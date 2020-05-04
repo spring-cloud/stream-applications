@@ -10,7 +10,7 @@
 
   	<modules>
 		<module>apps-core</module>
-		<module>apps-metadata</module>
+		<module>apps-build</module>
 		<module>source</module>
 		<module>sink</module>
 		<module>processor</module>
