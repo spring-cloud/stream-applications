@@ -1,0 +1,60 @@
+//tag::ref-doc[]
+:images-asciidoc: https://github.com/spring-cloud-stream-app-starters/stream-applications/raw/master/sink/counter-sink/src/main/resources
+= Counter Sink
+
+Counter that compute multiple counters from the received messages. It leverages the Micrometer library and can use various popular TSDB to  persist the counter values.
+
+By default the Counter Sink increments the `message`.`name` counter on every received message. The `message-counter-enabled` allows you to disable this counter when required.
+
+If tag expressions are provided (via the `counter.tag.expression.<tagKey>=<tagValue SpEL expression> property) then the `name` counter is incremented. Note that each SpEL  expression can evaluate into multiple values resulting into multiple counter increments (one fore every value resolved).
+
+If fixed tags are provided they are include in all message and expression counter increment measurements.
+
+Counter's implementation is based on the https://micrometer.io/[Micrometer library] which is a Vendor-neutral application metrics facade that supports the most popular monitoring systems.
+See the https://micrometer.io/docs[Micrometer documentation] for the list of supported monitoring systems. Starting with Spring Boot 2.0, Micrometer is the instrumentation library powering the delivery of application metrics from Spring Boot.
+
+All Spring Cloud Stream App Starters are configured to support two of the most popular monitoring systems, Prometheus and InfluxDB. You can declaratively select which monitoring system to use.
+If you are not using Prometheus or InfluxDB, you can customise the App starters to use a different monitoring system as well as include your preferred micrometer monitoring system library in your own custom applications.
+
+https://grafana.com/[Grafana] is a popular platform for building visualization dashboards.
+
+To enable Micrometer’s Prometheus meter registry for Spring Cloud Stream application starters, set the following properties.
+
+```
+management.metrics.export.prometheus.enabled=true
+management.endpoints.web.exposure.include=prometheus
+```
+
+and disable the application’s security which allows for a simple Prometheus configuration to scrape counter information by setting the following property.
+
+```
+spring.cloud.streamapp.security.enabled=false
+```
+
+To enable Micrometer’s Influx meter registry for Spring Cloud Stream application starters, set the following property.
+
+```
+management.metrics.export.influx.enabled=true
+management.metrics.export.influx.uri={influxdb-server-url}
+```
+
+NOTE: if the https://docs.spring.io/spring-cloud-dataflow/docs/2.0.0.BUILD-SNAPSHOT/reference/htmlsingle/#streams-monitoring[Data Flow Server metrics] is enabled then the `Counter` will reuse the exiting configurations.
+
+Following diagram illustrates Counter's information collection and processing flow.
+
+image::{images-asciidoc}/MicrometerCounterAppStarter.png[Counter Architecture, scaledwidth="70%"]
+
+=== Payload
+
+== Options
+
+//tag::configuration-properties[]
+$$counter.amount-expression$$:: $$A SpEL expression (against the incoming Message) to derive the amount to add to the counter. If not set the counter is incremented by 1.0$$ *($$Expression$$, default: `$$<none>$$`)*
+$$counter.message-counter-enabled$$:: $$Enables counting the number of messages processed. Uses the 'message.' counter name prefix to distinct it form the expression based counter. The message counter includes the fixed tags when provided.$$ *($$Boolean$$, default: `$$true$$`)*
+$$counter.name$$:: $$The name of the counter to increment. The 'name' and 'nameExpression' are mutually exclusive. Only one can be set.$$ *($$String$$, default: `$$<none>$$`)*
+$$counter.name-expression$$:: $$A SpEL expression (against the incoming Message) to derive the name of the counter to increment. The 'name' and 'nameExpression' are mutually exclusive. Only one can be set.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$counter.tag.expression$$:: $$Computes tags from SpEL expression. Single SpEL expression can produce an array of values, which in turn means distinct name/value tags. Every name/value tag will produce a separate counter increment. Tag expression format is: counter.tag.expression.[tag-name]=[SpEL expression]$$ *($$Map<String, Expression>$$, default: `$$<none>$$`)*
+$$counter.tag.fixed$$:: $$Custom tags assigned to every counter increment measurements. This is a map so the property convention fixed tags is: counter.tag.fixed.[tag-name]=[tag-value]$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]

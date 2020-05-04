@@ -1,0 +1,19 @@
+[[spring-cloud-stream-modules-sinks]]
+== Sinks
+
+:leveloffset: +2
+
+[[spring-cloud-stream-modules-cassandra-sink]]
+include::{stream-apps-root}/stream-applications/{branch}/sink/cassandra-sink/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-counter-sink]]
+include::{stream-apps-root}/stream-applications/{branch}/sink/counter-sink/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-jdbc-sink]]
+include::{stream-apps-root}/stream-applications/{branch}/sink/jdbc-sink/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-log-sink]]
+include::{stream-apps-root}/stream-applications/{branch}/sink/log-sink/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-mongodb-sink]]
+include::{stream-apps-root}/stream-applications/{branch}/sink/mongodb-sink/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-rabbit-sink]]
+include::{stream-apps-root}/stream-applications/{branch}/sink/rabbit-sink/README.adoc[tags=ref-doc]
+
+:leveloffset: -2

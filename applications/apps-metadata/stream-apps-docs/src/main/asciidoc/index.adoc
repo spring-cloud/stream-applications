@@ -1,0 +1,50 @@
+= Spring Cloud Stream Applications Reference Guide
+Sabby Anandan; Artem Bilan; Marius Bogoevici; Eric Bottard; Mark Fisher; Ilayaperumal Gopinathan; Gunnar Hillert; Mark Pollack; Patrick Peralta; Glenn Renfro; Gary Russell; Thomas Risberg; David Turanski; Janne Valkealahti; Soby Chacko; Christian Tzolov;
+:doctype: book
+:toc: left
+:toclevels: 4
+:source-highlighter: prettify
+:numbered:
+:icons: font
+:hide-uri-scheme:
+:docinfo: shared
+
+:stream-apps-root:  https://raw.githubusercontent.com/spring-cloud-stream-app-starters
+
+:branch: master
+
+:stream-apps-asciidoc: https://raw.githubusercontent.com/spring-cloud-stream-app-starters/app-starters-release/master/spring-cloud-stream-app-starters-docs/src/main/asciidoc
+
+:scst-core-version: 3.0.3.RELEASE
+
+ifdef::backend-html5[]
+
+Version {project-version}
+
+(C) 2012-2020 Pivotal Software, Inc.
+
+_Copies of this document may be made for your own use and for distribution to
+others, provided that you do not charge any fee for such copies and further
+provided that each copy contains this Copyright Notice, whether distributed in
+print or electronically._
+
+endif::backend-html5[]
+
+// ======================================================================================
+
+= Reference Guide
+include::overview.adoc[]
+
+[[starters]]
+= Starters
+include::sources.adoc[]
+
+include::processors.adoc[]
+
+include::sinks.adoc[]
+
+= Appendices
+[appendix]
+include::contributing.adoc[]
+
+// ======================================================================================

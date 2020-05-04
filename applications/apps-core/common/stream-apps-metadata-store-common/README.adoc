@@ -1,0 +1,181 @@
+=== `MetadataStore` Common Module
+
+This artifact contains a Spring Boot auto-configuration for the `MetadataStore`which can be used in various Spring Integration scenarios, like file polling, idempotent receiver, offset management etc.
+See Spring Integration "`https://docs.spring.io/spring-integration/docs/5.0.6.RELEASE/reference/html/system-management-chapter.html#metadata-store[Reference Manual]`" for more information.
+
+In addition to the standard Spring Boot configuration properties this module exposes a `MetadataStoreProperties` with the `metadata.store` prefix.
+
+To auto-configure particular `MetadataStore` you just need to bring respective dependencies into the target app starter:
+
+==== Redis
+
+The `RedisMetadataStore` requires regular Spring Boot auto-configuration for https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-redis[Spring Data Redis] and minimal set of dependencies is like this:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-redis</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+----
+
+Additional configuration property for `RedisMetadataStore` is:
+
+$$metadata.store.redis.key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$MetaData$$`)*
+
+==== MongoDb
+
+The `MongoDbMetadataStore` requires regular Spring Boot auto-configuration for https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-mongodb[Spring Data MongoDB] and minimal set of dependencies is like this:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-mongodb</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-mongodb</artifactId>
+</dependency>
+----
+
+Additional configuration property for `MongoDbMetadataStore` is:
+
+$$metadata.store.mongo-db.collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$metadataStore$$`)*
+
+==== Pivotal Gemfire / Apache Geode
+
+The `GemfireMetadataStore` requires these dependencies for auto-configuration:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-gemfire</artifactId>
+</dependency>
+----
+
+or when your environment is based on the Open Source https://geode.apache.org/[Apache Geode]:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-gemfire</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-gemfire</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.springframework.data</groupId>
+    <artifactId>spring-data-geode</artifactId>
+</dependency>
+----
+
+You also can consider to use https://github.com/spring-projects/spring-boot-data-geode[Spring Boot Data Geode] instead for automatic dependency management and proper Spring Boot auto-configuration for Pivotal Gemfire/Apache Geode.
+
+Additional configuration property for `GemfireMetadataStore` is:
+
+$$metadata.store.gemfire.region$$:: $$Gemfire region name for metadata.$$ *($$String$$, default: `$$MetaData$$`)*
+
+In addition, for the `GemfireMetadataStore`, a `MetadataStoreListener` bean can be configured in the application context to react to the `MetadataStore` events.
+
+A default auto-configured `ClientRegionFactoryBean`, based on the auto-configured `GemFireCache`, bean can be overridden in the target application.
+
+==== Hazelcast
+
+The `HazelcastMetadataStore` requires regular Spring Boot auto-configuration for https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-caching-provider-hazelcast[Hazelcast] and minimal set of dependencies is like this:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-hazelcast</artifactId>
+</dependency>
+----
+
+There are no additional configuration properties for the `HazelcastMetadataStore`, however a `MetadataStoreListener` bean can be configured in the application context to react to the `MetadataStore` events.
+
+==== Zookeeper
+
+The `ZookeeperMetadataStore` requires this dependency for auto-configuration:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-zookeeper</artifactId>
+</dependency>
+----
+
+The configuration properties for `ZookeeperMetadataStore` are:
+
+$$metadata.store.zookeeper.connect-string$$:: $$Zookeeper connect string in form HOST:PORT.$$ *($$String$$, default: `$$127.0.0.1:2181$$`)*
+$$metadata.store.zookeeper.retry-interval$$:: $$Retry interval for Zookeeper operations in milliseconds.$$ *($$int$$, default: `$$1000$$`)*
+$$metadata.store.zookeeper.encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$, default: `$$UTF-8$$`)*
+$$metadata.store.zookeeper.root$$:: $$Root node - store entries are children of this node.$$ *($$String$$, default: `$$/SpringIntegration-MetadataStore$$`)*
+
+In addition, for the `ZookeeperMetadataStore`, a `MetadataStoreListener` bean can be configured in the application context to react to the `MetadataStore` events.
+Also a `CuratorFramework` bean can be provided to override a default auto-configured one.
+
+==== AWS DymanoDb
+
+The `DynamoDbMetadataStore` requires regular Spring Cloud AWS auto-configuration for https://cloud.spring.io/spring-cloud-static/spring-cloud-aws/2.0.0.RELEASE/single/spring-cloud-aws.html#_spring_boot_auto_configuration[Spring Boot] and minimal set of dependencies is like this:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-aws</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.amazonaws</groupId>
+    <artifactId>aws-java-sdk-dynamodb</artifactId>
+</dependency>
+----
+
+Additional configuration properties for `DynamoDbMetadataStore` are:
+
+$$metadata.store.dynamo-db.table:: $$Table name for metadata.$$ *($$String$$, default: `$$SpringIntegrationMetadataStore$$`)*
+$$metadata.store.dynamo-db.read-capacity:: $$Read capacity on the table.$$ *($$long$$, default: `$$1$$`)*
+$$metadata.store.dynamo-db.write-capacity:: $$Write capacity on the table.$$ *($$long$$, default: `$$1$$`)*
+$$metadata.store.dynamo-db.create-delay:: $$Delay between create table retries.$$ *($$int$$, default: `$$1$$`)*
+$$metadata.store.dynamo-db.create-retries:: $$Retry number for create table request.$$ *($$int$$, default: `$$25$$`)*
+$$metadata.store.dynamo-db.time-to-live:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
+
+A default, auto-configured `AmazonDynamoDBAsync` bean can be overridden in the target application.
+
+==== JDBC
+
+The `JdbcMetadataStore` requires regular Spring Boot auto-configuration for https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-sql[JDBC DataSource] and minimal set of dependencies is like this:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-jdbc</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jdbc</artifactId>
+</dependency>
+----
+
+Plus vendor-specific JDBC driver artifact(s).
+
+Additional configuration properties for `JdbcMetadataStore` are:
+
+$$metadata.store.jdbc.table-prefix:: $$Prefix for the custom table name.$$ *($$String$$, default: `$$INT_$$`)*
+$$metadata.store.jdbc.region:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$DEFAULT$$`)*
+
+
+
+When no any of those technologies dependencies are preset, an in-memory `SimpleMetadataStore` is auto-configured.
+The target application can also provide its own `MetadataStore` bean to override any auto-configuration hooks.

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.springframework.cloud.stream.app</groupId>
+    <artifactId>stream-apps-parent</artifactId>
+    <version>3.0.0.BUILD-SNAPSHOT</version>
+    <name>stream-apps-parent</name>
+    <description>Infrastructure for stream apps</description>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.0.M4</version>
+    </parent>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <stream-apps-core.version>3.0.0.M2</stream-apps-core.version>
+        <spring-boot.version>2.3.0.M4</spring-boot.version>
+        <app-metadata-maven-plugin-version>2.0.1.M1</app-metadata-maven-plugin-version>
+        <scst-app-maven-plugin.version>2.0.0.M2</scst-app-maven-plugin.version>
+        <stream-apps-docs-plugin.version>3.0.0.M1</stream-apps-docs-plugin.version>
+        <spring-cloud-stream.version>3.0.2.RELEASE</spring-cloud-stream.version>
+        <spring-cloud-function-dependencies.version>3.0.2.RELEASE</spring-cloud-function-dependencies.version>
+        <spring-cloud-dependencies.version>Hoxton.SR2</spring-cloud-dependencies.version>
+        <spring-cloud-stream-dependencies.version>Horsham.SR2</spring-cloud-stream-dependencies.version>
+        <java-cfenv-boot.version>2.1.1.RELEASE</java-cfenv-boot.version>
+        <java-functions.version>1.0.0.BUILD-SNAPSHOT</java-functions.version>
+        <prometheus-rsocket.version>0.9.0</prometheus-rsocket.version>
+    </properties>
+
+    <modules>
+        <module>common</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-dependencies</artifactId>
+                <version>${spring-cloud-stream-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream</artifactId>
+            <type>test-jar</type>
+            <classifier>test-binder</classifier>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <comments>Copyright 2014-2020 the original author or authors.
+
+                Licensed under the Apache License, Version 2.0 (the "License");
+                you may not use this file except in compliance with the License.
+                You may obtain a copy of the License at
+
+                http://www.apache.org/licenses/LICENSE-2.0
+
+                Unless required by applicable law or agreed to in writing, software
+                distributed under the License is distributed on an "AS IS" BASIS,
+                WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+                implied.
+
+                See the License for the specific language governing permissions and
+                limitations under the License.</comments>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git://github.com/pivotal/java-functions.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/pivotal/java-functions.git</developerConnection>
+        <url>https://github.com/pivotal/java-functions</url>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>repo.spring.io</id>
+            <name>Spring Release Repository</name>
+            <url>https://repo.spring.io/libs-release-local</url>
+        </repository>
+        <snapshotRepository>
+            <id>repo.spring.io</id>
+            <name>Spring Snapshot Repository</name>
+            <url>https://repo.spring.io/libs-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>milestone</id>
+            <distributionManagement>
+                <repository>
+                    <id>repo.spring.io</id>
+                    <name>Spring Milestone Repository</name>
+                    <url>https://repo.spring.io/libs-milestone-local</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>central</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <distributionManagement>
+                <repository>
+                    <id>sonatype-nexus-staging</id>
+                    <name>Nexus Release Repository</name>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>sonatype-nexus-snapshots</id>
+                    <name>Sonatype Nexus Snapshots</name>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <includes>
+                            <include>**/*Tests.java</include>
+                            <include>**/*Test.java</include>
+                        </includes>
+                        <excludes>
+                            <exclude>**/Abstract*.java</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
+                    <version>${stream-apps-docs-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>generate-documentation</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>generate-documentation</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.cloud.stream.app.plugin</groupId>
+                    <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+                    <version>${scst-app-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>app-gen</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>generate-app</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <generatedProjectHome>${basedir}/apps</generatedProjectHome>
+                        <javaVersion>1.8</javaVersion>
+                        <bootVersion>${spring-boot.version}</bootVersion>
+
+                        <binders>
+                            <item>kafka</item>
+                            <item>rabbit</item>
+                        </binders>
+                        <boms>
+                            <dependency>
+                                <groupId>org.springframework.cloud</groupId>
+                                <artifactId>spring-cloud-stream-dependencies</artifactId>
+                                <version>${spring-cloud-stream-dependencies.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.springframework.cloud</groupId>
+                                <artifactId>spring-cloud-function-dependencies</artifactId>
+                                <version>${spring-cloud-function-dependencies.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.springframework.cloud</groupId>
+                                <artifactId>spring-cloud-dependencies</artifactId>
+                                <version>${spring-cloud-dependencies.version}</version>
+                            </dependency>
+                        </boms>
+                        <globalDependencies>
+                            <dependency>
+                                <groupId>org.springframework.cloud.stream.app</groupId>
+                                <artifactId>stream-apps-security-common</artifactId>
+                                <version>${stream-apps-core.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.springframework.cloud.stream.app</groupId>
+                                <artifactId>stream-apps-micrometer-common</artifactId>
+                                <version>${stream-apps-core.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>io.micrometer</groupId>
+                                <artifactId>micrometer-registry-influx</artifactId>
+                            </dependency>
+                            <dependency>
+                                <groupId>io.micrometer</groupId>
+                                <artifactId>micrometer-registry-prometheus</artifactId>
+                            </dependency>
+                            <dependency>
+                                <groupId>io.micrometer.prometheus</groupId>
+                                <artifactId>prometheus-rsocket-spring</artifactId>
+                                <version>${prometheus-rsocket.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>io.micrometer</groupId>
+                                <artifactId>micrometer-registry-datadog</artifactId>
+                            </dependency>
+                            <dependency>
+                                <groupId>io.pivotal.cfenv</groupId>
+                                <artifactId>java-cfenv-boot</artifactId>
+                                <version>${java-cfenv-boot.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.springframework.boot</groupId>
+                                <artifactId>spring-boot-configuration-processor</artifactId>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.springframework.boot</groupId>
+                                <artifactId>spring-boot-starter-actuator</artifactId>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.springframework.boot</groupId>
+                                <artifactId>spring-boot-starter-web</artifactId>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.springframework.boot</groupId>
+                                <artifactId>spring-boot-starter-logging</artifactId>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.springframework.boot</groupId>
+                                <artifactId>spring-boot-starter-security</artifactId>
+                            </dependency>
+                        </globalDependencies>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/libs-snapshot-local</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/libs-milestone-local</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>spring-releases</id>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/release</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>spring-libs-release</id>
+            <name>Spring Libs Release</name>
+            <url>https://repo.spring.io/libs-release</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>spring-milestone-release</id>
+            <name>Spring Milestone Release</name>
+            <url>https://repo.spring.io/libs-milestone</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-releases</id>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/libs-release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/libs-snapshot-local</url>
+        </pluginRepository>
+        <pluginRepository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/libs-milestone-local</url>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
+

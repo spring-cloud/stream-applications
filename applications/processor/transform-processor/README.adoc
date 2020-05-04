@@ -1,0 +1,23 @@
+//tag::ref-doc[]
+= Transform Processor
+
+Transformer processor allows you to convert the message payload structure based on a SpEL expression.
+
+Here is an example of how you can run this application.
+
+`java -jar filter-processor-kafka-<version>.jar --spel.function.expression=toUpperCase()`
+
+Change kafka to rabbit if you want to run it against RabbitMQ.
+
+
+=== Payload
+
+Incoming message can contain any type of payload.
+
+== Options
+
+//tag::configuration-properties[]
+$$spel.function.expression$$:: $$A SpEL expression to apply.$$ *($$String$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]

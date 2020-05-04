@@ -1,0 +1,25 @@
+//tag::ref-doc[]
+= MongoDB Sink
+
+This sink application ingest incoming data into MongoDB.
+This application is fully based on the `MongoDataAutoConfiguration`, so refer to the https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-nosql.html#boot-features-mongodb[Spring Boot MongoDB Support] for more information.
+
+== Input
+
+=== Payload
+
+* Any POJO
+* `String`
+* `byte[]`
+
+== Options
+
+The **$$mongodb$$** $$sink$$ has the following options:
+
+
+//tag::configuration-properties[]
+$$mongodb.consumer.collection$$:: $$The MongoDB collection to store data$$ *($$String$$, default: `$$<none>$$`)*
+$$mongodb.consumer.collection-expression$$:: $$The SpEL expression to evaluate MongoDB collection$$ *($$Expression$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]

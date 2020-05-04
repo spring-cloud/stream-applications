@@ -1,0 +1,33 @@
+=== `App Starters Security` Common Module
+
+Spring Boot auto-configuration to manage the web security of the application starters.
+
+When the `app-starters-security-common` dependency is on the classpath, the `spring.cloud.streamapp.security.enabled` and `spring.cloud.streamapp.security.csrf-enabled` properties control the application security behavior.
+
+By default the security is enabled allowing unauthorized access only to the `Info` and `Health` endpoints.
+
+The `spring.cloud.streamapp.security.enabled = false` completely surpass the application security.
+
+For secured application setting `spring.cloud.streamapp.security.csrf-enabled = false` disables security for the CSRF access.
+
+With security enabled (`spring.cloud.streamapp.security.enabled = true`) and `actuator` dependency on the classpath, the `(Reactive)ManagementWebSecurityAutoConfiguration` is activated, providing unauthenticated access to the `HealthEndpoint` and `InfoEndpoint`.
+
+If the user specifies their own `WebSecurityConfigurerAdapter` (for MVC application), this configuration will back-off completely and the user should specify all the bits that they want to configure as part of the custom security configuration.
+For reactive (WebFlux) application the same effect can be achieved with a custom `WebFilterChainProxy` bean.
+
+=== Configuration
+To include app starters security management for a stream app, just include a dependency on this module.
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud.stream.app</groupId>
+    <artifactId>app-starters-security-common</artifactId>
+</dependency>
+----
+
+
+All Spring Cloud Stream app starters that inherit form the `core` pom have the `app-starters-security-common` dependency included by default.
+
+* `spring.cloud.streamapp.security.enabled` (default: `true`). If set to `false` it surpasses the boot security.
+* `spring.cloud.streamapp.security.csrf-enabled` (default: `true`). If set to `false`, for secured applications it enables CQRS.

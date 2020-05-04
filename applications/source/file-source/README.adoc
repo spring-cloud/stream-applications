@@ -1,0 +1,33 @@
+//tag::ref-doc[]
+= File Source
+
+This application polls a directory and sends new files or their contents to the output channel.
+The file source provides the contents of a File as a byte array by default.
+However, this can be customized using the --file.supplier.mode option:
+
+* ref Provides a java.io.File reference
+
+* lines Will split files line-by-line and emit a new message for each line
+
+* contents The default. Provides the contents of a file as a byte array
+
+When using `--file.supplier.mode=lines`, you can also provide the additional option `--file.supplier.withMarkers=true`.
+If set to true, the underlying FileSplitter will emit additional start-of-file and end-of-file marker messages before and after the actual data.
+The payload of these 2 additional marker messages is of type `FileSplitter.FileMarker`. The option withMarkers defaults to false if not explicitly set.
+
+== Options
+
+The **$$file$$** $$source$$ has the following options:
+
+//tag::configuration-properties[]
+$$file.consumer.markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$true$$`)*
+$$file.consumer.mode$$:: $$The FileReadingMode to use for file reading sources. Values are 'ref' - The File object, 'lines' - a message per line, or 'contents' - the contents as bytes.$$ *($$FileReadingMode$$, default: `$$<none>$$`, possible values: `ref`,`lines`,`contents`)*
+$$file.consumer.with-markers$$:: $$Set to true to emit start of file/end of file marker messages before/after the data. 	Only valid with FileReadingMode 'lines'.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$file.supplier.delay-when-empty$$:: $$Duration of delay when no new files are detected.$$ *($$Duration$$, default: `$$1s$$`)*
+$$file.supplier.directory$$:: $$The directory to poll for new files.$$ *($$File$$, default: `$$<none>$$`)*
+$$file.supplier.filename-pattern$$:: $$A simple ant pattern to match files.$$ *($$String$$, default: `$$<none>$$`)*
+$$file.supplier.filename-regex$$:: $$A regex pattern to match files.$$ *($$Pattern$$, default: `$$<none>$$`)*
+$$file.supplier.prevent-duplicates$$:: $$Set to true to include an AcceptOnceFileListFilter which prevents duplicates.$$ *($$Boolean$$, default: `$$true$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>stream-apps-release-train</artifactId>
+        <groupId>org.springframework.cloud.stream.app</groupId>
+        <version>Fahrenheit.BUILD-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>stream-apps-descriptor</artifactId>
+    <name>stream-apps-descriptor</name>
+    <packaging>jar</packaging>
+
+    <properties>
+        <cassandra-sink.version>3.0.0.BUILD-SNAPSHOT</cassandra-sink.version>
+        <counter-sink.version>3.0.0.BUILD-SNAPSHOT</counter-sink.version>
+        <jdbc-sink.version>3.0.0.BUILD-SNAPSHOT</jdbc-sink.version>
+        <log-sink.version>3.0.0.BUILD-SNAPSHOT</log-sink.version>
+        <mongodb-sink.version>3.0.0.BUILD-SNAPSHOT</mongodb-sink.version>
+        <rabbit-sink.version>3.0.0.BUILD-SNAPSHOT</rabbit-sink.version>
+        <http-source.version>3.0.0.BUILD-SNAPSHOT</http-source.version>
+        <jdbc-source.version>3.0.0.BUILD-SNAPSHOT</jdbc-source.version>
+        <mongodb-source.version>3.0.0.BUILD-SNAPSHOT</mongodb-source.version>
+        <time-source.version>3.0.0.BUILD-SNAPSHOT</time-source.version>
+        <filter-processor.version>3.0.0.BUILD-SNAPSHOT</filter-processor.version>
+        <splitter-processor.version>3.0.0.BUILD-SNAPSHOT</splitter-processor.version>
+        <transform-processor.version>3.0.0.BUILD-SNAPSHOT</transform-processor.version>
+    </properties>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>META-INF/kafka-apps-maven.properties</include>
+                    <include>META-INF/rabbit-apps-maven.properties</include>
+                    <include>META-INF/kafka-apps-docker.properties</include>
+                    <include>META-INF/rabbit-apps-docker.properties</include>
+                    <include>META-INF/kafka-apps-maven-repo-url.properties</include>
+                    <include>META-INF/rabbit-apps-maven-repo-url.properties</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source><![CDATA[
+        pom.properties['repo-spring-io']=
+                "${jdbc-source.version}".contains('BUILD-SNAPSHOT') ? 'repo.spring.io/snapshot' :
+                        "${jdbc-source.version}".contains('RELEASE') ? 'repo.spring.io/release' : 'repo.spring.io/milestone';
+
+        pom.properties['cassandra-sink-docker.tag']=
+                "${cassandra-sink.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${cassandra-sink.version}";
+        pom.properties['counter-sink-docker.tag']=
+                "${counter-sink.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${counter-sink.version}";
+        pom.properties['jdbc-sink-docker.tag']=
+                "${jdbc-sink.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${jdbc-sink.version}";
+        pom.properties['log-sink-docker.tag']=
+                "${log-sink.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${log-sink.version}";
+        pom.properties['mongodb-sink-docker.tag']=
+                "${mongodb-sink.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${mongodb-sink.version}";
+        pom.properties['rabbit-sink-docker.tag']=
+                "${rabbit-sink.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${rabbit-sink.version}";
+        pom.properties['http-source-docker.tag']=
+                "${http-source.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${http-source.version}";
+        pom.properties['jdbc-source-docker.tag']=
+                "${jdbc-source.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${jdbc-source.version}";
+        pom.properties['mongodb-source-docker.tag']=
+                "${mongodb-source.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${mongodb-source.version}";
+        pom.properties['time-source-docker.tag']=
+                "${time-source.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${time-source.version}";
+        pom.properties['filter-processor-docker.tag']=
+                "${filter-processor.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${filter-processor.version}";
+        pom.properties['splitter-processor-docker.tag']=
+                "${splitter-processor.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${splitter-processor.version}";
+        pom.properties['transform-processor-docker.tag']=
+                "${transform-processor.version}".contains('BUILD-SNAPSHOT') ? 'latest' : "${transform-processor.version}";
+                                ]]></source>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>target/classes/META-INF/kafka-apps-maven.properties</file>
+                                    <type>stream-apps-kafka-maven</type>
+                                </artifact>
+                                <artifact>
+                                    <file>target/classes/META-INF/kafka-apps-docker.properties</file>
+                                    <type>stream-apps-kafka-docker</type>
+                                </artifact>
+                                <artifact>
+                                    <file>target/classes/META-INF/rabbit-apps-maven.properties</file>
+                                    <type>stream-apps-rabbit-maven</type>
+                                </artifact>
+                                <artifact>
+                                    <file>target/classes/META-INF/rabbit-apps-docker.properties</file>
+                                    <type>stream-apps-rabbit-docker</type>
+                                </artifact>
+                                <artifact>
+                                    <file>target/classes/META-INF/kafka-apps-maven-repo-url.properties</file>
+                                    <type>kafka-apps-maven-repo-url.properties</type>
+                                </artifact>
+                                <artifact>
+                                    <file>target/classes/META-INF/rabbit-apps-maven-repo-url.properties</file>
+                                    <type>rabbit-apps-maven-repo-url.properties</type>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+    </build>
+
+</project>

@@ -1,0 +1,25 @@
+//tag::ref-doc[]
+= MongoDB Source
+
+This source polls data from MongoDB.
+This source is fully based on the `MongoDataAutoConfiguration`, so refer to the
+https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-nosql.html#boot-features-mongodb[Spring Boot MongoDB Support]
+for more information.
+
+
+== Options
+
+The **$$mongodb$$** $$source$$ has the following options:
+
+
+//tag::configuration-properties[]
+$$mongodb.supplier.collection$$:: $$The MongoDB collection to query$$ *($$String$$, default: `$$<none>$$`)*
+$$mongodb.supplier.query$$:: $$The MongoDB query$$ *($$String$$, default: `$${ }$$`)*
+$$mongodb.supplier.query-expression$$:: $$The SpEL expression in MongoDB query DSL style$$ *($$Expression$$, default: `$$<none>$$`)*
+$$mongodb.supplier.split$$:: $$Whether to split the query result as individual messages.$$ *($$Boolean$$, default: `$$true$$`)*
+//end::configuration-properties[]
+
+Also see the https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[Spring Boot Documentation] for additional `MongoProperties` properties.
+See and `TriggerProperties` for polling options.
+
+//end::ref-doc[]

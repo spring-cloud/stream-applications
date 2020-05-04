@@ -1,0 +1,23 @@
+[[pom-dependencies]]
+== Stream Apps POM Dependencies
+
+Following diagram highlights some of the important `Stream Apps` POM dependencies.
+
+image::{stream-apps-asciidoc}/images/starters-pom-dependencies.png[PomDependencies, scaledwidth="100%"]
+
+The dependencies are grouped in three categories:
+
+* *Core Spring libraries* - represent the core framework libraries such as `Spring Boot`, `Spring Integration`,
+`Spring Cloud`. The "Bill Of Materials" (BOM) patterns is used throughout the stack to decouple the dependency
+management from the lifecycle configurations.
+The `app-starters-build` parent POM and  the `app-starters-core-dependencies` BOM use inherit by all app starters.
+
+* *App Starters* - libraries that contain the complete configuration of a Spring Cloud Stream application with a specific role
+Starters are not executable applications, and are intended to be included in the `Pre-build Apps`, along with a Binder
+implementation.
+The App Starter root pom (`[my-app-name]-app-starters-build`) inherit all compile-tme configuration for its parent
+the core `app-starters-build`. Starer's BOM `[my-app-name]-app-dependencies` is used to manage starter's own dependencies.
+
+* *Pre-build App* - pre-build Spring Boot applications that include the app starters and a Binder implementation.
+
+

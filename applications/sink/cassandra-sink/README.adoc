@@ -1,0 +1,44 @@
+//tag::ref-doc[]
+= Cassandra Sink
+
+This sink application writes the content of each message it receives into Cassandra.
+
+It expects a payload of JSON String and uses it’s properties to map to table columns.
+
+=== Payload
+A JSON String or byte array representing the entity (or a list of entities) to be persisted.
+
+== Options
+
+The **$$cassandra$$** $$sink$$ has the following options:
+
+
+//tag::configuration-properties[]
+$$cassandra.cluster.create-keyspace$$:: $$Flag to create (or not) keyspace on application startup.$$ *($$Boolean$$, default: `$$false$$`)*
+$$cassandra.cluster.entity-base-packages$$:: $$Base packages to scan for entities annotated with Table annotations.$$ *($$String[]$$, default: `$$[]$$`)*
+$$cassandra.cluster.init-script$$:: $$Resource with CQL scripts (delimited by ';') to initialize keyspace schema.$$ *($$Resource$$, default: `$$<none>$$`)*
+$$cassandra.cluster.skip-ssl-validation$$:: $$Flag to validate the Servers' SSL certs$$ *($$Boolean$$, default: `$$false$$`)*
+$$cassandra.consistency-level$$:: $$The consistency level for write operation.$$ *($$ConsistencyLevel$$, default: `$$<none>$$`)*
+$$cassandra.ingest-query$$:: $$Ingest Cassandra query.$$ *($$String$$, default: `$$<none>$$`)*
+$$cassandra.query-type$$:: $$QueryType for Cassandra Sink.$$ *($$Type$$, default: `$$<none>$$`, possible values: `INSERT`,`UPDATE`,`DELETE`,`STATEMENT`)*
+$$cassandra.statement-expression$$:: $$Expression in Cassandra query DSL style.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$cassandra.ttl$$:: $$Time-to-live option of WriteOptions.$$ *($$Integer$$, default: `$$0$$`)*
+$$spring.data.cassandra.cluster-name$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.cassandra.compression$$:: $$Compression supported by the Cassandra binary protocol.$$ *($$Compression$$, default: `$$none$$`, possible values: `LZ4`,`SNAPPY`,`NONE`)*
+$$spring.data.cassandra.connect-timeout$$:: $$Socket option: connection time out.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$spring.data.cassandra.consistency-level$$:: $$Queries consistency level.$$ *($$DefaultConsistencyLevel$$, default: `$$<none>$$`, possible values: `ANY`,`ONE`,`TWO`,`THREE`,`QUORUM`,`ALL`,`LOCAL_ONE`,`LOCAL_QUORUM`,`EACH_QUORUM`,`SERIAL`,`LOCAL_SERIAL`)*
+$$spring.data.cassandra.contact-points$$:: $$Cluster node addresses in the form 'host:port'.$$ *($$List<String>$$, default: `$$[127.0.0.1:9042]$$`)*
+$$spring.data.cassandra.fetch-size$$:: $$<documentation missing>$$ *($$Integer$$, default: `$$<none>$$`)*
+$$spring.data.cassandra.keyspace-name$$:: $$Keyspace name to use.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.cassandra.local-datacenter$$:: $$Datacenter that is considered "local". Contact points should be from this datacenter.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.cassandra.page-size$$:: $$Queries default page size.$$ *($$Integer$$, default: `$$5000$$`)*
+$$spring.data.cassandra.password$$:: $$Login password of the server.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.cassandra.read-timeout$$:: $$Socket option: read time out.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$spring.data.cassandra.schema-action$$:: $$Schema action to take at startup.$$ *($$String$$, default: `$$none$$`)*
+$$spring.data.cassandra.serial-consistency-level$$:: $$Queries serial consistency level.$$ *($$DefaultConsistencyLevel$$, default: `$$<none>$$`, possible values: `ANY`,`ONE`,`TWO`,`THREE`,`QUORUM`,`ALL`,`LOCAL_ONE`,`LOCAL_QUORUM`,`EACH_QUORUM`,`SERIAL`,`LOCAL_SERIAL`)*
+$$spring.data.cassandra.session-name$$:: $$Name of the Cassandra session.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.cassandra.ssl$$:: $$Enable SSL support.$$ *($$Boolean$$, default: `$$false$$`)*
+$$spring.data.cassandra.username$$:: $$Login user of the server.$$ *($$String$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]

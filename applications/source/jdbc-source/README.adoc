@@ -1,0 +1,36 @@
+//tag::ref-doc[]
+= JDBC Source
+
+This source polls data from an RDBMS.
+This source is fully based on the `DataSourceAutoConfiguration`, so refer to the https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html[Spring Boot JDBC Support] for more information.
+
+=== Payload
+
+* `Map<String, Object>` when `jdbc.split == true` (default) and `List<Map<String, Object>>` otherwise
+
+== Options
+
+The **$$jdbc$$** $$source$$ has the following options:
+
+//tag::configuration-properties[]
+$$jdbc.supplier.max-rows$$:: $$Max numbers of rows to process for query.$$ *($$Integer$$, default: `$$0$$`)*
+$$jdbc.supplier.query$$:: $$The query to use to select data.$$ *($$String$$, default: `$$<none>$$`)*
+$$jdbc.supplier.split$$:: $$Whether to split the SQL result as individual messages.$$ *($$Boolean$$, default: `$$true$$`)*
+$$jdbc.supplier.update$$:: $$An SQL update statement to execute for marking polled messages as 'seen'.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.cloud.stream.poller.cron$$:: $$Cron expression value for the Cron Trigger.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.cloud.stream.poller.fixed-delay$$:: $$Fixed delay for default poller.$$ *($$Long$$, default: `$$1000$$`)*
+$$spring.cloud.stream.poller.initial-delay$$:: $$Initial delay for periodic triggers.$$ *($$Integer$$, default: `$$0$$`)*
+$$spring.cloud.stream.poller.max-messages-per-poll$$:: $$Maximum messages per poll for the default poller.$$ *($$Long$$, default: `$$1$$`)*
+$$spring.datasource.data$$:: $$Data (DML) script resource references.$$ *($$List<String>$$, default: `$$<none>$$`)*
+$$spring.datasource.driver-class-name$$:: $$Fully qualified name of the JDBC driver. Auto-detected based on the URL by default.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.initialization-mode$$:: $$Initialize the datasource with available DDL and DML scripts.$$ *($$DataSourceInitializationMode$$, default: `$$embedded$$`, possible values: `ALWAYS`,`EMBEDDED`,`NEVER`)*
+$$spring.datasource.password$$:: $$Login password of the database.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.schema$$:: $$Schema (DDL) script resource references.$$ *($$List<String>$$, default: `$$<none>$$`)*
+$$spring.datasource.url$$:: $$JDBC URL of the database.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.username$$:: $$Login username of the database.$$ *($$String$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+Also see the https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[Spring Boot Documentation]
+for addition `DataSource` properties and `TriggerProperties` and `MaxMessagesProperties` for polling options.
+
+//end::ref-doc[]

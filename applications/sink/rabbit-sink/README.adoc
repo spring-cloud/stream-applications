@@ -1,0 +1,34 @@
+//tag::ref-doc[]
+= RabbitMQ Sink
+
+This module sends messages to RabbitMQ.
+
+== Options
+
+The **$$rabbit$$** $$sink$$ has the following options:
+
+(See the Spring Boot documentation for RabbitMQ connection properties)
+
+//tag::configuration-properties[]
+$$rabbit.converter-bean-name$$:: $$The bean name for a custom message converter; if omitted, a SimpleMessageConverter is used. If 'jsonConverter', a Jackson2JsonMessageConverter bean will be created for you.$$ *($$String$$, default: `$$<none>$$`)*
+$$rabbit.exchange$$:: $$Exchange name - overridden by exchangeNameExpression, if supplied.$$ *($$String$$, default: `$$<empty string>$$`)*
+$$rabbit.exchange-expression$$:: $$A SpEL expression that evaluates to an exchange name.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$rabbit.mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$[*]$$`)*
+$$rabbit.own-connection$$:: $$When true, use a separate connection based on the boot properties.$$ *($$Boolean$$, default: `$$false$$`)*
+$$rabbit.persistent-delivery-mode$$:: $$Default delivery mode when 'amqp_deliveryMode' header is not present, true for PERSISTENT.$$ *($$Boolean$$, default: `$$false$$`)*
+$$rabbit.routing-key$$:: $$Routing key - overridden by routingKeyExpression, if supplied.$$ *($$String$$, default: `$$<none>$$`)*
+$$rabbit.routing-key-expression$$:: $$A SpEL expression that evaluates to a routing key.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$spring.rabbitmq.addresses$$:: $$Comma-separated list of addresses to which the client should connect.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.rabbitmq.connection-timeout$$:: $$Connection timeout. Set it to zero to wait forever.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$spring.rabbitmq.host$$:: $$RabbitMQ host.$$ *($$String$$, default: `$$localhost$$`)*
+$$spring.rabbitmq.password$$:: $$Login to authenticate against the broker.$$ *($$String$$, default: `$$guest$$`)*
+$$spring.rabbitmq.port$$:: $$RabbitMQ port.$$ *($$Integer$$, default: `$$5672$$`)*
+$$spring.rabbitmq.publisher-confirm-type$$:: $$Type of publisher confirms to use.$$ *($$ConfirmType$$, default: `$$<none>$$`, possible values: `SIMPLE`,`CORRELATED`,`NONE`)*
+$$spring.rabbitmq.publisher-returns$$:: $$Whether to enable publisher returns.$$ *($$Boolean$$, default: `$$false$$`)*
+$$spring.rabbitmq.requested-channel-max$$:: $$Number of channels per connection requested by the client. Use 0 for unlimited.$$ *($$Integer$$, default: `$$2047$$`)*
+$$spring.rabbitmq.requested-heartbeat$$:: $$Requested heartbeat timeout; zero for none. If a duration suffix is not specified, seconds will be used.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$spring.rabbitmq.username$$:: $$Login user to authenticate to the broker.$$ *($$String$$, default: `$$guest$$`)*
+$$spring.rabbitmq.virtual-host$$:: $$Virtual host to use when connecting to the broker.$$ *($$String$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]

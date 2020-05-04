@@ -1,0 +1,10 @@
+//tag::ref-doc[]
+= Bridge Processor
+
+A processor that bridges the input and ouput by simply passing the incoming payload to the outbound.
+
+=== Payload
+
+Any
+
+//end::ref-doc[]

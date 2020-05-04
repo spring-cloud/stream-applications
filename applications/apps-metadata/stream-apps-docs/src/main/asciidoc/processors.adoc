@@ -1,0 +1,15 @@
+[[spring-cloud-stream-modules-processors]]
+== Processors
+
+:leveloffset: +2
+
+[[spring-cloud-stream-modules-filter]]
+include::{stream-apps-root}/stream-applications/{branch}/processor/filter-processor/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-splitter]]
+include::{stream-apps-root}/stream-applications/{branch}/processor/splitter-processor/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-transform]]
+include::{stream-apps-root}/stream-applications/{branch}/processor/transform-processor/README.adoc[tags=ref-doc]
+
+:leveloffset: -2
+
+

@@ -1,0 +1,31 @@
+//tag::ref-doc[]
+= Http Source
+
+A source application that listens for HTTP requests and emits the body as a message payload.
+If the Content-Type matches `text/*` or `application/json`, the payload will be a String,
+otherwise the payload will be a byte array.
+
+==== Payload:
+
+If content type matches `text/*` or `application/json`
+
+* `String`
+
+If content type does not match `text/*` or `application/json`
+
+* `byte array`
+
+== Options
+
+The **$$http$$** $$source$$ supports the following configuration properties:
+
+//tag::configuration-properties[]
+$$http.cors.allow-credentials$$:: $$Whether the browser should include any cookies associated with the domain of the request being annotated.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$http.cors.allowed-headers$$:: $$List of request headers that can be used during the actual request.$$ *($$String[]$$, default: `$$<none>$$`)*
+$$http.cors.allowed-origins$$:: $$List of allowed origins, e.g. "http://domain1.com".$$ *($$String[]$$, default: `$$<none>$$`)*
+$$http.mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$<none>$$`)*
+$$http.path-pattern$$:: $$HTTP endpoint path mapping.$$ *($$String$$, default: `$$/$$`)*
+$$server.port$$:: $$Server HTTP port.$$ *($$Integer$$, default: `$$8080$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]

@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.springframework.cloud.stream.app.micrometer.common.SpringCloudStreamMicrometerCommonTags,\
+org.springframework.cloud.stream.app.micrometer.common.CloudFoundryMicrometerCommonTags
+org.springframework.boot.env.EnvironmentPostProcessor=\
+org.springframework.cloud.stream.app.micrometer.common.SpringCloudStreamMicrometerEnvironmentPostProcessor
+

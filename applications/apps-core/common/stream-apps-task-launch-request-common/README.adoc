@@ -1,0 +1,52 @@
+=== `Data Flow Task Launch Request Support` Common Module
+
+This artifact contains a Spring Boot auto-configuration providing components to produce a Task Launch Request payload.
+In theory any message source can be used to launch a Task. The task launch request is compatible with the
+task-launcher-dataflow sink.
+
+
+==== Data Flow Task Launch Request
+
+Data Flow Task Launch Request requests require a Data Flow server with an existing task definition.
+The task launch request contains the name of the task to launch. This must the name of a defined task in Data Flow.
+You may optionally provide command line arguments and deployment properties.
+
+===== Task Name
+
+The task name is a required field. This may be statically configured by setting `task.launch.request.task-name`,
+extracted from the Message by setting `task.launch.request.task-name-expression`.
+You may also override the default implementation of the `TaskNameMessageMapper` bean to enable more complex runtime task name mappings.
+
+
+===== Task Command Line Arguments
+
+The launched task often requires additional data which may be passed as command line arguments.
+The `task.launch.request.args` property accepts a comma delimited string of key-value pairs, for example
+`key1=val1,key2=val2`. In addition, a `task.launch.request.arg-expressions` allows you to use SpEL expressions to evaluate
+message contents to provide command line arguments.
+For example, `task.launch.request.arg-expressions=foo=payload.toUpperCase(),bar=payload.substring(0,2)`.
+
+You may also provide override implementation of the `CommandLineArgumentsMessageMapper` bean to implement more complex logic.
+
+===== Task Deployment Properties
+
+Deployment properties are platform-specific configuration used by the `TaskLauncher` and are always statically configured by
+setting `task.launch.request.deployment-properties` and apply to every task launch request.
+
+=== Configuration
+To enable any stream app to transform its output to a Task Launch Request, include a dependency on this module
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud.stream.app</groupId>
+    <artifactId>app-starters-task-launch-request-common</artifactId>
+</dependency>
+----
+
+Setting the application property `spring.cloud.stream.function.definition=taskLaunchRequest` is required to execute the transformation.
+You may safely add the above dependency to applications which optionally produce a task launch request.
+
+
+`TaskLaunchRequestIntegrationTests` provides some configuration examples.
+

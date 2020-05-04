@@ -1,0 +1,28 @@
+//tag::ref-doc[]
+= File Sink
+
+The file sink app writes each message it receives to a file.
+
+=== Payload
+
+* `java.io.File`
+* `java.io.InputStream`
+* `byte[]`
+* `String`
+
+== Options
+
+The `file-sink` has the following options:
+
+//tag::configuration-properties[]
+$$file.consumer.binary$$:: $$A flag to indicate whether adding a newline after the write should be suppressed.$$ *($$Boolean$$, default: `$$false$$`)*
+$$file.consumer.charset$$:: $$The charset to use when writing text content.$$ *($$String$$, default: `$$UTF-8$$`)*
+$$file.consumer.directory$$:: $$The parent directory of the target file.$$ *($$File$$, default: `$$<none>$$`)*
+$$file.consumer.directory-expression$$:: $$The expression to evaluate for the parent directory of the target file.$$ *($$String$$, default: `$$<none>$$`)*
+$$file.consumer.mode$$:: $$The FileExistsMode to use if the target file already exists.$$ *($$FileExistsMode$$, default: `$$<none>$$`, possible values: `APPEND`,`APPEND_NO_FLUSH`,`FAIL`,`IGNORE`,`REPLACE`,`REPLACE_IF_MODIFIED`)*
+$$file.consumer.name$$:: $$The name of the target file.$$ *($$String$$, default: `$$file-consumer$$`)*
+$$file.consumer.name-expression$$:: $$The expression to evaluate for the name of the target file.$$ *($$String$$, default: `$$<none>$$`)*
+$$file.consumer.suffix$$:: $$The suffix to append to file name.$$ *($$String$$, default: `$$<empty string>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]
