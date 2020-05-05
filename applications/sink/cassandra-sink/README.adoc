@@ -14,20 +14,11 @@ The **$$cassandra$$** $$sink$$ has the following options:
 
 
 //tag::configuration-properties[]
-$$cassandra.cluster.create-keyspace$$:: $$Flag to create (or not) keyspace on application startup.$$ *($$Boolean$$, default: `$$false$$`)*
-$$cassandra.cluster.entity-base-packages$$:: $$Base packages to scan for entities annotated with Table annotations.$$ *($$String[]$$, default: `$$[]$$`)*
-$$cassandra.cluster.init-script$$:: $$Resource with CQL scripts (delimited by ';') to initialize keyspace schema.$$ *($$Resource$$, default: `$$<none>$$`)*
-$$cassandra.cluster.skip-ssl-validation$$:: $$Flag to validate the Servers' SSL certs$$ *($$Boolean$$, default: `$$false$$`)*
-$$cassandra.consistency-level$$:: $$The consistency level for write operation.$$ *($$ConsistencyLevel$$, default: `$$<none>$$`)*
-$$cassandra.ingest-query$$:: $$Ingest Cassandra query.$$ *($$String$$, default: `$$<none>$$`)*
-$$cassandra.query-type$$:: $$QueryType for Cassandra Sink.$$ *($$Type$$, default: `$$<none>$$`, possible values: `INSERT`,`UPDATE`,`DELETE`,`STATEMENT`)*
-$$cassandra.statement-expression$$:: $$Expression in Cassandra query DSL style.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$cassandra.ttl$$:: $$Time-to-live option of WriteOptions.$$ *($$Integer$$, default: `$$0$$`)*
 $$spring.data.cassandra.cluster-name$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.data.cassandra.compression$$:: $$Compression supported by the Cassandra binary protocol.$$ *($$Compression$$, default: `$$none$$`, possible values: `LZ4`,`SNAPPY`,`NONE`)*
 $$spring.data.cassandra.connect-timeout$$:: $$Socket option: connection time out.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$spring.data.cassandra.consistency-level$$:: $$Queries consistency level.$$ *($$DefaultConsistencyLevel$$, default: `$$<none>$$`, possible values: `ANY`,`ONE`,`TWO`,`THREE`,`QUORUM`,`ALL`,`LOCAL_ONE`,`LOCAL_QUORUM`,`EACH_QUORUM`,`SERIAL`,`LOCAL_SERIAL`)*
-$$spring.data.cassandra.contact-points$$:: $$Cluster node addresses in the form 'host:port'.$$ *($$List<String>$$, default: `$$[127.0.0.1:9042]$$`)*
+$$spring.data.cassandra.contact-points$$:: $$Cluster node addresses in the form 'host:port', or a simple 'host' to use the configured port.$$ *($$List<String>$$, default: `$$[127.0.0.1:9042]$$`)*
 $$spring.data.cassandra.fetch-size$$:: $$<documentation missing>$$ *($$Integer$$, default: `$$<none>$$`)*
 $$spring.data.cassandra.keyspace-name$$:: $$Keyspace name to use.$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.data.cassandra.local-datacenter$$:: $$Datacenter that is considered "local". Contact points should be from this datacenter.$$ *($$String$$, default: `$$<none>$$`)*

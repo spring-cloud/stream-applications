@@ -49,12 +49,6 @@ image::{images-asciidoc}/MicrometerCounterAppStarter.png[Counter Architecture, s
 == Options
 
 //tag::configuration-properties[]
-$$counter.amount-expression$$:: $$A SpEL expression (against the incoming Message) to derive the amount to add to the counter. If not set the counter is incremented by 1.0$$ *($$Expression$$, default: `$$<none>$$`)*
-$$counter.message-counter-enabled$$:: $$Enables counting the number of messages processed. Uses the 'message.' counter name prefix to distinct it form the expression based counter. The message counter includes the fixed tags when provided.$$ *($$Boolean$$, default: `$$true$$`)*
-$$counter.name$$:: $$The name of the counter to increment. The 'name' and 'nameExpression' are mutually exclusive. Only one can be set.$$ *($$String$$, default: `$$<none>$$`)*
-$$counter.name-expression$$:: $$A SpEL expression (against the incoming Message) to derive the name of the counter to increment. The 'name' and 'nameExpression' are mutually exclusive. Only one can be set.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$counter.tag.expression$$:: $$Computes tags from SpEL expression. Single SpEL expression can produce an array of values, which in turn means distinct name/value tags. Every name/value tag will produce a separate counter increment. Tag expression format is: counter.tag.expression.[tag-name]=[SpEL expression]$$ *($$Map<String, Expression>$$, default: `$$<none>$$`)*
-$$counter.tag.fixed$$:: $$Custom tags assigned to every counter increment measurements. This is a map so the property convention fixed tags is: counter.tag.fixed.[tag-name]=[tag-value]$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

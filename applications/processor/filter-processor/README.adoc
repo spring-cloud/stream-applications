@@ -16,7 +16,6 @@ If the incoming type is `byte[]` and the content type is set to `text/plain` or 
 == Options
 
 //tag::configuration-properties[]
-$$spel.function.expression$$:: $$A SpEL expression to apply.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

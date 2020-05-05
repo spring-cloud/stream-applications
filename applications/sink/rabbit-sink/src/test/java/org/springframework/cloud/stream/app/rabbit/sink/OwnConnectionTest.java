@@ -16,19 +16,11 @@
 
 package org.springframework.cloud.stream.app.rabbit.sink;
 
-import java.util.function.Consumer;
-
-import com.github.dockerjava.api.command.CreateContainerCmd;
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports;
-import org.junit.ClassRule;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.test.context.TestPropertySource;
-import org.testcontainers.containers.GenericContainer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;

@@ -13,10 +13,6 @@ This source is fully based on the `DataSourceAutoConfiguration`, so refer to the
 The **$$jdbc$$** $$source$$ has the following options:
 
 //tag::configuration-properties[]
-$$jdbc.supplier.max-rows$$:: $$Max numbers of rows to process for query.$$ *($$Integer$$, default: `$$0$$`)*
-$$jdbc.supplier.query$$:: $$The query to use to select data.$$ *($$String$$, default: `$$<none>$$`)*
-$$jdbc.supplier.split$$:: $$Whether to split the SQL result as individual messages.$$ *($$Boolean$$, default: `$$true$$`)*
-$$jdbc.supplier.update$$:: $$An SQL update statement to execute for marking polled messages as 'seen'.$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.cloud.stream.poller.cron$$:: $$Cron expression value for the Cron Trigger.$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.cloud.stream.poller.fixed-delay$$:: $$Fixed delay for default poller.$$ *($$Long$$, default: `$$1000$$`)*
 $$spring.cloud.stream.poller.initial-delay$$:: $$Initial delay for periodic triggers.$$ *($$Integer$$, default: `$$0$$`)*

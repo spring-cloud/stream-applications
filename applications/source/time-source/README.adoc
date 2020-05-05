@@ -12,7 +12,6 @@ $$spring.cloud.stream.poller.cron$$:: $$Cron expression value for the Cron Trigg
 $$spring.cloud.stream.poller.fixed-delay$$:: $$Fixed delay for default poller.$$ *($$Long$$, default: `$$1000$$`)*
 $$spring.cloud.stream.poller.initial-delay$$:: $$Initial delay for periodic triggers.$$ *($$Integer$$, default: `$$0$$`)*
 $$spring.cloud.stream.poller.max-messages-per-poll$$:: $$Maximum messages per poll for the default poller.$$ *($$Long$$, default: `$$1$$`)*
-$$time.date-format$$:: $$Format for the date value.$$ *($$String$$, default: `$$MM/dd/yy HH:mm:ss$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

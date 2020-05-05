@@ -17,7 +17,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.cloud.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>filter-function</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>

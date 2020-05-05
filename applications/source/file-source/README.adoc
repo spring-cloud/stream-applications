@@ -20,14 +20,6 @@ The payload of these 2 additional marker messages is of type `FileSplitter.FileM
 The **$$file$$** $$source$$ has the following options:
 
 //tag::configuration-properties[]
-$$file.consumer.markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$true$$`)*
-$$file.consumer.mode$$:: $$The FileReadingMode to use for file reading sources. Values are 'ref' - The File object, 'lines' - a message per line, or 'contents' - the contents as bytes.$$ *($$FileReadingMode$$, default: `$$<none>$$`, possible values: `ref`,`lines`,`contents`)*
-$$file.consumer.with-markers$$:: $$Set to true to emit start of file/end of file marker messages before/after the data. 	Only valid with FileReadingMode 'lines'.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$file.supplier.delay-when-empty$$:: $$Duration of delay when no new files are detected.$$ *($$Duration$$, default: `$$1s$$`)*
-$$file.supplier.directory$$:: $$The directory to poll for new files.$$ *($$File$$, default: `$$<none>$$`)*
-$$file.supplier.filename-pattern$$:: $$A simple ant pattern to match files.$$ *($$String$$, default: `$$<none>$$`)*
-$$file.supplier.filename-regex$$:: $$A regex pattern to match files.$$ *($$Pattern$$, default: `$$<none>$$`)*
-$$file.supplier.prevent-duplicates$$:: $$Set to true to include an AcceptOnceFileListFilter which prevents duplicates.$$ *($$Boolean$$, default: `$$true$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
