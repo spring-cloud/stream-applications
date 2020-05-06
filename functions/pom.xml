@@ -47,6 +47,7 @@
 		<module>consumer/log-consumer</module>
 		<module>consumer/mongodb-consumer</module>
 		<module>consumer/rabbit-consumer</module>
+		<module>consumer/redis-consumer</module>
 
 		<module>function/filter-function</module>
 		<module>function/spel-function</module>

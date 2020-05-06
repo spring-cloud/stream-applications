@@ -6,7 +6,7 @@
 	<description>Stream Apps Docs</description>
 	<parent>
 		<groupId>org.springframework.cloud.stream.app</groupId>
-		<artifactId>apps-build</artifactId>
+		<artifactId>stream-applications-build</artifactId>
 		<version>Fahrenheit.BUILD-SNAPSHOT</version>
 	</parent>
 
