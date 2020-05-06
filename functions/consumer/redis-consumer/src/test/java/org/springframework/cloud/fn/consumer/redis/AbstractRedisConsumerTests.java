@@ -39,12 +39,8 @@ public class AbstractRedisConsumerTests {
 	@Autowired
 	RedisConnectionFactory redisConnectionFactory;
 
-	StringRedisTemplate createStringRedisTemplate(RedisConnectionFactory connectionFactory) {
-		StringRedisTemplate redisTemplate = new StringRedisTemplate();
-		redisTemplate.setConnectionFactory(connectionFactory);
-		redisTemplate.afterPropertiesSet();
-		return redisTemplate;
-	}
+	@Autowired
+	StringRedisTemplate redisTemplate;
 
 	@SpringBootApplication
 	static class TestApplication {

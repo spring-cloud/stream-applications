@@ -34,16 +34,11 @@ public class RedisConsumerQueueTests extends AbstractRedisConsumerTests {
 
 	@Test
 	public void testWithQueue() {
-		StringRedisTemplate redisTemplate = createStringRedisTemplate(redisConnectionFactory);
-
-		//Execute
 		Message<String> message = MessageBuilder.withPayload("hello").build();
 
 		redisConsumer.accept(message);
 
 		Object result = redisTemplate.boundListOps("test-queue").rightPop(5000, TimeUnit.MILLISECONDS);
-		assertThat(result).isNotNull();
-
 		assertThat(result).isEqualTo("hello");
 	}
 }

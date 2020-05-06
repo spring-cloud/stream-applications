@@ -41,7 +41,6 @@ public class RedisConsumerKeyTests extends AbstractRedisConsumerTests {
 	public void testWithKey() {
 		//Setup
 		String key = "foo";
-		StringRedisTemplate redisTemplate = createStringRedisTemplate(redisConnectionFactory);
 		redisTemplate.delete(key);
 
 		RedisList<String> redisList = new DefaultRedisList<>(key, redisTemplate);
