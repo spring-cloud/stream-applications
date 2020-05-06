@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2011-2018 Pivotal Software Inc, All Rights Reserved.
+ * Copyright 2011-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       https://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.supplier.http;
 import java.util.function.Supplier;
 
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -32,8 +33,6 @@ import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.integration.webflux.dsl.WebFlux;
 import org.springframework.integration.webflux.inbound.WebFluxInboundEndpoint;
 import org.springframework.messaging.Message;
-
-import reactor.core.publisher.Flux;
 
 /**
  * Configuration for the HTTP Supplier.

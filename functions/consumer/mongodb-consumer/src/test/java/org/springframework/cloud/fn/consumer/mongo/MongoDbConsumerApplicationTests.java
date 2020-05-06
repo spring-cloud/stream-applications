@@ -20,16 +20,16 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-
 import java.util.function.Function;
+
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.messaging.Message;
@@ -76,16 +76,17 @@ class MongoDbConsumerApplicationTests {
 				.assertNext(document -> {
 					assertThat(document.get("foo")).isEqualTo("bar");
 				})
-				.assertNext(document-> {
+				.assertNext(document -> {
 					assertThat(document.get("firstName")).isEqualTo("Foo");
 					assertThat(document.get("lastName")).isEqualTo("Bar");
 				})
-				.assertNext(document-> {
+				.assertNext(document -> {
 					assertThat(document.get("my_data")).isEqualTo("THE DATA");
 				})
 				.verifyComplete();
 	}
 
 	@SpringBootApplication
-	static class TestApplication {}
+	static class TestApplication {
+	}
 }

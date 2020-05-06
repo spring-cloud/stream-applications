@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,10 +55,10 @@ public class JdbcConsumerApplicationTests {
 
 		private Integer b;
 
-		public Payload() {
+		Payload() {
 		}
 
-		public Payload(String a, Integer b) {
+		Payload(String a, Integer b) {
 			this.a = a;
 			this.b = b;
 		}
@@ -67,12 +67,12 @@ public class JdbcConsumerApplicationTests {
 			return a;
 		}
 
-		public Integer getB() {
-			return b;
-		}
-
 		public void setA(String a) {
 			this.a = a;
+		}
+
+		public Integer getB() {
+			return b;
 		}
 
 		public void setB(Integer b) {
@@ -87,6 +87,7 @@ public class JdbcConsumerApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {}
+	static class TestApplication {
+	}
 
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       https://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,11 +48,10 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
- *
  * @author Christian Tzolov
  */
 @Configuration
-@EnableConfigurationProperties({ CounterConsumerProperties.class })
+@EnableConfigurationProperties({CounterConsumerProperties.class})
 public class CounterConsumerConfiguration {
 
 	@Bean
@@ -73,7 +72,7 @@ public class CounterConsumerConfiguration {
 
 	@Bean(name = "counterConsumer")
 	public Consumer<Message<?>> counterConsumer(CounterConsumerProperties properties, MeterRegistry[] meterRegistries,
-			@Qualifier(IntegrationContextUtils.INTEGRATION_EVALUATION_CONTEXT_BEAN_NAME) EvaluationContext context) {
+												@Qualifier(IntegrationContextUtils.INTEGRATION_EVALUATION_CONTEXT_BEAN_NAME) EvaluationContext context) {
 
 		return message -> {
 
@@ -104,6 +103,7 @@ public class CounterConsumerConfiguration {
 
 	/**
 	 * Converts a key/value Map into Tag(key,value) list. Filters out the empty key/value pairs.
+	 *
 	 * @param keyValueMap key/value map to convert into tags.
 	 * @return Returns Tags list representing every non-empty key/value pair.
 	 */
@@ -119,6 +119,7 @@ public class CounterConsumerConfiguration {
 	 * Converts the input value into an list of values. If the value is not a collection/array type the result
 	 * is a single element list. For collection/array input value the result is the list of stringifie content of
 	 * this collection.
+	 *
 	 * @param value input value can be array, collection or single value.
 	 * @return Returns value list.
 	 */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 the original author or authors.
+ * Copyright 2019-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.springframework.cloud.fn.splitter.SplitterFunctionConfiguration;
-import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.splitter.SplitterFunctionConfiguration;
 import org.springframework.cloud.function.context.PollableBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.expression.Expression;
@@ -43,10 +43,9 @@ import org.springframework.messaging.Message;
  * @author Adam Zwickey
  * @author Artem Bilan
  * @author David Turanski
- *
  */
 @Configuration
-@EnableConfigurationProperties({ MongodbSupplierProperties.class })
+@EnableConfigurationProperties({MongodbSupplierProperties.class})
 @Import(SplitterFunctionConfiguration.class)
 public class MongodbSupplierConfiguration {
 
@@ -82,7 +81,8 @@ public class MongodbSupplierConfiguration {
 
 	/**
 	 * The inheritors can consider to override this method for their purpose or just adjust
-	 * options for the returned instance
+	 * options for the returned instance.
+	 *
 	 * @return a {@link MongoDbMessageSource} instance
 	 */
 	@Bean

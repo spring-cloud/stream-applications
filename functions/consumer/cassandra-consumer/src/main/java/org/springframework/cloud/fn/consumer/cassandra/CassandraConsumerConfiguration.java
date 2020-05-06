@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,9 +24,16 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
+import reactor.core.publisher.Mono;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.consumer.cassandra.query.ColumnNameExtractor;
 import org.springframework.cloud.fn.consumer.cassandra.query.InsertQueryColumnNameExtractor;
+import org.springframework.cloud.fn.consumer.cassandra.query.UpdateQueryColumnNameExtractor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.cassandra.core.InsertOptions;
@@ -43,13 +50,6 @@ import org.springframework.integration.transformer.AbstractPayloadTransformer;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.StdDateFormat;
-import org.springframework.cloud.fn.consumer.cassandra.query.ColumnNameExtractor;
-import org.springframework.cloud.fn.consumer.cassandra.query.UpdateQueryColumnNameExtractor;
-import reactor.core.publisher.Mono;
-
 /**
  * @author Artem Bilan
  * @author Thomas Risberg
@@ -65,7 +65,7 @@ public class CassandraConsumerConfiguration {
 
 	@Bean
 	public IntegrationFlow cassandraConsumerFlow(MessageHandler cassandraSinkMessageHandler,
-			ObjectMapper objectMapper) {
+												ObjectMapper objectMapper) {
 		IntegrationFlowBuilder integrationFlowBuilder =
 				IntegrationFlows.from(CassandraConsumerFunction.class);
 		if (StringUtils.hasText(this.cassandraSinkProperties.getIngestQuery())) {

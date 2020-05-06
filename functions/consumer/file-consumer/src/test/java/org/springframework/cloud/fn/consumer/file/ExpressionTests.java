@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.support.MessageBuilder;
@@ -36,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Mark Fisher
  * @author Artem Bilan
  * @author Soby Chacko
- *
+ * <p>
  * We don't need a separate SpringBootApplication for this test as there is already one available in this package.
  * {@link AbstractFileConsumerTests}.
  */

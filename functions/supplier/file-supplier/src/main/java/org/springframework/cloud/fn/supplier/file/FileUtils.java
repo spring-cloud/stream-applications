@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,19 +29,23 @@ import org.springframework.util.MimeTypeUtils;
  * @author Gary Russell
  * @author Artem Bilan
  * @author Christian Tzolov
- *
  */
-public class FileUtils {
+public final class FileUtils {
+
+	private FileUtils() {
+
+	}
 
 	/**
 	 * Enhance an {@link IntegrationFlowBuilder} to add flow snippets, depending on
 	 * {@link FileConsumerProperties}.
-	 * @param flowBuilder the flow builder.
+	 *
+	 * @param flowBuilder            the flow builder.
 	 * @param fileConsumerProperties the properties.
 	 * @return the updated flow builder.
 	 */
 	public static IntegrationFlowBuilder enhanceFlowForReadingMode(IntegrationFlowBuilder flowBuilder,
-																   FileConsumerProperties fileConsumerProperties) {
+																FileConsumerProperties fileConsumerProperties) {
 		switch (fileConsumerProperties.getMode()) {
 			case contents:
 				flowBuilder.enrichHeaders(Collections.<String, Object>singletonMap(MessageHeaders.CONTENT_TYPE,
@@ -71,12 +75,13 @@ public class FileUtils {
 	/**
 	 * Enhance an {@link IntegrationFlowBuilder} to add flow snippets, depending on
 	 * {@link FileConsumerProperties}; used for streaming sources.
-	 * @param flowBuilder the flow builder.
+	 *
+	 * @param flowBuilder            the flow builder.
 	 * @param fileConsumerProperties the properties.
 	 * @return the updated flow builder.
 	 */
 	public static IntegrationFlowBuilder enhanceStreamFlowForReadingMode(IntegrationFlowBuilder flowBuilder,
-																		 FileConsumerProperties fileConsumerProperties) {
+																		FileConsumerProperties fileConsumerProperties) {
 		switch (fileConsumerProperties.getMode()) {
 			case contents:
 				flowBuilder.enrichHeaders(Collections.<String, Object>singletonMap(MessageHeaders.CONTENT_TYPE,

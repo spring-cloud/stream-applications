@@ -26,6 +26,9 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class RabbitConsumerProperties {
 
+	/**
+	 * JSON Converter.
+	 */
 	public static final String JSON_CONVERTER = "jsonConverter";
 
 	/**

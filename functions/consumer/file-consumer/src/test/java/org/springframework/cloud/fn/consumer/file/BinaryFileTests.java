@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.consumer.file;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.FileCopyUtils;

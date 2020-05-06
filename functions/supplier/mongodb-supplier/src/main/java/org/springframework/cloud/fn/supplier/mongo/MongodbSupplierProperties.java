@@ -28,24 +28,23 @@ import org.springframework.validation.annotation.Validated;
  * @author Artem Bilan
  * @author Chris Schaefer
  * @author David Turanski
- *
  */
 @ConfigurationProperties("mongodb.supplier")
 @Validated
 public class MongodbSupplierProperties {
 
 	/**
-	 * The MongoDB collection to query
+	 * The MongoDB collection to query.
 	 */
 	private String collection;
 
 	/**
-	 * The MongoDB query
+	 * The MongoDB query.
 	 */
 	private String query = "{ }";
 
 	/**
-	 * The SpEL expression in MongoDB query DSL style
+	 * The SpEL expression in MongoDB query DSL style.
 	 */
 	private Expression queryExpression;
 
@@ -71,13 +70,13 @@ public class MongodbSupplierProperties {
 		this.queryExpression = queryExpression;
 	}
 
-	public void setCollection(String collection) {
-		this.collection = collection;
-	}
-
 	@NotBlank(message = "Collection name is required")
 	public String getCollection() {
 		return collection;
+	}
+
+	public void setCollection(String collection) {
+		this.collection = collection;
 	}
 
 	public boolean isSplit() {

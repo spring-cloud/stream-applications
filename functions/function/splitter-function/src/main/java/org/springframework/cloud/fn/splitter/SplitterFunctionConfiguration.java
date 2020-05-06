@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2011-2020 Pivotal Software Inc, All Rights Reserved.
+ * Copyright 2011-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       https://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
 import org.springframework.boot.autoconfigure.condition.AnyNestedCondition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -38,15 +39,13 @@ import org.springframework.integration.splitter.ExpressionEvaluatingSplitter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 
-import reactor.core.publisher.Flux;
-
 @Configuration
 @EnableConfigurationProperties(SplitterFunctionProperties.class)
 public class SplitterFunctionConfiguration {
 
 	@Bean
 	public Function<Message<?>, List<Message<?>>> splitterFunction(AbstractMessageSplitter messageSplitter,
-			SplitterFunctionProperties splitterFunctionProperties) {
+																SplitterFunctionProperties splitterFunctionProperties) {
 
 		messageSplitter.setApplySequence(splitterFunctionProperties.isApplySequence());
 		ThreadLocalFluxSinkMessageChannel outputChannel = new ThreadLocalFluxSinkMessageChannel();
@@ -97,10 +96,12 @@ public class SplitterFunctionConfiguration {
 		}
 
 		@ConditionalOnProperty(prefix = "splitter", name = "charset")
-		static class Charset { }
+		static class Charset {
+		}
 
 		@ConditionalOnProperty(prefix = "splitter", name = "fileMarkers")
-		static class FileMarkers { }
+		static class FileMarkers {
+		}
 
 	}
 

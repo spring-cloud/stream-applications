@@ -16,12 +16,15 @@
 
 package org.springframework.cloud.fn.supplier.jdbc;
 
-import io.pivotal.java.function.splitter.function.SplitterFunctionConfiguration;
-
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import javax.sql.DataSource;
+
+import io.pivotal.java.function.splitter.function.SplitterFunctionConfiguration;
+import reactor.core.publisher.Flux;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.function.context.PollableBean;
@@ -31,7 +34,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.jdbc.JdbcPollingChannelAdapter;
 import org.springframework.messaging.Message;
-import reactor.core.publisher.Flux;
 
 /**
  * @author Soby Chacko

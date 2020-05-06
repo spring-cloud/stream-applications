@@ -27,13 +27,13 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
@@ -67,23 +67,23 @@ class MongodbSupplierApplicationTests {
 	@Test
 	void testMongodbSupplier() {
 		Flux<Message<?>> messageFlux = this.mongodbSupplier.get();
-			StepVerifier.create(messageFlux)
-					.assertNext((message) ->
+		StepVerifier.create(messageFlux)
+				.assertNext((message) ->
 						assertThat(payload(message)).contains(
-								entry("greeting","hello"),
+								entry("greeting", "hello"),
 								entry("name", "foo")))
-					.assertNext((message) ->
-							assertThat(payload(message)).contains(
-									entry("greeting","hola"),
-									entry("name", "bar")))
-					.thenCancel()
-					.verify();
+				.assertNext((message) ->
+						assertThat(payload(message)).contains(
+								entry("greeting", "hola"),
+								entry("name", "bar")))
+				.thenCancel()
+				.verify();
 	}
 
-	private  Map<String,Object> payload(Message<?> message) {
-		Map<String,Object> map = null;
+	private Map<String, Object> payload(Message<?> message) {
+		Map<String, Object> map = null;
 		try {
-			map = objectMapper.readValue(message.getPayload().toString(),HashMap.class);
+			map = objectMapper.readValue(message.getPayload().toString(), HashMap.class);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -92,5 +92,6 @@ class MongodbSupplierApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {}
+	static class TestApplication {
+	}
 }

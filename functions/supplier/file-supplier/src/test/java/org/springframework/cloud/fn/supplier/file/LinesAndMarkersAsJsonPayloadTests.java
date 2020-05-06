@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,14 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
+
 import org.springframework.integration.file.splitter.FileSplitter;
 import org.springframework.integration.json.JsonPathUtils;
 import org.springframework.integration.support.json.JsonObjectMapperProvider;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,7 +54,8 @@ public class LinesAndMarkersAsJsonPayloadTests extends AbstractFileSupplierTests
 							try {
 								final Object evaluate = JsonPathUtils.evaluate(message.getPayload(), "$.mark");
 								assertThat(evaluate).isEqualTo(FileSplitter.FileMarker.Mark.START.name());
-							} catch (IOException e) {
+							}
+							catch (IOException e) {
 								// passt through
 							}
 						}
@@ -69,7 +71,8 @@ public class LinesAndMarkersAsJsonPayloadTests extends AbstractFileSupplierTests
 								assertThat(FileSplitter.FileMarker.Mark.END).isEqualTo(fileMarker1.getMark());
 								assertThat(firstFile.toAbsolutePath()).isEqualTo(fileMarker1.getFilePath());
 								assertThat(fileMarker1.getLineCount()).isEqualTo(2);
-							} catch (IOException e) {
+							}
+							catch (IOException e) {
 								// passt through
 							}
 						}

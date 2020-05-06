@@ -17,8 +17,6 @@
 package org.springframework.cloud.fn.consumer.mongo;
 
 import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.expression.Expression;
@@ -34,12 +32,12 @@ import org.springframework.validation.annotation.Validated;
 public class MongoDbConsumerProperties {
 
 	/**
-	 * The MongoDB collection to store data
+	 * The MongoDB collection to store data.
 	 */
 	private String collection;
 
 	/**
-	 * The SpEL expression to evaluate MongoDB collection
+	 * The SpEL expression to evaluate MongoDB collection.
 	 */
 	private Expression collectionExpression;
 

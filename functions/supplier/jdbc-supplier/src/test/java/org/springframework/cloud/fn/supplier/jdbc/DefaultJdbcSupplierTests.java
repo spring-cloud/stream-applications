@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,14 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,7 +49,7 @@ public class DefaultJdbcSupplierTests {
 										.satisfies((msg) -> assertThat(msg)
 												.extracting(Message::getPayload)
 												.matches(o -> {
-													Map map = (Map)o;
+													Map map = (Map) o;
 													return map.get("ID").equals(1L) && map.get("NAME").equals("Bob");
 												})
 										))
@@ -57,7 +58,7 @@ public class DefaultJdbcSupplierTests {
 										.satisfies((msg) -> assertThat(msg)
 												.extracting(Message::getPayload)
 												.matches(o -> {
-													Map map = (Map)o;
+													Map map = (Map) o;
 													return map.get("ID").equals(2L) && map.get("NAME").equals("Jane");
 												})
 										))
@@ -66,7 +67,7 @@ public class DefaultJdbcSupplierTests {
 										.satisfies((msg) -> assertThat(msg)
 												.extracting(Message::getPayload)
 												.matches(o -> {
-													Map map = (Map)o;
+													Map map = (Map) o;
 													return map.get("ID").equals(3L) && map.get("NAME").equals("John");
 												})
 										))

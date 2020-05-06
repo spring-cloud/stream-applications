@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,22 +34,25 @@ import javax.validation.Payload;
  * @author Eric Bottard
  * @author Soby Chacko
  */
-@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR,
-		ElementType.PARAMETER })
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR,
+		ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = { DateFormat.DateFormatValidator.class })
+@Constraint(validatedBy = {DateFormat.DateFormatValidator.class})
 public @interface DateFormat {
 
+	/**
+	 * Default message for validation.
+	 */
 	String DEFAULT_MESSAGE = "";
 
 	String message() default DEFAULT_MESSAGE;
 
-	Class<?>[] groups() default { };
+	Class<?>[] groups() default {};
 
-	Class<? extends Payload>[] payload() default { };
+	Class<? extends Payload>[] payload() default {};
 
-	public static class DateFormatValidator implements ConstraintValidator<DateFormat, CharSequence> {
+	class DateFormatValidator implements ConstraintValidator<DateFormat, CharSequence> {
 
 		private String message;
 

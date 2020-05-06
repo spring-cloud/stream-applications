@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       https://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,7 +34,7 @@ import org.springframework.validation.annotation.Validated;
 public class CounterConsumerProperties {
 
 	/**
-	 * The default name of the increment
+	 * The default name of the increment.
 	 */
 	@Value("${spring.application.name:counts}")
 	private String defaultName;
@@ -67,47 +67,6 @@ public class CounterConsumerProperties {
 	 * Fixed and computed tags to be assignee with the counter increment measurement.
 	 */
 	private MetricsTag tag = new MetricsTag();
-
-	public static class MetricsTag {
-
-		/**
-		 * Custom tags assigned to every counter increment measurements.
-		 * This is a map so the property convention fixed tags is: counter.tag.fixed.[tag-name]=[tag-value]
-		 */
-		private Map<String, String> fixed;
-
-		/**
-		 * Computes tags from SpEL expression.
-		 * Single SpEL expression can produce an array of values, which in turn means distinct name/value tags.
-		 * Every name/value tag will produce a separate counter increment.
-		 * Tag expression format is: counter.tag.expression.[tag-name]=[SpEL expression]
-		 */
-		private Map<String, Expression> expression;
-
-		public Map<String, String> getFixed() {
-			return fixed;
-		}
-
-		public void setFixed(Map<String, String> fixed) {
-			this.fixed = fixed;
-		}
-
-		public Map<String, Expression> getExpression() {
-			return expression;
-		}
-
-		public void setExpression(Map<String, Expression> expression) {
-			this.expression = expression;
-		}
-
-		@Override
-		public String toString() {
-			return "MetricsTag{" +
-					"fixed=" + fixed +
-					", expression=" + expression +
-					'}';
-		}
-	}
 
 	public MetricsTag getTag() {
 		return tag;
@@ -168,5 +127,46 @@ public class CounterConsumerProperties {
 				", name=" + name +
 				", tag=" + tag +
 				'}';
+	}
+
+	public static class MetricsTag {
+
+		/**
+		 * Custom tags assigned to every counter increment measurements.
+		 * This is a map so the property convention fixed tags is: counter.tag.fixed.[tag-name]=[tag-value]
+		 */
+		private Map<String, String> fixed;
+
+		/**
+		 * Computes tags from SpEL expression.
+		 * Single SpEL expression can produce an array of values, which in turn means distinct name/value tags.
+		 * Every name/value tag will produce a separate counter increment.
+		 * Tag expression format is: counter.tag.expression.[tag-name]=[SpEL expression]
+		 */
+		private Map<String, Expression> expression;
+
+		public Map<String, String> getFixed() {
+			return fixed;
+		}
+
+		public void setFixed(Map<String, String> fixed) {
+			this.fixed = fixed;
+		}
+
+		public Map<String, Expression> getExpression() {
+			return expression;
+		}
+
+		public void setExpression(Map<String, Expression> expression) {
+			this.expression = expression;
+		}
+
+		@Override
+		public String toString() {
+			return "MetricsTag{" +
+					"fixed=" + fixed +
+					", expression=" + expression +
+					'}';
+		}
 	}
 }

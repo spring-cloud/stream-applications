@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileReader;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.FileCopyUtils;

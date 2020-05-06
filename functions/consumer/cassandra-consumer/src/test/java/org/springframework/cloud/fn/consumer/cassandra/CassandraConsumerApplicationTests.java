@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-import org.springframework.cloud.fn.consumer.cassandra.domain.Book;
 import org.cassandraunit.spring.CassandraUnitDependencyInjectionIntegrationTestExecutionListener;
 import org.cassandraunit.spring.EmbeddedCassandra;
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
@@ -34,6 +33,7 @@ import reactor.core.publisher.Mono;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.fn.consumer.cassandra.domain.Book;
 import org.springframework.data.cassandra.core.CassandraOperations;
 import org.springframework.data.cassandra.core.WriteResult;
 import org.springframework.test.annotation.DirtiesContext;
@@ -98,6 +98,8 @@ abstract class CassandraConsumerApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {}
+	static class TestApplication {
+
+	}
 
 }

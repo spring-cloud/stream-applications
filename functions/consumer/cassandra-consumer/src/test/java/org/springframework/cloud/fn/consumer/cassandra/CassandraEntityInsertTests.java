@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.fn.consumer.cassandra;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -25,13 +23,14 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import org.springframework.cloud.fn.consumer.cassandra.domain.Book;
 import org.springframework.data.cassandra.core.WriteResult;
 import org.springframework.test.context.TestPropertySource;
 
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Artem Bilan

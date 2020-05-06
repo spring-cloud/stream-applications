@@ -17,6 +17,26 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
+		<disable.checks>false</disable.checks>
+		<maven-checkstyle-plugin.failsOnError>true</maven-checkstyle-plugin.failsOnError>
+		<maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
+		<maven-checkstyle-plugin.includeTestSourceDirectory>true</maven-checkstyle-plugin.includeTestSourceDirectory>
+		<puppycrawl-tools-checkstyle.version>8.29</puppycrawl-tools-checkstyle.version>
+		<checkstyle.suppressions.file>
+			https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/spring-cloud-build-tools/src/checkstyle/checkstyle-suppressions.xml
+		</checkstyle.suppressions.file>
+		<checkstyle.nohttp.file>
+			https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/spring-cloud-build-tools/src/checkstyle/nohttp-checkstyle.xml
+		</checkstyle.nohttp.file>
+		<checkstyle.additional.suppressions.file>
+			https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/spring-cloud-build-tools/src/checkstyle/checkstyle-suppressions.xml
+		</checkstyle.additional.suppressions.file>
+		<nohttp-checkstyle.version>0.0.2.RELEASE</nohttp-checkstyle.version>
+		<disable.nohttp.checks>true</disable.nohttp.checks>
+		<spring-javaformat-checkstyle.version>0.0.7</spring-javaformat-checkstyle.version>
+		<spring-cloud-build.version>3.0.0-SNAPSHOT</spring-cloud-build.version>
 	</properties>
 
   	<modules>
@@ -112,6 +132,77 @@
 						<exclude>**/Abstract*.java</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>${maven-checkstyle-plugin.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>${puppycrawl-tools-checkstyle.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>io.spring.javaformat</groupId>
+						<artifactId>spring-javaformat-checkstyle</artifactId>
+						<version>${spring-javaformat-checkstyle.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.springframework.cloud</groupId>
+						<artifactId>spring-cloud-build-tools</artifactId>
+						<version>${spring-cloud-build.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>io.spring.nohttp</groupId>
+						<artifactId>nohttp-checkstyle</artifactId>
+						<version>${nohttp-checkstyle.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>checkstyle-validation</id>
+						<phase>validate</phase>
+						<inherited>true</inherited>
+						<configuration>
+							<skip>${disable.checks}</skip>
+							<configLocation>checkstyle.xml</configLocation>
+							<headerLocation>checkstyle-header.txt</headerLocation>
+							<propertyExpansion>
+								checkstyle.build.directory=${project.build.directory}
+								checkstyle.suppressions.file=${checkstyle.suppressions.file}
+								checkstyle.additional.suppressions.file=${checkstyle.additional.suppressions.file}
+							</propertyExpansion>
+							<consoleOutput>true</consoleOutput>
+							<includeTestSourceDirectory>
+								${maven-checkstyle-plugin.includeTestSourceDirectory}
+							</includeTestSourceDirectory>
+							<failsOnError>${maven-checkstyle-plugin.failsOnError}
+							</failsOnError>
+							<failOnViolation>
+								${maven-checkstyle-plugin.failOnViolation}
+							</failOnViolation>
+						</configuration>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>no-http-checkstyle-validation</id>
+						<phase>validate</phase>
+						<inherited>true</inherited>
+						<configuration>
+							<skip>${disable.nohttp.checks}</skip>
+							<configLocation>${checkstyle.nohttp.file}</configLocation>
+							<includes>**/*</includes>
+							<excludes>**/.idea/**/*,**/.git/**/*,**/target/**/*,**/*.log</excludes>
+							<sourceDirectories>./</sourceDirectories>
+						</configuration>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

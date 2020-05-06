@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import java.util.stream.StreamSupport;
 import javax.sql.DataSource;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -72,7 +71,6 @@ import org.springframework.util.MimeTypeUtils;
 import org.springframework.util.MultiValueMap;
 
 /**
- *
  * @author Eric Bottard
  * @author Thomas Risberg
  * @author Robert St. John
@@ -103,8 +101,35 @@ public class JdbcConsumerConfiguration {
 	}
 
 	@Bean
+	public static ShorthandMapConverter shorthandMapConverter() {
+		return new ShorthandMapConverter();
+	}
+
+	private static boolean convertibleContentType(String contentType) {
+		return contentType.contains("text") || contentType.contains("json") || contentType.contains("x-spring-tuple");
+	}
+
+	private static String generateSql(String tableName, Set<String> columns) {
+		StringBuilder builder = new StringBuilder("INSERT INTO ");
+		StringBuilder questionMarks = new StringBuilder(") VALUES (");
+		builder.append(tableName).append("(");
+		int i = 0;
+
+		for (String column : columns) {
+			if (i++ > 0) {
+				builder.append(", ");
+				questionMarks.append(", ");
+			}
+			builder.append(column);
+			questionMarks.append(':').append(column);
+		}
+		builder.append(questionMarks).append(")");
+		return builder.toString();
+	}
+
+	@Bean
 	IntegrationFlow jdbcConsumerFlow(@Qualifier("aggregator") MessageHandler aggregator,
-			JdbcMessageHandler jdbcMessageHandler) {
+									JdbcMessageHandler jdbcMessageHandler) {
 
 		final IntegrationFlowBuilder builder =
 				IntegrationFlows.from(Consumer.class, gateway -> gateway.beanName("jdbcConsumer"));
@@ -214,33 +239,6 @@ public class JdbcConsumerConfiguration {
 			databasePopulator.addScript(resourceLoader.getResource(this.properties.getInitialize()));
 		}
 		return dataSourceInitializer;
-	}
-
-	@Bean
-	public static ShorthandMapConverter shorthandMapConverter() {
-		return new ShorthandMapConverter();
-	}
-
-	private static boolean convertibleContentType(String contentType) {
-		return contentType.contains("text") || contentType.contains("json") || contentType.contains("x-spring-tuple");
-	}
-
-	private static String generateSql(String tableName, Set<String> columns) {
-		StringBuilder builder = new StringBuilder("INSERT INTO ");
-		StringBuilder questionMarks = new StringBuilder(") VALUES (");
-		builder.append(tableName).append("(");
-		int i = 0;
-
-		for (String column : columns) {
-			if (i++ > 0) {
-				builder.append(", ");
-				questionMarks.append(", ");
-			}
-			builder.append(column);
-			questionMarks.append(':').append(column);
-		}
-		builder.append(questionMarks).append(")");
-		return builder.toString();
 	}
 
 	private static final class ParameterFactory implements SqlParameterSourceFactory {

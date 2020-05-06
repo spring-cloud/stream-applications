@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,8 @@ public class FileConsumerProperties {
 	private FileReadingMode mode = FileReadingMode.contents;
 
 	/**
-	 * 	Set to true to emit start of file/end of file marker messages before/after the data.
-	 * 	Only valid with FileReadingMode 'lines'.
+	 * Set to true to emit start of file/end of file marker messages before/after the data.
+	 * Only valid with FileReadingMode 'lines'.
 	 */
 	private Boolean withMarkers = null;
 

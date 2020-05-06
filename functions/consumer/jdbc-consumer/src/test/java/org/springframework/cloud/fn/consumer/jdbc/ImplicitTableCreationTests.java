@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {
 		"jdbc.consumer.tableName=no_script",
 		"jdbc.consumer.initialize=true",
-		"jdbc.consumer.columns=a,b" })
+		"jdbc.consumer.columns=a,b"})
 public class ImplicitTableCreationTests extends JdbcConsumerApplicationTests {
 
 	@Test

@@ -16,13 +16,14 @@
 
 package org.springframework.cloud.fn.consumer.cassandra;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.fn.consumer.cassandra.domain.Book;
@@ -30,9 +31,7 @@ import org.springframework.data.cassandra.core.WriteResult;
 import org.springframework.integration.support.json.Jackson2JsonObjectMapper;
 import org.springframework.test.context.TestPropertySource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Artem Bilan

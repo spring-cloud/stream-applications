@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,10 @@ package org.springframework.cloud.fn.consumer.jdbc;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Eric Bottard
@@ -33,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Soby Chacko
  * @author Szabolcs Stremler
  */
-@TestPropertySource(properties = { "jdbc.consumer.batchSize=1000", "jdbc.consumer.idleTimeout=100" })
+@TestPropertySource(properties = {"jdbc.consumer.batchSize=1000", "jdbc.consumer.idleTimeout=100"})
 public class BatchInsertTimeoutTests extends JdbcConsumerApplicationTests {
 
 	@Test
