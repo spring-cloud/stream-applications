@@ -1,5 +1,6 @@
 /*
  * Copyright 2015-2020 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -66,40 +67,16 @@ public class RedisConsumerProperties {
 	 */
 	private String topic;
 
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	public void setQueue(String queue) {
-		this.queue = queue;
-	}
-
-	public void setTopic(String topic) {
-		this.topic = topic;
-	}
-
 	public String keyExpression() {
 		return key != null ? "'" + key + "'" : keyExpression;
-	}
-
-	public void setKeyExpression(String keyExpression) {
-		this.keyExpression = keyExpression;
 	}
 
 	public String queueExpression() {
 		return queue != null ? "'" + queue + "'" : queueExpression;
 	}
 
-	public void setQueueExpression(String queueExpression) {
-		this.queueExpression = queueExpression;
-	}
-
 	public String topicExpression() {
 		return topic != null ? "'" + topic + "'" : topicExpression;
-	}
-
-	public void setTopicExpression(String topicExpression) {
-		this.topicExpression = topicExpression;
 	}
 
 	boolean isKeyPresent() {
@@ -118,32 +95,55 @@ public class RedisConsumerProperties {
 		return topicExpression;
 	}
 
+	public void setTopicExpression(String topicExpression) {
+		this.topicExpression = topicExpression;
+	}
+
 	public String getQueueExpression() {
 		return queueExpression;
+	}
+
+	public void setQueueExpression(String queueExpression) {
+		this.queueExpression = queueExpression;
 	}
 
 	public String getKeyExpression() {
 		return keyExpression;
 	}
 
+	public void setKeyExpression(String keyExpression) {
+		this.keyExpression = keyExpression;
+	}
+
 	public String getKey() {
 		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public String getQueue() {
 		return queue;
 	}
 
+	public void setQueue(String queue) {
+		this.queue = queue;
+	}
+
 	public String getTopic() {
 		return topic;
 	}
 
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
 
 	// The javabean property name is what will be reported in case of violation. Make it meaningful
 	@AssertTrue(message = "Exactly one of 'queue', 'queueExpression', 'key', 'keyExpression', "
 			+ "'topic' and 'topicExpression' must be set")
 	public boolean isMutuallyExclusive() {
-		Object[] props = new Object[] { queue, queueExpression, key, keyExpression, topic, topicExpression };
+		Object[] props = new Object[]{queue, queueExpression, key, keyExpression, topic, topicExpression};
 		return (props.length - 1) == Collections.frequency(Arrays.asList(props), null);
 	}
 

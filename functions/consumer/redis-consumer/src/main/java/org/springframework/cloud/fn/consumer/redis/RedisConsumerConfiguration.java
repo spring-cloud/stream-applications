@@ -49,7 +49,7 @@ public class RedisConsumerConfiguration {
 
 	@Bean
 	public MessageHandler redisConsumerMessageHandler(RedisConnectionFactory redisConnectionFactory,
-													  RedisConsumerProperties redisConsumerProperties) {
+													RedisConsumerProperties redisConsumerProperties) {
 		if (redisConsumerProperties.isKeyPresent()) {
 			RedisStoreWritingMessageHandler redisStoreWritingMessageHandler = new RedisStoreWritingMessageHandler(
 					redisConnectionFactory);
