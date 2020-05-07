@@ -54,7 +54,6 @@
     </properties>
 
     <modules>
-        <module>common/stream-applications-ftp-common</module>
         <module>common/stream-applications-test-support</module>
         <module>common/stream-applications-postprocessor-common</module>
         <module>common/stream-applications-micrometer-common</module>
