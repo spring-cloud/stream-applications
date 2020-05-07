@@ -15,11 +15,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.cloud.stream.app</groupId>
-            <artifactId>stream-apps-file-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
