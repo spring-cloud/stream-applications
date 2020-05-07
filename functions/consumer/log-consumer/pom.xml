@@ -16,7 +16,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>payload-converter-function</artifactId>
 			<version>${project.version}</version>
 		</dependency>

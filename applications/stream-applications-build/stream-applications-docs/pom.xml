@@ -23,62 +23,62 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>splitter-function</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>spel-function</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>counter-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>jdbc-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>mongodb-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>cassandra-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>rabbit-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>log-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>time-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>jdbc-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>http-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.pivotal.java.function</groupId>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>mongodb-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
@@ -101,7 +101,7 @@
 								<configuration>
 									<includeDependencySources>true</includeDependencySources>
 									<dependencySourceIncludes>
-										<dependencySourceInclude>io.pivotal.java.function:*</dependencySourceInclude>
+										<dependencySourceInclude>org.springframework.cloud.fn:*</dependencySourceInclude>
 									</dependencySourceIncludes>
 									<attach>false</attach>
 									<quiet>true</quiet>

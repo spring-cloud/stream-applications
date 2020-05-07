@@ -33,7 +33,7 @@
             <version>${spring-cloud-function.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.pivotal.java.function</groupId>
+            <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>splitter-function</artifactId>
             <version>${project.version}</version>
         </dependency>

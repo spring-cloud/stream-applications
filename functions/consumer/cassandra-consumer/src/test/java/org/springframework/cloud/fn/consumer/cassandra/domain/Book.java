@@ -23,7 +23,7 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 /**
- * Test POJO
+ * Test POJO.
  *
  * @author David Webb
  * @author Artem Bilan

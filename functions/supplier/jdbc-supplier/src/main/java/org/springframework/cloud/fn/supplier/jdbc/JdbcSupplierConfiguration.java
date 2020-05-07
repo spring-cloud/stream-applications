@@ -22,11 +22,11 @@ import java.util.function.Supplier;
 
 import javax.sql.DataSource;
 
-import io.pivotal.java.function.splitter.function.SplitterFunctionConfiguration;
 import reactor.core.publisher.Flux;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.splitter.SplitterFunctionConfiguration;
 import org.springframework.cloud.function.context.PollableBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
