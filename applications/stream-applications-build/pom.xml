@@ -14,8 +14,8 @@
     </parent>
 
     <modules>
-        <module>stream-apps-docs</module>
-        <module>stream-apps-descriptor</module>
+        <module>stream-applications-docs</module>
+        <module>stream-applications-descriptor</module>
     </modules>
 
     <profiles>
