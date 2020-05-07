@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>apps-build</artifactId>
+    <artifactId>stream-applications-build</artifactId>
     <version>Fahrenheit.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
-        <artifactId>stream-apps-parent</artifactId>
+        <artifactId>stream-applications-core</artifactId>
         <version>3.0.0.BUILD-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../stream-applications-core</relativePath>
     </parent>
 
     <modules>

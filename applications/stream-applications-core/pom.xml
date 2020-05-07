@@ -6,7 +6,7 @@
     <artifactId>stream-applications-core</artifactId>
     <version>3.0.0.BUILD-SNAPSHOT</version>
     <name>stream-applications-core</name>
-    <description>Stream Applications Core (Parent)</description>
+    <description>Stream Applications Core Parent</description>
     <packaging>pom</packaging>
 
     <parent>
@@ -54,7 +54,13 @@
     </properties>
 
     <modules>
-        <module>common</module>
+        <module>common/stream-applications-ftp-common</module>
+        <module>common/stream-applications-test-support</module>
+        <module>common/stream-applications-postprocessor-common</module>
+        <module>common/stream-applications-micrometer-common</module>
+        <module>common/stream-applications-metadata-store-common</module>
+        <module>common/stream-applications-task-launch-request-common</module>
+        <module>common/stream-applications-security-common</module>
     </modules>
 
     <dependencyManagement>

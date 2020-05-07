@@ -3,14 +3,15 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>stream-apps-common</artifactId>
+        <artifactId>stream-applications-core</artifactId>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <version>3.0.0.BUILD-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>stream-apps-task-launch-request-common</artifactId>
-    <name>stream-apps-task-launch-request-common</name>
+    <artifactId>stream-applications-task-launch-request-common</artifactId>
+    <name>stream-applications-task-launch-request-common</name>
 
     <dependencies>
         <dependency>

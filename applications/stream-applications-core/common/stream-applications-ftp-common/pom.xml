@@ -2,29 +2,27 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>stream-apps-common</artifactId>
+        <artifactId>stream-applications-core</artifactId>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <version>3.0.0.BUILD-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>stream-apps-test-support</artifactId>
+    <artifactId>stream-applications-ftp-common</artifactId>
+    <name>stream-applications-ftp-common</name>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.integration</groupId>
-            <artifactId>spring-integration-test</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.integration</groupId>
-            <artifactId>spring-integration-test-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <artifactId>spring-integration-ftp</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud.stream.app</groupId>
+            <artifactId>stream-apps-file-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
-
 
 </project>

@@ -5,13 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>stream-apps-common</artifactId>
+        <artifactId>stream-applications-core</artifactId>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <version>3.0.0.BUILD-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
     </parent>
 
-    <artifactId>stream-apps-metadata-store-common</artifactId>
-    <name>stream-apps-metadata-store-common</name>
+    <artifactId>stream-applications-metadata-store-common</artifactId>
+    <name>stream-applications-metadata-store-common</name>
 
     <properties>
         <aws-java-sdk.version>1.11.439</aws-java-sdk.version>
