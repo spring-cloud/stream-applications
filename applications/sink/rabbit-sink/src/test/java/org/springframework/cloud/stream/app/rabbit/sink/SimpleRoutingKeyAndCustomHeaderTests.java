@@ -17,13 +17,13 @@
 package org.springframework.cloud.stream.app.rabbit.sink;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.test.context.TestPropertySource;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = {"rabbit.routingKey=scsapp-testq",
 		"rabbit.persistentDeliveryMode=true",
@@ -38,9 +38,9 @@ public class SimpleRoutingKeyAndCustomHeaderTests extends RabbitSinkIntegrationT
 				.build());
 		this.rabbitTemplate.setReceiveTimeout(10000);
 		Message received = this.rabbitTemplate.receive("scsapp-testq");
-		assertEquals("foo", new String(received.getBody()));
-		assertEquals("baz", received.getMessageProperties().getHeaders().get("bar"));
-		assertNull(received.getMessageProperties().getHeaders().get("qux"));
-		assertEquals(MessageDeliveryMode.PERSISTENT, received.getMessageProperties().getReceivedDeliveryMode());
+		assertThat(new String(received.getBody())).isEqualTo("foo");
+		assertThat(received.getMessageProperties().getHeaders().get("bar")).isEqualTo("baz");
+		assertThat(received.getMessageProperties().getHeaders().get("qux")).isNull();
+		assertThat(received.getMessageProperties().getReceivedDeliveryMode()).isEqualTo(MessageDeliveryMode.PERSISTENT);
 	}
 }

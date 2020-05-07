@@ -20,40 +20,38 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
-@TestPropertySource(properties = { "jdbc.supplier.query=select id, name from test order by id", "spring.cloud.stream.poller.fixedDelay=60000" })
+@TestPropertySource(properties = {"jdbc.supplier.query=select id, name from test order by id", "spring.cloud.stream.poller.fixedDelay=60000"})
 public class SelectAllWithDelayTests extends JdbcSourceIntegrationTests {
 
-		@Test
-		public void testExtraction() throws Exception {
-			Message<?> received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
-			assertNotNull(received);
-			assertThat(received.getPayload().getClass()).isEqualTo(String.class);
+	@Test
+	public void testExtraction() throws Exception {
+		Message<?> received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
+		assertThat(received).isNotNull();
+		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
 
-			Map<?, ?> payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
+		Map<?, ?> payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
 
-			assertEquals(1, payload.get("ID"));
-			received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
-			assertNotNull(received);
-			assertThat(received.getPayload().getClass()).isEqualTo(String.class);
+		assertThat(payload.get("ID")).isEqualTo(1);
+		received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
+		assertThat(received).isNotNull();
+		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
 
-			payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
-			assertEquals(2, payload.get("ID"));
-			received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
-			assertNotNull(received);
-			assertThat(received.getPayload().getClass()).isEqualTo(String.class);
+		payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
+		assertThat(payload.get("ID")).isEqualTo(2);
+		received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
+		assertThat(received).isNotNull();
+		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
 
-			payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
-			assertEquals(3, payload.get("ID"));
-			// should not wrap around to the beginning since delay is 60
-			received = messageCollector.forChannel(output).poll(1, TimeUnit.SECONDS);
-			assertNull(received);
-		}
+		payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
+		assertThat(payload.get("ID")).isEqualTo(3);
+		// should not wrap around to the beginning since delay is 60
+		received = messageCollector.forChannel(output).poll(1, TimeUnit.SECONDS);
+		assertThat(received).isNull();
+	}
 }

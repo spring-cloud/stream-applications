@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app.filter.processor;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -62,7 +63,8 @@ public class FilterProcessorTests {
 	}
 
 	@EnableAutoConfiguration
-	@Import({ FilterFunctionConfiguration.class })
-	public static class FilterProcessorConfiguration {}
+	@Import({FilterFunctionConfiguration.class})
+	public static class FilterProcessorConfiguration {
+	}
 
 }

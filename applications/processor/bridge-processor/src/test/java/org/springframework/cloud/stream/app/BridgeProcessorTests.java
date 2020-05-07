@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -55,6 +56,7 @@ public class BridgeProcessorTests {
 	}
 
 	@EnableAutoConfiguration
-	@Import({ BridgeProcessorConfiguration.class })
-	public static class BridgeTestAppConfiguration { }
+	@Import({BridgeProcessorConfiguration.class})
+	public static class BridgeTestAppConfiguration {
+	}
 }

@@ -20,12 +20,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Path;
 
-import org.springframework.cloud.fn.consumer.file.FileConsumerConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.cloud.fn.consumer.file.FileConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -67,5 +68,6 @@ public class FileSinkTests {
 
 	@EnableAutoConfiguration
 	@Import(FileConsumerConfiguration.class)
-	public static class FileSinkConfiguration {}
+	public static class FileSinkConfiguration {
+	}
 }

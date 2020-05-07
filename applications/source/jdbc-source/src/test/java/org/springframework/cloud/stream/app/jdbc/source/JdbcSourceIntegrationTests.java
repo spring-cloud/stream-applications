@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.jdbc.source;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -51,6 +52,7 @@ public class JdbcSourceIntegrationTests {
 
 	@SpringBootApplication
 	@Import(JdbcSupplierConfiguration.class)
-	public static class JdbcSourceConfiguration { }
+	public static class JdbcSourceConfiguration {
+	}
 
 }

@@ -22,6 +22,8 @@ import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
+import org.testcontainers.containers.GenericContainer;
+
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -40,7 +42,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.SubscribableChannel;
 import org.springframework.test.annotation.DirtiesContext;
-import org.testcontainers.containers.GenericContainer;
 
 @SpringBootTest(
 		properties = {"spring.cloud.stream.function.definition=rabbitConsumer"},
@@ -48,25 +49,6 @@ import org.testcontainers.containers.GenericContainer;
 @DirtiesContext
 @Import(RabbitSinkIntegrationTests.FooConfiguration.class)
 abstract class RabbitSinkIntegrationTests {
-
-	@Qualifier("rabbitConsumer-in-0")
-	@Autowired
-	protected SubscribableChannel channels;
-
-	@Autowired
-	protected RabbitConsumerProperties rabbitSinkProperties;
-
-	@Autowired
-	protected RabbitTemplate rabbitTemplate;
-
-	@Autowired
-	protected RabbitAdmin rabbitAdmin;
-
-	@Autowired(required = false)
-	protected MessageConverter myConverter;
-
-	@Autowired
-	protected CachingConnectionFactory bootFactory;
 
 	static {
 		Consumer<CreateContainerCmd> cmd = e -> e.withPortBindings(new PortBinding(Ports.Binding.bindPort(5672), new ExposedPort(5672)));
@@ -76,6 +58,20 @@ abstract class RabbitSinkIntegrationTests {
 				.withCreateContainerCmdModifier(cmd);
 		rabbitMq.start();
 	}
+
+	@Qualifier("rabbitConsumer-in-0")
+	@Autowired
+	protected SubscribableChannel channels;
+	@Autowired
+	protected RabbitConsumerProperties rabbitSinkProperties;
+	@Autowired
+	protected RabbitTemplate rabbitTemplate;
+	@Autowired
+	protected RabbitAdmin rabbitAdmin;
+	@Autowired(required = false)
+	protected MessageConverter myConverter;
+	@Autowired
+	protected CachingConnectionFactory bootFactory;
 
 	static class FooConfiguration {
 
@@ -98,5 +94,6 @@ abstract class RabbitSinkIntegrationTests {
 
 	@SpringBootApplication
 	@Import({RabbitConsumerConfiguration.class})
-	public static class RabbitSinkConfiguration {}
+	public static class RabbitSinkConfiguration {
+	}
 }

@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app.transform.processor;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -54,7 +55,8 @@ public class TransformProcessorTests {
 	}
 
 	@EnableAutoConfiguration
-	@Import({ SpelFunctionConfiguration.class })
-	public static class TransformProcessorConfiguration {}
+	@Import({SpelFunctionConfiguration.class})
+	public static class TransformProcessorConfiguration {
+	}
 
 }

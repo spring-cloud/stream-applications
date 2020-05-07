@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -62,5 +63,6 @@ public class TimeSourceTests {
 
 	@EnableAutoConfiguration
 	@Import(TimeSupplierConfiguration.class)
-	public static class TimeSourceConfiguration {}
+	public static class TimeSourceConfiguration {
+	}
 }

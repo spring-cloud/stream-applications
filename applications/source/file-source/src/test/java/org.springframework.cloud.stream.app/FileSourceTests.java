@@ -19,6 +19,7 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -59,5 +60,6 @@ public class FileSourceTests {
 
 	@EnableAutoConfiguration
 	@Import(FileSupplierConfiguration.class)
-	public static class FileSourceConfiguration {}
+	public static class FileSourceConfiguration {
+	}
 }

@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.jdbc.sink;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -53,7 +54,8 @@ public class JdbcSinkTests {
 
 	@EnableAutoConfiguration
 	@Import(JdbcConsumerConfiguration.class)
-	public static class JdbcSinkConfiguration {}
+	public static class JdbcSinkConfiguration {
+	}
 
 	static class Payload {
 
@@ -61,10 +63,10 @@ public class JdbcSinkTests {
 
 		private Integer b;
 
-		public Payload() {
+		Payload() {
 		}
 
-		public Payload(String a, Integer b) {
+		Payload(String a, Integer b) {
 			this.a = a;
 			this.b = b;
 		}
@@ -73,12 +75,12 @@ public class JdbcSinkTests {
 			return a;
 		}
 
-		public Integer getB() {
-			return b;
-		}
-
 		public void setA(String a) {
 			this.a = a;
+		}
+
+		public Integer getB() {
+			return b;
 		}
 
 		public void setB(Integer b) {

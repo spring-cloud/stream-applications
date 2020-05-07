@@ -20,11 +20,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,25 +32,25 @@ class DefaultBehaviorTests extends JdbcSourceIntegrationTests {
 	@Test
 	void testExtraction() throws Exception {
 		Message<?> received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
-		assertNotNull(received);
+		assertThat(received).isNotNull();
 		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
 
 		Map<?, ?> payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
 
-		assertEquals(1, payload.get("ID"));
+		assertThat(payload.get("ID")).isEqualTo(1);
 		received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
-		assertNotNull(received);
+		assertThat(received).isNotNull();
 		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
 
 		payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
 
-		assertEquals(2, payload.get("ID"));
+		assertThat(payload.get("ID")).isEqualTo(2);
 		received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
-		assertNotNull(received);
+		assertThat(received).isNotNull();
 		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
 
 		payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
 
-		assertEquals(3, payload.get("ID"));
+		assertThat(payload.get("ID")).isEqualTo(3);
 	}
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>http-source</artifactId>
     <version>3.0.0.BUILD-SNAPSHOT</version>
@@ -51,7 +52,8 @@
                         <name>http</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.http.HttpSupplierConfiguration.class</configClass>
+                        <configClass>org.springframework.cloud.fn.supplier.http.HttpSupplierConfiguration.class
+                        </configClass>
                     </generatedApp>
 
                     <dependencies>
@@ -65,7 +67,8 @@
                     <additionalAppProperties>
                         <additionalAppProperty>spring.main.web-application-type=reactive</additionalAppProperty>
                         <additionalAppProperty>spring.cloud.streamapp.security.enabled=false</additionalAppProperty>
-                        <additionalAppProperty>spring.cloud.streamapp.security.csrf-enabled=false</additionalAppProperty>
+                        <additionalAppProperty>spring.cloud.streamapp.security.csrf-enabled=false
+                        </additionalAppProperty>
                     </additionalAppProperties>
                 </configuration>
             </plugin>

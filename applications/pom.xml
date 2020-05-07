@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.springframework.cloud.stream.app</groupId>
-	<artifactId>stream-apps</artifactId>
+	<artifactId>stream-applications-infra</artifactId>
 	<version>3.0.0.BUILD-SNAPSHOT</version>
-	<name>stream-apps</name>
+	<name>stream-applications-infra</name>
 	<description>Infrastructure for stream applications</description>
 	<packaging>pom</packaging>
 
   	<modules>
-		<module>apps-core</module>
-		<module>apps-build</module>
+		<module>stream-applications-core</module>
+		<module>stream-applications-build</module>
 		<module>source</module>
 		<module>sink</module>
 		<module>processor</module>

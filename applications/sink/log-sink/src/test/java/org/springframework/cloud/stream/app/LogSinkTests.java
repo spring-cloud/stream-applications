@@ -18,7 +18,6 @@ package org.springframework.cloud.stream.app;
 
 import java.nio.charset.StandardCharsets;
 
-import org.springframework.cloud.fn.consumer.log.LogConsumerConfiguration;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +27,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.cloud.fn.consumer.log.LogConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -55,5 +55,6 @@ public class LogSinkTests {
 
 	@EnableAutoConfiguration
 	@Import(LogConsumerConfiguration.class)
-	public static class LogSinkConfiguration {}
+	public static class LogSinkConfiguration {
+	}
 }

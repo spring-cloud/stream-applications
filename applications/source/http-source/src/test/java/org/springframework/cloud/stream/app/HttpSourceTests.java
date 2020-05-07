@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,24 +35,24 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Soby Chacko
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-	properties = {"spring.cloud.function.definition=httpSupplier","debug=true"})
+		properties = {"spring.cloud.function.definition=httpSupplier", "debug=true"})
 public class HttpSourceTests {
 
 	@Autowired
-	private TestRestTemplate testRestTemplate;
-
-	@Autowired
 	OutputDestination outputDestination;
+	@Autowired
+	private TestRestTemplate testRestTemplate;
 
 	@Test
 	public void testSourceFromSupplier() {
-			testRestTemplate.postForObject("/", "test1", Object.class);
-			Message<byte[]> sourceMessage = outputDestination.receive(10000);
-			final String actual = new String(sourceMessage.getPayload());
-			assertThat(actual).isEqualTo("test1");
+		testRestTemplate.postForObject("/", "test1", Object.class);
+		Message<byte[]> sourceMessage = outputDestination.receive(10000);
+		final String actual = new String(sourceMessage.getPayload());
+		assertThat(actual).isEqualTo("test1");
 	}
 
 	@SpringBootApplication
 	@Import({HttpSupplierConfiguration.class, TestChannelBinderConfiguration.class, BindingServiceConfiguration.class})
-	public static class HttpSourceConfiguration {}
+	public static class HttpSourceConfiguration {
+	}
 }

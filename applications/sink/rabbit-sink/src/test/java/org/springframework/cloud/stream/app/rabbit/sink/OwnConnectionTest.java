@@ -17,16 +17,16 @@
 package org.springframework.cloud.stream.app.rabbit.sink;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 @TestPropertySource(properties = {"rabbit.routingKey=scsapp-testOwn",
-			"rabbit.own-connection=true"})
+		"rabbit.own-connection=true"})
 public class OwnConnectionTest extends RabbitSinkIntegrationTests {
 
 	/**
@@ -35,9 +35,6 @@ public class OwnConnectionTest extends RabbitSinkIntegrationTests {
 //	@ClassRule
 //	public static GenericContainer rabbitMq = new GenericContainer("rabbitmq:3.5.3")
 //			.withExposedPorts(5672);
-
-
-
 	@Test
 	public void test() {
 		this.rabbitAdmin.declareQueue(
@@ -47,7 +44,7 @@ public class OwnConnectionTest extends RabbitSinkIntegrationTests {
 				.build());
 		this.rabbitTemplate.setReceiveTimeout(10000);
 		Message received = this.rabbitTemplate.receive("scsapp-testOwn");
-		assertEquals("foo", new String(received.getBody()));
+		assertThat(new String(received.getBody())).isEqualTo("foo");
 		assertThat(this.bootFactory.getCacheProperties().getProperty("localPort")).isEqualTo("0");
 	}
 }

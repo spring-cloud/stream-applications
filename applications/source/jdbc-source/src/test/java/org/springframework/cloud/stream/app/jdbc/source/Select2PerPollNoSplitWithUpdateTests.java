@@ -23,12 +23,11 @@ import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.databind.type.CollectionLikeType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Soby Chacko
@@ -38,13 +37,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 		"jdbc.supplier.query=select id, name, tag from test where tag is NULL order by id",
 		"jdbc.supplier.split=false",
 		"jdbc.supplier.maxRows=2",
-		"jdbc.supplier.update=update test set tag='1' where id in (:id)" })
+		"jdbc.supplier.update=update test set tag='1' where id in (:id)"})
 public class Select2PerPollNoSplitWithUpdateTests extends JdbcSourceIntegrationTests {
 
 	@Test
 	public void testExtraction() throws Exception {
 		Message<?> received = this.messageCollector.forChannel(this.output).poll(10, TimeUnit.SECONDS);
-		assertNotNull(received);
+		assertThat(received).isNotNull();
 		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
 
 		CollectionLikeType valueType = TypeFactory.defaultInstance()
@@ -52,14 +51,14 @@ public class Select2PerPollNoSplitWithUpdateTests extends JdbcSourceIntegrationT
 
 		List<Map<?, ?>> payload = this.objectMapper.readValue((String) received.getPayload(), valueType);
 
-		assertEquals(2, payload.size());
-		assertEquals(1, payload.get(0).get("ID"));
-		assertEquals(2, payload.get(1).get("ID"));
+		assertThat(payload.size()).isEqualTo(2);
+		assertThat(payload.get(0).get("ID")).isEqualTo(1);
+		assertThat(payload.get(1).get("ID")).isEqualTo(2);
 		received = this.messageCollector.forChannel(this.output).poll(10, TimeUnit.SECONDS);
-		assertNotNull(received);
+		assertThat(received).isNotNull();
 		payload = this.objectMapper.readValue((String) received.getPayload(), valueType);
-		assertEquals(1, payload.size());
-		assertEquals(3, payload.get(0).get("ID"));
+		assertThat(payload.size()).isEqualTo(1);
+		assertThat(payload.get(0).get("ID")).isEqualTo(3);
 	}
 
 }

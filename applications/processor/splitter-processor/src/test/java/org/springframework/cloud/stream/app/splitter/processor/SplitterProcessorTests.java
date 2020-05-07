@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app.splitter.processor;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -58,6 +59,7 @@ public class SplitterProcessorTests {
 	}
 
 	@EnableAutoConfiguration
-	@Import({ SplitterFunctionConfiguration.class })
-	public static class SplitterProcessorConfiguration {}
+	@Import({SplitterFunctionConfiguration.class})
+	public static class SplitterProcessorConfiguration {
+	}
 }
