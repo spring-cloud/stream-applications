@@ -50,6 +50,7 @@
 		<module>consumer/redis-consumer</module>
 
 		<module>function/filter-function</module>
+		<module>function/header-enricher-function</module>
 		<module>function/spel-function</module>
 		<module>function/payload-converter-function</module>
 		<module>function/splitter-function</module>
