@@ -12,19 +12,19 @@
     <packaging>jar</packaging>
 
     <properties>
-        <cassandra-sink.version>3.0.0.SNAPSHOT</cassandra-sink.version>
-        <counter-sink.version>3.0.0.SNAPSHOT</counter-sink.version>
-        <jdbc-sink.version>3.0.0.SNAPSHOT</jdbc-sink.version>
-        <log-sink.version>3.0.0.SNAPSHOT</log-sink.version>
-        <mongodb-sink.version>3.0.0.SNAPSHOT</mongodb-sink.version>
-        <rabbit-sink.version>3.0.0.SNAPSHOT</rabbit-sink.version>
-        <http-source.version>3.0.0.SNAPSHOT</http-source.version>
-        <jdbc-source.version>3.0.0.SNAPSHOT</jdbc-source.version>
-        <mongodb-source.version>3.0.0.SNAPSHOT</mongodb-source.version>
-        <time-source.version>3.0.0.SNAPSHOT</time-source.version>
-        <filter-processor.version>3.0.0.SNAPSHOT</filter-processor.version>
-        <splitter-processor.version>3.0.0.SNAPSHOT</splitter-processor.version>
-        <transform-processor.version>3.0.0.SNAPSHOT</transform-processor.version>
+        <cassandra-sink.version>3.0.0-SNAPSHOT</cassandra-sink.version>
+        <counter-sink.version>3.0.0-SNAPSHOT</counter-sink.version>
+        <jdbc-sink.version>3.0.0-SNAPSHOT</jdbc-sink.version>
+        <log-sink.version>3.0.0-SNAPSHOT</log-sink.version>
+        <mongodb-sink.version>3.0.0-SNAPSHOT</mongodb-sink.version>
+        <rabbit-sink.version>3.0.0-SNAPSHOT</rabbit-sink.version>
+        <http-source.version>3.0.0-SNAPSHOT</http-source.version>
+        <jdbc-source.version>3.0.0-SNAPSHOT</jdbc-source.version>
+        <mongodb-source.version>3.0.0-SNAPSHOT</mongodb-source.version>
+        <time-source.version>3.0.0-SNAPSHOT</time-source.version>
+        <filter-processor.version>3.0.0-SNAPSHOT</filter-processor.version>
+        <splitter-processor.version>3.0.0-SNAPSHOT</splitter-processor.version>
+        <transform-processor.version>3.0.0-SNAPSHOT</transform-processor.version>
     </properties>
 
     <build>
