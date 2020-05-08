@@ -4,11 +4,11 @@
 :leveloffset: +2
 
 [[spring-cloud-stream-modules-filter]]
-include::{stream-apps-root}/applications/{branch}/processor/filter-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/{branch}/applications/processor/filter-processor/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-splitter]]
-include::{stream-apps-root}/applications/{branch}/processor/splitter-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/{branch}/applications/processor/splitter-processor/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-transform]]
-include::{stream-apps-root}/applications/{branch}/processor/transform-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/{branch}/applications/processor/transform-processor/README.adoc[tags=ref-doc]
 
 :leveloffset: -2
 

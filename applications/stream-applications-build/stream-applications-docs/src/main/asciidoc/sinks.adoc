@@ -4,16 +4,16 @@
 :leveloffset: +2
 
 [[spring-cloud-stream-modules-cassandra-sink]]
-include::{stream-apps-root}/applications/{branch}/sink/cassandra-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/{branch}/applications/sink/cassandra-sink/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-counter-sink]]
-include::{stream-apps-root}/applications/{branch}/sink/counter-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/{branch}/applications/sink/counter-sink/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-jdbc-sink]]
-include::{stream-apps-root}/applications/{branch}/sink/jdbc-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/{branch}/applications/sink/jdbc-sink/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-log-sink]]
-include::{stream-apps-root}/applications/{branch}/sink/log-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/{branch}/applications/sink/log-sink/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-mongodb-sink]]
-include::{stream-apps-root}/applications/{branch}/sink/mongodb-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/{branch}/applications/sink/mongodb-sink/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-rabbit-sink]]
-include::{stream-apps-root}/applications/{branch}/sink/rabbit-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/{branch}/applications/sink/rabbit-sink/README.adoc[tags=ref-doc]
 
 :leveloffset: -2
