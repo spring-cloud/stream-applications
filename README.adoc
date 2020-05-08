@@ -1,1 +1,52 @@
-== Stream applications 
+== Stream applications
+
+This repository provides a collection of components that help with various data integration use cases.
+It provides standalone Java functions that can be reusable in end-user applications.
+Using these functions as a baseline, it already provides various out of the box Spring Cloud Stream applications that can be run standalone or to used on Spring Cloud Data Flow.
+There are four major components in this repo.
+
+* Standalone Java Functions as java.util.function.Function/Consumer/Supplier
+* Core components for out of the applications
+* Out of the box Spring Cloud Stream applications as Source/Sink/Processor
+* An aggregator for the out of the box applications.
+
+See the README files provided at the top of each of these components to learn more.
+
+=== Build
+
+You can build everything from the root of the repository.
+
+`./mvnw clean install`
+
+==== Building functions
+
+`./mvnw clean install -f functions`
+
+==== Building core for Stream Applications
+
+`./mvnw clean install -f applicaitons/stream-applications-core`
+
+Most likely, you might be interested in building a subset of the available components.
+Let's assume that you want to build JDBC Source app based on Kafka Binder in Spring Cloud Stream and Log Sink based on Rabbit binder.
+Here is what you need to do.
+Assuming that you built both functions and stream-applications-core as above.
+
+```
+./mvnw clean package -f applications/source/jdbc-source
+cd applications/source/jdbc-source/apps/jdbc-source-kafka
+./mvnw clean package
+```
+
+This will generate the Kafka binder based uber jar in the target folder.
+
+Similarly for the log sink, do the following.
+
+```
+./mvnw clean package -f applications/sink/log-sink
+cd applications/sink/log-sink/apps/log-sink-rabbit
+./mvnw clean package
+```
+
+=== Code of Conduct
+
+Please see our https://github.com/spring-projects/.github/blob/master/CODE_OF_CONDUCT.md[Code of Conduct]

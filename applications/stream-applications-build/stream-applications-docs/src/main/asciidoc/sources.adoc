@@ -3,18 +3,17 @@
 
 :leveloffset: +2
 
-
 [[spring-cloud-stream-modules-http-source]]
-include::{stream-apps-root}/stream-applications/{branch}/source/http-source/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/applications/{branch}/source/http-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-jdbc-source]]
-include::{stream-apps-root}/stream-applications/{branch}/source/jdbc-source/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/applications/{branch}/source/jdbc-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-mongodb-source]]
-include::{stream-apps-root}/stream-applications/{branch}/source/mongodb-source/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/applications/{branch}/source/mongodb-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-time-source]]
-include::{stream-apps-root}/stream-applications/{branch}/source/time-source/README.adoc[tags=ref-doc]
+include::{stream-apps-root}/applications/{branch}/source/time-source/README.adoc[tags=ref-doc]
 
 :leveloffset: -2
 
