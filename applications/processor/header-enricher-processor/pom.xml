@@ -50,8 +50,8 @@
                 <groupId>org.springframework.cloud.stream.app.plugin</groupId>
                 <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
                 <configuration>
-                    <generatedApp>
-                        <name>filter</name>
+                    <generatedApp>  
+                        <name>header-enricher</name>
                         <type>processor</type>
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.fn.header.enricher.HeaderEnricherFunctionConfiguration.class</configClass>
