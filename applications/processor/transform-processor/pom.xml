@@ -50,7 +50,7 @@
                         <name>transform</name>
                         <type>processor</type>
                         <version>${project.version}</version>
-                        <configClass>org.springfamework.cloud.fn.spel.SpelFunctionConfiguration.class</configClass>
+                        <configClass>org.springframework.cloud.fn.spel.SpelFunctionConfiguration.class</configClass>
                         <functionDefinition>byteArrayTextToString|spelFunction</functionDefinition>
                     </generatedApp>
 
