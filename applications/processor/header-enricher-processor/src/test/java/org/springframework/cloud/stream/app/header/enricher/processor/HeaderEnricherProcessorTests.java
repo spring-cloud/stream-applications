@@ -14,57 +14,65 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.filter.processor;
+package org.springframework.cloud.stream.app.header.enricher.processor;
 
-import java.nio.charset.StandardCharsets;
-
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.filter.FilterFunctionConfiguration;
+import org.springframework.cloud.fn.header.enricher.HeaderEnricherFunctionConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.integration.test.matcher.HeaderMatcher;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.support.GenericMessage;
+import org.springframework.messaging.support.MessageBuilder;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 /**
  * @author Christian Tzolov
+ * @author Soby Chacko
  */
-public class FilterProcessorTests {
+public class HeaderEnricherProcessorTests {
 
 	@Test
-	public void testFilterProcessor() {
+	public void testHeaderEnricherProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(HeaderEnricherProcessorConfiguration.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=byteArrayTextToString|filterFunction",
-						"--spel.function.expression=payload.length() > 5")) {
+				.run("--spring.cloud.function.definition=headerEnricherFunction",
+						"--header.enricher.headers=foo='bar' \n baz='fiz' \n buz=payload \n jaz=@value",
+						"--header.enricher.overwrite=true")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
-			String longMessage = "hello world message";
-			processorInput.send(new GenericMessage<>(longMessage.getBytes(StandardCharsets.UTF_8)));
-			Message<byte[]> sourceMessage = processorOutput.receive(10000);
-			assertThat(new String(sourceMessage.getPayload())).isEqualTo(longMessage);
+			final Message<?> message = MessageBuilder.withPayload("hello")
+					.setHeader("baz", "qux").build();
+			processorInput.send(message);
+			Message<byte[]> enriched = processorOutput.receive(10000);
 
-			String shortMessage = "foo";
-			processorInput.send(new GenericMessage<>(shortMessage.getBytes(StandardCharsets.UTF_8)));
-			Message<byte[]> sourceMessage2 = processorOutput.receive(5000);
-			assertThat(sourceMessage2).isNull();
+			MatcherAssert.assertThat(enriched, HeaderMatcher.hasHeader("foo", equalTo("bar")));
+			MatcherAssert.assertThat(enriched, HeaderMatcher.hasHeader("baz", equalTo("fiz")));
+			MatcherAssert.assertThat(enriched, HeaderMatcher.hasHeader("buz", equalTo("hello")));
+			MatcherAssert.assertThat(enriched, HeaderMatcher.hasHeader("jaz", equalTo("beanValue")));
 		}
 	}
 
 	@EnableAutoConfiguration
-	@Import({FilterFunctionConfiguration.class})
-	public static class FilterProcessorConfiguration {
+	@Import({HeaderEnricherFunctionConfiguration.class})
+	public static class HeaderEnricherProcessorConfiguration {
+
+		@Bean
+		public String value() {
+			return "beanValue";
+		}
 	}
 
 }

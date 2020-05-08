@@ -1,0 +1,13 @@
+//tag::ref-doc[]
+= Redis Sink
+
+Sends messages to Redis.
+
+== Options
+
+The **$$redis$$** $$sink$$ has the following options:
+
+//tag::configuration-properties[]
+//end::configuration-properties[]
+
+//end::ref-doc[]

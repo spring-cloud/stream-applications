@@ -12,6 +12,7 @@
     <modules>
         <module>file-sink</module>
         <module>rabbit-sink</module>
+        <module>redis-sink</module>
         <module>log-sink</module>
         <module>cassandra-sink</module>
         <module>mongodb-sink</module>

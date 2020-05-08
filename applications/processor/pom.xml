@@ -11,6 +11,7 @@
 
     <modules>
         <module>bridge-processor</module>
+        <module>header-enricher-processor</module>
         <module>splitter-processor</module>
         <module>filter-processor</module>
         <module>transform-processor</module>

@@ -1,0 +1,16 @@
+//tag::ref-doc[]
+= Header Enricher Processor
+
+Use the header-enricher app to add message headers.
+
+The headers are provided in the form of new line delimited key value pairs, where the keys are the header names and the values are SpEL expressions.
+For example `--headers='foo=payload.someProperty \n bar=payload.otherProperty'`.
+
+== Options
+
+The **$$header-enricher$$** $$processor$$ has the following options:
+
+//tag::configuration-properties[]
+//end::configuration-properties[]
+
+//end::ref-doc[]
