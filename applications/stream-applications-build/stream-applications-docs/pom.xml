@@ -34,12 +34,27 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>header-enricher-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>counter-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>file-consumer</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>jdbc-consumer</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>redis-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
@@ -69,6 +84,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>file-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>jdbc-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
@@ -81,6 +101,16 @@
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>mongodb-supplier</artifactId>
 			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.stream.app</groupId>
+			<artifactId>bridge-processor</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.stream.app</groupId>
+			<artifactId>groovy-transform-processor</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<profiles>

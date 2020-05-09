@@ -3,8 +3,14 @@
 
 :leveloffset: +2
 
+[[spring-cloud-stream-modules-bridge]]
+include::{stream-apps-root}/{branch}/applications/processor/bridge-processor/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-filter]]
 include::{stream-apps-root}/{branch}/applications/processor/filter-processor/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-groovy-transform]]
+include::{stream-apps-root}/{branch}/applications/processor/groovy-transform-processor/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-header-enricher]]
+include::{stream-apps-root}/{branch}/applications/processor/header-enricher-processor/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-splitter]]
 include::{stream-apps-root}/{branch}/applications/processor/splitter-processor/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-transform]]

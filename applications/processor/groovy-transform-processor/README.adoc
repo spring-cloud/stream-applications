@@ -1,0 +1,13 @@
+//tag::ref-doc[]
+= Groovy Transform Processor
+
+A Processor that transforms messages using a Groovy script.
+
+== Options
+
+The **$$groovy-transform$$** $$processor$$ has the following options:
+
+//tag::configuration-properties[]
+//end::configuration-properties[]
+
+//end::ref-doc[]

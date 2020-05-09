@@ -14,17 +14,23 @@
     <properties>
         <cassandra-sink.version>3.0.0-SNAPSHOT</cassandra-sink.version>
         <counter-sink.version>3.0.0-SNAPSHOT</counter-sink.version>
+        <file-sink.version>3.0.0-SNAPSHOT</file-sink.version>
         <jdbc-sink.version>3.0.0-SNAPSHOT</jdbc-sink.version>
         <log-sink.version>3.0.0-SNAPSHOT</log-sink.version>
         <mongodb-sink.version>3.0.0-SNAPSHOT</mongodb-sink.version>
         <rabbit-sink.version>3.0.0-SNAPSHOT</rabbit-sink.version>
+        <redis-sink.version>3.0.0-SNAPSHOT</redis-sink.version>
+        <file-source.version>3.0.0-SNAPSHOT</file-source.version>
         <http-source.version>3.0.0-SNAPSHOT</http-source.version>
         <jdbc-source.version>3.0.0-SNAPSHOT</jdbc-source.version>
         <mongodb-source.version>3.0.0-SNAPSHOT</mongodb-source.version>
         <time-source.version>3.0.0-SNAPSHOT</time-source.version>
+        <bridge-processor.version>3.0.0-SNAPSHOT</bridge-processor.version>
         <filter-processor.version>3.0.0-SNAPSHOT</filter-processor.version>
+        <header-enricher-processor.version>3.0.0-SNAPSHOT</header-enricher-processor.version>
         <splitter-processor.version>3.0.0-SNAPSHOT</splitter-processor.version>
         <transform-processor.version>3.0.0-SNAPSHOT</transform-processor.version>
+        <groovy-transform-processor.version>3.0.0-SNAPSHOT</groovy-transform-processor.version>
     </properties>
 
     <build>
@@ -64,6 +70,8 @@
                 "${cassandra-sink.version}".contains('SNAPSHOT') ? 'latest' : "${cassandra-sink.version}";
         pom.properties['counter-sink-docker.tag']=
                 "${counter-sink.version}".contains('SNAPSHOT') ? 'latest' : "${counter-sink.version}";
+        pom.properties['file-sink-docker.tag']=
+                "${file-sink.version}".contains('SNAPSHOT') ? 'latest' : "${file-sink.version}";
         pom.properties['jdbc-sink-docker.tag']=
                 "${jdbc-sink.version}".contains('SNAPSHOT') ? 'latest' : "${jdbc-sink.version}";
         pom.properties['log-sink-docker.tag']=
@@ -72,6 +80,10 @@
                 "${mongodb-sink.version}".contains('SNAPSHOT') ? 'latest' : "${mongodb-sink.version}";
         pom.properties['rabbit-sink-docker.tag']=
                 "${rabbit-sink.version}".contains('SNAPSHOT') ? 'latest' : "${rabbit-sink.version}";
+        pom.properties['redis-sink-docker.tag']=
+                "${redis-sink.version}".contains('SNAPSHOT') ? 'latest' : "${redis-sink.version}";
+        pom.properties['file-source-docker.tag']=
+                "${file-source.version}".contains('SNAPSHOT') ? 'latest' : "${file-source.version}";
         pom.properties['http-source-docker.tag']=
                 "${http-source.version}".contains('SNAPSHOT') ? 'latest' : "${http-source.version}";
         pom.properties['jdbc-source-docker.tag']=
@@ -80,8 +92,14 @@
                 "${mongodb-source.version}".contains('SNAPSHOT') ? 'latest' : "${mongodb-source.version}";
         pom.properties['time-source-docker.tag']=
                 "${time-source.version}".contains('SNAPSHOT') ? 'latest' : "${time-source.version}";
+        pom.properties['bridge-processor-docker.tag']=
+                "${bridge-processor.version}".contains('SNAPSHOT') ? 'latest' : "${bridge-processor.version}";
         pom.properties['filter-processor-docker.tag']=
                 "${filter-processor.version}".contains('SNAPSHOT') ? 'latest' : "${filter-processor.version}";
+        pom.properties['groovy-transform-processor-docker.tag']=
+                "${groovy-transform-processor.version}".contains('SNAPSHOT') ? 'latest' : "${groovy-transform-processor.version}";
+        pom.properties['header-enricher-processor-docker.tag']=
+                "${header-enricher-processor.version}".contains('SNAPSHOT') ? 'latest' : "${header-enricher-processor.version}";
         pom.properties['splitter-processor-docker.tag']=
                 "${splitter-processor.version}".contains('SNAPSHOT') ? 'latest' : "${splitter-processor.version}";
         pom.properties['transform-processor-docker.tag']=

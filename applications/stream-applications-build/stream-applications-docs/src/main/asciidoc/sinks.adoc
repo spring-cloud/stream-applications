@@ -15,5 +15,7 @@ include::{stream-apps-root}/{branch}/applications/sink/log-sink/README.adoc[tags
 include::{stream-apps-root}/{branch}/applications/sink/mongodb-sink/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-rabbit-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/rabbit-sink/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-redis-sink]]
+include::{stream-apps-root}/{branch}/applications/sink/redis-sink/README.adoc[tags=ref-doc]
 
 :leveloffset: -2
