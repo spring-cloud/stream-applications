@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>groovy-transform-processor</artifactId>
-    <name>groovy-processor</name>
-    <description>groovy processor apps</description>
+    <artifactId>router-sink</artifactId>
     <version>3.0.0-SNAPSHOT</version>
+    <name>router-sink</name>
+    <description>log sink apps</description>
+    <packaging>jar</packaging>
 
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
@@ -20,7 +20,10 @@
     </properties>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-groovy</artifactId>
@@ -64,17 +67,6 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
 
     <build>
@@ -88,24 +80,23 @@
                 <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
                 <configuration>
                     <generatedApp>
-                        <name>groovy</name>
-                        <type>processor</type>
+                        <name>router</name>
+                        <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>
-                            org.springframework.cloud.stream.app.groovy.processor.GroovyProcessorConfiguration.class
+                        <configClass>org.springframework.cloud.stream.app.router.sink.RouterSinkConfiguration.class
                         </configClass>
-                        <functionDefinition>byteArrayTextToString|groovyProcessorFunction</functionDefinition>
+                        <functionDefinition>byteArrayTextToString|routerSinkConsumer</functionDefinition>
                     </generatedApp>
-
                     <dependencies>
                         <dependency>
                             <groupId>org.springframework.cloud.stream.app</groupId>
-                            <artifactId>groovy-processor</artifactId>
+                            <artifactId>router-sink</artifactId>
                             <version>${project.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
@@ -127,4 +118,5 @@
             <url>https://repo.spring.io/libs-milestone-local</url>
         </repository>
     </repositories>
+
 </project>

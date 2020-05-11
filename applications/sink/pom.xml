@@ -10,13 +10,14 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>file-sink</module>
-        <module>rabbit-sink</module>
-        <module>redis-sink</module>
-        <module>log-sink</module>
         <module>cassandra-sink</module>
-        <module>mongodb-sink</module>
         <module>counter-sink</module>
+        <module>file-sink</module>
+        <module>log-sink</module>
+        <module>mongodb-sink</module>
         <module>jdbc-sink</module>
+        <module>redis-sink</module>
+        <module>rabbit-sink</module>
+        <module>router-sink</module>
     </modules>
 </project>
