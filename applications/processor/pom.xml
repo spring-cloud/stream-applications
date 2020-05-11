@@ -11,7 +11,7 @@
 
     <modules>
         <module>bridge-processor</module>
-        <module>groovy-transform-processor</module>
+        <module>groovy-processor</module>
         <module>header-enricher-processor</module>
         <module>splitter-processor</module>
         <module>filter-processor</module>

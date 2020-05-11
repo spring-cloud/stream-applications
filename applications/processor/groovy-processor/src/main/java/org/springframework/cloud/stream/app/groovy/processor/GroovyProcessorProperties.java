@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.groovy.transform.processor;
+package org.springframework.cloud.stream.app.groovy.processor;
 
 import java.util.Properties;
 
@@ -29,9 +29,9 @@ import org.springframework.validation.annotation.Validated;
  *
  * @author Eric Bottard
  */
-@ConfigurationProperties("groovy-transformer")
+@ConfigurationProperties("groovy-processor")
 @Validated
-public class GroovyTransformProcessorProperties {
+public class GroovyProcessorProperties {
 
 	/**
 	 * Reference to a script used to process messages.

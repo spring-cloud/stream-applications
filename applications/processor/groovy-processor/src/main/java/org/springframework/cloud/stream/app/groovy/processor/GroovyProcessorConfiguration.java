@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.groovy.transform.processor;
+package org.springframework.cloud.stream.app.groovy.processor;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -45,14 +45,14 @@ import org.springframework.util.CollectionUtils;
  * @author Soby Chacko
  */
 @Configuration
-@EnableConfigurationProperties(GroovyTransformProcessorProperties.class)
-public class GroovyTransformProcessorConfiguration {
+@EnableConfigurationProperties(GroovyProcessorProperties.class)
+public class GroovyProcessorConfiguration {
 
 	@Autowired
-	private GroovyTransformProcessorProperties properties;
+	private GroovyProcessorProperties properties;
 
 	@Bean
-	public Function<Message<?>, Object> groovyTransformFunction(ScriptVariableGenerator scriptVariableGenerator) {
+	public Function<Message<?>, Object> groovyProcessorFunction(ScriptVariableGenerator scriptVariableGenerator) {
 		return message -> transformer(scriptVariableGenerator).processMessage(message);
 	}
 

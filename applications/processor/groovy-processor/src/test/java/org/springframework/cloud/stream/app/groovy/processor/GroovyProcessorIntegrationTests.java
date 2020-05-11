@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.groovy.transform.processor;
+package org.springframework.cloud.stream.app.groovy.processor;
 
 import java.nio.charset.StandardCharsets;
 
@@ -33,16 +33,16 @@ import org.springframework.messaging.support.GenericMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GroovyTransformProcessorIntegrationTests {
+public class GroovyProcessorIntegrationTests {
 
 	@Test
-	public void testGroovyTransformerWithScript() {
+	public void testGroovyProcessorWithScript() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyTransformTestAppConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyProcessorTestAppConfiguration.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=byteArrayTextToString|groovyTransformFunction",
-						"--groovy-transformer.script=script.groovy",
-						"--groovy-transformer.variables=limit=5\n foo=\\\40WORLD")) {
+				.run("--spring.cloud.function.definition=byteArrayTextToString|groovyProcessorFunction",
+						"--groovy-processor.script=script.groovy",
+						"--groovy-processor.variables=limit=5\n foo=\\\40WORLD")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
@@ -55,12 +55,12 @@ public class GroovyTransformProcessorIntegrationTests {
 	}
 
 	@Test
-	public void testGroovyTransformerWithGrab() {
+	public void testGroovyProcessorWithGrab() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyTransformTestAppConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyProcessorTestAppConfiguration.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=byteArrayTextToString|groovyTransformFunction",
-						"--groovy-transformer.script=script-with-grab.groovy")) {
+				.run("--spring.cloud.function.definition=byteArrayTextToString|groovyProcessorFunction",
+						"--groovy-processor.script=script-with-grab.groovy")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
@@ -74,7 +74,7 @@ public class GroovyTransformProcessorIntegrationTests {
 
 
 	@EnableAutoConfiguration
-	@Import({GroovyTransformProcessorConfiguration.class})
-	public static class GroovyTransformTestAppConfiguration {
+	@Import({GroovyProcessorConfiguration.class})
+	public static class GroovyProcessorTestAppConfiguration {
 	}
 }
