@@ -14,6 +14,7 @@
         <module>jdbc-source</module>
         <module>http-source</module>
         <module>time-source</module>
+        <module>load-generator-source</module>
         <module>mongodb-source</module>
     </modules>
 </project>
