@@ -3,7 +3,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>groovy-transform-processor</artifactId>
+    <artifactId>groovy-processor</artifactId>
     <name>groovy-processor</name>
     <description>groovy processor apps</description>
     <version>3.0.0-SNAPSHOT</version>
@@ -92,7 +92,7 @@
                         <type>processor</type>
                         <version>${project.version}</version>
                         <configClass>
-                            org.springframework.cloud.stream.app.groovy.processor.GroovyProcessorConfiguration.class
+                            org.springframework.cloud.stream.app.processor.groovy.GroovyProcessorConfiguration.class
                         </configClass>
                         <functionDefinition>byteArrayTextToString|groovyProcessorFunction</functionDefinition>
                     </generatedApp>

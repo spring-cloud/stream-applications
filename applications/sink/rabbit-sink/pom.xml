@@ -75,8 +75,7 @@
                         <name>rabbit</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.rabbit.RabbitConsumerConfiguration.class
-                        </configClass>
+                        <configClass>org.springframework.cloud.fn.consumer.rabbit.RabbitConsumerConfiguration.class</configClass>
                     </generatedApp>
 
                     <dependencies>

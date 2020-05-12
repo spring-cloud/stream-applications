@@ -43,8 +43,7 @@
                         <name>bridge</name>
                         <type>processor</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.stream.app.BridgeProcessorConfiguration.class
-                        </configClass>
+                        <configClass>org.springframework.cloud.stream.app.processor.bridge.BridgeProcessorConfiguration.class</configClass>
                         <functionDefinition>bridgeFunction</functionDefinition>
                     </generatedApp>
 

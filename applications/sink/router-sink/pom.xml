@@ -87,8 +87,7 @@
                         <name>router</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.stream.app.router.sink.RouterSinkConfiguration.class
-                        </configClass>
+                        <configClass>org.springframework.cloud.stream.app.sink.router.RouterSinkConfiguration.class</configClass>
                         <functionDefinition>byteArrayTextToString|routerSinkConsumer</functionDefinition>
                     </generatedApp>
                     <dependencies>

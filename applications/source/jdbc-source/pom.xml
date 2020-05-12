@@ -63,8 +63,7 @@
                         <name>jdbc</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.jdbc.JdbcSupplierConfiguration.class
-                        </configClass>
+                        <configClass>org.springframework.cloud.fn.supplier.jdbc.JdbcSupplierConfiguration.class</configClass>
                     </generatedApp>
 
                     <dependencies>

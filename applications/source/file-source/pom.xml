@@ -42,8 +42,7 @@
                         <name>file</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.file.FileSupplierConfiguration.class
-                        </configClass>
+                        <configClass>org.springframework.cloud.fn.supplier.file.FileSupplierConfiguration.class</configClass>
                     </generatedApp>
                     <dependencies>
                         <dependency>

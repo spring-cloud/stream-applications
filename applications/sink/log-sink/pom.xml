@@ -53,8 +53,7 @@
                         <name>log</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.log.LogConsumerConfiguration.class
-                        </configClass>
+                        <configClass>org.springframework.cloud.fn.consumer.log.LogConsumerConfiguration.class</configClass>
                         <functionDefinition>byteArrayTextToString|logConsumer</functionDefinition>
                     </generatedApp>
                     <dependencies>

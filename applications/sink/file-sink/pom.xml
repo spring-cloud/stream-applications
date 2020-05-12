@@ -42,8 +42,7 @@
                         <name>file</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.file.FileConsumerConfiguration.class
-                        </configClass>
+                        <configClass>org.springframework.cloud.fn.consumer.file.FileConsumerConfiguration.class</configClass>
                     </generatedApp>
                     <dependencies>
                         <dependency>

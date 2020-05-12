@@ -60,8 +60,7 @@
                         <name>jdbc</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.jdbc.JdbcConsumerConfiguration.class
-                        </configClass>
+                        <configClass>org.springframework.cloud.fn.consumer.jdbc.JdbcConsumerConfiguration.class</configClass>
                     </generatedApp>
                     <dependencies>
                         <dependency>
