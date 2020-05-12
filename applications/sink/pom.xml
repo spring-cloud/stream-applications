@@ -13,6 +13,7 @@
         <module>cassandra-sink</module>
         <module>counter-sink</module>
         <module>file-sink</module>
+        <module>ftp-sink</module>
         <module>log-sink</module>
         <module>mongodb-sink</module>
         <module>jdbc-sink</module>
