@@ -7,6 +7,8 @@
 include::{stream-apps-root}/{branch}/applications/sink/cassandra-sink/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-counter-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/counter-sink/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-ftp-sink]]
+include::{stream-apps-root}/{branch}/applications/sink/ftp-sink/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-jdbc-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/jdbc-sink/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-log-sink]]
@@ -17,5 +19,7 @@ include::{stream-apps-root}/{branch}/applications/sink/mongodb-sink/README.adoc[
 include::{stream-apps-root}/{branch}/applications/sink/rabbit-sink/README.adoc[tags=ref-doc]
 [[spring-cloud-stream-modules-redis-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/redis-sink/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-sftp-sink]]
+include::{stream-apps-root}/{branch}/applications/sink/sftp-sink/README.adoc[tags=ref-doc]
 
 :leveloffset: -2

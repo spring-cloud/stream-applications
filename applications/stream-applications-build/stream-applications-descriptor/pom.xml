@@ -15,11 +15,13 @@
         <cassandra-sink.version>3.0.0-SNAPSHOT</cassandra-sink.version>
         <counter-sink.version>3.0.0-SNAPSHOT</counter-sink.version>
         <file-sink.version>3.0.0-SNAPSHOT</file-sink.version>
+        <ftp-sink.version>3.0.0-SNAPSHOT</ftp-sink.version>
         <jdbc-sink.version>3.0.0-SNAPSHOT</jdbc-sink.version>
         <log-sink.version>3.0.0-SNAPSHOT</log-sink.version>
         <mongodb-sink.version>3.0.0-SNAPSHOT</mongodb-sink.version>
         <rabbit-sink.version>3.0.0-SNAPSHOT</rabbit-sink.version>
         <redis-sink.version>3.0.0-SNAPSHOT</redis-sink.version>
+        <sftp-sink.version>3.0.0-SNAPSHOT</sftp-sink.version>
         <file-source.version>3.0.0-SNAPSHOT</file-source.version>
         <http-source.version>3.0.0-SNAPSHOT</http-source.version>
         <jdbc-source.version>3.0.0-SNAPSHOT</jdbc-source.version>
@@ -72,6 +74,8 @@
                 "${counter-sink.version}".contains('SNAPSHOT') ? 'latest' : "${counter-sink.version}";
         pom.properties['file-sink-docker.tag']=
                 "${file-sink.version}".contains('SNAPSHOT') ? 'latest' : "${file-sink.version}";
+        pom.properties['ftp-sink-docker.tag']=
+                "${ftp-sink.version}".contains('SNAPSHOT') ? 'latest' : "${ftp-sink.version}";
         pom.properties['jdbc-sink-docker.tag']=
                 "${jdbc-sink.version}".contains('SNAPSHOT') ? 'latest' : "${jdbc-sink.version}";
         pom.properties['log-sink-docker.tag']=
@@ -82,6 +86,8 @@
                 "${rabbit-sink.version}".contains('SNAPSHOT') ? 'latest' : "${rabbit-sink.version}";
         pom.properties['redis-sink-docker.tag']=
                 "${redis-sink.version}".contains('SNAPSHOT') ? 'latest' : "${redis-sink.version}";
+        pom.properties['sftp-sink-docker.tag']=
+                "${sftp-sink.version}".contains('SNAPSHOT') ? 'latest' : "${sftp-sink.version}";
         pom.properties['file-source-docker.tag']=
                 "${file-source.version}".contains('SNAPSHOT') ? 'latest' : "${file-source.version}";
         pom.properties['http-source-docker.tag']=

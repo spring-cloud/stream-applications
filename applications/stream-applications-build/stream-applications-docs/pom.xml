@@ -112,6 +112,16 @@
 			<artifactId>groovy-transform-processor</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>sftp-consumer</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>ftp-consumer</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>
