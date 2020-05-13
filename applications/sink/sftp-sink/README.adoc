@@ -1,0 +1,58 @@
+//tag::ref-doc[]
+= SFTP Sink
+
+SFTP sink is a simple option to push files to an SFTP server from incoming messages.
+
+It uses an `sftp-outbound-adapter`, therefore incoming messages can be either a `java.io.File` object, a `String` (content of the file)
+or an array of `bytes` (file content as well).
+
+To use this sink, you need a username and a password to login.
+
+NOTE: By default Spring Integration will use `o.s.i.file.DefaultFileNameGenerator` if none is specified. `DefaultFileNameGenerator` will determine the file name
+based on the value of the `file_name` header (if it exists) in the `MessageHeaders`, or if the payload of the `Message` is already a `java.io.File`, then it will
+use the original name of that file.
+
+When configuring the `sftp.factory.known-hosts-expression` option, the root object of the evaluation is the application context, an example might be `sftp.factory.known-hosts-expression = @systemProperties['user.home'] + '/.ssh/known_hosts'`.
+
+== Input
+
+=== Headers
+
+* `file_name` (See note above)
+
+=== Payload
+
+* `java.io.File`
+* `java.io.InputStream`
+* `byte[]`
+* `String`
+
+== Output
+
+N/A (writes to the SFTP server).
+
+== Options
+
+The **$$sftp$$** $$sink$$ has the following options:
+
+//tag::configuration-properties[]
+$$sftp.consumer.auto-create-dir$$:: $$Whether or not to create the remote directory.$$ *($$Boolean$$, default: `$$true$$`)*
+$$sftp.consumer.factory.allow-unknown-keys$$:: $$True to allow an unknown or changed key.$$ *($$Boolean$$, default: `$$false$$`)*
+$$sftp.consumer.factory.cache-sessions$$:: $$Cache sessions.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$sftp.consumer.factory.host$$:: $$The host name of the server.$$ *($$String$$, default: `$$localhost$$`)*
+$$sftp.consumer.factory.known-hosts-expression$$:: $$A SpEL expression resolving to the location of the known hosts file.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$sftp.consumer.factory.pass-phrase$$:: $$Passphrase for user's private key.$$ *($$String$$, default: `$$<empty string>$$`)*
+$$sftp.consumer.factory.password$$:: $$The password to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
+$$sftp.consumer.factory.port$$:: $$The port of the server.$$ *($$Integer$$, default: `$$22$$`)*
+$$sftp.consumer.factory.private-key$$:: $$Resource location of user's private key.$$ *($$Resource$$, default: `$$<none>$$`)*
+$$sftp.consumer.factory.username$$:: $$The username to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
+$$sftp.consumer.filename-expression$$:: $$A SpEL expression to generate the remote file name.$$ *($$String$$, default: `$$<none>$$`)*
+$$sftp.consumer.mode$$:: $$Action to take if the remote file already exists.$$ *($$FileExistsMode$$, default: `$$<none>$$`, possible values: `APPEND`,`APPEND_NO_FLUSH`,`FAIL`,`IGNORE`,`REPLACE`,`REPLACE_IF_MODIFIED`)*
+$$sftp.consumer.remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$/$$`)*
+$$sftp.consumer.remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$/$$`)*
+$$sftp.consumer.temporary-remote-dir$$:: $$A temporary directory where the file will be written if 'isUseTemporaryFilename()' is true.$$ *($$String$$, default: `$$/$$`)*
+$$sftp.consumer.tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
+$$sftp.consumer.use-temporary-filename$$:: $$Whether or not to write to a temporary file and rename.$$ *($$Boolean$$, default: `$$true$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]
