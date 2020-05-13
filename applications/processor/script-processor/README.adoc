@@ -1,0 +1,14 @@
+//tag::ref-doc[]
+= Script Processor
+
+Processor that transforms messages using a script. The script body is supplied directly
+as a property value. The language of the script can be specified (groovy/javascript/ruby/python).
+
+== Options
+
+The **$$script-processor$$** $$processor$$ has the following options:
+
+//tag::configuration-properties[]
+//end::configuration-properties[]
+
+//end::ref-doc[]

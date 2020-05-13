@@ -16,6 +16,7 @@
         <module>splitter-processor</module>
         <module>filter-processor</module>
         <module>transform-processor</module>
+        <module>script-processor</module>
     </modules>
 
 </project>
