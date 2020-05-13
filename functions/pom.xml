@@ -52,6 +52,7 @@
 		<module>consumer/mongodb-consumer</module>
 		<module>consumer/rabbit-consumer</module>
 		<module>consumer/redis-consumer</module>
+		<module>consumer/sftp-consumer</module>
 
 		<module>function/filter-function</module>
 		<module>function/header-enricher-function</module>

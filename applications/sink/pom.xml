@@ -20,5 +20,6 @@
         <module>redis-sink</module>
         <module>rabbit-sink</module>
         <module>router-sink</module>
+        <module>sftp-sink</module>
     </modules>
 </project>
