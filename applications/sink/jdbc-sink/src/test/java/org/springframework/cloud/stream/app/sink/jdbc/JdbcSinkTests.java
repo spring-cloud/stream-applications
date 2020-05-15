@@ -37,7 +37,7 @@ public class JdbcSinkTests {
 	@Test
 	public void testSimpleInserts() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(JdbcSinkConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(JdbcSinkTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=jdbcConsumer")) {
 
@@ -54,7 +54,7 @@ public class JdbcSinkTests {
 
 	@EnableAutoConfiguration
 	@Import(JdbcConsumerConfiguration.class)
-	public static class JdbcSinkConfiguration {
+	public static class JdbcSinkTestConfiguration {
 	}
 
 	static class Payload {

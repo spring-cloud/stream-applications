@@ -38,7 +38,7 @@ public class GroovyProcessorIntegrationTests {
 	@Test
 	public void testGroovyProcessorWithScript() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyProcessorTestAppConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyProcessorTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|groovyProcessorFunction",
 						"--groovy-processor.script=script.groovy",
@@ -57,7 +57,7 @@ public class GroovyProcessorIntegrationTests {
 	@Test
 	public void testGroovyProcessorWithGrab() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyProcessorTestAppConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyProcessorTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|groovyProcessorFunction",
 						"--groovy-processor.script=script-with-grab.groovy")) {
@@ -75,6 +75,6 @@ public class GroovyProcessorIntegrationTests {
 
 	@EnableAutoConfiguration
 	@Import({GroovyProcessorConfiguration.class})
-	public static class GroovyProcessorTestAppConfiguration {
+	public static class GroovyProcessorTestConfiguration {
 	}
 }

@@ -94,6 +94,6 @@ abstract class RabbitSinkIntegrationTests {
 
 	@SpringBootApplication
 	@Import({RabbitConsumerConfiguration.class})
-	public static class RabbitSinkConfiguration {
+	public static class RabbitSinkTestConfiguration {
 	}
 }

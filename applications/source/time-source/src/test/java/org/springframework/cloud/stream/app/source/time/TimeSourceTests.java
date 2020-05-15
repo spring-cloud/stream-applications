@@ -44,7 +44,7 @@ public class TimeSourceTests {
 	public void testSourceFromSupplier() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
-						.getCompleteConfiguration(TimeSourceConfiguration.class))
+						.getCompleteConfiguration(TimeSourceTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=timeSupplier")) {
 
@@ -63,6 +63,6 @@ public class TimeSourceTests {
 
 	@EnableAutoConfiguration
 	@Import(TimeSupplierConfiguration.class)
-	public static class TimeSourceConfiguration {
+	public static class TimeSourceTestConfiguration {
 	}
 }

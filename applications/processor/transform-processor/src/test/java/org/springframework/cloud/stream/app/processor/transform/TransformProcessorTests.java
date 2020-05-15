@@ -39,7 +39,7 @@ public class TransformProcessorTests {
 	@Test
 	public void testTransformProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(TransformProcessorConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(TransformProcessorTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|spelFunction",
 						"--spel.function.expression=payload.toUpperCase()")) {
@@ -56,7 +56,7 @@ public class TransformProcessorTests {
 
 	@EnableAutoConfiguration
 	@Import({SpelFunctionConfiguration.class})
-	public static class TransformProcessorConfiguration {
+	public static class TransformProcessorTestConfiguration {
 	}
 
 }

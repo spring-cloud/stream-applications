@@ -39,7 +39,7 @@ public class SplitterProcessorTests {
 	@Test
 	public void testSplitterProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(SplitterProcessorConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(SplitterProcessorTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|splitterFunction",
 						"--splitter.expression=payload.split(',')")) {
@@ -60,6 +60,6 @@ public class SplitterProcessorTests {
 
 	@EnableAutoConfiguration
 	@Import({SplitterFunctionConfiguration.class})
-	public static class SplitterProcessorConfiguration {
+	public static class SplitterProcessorTestConfiguration {
 	}
 }

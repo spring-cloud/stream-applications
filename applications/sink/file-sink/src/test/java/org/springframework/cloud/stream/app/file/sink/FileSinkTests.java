@@ -49,7 +49,7 @@ public class FileSinkTests {
 	public void testFileSink() throws Exception {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
-						.getCompleteConfiguration(FileSinkConfiguration.class))
+						.getCompleteConfiguration(FileSinkTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=fileConsumer",
 						"--file.consumer.name=test",
@@ -68,6 +68,6 @@ public class FileSinkTests {
 
 	@EnableAutoConfiguration
 	@Import(FileConsumerConfiguration.class)
-	public static class FileSinkConfiguration {
+	public static class FileSinkTestConfiguration {
 	}
 }

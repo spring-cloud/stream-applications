@@ -52,7 +52,7 @@ public class JdbcSourceIntegrationTests {
 
 	@SpringBootApplication
 	@Import(JdbcSupplierConfiguration.class)
-	public static class JdbcSourceConfiguration {
+	public static class JdbcSourceTestConfiguration {
 	}
 
 }

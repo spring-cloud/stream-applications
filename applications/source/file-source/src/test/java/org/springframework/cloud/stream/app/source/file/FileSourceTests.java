@@ -46,7 +46,7 @@ public class FileSourceTests {
 	public void testFileSource() throws Exception {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
-						.getCompleteConfiguration(FileSourceConfiguration.class))
+						.getCompleteConfiguration(FileSourceTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=fileSupplier", "--file.supplier.directory=" + tempDir.toAbsolutePath().toString())) {
 
@@ -62,6 +62,6 @@ public class FileSourceTests {
 
 	@EnableAutoConfiguration
 	@Import(FileSupplierConfiguration.class)
-	public static class FileSourceConfiguration {
+	public static class FileSourceTestConfiguration {
 	}
 }

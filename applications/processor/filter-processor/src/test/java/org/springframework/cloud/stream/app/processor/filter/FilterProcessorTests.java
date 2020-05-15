@@ -42,7 +42,7 @@ public class FilterProcessorTests {
 	@Test
 	public void testFilterProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|filterFunction",
 						"--spel.function.expression=payload.length() > 5")) {
@@ -64,7 +64,7 @@ public class FilterProcessorTests {
 
 	@EnableAutoConfiguration
 	@Import({FilterFunctionConfiguration.class})
-	public static class FilterProcessorConfiguration {
+	public static class FilterProcessorTestConfiguration {
 	}
 
 }

@@ -41,7 +41,7 @@ public class BridgeProcessorTests {
 	@Test
 	public void testFilterProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(BridgeTestAppConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(BridgeProcessorTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run()) {
 
@@ -57,6 +57,6 @@ public class BridgeProcessorTests {
 
 	@EnableAutoConfiguration
 	@Import({BridgeProcessorConfiguration.class})
-	public static class BridgeTestAppConfiguration {
+	public static class BridgeProcessorTestConfiguration {
 	}
 }

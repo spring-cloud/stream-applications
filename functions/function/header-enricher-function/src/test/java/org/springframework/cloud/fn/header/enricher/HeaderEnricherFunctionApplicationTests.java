@@ -59,7 +59,7 @@ public class HeaderEnricherFunctionApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class HeaderEnricherTestApplication {
+	static class TestApplication {
 
 		@Bean
 		public String value() {

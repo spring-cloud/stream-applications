@@ -53,6 +53,6 @@ public class HttpSourceTests {
 
 	@SpringBootApplication
 	@Import({HttpSupplierConfiguration.class, TestChannelBinderConfiguration.class, BindingServiceConfiguration.class})
-	public static class HttpSourceConfiguration {
+	public static class HttpSourceTestConfiguration {
 	}
 }

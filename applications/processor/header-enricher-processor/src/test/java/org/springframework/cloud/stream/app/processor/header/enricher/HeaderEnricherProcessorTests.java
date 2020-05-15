@@ -44,7 +44,7 @@ public class HeaderEnricherProcessorTests {
 	@Test
 	public void testHeaderEnricherProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(HeaderEnricherProcessorConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(HeaderEnricherProcessorTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=headerEnricherFunction",
 						"--header.enricher.headers=foo='bar' \n baz='fiz' \n buz=payload \n jaz=@value",
@@ -67,7 +67,7 @@ public class HeaderEnricherProcessorTests {
 
 	@EnableAutoConfiguration
 	@Import({HeaderEnricherFunctionConfiguration.class})
-	public static class HeaderEnricherProcessorConfiguration {
+	public static class HeaderEnricherProcessorTestConfiguration {
 
 		@Bean
 		public String value() {

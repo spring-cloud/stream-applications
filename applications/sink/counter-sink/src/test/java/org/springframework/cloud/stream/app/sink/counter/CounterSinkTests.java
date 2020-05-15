@@ -46,7 +46,7 @@ public class CounterSinkTests {
 	@Test
 	public void testCounterSink(CapturedOutput output) {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(CounterSinkConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(CounterSinkTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|counterConsumer",
 						"--counter.name=counter666",
@@ -69,7 +69,7 @@ public class CounterSinkTests {
 	@EnableAutoConfiguration
 	//@Import({CounterConsumerConfiguration.class, PayloadConverterConfiguration.class})
 	@Import({CounterConsumerConfiguration.class})
-	public static class CounterSinkConfiguration {
+	public static class CounterSinkTestConfiguration {
 	}
 
 }

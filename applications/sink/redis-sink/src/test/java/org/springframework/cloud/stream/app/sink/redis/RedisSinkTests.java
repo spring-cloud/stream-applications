@@ -46,7 +46,7 @@ public class RedisSinkTests {
 	public void testRedisSink() throws Exception {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
-						.getCompleteConfiguration(RedisSinkConfiguration.class))
+						.getCompleteConfiguration(RedisSinkTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=redisConsumer",
 						"--redis.consumer.key=foo")) {
@@ -78,6 +78,6 @@ public class RedisSinkTests {
 
 	@EnableAutoConfiguration
 	@Import(RedisConsumerConfiguration.class)
-	public static class RedisSinkConfiguration {
+	public static class RedisSinkTestConfiguration {
 	}
 }

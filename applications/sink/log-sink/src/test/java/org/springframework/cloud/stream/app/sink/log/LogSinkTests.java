@@ -43,7 +43,7 @@ public class LogSinkTests {
 	@Test
 	public void testSourceFromSupplier(CapturedOutput output) {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(LogSinkConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(LogSinkTestConfiguration.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|logConsumer")) {
 
@@ -55,6 +55,6 @@ public class LogSinkTests {
 
 	@EnableAutoConfiguration
 	@Import(LogConsumerConfiguration.class)
-	public static class LogSinkConfiguration {
+	public static class LogSinkTestConfiguration {
 	}
 }
