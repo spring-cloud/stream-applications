@@ -42,7 +42,10 @@
   	<modules>
 		<module>common/ftp-common</module>
 		<module>common/function-test-support</module>
+<<<<<<< HEAD
 		<module>common/tcp-common</module>
+=======
+>>>>>>> MQTT source as supplier/source
 		<module>common/mqtt-common</module>
 
 		<module>consumer/cassandra-consumer</module>
