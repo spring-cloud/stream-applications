@@ -1,0 +1,31 @@
+//tag::ref-doc[]
+= MQTT Source
+
+Source that enables receiving messages from MQTT.
+
+==== Payload:
+
+* `String` if binary setting is `false` (default)
+* `byte[]` if binary setting is `true`
+
+== Options
+
+The **$$mqtt$$** $$source$$ has the following options:
+
+//tag::configuration-properties[]
+$$mqtt.clean-session$$:: $$whether the client and server should remember state across restarts and reconnects.$$ *($$Boolean$$, default: `$$true$$`)*
+$$mqtt.connection-timeout$$:: $$the connection timeout in seconds.$$ *($$Integer$$, default: `$$30$$`)*
+$$mqtt.keep-alive-interval$$:: $$the ping interval in seconds.$$ *($$Integer$$, default: `$$60$$`)*
+$$mqtt.password$$:: $$the password to use when connecting to the broker.$$ *($$String$$, default: `$$guest$$`)*
+$$mqtt.persistence$$:: $$'memory' or 'file'.$$ *($$String$$, default: `$$memory$$`)*
+$$mqtt.persistence-directory$$:: $$Persistence directory.$$ *($$String$$, default: `$$/tmp/paho$$`)*
+$$mqtt.supplier.binary$$:: $$true to leave the payload as bytes.$$ *($$Boolean$$, default: `$$false$$`)*
+$$mqtt.supplier.charset$$:: $$the charset used to convert bytes to String (when binary is false).$$ *($$String$$, default: `$$UTF-8$$`)*
+$$mqtt.supplier.client-id$$:: $$identifies the client.$$ *($$String$$, default: `$$stream.client.id.source$$`)*
+$$mqtt.supplier.qos$$:: $$the qos; a single value for all topics or a comma-delimited list to match the topics.$$ *($$Integer[]$$, default: `$$[0]$$`)*
+$$mqtt.supplier.topics$$:: $$the topic(s) (comma-delimited) to which the source will subscribe.$$ *($$String[]$$, default: `$$[stream.mqtt]$$`)*
+$$mqtt.url$$:: $$location of the mqtt broker(s) (comma-delimited list).$$ *($$String[]$$, default: `$$[tcp://localhost:1883]$$`)*
+$$mqtt.username$$:: $$the username to use when connecting to the broker.$$ *($$String$$, default: `$$guest$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]
