@@ -67,7 +67,6 @@ public class CounterSinkTests {
 	}
 
 	@EnableAutoConfiguration
-	//@Import({CounterConsumerConfiguration.class, PayloadConverterConfiguration.class})
 	@Import({CounterConsumerConfiguration.class})
 	public static class CounterSinkTestConfiguration {
 	}
