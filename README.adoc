@@ -24,7 +24,7 @@ You can build everything from the root of the repository.
 
 ==== Building core for Stream Applications
 
-`./mvnw clean install -f applicaitons/stream-applications-core`
+`./mvnw clean install -f applications/stream-applications-core`
 
 Most likely, you might be interested in building a subset of the available components.
 Let's assume that you want to build JDBC Source app based on Kafka Binder in Spring Cloud Stream and Log Sink based on Rabbit binder.

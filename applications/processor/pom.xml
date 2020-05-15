@@ -11,10 +11,11 @@
 
     <modules>
         <module>bridge-processor</module>
+        <module>filter-processor</module>
         <module>groovy-processor</module>
         <module>header-enricher-processor</module>
+        <module>http-request-processor</module>
         <module>splitter-processor</module>
-        <module>filter-processor</module>
         <module>transform-processor</module>
         <module>script-processor</module>
     </modules>
