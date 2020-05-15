@@ -22,7 +22,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.consumer.redis.RedisConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
@@ -46,7 +46,7 @@ public class RedisSinkTests {
 	public void testRedisSink() throws Exception {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
-						.getCompleteConfiguration(RedisSinkTestConfiguration.class))
+						.getCompleteConfiguration(RedisSinkTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=redisConsumer",
 						"--redis.consumer.key=foo")) {
@@ -76,8 +76,8 @@ public class RedisSinkTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import(RedisConsumerConfiguration.class)
-	public static class RedisSinkTestConfiguration {
+	public static class RedisSinkTestApplication {
 	}
 }

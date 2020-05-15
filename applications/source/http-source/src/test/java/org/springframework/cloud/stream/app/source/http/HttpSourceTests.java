@@ -40,6 +40,7 @@ public class HttpSourceTests {
 
 	@Autowired
 	OutputDestination outputDestination;
+
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
@@ -53,6 +54,6 @@ public class HttpSourceTests {
 
 	@SpringBootApplication
 	@Import({HttpSupplierConfiguration.class, TestChannelBinderConfiguration.class, BindingServiceConfiguration.class})
-	public static class HttpSourceTestConfiguration {
+	public static class HttpSourceTestApplication {
 	}
 }

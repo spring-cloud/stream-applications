@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
@@ -43,7 +43,7 @@ public class LogSinkTests {
 	@Test
 	public void testSourceFromSupplier(CapturedOutput output) {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(LogSinkTestConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(LogSinkTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|logConsumer")) {
 
@@ -53,8 +53,8 @@ public class LogSinkTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import(LogConsumerConfiguration.class)
-	public static class LogSinkTestConfiguration {
+	public static class LogSinkTestApplication {
 	}
 }

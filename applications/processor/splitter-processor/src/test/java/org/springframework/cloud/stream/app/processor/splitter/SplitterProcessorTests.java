@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.splitter.SplitterFunctionConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
@@ -39,7 +39,7 @@ public class SplitterProcessorTests {
 	@Test
 	public void testSplitterProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(SplitterProcessorTestConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(SplitterProcessorTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|splitterFunction",
 						"--splitter.expression=payload.split(',')")) {
@@ -58,8 +58,8 @@ public class SplitterProcessorTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import({SplitterFunctionConfiguration.class})
-	public static class SplitterProcessorTestConfiguration {
+	public static class SplitterProcessorTestApplication {
 	}
 }

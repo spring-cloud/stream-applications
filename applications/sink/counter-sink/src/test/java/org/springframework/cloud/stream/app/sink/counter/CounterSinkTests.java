@@ -21,13 +21,10 @@ import java.nio.charset.StandardCharsets;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.test.system.CapturedOutput;
-import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.cloud.fn.consumer.counter.CounterConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
@@ -40,17 +37,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Christian Tzolov
  */
-@ExtendWith(OutputCaptureExtension.class)
 public class CounterSinkTests {
 
 	@Test
-	public void testCounterSink(CapturedOutput output) {
+	public void testCounterSink() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(CounterSinkTestConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(CounterSinkTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|counterConsumer",
 						"--counter.name=counter666",
-						//"--counter.amount-expression=new String(payload).length()",
 						"--counter.amount-expression=payload.length()",
 						"--counter.tag.expression.foo='bar'")) {
 
@@ -66,9 +61,9 @@ public class CounterSinkTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import({CounterConsumerConfiguration.class})
-	public static class CounterSinkTestConfiguration {
+	public static class CounterSinkTestApplication {
 	}
 
 }

@@ -29,12 +29,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"rabbit.own-connection=true"})
 public class OwnConnectionTest extends RabbitSinkIntegrationTests {
 
-	/**
-	 * RabbitMQ
-	 */
-//	@ClassRule
-//	public static GenericContainer rabbitMq = new GenericContainer("rabbitmq:3.5.3")
-//			.withExposedPorts(5672);
 	@Test
 	public void test() {
 		this.rabbitAdmin.declareQueue(

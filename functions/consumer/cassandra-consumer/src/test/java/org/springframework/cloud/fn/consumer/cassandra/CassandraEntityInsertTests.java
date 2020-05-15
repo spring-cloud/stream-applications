@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisabledOnOs(OS.WINDOWS)
 @TestPropertySource(properties = {
 		"spring.data.cassandra.schema-action=RECREATE",
-		"cassandra.cluster.entity-base-packages=io.pivotal.java.function.cassandra.consumer.domain" })
+		"cassandra.cluster.entity-base-packages=org.springframework.cloud.fn.consumer.cassandra.domain" })
 class CassandraEntityInsertTests extends CassandraConsumerApplicationTests {
 
 	@Test

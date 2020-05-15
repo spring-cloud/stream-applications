@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
@@ -41,7 +41,7 @@ public class BridgeProcessorTests {
 	@Test
 	public void testFilterProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(BridgeProcessorTestConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(BridgeProcessorTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run()) {
 
@@ -55,8 +55,8 @@ public class BridgeProcessorTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import({BridgeProcessorConfiguration.class})
-	public static class BridgeProcessorTestConfiguration {
+	public static class BridgeProcessorTestApplication {
 	}
 }

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.supplier.file.FileSupplierConfiguration;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
@@ -46,7 +46,7 @@ public class FileSourceTests {
 	public void testFileSource() throws Exception {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
-						.getCompleteConfiguration(FileSourceTestConfiguration.class))
+						.getCompleteConfiguration(FileSourceTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=fileSupplier", "--file.supplier.directory=" + tempDir.toAbsolutePath().toString())) {
 
@@ -60,8 +60,8 @@ public class FileSourceTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import(FileSupplierConfiguration.class)
-	public static class FileSourceTestConfiguration {
+	public static class FileSourceTestApplication {
 	}
 }

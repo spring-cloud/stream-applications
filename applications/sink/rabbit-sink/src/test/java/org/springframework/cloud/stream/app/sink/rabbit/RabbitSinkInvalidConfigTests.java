@@ -65,5 +65,4 @@ public class RabbitSinkInvalidConfigTests {
 	static class Config {
 
 	}
-
 }

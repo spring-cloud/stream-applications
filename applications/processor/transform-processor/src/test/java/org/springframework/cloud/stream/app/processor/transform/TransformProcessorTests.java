@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.spel.SpelFunctionConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
@@ -39,7 +39,7 @@ public class TransformProcessorTests {
 	@Test
 	public void testTransformProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(TransformProcessorTestConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(TransformProcessorTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|spelFunction",
 						"--spel.function.expression=payload.toUpperCase()")) {
@@ -54,9 +54,9 @@ public class TransformProcessorTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import({SpelFunctionConfiguration.class})
-	public static class TransformProcessorTestConfiguration {
+	public static class TransformProcessorTestApplication {
 	}
 
 }

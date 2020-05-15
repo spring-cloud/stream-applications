@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.consumer.file.FileConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
@@ -49,7 +49,7 @@ public class FileSinkTests {
 	public void testFileSink() throws Exception {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
-						.getCompleteConfiguration(FileSinkTestConfiguration.class))
+						.getCompleteConfiguration(FileSinkTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=fileConsumer",
 						"--file.consumer.name=test",
@@ -66,8 +66,8 @@ public class FileSinkTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import(FileConsumerConfiguration.class)
-	public static class FileSinkTestConfiguration {
+	public static class FileSinkTestApplication {
 	}
 }

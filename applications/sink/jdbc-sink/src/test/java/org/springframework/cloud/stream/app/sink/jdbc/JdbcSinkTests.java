@@ -19,7 +19,7 @@ package org.springframework.cloud.stream.app.sink.jdbc;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.consumer.jdbc.JdbcConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
@@ -37,7 +37,7 @@ public class JdbcSinkTests {
 	@Test
 	public void testSimpleInserts() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(JdbcSinkTestConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(JdbcSinkTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=jdbcConsumer")) {
 
@@ -52,9 +52,9 @@ public class JdbcSinkTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import(JdbcConsumerConfiguration.class)
-	public static class JdbcSinkTestConfiguration {
+	public static class JdbcSinkTestApplication {
 	}
 
 	static class Payload {

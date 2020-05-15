@@ -62,14 +62,19 @@ abstract class RabbitSinkIntegrationTests {
 	@Qualifier("rabbitConsumer-in-0")
 	@Autowired
 	protected SubscribableChannel channels;
+
 	@Autowired
 	protected RabbitConsumerProperties rabbitSinkProperties;
+
 	@Autowired
 	protected RabbitTemplate rabbitTemplate;
+
 	@Autowired
 	protected RabbitAdmin rabbitAdmin;
+
 	@Autowired(required = false)
 	protected MessageConverter myConverter;
+
 	@Autowired
 	protected CachingConnectionFactory bootFactory;
 
@@ -94,6 +99,6 @@ abstract class RabbitSinkIntegrationTests {
 
 	@SpringBootApplication
 	@Import({RabbitConsumerConfiguration.class})
-	public static class RabbitSinkTestConfiguration {
+	public static class RabbitSinkTestApplication {
 	}
 }

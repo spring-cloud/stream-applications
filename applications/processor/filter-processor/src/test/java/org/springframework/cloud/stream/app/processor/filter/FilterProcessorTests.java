@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.filter.FilterFunctionConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
@@ -42,7 +42,7 @@ public class FilterProcessorTests {
 	@Test
 	public void testFilterProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorTestConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|filterFunction",
 						"--spel.function.expression=payload.length() > 5")) {
@@ -62,9 +62,9 @@ public class FilterProcessorTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import({FilterFunctionConfiguration.class})
-	public static class FilterProcessorTestConfiguration {
+	public static class FilterProcessorTestApplication {
 	}
 
 }

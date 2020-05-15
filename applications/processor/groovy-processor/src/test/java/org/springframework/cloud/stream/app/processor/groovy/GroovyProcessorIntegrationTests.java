@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
@@ -38,7 +38,7 @@ public class GroovyProcessorIntegrationTests {
 	@Test
 	public void testGroovyProcessorWithScript() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyProcessorTestConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyProcessorTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|groovyProcessorFunction",
 						"--groovy-processor.script=script.groovy",
@@ -57,7 +57,7 @@ public class GroovyProcessorIntegrationTests {
 	@Test
 	public void testGroovyProcessorWithGrab() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyProcessorTestConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(GroovyProcessorTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|groovyProcessorFunction",
 						"--groovy-processor.script=script-with-grab.groovy")) {
@@ -73,8 +73,8 @@ public class GroovyProcessorIntegrationTests {
 	}
 
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import({GroovyProcessorConfiguration.class})
-	public static class GroovyProcessorTestConfiguration {
+	public static class GroovyProcessorTestApplication {
 	}
 }

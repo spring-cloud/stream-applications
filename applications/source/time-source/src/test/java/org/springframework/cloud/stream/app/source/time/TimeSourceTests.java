@@ -22,7 +22,7 @@ import java.util.Date;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.supplier.time.TimeProperties;
 import org.springframework.cloud.fn.supplier.time.TimeSupplierConfiguration;
@@ -44,7 +44,7 @@ public class TimeSourceTests {
 	public void testSourceFromSupplier() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
-						.getCompleteConfiguration(TimeSourceTestConfiguration.class))
+						.getCompleteConfiguration(TimeSourceTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=timeSupplier")) {
 
@@ -61,8 +61,8 @@ public class TimeSourceTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import(TimeSupplierConfiguration.class)
-	public static class TimeSourceTestConfiguration {
+	public static class TimeSourceTestApplication {
 	}
 }

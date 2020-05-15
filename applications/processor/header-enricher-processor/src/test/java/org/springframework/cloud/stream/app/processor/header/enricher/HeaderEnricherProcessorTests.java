@@ -20,7 +20,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.header.enricher.HeaderEnricherFunctionConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
@@ -44,7 +44,7 @@ public class HeaderEnricherProcessorTests {
 	@Test
 	public void testHeaderEnricherProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(HeaderEnricherProcessorTestConfiguration.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(HeaderEnricherProcessorTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=headerEnricherFunction",
 						"--header.enricher.headers=foo='bar' \n baz='fiz' \n buz=payload \n jaz=@value",
@@ -65,9 +65,9 @@ public class HeaderEnricherProcessorTests {
 		}
 	}
 
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import({HeaderEnricherFunctionConfiguration.class})
-	public static class HeaderEnricherProcessorTestConfiguration {
+	public static class HeaderEnricherProcessorTestApplication {
 
 		@Bean
 		public String value() {
