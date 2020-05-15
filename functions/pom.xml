@@ -43,6 +43,7 @@
 		<module>common/ftp-common</module>
 		<module>common/function-test-support</module>
 		<module>common/tcp-common</module>
+		<module>common/mqtt-common</module>
 
 		<module>consumer/cassandra-consumer</module>
 		<module>consumer/counter-consumer</module>
@@ -65,6 +66,7 @@
 		<module>supplier/http-supplier</module>
 		<module>supplier/jdbc-supplier</module>
 		<module>supplier/mongodb-supplier</module>
+		<module>supplier/mqtt-supplier</module>
 		<module>supplier/tcp-supplier</module>
 		<module>supplier/time-supplier</module>
 
