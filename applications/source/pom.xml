@@ -15,5 +15,6 @@
         <module>http-source</module>
         <module>time-source</module>
         <module>mongodb-source</module>
+        <module>tcp-source</module>
     </modules>
 </project>
