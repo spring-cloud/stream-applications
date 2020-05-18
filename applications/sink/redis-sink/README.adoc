@@ -31,6 +31,7 @@ $$spring.redis.password$$:: $$Login password of the redis server.$$ *($$String$$
 $$spring.redis.port$$:: $$Redis server port.$$ *($$Integer$$, default: `$$6379$$`)*
 $$spring.redis.sentinel.master$$:: $$Name of the Redis server.$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.redis.sentinel.nodes$$:: $$Comma-separated list of "host:port" pairs.$$ *($$List<String>$$, default: `$$<none>$$`)*
+$$spring.redis.sentinel.password$$:: $$Password for authenticating with sentinel(s).$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.redis.ssl$$:: $$Whether to enable SSL support.$$ *($$Boolean$$, default: `$$false$$`)*
 $$spring.redis.timeout$$:: $$Connection timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$spring.redis.url$$:: $$Connection URL. Overrides host, port, and password. User is ignored. Example: redis://user:password@example.com:6379$$ *($$String$$, default: `$$<none>$$`)*
