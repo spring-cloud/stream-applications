@@ -67,11 +67,11 @@ public class ScriptProcessorConfiguration {
 
 	@Bean
 	public Function<Message<?>, Object> scriptProcessorFunction() {
-		return transformer()::processMessage;
+		return processor()::processMessage;
 	}
 
 	@Bean
-	public MessageProcessor<?> transformer() {
+	public MessageProcessor<?> processor() {
 		String language = this.properties.getLanguage();
 		String script = this.properties.getScript();
 		logger.info(String.format("Input script is '%s', language is '%s'", script, language));
