@@ -1,0 +1,18 @@
+//tag::ref-doc[]
+= Script Processor
+
+Processor that transforms messages using a script. The script body is supplied directly
+as a property value. The language of the script can be specified (groovy/javascript/ruby/python).
+
+== Options
+
+The **$$script-processor$$** $$processor$$ has the following options:
+
+//tag::configuration-properties[]
+$$script-processor.language$$:: $$Language of the text in the script property. Supported: groovy, javascript, ruby, python.$$ *($$String$$, default: `$$<none>$$`)*
+$$script-processor.script$$:: $$Text of the script.$$ *($$String$$, default: `$$<none>$$`)*
+$$script-processor.variables$$:: $$Variable bindings as a new line delimited string of name-value pairs, e.g. 'foo=bar\n baz=car'.$$ *($$Properties$$, default: `$$<none>$$`)*
+$$script-processor.variables-location$$:: $$The location of a properties file containing custom script variable bindings.$$ *($$Resource$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]
