@@ -36,7 +36,7 @@ public class SpringCloudStreamMicrometerEnvironmentPostProcessor implements Envi
 	private final static String METRICS_PROPERTY_NAME_TEMPLATE = "management.metrics.export.%s.enabled";
 
 	private final static String[] METRICS_REPOSITORY_NAMES =
-			new String[]{"datadog", "influx", "prometheus", "prometheus.rsocket"};
+			new String[]{"datadog", "influx", "prometheus", "prometheus.rsocket", "wavefront"};
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
