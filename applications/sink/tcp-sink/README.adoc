@@ -1,0 +1,41 @@
+//tag::ref-doc[]
+= TCP Sink
+
+This module writes messages to TCP using an Encoder.
+
+TCP is a streaming protocol and some mechanism is needed to frame messages on the wire. A number of encoders are
+available, the default being 'CRLF'.
+
+== Options
+
+The **$$tcp$$** $$sink$$ has the following options:
+
+//tag::configuration-properties[]
+$$tcp.consumer.charset$$:: $$The charset used when converting from bytes to String.$$ *($$String$$, default: `$$UTF-8$$`)*
+$$tcp.consumer.close$$:: $$Whether to close the socket after each message.$$ *($$Boolean$$, default: `$$false$$`)*
+$$tcp.consumer.encoder$$:: $$The encoder to use when sending messages.$$ *($$Encoding$$, default: `$$<none>$$`, possible values: `CRLF`,`LF`,`NULL`,`STXETX`,`RAW`,`L1`,`L2`,`L4`)*
+$$tcp.consumer.host$$:: $$The host to which this sink will connect.$$ *($$String$$, default: `$$<none>$$`)*
+$$tcp.nio$$:: $$Whether or not to use NIO.$$ *($$Boolean$$, default: `$$false$$`)*
+$$tcp.port$$:: $$The port on which to listen; 0 for the OS to choose a port.$$ *($$Integer$$, default: `$$1234$$`)*
+$$tcp.reverse-lookup$$:: $$Perform a reverse DNS lookup on the remote IP Address; if false, just the IP address is included in the message headers.$$ *($$Boolean$$, default: `$$false$$`)*
+$$tcp.socket-timeout$$:: $$The timeout (ms) before closing the socket when no data is received.$$ *($$Integer$$, default: `$$120000$$`)*
+$$tcp.use-direct-buffers$$:: $$Whether or not to use direct buffers.$$ *($$Boolean$$, default: `$$false$$`)*
+//end::configuration-properties[]
+
+== Available Encoders
+
+.Text Data
+
+CRLF (default):: text terminated by carriage return (0x0d) followed by line feed (0x0a)
+LF:: text terminated by line feed (0x0a)
+NULL:: text terminated by a null byte (0x00)
+STXETX:: text preceded by an STX (0x02) and terminated by an ETX (0x03)
+
+.Text and Binary Data
+
+RAW:: no structure - the client indicates a complete message by closing the socket
+L1:: data preceded by a one byte (unsigned) length field (supports up to 255 bytes)
+L2:: data preceded by a two byte (unsigned) length field (up to 2^16^-1 bytes)
+L4:: data preceded by a four byte (signed) length field (up to 2^31^-1 bytes)
+
+//end::ref-doc[]
