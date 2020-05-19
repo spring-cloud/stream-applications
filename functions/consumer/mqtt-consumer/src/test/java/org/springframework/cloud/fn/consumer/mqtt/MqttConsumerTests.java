@@ -18,10 +18,7 @@ package org.springframework.cloud.fn.consumer.mqtt;
 
 import java.util.function.Consumer;
 
-import com.github.dockerjava.api.command.CreateContainerCmd;
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 
@@ -45,11 +42,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MqttConsumerTests {
 
 	static {
-		Consumer<CreateContainerCmd> cmd = e -> e.withPortBindings(new PortBinding(Ports.Binding.bindPort(1883), new ExposedPort(1883)));
 		GenericContainer mosquitto = new GenericContainer("eclipse-mosquitto")
-				.withExposedPorts(1883)
-				.withCreateContainerCmdModifier(cmd);
+				.withExposedPorts(1883);
 		mosquitto.start();
+		final Integer mappedPort = mosquitto.getMappedPort(1883);
+		System.setProperty("mqtt.url", "tcp://localhost:" + mappedPort);
 	}
 
 	@Autowired
@@ -57,6 +54,11 @@ public class MqttConsumerTests {
 
 	@Autowired
 	protected QueueChannel queue;
+
+	@AfterAll
+	public static void cleanup() {
+		System.clearProperty("mqtt.url");
+	}
 
 	@Test
 	public void testMqttConsumer() {
