@@ -16,12 +16,6 @@
 
 package org.springframework.cloud.stream.app.sink.rabbit;
 
-import java.util.function.Consumer;
-
-import com.github.dockerjava.api.command.CreateContainerCmd;
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports;
 import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.amqp.core.Binding;
@@ -44,19 +38,18 @@ import org.springframework.messaging.SubscribableChannel;
 import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(
-		properties = {"spring.cloud.stream.function.definition=rabbitConsumer"},
+		properties = {"spring.cloud.stream.function.definition=rabbitConsumer", "spring.rabbitmq.port = ${spring.rabbitmq.test.port}"},
 		webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @DirtiesContext
 @Import(RabbitSinkIntegrationTests.FooConfiguration.class)
 abstract class RabbitSinkIntegrationTests {
 
 	static {
-		Consumer<CreateContainerCmd> cmd = e -> e.withPortBindings(new PortBinding(Ports.Binding.bindPort(5672), new ExposedPort(5672)));
-
-		GenericContainer rabbitMq = new GenericContainer("rabbitmq:3.5.3")
-				.withExposedPorts(5672)
-				.withCreateContainerCmdModifier(cmd);
-		rabbitMq.start();
+		GenericContainer rabbitmq = new GenericContainer("rabbitmq:3.5.3")
+				.withExposedPorts(5672);
+		rabbitmq.start();
+		final Integer mappedPort = rabbitmq.getMappedPort(5672);
+		System.setProperty("spring.rabbitmq.test.port", mappedPort.toString());
 	}
 
 	@Qualifier("rabbitConsumer-in-0")
