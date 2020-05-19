@@ -24,7 +24,7 @@ import org.springframework.validation.annotation.Validated;
  */
 @ConfigurationProperties("time")
 @Validated
-public class TimeProperties {
+public class TimeSupplierProperties {
 
 	/**
 	 * Format for the date value.

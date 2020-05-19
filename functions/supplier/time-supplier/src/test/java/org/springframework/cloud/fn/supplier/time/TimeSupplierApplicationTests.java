@@ -33,7 +33,7 @@ public abstract class TimeSupplierApplicationTests {
 	Supplier<String> timeSupplier;
 
 	@Autowired
-	TimeProperties timeProperties;
+	TimeSupplierProperties timeSupplierProperties;
 
 	protected abstract void testTimeSupplier();
 

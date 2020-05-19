@@ -29,12 +29,12 @@ import org.springframework.context.annotation.Configuration;
  * @author Soby Chacko
  */
 @Configuration
-@EnableConfigurationProperties(TimeProperties.class)
+@EnableConfigurationProperties(TimeSupplierProperties.class)
 public class TimeSupplierConfiguration {
 
 	@Bean
-	public Supplier<String> timeSupplier(TimeProperties timeProperties) {
-		FastDateFormat fastDateFormat = FastDateFormat.getInstance(timeProperties.getDateFormat());
+	public Supplier<String> timeSupplier(TimeSupplierProperties timeSupplierProperties) {
+		FastDateFormat fastDateFormat = FastDateFormat.getInstance(timeSupplierProperties.getDateFormat());
 		return () -> fastDateFormat.format(new Date());
 	}
 

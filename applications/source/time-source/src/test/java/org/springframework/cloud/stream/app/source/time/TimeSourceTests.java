@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.supplier.time.TimeProperties;
+import org.springframework.cloud.fn.supplier.time.TimeSupplierProperties;
 import org.springframework.cloud.fn.supplier.time.TimeSupplierConfiguration;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
@@ -52,8 +52,8 @@ public class TimeSourceTests {
 			Message<byte[]> sourceMessage = target.receive(10000);
 			final String actual = new String(sourceMessage.getPayload());
 
-			TimeProperties timeProperties = context.getBean(TimeProperties.class);
-			SimpleDateFormat dateFormat = new SimpleDateFormat(timeProperties.getDateFormat());
+			TimeSupplierProperties timeSupplierProperties = context.getBean(TimeSupplierProperties.class);
+			SimpleDateFormat dateFormat = new SimpleDateFormat(timeSupplierProperties.getDateFormat());
 			assertThatCode(() -> {
 				Date date = dateFormat.parse(actual);
 				assertThat(date).isNotNull();

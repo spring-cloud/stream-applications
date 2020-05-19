@@ -33,7 +33,7 @@ public class SimpleTimeSupplierTests extends TimeSupplierApplicationTests {
 	@Test
 	public void testTimeSupplier() {
 		final String time = timeSupplier.get();
-		SimpleDateFormat dateFormat = new SimpleDateFormat(new TimeProperties().getDateFormat());
+		SimpleDateFormat dateFormat = new SimpleDateFormat(new TimeSupplierProperties().getDateFormat());
 		assertThatCode(() -> {
 			Date date = dateFormat.parse(time);
 			assertThat(date).isNotNull();

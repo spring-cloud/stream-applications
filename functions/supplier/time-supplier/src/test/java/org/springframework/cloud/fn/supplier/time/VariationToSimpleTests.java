@@ -37,7 +37,7 @@ public class VariationToSimpleTests extends TimeSupplierApplicationTests {
 	@Test
 	public void testTimeSupplier() {
 		final String time = timeSupplier.get();
-		SimpleDateFormat dateFormat = new SimpleDateFormat(timeProperties.getDateFormat());
+		SimpleDateFormat dateFormat = new SimpleDateFormat(timeSupplierProperties.getDateFormat());
 		assertThatCode(() -> {
 			Date date = dateFormat.parse(time);
 			assertThat(date).isNotNull();
@@ -46,9 +46,9 @@ public class VariationToSimpleTests extends TimeSupplierApplicationTests {
 
 	@Test
 	public void testInvalidDateFormat() {
-		TimeProperties timeProperties = new TimeProperties();
-		timeProperties.setDateFormat("AA/dd/yyyy HH:mm:ss");
-		assertThatIllegalArgumentException().isThrownBy(() -> new SimpleDateFormat(timeProperties.getDateFormat()));
+		TimeSupplierProperties timeSupplierProperties = new TimeSupplierProperties();
+		timeSupplierProperties.setDateFormat("AA/dd/yyyy HH:mm:ss");
+		assertThatIllegalArgumentException().isThrownBy(() -> new SimpleDateFormat(timeSupplierProperties.getDateFormat()));
 	}
 
 }
