@@ -16,6 +16,7 @@
         <module>ftp-sink</module>
         <module>log-sink</module>
         <module>mongodb-sink</module>
+        <module>mqtt-sink</module>
         <module>jdbc-sink</module>
         <module>redis-sink</module>
         <module>rabbit-sink</module>

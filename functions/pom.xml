@@ -42,7 +42,10 @@
   	<modules>
 		<module>common/ftp-common</module>
 		<module>common/function-test-support</module>
+<<<<<<< HEAD
 		<module>common/tcp-common</module>
+=======
+>>>>>>> MQTT source as supplier/source
 		<module>common/mqtt-common</module>
 
 		<module>consumer/cassandra-consumer</module>
@@ -52,6 +55,7 @@
 		<module>consumer/jdbc-consumer</module>
 		<module>consumer/log-consumer</module>
 		<module>consumer/mongodb-consumer</module>
+		<module>consumer/mqtt-consumer</module>
 		<module>consumer/rabbit-consumer</module>
 		<module>consumer/redis-consumer</module>
 		<module>consumer/sftp-consumer</module>

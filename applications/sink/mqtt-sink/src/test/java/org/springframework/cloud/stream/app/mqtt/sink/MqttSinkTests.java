@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.source.mqtt;
+package org.springframework.cloud.stream.app.mqtt.sink;
 
 import java.util.function.Consumer;
 
@@ -24,29 +24,28 @@ import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.shaded.javax.ws.rs.HEAD;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.supplier.mqtt.MqttSupplierConfiguration;
-import org.springframework.cloud.stream.binder.test.OutputDestination;
+import org.springframework.cloud.fn.consumer.mqtt.MqttConsumerConfiguration;
+import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
-import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
+import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.support.MessageBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MqttSourceTests {
+public class MqttSinkTests {
 
 	static {
 		Consumer<CreateContainerCmd> cmd = e -> e.withPortBindings(new PortBinding(Ports.Binding.bindPort(1883), new ExposedPort(1883)));
@@ -57,44 +56,52 @@ public class MqttSourceTests {
 	}
 
 	@Test
-	public void testMqttSource() {
+	public void testMqttSink() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
-						.getCompleteConfiguration(MqttSourceTestConfiguration.class))
+						.getCompleteConfiguration(MqttSinkTestConfiguration.class))
 				.web(WebApplicationType.NONE)
-				.run("--mqtt.supplier.topics=test,fake", "--mqtt.supplier.qos=0,0")) {
+				.run("--spring.cloud.function.definition=mqttConsumer",
+						"--mqtt.consumer.topic=test")) {
 
-			final MessageHandler mqttOutbound = context.getBean("mqttOutbound", MessageHandler.class);
-			mqttOutbound.handleMessage(MessageBuilder.withPayload("hello").build());
+			final Message<String> message = MessageBuilder.withPayload("hello").build();
+			InputDestination source = context.getBean(InputDestination.class);
+			source.send(message);
 
-			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(10000);
-
-			final String actual = new String(sourceMessage.getPayload());
-			assertThat(actual).isEqualTo("hello");
+			QueueChannel queueChannel = context.getBean(QueueChannel.class);
+			Message<?> in = queueChannel.receive(10000);
+			assertThat(in).isNotNull();
+			assertThat(in.getPayload()).isEqualTo("hello");
 		}
 	}
 
 	@EnableAutoConfiguration
-	@Import(MqttSupplierConfiguration.class)
-	public static class MqttSourceTestConfiguration {
+	@Import(MqttConsumerConfiguration.class)
+	public static class MqttSinkTestConfiguration {
 
 		@Autowired
 		private MqttPahoClientFactory mqttClientFactory;
 
 		@Bean
-		public MessageHandler mqttOutbound(BeanFactory beanFactory) {
-			MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler("test", mqttClientFactory);
-			messageHandler.setAsync(true);
-			messageHandler.setDefaultTopic("test");
-			messageHandler.setConverter(pahoMessageConverter1(beanFactory));
-			return messageHandler;
+		public MqttPahoMessageDrivenChannelAdapter mqttInbound(BeanFactory beanFactory) {
+			MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("test",
+					mqttClientFactory, "test");
+			adapter.setQos(0);
+			adapter.setConverter(pahoMessageConverter(beanFactory));
+			adapter.setOutputChannelName("queue");
+			return adapter;
 		}
 
-		public DefaultPahoMessageConverter pahoMessageConverter1(BeanFactory beanFactory) {
-			final DefaultPahoMessageConverter pahoMessageConverter = new DefaultPahoMessageConverter(1, true, "UTF-8");
-			pahoMessageConverter.setBeanFactory(beanFactory);
-			return pahoMessageConverter;
+		public DefaultPahoMessageConverter pahoMessageConverter(BeanFactory beanFactory) {
+			DefaultPahoMessageConverter converter = new DefaultPahoMessageConverter(1, true, "UTF-8");
+			converter.setPayloadAsBytes(false);
+			converter.setBeanFactory(beanFactory);
+			return converter;
+		}
+
+		@Bean
+		public QueueChannel queue() {
+			return new QueueChannel();
 		}
 	}
 }
