@@ -36,7 +36,7 @@
         <maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
         <maven-checkstyle-plugin.includeTestSourceDirectory>true</maven-checkstyle-plugin.includeTestSourceDirectory>
         <puppycrawl-tools-checkstyle.version>8.29</puppycrawl-tools-checkstyle.version>
-        <checkstyle.location>../../etc/checkstyle</checkstyle.location>
+        <checkstyle.location>${maven.multiModuleProjectDirectory}/etc/checkstyle</checkstyle.location>
         <checkstyle.suppressions.file>
            ${checkstyle.location}/checkstyle-suppressions.xml
         </checkstyle.suppressions.file>
