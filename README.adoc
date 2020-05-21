@@ -11,7 +11,7 @@ The repository is divided into two sections - `Functions` and `Applications`. Th
 The following are the four major components of this repository.
 
 * https://github.com/spring-cloud/stream-applications/tree/master/functions[Standalone Java Functions] as java.util.function.Function/Consumer/Supplier
-* https://github.com/spring-cloud/stream-applications/tree/master/applications/stream-applications-core[Core components] for the out of the applications
+* https://github.com/spring-cloud/stream-applications/tree/master/applications/stream-applications-core[Core components] for the out of the box applications
 * https://github.com/spring-cloud/stream-applications/tree/master/applications[Out of the box Spring Cloud Stream applications] as Source/Sink/Processor
 * https://github.com/spring-cloud/stream-applications/tree/master/applications/stream-applications-build[Aggregator] for the out of the box applications.
 

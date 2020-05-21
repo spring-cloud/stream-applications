@@ -1,7 +1,7 @@
 # HTTP Supplier
 
 This module provides an HTTP supplier that can be reused and composed in other applications.
-The `Supplier` uses the `HttpInboundChannelAdapter` from Spring Integration.
+The `Supplier` uses the `WebFluxInboundEndpoint` from Spring Integration.
 `httpSupplier` is implemented as a `java.util.function.Supplier`.
 This supplier gives you a reactive stream from the http endpoint. The supplier has a signature of `Supplier<Flux<Message<byte[]>>>`.
 Users have to subscribe to this `Flux` and then receive the data.

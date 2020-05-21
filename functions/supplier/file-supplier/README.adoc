@@ -3,7 +3,7 @@
 This module provides a File supplier that can be reused and composed in other applications.
 The `Supplier` uses the `FileInboundChannelAdapter` from Spring Integration.
 `FileSupplier` is implemented as a `java.util.function.Supplier`.
-This supplier gives you a reactive stream from the file as the supplier has a signature of `Supplier<Flux<Message<?>>>`.
+This supplier gives you a reactive stream of files from the provided directory as the supplier has a signature of `Supplier<Flux<Message<?>>>`.
 Users have to subscribe to this `Flux` and receive the data.
 
 ## Beans for injection
