@@ -1,13 +1,44 @@
 //tag::ref-doc[]
 = Http Request Processor
 
-Blah blah blah
+A processor app that makes requests to an HTTP resource and emits the response body as a message payload.
+
+== Input
+=== Headers
+Any Required HTTP headers must be explicitly set via the `headers` or `headers-expression` property. See examples below.
+Header values may also be used to construct:
+
+ * the request body when referenced in the `body-expression` property.
+ * the HTTP method when referenced in the `http-method-expression` property.
+ * the URL when referenced in the `url-expression` property.
 
 === Payload
 
-* Incoming payload - `Message<?`>
-* Outgoing payload - Depends on `reply-expression`
+The payload is used as the request body for a POST request by default, and can be any Java type.
+It should be an empty String for a GET request.
+The payload may also be used to construct:
 
+* the request body when referenced in the `body-expression` property.
+* the HTTP method when referenced in the `http-method-expression` property.
+* the URL when referenced in the `url-expression` property.
+
+The underlying https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/reactive/function/client/WebClient.html[WebClient] supports Jackson JSON serialization to support any request and response types if necessary.
+The `expected-response-type` property, `String.class` by default, may be set to any class in your application class path.
+Note that user defined payload types will require adding required dependencies to your pom file.
+
+== Output
+
+=== Headers
+No HTTP message headers are mapped to the outbound Message.
+
+=== Payload
+The raw output object is https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/http/ResponseEntity.html[ResponseEntity<?>] any of its fields (e.g., `body`, `headers`) or accessor methods (`statusCode`) may be referenced as part of the `reply-expression`.
+By default the outbound Message payload is the response body.
+Note that ResponseEntity (referenced by the expression `#root`) cannot be deserialized by Jackson by default, but may be rendered as a `HashMap`.
+
+== Options
+
+The **$$http-request$$** $$processor$$ has the following options:
 
 == Options
 
