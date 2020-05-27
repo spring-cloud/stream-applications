@@ -1,0 +1,35 @@
+# File Supplier
+
+This module provides a File supplier that can be reused and composed in other applications.
+The `Supplier` uses the `FileInboundChannelAdapter` from Spring Integration.
+`FileSupplier` is implemented as a `java.util.function.Supplier`.
+This supplier gives you a reactive stream of files from the provided directory as the supplier has a signature of `Supplier<Flux<Message<?>>>`.
+Users have to subscribe to this `Flux` and receive the data.
+
+## Beans for injection
+
+You can import the `FileSupplierConfiguration` in the application and then inject the following bean.
+
+`fileSupplier`
+
+You need to inject this as `Supplier<Flux<Message<?>>>`.
+
+You can use `fileSupplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it and then subscribe to the returned `Flux`.
+
+## Configuration Options
+
+All configuration properties are prefixed with `file.supplier`.
+There are also properties that need to be used with the prefix `file.consumer`.
+
+For more information on the various options available, please see https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/file-supplier/src/main/java/org/springframework/cloud/fn/supplier/file/FileSupplierProperties.java[FileSupplierProperties].
+See https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/file-supplier/src/main/java/org/springframework/cloud/fn/supplier/file/FileConsumerProperties.java[this] also.
+
+## Tests
+
+See this https://github.com/spring-cloud/stream-applications/tree/master/functions/supplier/file-supplier/src/test/java/org/springframework/cloud/fn/supplier/file[test suite] for the various ways, this supplier is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/file-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application where it makes a File Source.

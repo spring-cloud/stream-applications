@@ -1,16 +1,113 @@
 == Stream applications
 
 This repository provides a collection of components that help with various data integration use cases.
-It provides standalone Java functions that can be reusable in end-user applications.
-Using these functions as a baseline, it already provides various out of the box Spring Cloud Stream applications that can be run standalone or to used on Spring Cloud Data Flow.
-There are four major components in this repo.
+It provides standalone Java functions that can be reused in end-user applications.
 
-* Standalone Java Functions as java.util.function.Function/Consumer/Supplier
-* Core components for out of the applications
-* Out of the box Spring Cloud Stream applications as Source/Sink/Processor
-* An aggregator for the out of the box applications.
+In addition to providing these functions, this repository is also used to generate out of the box Spring Cloud Stream applications those using the functions as a baseline.
+These applications can be run standalone as Spring Cloud Stream applications or as part of a data flow such as the one orchestrated using Spring Cloud Data Flow.
 
-See the README files provided at the top of each of these components to learn more.
+The repository is divided into two sections - `Functions` and `Applications`. The former is used for hosting the various functions and the latter is for generating the apps.
+
+The following are the four major components of this repository.
+
+* https://github.com/spring-cloud/stream-applications/tree/master/functions[Standalone Java Functions] as java.util.function.Function/Consumer/Supplier
+* https://github.com/spring-cloud/stream-applications/tree/master/applications/stream-applications-core[Core components] for the out of the box applications
+* https://github.com/spring-cloud/stream-applications/tree/master/applications[Out of the box Spring Cloud Stream applications] as Source/Sink/Processor
+* https://github.com/spring-cloud/stream-applications/tree/master/applications/stream-applications-build[Aggregator] for the out of the box applications.
+
+=== Available Functions
+
+
+|===
+|Supplier |Consumer |Function
+
+|File
+|Cassandra
+|Filter
+|HTTP
+|Counter
+|Header-Enricher
+|JDBC
+|File
+|SpEL
+|MongoDB
+|FTP
+|Splitter
+|MQTT
+|JDBC
+|
+|TCP
+|Log
+|
+|Time
+|MongoDB
+|
+|
+|MQTT
+|
+|
+|Rabbit
+|
+|
+|Redis
+|
+|
+|SFTP
+|
+|
+|TCP
+|
+|===
+
+=== Available Spring Cloud Stream Applications
+
+|===
+|Source |Sink |Processor
+
+|File
+|Cassandra
+|Bridge
+|HTTP
+|Counter
+|Filter
+|JDBC
+|File
+|Groovy
+|Load-Generator
+|FTP
+|Header-Enricher
+|MongoDB
+|JDBC
+|Script
+|MQTT
+|Log
+|Splitter
+|TCP
+|MongoDB
+|Transform
+|Time
+|MQTT
+|
+|
+|Rabbit
+|
+|
+|Redis
+|
+|
+|Router
+|
+|
+|SFTP
+|
+|
+|TCP
+|
+|
+|Throughput
+|
+|===
+
 
 === Build
 
@@ -18,21 +115,30 @@ You can build everything from the root of the repository.
 
 `./mvnw clean install`
 
+But, this may not be what you are interested in doing since you are probably interested in a single application or a few of them.
+In order to build the functions and applications that you are interested in, you need to build them selectively as shown below.
+
 ==== Building functions
 
 `./mvnw clean install -f functions`
+
+You can also build a single function or group of functions.
+For e.g if you are only interested in jdbc-supplier and log-consumer, do the following.
+
+`./mvnw clean install -pl :jdbc-suppler,:log-consumer`
 
 ==== Building core for Stream Applications
 
 `./mvnw clean install -f applicaitons/stream-applications-core`
 
-Most likely, you might be interested in building a subset of the available components.
-Let's assume that you want to build JDBC Source app based on Kafka Binder in Spring Cloud Stream and Log Sink based on Rabbit binder.
+=== Building the applications
+
+Let's assume that you want to build JDBC Source application based on Kafka Binder in Spring Cloud Stream and Log Sink application based on Rabbit binder.
 Here is what you need to do.
 Assuming that you built both functions and stream-applications-core as above.
 
 ```
-./mvnw clean package -f applications/source/jdbc-source
+./mvnw clean package -pl :jdbc-source
 cd applications/source/jdbc-source/apps/jdbc-source-kafka
 ./mvnw clean package
 ```
@@ -42,7 +148,7 @@ This will generate the Kafka binder based uber jar in the target folder.
 Similarly for the log sink, do the following.
 
 ```
-./mvnw clean package -f applications/sink/log-sink
+./mvnw clean package -pl :log-sink
 cd applications/sink/log-sink/apps/log-sink-rabbit
 ./mvnw clean package
 ```
