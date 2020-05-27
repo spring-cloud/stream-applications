@@ -15,13 +15,16 @@
 
     <properties>
         <sshd-core.version>1.6.0</sshd-core.version>
+        <test-containers.version> 1.14.2</test-containers.version>
+        <apache-ftpserver.version>1.1.1</apache-ftpserver.version>
+        <geode-starter.version>1.2.7.RELEASE</geode-starter.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.ftpserver</groupId>
             <artifactId>ftpserver-core</artifactId>
-            <version>1.1.1</version>
+            <version>${apache-ftpserver.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -43,6 +46,16 @@
             <groupId>org.apache.sshd</groupId>
             <artifactId>sshd-core</artifactId>
             <version>${sshd-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${test-containers.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-geode</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

@@ -1,0 +1,68 @@
+# Geode Supplier
+
+This module provides a `java.util.function.Supplier` that can be reused and composed in other applications.
+The `Supplier` configures an Apache Geode client that connects to an external Apache Geode cache server or locator to monitor an existing region.
+If `geode.supplier.query` is provided, the supplier will create a continuous query on the region and publish any events that meet the select criteria.
+If no query is provided, the supplier will publish all create and update events on the region.
+
+## Continuous Query
+If a query is provided, the supplier uses the `ContinuousQueryMessageProducer` from `Spring Integration` which wraps a https://docs.spring.io/spring-data/gemfire/docs/current/api/org/springframework/data/gemfire/listener/ContinuousQueryListenerContainer.html[ContinuousQueryListenerContainer]
+and emits a reactive stream of objects, extracted from a Geode https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/CqEvent.html[CqEvent], which holds all of the
+event details.
+A SpEl Expression, given by the property `geode.cq.supplier.event-expression` is used to extract desired fields from the CQEvent payload.
+The default expression is `newValue` which returns the current value from the configured Region.
+
+## Cache Listener
+
+If no query is provided, the supplier uses the `CacheListeningMessageProducer` from `Spring Integration` which wraps a https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/CacheListener.html[CacheListener]
+and emits a reactive stream of objects, extracted from a Geode https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/EntryEvent.html[EntryEvent], which holds all of the
+event details.
+A SpEl Expression, given by the property `geode.supplier.entry-event-expression` is used to extract desired fields from the EntryEvent payload.
+The default expression is `newValue` which returns the current value from the configured Region.
+
+NOTE: Retrieving the value by itself is not always sufficient, especially if it does not contain the key value, or any additional context.
+The key is referenced by the field `key`.
+If the cached key and value types are primitives, a simple expression like `key + ':' +newValue` may be useful.
+To access the entire EntryEvent, set the expression to `#root` or `#this`.
+
+The configured MessageProducer emits objects to the supplier implemented as `Supplier<Flux<?>>`.
+Users have to subscribe to the returned `Flux` to receive the data.
+
+## PDX Serialization
+
+The supplier works with PDX serialized cache objects of type https://geode.apache.org/releases/latest/javadoc/org/apache/geode/pdx/PdxInstance.html[PdxInstance], which Geode uses to store objects that can be represented as JSON.
+If the target region uses PDX serialization and you set  `geode.client.pdx-read-serialized` to `true`, PdxInstance objects will be returned as JSON strings.
+
+## Beans for injection
+
+You can import the `GeodeSupplierConfiguration` configuration in a Spring Boot application and then inject the `geodeSupplier` bean as type `Supplier<Flux<T>>`, where `T` is the expected return type.
+If necessary, can use the bean name `geodeSupplier` as a qualifier.
+
+Once injected, you can invoke the `get` method of the `Supplier` and then subscribe to the returned `Flux` to initiate the stream.
+
+## Configuration Options
+
+Required properties:
+
+* `geode.region.region-name` - The name of the existing remote region.
+* `geode.pool.host-addresses` - A comma delimited list of `host:port` pairs. By default these are locator addresses but are cache server addresses if you set `geode.pool.connect-type=server`.
+
+For more information on the various options available, please see:
+
+* link:src/main/java/org/springframework/cloud/fn/supplier/geode/GeodeSupplierProperties.java[GeodeSupplierProperties.java] (`geode.supplier`)
+
+Many of the options, common to functions that use Apache Geode, are configured by several `@ConfigurationProperties` classes which are included as needed:
+
+* link:../../common/geode-common/src/main/java/org/springframework/cloud/fn/common/geode/GeodeClientCacheProperties.java[GeodeClientCacheProperties.java] (`geode.client`)
+* link:../../common/geode-common/src/main/java/org/springframework/cloud/fn/common/geode/GeodeRegionProperties.java[GeodeRegionProperties.java] (`geode.region`)
+* link:../../common/geode-common/src/main/java/org/springframework/cloud/fn/common/geode/GeodePoolProperties.java[GeodePoolProperties.java] (`geode.pool`)
+* link:../../common/geode-common/src/main/java/org/springframework/cloud/fn/common/geode/GeodeSecurityProperties.java[GeodeSecurityProperties.java] (`geode.security`)
+* link:../../common/geode-common/src/main/java/org/springframework/cloud/fn/common/geode/GeodeSslProperties.java[GeodeSslProperties.java] (`geode.security.ssl`)
+
+## Examples
+
+See this link:src/test/java/org/springframework/cloud/fn/supplier/geode/GeodeSupplierApplicationTests.java[test suite] for examples of how this supplier is used.
+
+## Other usage
+
+See this link:../../../applications/source/geode-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application to emit entry event data.

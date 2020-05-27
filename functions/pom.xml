@@ -44,13 +44,16 @@
 		<module>common/config-common</module>
 		<module>common/ftp-common</module>
 		<module>common/function-test-support</module>
-		<module>common/tcp-common</module>
+		<module>common/geode-common</module>
 		<module>common/mqtt-common</module>
+		<module>common/tcp-common</module>
+
 
 		<module>consumer/cassandra-consumer</module>
 		<module>consumer/counter-consumer</module>
 		<module>consumer/file-consumer</module>
 		<module>consumer/ftp-consumer</module>
+		<module>consumer/geode-consumer</module>
 		<module>consumer/jdbc-consumer</module>
 		<module>consumer/log-consumer</module>
 		<module>consumer/mongodb-consumer</module>
@@ -68,6 +71,7 @@
 		<module>function/splitter-function</module>
 
 		<module>supplier/file-supplier</module>
+		<module>supplier/geode-supplier</module>
 		<module>supplier/http-supplier</module>
 		<module>supplier/jdbc-supplier</module>
 		<module>supplier/mongodb-supplier</module>

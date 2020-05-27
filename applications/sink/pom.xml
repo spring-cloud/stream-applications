@@ -14,6 +14,7 @@
         <module>counter-sink</module>
         <module>file-sink</module>
         <module>ftp-sink</module>
+        <module>geode-sink</module>
         <module>log-sink</module>
         <module>mongodb-sink</module>
         <module>mqtt-sink</module>
