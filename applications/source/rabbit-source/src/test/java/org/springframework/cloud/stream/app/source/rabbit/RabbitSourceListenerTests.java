@@ -30,6 +30,7 @@ import org.springframework.messaging.Message;
 import org.testcontainers.containers.RabbitMQContainer;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,7 +46,7 @@ public class RabbitSourceListenerTests {
     }
 
     @Test
-    public void testMqttSource() {
+    public void testRabbitSource() {
         try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
                 TestChannelBinderConfiguration
                         .getCompleteConfiguration(RabbitSourceTestApplication.class))
