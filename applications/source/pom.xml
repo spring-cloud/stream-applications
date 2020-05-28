@@ -18,5 +18,6 @@
         <module>load-generator-source</module>
         <module>mongodb-source</module>
         <module>tcp-source</module>
+        <module>rabbit-source</module>
     </modules>
 </project>
