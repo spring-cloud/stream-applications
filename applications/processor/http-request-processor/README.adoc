@@ -1,0 +1,59 @@
+//tag::ref-doc[]
+= Http Request Processor
+
+A processor app that makes requests to an HTTP resource and emits the response body as a message payload.
+
+== Input
+=== Headers
+Any Required HTTP headers must be explicitly set via the `headers` or `headers-expression` property. See examples below.
+Header values may also be used to construct:
+
+ * the request body when referenced in the `body-expression` property.
+ * the HTTP method when referenced in the `http-method-expression` property.
+ * the URL when referenced in the `url-expression` property.
+
+=== Payload
+
+The payload is used as the request body for a POST request by default, and can be any Java type.
+It should be an empty String for a GET request.
+The payload may also be used to construct:
+
+* the request body when referenced in the `body-expression` property.
+* the HTTP method when referenced in the `http-method-expression` property.
+* the URL when referenced in the `url-expression` property.
+
+The underlying https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/reactive/function/client/WebClient.html[WebClient] supports Jackson JSON serialization to support any request and response types if necessary.
+The `expected-response-type` property, `String.class` by default, may be set to any class in your application class path.
+Note that user defined payload types will require adding required dependencies to your pom file.
+
+== Output
+
+=== Headers
+No HTTP message headers are mapped to the outbound Message.
+
+=== Payload
+The raw output object is https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/http/ResponseEntity.html[ResponseEntity<?>] any of its fields (e.g., `body`, `headers`) or accessor methods (`statusCode`) may be referenced as part of the `reply-expression`.
+By default the outbound Message payload is the response body.
+Note that ResponseEntity (referenced by the expression `#root`) cannot be deserialized by Jackson by default, but may be rendered as a `HashMap`.
+
+== Options
+
+The **$$http-request$$** $$processor$$ has the following options:
+
+== Options
+
+//tag::configuration-properties[]
+$$http.request.processor.body$$:: $$The (static) request body; if neither this nor bodyExpression is provided, the payload will be used.$$ *($$Object$$, default: `$$<none>$$`)*
+$$http.request.processor.body-expression$$:: $$A SpEL expression to derive the request body from the incoming message.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$http.request.processor.expected-response-type$$:: $$The type used to interpret the response.$$ *($$Class<?>$$, default: `$$<none>$$`)*
+$$http.request.processor.headers$$:: $$A Map of HTTP request headers.$$ *($$HttpHeaders$$, default: `$$<none>$$`)*
+$$http.request.processor.headers-expression$$:: $$A SpEL expression used to derive the http headers map to use.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$http.request.processor.http-method$$:: $$The kind of http method to use.$$ *($$HttpMethod$$, default: `$$<none>$$`, possible values: `GET`,`HEAD`,`POST`,`PUT`,`PATCH`,`DELETE`,`OPTIONS`,`TRACE`)*
+$$http.request.processor.http-method-expression$$:: $$A SpEL expression to derive the request method from the incoming message.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$http.request.processor.reply-expression$$:: $$A SpEL expression used to compute the final result, applied against the whole http {@link org.springframework.http.ResponseEntity}.$$ *($$Expression$$, default: `$$body$$`)*
+$$http.request.processor.timeout$$:: $$Request timeout in milliseconds.$$ *($$Long$$, default: `$$30000$$`)*
+$$http.request.processor.url$$:: $$The URL to issue an http request to, as a static value.$$ *($$String$$, default: `$$<none>$$`)*
+$$http.request.processor.url-expression$$:: $$A SpEL expression against incoming message to determine the URL to use.$$ *($$Expression$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]

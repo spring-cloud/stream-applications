@@ -129,7 +129,7 @@ For e.g if you are only interested in jdbc-supplier and log-consumer, do the fol
 
 ==== Building core for Stream Applications
 
-`./mvnw clean install -f applicaitons/stream-applications-core`
+`./mvnw clean install -f applications/stream-applications-core`
 
 === Building the applications
 
