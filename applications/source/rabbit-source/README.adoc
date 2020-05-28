@@ -12,45 +12,25 @@ N/A
 
 == Output
 
-=== Headers
-
-* `content-type: text/plain`
-
-=== Payload
-
-* `String`
-
-=== Headers
-
-* `content-type: application/octet-stream`
-
 === Payload
 
 * `byte[]`
-
-=== Headers
-
-* `content-type: application/x-java-serialized-object`
-
-=== Payload
-
-* `java.io.Serializable`
 
 == Options
 
 The **$$rabbit$$** $$source$$ has the following options:
 
 //tag::configuration-properties[]
-$$rabbit.enable-retry$$:: $$true to enable retry.$$ *($$Boolean$$, default: `$$false$$`)*
-$$rabbit.initial-retry-interval$$:: $$Initial retry interval when retry is enabled.$$ *($$Integer$$, default: `$$1000$$`)*
-$$rabbit.mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$[STANDARD_REQUEST_HEADERS]$$`)*
-$$rabbit.max-attempts$$:: $$The maximum delivery attempts when retry is enabled.$$ *($$Integer$$, default: `$$3$$`)*
-$$rabbit.max-retry-interval$$:: $$Max retry interval when retry is enabled.$$ *($$Integer$$, default: `$$30000$$`)*
-$$rabbit.own-connection$$:: $$When true, use a separate connection based on the boot properties.$$ *($$Boolean$$, default: `$$false$$`)*
-$$rabbit.queues$$:: $$The queues to which the source will listen for messages.$$ *($$String[]$$, default: `$$<none>$$`)*
-$$rabbit.requeue$$:: $$Whether rejected messages should be requeued.$$ *($$Boolean$$, default: `$$true$$`)*
-$$rabbit.retry-multiplier$$:: $$Retry backoff multiplier when retry is enabled.$$ *($$Double$$, default: `$$2$$`)*
-$$rabbit.transacted$$:: $$Whether the channel is transacted.$$ *($$Boolean$$, default: `$$false$$`)*
+$$rabbit.supplier.enable-retry$$:: $$true to enable retry.$$ *($$Boolean$$, default: `$$false$$`)*
+$$rabbit.supplier.initial-retry-interval$$:: $$Initial retry interval when retry is enabled.$$ *($$Integer$$, default: `$$1000$$`)*
+$$rabbit.supplier.mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$[STANDARD_REQUEST_HEADERS]$$`)*
+$$rabbit.supplier.max-attempts$$:: $$The maximum delivery attempts when retry is enabled.$$ *($$Integer$$, default: `$$3$$`)*
+$$rabbit.supplier.max-retry-interval$$:: $$Max retry interval when retry is enabled.$$ *($$Integer$$, default: `$$30000$$`)*
+$$rabbit.supplier.own-connection$$:: $$When true, use a separate connection based on the boot properties.$$ *($$Boolean$$, default: `$$false$$`)*
+$$rabbit.supplier.queues$$:: $$The queues to which the source will listen for messages.$$ *($$String[]$$, default: `$$<none>$$`)*
+$$rabbit.supplier.requeue$$:: $$Whether rejected messages should be requeued.$$ *($$Boolean$$, default: `$$true$$`)*
+$$rabbit.supplier.retry-multiplier$$:: $$Retry backoff multiplier when retry is enabled.$$ *($$Double$$, default: `$$2$$`)*
+$$rabbit.supplier.transacted$$:: $$Whether the channel is transacted.$$ *($$Boolean$$, default: `$$false$$`)*
 $$spring.rabbitmq.addresses$$:: $$Comma-separated list of addresses to which the client should connect.$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.rabbitmq.connection-timeout$$:: $$Connection timeout. Set it to zero to wait forever.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$spring.rabbitmq.host$$:: $$RabbitMQ host.$$ *($$String$$, default: `$$localhost$$`)*
