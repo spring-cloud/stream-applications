@@ -41,6 +41,7 @@
 	</properties>
 
   	<modules>
+		<module>common/config-common</module>
 		<module>common/ftp-common</module>
 		<module>common/function-test-support</module>
 		<module>common/tcp-common</module>
