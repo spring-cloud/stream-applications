@@ -20,6 +20,7 @@ import java.beans.Introspector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,7 @@ import org.springframework.integration.expression.SpelPropertyAccessorRegistrar;
 import org.springframework.integration.json.JsonPropertyAccessor;
 
 @Configuration
+@ConditionalOnMissingBean(SpelPropertyAccessorRegistrar.class)
 public class SpelExpressionConverterConfiguration {
 	@Bean
 	public static SpelPropertyAccessorRegistrar spelPropertyAccessorRegistrar() {
