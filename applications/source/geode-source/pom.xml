@@ -58,7 +58,7 @@
                         <name>geode</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.geode.GeodeSupplierConfiguration.class</configClass>
+                        <configClass>org.springframework.cloud.fn.supplier.geode.cq.GeodeSupplierConfiguration.class</configClass>
                         <functionDefinition>geodeSupplier</functionDefinition>
                     </generatedApp>
                     <dependencies>
