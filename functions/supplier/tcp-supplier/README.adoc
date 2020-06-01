@@ -22,12 +22,12 @@ Once injected, you can use the `get` method of the `Supplier` to invoke it and t
 
 All configuration properties are prefixed with `tcp.supplier` and `tcp`.
 
-For more information on the various options available, please see https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/tcp-supplier/src/main/java/org/springframework/cloud/fn/supplier/tcp/TcpSupplierProperties.java[TcpSupplierProperties].
-In addition to this, there is also https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tcp-common/src/main/java/org/springframework/cloud/fn/common/tcp/TcpConnectionFactoryProperties.java[this set of properties] to consider.
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/tcp/TcpSupplierProperties.java[TcpSupplierProperties].
+In addition to this, there is also link:../../common/tcp-common/src/main/java/org/springframework/cloud/fn/common/tcp/TcpConnectionFactoryProperties.java[this set of properties] to consider.
 
 ## Tests
 
-See this https://github.com/spring-cloud/stream-applications/tree/master/functions/supplier/tcp-supplier/src/test/java/org/springframework/cloud/fn/supplier/tcp[test suite] for the various ways, this supplier is used.
+See this link:src/test/java/org/springframework/cloud/fn/supplier/tcp[test suite] for the various ways, this supplier is used.
 
 ## Other usage
 

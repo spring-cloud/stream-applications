@@ -22,11 +22,11 @@ Once injected, you can use the `get` method of the `Supplier` to invoke it and t
 
 All configuration properties are prefixed with `http`.
 
-For more information on the various options available, please see https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/http-supplier/src/main/java/org/springframework/cloud/fn/supplier/http/HttpSupplierProperties.java[FileSupplierProperties].
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/http/HttpSupplierProperties.java[HttpSupplierProperties].
 
 ## Tests
 
-See this https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/http-supplier/src/test/java/org/springframework/cloud/fn/supplier/http/HttpSupplierApplicationTests.java[test suite] for the various ways, this supplier is used.
+See this link:src/test/java/org/springframework/cloud/fn/supplier/http/HttpSupplierApplicationTests.java[test suite] for the various ways, this supplier is used.
 
 ## Other usage
 

@@ -39,21 +39,21 @@ import org.springframework.messaging.Message;
  *
  * @author Artem Bilan
  */
-@EnableConfigurationProperties(HttpSourceProperties.class)
+@EnableConfigurationProperties(HttpSupplierProperties.class)
 @Configuration
 public class HttpSupplierConfiguration {
 
 	@Bean
-	public Publisher<Message<byte[]>> httpSupplierFlow(HttpSourceProperties httpSourceProperties) {
+	public Publisher<Message<byte[]>> httpSupplierFlow(HttpSupplierProperties httpSupplierProperties) {
 		return IntegrationFlows.from(
-				WebFlux.inboundChannelAdapter(httpSourceProperties.getPathPattern())
+				WebFlux.inboundChannelAdapter(httpSupplierProperties.getPathPattern())
 						.requestPayloadType(byte[].class)
 						.statusCodeExpression(new ValueExpression<>(HttpStatus.ACCEPTED))
-						.mappedRequestHeaders(httpSourceProperties.getMappedRequestHeaders())
+						.mappedRequestHeaders(httpSupplierProperties.getMappedRequestHeaders())
 						.crossOrigin(crossOrigin ->
-								crossOrigin.origin(httpSourceProperties.getCors().getAllowedOrigins())
-										.allowedHeaders(httpSourceProperties.getCors().getAllowedHeaders())
-										.allowCredentials(httpSourceProperties.getCors().getAllowCredentials()))
+								crossOrigin.origin(httpSupplierProperties.getCors().getAllowedOrigins())
+										.allowedHeaders(httpSupplierProperties.getCors().getAllowedHeaders())
+										.allowCredentials(httpSupplierProperties.getCors().getAllowCredentials()))
 						.autoStartup(false))
 				.toReactivePublisher();
 	}

@@ -30,7 +30,7 @@ import org.springframework.web.cors.CorsConfiguration;
  */
 @ConfigurationProperties("http")
 @Validated
-public class HttpSourceProperties {
+public class HttpSupplierProperties {
 
 	/**
 	 * HTTP endpoint path mapping.

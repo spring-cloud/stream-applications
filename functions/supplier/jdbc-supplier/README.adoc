@@ -23,11 +23,11 @@ In the case of splitting you get a `Flux` which you have to subscribe in your ap
 
 All configuration properties are prefixed with `jdbc.supplier`.
 
-For more information on the various options available, please see https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/jdbc-supplier/src/main/java/org/springframework/cloud/fn/supplier/jdbc/JdbcSupplierProperties.java[JdbcSupplierProperties]
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/jdbc/JdbcSupplierProperties.java[JdbcSupplierProperties]
 
 ## Tests
 
-See this https://github.com/spring-cloud/stream-applications/tree/master/functions/supplier/jdbc-supplier/src/test/java/org/springframework/cloud/fn/supplier/jdbc[test suite] for the various ways, this supplier is used.
+See this link:src/test/java/org/springframework/cloud/fn/supplier/jdbc[test suite] for the various ways, this supplier is used.
 
 ## Other usage
 

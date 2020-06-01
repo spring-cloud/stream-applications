@@ -23,11 +23,11 @@ In the case of splitting you get a `Flux` which you have to subscribe in your ap
 
 All configuration properties are prefixed with `mongodb.supplier`.
 
-For more information on the various options available, please see https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/mongodb-supplier/src/main/java/org/springframework/cloud/fn/supplier/mongo/MongodbSupplierProperties.java[MongoDBSupplierProperties]
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/mongo/MongodbSupplierProperties.java[MongoDBSupplierProperties]
 
 ## Tests
 
-See this https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/mongodb-supplier/src/test/java/org/springframework/cloud/fn/supplier/mongo/MongodbSupplierApplicationTests.java[test suite] for the various ways, this supplier is used.
+See this link:src/test/java/org/springframework/cloud/fn/supplier/mongo/MongodbSupplierApplicationTests.java[test suite] for the various ways, this supplier is used.
 
 ## Other usage
 

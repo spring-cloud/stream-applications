@@ -20,11 +20,11 @@ Once injected, you can use the `get` method of the `Supplier` to invoke it.
 
 All configuration properties are prefixed with `time`.
 
-For more information on the various options available, please see https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/time-supplier/src/main/java/org/springframework/cloud/fn/supplier/time/TimeSupplierProperties.java[TimeSupplierProperties].
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/time/TimeSupplierProperties.java[TimeSupplierProperties].
 
 ## Tests
 
-See this https://github.com/spring-cloud/stream-applications/tree/master/functions/supplier/time-supplier/src/test/java/org/springframework/cloud/fn/supplier/time[test suite] for the various ways, this supplier is used.
+See this link:src/test/java/org/springframework/cloud/fn/supplier/time[test suite] for the various ways, this supplier is used.
 
 ## Other usage
 
