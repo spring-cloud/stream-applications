@@ -30,7 +30,13 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>geode-common</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${spring-cloud-fn.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud.fn</groupId>
+            <artifactId>config-common</artifactId>
+            <version>${spring-cloud-fn.version}</version>
         </dependency>
 
         <dependency>
@@ -48,12 +54,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>config-common</artifactId>
-            <version>${spring-cloud-fn.version}</version>
         </dependency>
 
         <dependency>

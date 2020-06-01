@@ -53,6 +53,7 @@
 		<module>consumer/counter-consumer</module>
 		<module>consumer/file-consumer</module>
 		<module>consumer/ftp-consumer</module>
+		<module>consumer/geode-consumer</module>
 		<module>consumer/jdbc-consumer</module>
 		<module>consumer/log-consumer</module>
 		<module>consumer/mongodb-consumer</module>

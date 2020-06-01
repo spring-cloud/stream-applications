@@ -5,7 +5,7 @@ The `Supplier` configures an Apache Geode client that connects to an external Ap
 The supplier uses the `ContinuousQueryMessageProducer` from `Spring Integration` which wraps a https://docs.spring.io/spring-data/gemfire/docs/current/api/org/springframework/data/gemfire/listener/ContinuousQueryListenerContainer.html[ContinuousQueryListenerContainer]
 and emits a reactive stream of objects, extracted from a Geode https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/CqEvent.html[CqEvent], which holds all of the
 event details.
-A SpEl Expression, given by the property `geode.cq.supplier.entry-event-expression` is used to extract desired fields information from the payload.
+A SpEl Expression, given by the property `geode.cq.supplier.event-expression` is used to extract desired fields from the CQEvent payload.
 The default expression is `newValue` which returns the current value from the configured Region.
 
 NOTE: Retrieving the value by itself is not always sufficient, especially if it does not contain the key value, or any additional context.
@@ -30,14 +30,12 @@ Once injected, you can invoke the `get` method of the `Supplier` and then subscr
 
 ## Configuration Options
 
-For more information on the various options available, please see:
-
 Required properties:
 
 * `geode.region.region-name` - The name of the existing remote region.
 * `geode.pool.host-addresses` - A comma delimited list of `host:port` pairs. By default these are locator addresses but are cache server addresses if you set `geode.pool.connect-type=server`.
 
-Additional configuration options:
+For more information on the various options available, please see:
 
 * link:src/main/java/org/springframework/cloud/fn/supplier/geode/cq/GeodeCqSupplierProperties.java[GeodeCqSupplierProperties.java] (`geode.cq.supplier`)
 
@@ -55,4 +53,4 @@ See this link:src/test/java/org/springframework/cloud/fn/supplier/geode/cq/Geode
 
 ## Other usage
 
-See this link:../../../applications/source/geode-cq-source/README.adoc[README] where this supplies is used to create a Spring Cloud Stream application to emit CQ event data.
+See this link:../../../applications/source/geode-cq-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application to emit CQ event data.

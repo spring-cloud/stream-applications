@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.geode.cq;
+package org.springframework.cloud.fn.consumer.geode;
 
-import java.time.Duration;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,20 +27,18 @@ import org.apache.geode.pdx.PdxInstance;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.fn.common.geode.JsonPdxFunctions;
 import org.springframework.cloud.fn.test.support.geode.GeodeContainer;
 import org.springframework.cloud.fn.test.support.geode.GeodeContainerIntializer;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.GenericMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class GeodeCqSupplierApplicationTests {
+public class GeodeConsumerApplicationTests {
 
 	private ApplicationContextRunner applicationContextRunner;
 
@@ -58,43 +54,49 @@ public class GeodeCqSupplierApplicationTests {
 				});
 
 		applicationContextRunner = new ApplicationContextRunner()
-				.withUserConfiguration(GeodeCqSupplierTestApplication.class);
+				.withUserConfiguration(GeodeConsumerTestApplication.class);
 
 		geode = initializer.geodeContainer();
 	}
 
 	@Test
-	void pdxReadSerialized() {
+	void consumeWithJsonEnabled() {
 		applicationContextRunner
 				.withPropertyValues(
 						"geode.region.regionName=Stocks",
-						"geode.client.pdx-read-serialized=true",
-						"geode.cq.supplier.query= Select * from /Stocks where symbol='XXX' and price > 140",
+						"geode.consumer.json=true",
+						"geode.consumer.key-expression=payload.getField('symbol')",
 						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
 				.run(context -> {
-					Supplier<Flux<String>> geodeCqSupplier = context.getBean("geodeCqSupplier", Supplier.class);
-					// Using local region here
-					Region<String, PdxInstance> region = context.getBean(Region.class);
-					putStockEvent(region, new Stock("XXX", 140.00));
-					putStockEvent(region, new Stock("XXX", 140.20));
-					putStockEvent(region, new Stock("YYY", 110.00));
-					putStockEvent(region, new Stock("YYY", 110.01));
-					putStockEvent(region, new Stock("XXX", 139.80));
+					Consumer<Message<?>> geodeConsumer = context.getBean("geodeConsumer", Consumer.class);
 
-					StepVerifier.create(geodeCqSupplier.get()).assertNext(val -> {
-						try {
-							assertThat(objectMapper.readValue(val, Stock.class)).isEqualTo(new Stock("XXX", 140.20));
-						}
-						catch (JsonProcessingException e) {
-							fail(e.getMessage());
-						}
-					}).thenCancel().verify(Duration.ofSeconds(10));
+					String json = objectMapper.writeValueAsString(new Stock("XXX", 100.00));
+					geodeConsumer.accept(new GenericMessage<>(json));
+
+					Region<String, PdxInstance> region = context.getBean(Region.class);
+					PdxInstance instance = region.get("XXX");
+					assertThat(instance.getField("price")).isEqualTo(100.00);
+					region.close();
 				});
 	}
 
-	private void putStockEvent(Region<String, PdxInstance> region, Stock stock) throws JsonProcessingException {
-		String json = objectMapper.writeValueAsString(stock);
-		region.put(stock.getSymbol(), JsonPdxFunctions.jsonToPdx().apply(json));
+	@Test
+	void consumeWithoutJsonEnabled() {
+		applicationContextRunner
+				.withPropertyValues(
+						"geode.region.regionName=Stocks",
+						"geode.consumer.key-expression='key'",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
+				.run(context -> {
+					Consumer<Message<?>> geodeConsumer = context.getBean("geodeConsumer", Consumer.class);
+
+					geodeConsumer.accept(new GenericMessage<>("value"));
+
+					Region<String, String> region = context.getBean(Region.class);
+					String value = region.get("key");
+					assertThat(value).isEqualTo("value");
+					region.close();
+				});
 	}
 
 	@Data
@@ -107,6 +109,7 @@ public class GeodeCqSupplierApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class GeodeCqSupplierTestApplication {
+	static class GeodeConsumerTestApplication {
 	}
+
 }

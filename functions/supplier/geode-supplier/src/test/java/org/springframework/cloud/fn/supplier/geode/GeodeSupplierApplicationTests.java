@@ -74,7 +74,7 @@ public class GeodeSupplierApplicationTests {
 							"put --key=foo --value=bar --region=myRegion",
 							"put --key=hello --value=dave --region=myRegion");
 
-					Supplier<Flux<EntryEvent>> geodeSupplier = context.getBean(Supplier.class, "geodeSupplier");
+					Supplier<Flux<EntryEvent>> geodeSupplier = context.getBean("geodeSupplier", Supplier.class);
 
 					StepVerifier.create(geodeSupplier.get()).assertNext(cacheEvent -> {
 						assertThat(cacheEvent.getOperation().isCreate()).isTrue();
@@ -101,7 +101,7 @@ public class GeodeSupplierApplicationTests {
 						"geode.client.pdx-read-serialized=true",
 						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
 				.run(context -> {
-					Supplier<Flux<String>> geodeSupplier = context.getBean(Supplier.class, "geodeSupplier");
+					Supplier<Flux<String>> geodeSupplier = context.getBean("geodeSupplier", Supplier.class);
 					// Using local region here
 					Region<String, PdxInstance> region = context.getBean(Region.class);
 					Stock stock = new Stock("XXX", 140.00);
@@ -133,7 +133,7 @@ public class GeodeSupplierApplicationTests {
 					Region<String, String> region = context.getBean(Region.class);
 
 					region.put("foo", "bar");
-					Supplier<Flux<String>> geodeSupplier = context.getBean(Supplier.class, "geodeSupplier");
+					Supplier<Flux<EntryEvent>> geodeSupplier = context.getBean("geodeSupplier", Supplier.class);
 
 					StepVerifier.create(geodeSupplier.get()).assertNext(val -> {
 						assertThat(val).isEqualTo("foo:bar");
