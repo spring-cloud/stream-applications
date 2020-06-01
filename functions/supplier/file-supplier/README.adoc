@@ -23,12 +23,12 @@ Once injected, you can use the `get` method of the `Supplier` to invoke it and t
 All configuration properties are prefixed with `file.supplier`.
 There are also properties that need to be used with the prefix `file.consumer`.
 
-For more information on the various options available, please see https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/file-supplier/src/main/java/org/springframework/cloud/fn/supplier/file/FileSupplierProperties.java[FileSupplierProperties].
-See https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/file-supplier/src/main/java/org/springframework/cloud/fn/supplier/file/FileConsumerProperties.java[this] also.
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/file/FileSupplierProperties.java[FileSupplierProperties].
+See link:src/main/java/org/springframework/cloud/fn/supplier/file/FileConsumerProperties.java[this] also.
 
 ## Tests
 
-See this https://github.com/spring-cloud/stream-applications/tree/master/functions/supplier/file-supplier/src/test/java/org/springframework/cloud/fn/supplier/file[test suite] for the various ways, this supplier is used.
+See this link:src/test/java/org/springframework/cloud/fn/supplier/file[test suite] for the various ways, this supplier is used.
 
 ## Other usage
 
