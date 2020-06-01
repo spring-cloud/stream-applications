@@ -1,0 +1,26 @@
+# Log Consumer
+
+A consumer that allows you to log the data
+The consumer uses the `LoggingMessageHandler` from Spring Integration.
+
+## Beans for injection
+
+You can import `LogConsumerConfiguration` in the application and then inject the following bean.
+
+`Consumer<Message<?>> logConsumer`
+
+You can use `logConsumer` as a qualifier when injecting.
+
+## Configuration Options
+
+All configuration properties are prefixed with `log`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/log/LogConsumerProperties.java[LogConsumerProperties].
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/consumer/log/LogConsumerApplicationTests.java[test suite] for the various ways, this consumer is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/log-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a Log sink.

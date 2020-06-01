@@ -1,0 +1,32 @@
+# Cassandra Consumer
+
+This module provides a Cassandra Consumer that can be reused and composed in other applications.
+Internally it uses the `CassandraMessageHandler` from Spring Integration.
+`CassandraConsumerFunction` is implemented as a `java.util.function.Function`.
+
+## Beans for injection
+
+You can import the `CassnadraConsumerConfiguration` in the application and then inject the following bean.
+
+`cassandraConsumerFunction`
+
+You can use `cassandraConsumerFunction` as a qualifier when injecting.
+
+Type for injection: `Function<Object, Mono<? extends WriteResult>>`
+
+You can ignore the return value from the function as this is a consumer and simply will send the data to Cassandra.
+
+## Configuration Options
+
+All configuration properties are prefixed with either `cassandra` or `cassandra.cluster`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/cassandra/CassandraConsumerProperties.java[CassandraConsumerProperties].
+See link:src/main/java/org/springframework/cloud/fn/consumer/cassandra/cluster/CassandraClusterProperties.java[this] also.
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/consumer/cassandra[test suite] for the various ways, this consumer is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/cassandra-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a Cassandra sink.

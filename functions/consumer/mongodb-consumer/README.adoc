@@ -1,0 +1,27 @@
+# MongoDB Consumer
+
+A consumer that allows you to insert records into MongoDB.
+
+## Beans for injection
+
+You can import `MongoDbConsumerConfiguration` in the application and then inject the following bean.
+
+`Function<Message<?>, Mono<Void>> mongodbConsumer`
+
+You can use `mongodbConsumer` as a qualifier when injecting.
+
+The return value from the function can be ignored as this is used as a consumer to send records to MongoDB.
+
+## Configuration Options
+
+All configuration properties are prefixed with `mongodb.consumer`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/mongo/MongoDBConsumerProperties.java[MongoDBConsumerProperties].
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/consumer/mongo/MongoDBConsumerApplicationTests.java[test suite] for the various ways, this consumer is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/mongodb-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a MongoDB sink.
