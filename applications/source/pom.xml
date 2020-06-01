@@ -11,6 +11,7 @@
 
     <modules>
         <module>geode-source</module>
+        <module>geode-cq-source</module>
         <module>file-source</module>
         <module>jdbc-source</module>
         <module>http-source</module>

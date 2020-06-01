@@ -28,7 +28,7 @@ import org.springframework.validation.annotation.Validated;
  *
  * @author David Turanski
  */
-@ConfigurationProperties("geode.cq")
+@ConfigurationProperties("geode.cq.supplier")
 @Validated
 public class GeodeCqSupplierProperties {
 
@@ -37,11 +37,10 @@ public class GeodeCqSupplierProperties {
 	/**
 	 * SpEL expression to use to extract data from a cq event.
 	 */
-	private Expression eventExpression = new SpelExpressionParser().parseExpression
-			(DEFAULT_EXPRESSION);
+	private Expression eventExpression = new SpelExpressionParser().parseExpression(DEFAULT_EXPRESSION);
 
 	/**
-	 * The OQL query
+	 * The OQL query.
 	 */
 	private String query;
 

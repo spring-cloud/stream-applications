@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.geode;
+package org.springframework.cloud.fn.supplier.geode.cq;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.apache.geode.cache.CacheListener;
-import org.apache.geode.cache.Region;
+import org.apache.geode.cache.client.ClientCache;
 import org.apache.geode.pdx.PdxInstance;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.fn.common.geode.GeodeClientRegionConfiguration;
@@ -34,24 +34,26 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.gemfire.client.Interest;
+import org.springframework.data.gemfire.listener.ContinuousQueryListener;
+import org.springframework.data.gemfire.listener.ContinuousQueryListenerContainer;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.FluxMessageChannel;
-import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
-import org.springframework.integration.gemfire.inbound.CacheListeningMessageProducer;
+import org.springframework.integration.gemfire.inbound.ContinuousQueryMessageProducer;
 import org.springframework.integration.router.PayloadTypeRouter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 
 /**
- * The Geode Supplier provides a {@link CacheListeningMessageProducer} which produces a
- * message for each cache entry event. Internally it uses a {@link CacheListener} which,
- * by default, emits an {@link org.apache.geode.cache.EntryEvent} which holds all of the
- * event details. A SpEl Expression, given by the property 'entryEventExpression' is used
- * to extract required information from the payload. The default expression is 'newValue'
- * which returns the updated object. This may not be ideal for every use case especially
- * if it does not provide the key value. The key is referenced by the field 'key'. Also
+ * The Geode CQ Supplier provides a {@link ContinuousQueryMessageProducer} which produces
+ * a message for each event included in the given query. Internally it uses a
+ * {@link ContinuousQueryListenerContainer} which, by default, emits an
+ * {@link org.apache.geode.cache.query.CqEvent} which holds all of the event details. A
+ * SpEl Expression, given by the property 'entryEventExpression' is used to extract
+ * required information from the payload. The default expression is 'newValue' which
+ * returns the updated object. This may not be ideal for every use case especially if it
+ * does not provide the key value. The key is referenced by the field 'key'. Also
  * available are 'operation' (the operation associated with the event, and 'oldValue'. If
  * the cached key and value types are primitives, an simple expression like "key + ':' +
  * newValue" may work.
@@ -69,20 +71,20 @@ import org.springframework.messaging.MessageChannel;
 @Import(GeodeClientRegionConfiguration.class)
 @Configuration
 @PropertySource("classpath:geode-client.properties")
-@EnableConfigurationProperties(GeodeSupplierProperties.class)
-public class GeodeSupplierConfiguration {
+@EnableConfigurationProperties(GeodeCqSupplierProperties.class)
+public class GeodeCqSupplierConfiguration {
 
-	private EmitterProcessor<Message<?>> cacheEvents = EmitterProcessor.create();
+	private EmitterProcessor<Message<?>> cqEvents = EmitterProcessor.create();
 
 	@Bean
-	public Supplier<Flux<?>> geodeSupplier() {
-		return () -> cacheEvents.map(Message::getPayload);
+	public Supplier<Flux<?>> geodeCqSupplier() {
+		return () -> cqEvents.map(Message::getPayload);
 	}
 
 	@Bean
 	FluxMessageChannel fluxChannel() {
 		FluxMessageChannel fluxChannel = new FluxMessageChannel();
-		fluxChannel.subscribe(cacheEvents);
+		fluxChannel.subscribe(cqEvents);
 		return fluxChannel;
 	}
 
@@ -133,12 +135,25 @@ public class GeodeSupplierConfiguration {
 	}
 
 	@Bean
-	public MessageProducer cacheListeningMessageProducer(MessageChannel routerChannel,
-			GeodeSupplierProperties properties, Region<?, ?> region) {
-		CacheListeningMessageProducer cacheListeningMessageProducer = new CacheListeningMessageProducer(region);
-		cacheListeningMessageProducer.setOutputChannel(routerChannel);
-		cacheListeningMessageProducer.setPayloadExpression(
-				properties.getEntryEventExpression());
-		return cacheListeningMessageProducer;
+	ContinuousQueryListener continuousQueryListener(ContinuousQueryListenerContainer continuousQueryListenerContainer,
+			GeodeCqSupplierProperties properties) {
+		ContinuousQueryMessageProducer continuousQueryMessageProducer = new ContinuousQueryMessageProducer(
+				continuousQueryListenerContainer,
+				properties.getQuery());
+		continuousQueryMessageProducer.setPayloadExpression(properties.getEventExpression());
+		continuousQueryMessageProducer.setOutputChannel(routerChannel());
+		return continuousQueryMessageProducer;
+	}
+
+	@Bean
+	ContinuousQueryListenerContainer continuousQueryListenerContainer(ClientCache clientCache) {
+		ContinuousQueryListenerContainer continuousQueryListenerContainer = new ContinuousQueryListenerContainer();
+		try {
+			continuousQueryListenerContainer.setCache(clientCache);
+		}
+		catch (Exception e) {
+			throw new BeanCreationException(e.getLocalizedMessage(), e);
+		}
+		return continuousQueryListenerContainer;
 	}
 }

@@ -1,19 +1,19 @@
-# Geode Supplier
+# Geode Continuous Query Supplier
 
 This module provides a `java.util.function.Supplier` that can be reused and composed in other applications.
 The `Supplier` configures an Apache Geode client that connects to an external Apache Geode cache server or locator to monitor an existing region.
-The supplier uses the `CacheListeningMessageProducer` from `Spring Integration` which wraps a https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/CacheListener.html[CacheListener]
-and emits a reactive stream of objects, extracted from a Geode https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/EntryEvent.html[EntryEvent], which holds all of the
+The supplier uses the `ContinuousQueryMessageProducer` from `Spring Integration` which wraps a https://docs.spring.io/spring-data/gemfire/docs/current/api/org/springframework/data/gemfire/listener/ContinuousQueryListenerContainer.html[ContinuousQueryListenerContainer]
+and emits a reactive stream of objects, extracted from a Geode https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/CqEvent.html[CqEvent], which holds all of the
 event details.
-A SpEl Expression, given by the property `geode.supplier.entry-event-expression` is used to extract desired fields information from the payload.
+A SpEl Expression, given by the property `geode.cq.supplier.entry-event-expression` is used to extract desired fields information from the payload.
 The default expression is `newValue` which returns the current value from the configured Region.
 
 NOTE: Retrieving the value by itself is not always sufficient, especially if it does not contain the key value, or any additional context.
-The key is referenced by the field `key`. The EntryEvent also provides the `operation` (create or update).
+The key is referenced by the field `key`. The CqEvent also provides the `operation` (create or update).
 If the cached key and value types are primitives, a simple expression like `key + ':' +newValue` may be useful.
-To access the entire EntryEvent, set the expression to `#root` or `#this`.
+To access the entire CqEvent, set the expression to `#root` or `#this`.
 
-The CacheListeningMessageProducer emits objects to the supplier implemented as `Supplier<Flux<?>>`.
+The ContinuousQueryMessageProducer emits objects to the supplier implemented as `Supplier<Flux<?>>`.
 Users have to subscribe to the returned `Flux` to receive the data.
 
 ## PDX Serialization
@@ -23,8 +23,8 @@ The supplier works with PDX serialized cache objects of type https://geode.apach
 
 ## Beans for injection
 
-You can import the `GeodeSupplierConfiguration` configuration in a Spring Boot application and then inject the `geodeSupplier` bean as type `Supplier<Flux<T>>`, where `T` is the expected return type.
-If necessary, can use the bean name `geodeSupplier` as a qualifier.
+You can import the `GeodeCqSupplierConfiguration` configuration in a Spring Boot application and then inject the `geodeCqSupplier` bean as type `Supplier<Flux<T>>`, where `T` is the expected return type.
+If necessary, can use the bean name `geodeCqSupplier` as a qualifier.
 
 Once injected, you can invoke the `get` method of the `Supplier` and then subscribe to the returned `Flux` to initiate the stream.
 
@@ -39,7 +39,7 @@ Required properties:
 
 Additional configuration options:
 
-* link:src/main/java/org/springframework/cloud/fn/supplier/geode/GeodeSupplierProperties.java[GeodeSupplierProperties.java] (`geode.supplier`)
+* link:src/main/java/org/springframework/cloud/fn/supplier/geode/cq/GeodeCqSupplierProperties.java[GeodeCqSupplierProperties.java] (`geode.cq.supplier`)
 
 Many of the options, common to functions that use Apache Geode, are configured by several `@ConfigurationProperties` classes which are included as needed:
 
@@ -51,8 +51,8 @@ Many of the options, common to functions that use Apache Geode, are configured b
 
 ## Examples
 
-See this link:src/test/java/org/springframework/cloud/fn/supplier/geode/GeodeSupplierApplicationTests.java[test suite] for examples of how this supplier is used.
+See this link:src/test/java/org/springframework/cloud/fn/supplier/geode/cq/GeodeCqSupplierApplicationTests.java[test suite] for examples of how this supplier is used.
 
 ## Other usage
 
-See this link:../../../applications/source/geode-source/README.adoc[README] where this supplies is used to create a Spring Cloud Stream application to emit entry event data.
+See this link:../../../applications/source/geode-cq-source/README.adoc[README] where this supplies is used to create a Spring Cloud Stream application to emit CQ event data.

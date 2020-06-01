@@ -19,7 +19,6 @@ package org.springframework.cloud.stream.app.source.geode;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.apache.geode.cache.Region;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,7 +30,6 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.fn.supplier.geode.GeodeSupplierConfiguration;
 import org.springframework.cloud.fn.test.support.geode.GeodeContainer;
 import org.springframework.cloud.fn.test.support.geode.GeodeContainerIntializer;
-import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.annotation.Import;
@@ -68,8 +66,6 @@ public class GeodeSourceTests {
 						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort(),
 						"spring.cloud.function.definition=geodeSupplier")
 				.run(context -> {
-
-					Stream.of(context.getBeanNamesForAnnotation(EnableBinding.class)).forEach(System.out::println);
 
 					// Using local region here since it's faster
 					Region<String, String> region = context.getBean(Region.class);
