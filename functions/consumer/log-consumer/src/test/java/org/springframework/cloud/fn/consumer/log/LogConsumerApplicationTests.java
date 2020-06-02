@@ -80,7 +80,7 @@ class LogConsumerApplicationTests {
 		assertThat(captorMessage.getPayload()).isEqualTo(expectedPayload);
 
 		MessageHeaders messageHeaders = captorMessage.getHeaders();
-		assertThat(messageHeaders).hasSize(3);
+		assertThat(messageHeaders).hasSize(4);
 
 		assertThat(messageHeaders)
 				.containsEntry(MessageHeaders.CONTENT_TYPE, message.getHeaders().get(MessageHeaders.CONTENT_TYPE));

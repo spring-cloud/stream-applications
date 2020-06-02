@@ -16,8 +16,12 @@
 
 package org.springframework.cloud.fn.supplier.rabbit;
 
+import java.util.function.Supplier;
+
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Envelope;
+import reactor.core.publisher.Flux;
+
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
@@ -41,9 +45,6 @@ import org.springframework.integration.channel.FluxMessageChannel;
 import org.springframework.messaging.Message;
 import org.springframework.retry.interceptor.RetryOperationsInterceptor;
 import org.springframework.util.Assert;
-import reactor.core.publisher.Flux;
-
-import java.util.function.Supplier;
 
 /**
  * A source module that receives data from RabbitMQ.
@@ -55,143 +56,144 @@ import java.util.function.Supplier;
 @EnableConfigurationProperties(RabbitSupplierProperties.class)
 public class RabbitSupplierConfiguration implements DisposableBean {
 
-    private static final MessagePropertiesConverter inboundMessagePropertiesConverter =
-            new DefaultMessagePropertiesConverter() {
+	private static final MessagePropertiesConverter inboundMessagePropertiesConverter =
+			new DefaultMessagePropertiesConverter() {
 
-                @Override
-                public MessageProperties toMessageProperties(AMQP.BasicProperties source,
-                                                             Envelope envelope,
-                                                             String charset) {
-                    MessageProperties properties = super.toMessageProperties(source, envelope, charset);
-                    properties.setDeliveryMode(null);
-                    return properties;
-                }
-            };
+				@Override
+				public MessageProperties toMessageProperties(AMQP.BasicProperties source,
+															Envelope envelope,
+															String charset) {
+					MessageProperties properties = super.toMessageProperties(source, envelope, charset);
+					properties.setDeliveryMode(null);
+					return properties;
+				}
+			};
 
-    @Autowired
-    private RabbitProperties rabbitProperties;
+	@Autowired
+	private RabbitProperties rabbitProperties;
 
-    @Autowired
-    private ObjectProvider<ConnectionNameStrategy> connectionNameStrategy;
+	@Autowired
+	private ObjectProvider<ConnectionNameStrategy> connectionNameStrategy;
 
-    @Autowired
-    private RabbitSupplierProperties properties;
+	@Autowired
+	private RabbitSupplierProperties properties;
 
-    @Autowired
-    private ConnectionFactory rabbitConnectionFactory;
+	@Autowired
+	private ConnectionFactory rabbitConnectionFactory;
 
-    private CachingConnectionFactory ownConnectionFactory;
+	private CachingConnectionFactory ownConnectionFactory;
 
-    @Bean
-    public SimpleMessageListenerContainer container() {
-        ConnectionFactory connectionFactory = this.properties.isOwnConnection()
-                ? buildLocalConnectionFactory()
-                : this.rabbitConnectionFactory;
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
-        container.setAutoStartup(false);
-        RabbitProperties.SimpleContainer simpleContainer = this.rabbitProperties.getListener().getSimple();
+	@Bean
+	public SimpleMessageListenerContainer container() {
+		ConnectionFactory connectionFactory = this.properties.isOwnConnection()
+				? buildLocalConnectionFactory()
+				: this.rabbitConnectionFactory;
+		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
+		container.setAutoStartup(false);
+		RabbitProperties.SimpleContainer simpleContainer = this.rabbitProperties.getListener().getSimple();
 
-        AcknowledgeMode acknowledgeMode = simpleContainer.getAcknowledgeMode();
-        if (acknowledgeMode != null) {
-            container.setAcknowledgeMode(acknowledgeMode);
-        }
-        Integer concurrency = simpleContainer.getConcurrency();
-        if (concurrency != null) {
-            container.setConcurrentConsumers(concurrency);
-        }
-        Integer maxConcurrency = simpleContainer.getMaxConcurrency();
-        if (maxConcurrency != null) {
-            container.setMaxConcurrentConsumers(maxConcurrency);
-        }
-        Integer prefetch = simpleContainer.getPrefetch();
-        if (prefetch != null) {
-            container.setPrefetchCount(prefetch);
-        }
-        Integer transactionSize = simpleContainer.getBatchSize();
-        if (transactionSize != null) {
-            container.setBatchSize(transactionSize);
-        }
+		AcknowledgeMode acknowledgeMode = simpleContainer.getAcknowledgeMode();
+		if (acknowledgeMode != null) {
+			container.setAcknowledgeMode(acknowledgeMode);
+		}
+		Integer concurrency = simpleContainer.getConcurrency();
+		if (concurrency != null) {
+			container.setConcurrentConsumers(concurrency);
+		}
+		Integer maxConcurrency = simpleContainer.getMaxConcurrency();
+		if (maxConcurrency != null) {
+			container.setMaxConcurrentConsumers(maxConcurrency);
+		}
+		Integer prefetch = simpleContainer.getPrefetch();
+		if (prefetch != null) {
+			container.setPrefetchCount(prefetch);
+		}
+		Integer transactionSize = simpleContainer.getBatchSize();
+		if (transactionSize != null) {
+			container.setBatchSize(transactionSize);
+		}
 
-        container.setDefaultRequeueRejected(this.properties.getRequeue());
-        container.setChannelTransacted(this.properties.getTransacted());
-        String[] queues = this.properties.getQueues();
-        Assert.state(queues.length > 0, "At least one queue is required");
-        Assert.noNullElements(queues, "queues cannot have null elements");
-        container.setQueueNames(queues);
-        if (this.properties.isEnableRetry()) {
-            container.setAdviceChain(rabbitSourceRetryInterceptor());
-        }
-        container.setMessagePropertiesConverter(inboundMessagePropertiesConverter);
-        return container;
-    }
+		container.setDefaultRequeueRejected(this.properties.getRequeue());
+		container.setChannelTransacted(this.properties.getTransacted());
+		String[] queues = this.properties.getQueues();
+		Assert.state(queues.length > 0, "At least one queue is required");
+		Assert.noNullElements(queues, "queues cannot have null elements");
+		container.setQueueNames(queues);
+		if (this.properties.isEnableRetry()) {
+			container.setAdviceChain(rabbitSourceRetryInterceptor());
+		}
+		container.setMessagePropertiesConverter(inboundMessagePropertiesConverter);
+		return container;
+	}
 
-    @Bean
-    public AmqpInboundChannelAdapter adapter(SimpleMessageListenerContainer container,
-                                             FluxMessageChannel channel) {
-        return Amqp.inboundAdapter(container)
-                .autoStartup(false)
-                .outputChannel(channel)
-                .mappedRequestHeaders(properties.getMappedRequestHeaders())
-                .get();
-    }
+	@Bean
+	public AmqpInboundChannelAdapter adapter(SimpleMessageListenerContainer container,
+											FluxMessageChannel channel) {
+		return Amqp.inboundAdapter(container)
+				.autoStartup(false)
+				.outputChannel(channel)
+				.mappedRequestHeaders(properties.getMappedRequestHeaders())
+				.get();
+	}
 
-    @Bean
-    public Supplier<Flux<Message<?>>> rabbitSupplier(AmqpInboundChannelAdapter adapter,
-                                                     FluxMessageChannel channel) {
-        return () -> Flux.from(channel).doOnSubscribe(subscription -> adapter.start());
-    }
+	@Bean
+	public Supplier<Flux<Message<?>>> rabbitSupplier(AmqpInboundChannelAdapter adapter,
+													FluxMessageChannel channel) {
+		return () -> Flux.from(channel).doOnSubscribe(subscription -> adapter.start());
+	}
 
-    @Bean
-    public FluxMessageChannel output() {
-        return new FluxMessageChannel();
-    }
+	@Bean
+	public FluxMessageChannel output() {
+		return new FluxMessageChannel();
+	}
 
-    @Bean
-    public RetryOperationsInterceptor rabbitSourceRetryInterceptor() {
-        return RetryInterceptorBuilder.stateless()
-                .maxAttempts(this.properties.getMaxAttempts())
-                .backOffOptions(this.properties.getInitialRetryInterval(), this.properties.getRetryMultiplier(),
-                                this.properties.getMaxRetryInterval())
-                .recoverer(new RejectAndDontRequeueRecoverer())
-                .build();
-    }
+	@Bean
+	public RetryOperationsInterceptor rabbitSourceRetryInterceptor() {
+		return RetryInterceptorBuilder.stateless()
+				.maxAttempts(this.properties.getMaxAttempts())
+				.backOffOptions(this.properties.getInitialRetryInterval(), this.properties.getRetryMultiplier(),
+						this.properties.getMaxRetryInterval())
+				.recoverer(new RejectAndDontRequeueRecoverer())
+				.build();
+	}
 
-    @Override
-    public void destroy() throws Exception {
-        if (this.ownConnectionFactory != null) {
-            this.ownConnectionFactory.destroy();
-        }
-    }
+	@Override
+	public void destroy() throws Exception {
+		if (this.ownConnectionFactory != null) {
+			this.ownConnectionFactory.destroy();
+		}
+	}
 
-    private ConnectionFactory buildLocalConnectionFactory() {
-        try {
-            this.ownConnectionFactory = new AutoConfig.Creator().rabbitConnectionFactory(this.rabbitProperties,
-                                                                                         this.connectionNameStrategy);
-        } catch (Exception exception) {
-            throw new IllegalStateException("Error building connection factory", exception);
-        }
+	private ConnectionFactory buildLocalConnectionFactory() {
+		try {
+			this.ownConnectionFactory = new AutoConfig.Creator().rabbitConnectionFactory(this.rabbitProperties,
+					this.connectionNameStrategy);
+		}
+		catch (Exception exception) {
+			throw new IllegalStateException("Error building connection factory", exception);
+		}
 
-        return this.ownConnectionFactory;
-    }
+		return this.ownConnectionFactory;
+	}
 }
 
 class AutoConfig extends RabbitAutoConfiguration {
 
-    static class Creator extends RabbitConnectionFactoryCreator {
+	static class Creator extends RabbitConnectionFactoryCreator {
 
-        @Override
-        public CachingConnectionFactory rabbitConnectionFactory(RabbitProperties config,
-                                                                ObjectProvider<ConnectionNameStrategy> connectionNameStrategy) throws Exception {
-            CachingConnectionFactory cf = super.rabbitConnectionFactory(config, connectionNameStrategy);
-            cf.setConnectionNameStrategy(new ConnectionNameStrategy() {
+		@Override
+		public CachingConnectionFactory rabbitConnectionFactory(RabbitProperties config,
+																ObjectProvider<ConnectionNameStrategy> connectionNameStrategy) throws Exception {
+			CachingConnectionFactory cf = super.rabbitConnectionFactory(config, connectionNameStrategy);
+			cf.setConnectionNameStrategy(new ConnectionNameStrategy() {
 
-                @Override
-                public String obtainNewConnectionName(ConnectionFactory connectionFactory) {
-                    return "rabbit.supplier.own.connection";
-                }
-            });
-            cf.afterPropertiesSet();
-            return cf;
-        }
-    }
+				@Override
+				public String obtainNewConnectionName(ConnectionFactory connectionFactory) {
+					return "rabbit.supplier.own.connection";
+				}
+			});
+			cf.afterPropertiesSet();
+			return cf;
+		}
+	}
 }

@@ -72,7 +72,8 @@
                         <name>rabbit</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.rabbit.RabbitSupplierConfiguration.class</configClass>
+                        <configClass>org.springframework.cloud.fn.supplier.rabbit.RabbitSupplierConfiguration.class
+                        </configClass>
                     </generatedApp>
 
                     <dependencies>

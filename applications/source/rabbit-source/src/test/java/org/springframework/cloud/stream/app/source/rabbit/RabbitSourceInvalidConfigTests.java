@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.source.rabbit;
 
 import org.junit.Test;
+
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.bind.validation.BindValidationException;
@@ -40,44 +41,47 @@ import static org.junit.Assert.fail;
  */
 public class RabbitSourceInvalidConfigTests {
 
-    @Test
-    public void testNoQueues() {
-        try {
-            AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-            TestPropertyValues.of("rabbit.supplier.enableRetry:false").applyTo(context);
-            context.register(Config.class);
-            context.refresh();
-            fail("BeanCreationException expected");
-        } catch (Exception e) {
-            assertThat(e, instanceOf(BeanCreationException.class));
-            assertThat(extractedValidationMessage(e), containsString("queue(s) are required"));
-        }
-    }
+	@Test
+	public void testNoQueues() {
+		try {
+			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+			TestPropertyValues.of("rabbit.supplier.enableRetry:false").applyTo(context);
+			context.register(Config.class);
+			context.refresh();
+			fail("BeanCreationException expected");
+		}
+		catch (Exception e) {
+			assertThat(e, instanceOf(BeanCreationException.class));
+			assertThat(extractedValidationMessage(e), containsString("queue(s) are required"));
+		}
+	}
 
-    @Test
-    public void testEmptyQueues() {
-        try {
-            AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-            TestPropertyValues.of("rabbit.supplier.enableRetry:false").applyTo(context);
-            TestPropertyValues.of("rabbit.supplier.queues:").applyTo(context);
-            context.register(Config.class);
-            context.refresh();
-            fail("BeanCreationException expected");
-        } catch (Exception e) {
-            assertThat(e, instanceOf(BeanCreationException.class));
-            assertThat(extractedValidationMessage(e), containsString("At least one queue is required"));
-        }
-    }
+	@Test
+	public void testEmptyQueues() {
+		try {
+			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+			TestPropertyValues.of("rabbit.supplier.enableRetry:false").applyTo(context);
+			TestPropertyValues.of("rabbit.supplier.queues:").applyTo(context);
+			context.register(Config.class);
+			context.refresh();
+			fail("BeanCreationException expected");
+		}
+		catch (Exception e) {
+			assertThat(e, instanceOf(BeanCreationException.class));
+			assertThat(extractedValidationMessage(e), containsString("At least one queue is required"));
+		}
+	}
 
-    private String extractedValidationMessage(Exception e) {
-        BindValidationException bindValidationException = (BindValidationException) e.getCause().getCause();
-        ValidationErrors validationErrors = bindValidationException.getValidationErrors();
-        FieldError fieldError = (FieldError) validationErrors.getAllErrors().get(0);
+	private String extractedValidationMessage(Exception e) {
+		BindValidationException bindValidationException = (BindValidationException) e.getCause().getCause();
+		ValidationErrors validationErrors = bindValidationException.getValidationErrors();
+		FieldError fieldError = (FieldError) validationErrors.getAllErrors().get(0);
 
-        return fieldError.getDefaultMessage();
-    }
+		return fieldError.getDefaultMessage();
+	}
 
-    @Configuration
-    @EnableConfigurationProperties(RabbitSupplierProperties.class)
-    static class Config {}
+	@Configuration
+	@EnableConfigurationProperties(RabbitSupplierProperties.class)
+	static class Config {
+	}
 }

@@ -16,8 +16,12 @@
 
 package org.springframework.cloud.stream.app.source.rabbit;
 
+import java.util.HashMap;
+
 import org.aopalliance.aop.Advice;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.RabbitMQContainer;
+
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -34,14 +38,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 import org.springframework.retry.support.RetryTemplate;
-import org.testcontainers.containers.RabbitMQContainer;
-
-import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests for RabbitSource.
@@ -51,135 +49,135 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  */
 public class RabbitSourceListenerTests {
 
-    static {
-        RabbitMQContainer rabbitmq = new RabbitMQContainer("rabbitmq:3.7-management-alpine")
-                .withQueue("scsapp-testq", false, false, new HashMap<>())
-                .withQueue("scsapp-testq2", false, false, new HashMap<>())
-                .withQueue("scsapp-testOwnSource", false, false, new HashMap<>())
-                .withExchange("scsapp-testex", "fanout")
-                .withBinding("scsapp-testex", "scsapp-testq");
-        rabbitmq.start();
+	static {
+		RabbitMQContainer rabbitmq = new RabbitMQContainer("rabbitmq:3.7-management-alpine")
+				.withQueue("scsapp-testq", false, false, new HashMap<>())
+				.withQueue("scsapp-testq2", false, false, new HashMap<>())
+				.withQueue("scsapp-testOwnSource", false, false, new HashMap<>())
+				.withExchange("scsapp-testex", "fanout")
+				.withBinding("scsapp-testex", "scsapp-testq");
+		rabbitmq.start();
 
-        System.setProperty("spring.rabbitmq.test.port", rabbitmq.getAmqpPort().toString());
-    }
+		System.setProperty("spring.rabbitmq.test.port", rabbitmq.getAmqpPort().toString());
+	}
 
-    @Test
-    public void testRabbitSource() {
-        try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-                TestChannelBinderConfiguration
-                        .getCompleteConfiguration(RabbitSourceTestApplication.class))
-                .web(WebApplicationType.NONE)
-                .run("--spring.cloud.function.definition=rabbitSupplier",
-                     "--rabbit.supplier.queues=scsapp-testq",
-                     "--rabbit.persistentDeliveryMode=true",
-                     "--spring.rabbitmq.listener.simple.concurrency=2",
-                     "--spring.rabbitmq.listener.simple.maxConcurrency=3",
-                     "--spring.rabbitmq.listener.simple.acknowledgeMode=AUTO",
-                     "--spring.rabbitmq.listener.simple.prefetch=10",
-                     "--spring.rabbitmq.listener.simple.transactionSize=5",
-                     "--spring.rabbitmq.port=" +
-                             "${spring.rabbitmq.test.port}"
-                )) {
+	@Test
+	public void testRabbitSource() {
+		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+				TestChannelBinderConfiguration
+						.getCompleteConfiguration(RabbitSourceTestApplication.class))
+				.web(WebApplicationType.NONE)
+				.run("--spring.cloud.function.definition=rabbitSupplier",
+						"--rabbit.supplier.queues=scsapp-testq",
+						"--rabbit.persistentDeliveryMode=true",
+						"--spring.rabbitmq.listener.simple.concurrency=2",
+						"--spring.rabbitmq.listener.simple.maxConcurrency=3",
+						"--spring.rabbitmq.listener.simple.acknowledgeMode=AUTO",
+						"--spring.rabbitmq.listener.simple.prefetch=10",
+						"--spring.rabbitmq.listener.simple.transactionSize=5",
+						"--spring.rabbitmq.port=" +
+								"${spring.rabbitmq.test.port}"
+				)) {
 
-            final RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
-            rabbitTemplate.convertAndSend("scsapp-testex", "", "hello");
+			final RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
+			rabbitTemplate.convertAndSend("scsapp-testex", "", "hello");
 
-            OutputDestination target = context.getBean(OutputDestination.class);
-            Message<byte[]> sourceMessage = target.receive(600000);
+			OutputDestination target = context.getBean(OutputDestination.class);
+			Message<byte[]> sourceMessage = target.receive(600000);
 
-            final String actual = new String(sourceMessage.getPayload());
-            assertThat(actual).isEqualTo("hello");
-        }
-    }
+			final String actual = new String(sourceMessage.getPayload());
+			assertThat(actual).isEqualTo("hello");
+		}
+	}
 
-    @Test
-    public void testOwnConnection() {
-        try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-                TestChannelBinderConfiguration
-                        .getCompleteConfiguration(RabbitSourceTestApplication.class))
-                .web(WebApplicationType.NONE)
-                .run("--spring.cloud.function.definition=rabbitSupplier",
-                     "--rabbit.supplier.queues=scsapp-testOwnSource",
-                     "--rabbit.supplier.enableRetry=false",
-                     "--rabbit.supplier.own-connection=true",
-                     "--spring.rabbitmq.port=" +
-                             "${spring.rabbitmq.test.port}"
-                )) {
+	@Test
+	public void testOwnConnection() {
+		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+				TestChannelBinderConfiguration
+						.getCompleteConfiguration(RabbitSourceTestApplication.class))
+				.web(WebApplicationType.NONE)
+				.run("--spring.cloud.function.definition=rabbitSupplier",
+						"--rabbit.supplier.queues=scsapp-testOwnSource",
+						"--rabbit.supplier.enableRetry=false",
+						"--rabbit.supplier.own-connection=true",
+						"--spring.rabbitmq.port=" +
+								"${spring.rabbitmq.test.port}"
+				)) {
 
-            final RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
-            final CachingConnectionFactory bootFactory = context.getBean(CachingConnectionFactory.class);
-            rabbitTemplate.convertAndSend("scsapp-testOwnSource", "foo");
+			final RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
+			final CachingConnectionFactory bootFactory = context.getBean(CachingConnectionFactory.class);
+			rabbitTemplate.convertAndSend("scsapp-testOwnSource", "foo");
 
-            bootFactory.resetConnection();
+			bootFactory.resetConnection();
 
-            OutputDestination target = context.getBean(OutputDestination.class);
-            Message<byte[]> sourceMessage = target.receive(600000);
+			OutputDestination target = context.getBean(OutputDestination.class);
+			Message<byte[]> sourceMessage = target.receive(600000);
 
-            final String actual = new String(sourceMessage.getPayload());
-            assertThat(actual).isEqualTo("foo");
-            assertThat(bootFactory.getCacheProperties().getProperty("localPort")).isEqualTo("0");
-        }
-    }
+			final String actual = new String(sourceMessage.getPayload());
+			assertThat(actual).isEqualTo("foo");
+			assertThat(bootFactory.getCacheProperties().getProperty("localPort")).isEqualTo("0");
+		}
+	}
 
-    @Test
-    public void testPropertiesPopulated() {
-        try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-                TestChannelBinderConfiguration
-                        .getCompleteConfiguration(RabbitSourceTestApplication.class))
-                .web(WebApplicationType.NONE)
-                .run("--spring.cloud.function.definition=rabbitSupplier",
-                     "--rabbit.supplier.queues = scsapp-testq2",
-                     "--rabbit.supplier.enableRetry = true",
-                     "--rabbit.supplier.initialRetryInterval = 123",
-                     "--rabbit.supplier.maxRetryInterval = 345",
-                     "--rabbit.supplier.retryMultiplier = 1.5",
-                     "--rabbit.supplier.maxAttempts = 5",
-                     "--rabbit.supplier.requeue = false",
-                     "--rabbit.supplier.mappedRequestHeaders = STANDARD_REQUEST_HEADERS,bar",
-                     "--spring.rabbitmq.listener.simple.concurrency = 2",
-                     "--spring.rabbitmq.listener.simple.maxConcurrency = 3 ",
-                     "--spring.rabbitmq.listener.simple.acknowledgeMode = NONE",
-                     "--spring.rabbitmq.listener.simple.prefetch = 10",
-                     "--spring.rabbitmq.listener.simple.batchSize = 5",
-                     "--spring.rabbitmq.port=" +
-                             "${spring.rabbitmq.test.port}"
-                )) {
+	@Test
+	public void testPropertiesPopulated() {
+		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+				TestChannelBinderConfiguration
+						.getCompleteConfiguration(RabbitSourceTestApplication.class))
+				.web(WebApplicationType.NONE)
+				.run("--spring.cloud.function.definition=rabbitSupplier",
+						"--rabbit.supplier.queues = scsapp-testq2",
+						"--rabbit.supplier.enableRetry = true",
+						"--rabbit.supplier.initialRetryInterval = 123",
+						"--rabbit.supplier.maxRetryInterval = 345",
+						"--rabbit.supplier.retryMultiplier = 1.5",
+						"--rabbit.supplier.maxAttempts = 5",
+						"--rabbit.supplier.requeue = false",
+						"--rabbit.supplier.mappedRequestHeaders = STANDARD_REQUEST_HEADERS,bar",
+						"--spring.rabbitmq.listener.simple.concurrency = 2",
+						"--spring.rabbitmq.listener.simple.maxConcurrency = 3 ",
+						"--spring.rabbitmq.listener.simple.acknowledgeMode = NONE",
+						"--spring.rabbitmq.listener.simple.prefetch = 10",
+						"--spring.rabbitmq.listener.simple.batchSize = 5",
+						"--spring.rabbitmq.port=" +
+								"${spring.rabbitmq.test.port}"
+				)) {
 
-            final RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
-            final SimpleMessageListenerContainer container = context.getBean(SimpleMessageListenerContainer.class);
-            Advice[] adviceChain = TestUtils.getPropertyValue(container, "adviceChain", Advice[].class);
-            assertEquals(1, adviceChain.length);
-            RetryTemplate retryTemplate = TestUtils.getPropertyValue(adviceChain[0], "retryOperations",
-                                                                     RetryTemplate.class);
-            assertEquals(5, TestUtils.getPropertyValue(retryTemplate, "retryPolicy.maxAttempts"));
-            assertEquals(123L, TestUtils.getPropertyValue(retryTemplate, "backOffPolicy.initialInterval"));
-            assertEquals(345L, TestUtils.getPropertyValue(retryTemplate, "backOffPolicy.maxInterval"));
-            assertEquals(1.5, TestUtils.getPropertyValue(retryTemplate, "backOffPolicy.multiplier"));
-            assertEquals("scsapp-testq2", container.getQueueNames()[0]);
-            assertFalse(TestUtils.getPropertyValue(container, "defaultRequeueRejected", Boolean.class));
-            assertEquals(2, TestUtils.getPropertyValue(container, "concurrentConsumers"));
-            assertEquals(3, TestUtils.getPropertyValue(container, "maxConcurrentConsumers"));
-            assertEquals(AcknowledgeMode.NONE, TestUtils.getPropertyValue(container, "acknowledgeMode"));
-            assertEquals(10, TestUtils.getPropertyValue(container, "prefetchCount"));
-            assertEquals(5, TestUtils.getPropertyValue(container, "batchSize"));
+			final RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
+			final SimpleMessageListenerContainer container = context.getBean(SimpleMessageListenerContainer.class);
+			Advice[] adviceChain = TestUtils.getPropertyValue(container, "adviceChain", Advice[].class);
+			assertThat(adviceChain.length).isEqualTo(1);
+			RetryTemplate retryTemplate = TestUtils.getPropertyValue(adviceChain[0], "retryOperations",
+					RetryTemplate.class);
+			assertThat(TestUtils.getPropertyValue(retryTemplate, "retryPolicy.maxAttempts")).isEqualTo(5);
+			assertThat(TestUtils.getPropertyValue(retryTemplate, "backOffPolicy.initialInterval")).isEqualTo(123L);
+			assertThat(TestUtils.getPropertyValue(retryTemplate, "backOffPolicy.maxInterval")).isEqualTo(345L);
+			assertThat(TestUtils.getPropertyValue(retryTemplate, "backOffPolicy.multiplier")).isEqualTo(1.5);
+			assertThat(container.getQueueNames()[0]).isEqualTo("scsapp-testq2");
+			assertThat(TestUtils.getPropertyValue(container, "defaultRequeueRejected", Boolean.class)).isFalse();
+			assertThat(TestUtils.getPropertyValue(container, "concurrentConsumers")).isEqualTo(2);
+			assertThat(TestUtils.getPropertyValue(container, "maxConcurrentConsumers")).isEqualTo(3);
+			assertThat(TestUtils.getPropertyValue(container, "acknowledgeMode")).isEqualTo(AcknowledgeMode.NONE);
+			assertThat(TestUtils.getPropertyValue(container, "prefetchCount")).isEqualTo(10);
+			assertThat(TestUtils.getPropertyValue(container, "batchSize")).isEqualTo(5);
 
-            rabbitTemplate.convertAndSend("", "scsapp-testq2", "foo", message -> {
-                message.getMessageProperties().getHeaders().put("bar", "baz");
-                return message;
-            });
+			rabbitTemplate.convertAndSend("", "scsapp-testq2", "foo", message -> {
+				message.getMessageProperties().getHeaders().put("bar", "baz");
+				return message;
+			});
 
-            OutputDestination target = context.getBean(OutputDestination.class);
-            Message<byte[]> sourceMessage = target.receive(600000);
+			OutputDestination target = context.getBean(OutputDestination.class);
+			Message<byte[]> sourceMessage = target.receive(600000);
 
-            final String actual = new String(sourceMessage.getPayload());
-            assertEquals("foo", actual);
-            assertEquals("baz", sourceMessage.getHeaders().get("bar"));
-            assertNull(sourceMessage.getHeaders().get(AmqpHeaders.DELIVERY_MODE));
-        }
-    }
+			final String actual = new String(sourceMessage.getPayload());
+			assertThat(actual).isEqualTo("foo");
+			assertThat(sourceMessage.getHeaders().get("bar")).isEqualTo("baz");
+			assertThat(sourceMessage.getHeaders().get(AmqpHeaders.DELIVERY_MODE)).isNull();
+		}
+	}
 
-    @SpringBootApplication
-    @Import(RabbitSupplierConfiguration.class)
-    public static class RabbitSourceTestApplication {
-    }
+	@SpringBootApplication
+	@Import(RabbitSupplierConfiguration.class)
+	public static class RabbitSourceTestApplication {
+	}
 }
