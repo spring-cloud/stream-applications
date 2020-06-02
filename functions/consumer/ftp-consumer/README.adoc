@@ -1,0 +1,26 @@
+# Ftp Consumer
+
+A consumer that allows you to ftp files.
+The consumer uses the `FtpMessageHandler` from Spring Integration.
+
+## Beans for injection
+
+You can import `FtpConsumerConfiguration` in the application and then inject the following bean.
+
+`Consumer<Message<?>> ftpConsumer`
+
+You can use `ftpConsumer` as a qualifier when injecting.
+
+## Configuration Options
+
+All configuration properties are prefixed with `ftp.consumer`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/ftp/FtpConsumerProperties.java[FtpConsumerProperties].
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/consumer/ftp[test suite] for the various ways, this consumer is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/ftp-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a Ftp sink.

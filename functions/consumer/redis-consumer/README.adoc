@@ -1,0 +1,25 @@
+# Redis Consumer
+
+A consumer that allows you to write incoming messages into Redis.
+
+## Beans for injection
+
+You can import `RedisConsumerConfiguration` in the application and then inject the following bean.
+
+`Consumer<Message<?>> redisConsumer`
+
+You can use `redisConsumer` as a qualifier when injecting.
+
+## Configuration Options
+
+All configuration properties are prefixed with `redis.consumer`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/redis/RedisConsumerProperties.java[RedisConsumerProperties].
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/consumer/redis[test suite] for the various ways, this consumer is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/redis-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a Redis sink.

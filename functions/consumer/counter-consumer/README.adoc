@@ -1,0 +1,28 @@
+# Counter Consumer
+
+A consumer that allows to compute multiple consumers from an incoming message.
+It uses micrometer internally and can use various popular TSDB technologies to persist the counter values.
+
+It is worth to look at the https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/counter-sink/README.adoc[counter-sink] where this consumer is used to create a Spring Cloud Stream based counter sink.
+
+## Beans for injection
+
+You can import `CounterConsumerConfiguration` in the application and then inject the following bean.
+
+`Consumer<Message<?>> counterConsumer`
+
+You can use `counterConsumer` as a qualifier when injecting.
+
+## Configuration Options
+
+All configuration properties are prefixed with `counter`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/counter/CounterConsumerProperties.java[CounterConsumerProperties].
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/consumer/counter[test suite] for the various ways, this consumer is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/counter-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a Counter sink.

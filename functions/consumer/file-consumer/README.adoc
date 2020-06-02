@@ -1,0 +1,26 @@
+# File Consumer
+
+A consumer that allows you to write incoming messages into files. 
+The consumer uses the `FileWritingMessageHandler` from Spring Integration.
+
+## Beans for injection
+
+You can import `FileConsumerConfiguration` in the application and then inject the following bean.
+
+`Consumer<Message<?>> fileConsumer`
+
+You can use `fileConsumer` as a qualifier when injecting.
+
+## Configuration Options
+
+All configuration properties are prefixed with `file.consumer`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/file/FileConsumerProperties.java[FileConsumerProperties].
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/consumer/file[test suite] for the various ways, this consumer is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/file-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a File sink.
