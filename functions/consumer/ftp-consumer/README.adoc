@@ -1,7 +1,7 @@
 # Ftp Consumer
 
 A consumer that allows you to ftp files.
-The consumer uses the `FileTransferringMessageHandler` from Spring Integration.
+The consumer uses the `FtpMessageHandler` from Spring Integration.
 
 ## Beans for injection
 
