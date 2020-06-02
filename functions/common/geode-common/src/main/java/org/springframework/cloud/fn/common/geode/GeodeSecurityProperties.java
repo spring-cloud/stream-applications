@@ -89,7 +89,7 @@ public class GeodeSecurityProperties {
 
 			Properties properties = new Properties();
 			properties.setProperty(SECURITY_USERNAME, username);
-			properties.setProperty(SECURITY_PASSWORDgit s, password);
+			properties.setProperty(SECURITY_PASSWORD, password);
 			return properties;
 		}
 

@@ -72,7 +72,6 @@
 
 		<module>supplier/file-supplier</module>
 		<module>supplier/geode-supplier</module>
-		<module>supplier/geode-cq-supplier</module>
 		<module>supplier/http-supplier</module>
 		<module>supplier/jdbc-supplier</module>
 		<module>supplier/mongodb-supplier</module>

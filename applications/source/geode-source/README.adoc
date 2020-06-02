@@ -1,7 +1,7 @@
 //tag::ref-doc[]
 = Geode Source
 
-The Geode source will emit a stream of Objects extracted from Apache Geode EntryEvents.
+The Geode source will emit a stream of Objects extracted from Apache Geode EntryEvents or CqEvents.
 
 == Options
 
@@ -23,7 +23,8 @@ $$geode.security.ssl.truststore-type$$:: $$Identifies the type of truststore use
 $$geode.security.ssl.truststore-uri$$:: $$Location of the pre-created truststore URI to be used for connecting to the Geode cluster.$$ *($$Resource$$, default: `$$<none>$$`)*
 $$geode.security.ssl.user-home-directory$$:: $$Local directory to cache the truststore and keystore files downloaded form the truststoreUri and keystoreUri locations.$$ *($$String$$, default: `$$user.home$$`)*
 $$geode.security.username$$:: $$The cache username.$$ *($$String$$, default: `$$<none>$$`)*
-$$geode.supplier.entry-event-expression$$:: $$SpEL expression to extract data from an {@link org.apache.geode.cache.EntryEvent}.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$geode.supplier.event-expression$$:: $$SpEL expression to extract data from an {@link org.apache.geode.cache.EntryEvent} or {@link org.apache.geode.cache.query.CqEvent}.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$geode.supplier.query$$:: $$An OQL query. This will enable continuous query if provided.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

@@ -19,6 +19,8 @@ package org.springframework.cloud.fn.supplier.geode;
 import java.time.Duration;
 import java.util.function.Supplier;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,8 +29,6 @@ import org.apache.geode.cache.Region;
 import org.apache.geode.pdx.PdxInstance;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -47,6 +47,8 @@ public class GeodeSupplierApplicationTests {
 
 	private static GeodeContainer geode;
 
+	private ObjectMapper objectMapper = new ObjectMapper();
+
 	@BeforeAll
 	static void setup() {
 		GeodeContainerIntializer initializer = new GeodeContainerIntializer(
@@ -64,7 +66,7 @@ public class GeodeSupplierApplicationTests {
 	void getServerEntryEvents() {
 		applicationContextRunner
 				.withPropertyValues("geode.region.regionName=myRegion",
-						"geode.supplier.entry-event-expression=#root",
+						"geode.supplier.event-expression=#root",
 						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
 				.run(context -> {
 					geode.connectAndExecGfsh(
@@ -123,7 +125,7 @@ public class GeodeSupplierApplicationTests {
 		applicationContextRunner
 				.withPropertyValues("geode.region.regionName=myRegion",
 						"geode.pool.connect-type=server",
-						"geode.supplier.entry-event-expression=key+':'+newValue",
+						"geode.supplier.event-expression=key+':'+newValue",
 						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
 				.run(context -> {
 
@@ -137,6 +139,40 @@ public class GeodeSupplierApplicationTests {
 						assertThat(val).isEqualTo("foo:bar");
 					}).thenCancel().verify(Duration.ofSeconds(10));
 				});
+	}
+
+	@Test
+	void continuousQuery() {
+		applicationContextRunner
+				.withPropertyValues(
+						"geode.region.regionName=myRegion",
+						"geode.client.pdx-read-serialized=true",
+						"geode.supplier.query=Select * from /myRegion where symbol='XXX' and price > 140",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
+				.run(context -> {
+					Supplier<Flux<String>> geodeCqSupplier = context.getBean("geodeSupplier", Supplier.class);
+					// Using local region here
+					Region<String, PdxInstance> region = context.getBean(Region.class);
+					putStockEvent(region, new Stock("XXX", 140.00));
+					putStockEvent(region, new Stock("XXX", 140.20));
+					putStockEvent(region, new Stock("YYY", 110.00));
+					putStockEvent(region, new Stock("YYY", 110.01));
+					putStockEvent(region, new Stock("XXX", 139.80));
+
+					StepVerifier.create(geodeCqSupplier.get()).assertNext(val -> {
+						try {
+							assertThat(objectMapper.readValue(val, Stock.class)).isEqualTo(new Stock("XXX", 140.20));
+						}
+						catch (JsonProcessingException e) {
+							fail(e.getMessage());
+						}
+					}).thenCancel().verify(Duration.ofSeconds(10));
+				});
+	}
+
+	private void putStockEvent(Region<String, PdxInstance> region, Stock stock) throws JsonProcessingException {
+		String json = objectMapper.writeValueAsString(stock);
+		region.put(stock.getSymbol(), JsonPdxFunctions.jsonToPdx().apply(json));
 	}
 
 	@Data

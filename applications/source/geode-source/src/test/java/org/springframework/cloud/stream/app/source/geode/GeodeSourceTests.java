@@ -20,12 +20,19 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.geode.cache.Region;
+import org.apache.geode.pdx.PdxInstance;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.cloud.fn.common.geode.JsonPdxFunctions;
 import org.springframework.cloud.fn.supplier.geode.GeodeSupplierConfiguration;
 import org.springframework.cloud.fn.test.support.geode.GeodeContainer;
 import org.springframework.cloud.fn.test.support.geode.GeodeContainerIntializer;
@@ -41,6 +48,8 @@ public class GeodeSourceTests {
 	private static ApplicationContextRunner applicationContextRunner;
 
 	private static GeodeContainer geode;
+
+	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@BeforeAll
 	static void setup() {
@@ -60,7 +69,7 @@ public class GeodeSourceTests {
 	void getCacheEvents() {
 		applicationContextRunner
 				.withPropertyValues("geode.region.regionName=myRegion",
-						"geode.supplier.entry-event-expression=key+':'+newValue",
+						"geode.supplier.event-expression=key+':'+newValue",
 						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort(),
 						"spring.cloud.function.definition=geodeSupplier")
 				.run(context -> {
@@ -82,6 +91,46 @@ public class GeodeSourceTests {
 
 					assertThat(values).containsExactly("foo:bar", "name:dave", "hello:world");
 				});
+	}
+
+	@Test
+	void pdxReadSerialized() {
+		applicationContextRunner
+				.withPropertyValues(
+						"spring.cloud.stream.function.definition=geodeSupplier",
+						"geode.region.regionName=myRegion",
+						"geode.client.pdx-read-serialized=true",
+						"geode.supplier.query=Select * from /myRegion where symbol='XXX' and price > 140",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
+				.run(context -> {
+					OutputDestination outputDestination = context.getBean(OutputDestination.class);
+					// Using local region here
+					Region<String, PdxInstance> region = context.getBean(Region.class);
+					putStockEvent(region, new Stock("XXX", 140.00));
+					putStockEvent(region, new Stock("XXX", 140.20));
+					putStockEvent(region, new Stock("YYY", 110.00));
+					putStockEvent(region, new Stock("YYY", 110.01));
+					putStockEvent(region, new Stock("XXX", 139.80));
+
+					Message<byte[]> message = outputDestination.receive(Duration.ofSeconds(3).toMillis());
+					assertThat(message).isNotNull();
+					Stock result = objectMapper.readValue(message.getPayload(), Stock.class);
+					assertThat(result).isEqualTo(new Stock("XXX", 140.20));
+				});
+	}
+
+	private void putStockEvent(Region<String, PdxInstance> region, Stock stock) throws JsonProcessingException {
+		String json = objectMapper.writeValueAsString(stock);
+		region.put(stock.getSymbol(), JsonPdxFunctions.jsonToPdx().apply(json));
+	}
+
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	static class Stock {
+		private String symbol;
+
+		private double price;
 	}
 
 	@SpringBootApplication

@@ -33,15 +33,29 @@ public class GeodeSupplierProperties {
 	private final SpelExpressionParser parser = new SpelExpressionParser();
 
 	/**
-	 * SpEL expression to extract data from an {@link org.apache.geode.cache.EntryEvent}.
+	 * SpEL expression to extract data from an {@link org.apache.geode.cache.EntryEvent} or
+	 * {@link org.apache.geode.cache.query.CqEvent}.
 	 */
-	private Expression entryEventExpression = parser.parseExpression(DEFAULT_EXPRESSION);
+	private Expression eventExpression = parser.parseExpression(DEFAULT_EXPRESSION);
 
-	public Expression getEntryEventExpression() {
-		return entryEventExpression;
+	/**
+	 * An OQL query. This will enable continuous query if provided.
+	 */
+	private String query;
+
+	public Expression getEventExpression() {
+		return eventExpression;
 	}
 
-	public void setEntryEventExpression(Expression entryEventExpression) {
-		this.entryEventExpression = entryEventExpression;
+	public void setEventExpression(Expression eventExpression) {
+		this.eventExpression = eventExpression;
+	}
+
+	public String getQuery() {
+		return query;
+	}
+
+	public void setQuery(String query) {
+		this.query = query;
 	}
 }
