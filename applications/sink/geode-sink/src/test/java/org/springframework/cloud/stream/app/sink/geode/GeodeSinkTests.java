@@ -23,7 +23,6 @@ import org.apache.geode.cache.Region;
 import org.apache.geode.pdx.PdxInstance;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,17 +37,16 @@ import org.springframework.messaging.support.GenericMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class GeodeSinkTests {
 
-	private ApplicationContextRunner applicationContextRunner;
+	private static ApplicationContextRunner applicationContextRunner;
 
-	private GeodeContainer geode;
+	private static GeodeContainer geode;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@BeforeAll
-	void setup() {
+	static void setup() {
 		GeodeContainerIntializer initializer = new GeodeContainerIntializer(
 				geodeContainer -> {
 					geodeContainer.connectAndExecGfsh("create region --name=Stocks --type=REPLICATE");

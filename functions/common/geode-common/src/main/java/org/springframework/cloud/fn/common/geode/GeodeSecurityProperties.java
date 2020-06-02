@@ -61,9 +61,6 @@ public class GeodeSecurityProperties {
 	@SuppressWarnings("unused")
 	public static class UserAuthInitialize implements AuthInitialize {
 
-		private static final String USERNAME = "security-username";
-		private static final String PASSWORD = "security-password";
-
 		private LogWriter securitylog;
 		private LogWriter systemlog;
 
@@ -80,19 +77,19 @@ public class GeodeSecurityProperties {
 		@Override
 		public Properties getCredentials(Properties props, DistributedMember server, boolean isPeer) throws AuthenticationFailedException {
 
-			String username = props.getProperty(USERNAME);
+			String username = props.getProperty(SECURITY_USERNAME);
 			if (username == null) {
 				throw new AuthenticationFailedException("UserAuthInitialize: username not set.");
 			}
 
-			String password = props.getProperty(PASSWORD);
+			String password = props.getProperty(SECURITY_PASSWORD);
 			if (password == null) {
 				throw new AuthenticationFailedException("UserAuthInitialize: password not set.");
 			}
 
 			Properties properties = new Properties();
-			properties.setProperty(USERNAME, username);
-			properties.setProperty(PASSWORD, password);
+			properties.setProperty(SECURITY_USERNAME, username);
+			properties.setProperty(SECURITY_PASSWORDgit s, password);
 			return properties;
 		}
 

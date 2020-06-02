@@ -27,7 +27,6 @@ import org.apache.geode.cache.Region;
 import org.apache.geode.pdx.PdxInstance;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import reactor.core.publisher.Flux;
@@ -42,15 +41,14 @@ import org.springframework.cloud.fn.test.support.geode.GeodeContainerIntializer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class GeodeSupplierApplicationTests {
 
-	private ApplicationContextRunner applicationContextRunner;
+	private static ApplicationContextRunner applicationContextRunner;
 
-	private GeodeContainer geode;
+	private static GeodeContainer geode;
 
 	@BeforeAll
-	void setup() {
+	static void setup() {
 		GeodeContainerIntializer initializer = new GeodeContainerIntializer(
 				geodeContainer -> {
 					geodeContainer.connectAndExecGfsh("create region --name=myRegion --type=REPLICATE");
@@ -133,7 +131,7 @@ public class GeodeSupplierApplicationTests {
 					Region<String, String> region = context.getBean(Region.class);
 
 					region.put("foo", "bar");
-					Supplier<Flux<EntryEvent>> geodeSupplier = context.getBean("geodeSupplier", Supplier.class);
+					Supplier<Flux<String>> geodeSupplier = context.getBean("geodeSupplier", Supplier.class);
 
 					StepVerifier.create(geodeSupplier.get()).assertNext(val -> {
 						assertThat(val).isEqualTo("foo:bar");

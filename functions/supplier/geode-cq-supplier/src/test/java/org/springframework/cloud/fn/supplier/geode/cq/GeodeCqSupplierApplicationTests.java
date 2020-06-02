@@ -28,7 +28,6 @@ import org.apache.geode.cache.Region;
 import org.apache.geode.pdx.PdxInstance;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -41,17 +40,16 @@ import org.springframework.cloud.fn.test.support.geode.GeodeContainerIntializer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class GeodeCqSupplierApplicationTests {
 
-	private ApplicationContextRunner applicationContextRunner;
+	private static ApplicationContextRunner applicationContextRunner;
 
-	private GeodeContainer geode;
+	private static GeodeContainer geode;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@BeforeAll
-	void setup() {
+	static void setup() {
 		GeodeContainerIntializer initializer = new GeodeContainerIntializer(
 				geodeContainer -> {
 					geodeContainer.connectAndExecGfsh("create region --name=Stocks --type=REPLICATE");
