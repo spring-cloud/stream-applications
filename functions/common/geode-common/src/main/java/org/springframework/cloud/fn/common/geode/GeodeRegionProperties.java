@@ -22,6 +22,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 /**
+ * Region configuration properties.
  * @author David Turanski
  */
 @ConfigurationProperties("geode.region")

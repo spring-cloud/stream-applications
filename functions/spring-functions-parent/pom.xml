@@ -17,6 +17,7 @@
 	<properties>
 		<spring-boot.version>2.3.0.RELEASE</spring-boot.version>
 		<spring-cloud-function.version>3.0.3.RELEASE</spring-cloud-function.version>
+		<spring-cloud-fn.version>${project.version}</spring-cloud-fn.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>

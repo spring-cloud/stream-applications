@@ -14,10 +14,6 @@
         <relativePath>../../spring-functions-parent</relativePath>
     </parent>
 
-    <properties>
-        <spring-cloud-fn.version>${project.version}</spring-cloud-fn.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.integration</groupId>

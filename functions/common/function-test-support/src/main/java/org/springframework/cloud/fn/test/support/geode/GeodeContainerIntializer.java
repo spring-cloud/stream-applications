@@ -27,6 +27,11 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import org.springframework.util.SocketUtils;
 
+/**
+ * Creates and starts a {@link GeodeContainer} using available random ports for locator
+ * and server. Runs a {@code Consumer<GeodeContainer>} post processor if provided.
+ * @author David Turanski
+ */
 public class GeodeContainerIntializer {
 
 	private int locatorPort;
@@ -37,6 +42,10 @@ public class GeodeContainerIntializer {
 
 	private Optional<Consumer<GeodeContainer>> postProcessor;
 
+	/**
+	 * Create, start, and perform post processing on a {@link GeodeContainer}.
+	 * @param postProcessor a {@code Consumer<GeodeContainer>} to run after the container is started.
+	 */
 	public GeodeContainerIntializer(Consumer<GeodeContainer> postProcessor) {
 		cacheServerPort = SocketUtils.findAvailableTcpPort();
 
@@ -52,6 +61,9 @@ public class GeodeContainerIntializer {
 		startContainer();
 	}
 
+	/**
+	 * Create and start a {@link GeodeContainer}.
+	 */
 	public GeodeContainerIntializer() {
 		this(null);
 	}
@@ -72,6 +84,9 @@ public class GeodeContainerIntializer {
 		postProcessor.ifPresent(geodeContainerConsumer -> geodeContainerConsumer.accept(geode));
 	}
 
+	/**
+	 * @return the {@link GeodeContainer} instance.
+	 */
 	public GeodeContainer geodeContainer() {
 		return geode;
 	}

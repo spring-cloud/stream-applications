@@ -23,39 +23,55 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+/**
+ * A Test Container that starts a Geode Locator and Server on configured ports. This also
+ * provides methods for executing one or more Gfsh commands.
+ */
 public class GeodeContainer extends GenericContainer {
 	private static Logger logger = LoggerFactory.getLogger(GeodeContainer.class);
-
-	/**
-	 * The default geode image.
-	 */
-	private final static String DEFAULT_IMAGE = "apachegeode/geode:1.12.0";
 
 	private final int locatorPort;
 
 	private final int cacheServerPort;
 
+	/**
+	 * Create a Geode container from a Docker image.
+	 * @param dockerImageName the name of the image.
+	 * @param locatorPort the locator port.
+	 * @param cacheServerPort the cache server port.
+	 */
 	public GeodeContainer(@NonNull String dockerImageName, int locatorPort, int cacheServerPort) {
 		super(dockerImageName);
 		this.locatorPort = locatorPort;
 		this.cacheServerPort = cacheServerPort;
-
 	}
 
+	/**
+	 * Create a Geode Container from a {@code Future<String>}. Test containers provides some
+	 * implementations as image builders, such as
+	 * {@link org.testcontainers.images.builder.ImageFromDockerfile}.
+	 * @param image the image builder.
+	 * @param locatorPort the locator port.
+	 * @param cacheServerPort the server port.
+	 */
 	public GeodeContainer(@NonNull Future<String> image, int locatorPort, int cacheServerPort) {
 		super(image);
 		this.locatorPort = locatorPort;
 		this.cacheServerPort = cacheServerPort;
 	}
 
+	/**
+	 * A convenience method to connect to a locator with Gfsh.
+	 * @return the connect command String.
+	 */
 	public String connect() {
 		return "connect --locator=" + locators();
 	}
@@ -104,6 +120,13 @@ public class GeodeContainer extends GenericContainer {
 		return execInContainer(Gfsh.command(command).commandParts());
 	}
 
+	/**
+	 * Executes a command in the container, logging stdout and stderr and wrapping checked
+	 * exceptions.
+	 * @see GenericContainer#execInContainer(String...)
+	 * @param command the command to execute.
+	 * @return the {@link org.testcontainers.containers.Container.ExecResult}
+	 */
 	@Override
 	public ExecResult execInContainer(String... command) {
 		try {

@@ -26,9 +26,9 @@ import org.apache.geode.security.AuthenticationFailedException;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
+ * Configuration properties for Geode username/password authentication.
  * @author David Turanski
  **/
-
 @ConfigurationProperties("geode.security")
 public class GeodeSecurityProperties {
 
