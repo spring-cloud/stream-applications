@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -41,7 +40,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CounterSinkTests {
 
 	@Test
-	@Disabled
 	public void testCounterSink() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(CounterSinkTestApplication.class))

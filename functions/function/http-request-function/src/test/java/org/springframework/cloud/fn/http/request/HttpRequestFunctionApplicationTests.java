@@ -183,7 +183,7 @@ public class HttpRequestFunctionApplicationTests {
 		runner.run(context -> {
 			HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
 			StepVerifier.create(httpRequestFunction.apply(Flux.just(new GenericMessage(""))))
-					.expectErrorMatches(throwable -> throwable.getMessage().startsWith("Connection refused"))
+					.expectErrorMatches(throwable -> throwable.getMessage().contains("Connection refused"))
 					.verify();
 		});
 	}
