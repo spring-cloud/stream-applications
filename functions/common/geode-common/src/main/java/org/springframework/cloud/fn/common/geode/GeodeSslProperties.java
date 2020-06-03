@@ -25,7 +25,7 @@ import org.springframework.validation.annotation.Validated;
 
 /**
  * SSL configuration for Geode client applications.
- * @see <a href=https://geode.apache.org/docs/guide/14/managing/security/implementing_ssl.html/>
+ * @see <a href=https://geode.apache.org/docs/guide/14/managing/security/implementing_ssl.html>Implementing SSL in Geode</a>
  *
  * @author Christian Tzolov
  */

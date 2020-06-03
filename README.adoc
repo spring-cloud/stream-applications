@@ -30,6 +30,9 @@ The following are the four major components of this repository.
 |link:functions/supplier/jdbc-supplier/README.adoc[JDBC]
 |link:functions/consumer/file-consumer/README.adoc[File]
 |link:functions/function/http-request-function/README.adoc[HTTP Request]
+|link:functions/supplier/geode-supplier/README.adoc[Geode]
+|link:functions/consumer/geode-consumer/README.adoc[Geode]
+|
 |link:functions/supplier/mongodb-supplier/README.adoc[MongoDB]
 |link:functions/consumer/ftp-consumer/README.adoc[FTP]
 |SpEL
@@ -72,6 +75,10 @@ The following are the four major components of this repository.
 |link:applications/processor/filter-processor/README.adoc[Filter]
 |link:applications/source/jdbc-source/README.adoc[JDBC]
 |link:applications/sink/file-sink/README.adoc[Fiile]
+|
+|link:applications/source/geode-source/README.adoc[Geode]
+|link:applications/sink/geode-sink/README.adoc[Geode]
+|
 |link:applications/processor/groovy-processor/README.adoc[Groovy]
 |link:applications/source/load-generator-source/README.adoc[Load-Generator]
 |link:applications/sink/ftp-sink/README.adoc[FTP]
