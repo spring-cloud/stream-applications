@@ -60,7 +60,7 @@
                         <dependency>
                             <groupId>org.springframework.cloud.stream.app</groupId>
                             <artifactId>throughput-sink</artifactId>
-                            <version>${java-functions.version}</version>
+                            <version>${project.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>
