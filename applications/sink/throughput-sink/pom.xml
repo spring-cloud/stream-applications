@@ -53,7 +53,7 @@
                         <name>throughput</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.stream.app.sink.throughput.ThroughputConsumerConfiguration.class</configClass>
+                        <configClass>org.springframework.cloud.stream.app.sink.throughput.ThroughputSinkConfiguration.class</configClass>
                         <functionDefinition>throughputConsumer</functionDefinition>
                     </generatedApp>
                     <dependencies>
