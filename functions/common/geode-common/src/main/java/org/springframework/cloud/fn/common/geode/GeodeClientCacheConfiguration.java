@@ -125,13 +125,6 @@ public class GeodeClientCacheConfiguration {
 	}
 
 	/**
-	 * Copy the Trust or Key stores from a remote URI into a local file.
-	 *
-	 * @param sslProperties SSL gemfire properties required for retrieving the provided
-	 *     truststore.
-	 * @return Returns the absolute path of the local trust store copy
-	 */
-	/**
 	 * Copy the Trust store specified in the URI into a local accessible file.
 	 *
 	 * @param storeUri Either Keystore or Truststore remote resource URI
