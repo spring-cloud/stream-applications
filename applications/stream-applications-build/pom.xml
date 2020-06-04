@@ -18,6 +18,41 @@
         <module>stream-applications-descriptor</module>
     </modules>
 
+    <properties>
+        <file-source.version>3.0.0-SNAPSHOT</file-source.version>
+        <geode-source.version>3.0.0-SNAPSHOT</geode-source.version>
+        <http-source.version>3.0.0-SNAPSHOT</http-source.version>
+        <jdbc-source.version>3.0.0-SNAPSHOT</jdbc-source.version>
+        <load-generator-source.version>3.0.0-SNAPSHOT</load-generator-source.version>
+        <mongodb-source.version>3.0.0-SNAPSHOT</mongodb-source.version>
+        <mqtt-source.version>3.0.0-SNAPSHOT</mqtt-source.version>
+        <rabbit-source.version>3.0.0-SNAPSHOT</rabbit-source.version>
+        <tcp-source.version>3.0.0-SNAPSHOT</tcp-source.version>
+        <time-source.version>3.0.0-SNAPSHOT</time-source.version>
+        <cassandra-sink.version>3.0.0-SNAPSHOT</cassandra-sink.version>
+        <counter-sink.version>3.0.0-SNAPSHOT</counter-sink.version>
+        <file-sink.version>3.0.0-SNAPSHOT</file-sink.version>
+        <ftp-sink.version>3.0.0-SNAPSHOT</ftp-sink.version>
+        <geode-sink.version>3.0.0-SNAPSHOT</geode-sink.version>
+        <jdbc-sink.version>3.0.0-SNAPSHOT</jdbc-sink.version>
+        <log-sink.version>3.0.0-SNAPSHOT</log-sink.version>
+        <mongodb-sink.version>3.0.0-SNAPSHOT</mongodb-sink.version>
+        <mqtt-sink.version>3.0.0-SNAPSHOT</mqtt-sink.version>
+        <rabbit-sink.version>3.0.0-SNAPSHOT</rabbit-sink.version>
+        <redis-sink.version>3.0.0-SNAPSHOT</redis-sink.version>
+        <router-sink.version>3.0.0-SNAPSHOT</router-sink.version>
+        <sftp-sink.version>3.0.0-SNAPSHOT</sftp-sink.version>
+        <throughput-sink.version>3.0.0-SNAPSHOT</throughput-sink.version>
+        <bridge-processor.version>3.0.0-SNAPSHOT</bridge-processor.version>
+        <filter-processor.version>3.0.0-SNAPSHOT</filter-processor.version>
+        <groovy-processor.version>3.0.0-SNAPSHOT</groovy-processor.version>
+        <header-enricher-processor.version>3.0.0-SNAPSHOT</header-enricher-processor.version>
+        <http-request-processor.version>3.0.0-SNAPSHOT</http-request-processor.version>
+        <script-processor.version>3.0.0-SNAPSHOT</script-processor.version>
+        <splitter-processor.version>3.0.0-SNAPSHOT</splitter-processor.version>
+        <transform-processor.version>3.0.0-SNAPSHOT</transform-processor.version>
+    </properties>
+
     <profiles>
         <profile>
             <id>spring</id>

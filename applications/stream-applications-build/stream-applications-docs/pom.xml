@@ -22,19 +22,58 @@
 			<type>zip</type>
 			<optional>true</optional>
 		</dependency>
+		<!-- Any modules whose javadocs need to be published must be listed here.
+		Modules with @ConfigurationProperties.
+		-->
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>splitter-function</artifactId>
+			<artifactId>file-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>spel-function</artifactId>
+			<artifactId>geode-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>header-enricher-function</artifactId>
+			<artifactId>http-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>jdbc-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>mongodb-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>mqtt-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>rabbit-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>tcp-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>time-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>cassandra-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
@@ -49,27 +88,17 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>ftp-consumer</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>geode-consumer</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>jdbc-consumer</artifactId>
-			<version>${java-functions.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>redis-consumer</artifactId>
-			<version>${java-functions.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>mongodb-consumer</artifactId>
-			<version>${java-functions.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>cassandra-consumer</artifactId>
-			<version>${java-functions.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>rabbit-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
@@ -79,38 +108,28 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>time-supplier</artifactId>
+			<artifactId>mongodb-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>file-supplier</artifactId>
+			<artifactId>mqtt-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>jdbc-supplier</artifactId>
+			<artifactId>rabbit-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>http-supplier</artifactId>
-			<version>${java-functions.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>mongodb-supplier</artifactId>
+			<artifactId>redis-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.stream.app</groupId>
-			<artifactId>bridge-processor</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud.stream.app</groupId>
-			<artifactId>groovy-transform-processor</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<artifactId>router-sink</artifactId>
+			<version>${router-sink.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
@@ -119,8 +138,49 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>ftp-consumer</artifactId>
+			<artifactId>tcp-consumer</artifactId>
 			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>header-enricher-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>http-request-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>spel-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>splitter-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<!-- Apps don't use external functions as baseline, but contain @ConfigurationProperties -->
+		<dependency>
+			<groupId>org.springframework.cloud.stream.app</groupId>
+			<artifactId>load-generator-source</artifactId>
+			<version>${load-generator-source.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.stream.app</groupId>
+			<artifactId>throughput-sink</artifactId>
+			<version>${throughput-sink.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.stream.app</groupId>
+			<artifactId>groovy-processor</artifactId>
+			<version>${groovy-processor.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.stream.app</groupId>
+			<artifactId>script-processor</artifactId>
+			<version>${script-processor.version}</version>
 		</dependency>
 	</dependencies>
 	<profiles>

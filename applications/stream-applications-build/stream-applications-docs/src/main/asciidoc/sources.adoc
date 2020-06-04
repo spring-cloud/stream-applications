@@ -3,14 +3,32 @@
 
 :leveloffset: +2
 
+[[spring-cloud-stream-modules-file-source]]
+include::{stream-apps-root}/{branch}/applications/source/file-source/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-geode-source]]
+include::{stream-apps-root}/{branch}/applications/source/geode-source/README.adoc[tags=ref-doc]
+
 [[spring-cloud-stream-modules-http-source]]
 include::{stream-apps-root}/{branch}/applications/source/http-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-jdbc-source]]
 include::{stream-apps-root}/{branch}/applications/source/jdbc-source/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-load-generator-source]]
+include::{stream-apps-root}/{branch}/applications/source/load-generator-source/README.adoc[tags=ref-doc]
+
 [[spring-cloud-stream-modules-mongodb-source]]
 include::{stream-apps-root}/{branch}/applications/source/mongodb-source/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-mqtt-source]]
+include::{stream-apps-root}/{branch}/applications/source/mqtt-source/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-rabbit-source]]
+include::{stream-apps-root}/{branch}/applications/source/rabbit-source/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-tcp-source]]
+include::{stream-apps-root}/{branch}/applications/source/tcp-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-time-source]]
 include::{stream-apps-root}/{branch}/applications/source/time-source/README.adoc[tags=ref-doc]

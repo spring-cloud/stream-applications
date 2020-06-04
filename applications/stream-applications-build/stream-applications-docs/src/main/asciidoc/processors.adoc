@@ -3,17 +3,28 @@
 
 :leveloffset: +2
 
-[[spring-cloud-stream-modules-bridge]]
+[[spring-cloud-stream-modules-bridge-processor]]
 include::{stream-apps-root}/{branch}/applications/processor/bridge-processor/README.adoc[tags=ref-doc]
-[[spring-cloud-stream-modules-filter]]
+
+[[spring-cloud-stream-modules-filter-processor]]
 include::{stream-apps-root}/{branch}/applications/processor/filter-processor/README.adoc[tags=ref-doc]
-[[spring-cloud-stream-modules-groovy-transform]]
-include::{stream-apps-root}/{branch}/applications/processor/groovy-transform-processor/README.adoc[tags=ref-doc]
-[[spring-cloud-stream-modules-header-enricher]]
+
+[[spring-cloud-stream-modules-groovy-processor]]
+include::{stream-apps-root}/{branch}/applications/processor/groovy-processor/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-header-enricher-processor]]
 include::{stream-apps-root}/{branch}/applications/processor/header-enricher-processor/README.adoc[tags=ref-doc]
-[[spring-cloud-stream-modules-splitter]]
+
+[[spring-cloud-stream-modules-http-request-processor]]
+include::{stream-apps-root}/{branch}/applications/processor/http-request-processor/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-script-processor]]
+include::{stream-apps-root}/{branch}/applications/processor/script-processor/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-splitter-processor]]
 include::{stream-apps-root}/{branch}/applications/processor/splitter-processor/README.adoc[tags=ref-doc]
-[[spring-cloud-stream-modules-transform]]
+
+[[spring-cloud-stream-modules-transform-processor]]
 include::{stream-apps-root}/{branch}/applications/processor/transform-processor/README.adoc[tags=ref-doc]
 
 :leveloffset: -2
