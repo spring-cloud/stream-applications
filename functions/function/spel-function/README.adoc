@@ -1,0 +1,28 @@
+# SpEL Function
+
+This module provides a SpEL function that can be reused and composed in other applications.
+The function can be used to apply SpEL transformations on data based on a SpEL expression.
+
+## Beans for injection
+
+You can import the `SpelFunctionConfiguration` in a Spring Boot application and then inject the following bean.
+
+`spelFunction`
+
+You can use `spelFunction` as a qualifier when injecting.
+
+Once injected, you can use the `apply` method of the `Function` to invoke it and get the result.
+
+## Configuration Options
+
+All configuration properties are prefixed with `spel`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/spel/SpelFunctionProperties.java[SpelFunctionProperties.java]
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/spel/SpelFunctionApplicationTests.java[test suite] for examples of how this function is used.
+
+## Other usage
+
+See this link:../../../applications/processor/transform-processor/README.adoc[README] where this function is used to create a Spring Cloud Stream transformer application.

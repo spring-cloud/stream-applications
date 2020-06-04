@@ -1,0 +1,27 @@
+# Filter Function
+
+This module provides a filter function that can be reused and composed in other applications.
+
+## Beans for injection
+
+You can import the `FilterFunctionConfiguration` in a Spring Boot application and then inject the following bean.
+
+`filterFunction`
+
+You can use `filterFunction` as a qualifier when injecting.
+
+Once injected, you can use the `apply` method of the `Function` to invoke it and get the result.
+
+## Configuration Options
+
+The filter function makes uses of link:../spel-function/README.adoc[SpEL function].
+
+For more information on the various options available, please see link:../spel-function/src/main/java/org/springframework/cloud/fn/spel/SpelFunctionProperties.java[SpelFunctionProperties.java]
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/filter/FilterFunctionApplicationTests.java[test suite] for examples of how this function is used.
+
+## Other usage
+
+See this link:../../../applications/processor/filter-processor/README.adoc[README] where this function is used to create a Spring Cloud Stream application.

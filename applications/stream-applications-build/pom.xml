@@ -42,6 +42,7 @@
         <redis-sink.version>3.0.0-SNAPSHOT</redis-sink.version>
         <router-sink.version>3.0.0-SNAPSHOT</router-sink.version>
         <sftp-sink.version>3.0.0-SNAPSHOT</sftp-sink.version>
+        <tcp-sink.version>3.0.0-SNAPSHOT</tcp-sink.version>
         <throughput-sink.version>3.0.0-SNAPSHOT</throughput-sink.version>
         <bridge-processor.version>3.0.0-SNAPSHOT</bridge-processor.version>
         <filter-processor.version>3.0.0-SNAPSHOT</filter-processor.version>

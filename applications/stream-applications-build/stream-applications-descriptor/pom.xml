@@ -106,7 +106,7 @@
         pom.properties['http-request-processor-docker.tag']=
                 "${http-request-processor.version}".contains('SNAPSHOT') ? 'latest' : "${http-request-processor.version}"
         pom.properties['script-processor-docker.tag']=
-                "${scrirpt-processor.version}".contains('SNAPSHOT') ? 'latest' : "${script-processor.version}"
+                "${script-processor.version}".contains('SNAPSHOT') ? 'latest' : "${script-processor.version}"
         pom.properties['splitter-processor-docker.tag']=
                 "${splitter-processor.version}".contains('SNAPSHOT') ? 'latest' : "${splitter-processor.version}"
         pom.properties['transform-processor-docker.tag']=
