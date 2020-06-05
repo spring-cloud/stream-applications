@@ -1,0 +1,38 @@
+//tag::ref-doc[]
+= Wavefront Sink
+
+The *Wavefront* sink consumes data in JSON format, coverts it into a metric in
+https://docs.wavefront.com/wavefront_data_format.html[Wavefront data format] and sends the metric directly to Wavefront
+or a Wavefront proxy.
+
+== Options
+
+The *Wavefront* $$sink$$ has the following options:
+
+//tag::configuration-properties[]
+$$wavefront.metric-name$$:: $$(Required) The name of the metric.$$ *($$String$$, default: `<none>`,
+format: `Valid characters are: a-z, A-Z, 0-9, hyphen ("-"), underscore ("_"), dot ("."), slash ("/"), and comma (",")`)*
+$$wavefront.source$$:: $$(Required) The source of the metric.$$ *($$String$$, default: `<none>`,
+format: `Valid characters are: a-z, A-Z, 0-9, hyphen ("-"), underscore ("_"), dot ("."). The length of the source field
+should be no more than 128 characters`)*
+$$wavefront.metric-json-path$$:: $$(Required) The json path for the metric value.$$ *($$String$$, default: `<none>`,
+format: `The metric has to be a number that can be parsed into a double-precision floating point number or a long integer.
+It can be positive, negative, or 0`)*
+$$timestamp-json-path$$:: $$(Optional) The json path for a timestamp of the metric.$$ *($$String$$, default: `timestamp is set to the current time`,
+format: `Number that reflects the epoch seconds of the metric (e.g. 1382754475)`)*
+$$wavefront.point-tags-json-paths-point-value$$:: $$(Optional) Collection of custom metadata associated with the metric.$$ *($$String$$, default: `<none>`,
+format: `Point tags cannot be empty. Valid characters for keys: alphanumeric, hyphen ("-"), underscore ("_"), dot (".").
+For values any character is allowed, including spaces. To include a double quote, escape it with a backslash, for
+example, \". A backslash cannot be the last character in the tag value. Maximum allowed length for a combination of a
+point tag key and value is 254 characters (255 including the "=" separating key and value). If the value is longer,
+the point is rejected and logged`)*
+$$wavefront.wavefront-domain$$:: $$(Required, if "wavefront-proxy-url" is not set) The URL of the Wavefront
+environment.$$ *($$String$$, default: `<none>`)*
+$$wavefront.wavefront-token$$:: $$(Required, if "wavefront-proxy-url" is not set) The token for the Wavefront
+environment.$$ *($$String$$, default: `<none>`)*
+$$wavefront.wavefront-proxy-address$$:: $$(Required, if "wavefront-proxy-domain" is not set) The URL of the Wavefront
+proxy.$$ *($$String$$, default: `<none>`)*
+
+//end::configuration-properties[]
+
+//end::ref-doc[]

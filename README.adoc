@@ -69,6 +69,9 @@ The following are the four major components of this repository.
 |
 |link:functions/consumer/websocket-consumer/README.adoc[Websocker]
 |
+|
+|link:functions/consumer/wavefront-consumer/README.adoc[Wavefront]
+|
 |===
 
 === Available Spring Cloud Stream Applications
@@ -129,6 +132,9 @@ The following are the four major components of this repository.
 |
 |
 |link:applications/sink/twitter-update-sink/README.adoc[Twitter Update]
+|
+|link:applications/sink/wavefront-sink/README.adoc[Wavefront]
+|
 |
 |===
 
