@@ -13,6 +13,7 @@
         <module>geode-source</module>
         <module>file-source</module>
         <module>jdbc-source</module>
+        <module>jms-source</module>
         <module>http-source</module>
         <module>mqtt-source</module>
         <module>time-source</module>
