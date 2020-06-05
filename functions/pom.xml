@@ -68,6 +68,7 @@
 		<module>consumer/websocket-consumer</module>
 		<module>consumer/s3-consumer</module>
 		<module>consumer/twitter-consumer</module>
+		<module>consumer/wavefront-consumer</module>
 
 		<module>function/filter-function</module>
 		<module>function/header-enricher-function</module>
