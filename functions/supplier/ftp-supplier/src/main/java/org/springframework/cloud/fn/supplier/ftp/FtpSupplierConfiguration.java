@@ -140,5 +140,4 @@ public class FtpSupplierConfiguration {
 			return () -> Flux.from(ftpReadingFlow());
 		}
 	}
-
 }

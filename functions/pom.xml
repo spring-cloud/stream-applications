@@ -41,6 +41,7 @@
 	</properties>
 
   	<modules>
+		<module>common/aws-s3-common</module>
 		<module>common/config-common</module>
 		<module>common/file-common</module>
 		<module>common/ftp-common</module>
@@ -65,6 +66,7 @@
 		<module>consumer/sftp-consumer</module>
 		<module>consumer/tcp-consumer</module>
 		<module>consumer/websocket-consumer</module>
+		<module>consumer/s3-consumer</module>
 
 		<module>function/filter-function</module>
 		<module>function/header-enricher-function</module>
@@ -86,6 +88,7 @@
 		<module>supplier/time-supplier</module>
 		<module>supplier/rabbit-supplier</module>
 		<module>supplier/websocket-supplier</module>
+		<module>supplier/s3-supplier</module>
 
 		<module>spring-functions-parent</module>
 	</modules>

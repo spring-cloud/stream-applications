@@ -23,5 +23,6 @@
         <module>tcp-source</module>
         <module>rabbit-source</module>
         <module>websocket-source</module>
+        <module>s3-source</module>
     </modules>
 </project>

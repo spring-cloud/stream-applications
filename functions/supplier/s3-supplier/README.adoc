@@ -1,0 +1,35 @@
+# AWS S3 Supplier
+
+This module provides an S3 supplier that can be reused and composed in other applications.
+The `Supplier` uses the AWS S3 support provided by Spring Integration and spring cloud aws project
+`S3Supplier` is implemented as a `java.util.function.Supplier`.
+This supplier gives you a reactive stream of files from the provided directory as the supplier has a signature of `Supplier<Flux<Message<?>>>`.
+Users have to subscribe to this `Flux` and receive the data.
+
+## Beans for injection
+
+You can import the `AwsS3SupplierConfiguration` in the application and then inject the following bean.
+
+`s3Supplier`
+
+You need to inject this as `Supplier<Flux<Message<?>>>`.
+
+You can use `s3Supplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it and then subscribe to the returned `Flux`.
+
+## Configuration Options
+
+All configuration properties are prefixed with `s3.supplier`.
+There are also properties that need to be used with the prefix `file.consumer`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/s3/AwsS3SupplierProperties.java[AwsS3upplierProperties].
+See link:../../common/file-common/src/main/java/org/springframework/cloud/fn/common/file/FileConsumerProperties.java[this] also.
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/supplier/s3[test suite] for the various ways, this supplier is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/s3-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application where it makes an AWS S3 Source.
