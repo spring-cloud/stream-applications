@@ -12,6 +12,7 @@
     <modules>
         <module>geode-source</module>
         <module>file-source</module>
+        <module>ftp-source</module>
         <module>jdbc-source</module>
         <module>http-source</module>
         <module>mqtt-source</module>

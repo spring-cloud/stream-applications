@@ -1,0 +1,98 @@
+//tag::ref-doc[]
+= FTP Source
+This source application supports transfer of files using the FTP protocol.
+Files are transferred from the `remote` directory to the `local` directory where the app is deployed.
+Messages emitted by the source are provided as a byte array by default. However, this can be
+customized using the `--mode` option:
+
+- *ref* Provides a `java.io.File` reference
+- *lines* Will split files line-by-line and emit a new message for each line
+- *contents* The default. Provides the contents of a file as a byte array
+
+When using `--mode=lines`, you can also provide the additional option `--withMarkers=true`.
+If set to `true`, the underlying `FileSplitter` will emit additional _start-of-file_ and _end-of-file_ marker messages before and after the actual data.
+The payload of these 2 additional marker messages is of type `FileSplitter.FileMarker`. The option `withMarkers` defaults to `false` if not explicitly set.
+
+See also https://github.com/spring-cloud/stream-applications/blob/master/functions/common/metadata-store-common/README.adoc[`MetaDataStore`] options for possible shared persistent store configuration for the `FtpPersistentAcceptOnceFileListFilter` used in the FTP Source.
+
+== Input
+
+N/A (Fetches files from an FTP server).
+
+== Output
+
+=== mode = contents
+
+==== Headers:
+
+* `Content-Type: application/octet-stream`
+* `file_originalFile: <java.io.File>`
+* `file_name: <file name>`
+
+==== Payload:
+
+A `byte[]` filled with the file contents.
+
+=== mode = lines
+
+==== Headers:
+
+* `Content-Type: text/plain`
+* `file_orginalFile: <java.io.File>`
+* `file_name: <file name>`
+* `correlationId: <UUID>` (same for each line)
+* `sequenceNumber: <n>`
+* `sequenceSize: 0` (number of lines is not know until the file is read)
+
+==== Payload:
+
+A `String` for each line.
+
+The first line is optionally preceded by a message with a `START` marker payload.
+The last line is optionally followed by a message with an `END` marker payload.
+
+Marker presence and format are determined by the `with-markers` and `markers-json` properties.
+
+=== mode = ref
+
+==== Headers:
+
+None.
+
+==== Payload:
+
+A `java.io.File` object.
+
+== Options
+
+The **$$ftp$$** $$source$$ has the following options:
+
+//tag::configuration-properties[]
+$$file.consumer.markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$true$$`)*
+$$file.consumer.mode$$:: $$The FileReadingMode to use for file reading sources. Values are 'ref' - The File object, 'lines' - a message per line, or 'contents' - the contents as bytes.$$ *($$FileReadingMode$$, default: `$$<none>$$`, possible values: `ref`,`lines`,`contents`)*
+$$file.consumer.with-markers$$:: $$Set to true to emit start of file/end of file marker messages before/after the data. Only valid with FileReadingMode 'lines'.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$ftp.factory.cache-sessions$$:: $$Cache sessions.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$ftp.factory.client-mode$$:: $$The client mode to use for the FTP session.$$ *($$ClientMode$$, default: `$$<none>$$`, possible values: `ACTIVE`,`PASSIVE`)*
+$$ftp.factory.host$$:: $$The host name of the server.$$ *($$String$$, default: `$$localhost$$`)*
+$$ftp.factory.password$$:: $$The password to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
+$$ftp.factory.port$$:: $$The port of the server.$$ *($$Integer$$, default: `$$21$$`)*
+$$ftp.factory.username$$:: $$The username to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
+$$ftp.supplier.auto-create-local-dir$$:: $$Set to true to create the local directory if it does not exist.$$ *($$Boolean$$, default: `$$true$$`)*
+$$ftp.supplier.delay-when-empty$$:: $$Duration of delay when no new files are detected.$$ *($$Duration$$, default: `$$1s$$`)*
+$$ftp.supplier.delete-remote-files$$:: $$Set to true to delete remote files after successful transfer.$$ *($$Boolean$$, default: `$$false$$`)*
+$$ftp.supplier.filename-pattern$$:: $$A filter pattern to match the names of files to transfer.$$ *($$String$$, default: `$$<none>$$`)*
+$$ftp.supplier.filename-regex$$:: $$A filter regex pattern to match the names of files to transfer.$$ *($$Pattern$$, default: `$$<none>$$`)*
+$$ftp.supplier.local-dir$$:: $$The local directory to use for file transfers.$$ *($$File$$, default: `$$<none>$$`)*
+$$ftp.supplier.preserve-timestamp$$:: $$Set to true to preserve the original timestamp.$$ *($$Boolean$$, default: `$$true$$`)*
+$$ftp.supplier.remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$/$$`)*
+$$ftp.supplier.remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$/$$`)*
+$$ftp.supplier.tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
+//end::configuration-properties[]
+
+== Examples
+
+```
+java -jar ftp_source.jar --ftp.remote-dir=foo --file.mode=lines --trigger.fixed-delay=60 --ftp.factory.host=ftpserver \
+         --ftp.factory.username=user --ftp.factory.password=pw --ftp.local-dir=/foo
+```
+//end::ref-doc[]

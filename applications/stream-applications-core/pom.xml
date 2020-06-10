@@ -56,7 +56,6 @@
         <module>common/stream-applications-test-support</module>
         <module>common/stream-applications-postprocessor-common</module>
         <module>common/stream-applications-micrometer-common</module>
-        <module>common/stream-applications-metadata-store-common</module>
         <module>common/stream-applications-task-launch-request-common</module>
         <module>common/stream-applications-security-common</module>
     </modules>
