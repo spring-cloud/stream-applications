@@ -23,6 +23,7 @@
         <module>rabbit-sink</module>
         <module>router-sink</module>
         <module>sftp-sink</module>
+        <module>tasklauncher-sink</module>
         <module>tcp-sink</module>
         <module>throughput-sink</module>
     </modules>
