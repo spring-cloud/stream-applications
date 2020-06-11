@@ -79,6 +79,7 @@
 		<module>function/tasklauncher-function</module>
 		<module>function/task-launch-request-function</module>
 		<module>function/twitter-function</module>
+		<module>function/tensorflow-function</module>
 
 		<module>supplier/file-supplier</module>
 		<module>supplier/ftp-supplier</module>
