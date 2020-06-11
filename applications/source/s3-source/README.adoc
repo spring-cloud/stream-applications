@@ -1,0 +1,97 @@
+//tag::ref-doc[]
+= Amazon S3 Source
+
+This source app supports transfer of files using the Amazon S3 protocol.
+Files are transferred from the `remote` directory (S3 bucket) to the `local` directory where the application is deployed.
+
+Messages emitted by the source are provided as a byte array by default. However, this can be
+customized using the `--mode` option:
+
+- *ref* Provides a `java.io.File` reference
+- *lines* Will split files line-by-line and emit a new message for each line
+- *contents* The default. Provides the contents of a file as a byte array
+
+When using `--mode=lines`, you can also provide the additional option `--withMarkers=true`.
+If set to `true`, the underlying `FileSplitter` will emit additional _start-of-file_ and _end-of-file_ marker messages before and after the actual data.
+The payload of these 2 additional marker messages is of type `FileSplitter.FileMarker`. The option `withMarkers` defaults to `false` if not explicitly set.
+
+=== mode = lines
+
+==== Headers:
+
+* `Content-Type: text/plain`
+* `file_orginalFile: <java.io.File>`
+* `file_name: <file name>`
+* `correlationId: <UUID>` (same for each line)
+* `sequenceNumber: <n>`
+* `sequenceSize: 0` (number of lines is not know until the file is read)
+
+==== Payload:
+
+A `String` for each line.
+
+The first line is optionally preceded by a message with a `START` marker payload.
+The last line is optionally followed by a message with an `END` marker payload.
+
+Marker presence and format are determined by the `with-markers` and `markers-json` properties.
+
+=== mode = ref
+
+==== Headers:
+
+None.
+
+==== Payload:
+
+A `java.io.File` object.
+
+== Options
+
+The **$$s3$$** $$source$$ has the following options:
+
+//tag::configuration-properties[]
+$$file.consumer.markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$true$$`)*
+$$file.consumer.mode$$:: $$The FileReadingMode to use for file reading sources. Values are 'ref' - The File object, 'lines' - a message per line, or 'contents' - the contents as bytes.$$ *($$FileReadingMode$$, default: `$$<none>$$`, possible values: `ref`,`lines`,`contents`)*
+$$file.consumer.with-markers$$:: $$Set to true to emit start of file/end of file marker messages before/after the data. Only valid with FileReadingMode 'lines'.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$s3.supplier.auto-create-local-dir$$:: $$Create or not the local directory.$$ *($$Boolean$$, default: `$$true$$`)*
+$$s3.supplier.delete-remote-files$$:: $$Delete or not remote files after processing.$$ *($$Boolean$$, default: `$$false$$`)*
+$$s3.supplier.filename-pattern$$:: $$The pattern to filter remote files.$$ *($$String$$, default: `$$<none>$$`)*
+$$s3.supplier.filename-regex$$:: $$The regexp to filter remote files.$$ *($$Pattern$$, default: `$$<none>$$`)*
+$$s3.supplier.local-dir$$:: $$The local directory to store files.$$ *($$File$$, default: `$$<none>$$`)*
+$$s3.supplier.preserve-timestamp$$:: $$To transfer or not the timestamp of the remote file to the local one.$$ *($$Boolean$$, default: `$$true$$`)*
+$$s3.supplier.remote-dir$$:: $$AWS S3 bucket resource.$$ *($$String$$, default: `$$bucket$$`)*
+$$s3.supplier.remote-file-separator$$:: $$Remote File separator.$$ *($$String$$, default: `$$/$$`)*
+$$s3.supplier.tmp-file-suffix$$:: $$Temporary file suffix.$$ *($$String$$, default: `$$.tmp$$`)*
+//end::configuration-properties[]
+
+== Amazon AWS common options
+
+The Amazon S3 Source (as all other Amazon AWS applications) is based on the
+https://github.com/spring-cloud/spring-cloud-aws[Spring Cloud AWS] project as a foundation, and its auto-configuration
+classes are used automatically by Spring Boot.
+Consult their documentation regarding required and useful auto-configuration properties.
+
+Some of them are about AWS credentials:
+
+- cloud.aws.credentials.accessKey
+- cloud.aws.credentials.secretKey
+- cloud.aws.credentials.instanceProfile
+- cloud.aws.credentials.profileName
+- cloud.aws.credentials.profilePath
+
+Other are for AWS `Region` definition:
+
+- cloud.aws.region.auto
+- cloud.aws.region.static
+
+And for AWS `Stack`:
+
+- cloud.aws.stack.auto
+- cloud.aws.stack.name
+
+== Examples
+
+```
+java -jar s3-source.jar --s3.remoteDir=/tmp/foo --file.consumer.mode=lines --trigger.fixed-delay=60
+```
+//end::ref-doc[]
