@@ -1,0 +1,11 @@
+image:
+  recognition:
+      model: https://storage.googleapis.com/mobilenet_v2/checkpoints/mobilenet_v2_1.4_224.tgz#mobilenet_v2_1.4_224_frozen.pb
+      modelType: mobilenetv2
+      responseSize: 3
+      normalizedImageSize: 224
+      cacheModel: true
+spring:
+    cloud:
+        function:
+            definition: imageRecognitionFunction

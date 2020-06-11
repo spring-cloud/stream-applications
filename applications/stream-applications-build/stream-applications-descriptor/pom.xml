@@ -127,6 +127,10 @@
                 "${header-enricher-processor.version}".contains('SNAPSHOT') ? 'latest' : "${header-enricher-processor.version}"
         pom.properties['http-request-processor-docker.tag']=
                 "${http-request-processor.version}".contains('SNAPSHOT') ? 'latest' : "${http-request-processor.version}"
+        pom.properties['image-recognition-processor-docker.tag']=
+                "${image-recognition-processor.version}".contains('SNAPSHOT') ? 'latest' : "${image-recognition-processor.version}"
+        pom.properties['object-detection-processor-docker.tag']=
+                "${object-detection-processor.version}".contains('SNAPSHOT') ? 'latest' : "${object-detection-processor.version}"
         pom.properties['script-processor-docker.tag']=
                 "${script-processor.version}".contains('SNAPSHOT') ? 'latest' : "${script-processor.version}"
         pom.properties['splitter-processor-docker.tag']=

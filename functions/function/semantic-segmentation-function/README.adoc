@@ -1,0 +1,104 @@
+:images-asciidoc: https://raw.githubusercontent.com/tzolov/stream-applications/tensorflow-redesign/functions/function/semantic-segmentation-function/src/main/resources/images/
+# Semantic Segmentation
+
+[.lead]
+Image Semantic Segmentation based on the state-of-art https://github.com/tensorflow/models/tree/master/research/deeplab[DeepLab] Tensorflow model.
+
+[cols="1,2", frame=none, grid=none]
+|===
+| image:{images-asciidoc}/VikiMaxiAdi-all.png[width=100%]
+|Semantic Segmentation is the process of associating each pixel of an image with a class label, (such as flower, person, road, sky, ocean, or car).
+Unlike the `Instance Segmentation`, which produces instance-aware region masks, the `Semantic Segmentation` produces class-aware masks.
+For implementing `Instance Segmentation` consult the https://github.com/tzolov/stream-applications/tree/tensorflow-redesign/functions/function/object-detection-function[Object Detection Service] instead.
+|===
+
+The https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/deprecated/JsonMapperFunction.java[JsonMapperFunction] permits
+converting the `List<ObjectDetection>` into JSON objects, and the
+https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/function/object-detection-function/src/main/java/org/springframework/cloud/fn/object/detection/ObjectDetectionImageAugmenter.java[ObjectDetectionImageAugmenter]
+allow to augment the input image with the detected bounding boxes and segmentation masks.
+
+## Usage
+
+Add the `semantic-segmentation` dependency to your pom (_use the latest version available_):
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud.fn</groupId>
+    <artifactId>semantic-segmentation-function</artifactId>
+    <version>${spring-cloud-fn.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.cloud.fn</groupId>
+    <artifactId>object-detection-function</artifactId>
+    <version>${spring-cloud-fn.version}</version>
+</dependency>
+----
+
+Following snippet demos how to use the PASCAL VOC model to apply mask to an input image
+
+[source,java,linenums]
+----
+
+SemanticSegmentation segmentationService = new SemanticSegmentation(
+  "http://download.tensorflow.org/models/deeplabv3_mnv2_pascal_trainval_2018_01_29.tar.gz#frozen_inference_graph.pb", // <1>
+  true); // <2>
+
+byte[] inputImage = GraphicsUtils.loadAsByteArray("classpath:/images/VikiMaxiAdi.jpg"); // <3>
+
+byte[] imageMask = segmentationService.masksAsImage(inputImage); // <4>
+BufferedImage bi = ImageIO.read(new ByteArrayInputStream(imageMask));
+ImageIO.write(bi, "png", new FileOutputStream("./semantic-segmentation-function/target/VikiMaxiAdi_masks.png"));
+
+byte[] augmentedImage = segmentationService.augment(inputImage); // <5>
+IOUtils.write(augmentedImage, new FileOutputStream("./semantic-segmentation-function/target/VikiMaxiAdi_augmented.jpg"));
+----
+<1> Download the PASCAL 2012 trained model directly from the web. The `frozen_inference_graph.pb` is the name of the model
+file inside the `tar.gz` archive.
+<2> Cache the downloaded model locally
+<3> Load the input image as byte array
+<4> Read get the segmentation mask as separate image
+<5> Blend the segmentation mask on top of the original image
+
+## Models
+
+Based on the training datasets, three groups of pre-trained models provided:
+
+[cols="1,2", frame=none, grid=none]
+|===
+| image:{images-asciidoc}/VikiMaxiAdi-all.png[width=100%]
+| https://github.com/tensorflow/models/blob/master/research/deeplab/g3doc/model_zoo.md#deeplab-models-trained-on-pascal-voc-2012[DeepLab models trained on PASCAL VOC 2012]
+
+| image:{images-asciidoc}/cityscape-all-small.png[width=100%]
+| https://github.com/tensorflow/models/blob/master/research/deeplab/g3doc/model_zoo.md#deeplab-models-trained-on-cityscapes[DeepLab models trained on Cityscapes]
+
+| image:{images-asciidoc}/ADE20K-all-small.png[width=100%]
+| https://github.com/tensorflow/models/blob/master/research/deeplab/g3doc/model_zoo.md#deeplab-models-trained-on-ade20k[DeepLab models trained on ADE20K]
+|===
+
+Select the model you want to use, copy its archive download Url and add a `#frozen_inference_graph.pb` fragment to it.
+Later fragment is the frozen model's file name inside the archive
+
+TIP: Download the archive and uncompress the `frozen_inference_graph.pb` for required model. Then use the `file://<local-file-name>` URI schema.
+
+Also, convenience there are a couple of models, extracted from the archive and uploaded to bintray:
+
+[cols=2*,, frame=none, grid=none]
+|===
+|PASCAL VOC 2012 (default)
+|http://dl.bintray.com/big-data/generic/deeplabv3_mnv2_pascal_train_aug_frozen_inference_graph.pb
+
+|CITYSCAPE
+|http://dl.bintray.com/big-data/generic/deeplabv3_mnv2_cityscapes_train_2018_02_05_frozen_inference_graph.pb
+
+|ADE20K
+|http://dl.bintray.com/big-data/generic/deeplabv3_xception_ade20k_train_2018_05_29_frozen_inference_graph.pb
+|===
+
+## References:
+[.small]
+* https://ai.googleblog.com/2018/03/semantic-image-segmentation-with.html[Semantic Image Segmentation with DeepLab in TensorFlow]
+* https://github.com/tensorflow/models/tree/master/research/deeplab[DeepLab Project]
+* https://medium.freecodecamp.org/how-to-use-deeplab-in-tensorflow-for-object-segmentation-using-deep-learning-a5777290ab6b[How to re-train DeepLab Segmentation models using Transfer Learning]
+

@@ -51,7 +51,7 @@
 		<module>common/mqtt-common</module>
 		<module>common/tcp-common</module>
 		<module>common/twitter-common</module>
-
+		<module>common/tensorflow-common</module>
 
 		<module>consumer/cassandra-consumer</module>
 		<module>consumer/counter-consumer</module>
@@ -79,6 +79,9 @@
 		<module>function/tasklauncher-function</module>
 		<module>function/task-launch-request-function</module>
 		<module>function/twitter-function</module>
+		<module>function/image-recognition-function</module>
+		<module>function/object-detection-function</module>
+		<module>function/semantic-segmentation-function</module>
 
 		<module>supplier/file-supplier</module>
 		<module>supplier/ftp-supplier</module>
