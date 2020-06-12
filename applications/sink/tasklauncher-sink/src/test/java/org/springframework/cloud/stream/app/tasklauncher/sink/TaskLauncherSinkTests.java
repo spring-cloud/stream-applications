@@ -31,9 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
@@ -41,7 +39,6 @@ import org.springframework.cloud.dataflow.rest.client.TaskOperations;
 import org.springframework.cloud.dataflow.rest.resource.CurrentTaskExecutionsResource;
 import org.springframework.cloud.dataflow.rest.resource.LauncherResource;
 import org.springframework.cloud.fn.tasklauncher.LaunchRequest;
-import org.springframework.cloud.stream.binder.test.TestChannelBinder;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -49,8 +46,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.acks.AcknowledgmentCallback;
+import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.util.DynamicPeriodicTrigger;
-import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.SubscribableChannel;
 import org.springframework.messaging.support.ErrorMessage;
@@ -220,10 +217,6 @@ public class TaskLauncherSinkTests {
 	@SpringBootApplication
 	static class TestConfig {
 
-		private ObjectMapper objectMapper = new ObjectMapper();
-
-		private DataFlowOperations dataFlowOperations;
-
 		private TaskOperations taskOperations;
 
 		private CurrentTaskExecutionsResource currentTaskExecutionsResource = new CurrentTaskExecutionsResource();
@@ -247,6 +240,7 @@ public class TaskLauncherSinkTests {
 		DataFlowOperations dataFlowOperations(CurrentTaskExecutionsResource currentTaskExecutionsResource,
 				CountDownLatch latch) {
 
+			DataFlowOperations dataFlowOperations;
 			taskOperations = mock(TaskOperations.class);
 			when(taskOperations.launch(anyString(), anyMap(), anyList(), isNull()))
 					.thenAnswer((Answer<Long>) invocation -> {
@@ -279,49 +273,39 @@ public class TaskLauncherSinkTests {
 		}
 
 		@Bean
-		public BeanPostProcessor beanPostProcessor(Environment environment, CountDownLatch countDownLatch) {
-			return new BeanPostProcessor() {
-
-				@Nullable
-				@Override
-				public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-
-					if (bean instanceof TestChannelBinder) {
-						((TestChannelBinder) bean).setMessageSourceDelegate(() -> {
-							boolean messageSourceDisabled = Boolean.valueOf(
-									environment.getProperty("messageSourceDisabled", "false"));
-							LaunchRequest request = new LaunchRequest();
-							request.setTaskName("foo");
-							if (environment.getProperty("requestWrongPlatform", "false")
-									.equals("true")) {
-								request.getDeploymentProperties().put(LaunchRequestConsumer.TASK_PLATFORM_NAME,
-										"other");
-							}
-
-							Message<byte[]> message = null;
-
-							if (messageSourceDisabled) {
-								countDownLatch.countDown();
-							}
-							else {
-								try {
-									message = MessageBuilder.withPayload(
-											objectMapper.writeValueAsBytes(request))
-											.setHeader("contentType", "application/json")
-											.setHeader(IntegrationMessageHeaderAccessor.ACKNOWLEDGMENT_CALLBACK,
-													(AcknowledgmentCallback) status -> {
-													})
-											.build();
-								}
-								catch (JsonProcessingException e) {
-									throw new BeanCreationException(e.getMessage(), e);
-								}
-							}
-							return message;
-						});
-					}
-					return bean;
+		public MessageSource<byte[]> testMessageSource(Environment environment, CountDownLatch countDownLatch,
+				ObjectMapper objectMapper) {
+			return () -> {
+				boolean messageSourceDisabled = Boolean.valueOf(
+						environment.getProperty("messageSourceDisabled", "false"));
+				LaunchRequest request = new LaunchRequest();
+				request.setTaskName("foo");
+				if (environment.getProperty("requestWrongPlatform", "false")
+						.equals("true")) {
+					request.getDeploymentProperties().put(LaunchRequestConsumer.TASK_PLATFORM_NAME,
+							"other");
 				}
+
+				Message<byte[]> message = null;
+
+				if (messageSourceDisabled) {
+					countDownLatch.countDown();
+				}
+				else {
+					try {
+						message = MessageBuilder.withPayload(
+								objectMapper.writeValueAsBytes(request))
+								.setHeader("contentType", "application/json")
+								.setHeader(IntegrationMessageHeaderAccessor.ACKNOWLEDGMENT_CALLBACK,
+										(AcknowledgmentCallback) status -> {
+										})
+								.build();
+					}
+					catch (JsonProcessingException e) {
+						throw new BeanCreationException(e.getMessage(), e);
+					}
+				}
+				return message;
 			};
 		}
 	}
