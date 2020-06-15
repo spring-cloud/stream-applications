@@ -16,9 +16,11 @@
 
 package org.springframework.cloud.stream.app.source.time;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -26,6 +28,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.supplier.time.TimeSupplierConfiguration;
 import org.springframework.cloud.fn.supplier.time.TimeSupplierProperties;
+import org.springframework.cloud.fn.task.launch.request.TaskLaunchRequest;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -37,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 /**
  * @author Soby Chacko
+ * @author David Turanski
  */
 public class TimeSourceTests {
 
@@ -45,8 +49,8 @@ public class TimeSourceTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(TimeSourceTestApplication.class))
-				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=timeSupplier")) {
+								.web(WebApplicationType.NONE)
+								.run("--spring.cloud.function.definition=timeSupplier")) {
 
 			OutputDestination target = context.getBean(OutputDestination.class);
 			Message<byte[]> sourceMessage = target.receive(10000);
@@ -58,6 +62,46 @@ public class TimeSourceTests {
 				Date date = dateFormat.parse(actual);
 				assertThat(date).isNotNull();
 			}).doesNotThrowAnyException();
+		}
+	}
+
+	@Test
+	public void testSourceComposedWithSpel() {
+		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+				TestChannelBinderConfiguration
+						.getCompleteConfiguration(TimeSourceTestApplication.class))
+								.web(WebApplicationType.NONE)
+								.run("--spring.cloud.stream.function.definition=timeSupplier|toMessage|spelFunction",
+										"--spel.function.expression=payload.length()")) {
+
+			OutputDestination target = context.getBean(OutputDestination.class);
+			Message<byte[]> sourceMessage = target.receive(10000);
+			final String actual = new String(sourceMessage.getPayload());
+			assertThat(Integer.valueOf(actual)).isEqualTo(17);
+		}
+	}
+
+	@Test
+	public void testSourceComposedWithOtherStuff() throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+				TestChannelBinderConfiguration
+						.getCompleteConfiguration(TimeSourceTestApplication.class))
+								.web(WebApplicationType.NONE)
+								.run("--spring.cloud.stream.function.definition=timeSupplier|toMessage|spelFunction|headerEnricherFunction|taskLaunchRequestFunction",
+										"--spel.function.expression=payload.length()",
+										"--header.enricher.headers=task-id=payload*2",
+										"--spring.cloud.stream.bindings.output.destination=foo",
+										"--task.launch.request.task-name-expression='task-'+headers['task-id']")) {
+
+			OutputDestination target = context.getBean(OutputDestination.class);
+			Message<byte[]> sourceMessage = target.receive(10000);
+			TaskLaunchRequest taskLaunchRequest = objectMapper.readValue(sourceMessage.getPayload(),
+					TaskLaunchRequest.class);
+			assertThat(taskLaunchRequest.getTaskName()).isEqualTo("task-34");
+			assertThat(context.getEnvironment().getProperty(
+					"spring.cloud.stream.function.bindings.timeSuppliertoMessagespelFunctionheaderEnricherFunctiontaskLaunchRequestFunction-out-0"))
+							.isEqualTo("output");
 		}
 	}
 

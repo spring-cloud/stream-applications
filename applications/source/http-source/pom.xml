@@ -61,6 +61,11 @@
                             <artifactId>http-supplier</artifactId>
                             <version>${java-functions.version}</version>
                         </dependency>
+                        <dependency>
+                            <groupId>org.springframework.cloud.stream.app</groupId>
+                            <artifactId>stream-applications-composite-function-support</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
                     </dependencies>
 
                     <additionalAppProperties>
