@@ -73,6 +73,7 @@
 		<module>function/payload-converter-function</module>
 		<module>function/splitter-function</module>
 		<module>function/tasklauncher-function</module>
+		<module>function/task-launch-request-function</module>
 
 		<module>supplier/file-supplier</module>
 		<module>supplier/ftp-supplier</module>
