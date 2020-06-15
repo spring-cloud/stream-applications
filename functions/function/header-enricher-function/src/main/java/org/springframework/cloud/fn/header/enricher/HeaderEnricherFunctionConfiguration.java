@@ -24,6 +24,7 @@ import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,7 @@ import org.springframework.messaging.Message;
  */
 @Configuration
 @EnableConfigurationProperties(HeaderEnricherFunctionProperties.class)
+@ConditionalOnProperty(prefix = "header.enricher", value = "headers")
 public class HeaderEnricherFunctionConfiguration {
 
 	@Autowired

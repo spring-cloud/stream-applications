@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.fn.header.enricher;
 
-
 import java.util.Properties;
 
 import javax.validation.constraints.NotNull;
@@ -36,13 +35,13 @@ import org.springframework.validation.annotation.Validated;
 public class HeaderEnricherFunctionProperties {
 
 	/**
-	 * \n separated properties representing headers in which values are SpEL expressions,
-	 * e.g foo='bar' \n baz=payload.baz.
+	 * \n separated properties representing headers in which values are SpEL expressions, e.g
+	 * foo='bar' \n baz=payload.baz.
 	 */
 	private Properties headers;
 
 	/**
-	 *  set to true to overwrite any existing message headers.
+	 * set to true to overwrite any existing message headers.
 	 */
 	private boolean overwrite = false;
 

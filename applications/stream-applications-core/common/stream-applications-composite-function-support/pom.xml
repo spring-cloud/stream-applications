@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2020-2020 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>org.springframework.cloud.stream.app</groupId>
+		<artifactId>stream-applications-core</artifactId>
+		<version>3.0.0-SNAPSHOT</version>
+		<relativePath>../..</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>stream-applications-composite-function-support</artifactId>
+	<packaging>jar</packaging>
+	<name>stream-applications-composite-function-support</name>
+	<description>Common dependencies and configuration for composite functions</description>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>filter-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>spel-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>header-enricher-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>payload-converter-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>splitter-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>task-launch-request-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

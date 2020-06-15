@@ -57,6 +57,7 @@
         <module>common/stream-applications-postprocessor-common</module>
         <module>common/stream-applications-micrometer-common</module>
         <module>common/stream-applications-security-common</module>
+        <module>common/stream-applications-composite-function-support</module>
     </modules>
 
     <dependencyManagement>
