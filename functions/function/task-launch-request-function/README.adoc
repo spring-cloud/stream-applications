@@ -1,0 +1,22 @@
+# Task Launch Request Function
+
+This module provides a function that can be reused and composed in other applications to transform the output to a link:src/main/java/org/springframework/cloud/fn/task/launch/request/TaskLaunchRequest.java[TaskLaunchRequest]
+that can be used as input to the Tasklauncher function to launch a task.
+
+## Beans for injection
+
+You can import the `TaskLaunchRequestFunctionConfiguration` in a Spring Boot application and then inject the following bean.
+
+`taskLaunchRequestFunction` as a link:src/main/java/org/springframework/cloud/fn/task/launch/request/TaskLaunchRequestFunction.java[TaskLaunchRequestFunction].
+
+You can use `taskLaunchRequestFunction` as a qualifier when injecting.
+
+Once injected, you can use the `apply` method of the `Function` to invoke it and get the result.
+
+## Configuration Options
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/task/launch/request/TaskLaunchRequestFunctionProperties.java[TaskLaunchRequestFunctionProperties.java]
+
+## Examples
+
+See this link:src/test/java/org/springframework/cloud/fn/task/launch/request/TaskLaunchRequestFunctionApplicationTests.java[test suite] for examples of how this function is used.
