@@ -1,25 +1,14 @@
 //tag::ref-doc[]
 = Amazon S3 Sink
 
-This sink app supports transfer files to the Amazon S3 bucket.
+This sink app supports transferring objects to the Amazon S3 bucket.
 Files payloads (and directories recursively) are transferred to the `remote` directory (S3 bucket) to the `local` directory where the application is deployed.
 
-Messages accepted by this sink must contain `payload` as:
+Messages accepted by this sink must contain one of the `payload` as:
 
 - `File`, including directories for recursive upload;
 - `InputStream`;
 - `byte[]`
-
-When using `--mode=lines`, you can also provide the additional option `--withMarkers=true`.
-If set to `true`, the underlying `FileSplitter` will emit additional _start-of-file_ and _end-of-file_ marker messages before and after the actual data.
-The payload of these 2 additional marker messages is of type `FileSplitter.FileMarker`. The option `withMarkers` defaults to `false` if not explicitly set.
-
-=== Payload
-
-* `java.io.File`
-* `java.io.InputStream`
-* `byte[]`
-* `String`
 
 == Options
 
@@ -34,6 +23,7 @@ $$s3.consumer.key-expression$$:: $$Expression to evaluate S3 Object key.$$ *($$E
 //end::configuration-properties[]
 
 The target generated application based on the `AmazonS3SinkConfiguration` can be enhanced with the `S3MessageHandler.UploadMetadataProvider` and/or `S3ProgressListener`, which are injected into `S3MessageHandler` bean.
+See https://github.com/spring-projects/spring-integration-aws[Spring Integration AWS] support for more details.
 
 == Amazon AWS common options
 

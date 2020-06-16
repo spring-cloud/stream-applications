@@ -17,7 +17,7 @@ All configuration properties are prefixed with `s3.consumer`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/s3/AwsS3ConsumerProperties.java[AwsS3ConsumerProperties].
 
-## Tests
+## Examples
 
 See this link:src/test/java/org/springframework/cloud/fn/consumer/s3[test suite] for the various ways, this consumer is used.
 
