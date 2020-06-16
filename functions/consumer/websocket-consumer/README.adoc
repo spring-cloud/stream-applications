@@ -1,25 +1,25 @@
 # Websocket Consumer
 
-A consumer that allows you to send TCP messages.
+A consumer that allows you to send messages using websocket.
 
 ## Beans for injection
 
-You can import `TcpConsumerConfiguration` in the application and then inject the following bean.
+You can import `WebsocketConsumerConfiguration` in the application and then inject the following bean.
 
-`Consumer<Message<?>> tcpConsumer`
+`Consumer<Message<?>> websocketConsumer`
 
-You can use `tcpConsumer` as a qualifier when injecting.
+You can use `websocketConsumer` as a qualifier when injecting.
 
 ## Configuration Options
 
-All configuration properties are prefixed with `tcp.consumer`.
+All configuration properties are prefixed with `websocket.consumer`.
 
-For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/tcp/TCPConsumerProperties.java[TcpConsumerProperties].
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/websocket/WebsocketConsumerProperties.java[WebsocketConsumerProperties].
 
 ## Tests
 
-See this link:src/test/java/org/springframework/cloud/fn/consumer/tcp[test suite] for the various ways, this consumer is used.
+See this link:src/test/java/org/springframework/cloud/fn/consumer/websocket[test suite] for the various ways, this consumer is used.
 
 ## Other usage
 
-See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/tcp-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a TCP sink.
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/websocket-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a TCP sink.
