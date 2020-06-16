@@ -24,7 +24,7 @@ All configuration properties are prefixed with `jms`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/jms/JmsSupplierProperties.java[JmsSupplierProperties].
 
-## Tests
+## Examples
 
 See this link:src/test/java/org/springframework/cloud/fn/supplier/jms/[test suite] for the various ways, this supplier is used.
 

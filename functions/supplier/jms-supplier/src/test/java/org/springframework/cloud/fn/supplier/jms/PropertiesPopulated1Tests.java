@@ -28,11 +28,11 @@ import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = {
-		"jms.sessionTransacted = false",
-		"jms.destination = topic",
-		"jms.messageSelector = JMSCorrelationId=foo",
-		"jms.subscriptionDurable = false",
-		"jms.subscriptionShared = false",
+		"jms.supplier.sessionTransacted = false",
+		"jms.supplier.destination = topic",
+		"jms.supplier.messageSelector = JMSCorrelationId=foo",
+		"jms.supplier.subscriptionDurable = false",
+		"jms.supplier.subscriptionShared = false",
 		"spring.jms.listener.acknowledgeMode = DUPS_OK",
 		"spring.jms.listener.concurrency = 3",
 		"spring.jms.listener.maxConcurrency = 4",

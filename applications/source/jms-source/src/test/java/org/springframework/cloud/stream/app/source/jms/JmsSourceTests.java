@@ -32,13 +32,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = {
-		"jms.sessionTransacted = true", "jms.destination = jmssource.test.queue",
-		"jms.messageSelector = JMSCorrelationId=foo",
-		"jms.subscriptionDurable = false", "jms.subscriptionShared = false",
-		"spring.jms.listener.acknowledgeMode = AUTO",
-		"spring.jms.listener.concurrency = 3",
-		"spring.jms.listener.maxConcurrency = 4",
-		"spring.jms.pubSubDomain = false"})
+		"jms.supplier.destination = jmssource.test.queue"})
 @DirtiesContext
 public class JmsSourceTests {
 

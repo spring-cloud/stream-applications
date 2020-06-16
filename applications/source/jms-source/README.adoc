@@ -8,13 +8,13 @@ The JMS source enables receiving messages from JMS.
 The **JMS** $$source$$ has the following options:
 
 //tag::configuration-properties[]
-$$jms.client-id$$:: $$Client id for durable subscriptions.$$ *($$String$$, default: `$$<none>$$`)*
-$$jms.destination$$:: $$The destination from which to receive messages (queue or topic).$$ *($$String$$, default: `$$<none>$$`)*
-$$jms.message-selector$$:: $$A selector for messages.$$ *($$String$$, default: `$$<none>$$`)*
-$$jms.session-transacted$$:: $$True to enable transactions and select a DefaultMessageListenerContainer, false to select a SimpleMessageListenerContainer.$$ *($$Boolean$$, default: `$$true$$`)*
-$$jms.subscription-durable$$:: $$True for a durable subscription.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$jms.subscription-name$$:: $$The name of a durable or shared subscription.$$ *($$String$$, default: `$$<none>$$`)*
-$$jms.subscription-shared$$:: $$True for a shared subscription.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$jms.supplier.client-id$$:: $$Client id for durable subscriptions.$$ *($$String$$, default: `$$<none>$$`)*
+$$jms.supplier.destination$$:: $$The destination from which to receive messages (queue or topic).$$ *($$String$$, default: `$$<none>$$`)*
+$$jms.supplier.message-selector$$:: $$A selector for messages.$$ *($$String$$, default: `$$<none>$$`)*
+$$jms.supplier.session-transacted$$:: $$True to enable transactions and select a DefaultMessageListenerContainer, false to select a SimpleMessageListenerContainer.$$ *($$Boolean$$, default: `$$true$$`)*
+$$jms.supplier.subscription-durable$$:: $$True for a durable subscription.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$jms.supplier.subscription-name$$:: $$The name of a durable or shared subscription.$$ *($$String$$, default: `$$<none>$$`)*
+$$jms.supplier.subscription-shared$$:: $$True for a shared subscription.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$spring.jms.jndi-name$$:: $$Connection factory JNDI name. When set, takes precedence to others connection factory auto-configurations.$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.jms.listener.acknowledge-mode$$:: $$Acknowledge mode of the container. By default, the listener is transacted with automatic acknowledgment.$$ *($$AcknowledgeMode$$, default: `$$<none>$$`, possible values: `AUTO`,`CLIENT`,`DUPS_OK`)*
 $$spring.jms.listener.auto-startup$$:: $$Start the container automatically on startup.$$ *($$Boolean$$, default: `$$true$$`)*

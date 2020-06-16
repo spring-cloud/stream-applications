@@ -28,9 +28,9 @@ import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = {
-		"jms.sessionTransacted = true", "jms.clientId = client", "jms.destination = topic",
-		"jms.subscriptionName = subName", "jms.subscriptionDurable = true",
-		"jms.subscriptionShared = false", "spring.jms.listener.acknowledgeMode = AUTO",
+		"jms.supplier.sessionTransacted = true", "jms.supplier.clientId = client", "jms.supplier.destination = topic",
+		"jms.supplier.subscriptionName = subName", "jms.supplier.subscriptionDurable = true",
+		"jms.supplier.subscriptionShared = false", "spring.jms.listener.acknowledgeMode = AUTO",
 		"spring.jms.listener.concurrency = 3",
 		"spring.jms.listener.maxConcurrency = 4"
 })

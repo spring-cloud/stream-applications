@@ -27,7 +27,7 @@ import org.springframework.validation.annotation.Validated;
  * @author Gary Russell
  *
  */
-@ConfigurationProperties(prefix = "jms")
+@ConfigurationProperties(prefix = "jms.supplier")
 @Validated
 public class JmsSupplierProperties {
 
