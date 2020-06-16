@@ -50,7 +50,11 @@
 		<module>common/metadata-store-common</module>
 		<module>common/mqtt-common</module>
 		<module>common/tcp-common</module>
+<<<<<<< HEAD
 		<module>common/twitter-common</module>
+=======
+		<module>common/tensorflow-common</module>
+>>>>>>> Tensorflow models functional model redesign
 
 
 		<module>consumer/cassandra-consumer</module>
@@ -80,6 +84,9 @@
 		<module>function/task-launch-request-function</module>
 		<module>function/twitter-function</module>
 		<module>function/tensorflow-function</module>
+		<module>function/image-recognition-function</module>
+		<module>function/object-detection-function</module>
+
 
 		<module>supplier/file-supplier</module>
 		<module>supplier/ftp-supplier</module>

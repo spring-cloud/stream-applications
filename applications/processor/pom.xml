@@ -19,6 +19,8 @@
         <module>transform-processor</module>
         <module>script-processor</module>
         <module>twitter-trend-processor</module>
+        <module>image-recognition-processor</module>
+        <module>object-dectection-processor</module>
     </modules>
 
 </project>
