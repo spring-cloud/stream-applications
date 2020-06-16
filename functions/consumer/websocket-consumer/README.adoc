@@ -1,4 +1,4 @@
-# TCP Consumer
+# Websocket Consumer
 
 A consumer that allows you to send TCP messages.
 

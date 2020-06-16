@@ -86,6 +86,9 @@ public class WebsocketSourceTests {
 		Message<byte[]> sourceMessage = output.receive(10000);
 		final String actual = new String(sourceMessage.getPayload());
 		assertThat(actual).isEqualTo("foo");
+
+		clientWebSocketContainer.stop();
+		clientWebSocketContainer.destroy();
 	}
 
 	@SpringBootApplication
