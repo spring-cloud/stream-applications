@@ -42,9 +42,11 @@
 
   	<modules>
 		<module>common/config-common</module>
+		<module>common/file-common</module>
 		<module>common/ftp-common</module>
 		<module>common/function-test-support</module>
 		<module>common/geode-common</module>
+		<module>common/metadata-store-common</module>
 		<module>common/mqtt-common</module>
 		<module>common/tcp-common</module>
 
@@ -71,6 +73,7 @@
 		<module>function/splitter-function</module>
 
 		<module>supplier/file-supplier</module>
+		<module>supplier/ftp-supplier</module>
 		<module>supplier/geode-supplier</module>
 		<module>supplier/http-supplier</module>
 		<module>supplier/jdbc-supplier</module>

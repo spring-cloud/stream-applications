@@ -40,6 +40,12 @@ $$ftp.consumer.remote-file-separator$$:: $$The remote file separator.$$ *($$Stri
 $$ftp.consumer.temporary-remote-dir$$:: $$A temporary directory where the file will be written if '#isUseTemporaryFilename()' is true.$$ *($$String$$, default: `$$/$$`)*
 $$ftp.consumer.tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
 $$ftp.consumer.use-temporary-filename$$:: $$Whether or not to write to a temporary file and rename.$$ *($$Boolean$$, default: `$$true$$`)*
+$$ftp.factory.cache-sessions$$:: $$Cache sessions.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$ftp.factory.client-mode$$:: $$The client mode to use for the FTP session.$$ *($$ClientMode$$, default: `$$<none>$$`, possible values: `ACTIVE`,`PASSIVE`)*
+$$ftp.factory.host$$:: $$The host name of the server.$$ *($$String$$, default: `$$localhost$$`)*
+$$ftp.factory.password$$:: $$The password to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
+$$ftp.factory.port$$:: $$The port of the server.$$ *($$Integer$$, default: `$$21$$`)*
+$$ftp.factory.username$$:: $$The username to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
