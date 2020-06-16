@@ -14,6 +14,7 @@
         <module>file-source</module>
         <module>ftp-source</module>
         <module>jdbc-source</module>
+        <module>jms-source</module>
         <module>http-source</module>
         <module>mqtt-source</module>
         <module>time-source</module>

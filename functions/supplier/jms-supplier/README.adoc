@@ -1,0 +1,33 @@
+# JMS Supplier
+
+This module provides a JMS supplier that can be reused and composed in other applications.
+The `Supplier` uses the JMS support provided by Spring Framework and Spring Integration under the covers.
+`jmsSupplier` is implemented as a `java.util.function.Supplier`.
+This supplier gives you a reactive stream from JMS sources. The supplier has a signature of `Supplier<Flux<Message<?>>>`.
+Users have to subscribe to this `Flux` and then receive the data.
+
+## Beans for injection
+
+You can import the `JmsSupplierConfiguration` in the application and then inject the following bean.
+
+`jmsSupplier`
+
+You need to inject this as `Supplier<Flux<Message<?>>>`.
+
+You can use `jmsSupplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it and then subscribe to the returned `Flux`.
+
+## Configuration Options
+
+All configuration properties are prefixed with `jms`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/jms/JmsSupplierProperties.java[JmsSupplierProperties].
+
+## Examples
+
+See this link:src/test/java/org/springframework/cloud/fn/supplier/jms/[test suite] for the various ways, this supplier is used.
+
+## Other usage
+
+See this link:../../../applications/source/jms-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream JMS Source.

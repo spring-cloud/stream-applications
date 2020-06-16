@@ -1,0 +1,31 @@
+//tag::ref-doc[]
+= JMS Source
+
+The JMS source enables receiving messages from JMS.
+
+== Options
+
+The **JMS** $$source$$ has the following options:
+
+//tag::configuration-properties[]
+$$jms.supplier.client-id$$:: $$Client id for durable subscriptions.$$ *($$String$$, default: `$$<none>$$`)*
+$$jms.supplier.destination$$:: $$The destination from which to receive messages (queue or topic).$$ *($$String$$, default: `$$<none>$$`)*
+$$jms.supplier.message-selector$$:: $$A selector for messages.$$ *($$String$$, default: `$$<none>$$`)*
+$$jms.supplier.session-transacted$$:: $$True to enable transactions and select a DefaultMessageListenerContainer, false to select a SimpleMessageListenerContainer.$$ *($$Boolean$$, default: `$$true$$`)*
+$$jms.supplier.subscription-durable$$:: $$True for a durable subscription.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$jms.supplier.subscription-name$$:: $$The name of a durable or shared subscription.$$ *($$String$$, default: `$$<none>$$`)*
+$$jms.supplier.subscription-shared$$:: $$True for a shared subscription.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$spring.jms.jndi-name$$:: $$Connection factory JNDI name. When set, takes precedence to others connection factory auto-configurations.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.jms.listener.acknowledge-mode$$:: $$Acknowledge mode of the container. By default, the listener is transacted with automatic acknowledgment.$$ *($$AcknowledgeMode$$, default: `$$<none>$$`, possible values: `AUTO`,`CLIENT`,`DUPS_OK`)*
+$$spring.jms.listener.auto-startup$$:: $$Start the container automatically on startup.$$ *($$Boolean$$, default: `$$true$$`)*
+$$spring.jms.listener.concurrency$$:: $$Minimum number of concurrent consumers.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$spring.jms.listener.max-concurrency$$:: $$Maximum number of concurrent consumers.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$spring.jms.listener.receive-timeout$$:: $$Timeout to use for receive calls. Use -1 for a no-wait receive or 0 for no timeout at all. The latter is only feasible if not running within a transaction manager and is generally discouraged since it prevents clean shutdown.$$ *($$Duration$$, default: `$$1s$$`)*
+$$spring.jms.pub-sub-domain$$:: $$Whether the default destination type is topic.$$ *($$Boolean$$, default: `$$false$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]
+
+NOTE: Spring boot broker configuration is used; refer to the
+https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-jms[Spring Boot Documentation] for more information.
+The `spring.jms.*` properties above are also handled by the boot JMS support.
