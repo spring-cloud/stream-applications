@@ -38,7 +38,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
 		properties = {
-				"debug=true",
 				"ftp.factory.username = foo",
 				"ftp.factory.password = foo",
 				"file.consumer.mode = ref",

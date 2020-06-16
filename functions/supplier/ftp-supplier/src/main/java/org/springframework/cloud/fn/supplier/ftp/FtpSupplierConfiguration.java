@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.supplier.ftp;
 
+import java.io.File;
 import java.util.function.Supplier;
 
 import org.apache.commons.net.ftp.FTPFile;
@@ -36,7 +37,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.integration.dsl.IntegrationFlowBuilder;
+import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.file.filters.ChainFileListFilter;
 import org.springframework.integration.file.remote.session.SessionFactory;
@@ -47,6 +48,7 @@ import org.springframework.integration.ftp.filters.FtpRegexPatternFileListFilter
 import org.springframework.integration.ftp.filters.FtpSimplePatternFileListFilter;
 import org.springframework.integration.ftp.inbound.FtpInboundFileSynchronizingMessageSource;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
+import org.springframework.integration.util.IntegrationReactiveUtils;
 import org.springframework.messaging.Message;
 import org.springframework.util.StringUtils;
 
@@ -86,7 +88,7 @@ public class FtpSupplierConfiguration {
 	}
 
 	@Bean
-	public FtpInboundChannelAdapterSpec ftpMessageSource() {
+	public MessageSource<File> ftpMessageSource() {
 		FtpInboundChannelAdapterSpec messageSourceBuilder = Ftp.inboundAdapter(ftpSessionFactory)
 				.preserveTimestamp(this.ftpSupplierProperties.isPreserveTimestamp())
 				.remoteDirectory(this.ftpSupplierProperties.getRemoteDir())
@@ -108,7 +110,7 @@ public class FtpSupplierConfiguration {
 		chainFileListFilter.addFilter(new FtpPersistentAcceptOnceFileListFilter(this.metadataStore, "ftpSource/"));
 
 		messageSourceBuilder.filter(chainFileListFilter);
-		return messageSourceBuilder;
+		return messageSourceBuilder.get();
 	}
 
 	@Bean
@@ -124,9 +126,9 @@ public class FtpSupplierConfiguration {
 	@Bean
 	@ConditionalOnExpression("environment['file.consumer.mode'] != 'ref'")
 	public Publisher<Message<Object>> ftpReadingFlow() {
-		IntegrationFlowBuilder flowBuilder =
-				IntegrationFlows.from(ftpMessageFlux());
-		return FileUtils.enhanceFlowForReadingMode(flowBuilder, fileConsumerProperties).toReactivePublisher();
+		return FileUtils.enhanceFlowForReadingMode(IntegrationFlows
+				.from(IntegrationReactiveUtils.messageSourceToFlux(ftpMessageSource())), fileConsumerProperties)
+				.toReactivePublisher();
 	}
 
 	@Bean
