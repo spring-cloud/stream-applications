@@ -1,0 +1,24 @@
+//tag::ref-doc[]
+= Websocket Source
+The `Websocket` source that produces messages through web socket.
+
+== Options
+
+//tag::configuration-properties[]
+$$websocket.supplier.allowed-origins$$:: $$The allowed origins.$$ *($$String$$, default: `$$*$$`)*
+$$websocket.supplier.path$$:: $$The path on which server WebSocket handler is exposed.$$ *($$String$$, default: `$$/websocket$$`)*
+$$websocket.supplier.sock-js.enable$$:: $$Enable SockJS service on the server. Default is 'false'$$ *($$Boolean$$, default: `$$false$$`)*
+//end::configuration-properties[]
+
+== Examples
+To verify that the websocket-source receives messages from Websocket clients, you can use the following simple end-to-end setup.
+
+=== Step 1: Start kafka
+
+=== Step 2: Deploy `websocket-source` on a specific port, say 8080
+
+=== Step 3: Connect a websocket client on port 8080 path "/websocket", and send some messages.
+
+You can  start a kafka console consumer and see the messages there.
+
+//end::ref-doc[]

@@ -1,0 +1,76 @@
+//tag::ref-doc[]
+= Websocket Sink
+
+A simple Websocket Sink implementation.
+
+== Options
+The following options are supported:
+
+//tag::configuration-properties[]
+$$websocket.consumer.log-level$$:: $$the logLevel for netty channels. Default is <tt>WARN</tt>$$ *($$String$$, default: `$$<none>$$`)*
+$$websocket.consumer.path$$:: $$the path on which a WebsocketSink consumer needs to connect. Default is <tt>/websocket</tt>$$ *($$String$$, default: `$$/websocket$$`)*
+$$websocket.consumer.port$$:: $$the port on which the Netty server listens. Default is <tt>9292</tt>$$ *($$Integer$$, default: `$$9292$$`)*
+$$websocket.consumer.ssl$$:: $$whether or not to create a {@link io.netty.handler.ssl.SslContext}.$$ *($$Boolean$$, default: `$$false$$`)*
+$$websocket.consumer.threads$$:: $$the number of threads for the Netty {@link io.netty.channel.EventLoopGroup}. Default is <tt>1</tt>$$ *($$Integer$$, default: `$$1$$`)*
+//end::configuration-properties[]
+
+== Examples
+To verify that the websocket-sink receives messages from other spring-cloud-stream apps, you can use the
+following simple end-to-end setup.
+
+
+=== Step 1: Start Rabbitmq
+
+=== Step 2: Deploy a `time-source`
+
+=== Step 3: Deploy the `websocket-sink`
+
+Finally start a websocket-sink in `trace` mode so that you see the messages produced by the `time-source` in the log:
+
+```
+java -jar <spring boot application for websocket-sink> --spring.cloud.stream.bindings.input=ticktock --server.port=9393 \
+	--logging.level.org.springframework.cloud.fn.consumer.websocket=TRACE
+```
+
+You should start seeing log messages in the console where you started the WebsocketSink like this:
+
+```
+Handling message: GenericMessage [payload=2015-10-21 12:52:53, headers={id=09ae31e0-a04e-b811-d211-b4d4e75b6f29, timestamp=1445424778065}]
+Handling message: GenericMessage [payload=2015-10-21 12:52:54, headers={id=75eaaf30-e5c6-494f-b007-9d5b5b920001, timestamp=1445424778065}]
+Handling message: GenericMessage [payload=2015-10-21 12:52:55, headers={id=18b887db-81fc-c634-7a9a-16b1c72de291, timestamp=1445424778066}]
+```
+
+== Actuators
+There is an `Endpoint` that you can use to access the last `n` messages sent and received. You have to
+ enable it by providing `--endpoints.websocketconsumertrace.enabled=true`. By default it shows the last 100 messages via the
+`https://host:port/websocketconsumertrace`. Here is a sample output:
+
+```
+ [
+   {
+    "timestamp": 1445453703508,
+    "info": {
+      "type": "text",
+      "direction": "out",
+      "id": "2ff9be50-c9b2-724b-5404-1a6305c033e4",
+      "payload": "2015-10-21 20:54:33"
+    }
+  },
+  ...
+  {
+    "timestamp": 1445453703506,
+    "info": {
+      "type": "text",
+      "direction": "out",
+      "id": "2b9dbcaf-c808-084d-a51b-50f617ae6a75",
+      "payload": "2015-10-21 20:54:32"
+    }
+  }
+]
+```
+
+There is also a simple HTML page where you see forwarded messages in a text area. You can access
+it directly via  `https://host:port` in your browser.
+
+//end::ref-doc[]
+

@@ -25,5 +25,6 @@
         <module>sftp-sink</module>
         <module>tcp-sink</module>
         <module>throughput-sink</module>
+        <module>websocket-sink</module>
     </modules>
 </project>

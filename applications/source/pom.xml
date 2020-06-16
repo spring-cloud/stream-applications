@@ -22,5 +22,6 @@
         <module>mongodb-source</module>
         <module>tcp-source</module>
         <module>rabbit-source</module>
+        <module>websocket-source</module>
     </modules>
 </project>
