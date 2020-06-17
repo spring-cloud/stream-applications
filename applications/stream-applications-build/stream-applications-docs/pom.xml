@@ -25,9 +25,46 @@
 		<!-- Any modules whose javadocs need to be published must be listed here.
 		Modules with @ConfigurationProperties.
 		-->
+		<!-- common javadocs -->
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>file-common</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>ftp-common</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>geode-common</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>metadata-store-common</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>mqtt-common</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>tcp-common</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<!-- supplier javadocs -->
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>file-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>ftp-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
@@ -45,7 +82,11 @@
 			<artifactId>jdbc-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>jms-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>mongodb-supplier</artifactId>
@@ -71,6 +112,12 @@
 			<artifactId>time-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>websocket-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<!-- consumer javadocs -->
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>cassandra-consumer</artifactId>
@@ -143,6 +190,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>websocket-consumer</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<!-- function javadocs -->
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>header-enricher-function</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
@@ -159,6 +212,11 @@
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>splitter-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>tasklauncher-function</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<!-- Apps don't use external functions as baseline, but contain @ConfigurationProperties -->
@@ -182,6 +240,14 @@
 			<artifactId>script-processor</artifactId>
 			<version>${script-processor.version}</version>
 		</dependency>
+
+		<!-- special cases -->
+		<dependency>
+			<groupId>org.springframework.cloud.stream.app</groupId>
+			<artifactId>tasklauncher-sink</artifactId>
+			<version>${tasklauncher-sink.version}</version>
+		</dependency>
+
 	</dependencies>
 	<profiles>
 		<profile>

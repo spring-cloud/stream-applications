@@ -20,15 +20,18 @@
 
     <properties>
         <file-source.version>3.0.0-SNAPSHOT</file-source.version>
+        <ftp-source.version>3.0.0-SNAPSHOT</ftp-source.version>
         <geode-source.version>3.0.0-SNAPSHOT</geode-source.version>
         <http-source.version>3.0.0-SNAPSHOT</http-source.version>
         <jdbc-source.version>3.0.0-SNAPSHOT</jdbc-source.version>
+        <jms-source.version>3.0.0-SNAPSHOT</jms-source.version>
         <load-generator-source.version>3.0.0-SNAPSHOT</load-generator-source.version>
         <mongodb-source.version>3.0.0-SNAPSHOT</mongodb-source.version>
         <mqtt-source.version>3.0.0-SNAPSHOT</mqtt-source.version>
         <rabbit-source.version>3.0.0-SNAPSHOT</rabbit-source.version>
         <tcp-source.version>3.0.0-SNAPSHOT</tcp-source.version>
         <time-source.version>3.0.0-SNAPSHOT</time-source.version>
+        <websocket-source.version>3.0.0-SNAPSHOT</websocket-source.version>
         <cassandra-sink.version>3.0.0-SNAPSHOT</cassandra-sink.version>
         <counter-sink.version>3.0.0-SNAPSHOT</counter-sink.version>
         <file-sink.version>3.0.0-SNAPSHOT</file-sink.version>
@@ -43,7 +46,9 @@
         <router-sink.version>3.0.0-SNAPSHOT</router-sink.version>
         <sftp-sink.version>3.0.0-SNAPSHOT</sftp-sink.version>
         <tcp-sink.version>3.0.0-SNAPSHOT</tcp-sink.version>
+        <tasklauncher-sink.version>3.0.0-SNAPSHOT</tasklauncher-sink.version>
         <throughput-sink.version>3.0.0-SNAPSHOT</throughput-sink.version>
+        <websocket-sink.version>3.0.0-SNAPSHOT</websocket-sink.version>
         <bridge-processor.version>3.0.0-SNAPSHOT</bridge-processor.version>
         <filter-processor.version>3.0.0-SNAPSHOT</filter-processor.version>
         <groovy-processor.version>3.0.0-SNAPSHOT</groovy-processor.version>

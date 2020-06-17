@@ -6,6 +6,9 @@
 [[spring-cloud-stream-modules-file-source]]
 include::{stream-apps-root}/{branch}/applications/source/file-source/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-ftp-source]]
+include::{stream-apps-root}/{branch}/applications/source/ftp-source/README.adoc[tags=ref-doc]
+
 [[spring-cloud-stream-modules-geode-source]]
 include::{stream-apps-root}/{branch}/applications/source/geode-source/README.adoc[tags=ref-doc]
 
@@ -14,6 +17,9 @@ include::{stream-apps-root}/{branch}/applications/source/http-source/README.adoc
 
 [[spring-cloud-stream-modules-jdbc-source]]
 include::{stream-apps-root}/{branch}/applications/source/jdbc-source/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-jms-source]]
+include::{stream-apps-root}/{branch}/applications/source/jms-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-load-generator-source]]
 include::{stream-apps-root}/{branch}/applications/source/load-generator-source/README.adoc[tags=ref-doc]
@@ -32,6 +38,9 @@ include::{stream-apps-root}/{branch}/applications/source/tcp-source/README.adoc[
 
 [[spring-cloud-stream-modules-time-source]]
 include::{stream-apps-root}/{branch}/applications/source/time-source/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-websocket-source]]
+include::{stream-apps-root}/{branch}/applications/source/websocket-source/README.adoc[tags=ref-doc]
 
 :leveloffset: -2
 

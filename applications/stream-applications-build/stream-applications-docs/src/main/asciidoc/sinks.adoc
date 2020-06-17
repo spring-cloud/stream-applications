@@ -45,7 +45,13 @@ include::{stream-apps-root}/{branch}/applications/sink/sftp-sink/README.adoc[tag
 [[spring-cloud-stream-modules-tcp-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/tcp-sink/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-tasklauncher-sink]]
+include::{stream-apps-root}/{branch}/applications/sink/tasklauncher-sink/README.adoc[tags=ref-doc]
+
 [[spring-cloud-stream-modules-throughput-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/throughput-sink/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-websocket-sink]]
+include::{stream-apps-root}/{branch}/applications/sink/websocket-sink/README.adoc[tags=ref-doc]
 
 :leveloffset: -2

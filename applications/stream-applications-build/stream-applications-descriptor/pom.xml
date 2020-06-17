@@ -45,12 +45,16 @@
                         "${jdbc-source.version}".contains('-') ? 'repo.spring.io/milestone' : 'repo.spring.io/release'
         pom.properties['file-source-docker.tag']=
                 "${file-source.version}".contains('SNAPSHOT') ? 'latest' : "${file-source.version}"
+        pom.properties['ftp-source-docker.tag']=
+                "${ftp-source.version}".contains('SNAPSHOT') ? 'latest' : "${ftp-source.version}"
         pom.properties['geode-source-docker.tag']=
                 "${geode-source.version}".contains('SNAPSHOT') ? 'latest' : "${geode-source.version}"
         pom.properties['http-source-docker.tag']=
                 "${http-source.version}".contains('SNAPSHOT') ? 'latest' : "${http-source.version}"
         pom.properties['jdbc-source-docker.tag']=
                 "${jdbc-source.version}".contains('SNAPSHOT') ? 'latest' : "${jdbc-source.version}"
+        pom.properties['jms-source-docker.tag']=
+                "${jms-source.version}".contains('SNAPSHOT') ? 'latest' : "${jms-source.version}"
         pom.properties['load-generator-source-docker.tag']=
                 "${load-generator-source.version}".contains('SNAPSHOT') ? 'latest' : "${load-generator-source.version}"
         pom.properties['mongodb-source-docker.tag']=
@@ -63,6 +67,8 @@
                 "${tcp-source.version}".contains('SNAPSHOT') ? 'latest' : "${tcp-source.version}"
         pom.properties['time-source-docker.tag']=
                 "${time-source.version}".contains('SNAPSHOT') ? 'latest' : "${time-source.version}"
+        pom.properties['websocket-source-docker.tag']=
+                "${websocket-source.version}".contains('SNAPSHOT') ? 'latest' : "${websocket-source.version}"
         pom.properties['cassandra-sink-docker.tag']=
                 "${cassandra-sink.version}".contains('SNAPSHOT') ? 'latest' : "${cassandra-sink.version}"
         pom.properties['counter-sink-docker.tag']=
@@ -93,6 +99,10 @@
                 "${tcp-sink.version}".contains('SNAPSHOT') ? 'latest' : "${tcp-sink.version}"
         pom.properties['throughput-sink-docker.tag']=
                 "${throughput-sink.version}".contains('SNAPSHOT') ? 'latest' : "${throughput-sink.version}"
+        pom.properties['tasklauncher-sink-docker.tag']=
+                "${tasklauncher-sink.version}".contains('SNAPSHOT') ? 'latest' : "${tasklauncher-sink.version}"
+        pom.properties['websocket-sink-docker.tag']=
+                "${websocket-sink.version}".contains('SNAPSHOT') ? 'latest' : "${websocket-sink.version}"
         pom.properties['bridge-processor-docker.tag']=
                 "${bridge-processor.version}".contains('SNAPSHOT') ? 'latest' : "${bridge-processor.version}"
         pom.properties['filter-processor-docker.tag']=
