@@ -45,6 +45,7 @@ import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.fn.consumer.s3.AwsS3ConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -164,7 +165,7 @@ public class AwsS3SinkTests {
 	}
 
 	@SpringBootApplication
-	@Import(TestChannelBinderConfiguration.class)
+	@Import({AwsS3ConsumerConfiguration.class, TestChannelBinderConfiguration.class})
 	public static class SampleConfiguration {
 
 		@Bean

@@ -47,13 +47,13 @@
                         <name>s3</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.stream.app.s3.sink.S3SinkConfiguration.class</configClass>
+                        <configClass>org.springframework.cloud.fn.consumer.s3.AwsS3ConsumerConfiguration.class</configClass>
                     </generatedApp>
                     <dependencies>
                         <dependency>
-                            <groupId>org.springframework.cloud.stream.app</groupId>
-                            <artifactId>s3-sink</artifactId>
-                            <version>${project.version}</version>
+                            <groupId>org.springframework.cloud.fn</groupId>
+                            <artifactId>s3-consumer</artifactId>
+                            <version>${java-functions.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>
