@@ -1,5 +1,5 @@
 /*
- * Copyright 2020- 2020  the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,9 @@ package org.springframework.cloud.fn.task.launch.request;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.cloud.fn.task.launch.request.TaskLaunchRequestFunctionConfiguration;
-import org.springframework.cloud.fn.task.launch.request.TaskLaunchRequestFunctionProperties;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -38,14 +37,14 @@ public class TaskLaunchRequestFunctionPropertiesTests {
 	@Test
 	public void deploymentPropertiesCanBeCustomized() {
 		TaskLaunchRequestFunctionProperties properties = getBatchProperties(
-			"task.launch.request.deploymentProperties:prop1=val1,prop2=val2");
+				"task.launch.request.deploymentProperties:prop1=val1,prop2=val2");
 		assertThat(properties.getDeploymentProperties()).isEqualTo("prop1=val1,prop2=val2");
 	}
 
 	@Test
 	public void parametersCanBeCustomized() {
 		TaskLaunchRequestFunctionProperties properties = getBatchProperties(
-			"task.launch.request.args:jp1=jpv1,jp2=jpv2");
+				"task.launch.request.args:jp1=jpv1,jp2=jpv2");
 		List<String> args = properties.getArgs();
 
 		assertThat(args).isNotNull();
@@ -66,7 +65,6 @@ public class TaskLaunchRequestFunctionPropertiesTests {
 
 		return context.getBean(TaskLaunchRequestFunctionProperties.class);
 	}
-
 
 	@Configuration
 	@EnableIntegration

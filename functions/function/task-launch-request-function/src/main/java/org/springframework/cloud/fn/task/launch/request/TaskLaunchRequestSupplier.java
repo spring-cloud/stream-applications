@@ -1,5 +1,5 @@
 /*
- * Copyright 2020- 2020  the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,46 +19,49 @@ package org.springframework.cloud.fn.task.launch.request;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+
 import org.springframework.util.Assert;
 
 class TaskLaunchRequestSupplier implements Supplier<TaskLaunchRequest> {
 
-    private Supplier<String> taskNameSupplier;
-    private Supplier<List<String>> commandLineArgumentsSupplier;
-    private Supplier<Map<String, String>> deploymentPropertiesSupplier;
+	private Supplier<String> taskNameSupplier;
 
+	private Supplier<List<String>> commandLineArgumentsSupplier;
 
-    public TaskLaunchRequestSupplier taskNameSupplier(Supplier<String> taskNameSupplier) {
-        this.taskNameSupplier = taskNameSupplier;
-        return this;
-    }
+	private Supplier<Map<String, String>> deploymentPropertiesSupplier;
 
-    public TaskLaunchRequestSupplier commandLineArgumentSupplier(Supplier<List<String>> commandLineArgumentsSupplier) {
-        this.commandLineArgumentsSupplier = commandLineArgumentsSupplier;
-        return this;
-    }
+	public TaskLaunchRequestSupplier taskNameSupplier(Supplier<String> taskNameSupplier) {
+		this.taskNameSupplier = taskNameSupplier;
+		return this;
+	}
 
-    public TaskLaunchRequestSupplier deploymentPropertiesSupplier(Supplier<Map<String, String>> deploymentPropertiesSupplier) {
-        this.deploymentPropertiesSupplier = deploymentPropertiesSupplier;
-        return this;
-    }
+	public TaskLaunchRequestSupplier commandLineArgumentSupplier(Supplier<List<String>> commandLineArgumentsSupplier) {
+		this.commandLineArgumentsSupplier = commandLineArgumentsSupplier;
+		return this;
+	}
 
-    @Override
-    public TaskLaunchRequest get() {
+	public TaskLaunchRequestSupplier deploymentPropertiesSupplier(
+			Supplier<Map<String, String>> deploymentPropertiesSupplier) {
+		this.deploymentPropertiesSupplier = deploymentPropertiesSupplier;
+		return this;
+	}
 
-        Assert.notNull(this.taskNameSupplier, "'taskNameSupplier' is required.");
+	@Override
+	public TaskLaunchRequest get() {
 
-        TaskLaunchRequest taskLaunchRequest = new TaskLaunchRequest();
-        taskLaunchRequest.setTaskName(this.taskNameSupplier.get());
+		Assert.notNull(this.taskNameSupplier, "'taskNameSupplier' is required.");
 
-        if (this.commandLineArgumentsSupplier != null) {
-            taskLaunchRequest.setCommandlineArguments(this.commandLineArgumentsSupplier.get());
-        }
+		TaskLaunchRequest taskLaunchRequest = new TaskLaunchRequest();
+		taskLaunchRequest.setTaskName(this.taskNameSupplier.get());
 
-        if (this.deploymentPropertiesSupplier != null) {
-            taskLaunchRequest.setDeploymentProperties(this.deploymentPropertiesSupplier.get());
-        }
+		if (this.commandLineArgumentsSupplier != null) {
+			taskLaunchRequest.setCommandlineArguments(this.commandLineArgumentsSupplier.get());
+		}
 
-        return taskLaunchRequest;
-    }
+		if (this.deploymentPropertiesSupplier != null) {
+			taskLaunchRequest.setDeploymentProperties(this.deploymentPropertiesSupplier.get());
+		}
+
+		return taskLaunchRequest;
+	}
 }

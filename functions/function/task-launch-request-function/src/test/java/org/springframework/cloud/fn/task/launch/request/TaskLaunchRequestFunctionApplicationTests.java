@@ -1,5 +1,5 @@
 /*
- * Copyright 2020- 2020  the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +23,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.task.launch.request.CommandLineArgumentsMessageMapper;
-import org.springframework.cloud.fn.task.launch.request.TaskLaunchRequest;
-import org.springframework.cloud.fn.task.launch.request.TaskLaunchRequestFunction;
-import org.springframework.cloud.fn.task.launch.request.TaskLaunchRequestFunctionConfiguration;
-import org.springframework.cloud.fn.task.launch.request.TaskNameMessageMapper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
@@ -51,8 +44,7 @@ public class TaskLaunchRequestFunctionApplicationTests {
 
 	@BeforeEach
 	public void setUp() {
-		springApplicationBuilder =
-		new SpringApplicationBuilder(TestApplication.class)
+		springApplicationBuilder = new SpringApplicationBuilder(TestApplication.class)
 				.web(WebApplicationType.NONE);
 	}
 
@@ -86,8 +78,8 @@ public class TaskLaunchRequestFunctionApplicationTests {
 
 		assertThat(taskLaunchRequest.getTaskName()).isEqualTo("foo");
 		assertThat(taskLaunchRequest.getCommandlineArguments()).containsExactlyInAnyOrder("foo=bar",
-							"baz=boo");
-		assertThat(taskLaunchRequest.getDeploymentProperties()).containsOnly(entry("count", "3"));;
+				"baz=boo");
+		assertThat(taskLaunchRequest.getDeploymentProperties()).containsOnly(entry("count", "3"));
 	}
 
 	@Test
@@ -141,7 +133,7 @@ public class TaskLaunchRequestFunctionApplicationTests {
 
 		Message<Integer> message = MessageBuilder.withPayload(123).build();
 
-		Message<TaskLaunchRequest> response = 	taskLaunchRequestFunction.apply(message);
+		Message<TaskLaunchRequest> response = taskLaunchRequestFunction.apply(message);
 
 		assertThat(response).isNotNull();
 
@@ -195,13 +187,13 @@ public class TaskLaunchRequestFunctionApplicationTests {
 	private TaskLaunchRequest verifyAndreceiveTaskLaunchRequest(ApplicationContext context)
 			throws IOException {
 		TaskLaunchRequestFunction taskLaunchRequestFunction = context.getBean(TaskLaunchRequestFunction.class);
-		Message<TaskLaunchRequest> message = taskLaunchRequestFunction.apply(MessageBuilder.withPayload(new byte[] {}).build());
+		Message<TaskLaunchRequest> message = taskLaunchRequestFunction
+				.apply(MessageBuilder.withPayload(new byte[] {}).build());
 		assertThat(message).isNotNull();
 		return message.getPayload();
 	}
 
 	@SpringBootApplication
-	@Import(TaskLaunchRequestFunctionConfiguration.class)
 	protected static class TestApplication {
 
 		@Bean

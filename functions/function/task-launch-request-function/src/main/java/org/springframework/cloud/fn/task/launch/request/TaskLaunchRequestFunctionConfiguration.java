@@ -1,5 +1,5 @@
 /*
- * Copyright 2020- 2020  the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Configuration for a {@link TaskLaunchRequestFunction}, provided as a common function that can be composed with other Suppliers or
- * Functions to transform any {@link Message} to a {@link TaskLaunchRequest} which may be used as input to the {@link TaskLauncherFunction} to launch a task.
+ * Functions to transform any {@link Message} to a {@link TaskLaunchRequest} which may be used as input to the {@code TaskLauncherFunction} to launch a task.
  *
  * Command line arguments used by the task, as well as the task name itself may be statically configured or extracted from
  * the message contents, using SpEL. See {@link TaskLaunchRequestFunctionProperties} for details.
@@ -50,6 +50,9 @@ import org.springframework.util.StringUtils;
 @EnableConfigurationProperties(TaskLaunchRequestFunctionProperties.class)
 public class TaskLaunchRequestFunctionConfiguration {
 
+	/**
+	 * The function name.
+	 */
 	public final static String TASK_LAUNCH_REQUEST_FUNCTION_NAME = "taskLaunchRequestFunction";
 
 	/**
@@ -94,21 +97,6 @@ public class TaskLaunchRequestFunctionConfiguration {
 				commandLineArgumentsMessageMapper);
 	}
 
-	private static class TaskLaunchRequestPropertiesInitializer extends TaskLaunchRequestSupplier {
-		TaskLaunchRequestPropertiesInitializer(
-				TaskLaunchRequestFunctionProperties taskLaunchRequestProperties) {
-
-			this.commandLineArgumentSupplier(
-					() -> new ArrayList<>(taskLaunchRequestProperties.getArgs()));
-
-			this.deploymentPropertiesSupplier(
-					() -> KeyValueListParser.parseCommaDelimitedKeyValuePairs(
-							taskLaunchRequestProperties.getDeploymentProperties()));
-
-			this.taskNameSupplier(() -> taskLaunchRequestProperties.getTaskName());
-		}
-	}
-
 	@Bean
 	public EvaluationContext evaluationContext(BeanFactory beanFactory) {
 		return ExpressionUtils.createStandardEvaluationContext(beanFactory);
@@ -133,12 +121,27 @@ public class TaskLaunchRequestFunctionConfiguration {
 				evaluationContext);
 	}
 
+	private static class TaskLaunchRequestPropertiesInitializer extends TaskLaunchRequestSupplier {
+		TaskLaunchRequestPropertiesInitializer(
+				TaskLaunchRequestFunctionProperties taskLaunchRequestProperties) {
+
+			this.commandLineArgumentSupplier(
+					() -> new ArrayList<>(taskLaunchRequestProperties.getArgs()));
+
+			this.deploymentPropertiesSupplier(
+					() -> KeyValueListParser.parseCommaDelimitedKeyValuePairs(
+							taskLaunchRequestProperties.getDeploymentProperties()));
+
+			this.taskNameSupplier(() -> taskLaunchRequestProperties.getTaskName());
+		}
+	}
+
 	private static class ExpressionEvaluatingTaskNameMessageMapper implements TaskNameMessageMapper {
 
 		private final Expression expression;
 		private final EvaluationContext evaluationContext;
 
-		public ExpressionEvaluatingTaskNameMessageMapper(Expression expression, EvaluationContext evaluationContext) {
+		ExpressionEvaluatingTaskNameMessageMapper(Expression expression, EvaluationContext evaluationContext) {
 			this.evaluationContext = evaluationContext;
 			this.expression = expression;
 		}

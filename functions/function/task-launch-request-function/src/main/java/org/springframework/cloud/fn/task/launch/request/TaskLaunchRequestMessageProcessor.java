@@ -1,5 +1,5 @@
 /*
- * Copyright 2020- 2020  the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,42 +26,43 @@ import org.springframework.util.StringUtils;
 
 class TaskLaunchRequestMessageProcessor implements MessagePostProcessor {
 
-    private final TaskNameMessageMapper taskNameMessageMapper;
-    private final CommandLineArgumentsMessageMapper commandLineArgumentsMessageMapper;
-    private final TaskLaunchRequestSupplier taskLaunchRequestInitializer;
+	private final TaskNameMessageMapper taskNameMessageMapper;
 
-    public TaskLaunchRequestMessageProcessor(TaskLaunchRequestSupplier taskLaunchRequestInitializer,
-                                             TaskNameMessageMapper taskNameMessageMapper,
-                                             CommandLineArgumentsMessageMapper commandLIneArgumentsMessageMapper) {
+	private final CommandLineArgumentsMessageMapper commandLineArgumentsMessageMapper;
 
-        this.taskLaunchRequestInitializer = taskLaunchRequestInitializer;
+	private final TaskLaunchRequestSupplier taskLaunchRequestInitializer;
 
-        this.taskNameMessageMapper = taskNameMessageMapper;
+	TaskLaunchRequestMessageProcessor(TaskLaunchRequestSupplier taskLaunchRequestInitializer,
+			TaskNameMessageMapper taskNameMessageMapper,
+			CommandLineArgumentsMessageMapper commandLIneArgumentsMessageMapper) {
 
-        this.commandLineArgumentsMessageMapper = commandLIneArgumentsMessageMapper;
+		this.taskLaunchRequestInitializer = taskLaunchRequestInitializer;
 
-    }
+		this.taskNameMessageMapper = taskNameMessageMapper;
 
-    @Override
-    public Message<TaskLaunchRequest> postProcessMessage(Message<?> message) {
-        TaskLaunchRequest taskLaunchRequest = taskLaunchRequestInitializer.get();
+		this.commandLineArgumentsMessageMapper = commandLIneArgumentsMessageMapper;
 
-        if (!StringUtils.hasText(taskLaunchRequest.getTaskName())) {
-            taskLaunchRequest.setTaskName(taskNameMessageMapper.processMessage(message));
-            Assert.hasText(taskLaunchRequest.getTaskName(), ()->
-                    "'taskName' is required in " + TaskLaunchRequest.class.getName());
-        }
+	}
 
-        taskLaunchRequest.addCommmandLineArguments(commandLineArgumentsMessageMapper.processMessage(message));
+	@Override
+	public Message<TaskLaunchRequest> postProcessMessage(Message<?> message) {
+		TaskLaunchRequest taskLaunchRequest = taskLaunchRequestInitializer.get();
 
-        MessageBuilder<TaskLaunchRequest> builder
-                = MessageBuilder.withPayload(taskLaunchRequest).copyHeaders(message.getHeaders());
-        return adjustHeaders(builder).build();
-    }
+		if (!StringUtils.hasText(taskLaunchRequest.getTaskName())) {
+			taskLaunchRequest.setTaskName(taskNameMessageMapper.processMessage(message));
+			Assert.hasText(taskLaunchRequest.getTaskName(),
+					() -> "'taskName' is required in " + TaskLaunchRequest.class.getName());
+		}
 
+		taskLaunchRequest.addCommmandLineArguments(commandLineArgumentsMessageMapper.processMessage(message));
 
-    private MessageBuilder<TaskLaunchRequest> adjustHeaders(MessageBuilder<TaskLaunchRequest> builder) {
-        builder.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
-        return builder;
-    }
+		MessageBuilder<TaskLaunchRequest> builder = MessageBuilder.withPayload(taskLaunchRequest)
+				.copyHeaders(message.getHeaders());
+		return adjustHeaders(builder).build();
+	}
+
+	private MessageBuilder<TaskLaunchRequest> adjustHeaders(MessageBuilder<TaskLaunchRequest> builder) {
+		builder.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
+		return builder;
+	}
 }
