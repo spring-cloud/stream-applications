@@ -39,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.fn.supplier.s3.AwsS3SupplierConfiguration;
@@ -70,7 +71,7 @@ import static org.mockito.Mockito.mock;
 				"file.consumer.mode=ref",
 				"s3.supplier.filenameRegex=.*\\\\.test$"})
 @DirtiesContext
-@SpringIntegrationTest(noAutoStartup = "*")
+@SpringIntegrationTest(noAutoStartup = "s3SupplierFlow")
 public class AwsS3SourceTests {
 
 	@TempDir
@@ -90,6 +91,7 @@ public class AwsS3SourceTests {
 	private OutputDestination output;
 
 	@Autowired
+	@Qualifier("s3SupplierFlow")
 	StandardIntegrationFlow standardIntegrationFlow;
 
 	@Autowired
@@ -133,13 +135,13 @@ public class AwsS3SourceTests {
 		this.standardIntegrationFlow.start();
 	}
 
-	@AfterEach
-	public void stop() {
-		this.standardIntegrationFlow.stop();
-	}
+//	@AfterEach
+//	public void stop() {
+//		this.standardIntegrationFlow.stop();
+//	}
 
 	@Test
-	@Disabled("TODO - We will investigate why this test is not passing.")
+	//@Disabled("TODO - We will investigate why this test is not passing.")
 	public void testS3SourceWithBinderBasic() {
 		Message<byte[]> sourceMessage = output.receive(10_000);
 		String actual = new String(sourceMessage.getPayload());
