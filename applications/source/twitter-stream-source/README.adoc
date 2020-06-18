@@ -1,0 +1,43 @@
+//tag::ref-doc[]
+= Twitter Stream Source
+
+Real-time Tweet streaming https://developer.twitter.com/en/docs/tweets/filter-realtime/api-reference/post-statuses-filter.html[Filter] and https://developer.twitter.com/en/docs/tweets/sample-realtime/overview/GET_statuse_sample[Sample] APIs support.
+
+* The `Filter API` returns public statuses that match one or more filter predicates.
+Multiple parameters allows using a single connection to the Streaming API.
+TIP: The `track`, `follow`, and `locations` fields are combined with an *OR* operator!
+Queries with `track=foo` and `follow=1234` returns Tweets matching `foo` *OR* created by user `1234`.
+
+* The `Sample API` returns a small random sample of all public statuses.
+The Tweets returned by the default access level are the same, so if two different clients connect to this endpoint, they will see the same Tweets.
+
+The default access level allows up to 400 track keywords, 5,000 follow user Ids and 25 0.1-360 degree location boxes.
+
+== Options
+
+//tag::configuration-properties[]
+$$twitter.connection.access-token$$:: $$Your Twitter token.$$ *($$String$$, default: `$$<none>$$`)*
+$$twitter.connection.access-token-secret$$:: $$Your Twitter token secret.$$ *($$String$$, default: `$$<none>$$`)*
+$$twitter.connection.consumer-key$$:: $$Your Twitter key.$$ *($$String$$, default: `$$<none>$$`)*
+$$twitter.connection.consumer-secret$$:: $$Your Twitter secret.$$ *($$String$$, default: `$$<none>$$`)*
+$$twitter.connection.debug-enabled$$:: $$Enables Twitter4J debug mode.$$ *($$Boolean$$, default: `$$false$$`)*
+$$twitter.connection.raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by the Twitter APIs. When set to False the result will use the Twitter4J's json representations. When set to True the result will use the original Twitter APISs json representations.$$ *($$Boolean$$, default: `$$true$$`)*
+$$twitter.stream.filter.count$$:: $$Indicates the number of previous statuses to stream before transitioning to the live stream.$$ *($$Integer$$, default: `$$0$$`)*
+$$twitter.stream.filter.filter-level$$:: $$The filter level limits what tweets appear in the stream to those with a minimum filterLevel attribute value. One of either none, low, or medium.$$ *($$FilterLevel$$, default: `$$<none>$$`)*
+$$twitter.stream.filter.follow$$:: $$Specifies the users, by ID, to receive public tweets from.$$ *($$List<Long>$$, default: `$$<none>$$`)*
+$$twitter.stream.filter.language$$:: $$Specifies the tweets language of the stream.$$ *($$List<String>$$, default: `$$<none>$$`)*
+$$twitter.stream.filter.locations$$:: $$Locations to track. Internally represented as 2D array. Bounding box is invalid: 52.38, 4.90, 51.51, -0.12.  The first pair must be the SW corner of the box$$ *($$List<BoundingBox>$$, default: `$$<none>$$`)*
+$$twitter.stream.filter.track$$:: $$Specifies keywords to track.$$ *($$List<String>$$, default: `$$<none>$$`)*
+$$twitter.stream.type$$:: $$<documentation missing>$$ *($$StreamType$$, default: `$$<none>$$`, possible values: `sample`,`filter`,`firehose`,`link`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]
+
+
+== Examples
+
+```
+java -jar twitter-stream-source.jar --twitter.connection.accessTokenSecret=xxx --twitter.connection.accessToken=xxx --twitter.connection.consumerKey=xxx --twitter.connection.consumerSecret=xxx
+```
+
+

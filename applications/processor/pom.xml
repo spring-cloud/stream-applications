@@ -18,6 +18,7 @@
         <module>splitter-processor</module>
         <module>transform-processor</module>
         <module>script-processor</module>
+        <module>twitter-trend-processor</module>
     </modules>
 
 </project>

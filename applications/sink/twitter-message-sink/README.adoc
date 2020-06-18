@@ -1,0 +1,51 @@
+//tag::ref-doc[]
+= Twitter Message Sink
+
+Send Direct Messages to a specified user from the authenticating user.
+Requires a JSON POST body and `Content-Type` header to be set to `application/json`.
+
+NOTE: When a message is received from a user you may send up to 5 messages in response within a 24 hour window.
+Each message received resets the 24 hour window and the 5 allotted messages.
+Sending a 6th message within a 24 hour window or sending a message outside of a 24 hour window will count towards rate-limiting.
+This behavior only applies when using the POST direct_messages/events/new endpoint.
+
+SpEL expressions are used to compute the request parameters from the input message.
+
+== Options
+TIP: Use single quotes (`'`) to wrap the literal values of the `SpEL` expression properties.
+For example to set a fixed message text use `text='Fixed Text'`.
+For fixed target userId use `userId='666'`.
+
+//tag::configuration-properties[]
+$$twitter.message.update.media-id$$:: $$A media id to associate with the message. A Direct Message may only reference a single media id.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$twitter.message.update.screen-name$$:: $$The screen name of the user to whom send the direct message.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$twitter.message.update.text$$:: $$The direct message text. URL encode as necessary. Max length of 10,000 characters.$$ *($$Expression$$, default: `$$payload$$`)*
+$$twitter.message.update.user-id$$:: $$The user id of the user to whom send the direct message.$$ *($$Expression$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]
+
+
+== Examples
+
+```
+java -jar twitter-message-sink.jar
+
+ --twitter.message.update.userId=headers['user']
+ --twitter.message.update.text=payload.concat(\" with suffix \")
+
+ --twitter.connection.consumerKey= ...
+ --twitter.connection.consumerSecret= ...
+ --twitter.connection.accessToken= ...
+ --twitter.connection.accessTokenSecret= ...
+
+ --
+
+```
+
+And here is a example pipeline that uses twitter-message:
+
+```
+twitter-message-stream= TODO
+```
+
