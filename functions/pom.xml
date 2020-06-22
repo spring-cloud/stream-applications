@@ -90,7 +90,7 @@
 		<module>supplier/time-supplier</module>
 		<module>supplier/rabbit-supplier</module>
 		<module>supplier/websocket-supplier</module>
-		<module>supplier/twitter-stream-supplier</module>
+		<module>supplier/twitter-supplier</module>
 
 		<module>spring-functions-parent</module>
 	</modules>

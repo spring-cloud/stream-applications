@@ -50,6 +50,7 @@
         <spring-cloud-build.version>3.0.0-SNAPSHOT</spring-cloud-build.version>
 
         <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+		<mockserver.version>5.10</mockserver.version>
     </properties>
 
     <modules>
@@ -69,6 +70,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+			<dependency>
+				<groupId>org.mock-server</groupId>
+				<artifactId>mockserver-netty</artifactId>
+				<version>${mockserver.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mock-server</groupId>
+				<artifactId>mockserver-client-java</artifactId>
+				<version>${mockserver.version}</version>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 

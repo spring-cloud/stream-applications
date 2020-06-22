@@ -2,10 +2,10 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>twitter-stream-source</artifactId>
+    <artifactId>twitter-search-source</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <name>twitter-stream-source</name>
-    <description>twitter stream source apps</description>
+    <name>twitter-search-source</name>
+    <description>twitter search source apps</description>
     <packaging>jar</packaging>
 
     <parent>
@@ -21,6 +21,7 @@
             <artifactId>twitter-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>function-test-support</artifactId>
@@ -53,11 +54,11 @@
                 <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
                 <configuration>
                     <generatedApp>
-                        <name>twitter-stream</name>
+                        <name>twitter-search</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.twitter.status.stream.TwitterStreamSupplierConfiguration.class</configClass>
-                        <functionDefinition>twitterStreamSupplier</functionDefinition>
+                        <configClass>org.springframework.cloud.fn.supplier.twitter.status.search.TwitterSearchSupplierConfiguration.class</configClass>
+                        <functionDefinition>twitterSearchSupplier</functionDefinition>
                     </generatedApp>
                     <dependencies>
                         <dependency>

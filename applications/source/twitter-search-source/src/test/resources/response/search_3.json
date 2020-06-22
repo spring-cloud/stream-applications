@@ -1,0 +1,447 @@
+{
+  "statuses": [
+    {
+      "created_at": "Sun Jun 21 05:44:20 +0000 2020",
+      "id": 1274578883334078468,
+      "id_str": "1274578883334078468",
+      "text": "\u0423\u0441\u043c\u0438\u0432\u043a\u0438 \u043e\u0442 \u0441\u0442\u0430\u0440\u0438\u0442\u0435 \u0424\u0423\u0422\u0411\u041e\u041b\u041d\u0418 \u043b\u0435\u043d\u0442\u0438: \u041f\u0443\u0431\u043b\u0438\u043a\u0430\u0442\u0430 \u0432\u044a\u0432 \u0412\u0440\u0430\u0446\u0430 \u0435 \u0433\u043b\u0435\u0434\u0430\u043b\u0430 \u0438 \u0437\u0440\u0435\u043b\u0438\u0449\u0430 \u043e\u0442 \u0447\u0443\u0436\u0434\u0435\u043d\u0446\u0438 : https:\/\/t.co\/odbEXBdbGT https:\/\/t.co\/ODL3TbZdIW",
+      "truncated": false,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "user_mentions": [],
+        "urls": [
+          {
+            "url": "https:\/\/t.co\/odbEXBdbGT",
+            "expanded_url": "http:\/\/Konkurent.bg",
+            "display_url": "Konkurent.bg",
+            "indices": [
+              89,
+              112
+            ]
+          },
+          {
+            "url": "https:\/\/t.co\/ODL3TbZdIW",
+            "expanded_url": "https:\/\/www.konkurent.bg\/news\/15913509855903\/usmivki-ot-starite-futbolni-lenti-publikata-vav-vratsa-e-gledala-i-zrelishta-ot-chuzhdentsi#.Xu7zsZ0PotM.twitter",
+            "display_url": "konkurent.bg\/news\/159135098\u2026",
+            "indices": [
+              113,
+              136
+            ]
+          }
+        ]
+      },
+      "metadata": {
+        "iso_language_code": "bg",
+        "result_type": "recent"
+      },
+      "source": "\u003ca href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\"\u003eTwitter Web App\u003c\/a\u003e",
+      "in_reply_to_status_id": null,
+      "in_reply_to_status_id_str": null,
+      "in_reply_to_user_id": null,
+      "in_reply_to_user_id_str": null,
+      "in_reply_to_screen_name": null,
+      "user": {
+        "id": 2793798645,
+        "id_str": "2793798645",
+        "name": "konkurent.bg",
+        "screen_name": "KonkurentBG",
+        "location": "\u0421\u0435\u0432\u0435\u0440\u043e\u0437\u0430\u043f\u0430\u0434\u043d\u0430 \u0411\u044a\u043b\u0433\u0430\u0440\u0438\u044f",
+        "description": "\u201e\u041a\u043e\u043d\u043a\u0443\u0440\u0435\u043d\u0442\u201d \u0435 \u043d\u0430\u0439-\u0433\u043e\u043b\u0435\u043c\u0438\u044f\u0442 \u0438 \u0432\u043b\u0438\u044f\u0442\u0435\u043b\u0435\u043d \u0440\u0435\u0433\u0438\u043e\u043d\u0430\u043b\u0435\u043d \u0432\u0441\u0435\u043a\u0438\u0434\u043d\u0435\u0432\u043d\u0438\u043a \u0432 \u0421\u0435\u0432\u0435\u0440\u043e\u0437\u0430\u043f\u0430\u0434\u043d\u0430 \u0411\u044a\u043b\u0433\u0430\u0440\u0438\u044f. \u0426\u0435\u043d\u0442\u0440\u0430\u043b\u043d\u0438\u044f\u0442 \u043e\u0444\u0438\u0441 \u0438 \u0441\u0435\u0434\u0430\u043b\u0438\u0449\u0435\u0442\u043e \u043d\u0430 \u0434\u0440\u0443\u0436\u0435\u0441\u0442\u0432\u043e\u0442\u043e \u0441\u0430 \u043f\u043e\u0437\u0438\u0446\u0438\u043e\u043d\u0438\u0440\u0430\u043d\u0438 \u0432\u044a\u0432 \u0412\u0440\u0430\u0446\u0430",
+        "url": "http:\/\/t.co\/VMbcih28OB",
+        "entities": {
+          "url": {
+            "urls": [
+              {
+                "url": "http:\/\/t.co\/VMbcih28OB",
+                "expanded_url": "http:\/\/konkurent.bg\/",
+                "display_url": "konkurent.bg",
+                "indices": [
+                  0,
+                  22
+                ]
+              }
+            ]
+          },
+          "description": {
+            "urls": []
+          }
+        },
+        "protected": false,
+        "followers_count": 1522,
+        "friends_count": 1867,
+        "listed_count": 10,
+        "created_at": "Tue Sep 30 07:35:14 +0000 2014",
+        "favourites_count": 32,
+        "utc_offset": null,
+        "time_zone": null,
+        "geo_enabled": false,
+        "verified": false,
+        "statuses_count": 121700,
+        "lang": null,
+        "contributors_enabled": false,
+        "is_translator": false,
+        "is_translation_enabled": false,
+        "profile_background_color": "C0DEED",
+        "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+        "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+        "profile_background_tile": true,
+        "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/608300958607671297\/vNObwz_B_normal.jpg",
+        "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/608300958607671297\/vNObwz_B_normal.jpg",
+        "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/2793798645\/1433865279",
+        "profile_link_color": "0084B4",
+        "profile_sidebar_border_color": "FFFFFF",
+        "profile_sidebar_fill_color": "DDEEF6",
+        "profile_text_color": "333333",
+        "profile_use_background_image": true,
+        "has_extended_profile": false,
+        "default_profile": false,
+        "default_profile_image": false,
+        "following": null,
+        "follow_request_sent": null,
+        "notifications": null,
+        "translator_type": "none"
+      },
+      "geo": null,
+      "coordinates": null,
+      "place": null,
+      "contributors": null,
+      "is_quote_status": false,
+      "retweet_count": 0,
+      "favorite_count": 0,
+      "favorited": false,
+      "retweeted": false,
+      "possibly_sensitive": false,
+      "lang": "bg"
+    },
+    {
+      "created_at": "Sun Jun 21 04:37:39 +0000 2020",
+      "id": 1274562101856567297,
+      "id_str": "1274562101856567297",
+      "text": "RT @scparametro2016: \ud83c\udde7\ud83c\uddec #EfbetLeague \u2502 Grupo do Rebaixamento \u2502 Grupo B \u2502 27\u00aa Rodada\n\nBotev Plovdiv 3x2 Botev Vratsa\n\n21\/06 - 13h\nArda x Dun\u2026",
+      "truncated": false,
+      "entities": {
+        "hashtags": [
+          {
+            "text": "EfbetLeague",
+            "indices": [
+              24,
+              36
+            ]
+          }
+        ],
+        "symbols": [],
+        "user_mentions": [
+          {
+            "screen_name": "scparametro2016",
+            "name": "SC Par\u00e2metro (de \ud83c\udfe0) \u270a\ud83c\udffd",
+            "id": 1093567069201842178,
+            "id_str": "1093567069201842178",
+            "indices": [
+              3,
+              19
+            ]
+          }
+        ],
+        "urls": []
+      },
+      "metadata": {
+        "iso_language_code": "und",
+        "result_type": "recent"
+      },
+      "source": "\u003ca href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\"\u003eTwitter Web App\u003c\/a\u003e",
+      "in_reply_to_status_id": null,
+      "in_reply_to_status_id_str": null,
+      "in_reply_to_user_id": null,
+      "in_reply_to_user_id_str": null,
+      "in_reply_to_screen_name": null,
+      "user": {
+        "id": 227357431,
+        "id_str": "227357431",
+        "name": "Igor Sausmikat",
+        "screen_name": "igorsausmikat",
+        "location": "Bras\u00edlia-DF\/SP",
+        "description": "Ex um monte de @, tinha um blog, mas elogio, critico, sugiro sempre que necess\u00e1rio. No mais? S\u00f3 conhecendo melhor.... e ac\u00e1 estamos donde tenemos que estar!!",
+        "url": "https:\/\/t.co\/dyjPEcCeQl",
+        "entities": {
+          "url": {
+            "urls": [
+              {
+                "url": "https:\/\/t.co\/dyjPEcCeQl",
+                "expanded_url": "https:\/\/www.instagram.com\/igorsausmikat\/",
+                "display_url": "instagram.com\/igorsausmikat\/",
+                "indices": [
+                  0,
+                  23
+                ]
+              }
+            ]
+          },
+          "description": {
+            "urls": []
+          }
+        },
+        "protected": false,
+        "followers_count": 788,
+        "friends_count": 4989,
+        "listed_count": 8,
+        "created_at": "Thu Dec 16 16:41:42 +0000 2010",
+        "favourites_count": 130,
+        "utc_offset": null,
+        "time_zone": null,
+        "geo_enabled": true,
+        "verified": false,
+        "statuses_count": 349115,
+        "lang": null,
+        "contributors_enabled": false,
+        "is_translator": false,
+        "is_translation_enabled": false,
+        "profile_background_color": "C0DEED",
+        "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+        "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+        "profile_background_tile": false,
+        "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/1221347767966162944\/zEpQD_Gm_normal.jpg",
+        "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/1221347767966162944\/zEpQD_Gm_normal.jpg",
+        "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/227357431\/1546748487",
+        "profile_link_color": "1DA1F2",
+        "profile_sidebar_border_color": "C0DEED",
+        "profile_sidebar_fill_color": "DDEEF6",
+        "profile_text_color": "333333",
+        "profile_use_background_image": true,
+        "has_extended_profile": true,
+        "default_profile": true,
+        "default_profile_image": false,
+        "following": null,
+        "follow_request_sent": null,
+        "notifications": null,
+        "translator_type": "none"
+      },
+      "geo": null,
+      "coordinates": null,
+      "place": null,
+      "contributors": null,
+      "retweeted_status": {
+        "created_at": "Sat Jun 20 20:29:55 +0000 2020",
+        "id": 1274439357991182336,
+        "id_str": "1274439357991182336",
+        "text": "\ud83c\udde7\ud83c\uddec #EfbetLeague \u2502 Grupo do Rebaixamento \u2502 Grupo B \u2502 27\u00aa Rodada\n\nBotev Plovdiv 3x2 Botev Vratsa\n\n21\/06 - 13h\nArda x\u2026 https:\/\/t.co\/7cNRbwTQTb",
+        "truncated": true,
+        "entities": {
+          "hashtags": [
+            {
+              "text": "EfbetLeague",
+              "indices": [
+                3,
+                15
+              ]
+            }
+          ],
+          "symbols": [],
+          "user_mentions": [],
+          "urls": [
+            {
+              "url": "https:\/\/t.co\/7cNRbwTQTb",
+              "expanded_url": "https:\/\/twitter.com\/i\/web\/status\/1274439357991182336",
+              "display_url": "twitter.com\/i\/web\/status\/1\u2026",
+              "indices": [
+                116,
+                139
+              ]
+            }
+          ]
+        },
+        "metadata": {
+          "iso_language_code": "und",
+          "result_type": "recent"
+        },
+        "source": "\u003ca href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\"\u003eTwitter Web App\u003c\/a\u003e",
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "user": {
+          "id": 1093567069201842178,
+          "id_str": "1093567069201842178",
+          "name": "SC Par\u00e2metro (de \ud83c\udfe0) \u270a\ud83c\udffd",
+          "screen_name": "scparametro2016",
+          "location": "Mogi das Cruzes, Brasil",
+          "description": "Cobertura das principais divis\u00f5es masculinas e femininas com bola rolando no mundo!",
+          "url": "https:\/\/t.co\/yOzONBTTCo",
+          "entities": {
+            "url": {
+              "urls": [
+                {
+                  "url": "https:\/\/t.co\/yOzONBTTCo",
+                  "expanded_url": "https:\/\/www.facebook.com\/scparametro2016\/",
+                  "display_url": "facebook.com\/scparametro201\u2026",
+                  "indices": [
+                    0,
+                    23
+                  ]
+                }
+              ]
+            },
+            "description": {
+              "urls": []
+            }
+          },
+          "protected": false,
+          "followers_count": 3608,
+          "friends_count": 2336,
+          "listed_count": 11,
+          "created_at": "Thu Feb 07 17:48:01 +0000 2019",
+          "favourites_count": 9961,
+          "utc_offset": null,
+          "time_zone": null,
+          "geo_enabled": false,
+          "verified": false,
+          "statuses_count": 24226,
+          "lang": null,
+          "contributors_enabled": false,
+          "is_translator": false,
+          "is_translation_enabled": false,
+          "profile_background_color": "000000",
+          "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+          "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+          "profile_background_tile": false,
+          "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/1267574634523824128\/xreXNzJZ_normal.jpg",
+          "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/1267574634523824128\/xreXNzJZ_normal.jpg",
+          "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/1093567069201842178\/1584658723",
+          "profile_link_color": "000080",
+          "profile_sidebar_border_color": "000000",
+          "profile_sidebar_fill_color": "000000",
+          "profile_text_color": "000000",
+          "profile_use_background_image": false,
+          "has_extended_profile": true,
+          "default_profile": false,
+          "default_profile_image": false,
+          "following": null,
+          "follow_request_sent": null,
+          "notifications": null,
+          "translator_type": "none"
+        },
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "is_quote_status": false,
+        "retweet_count": 2,
+        "favorite_count": 7,
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "und"
+      },
+      "is_quote_status": false,
+      "retweet_count": 2,
+      "favorite_count": 0,
+      "favorited": false,
+      "retweeted": false,
+      "lang": "und"
+    },
+    {
+      "created_at": "Sun Jun 21 02:26:46 +0000 2020",
+      "id": 1274529164138287107,
+      "id_str": "1274529164138287107",
+      "text": "Campeonato B\u00falgaro - 27\u00b0 Rodada - Playoff de Rebaixamento - Grupo B\n\nBotev Plovdiv  3 x 2 Botev Vratsa\u2026 https:\/\/t.co\/TxFgoqIfGF",
+      "truncated": true,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "user_mentions": [],
+        "urls": [
+          {
+            "url": "https:\/\/t.co\/TxFgoqIfGF",
+            "expanded_url": "https:\/\/twitter.com\/i\/web\/status\/1274529164138287107",
+            "display_url": "twitter.com\/i\/web\/status\/1\u2026",
+            "indices": [
+              104,
+              127
+            ]
+          }
+        ]
+      },
+      "metadata": {
+        "iso_language_code": "pt",
+        "result_type": "recent"
+      },
+      "source": "\u003ca href=\"http:\/\/twitter.com\/download\/android\" rel=\"nofollow\"\u003eTwitter for Android\u003c\/a\u003e",
+      "in_reply_to_status_id": null,
+      "in_reply_to_status_id_str": null,
+      "in_reply_to_user_id": null,
+      "in_reply_to_user_id_str": null,
+      "in_reply_to_screen_name": null,
+      "user": {
+        "id": 1110343004768874496,
+        "id_str": "1110343004768874496",
+        "name": "Loucos por futebol nacional e Internacional \u26bd",
+        "screen_name": "EsportePor",
+        "location": "Rio de Janeiro, Brasil",
+        "description": "Canal sobre futebol mundial, not\u00edcias, resultados, classifica\u00e7\u00e3o e goleadores.",
+        "url": null,
+        "entities": {
+          "description": {
+            "urls": []
+          }
+        },
+        "protected": false,
+        "followers_count": 664,
+        "friends_count": 891,
+        "listed_count": 4,
+        "created_at": "Tue Mar 26 00:49:36 +0000 2019",
+        "favourites_count": 2990,
+        "utc_offset": null,
+        "time_zone": null,
+        "geo_enabled": false,
+        "verified": false,
+        "statuses_count": 7437,
+        "lang": null,
+        "contributors_enabled": false,
+        "is_translator": false,
+        "is_translation_enabled": false,
+        "profile_background_color": "000000",
+        "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+        "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+        "profile_background_tile": false,
+        "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/1110343459523710981\/mfUCJj_N_normal.jpg",
+        "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/1110343459523710981\/mfUCJj_N_normal.jpg",
+        "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/1110343004768874496\/1553561950",
+        "profile_link_color": "1B95E0",
+        "profile_sidebar_border_color": "000000",
+        "profile_sidebar_fill_color": "000000",
+        "profile_text_color": "000000",
+        "profile_use_background_image": false,
+        "has_extended_profile": false,
+        "default_profile": false,
+        "default_profile_image": false,
+        "following": null,
+        "follow_request_sent": null,
+        "notifications": null,
+        "translator_type": "none"
+      },
+      "geo": null,
+      "coordinates": null,
+      "place": null,
+      "contributors": null,
+      "is_quote_status": false,
+      "retweet_count": 0,
+      "favorite_count": 0,
+      "favorited": false,
+      "retweeted": false,
+      "possibly_sensitive": false,
+      "lang": "pt"
+    }
+  ],
+  "search_metadata": {
+    "completed_in": 0.028,
+    "max_id": 1274578883334078468,
+    "max_id_str": "1274578883334078468",
+    "next_results": "?max_id=1274529164138287106&q=Vratsa&count=3&include_entities=1&result_type=mixed",
+    "query": "Vratsa",
+    "refresh_url": "?since_id=1274578883334078468&q=Vratsa&result_type=mixed&include_entities=1",
+    "count": 3,
+    "since_id": 0,
+    "since_id_str": "0"
+  }
+}
