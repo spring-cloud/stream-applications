@@ -129,7 +129,7 @@ or any combination of the above, without requiring a separate processor.
 For example, the time source executed, as shown below, will perform a series of transformations to publish a task launch request every second to the rabbit exchange `time-test`.
 
 ```
-java -jar target/time-source-rabbit-3.0.0-SNAPSHOT.jar --spring.cloud.stream.bindings.output.destination=time-test --spring.cloud.stream.function.definition="timeSupplier|toMessage|spelFunction|headerEnricherFunction|taskLaunchRequestFunction"  --spel.function.expression="payload.length()" --header.enricher.headers=task-id=payload*2 --task.launch.request.task-name-expression="'task-'+headers['task-id']"
+java -jar target/time-source-rabbit-3.0.0-SNAPSHOT.jar --spring.cloud.stream.bindings.output.destination=time-test --spring.cloud.stream.function.definition="timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction"  --spel.function.expression="payload.length()" --header.enricher.headers=task-id=payload*2 --task.launch.request.task-name-expression="'task-'+headers['task-id']"
 ```
 
 The transformed message looks like this:
@@ -146,14 +146,11 @@ Encoding: string
 
 Let's upack this function definition:
 
-`timeSupplier|toMessage|spelFunction|headerEnricherFunction|taskLaunchRequestFunction`
+`timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction`
 
 This creates a composed Supplier beginning with the default `timeSupplier` which is the foundation for `time-source`.
 This produces a String like `06/18/20 16:01:38`.  We transform this using the SpEL expression `payload.length()`.
 The `spelFunction` applies to a `Message` from which we can extract and transform the `payload` or `headers`, in accordance with common Spring Integration conventions.
-We first need to wrap the date String in a message, using `toMessage`.
-
-NOTE: This step will be incorporated into a future release of Spring Cloud Function so may be omitted.
 
 The output of `spelFunction` is the length of the date-time String, `17`.
 From here we apply the header enricher to add a Message header, `task-id` with the value of `payload*2` or ,`34`.
@@ -168,7 +165,7 @@ Please see the individual function documentation for an explanation of its confi
 
 NOTE: Support for composite functions includes auto-configuration for conventional binding name mappings (`input` and `output`) derived from the function definition and the presence of `spring.cloud.stream.bindings.output...`.
 In this example, `--spring.cloud.stream.bindings.output.destination=time-test` is enabled behind the scenes by the auto-configured property
-`--spring.cloud.stream.function.bindings.timeSuppliertoMessagespelFunctionheaderEnricherFunctiontaskLaunchRequestFunction-out-0=output`.
+`--spring.cloud.stream.function.bindings.timeSupplierspelFunctionheaderEnricherFunctiontaskLaunchRequestFunction-out-0=output`.
 
 === Build
 

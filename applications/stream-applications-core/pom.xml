@@ -23,9 +23,9 @@
         <scst-app-maven-plugin.version>2.0.0.M2</scst-app-maven-plugin.version>
         <stream-apps-docs-plugin.version>3.0.0.M1</stream-apps-docs-plugin.version>
         <spring-cloud-stream.version>3.0.2.RELEASE</spring-cloud-stream.version>
-        <spring-cloud-function-dependencies.version>3.0.7.RELEASE</spring-cloud-function-dependencies.version>
+        <spring-cloud-function-dependencies.version>3.0.8.RELEASE</spring-cloud-function-dependencies.version>
         <spring-cloud-dependencies.version>Hoxton.BUILD-SNAPSHOT</spring-cloud-dependencies.version>
-        <spring-cloud-stream-dependencies.version>Horsham.BUILD-SNAPSHOT</spring-cloud-stream-dependencies.version>
+        <spring-cloud-stream-dependencies.version>Horsham.SR6</spring-cloud-stream-dependencies.version>
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
         <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
         <prometheus-rsocket.version>0.9.0</prometheus-rsocket.version>

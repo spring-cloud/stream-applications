@@ -71,7 +71,7 @@ public class TimeSourceTests {
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(TimeSourceTestApplication.class))
 								.web(WebApplicationType.NONE)
-								.run("--spring.cloud.stream.function.definition=timeSupplier|toMessage|spelFunction",
+								.run("--spring.cloud.stream.function.definition=timeSupplier|spelFunction",
 										"--spel.function.expression=payload.length()")) {
 
 			OutputDestination target = context.getBean(OutputDestination.class);
@@ -88,7 +88,7 @@ public class TimeSourceTests {
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(TimeSourceTestApplication.class))
 								.web(WebApplicationType.NONE)
-								.run("--spring.cloud.stream.function.definition=timeSupplier|toMessage|spelFunction|headerEnricherFunction|taskLaunchRequestFunction",
+								.run("--spring.cloud.stream.function.definition=timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction",
 										"--spel.function.expression=payload.length()",
 										"--header.enricher.headers=task-id=payload*2",
 										"--spring.cloud.stream.bindings.output.destination=foo",
@@ -100,7 +100,7 @@ public class TimeSourceTests {
 					TaskLaunchRequest.class);
 			assertThat(taskLaunchRequest.getTaskName()).isEqualTo("task-34");
 			assertThat(context.getEnvironment().getProperty(
-					"spring.cloud.stream.function.bindings.timeSuppliertoMessagespelFunctionheaderEnricherFunctiontaskLaunchRequestFunction-out-0"))
+					"spring.cloud.stream.function.bindings.timeSupplierspelFunctionheaderEnricherFunctiontaskLaunchRequestFunction-out-0"))
 							.isEqualTo("output");
 		}
 	}
