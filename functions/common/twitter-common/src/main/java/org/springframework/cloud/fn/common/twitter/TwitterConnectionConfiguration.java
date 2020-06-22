@@ -79,23 +79,6 @@ public class TwitterConnectionConfiguration {
 				.setOAuthAccessTokenSecret(properties.getAccessTokenSecret());
 	}
 
-	//@Bean
-	//public Function<Message<?>, Message<?>> stringifyPayload() {
-	//
-	//	return message -> {
-	//		if (message.getPayload() instanceof byte[]) {
-	//			String contentType = message.getHeaders().containsKey(MessageHeaders.CONTENT_TYPE)
-	//					? message.getHeaders().get(MessageHeaders.CONTENT_TYPE).toString()
-	//					: BindingProperties.DEFAULT_CONTENT_TYPE.toString();
-	//			if (contentType.contains("text") || contentType.contains("json") || contentType.contains("x-spring-tuple")) {
-	//				message = new MutableMessage<>(new String(((byte[]) message.getPayload())), message.getHeaders());
-	//			}
-	//		}
-	//
-	//		return message;
-	//	};
-	//}
-
 	@Bean
 	public Function<Object, Message<byte[]>> json(ObjectMapper mapper) {
 		return objects -> {

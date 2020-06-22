@@ -68,6 +68,7 @@
 		<module>consumer/tcp-consumer</module>
 		<module>consumer/websocket-consumer</module>
 		<module>consumer/s3-consumer</module>
+		<module>consumer/twitter-consumer</module>
 
 		<module>function/filter-function</module>
 		<module>function/header-enricher-function</module>
@@ -77,6 +78,7 @@
 		<module>function/splitter-function</module>
 		<module>function/tasklauncher-function</module>
 		<module>function/task-launch-request-function</module>
+		<module>function/twitter-function</module>
 
 		<module>supplier/file-supplier</module>
 		<module>supplier/ftp-supplier</module>

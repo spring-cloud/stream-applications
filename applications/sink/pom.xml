@@ -28,5 +28,7 @@
         <module>tcp-sink</module>
         <module>throughput-sink</module>
         <module>websocket-sink</module>
+        <module>twitter-update-sink</module>
+        <module>twitter-message-sink</module>
     </modules>
 </project>
