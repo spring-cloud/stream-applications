@@ -30,7 +30,7 @@ import org.springframework.validation.annotation.Validated;
  * @author Christian Tzolov
  */
 @Component
-@ConfigurationProperties("twitter.friendships.sink")
+@ConfigurationProperties("twitter.friendships.update")
 @Validated
 public class TwitterFriendshipsConsumerProperties {
 

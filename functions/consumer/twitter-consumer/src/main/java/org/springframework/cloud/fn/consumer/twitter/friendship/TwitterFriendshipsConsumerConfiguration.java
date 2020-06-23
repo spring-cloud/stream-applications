@@ -39,7 +39,7 @@ public class TwitterFriendshipsConsumerConfiguration {
 
 	@Bean
 	@SuppressWarnings("Duplicates")
-	public Consumer<Message<?>> friendship(TwitterFriendshipsConsumerProperties properties, Twitter twitter) {
+	public Consumer<Message<?>> friendshipConsumer(TwitterFriendshipsConsumerProperties properties, Twitter twitter) {
 
 		return message -> {
 			try {

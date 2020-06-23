@@ -42,7 +42,7 @@ public class TwitterMessageConsumerConfiguration {
 	private static final Log logger = LogFactory.getLog(TwitterMessageConsumerConfiguration.class);
 
 	@Bean
-	public Consumer<Message<?>> sendDirectMessage(TwitterMessageConsumerProperties messageProperties, Twitter twitter) {
+	public Consumer<Message<?>> sendDirectMessageConsumer(TwitterMessageConsumerProperties messageProperties, Twitter twitter) {
 		return message -> {
 			try {
 				String messageText = messageProperties.getText().getValue(message, String.class);
@@ -68,12 +68,4 @@ public class TwitterMessageConsumerConfiguration {
 			}
 		};
 	}
-
-	//public Consumer<Message<?>> handle(Consumer<Message<?>> sendDirectMessage,
-	//		Function<Message<?>, Message<?>> normalizeStringPayload) {
-	//	return message -> {
-	//		sendDirectMessage.accept(normalizeStringPayload.apply(message));
-	//	};
-	//}
-
 }
