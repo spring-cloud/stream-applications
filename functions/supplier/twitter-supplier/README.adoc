@@ -1,0 +1,143 @@
+# Twitter Suppliers
+
+This module provides a Twitter Status, Message, Friendship suppliers that can be reused and composed in various applications.
+
+`java.util.function.Supplier`
+
+
+## 1. Twitter Status Search
+
+The Twitter's https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets.html[Standard search API] (search/tweets) allows simple queries against the indices of recent or popular Tweets. This `Source` provides continuous searches against a sampling of recent Tweets published in the past 7 days. Part of the 'public' set of APIs.
+
+Returns a collection of relevant Tweets matching a specified query.
+
+### 1.1 Beans for injection
+
+You can import the `TwitterSearchSupplierConfiguration` in the application and then inject the following bean.
+
+`twitterSearchSupplier`
+
+You need to inject this as `Supplier<Message<byte[]>>`.
+
+You can use `twitterSearchSupplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it.
+
+### 1.2 Configuration Options
+
+The configuration properties prefixed with `twitter.search`.
+There are also properties that need to be used with the prefix `twitter.connection`.
+
+The `spring.cloud.stream.poller` properties control the interval between consecutive search requests. Rate Limit - 180 requests per 30 min. window (e.g. ~6 r/m, ~ 1 req / 10 sec.)
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/twitter/search/stream/TwitterSearchSupplierProperties.java[TwitterSearchSupplierProperties].
+See link:src/main/java/org/springframework/cloud/fn/common/twitter/TwitterConnectionProperties.java[TwitterConnectionProperties] and https://github.com/spring-cloud/spring-cloud-stream/blob/master/spring-cloud-stream/src/main/java/org/springframework/cloud/stream/config/DefaultPollerProperties.java[DefaultPollerProperties]
+
+### 1.3 Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/twitter-search-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application where it makes a Twitter Search Source.
+
+## 2. Twitter Status Real-time Retrieval
+
+Provides real-time, Tweet streaming based on the https://developer.twitter.com/en/docs/tweets/filter-realtime/api-reference/post-statuses-filter.html[Filter] and https://developer.twitter.com/en/docs/tweets/sample-realtime/overview/GET_statuse_sample[Sample] APIs.
+The `Filter API` flavor returns public statuses that match one or more filter predicates.
+The `Sample API` flavor returns a small random sample of all public statuses.
+
+This supplier gives you a reactive stream of tweets from the configured connection as the supplier has a signature of `Supplier<Flux<Message<?>>>`.
+Users have to subscribe to this `Flux` and receive the data.
+
+The default access level allows up to 400 track keywords, 5,000 follow user Ids and 25 0.1-360 degree location boxes.
+
+### 2.1 Beans for injection
+
+You can import the `TwitterStreamSupplierConfiguration` in the application and then inject the following bean.
+
+`twitterStreamSupplier`
+
+You need to inject this as `Supplier<Flux<Message<?>>>`.
+
+You can use `twitterStreamSupplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it and then subscribe to the returned `Flux`.
+
+### 2.2 Configuration Options
+
+All configuration properties are prefixed with `twitter.stream`.
+There are also properties that need to be used with the prefix `twitter.connection`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/twitter/status/stream/TwitterStreamSupplierProperties.java[TwitterStreamSupplierProperties].
+See link:src/main/java/org/springframework/cloud/fn/common/twitter/TwitterConnectionProperties.java[TwitterConnectionProperties] also.
+
+
+### 2.3 Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/twitter-stream-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application where it makes a Twitter Stream Source.
+
+## 3. Twitter Direct Message Supplier
+
+Repeatedly retrieves the direct messages (both sent and received) within the last 30 days, sorted in reverse-chronological order.
+The relieved messages are cached (in a `MetadataStore` cache) to prevent duplications.
+By default an in-memory `SimpleMetadataStore` is used.
+
+The `twitter.message.source.count` controls the number or returned messages.
+
+The `spring.cloud.stream.poller` properties control the message poll interval.
+Must be aligned with used APIs rate limit
+
+### 3.1 Beans for injection
+
+You can import the `TwitterMessageSupplierConfiguration` in the application and then inject the following bean.
+
+`twitterMessageSupplier`
+
+You need to inject this as `Supplier<Message<byte[]>>`.
+
+You can use `twitterMessageSupplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it.
+
+### 3.2 Configuration Options
+
+The configuration properties prefixed with `twitter.search`.
+There are also properties that need to be used with the prefix `twitter.connection`.
+
+The `spring.cloud.stream.poller` properties control the interval between consecutive search requests. Rate Limit - 180 requests per 30 min. window (e.g. ~6 r/m, ~ 1 req / 10 sec.)
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/twitter/message/TwitterMessageSupplierProperties.java[TwitterMessageSupplierProperties].
+See link:src/main/java/org/springframework/cloud/fn/common/twitter/TwitterConnectionProperties.java[TwitterConnectionProperties] and https://github.com/spring-cloud/spring-cloud-stream/blob/master/spring-cloud-stream/src/main/java/org/springframework/cloud/stream/config/DefaultPollerProperties.java[DefaultPollerProperties]
+
+### 3.3 Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/twitter-message-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application where it makes a Twitter Message Source.
+
+## 4. Twitter Friendships Supplier
+
+Returns a cursored collection of user objects either for the https://developer.twitter.com/en/docs/accounts-and-users/follow-search-get-users/api-reference/get-followers-list[users following the specified user] (`followers`) or for https://developer.twitter.com/en/docs/accounts-and-users/follow-search-get-users/api-reference/get-friends-list[every user the specified user is following] (`friends`).
+
+The `twitter.friendships.source.type` property allow to select between both types.
+
+TIP: Rate limit: 15 requests per 30 min window. ~ 1 req/ 2 min
+
+### 4.1 Beans for injection
+
+You can import the `TwitterFriendshipsSupplierConfiguration` in the application and then inject one the following beans.
+
+- `followersSupplier` (only if `twitter.friendships.source.type=followers` ) - retrieves the https://developer.twitter.com/en/docs/accounts-and-users/follow-search-get-users/api-reference/get-followers-list[users following the specified user] (`followers`)
+
+- `friendsSupplier` (only if `twitter.friendships.source.type=friends`) - retrieves the for https://developer.twitter.com/en/docs/accounts-and-users/follow-search-get-users/api-reference/get-friends-list[every user the specified user is following] (`friends`).
+
+Both suppliers expose `Supplier<List<User>>`.
+
+- `deduplicatedFriendsJsonSupplier` - retrieves either the followers, or the friends collection (controlled by the `twitter.friendships.source.type`) property,  .
+encoded as JSON `Message` payloads. You need to inject this as `Supplier<Message<byte[]>>`.
+
+
+### 4.2 Configuration Options
+
+The configuration properties prefixed with `twitter.friendships.source`.
+There are also properties that need to be used with the prefix `twitter.connection`.
+
+The `spring.cloud.stream.poller` properties control the interval between consecutive search requests.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/twitter/friendships/TwitterFriendshipsSupplierProperties.java[TwitterFriendshipsSupplierProperties].
+See link:src/main/java/org/springframework/cloud/fn/common/twitter/TwitterConnectionProperties.java[TwitterConnectionProperties] and https://github.com/spring-cloud/spring-cloud-stream/blob/master/spring-cloud-stream/src/main/java/org/springframework/cloud/stream/config/DefaultPollerProperties.java[DefaultPollerProperties]

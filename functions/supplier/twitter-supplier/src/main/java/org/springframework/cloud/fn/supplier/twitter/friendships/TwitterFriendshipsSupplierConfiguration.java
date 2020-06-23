@@ -143,7 +143,7 @@ public class TwitterFriendshipsSupplierConfiguration {
 	}
 
 	@Bean
-	public Supplier<Message<byte[]>> userRetrieval(Function<List<User>, List<User>> userDeduplication,
+	public Supplier<Message<byte[]>> deduplicatedFriendsJsonSupplier(Function<List<User>, List<User>> userDeduplication,
 			Supplier<List<User>> userRetriever, Function<Object, Message<byte[]>> managedJson) {
 		return () -> userDeduplication.andThen(managedJson).apply(userRetriever.get());
 	}
