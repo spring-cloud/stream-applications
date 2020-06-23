@@ -66,7 +66,7 @@
                         <name>twitter-trend</name>
                         <type>processor</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.twitter.TwitterTrendFunctionConfiguration.class</configClass>
+                        <configClass>org.springframework.cloud.fn.twitter.trend.TwitterTrendFunctionConfiguration.class</configClass>
                         <functionDefinition>trendOrTrendLocationsFunction</functionDefinition>
                     </generatedApp>
 

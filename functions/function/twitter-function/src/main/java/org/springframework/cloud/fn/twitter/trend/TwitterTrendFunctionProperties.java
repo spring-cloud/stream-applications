@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.twitter;
+package org.springframework.cloud.fn.twitter.trend;
 
 import javax.validation.constraints.NotNull;
 

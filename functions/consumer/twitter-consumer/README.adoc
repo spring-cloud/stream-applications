@@ -36,6 +36,8 @@ All configuration properties are prefixed with `twitter.update`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/twitter/status/update/TwitterUpdateConsumerProperties.java[TwitterUpdateConsumerProperties].
 
+The twitter function makes uses of link:../spel-function/README.adoc[SpEL function].
+
 ### 1.3 Other usage
 
 See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/twitter-update-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a Twitter Update sink.
@@ -67,6 +69,8 @@ You can use `twitterStatusUpdateConsumer` as a qualifier when injecting.
 All configuration properties are prefixed with `twitter.message.update`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/twitter/message/TwitterMessageConsumerProperties.java[TwitterMessageConsumerProperties].
+
+The twitter function makes uses of link:../spel-function/README.adoc[SpEL function].
 
 ### 2.3 Other usage
 
@@ -101,4 +105,6 @@ You can use `friendshipConsumer` as a qualifier when injecting.
 All configuration properties are prefixed with `twitter.friendships.update`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/twitter/friendship/TwitterFriendshipsConsumerProperties.java[TwitterFriendshipsConsumerProperties].
+
+The twitter function makes uses of link:../spel-function/README.adoc[SpEL function].
 

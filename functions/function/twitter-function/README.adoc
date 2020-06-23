@@ -1,0 +1,30 @@
+# Twitter Functions
+
+This module provides couple of twitter functions that can be reused and composed in other applications.
+
+## Twitter Trend Function
+
+Functions can return either Trends topics or the Locations of the trending topics. The `twitter.trend.trend-query-type` property allows choosing between both types.
+
+* Trends - `twitter.trend.trend-query-type` is set to `trend`. Leverages the https://developer.twitter.com/en/docs/trends/trends-for-location/api-reference/get-trends-place[Trends API] to return the https://help.twitter.com/en/using-twitter/twitter-trending-faqs[trending topics] near a specific latitude, longitude location.
+
+* Trend Locations - the `twitter.trend.trend-query-type` is set `trendLocation`. Retrieve a full or nearby locations list of trending topics by location. If the `latitude`, `longitude` parameters are NOT provided the processor performs the https://developer.twitter.com/en/docs/trends/locations-with-trending-topics/api-reference/get-trends-available[Trends Available API] and returns the locations that Twitter has trending topic information for.
+If the `latitude`, `longitude` parameters are provided the processor performs the https://developer.twitter.com/en/docs/trends/locations-with-trending-topics/api-reference/get-trends-closest[Trends Closest API] and returns the locations that Twitter has trending topic information for, closest to a specified location.
+
+Response is an array of `locations` that encode the location's WOEID and some other human-readable information such as a canonical name and country the location belongs in.
+
+### Beans for injection
+
+You can import the `TwitterTrendFunctionConfiguration` in a Spring Boot application and then inject the following bean.
+
+`filterFunction`
+
+You can use `Function<Message<?>, Message<byte[]>> trendOrTrendLocationsFunction` as a qualifier when injecting.
+
+Once injected, you can use the `apply` method of the `Function` to invoke it and get the result.
+
+### Configuration Options
+
+
+### Other usage
+
