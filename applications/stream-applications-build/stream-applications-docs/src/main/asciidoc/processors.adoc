@@ -27,6 +27,9 @@ include::{stream-apps-root}/{branch}/applications/processor/splitter-processor/R
 [[spring-cloud-stream-modules-transform-processor]]
 include::{stream-apps-root}/{branch}/applications/processor/transform-processor/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-transform-processor]]
+include::{stream-apps-root}/{branch}/applications/processor/transform-processor/README.adoc[tags=ref-doc]
+
 :leveloffset: -2
 
 

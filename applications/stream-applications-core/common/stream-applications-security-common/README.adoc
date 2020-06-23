@@ -22,7 +22,7 @@ To include app starters security management for a stream app, just include a dep
 ----
 <dependency>
     <groupId>org.springframework.cloud.stream.app</groupId>
-    <artifactId>app-starters-security-common</artifactId>
+    <artifactId>stream-applications-security-common</artifactId>
 </dependency>
 ----
 

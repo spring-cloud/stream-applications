@@ -29,8 +29,12 @@
         <mongodb-source.version>3.0.0-SNAPSHOT</mongodb-source.version>
         <mqtt-source.version>3.0.0-SNAPSHOT</mqtt-source.version>
         <rabbit-source.version>3.0.0-SNAPSHOT</rabbit-source.version>
+        <s3-source.version>3.0.0-SNAPSHOT</s3-source.version>
         <tcp-source.version>3.0.0-SNAPSHOT</tcp-source.version>
         <time-source.version>3.0.0-SNAPSHOT</time-source.version>
+        <twitter-message-source.version>3.0.0-SNAPSHOT</twitter-message-source.version>
+        <twitter-search-source.version>3.0.0-SNAPSHOT</twitter-search-source.version>
+        <twitter-stream-source.version>3.0.0-SNAPSHOT</twitter-stream-source.version>
         <websocket-source.version>3.0.0-SNAPSHOT</websocket-source.version>
         <cassandra-sink.version>3.0.0-SNAPSHOT</cassandra-sink.version>
         <counter-sink.version>3.0.0-SNAPSHOT</counter-sink.version>
@@ -44,10 +48,13 @@
         <rabbit-sink.version>3.0.0-SNAPSHOT</rabbit-sink.version>
         <redis-sink.version>3.0.0-SNAPSHOT</redis-sink.version>
         <router-sink.version>3.0.0-SNAPSHOT</router-sink.version>
+        <s3-sink.version>3.0.0-SNAPSHOT</s3-sink.version>
         <sftp-sink.version>3.0.0-SNAPSHOT</sftp-sink.version>
-        <tcp-sink.version>3.0.0-SNAPSHOT</tcp-sink.version>
         <tasklauncher-sink.version>3.0.0-SNAPSHOT</tasklauncher-sink.version>
+        <tcp-sink.version>3.0.0-SNAPSHOT</tcp-sink.version>
         <throughput-sink.version>3.0.0-SNAPSHOT</throughput-sink.version>
+        <twitter-message-sink.version>3.0.0-SNAPSHOT</twitter-message-sink.version>
+        <twitter-update-sink.version>3.0.0-SNAPSHOT</twitter-update-sink.version>
         <websocket-sink.version>3.0.0-SNAPSHOT</websocket-sink.version>
         <bridge-processor.version>3.0.0-SNAPSHOT</bridge-processor.version>
         <filter-processor.version>3.0.0-SNAPSHOT</filter-processor.version>
@@ -57,6 +64,7 @@
         <script-processor.version>3.0.0-SNAPSHOT</script-processor.version>
         <splitter-processor.version>3.0.0-SNAPSHOT</splitter-processor.version>
         <transform-processor.version>3.0.0-SNAPSHOT</transform-processor.version>
+        <twitter-trend-processor.version>3.0.0-SNAPSHOT</twitter-trend-processor.version>
     </properties>
 
     <profiles>

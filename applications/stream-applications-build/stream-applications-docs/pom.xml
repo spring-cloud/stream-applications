@@ -56,6 +56,11 @@
 			<artifactId>tcp-common</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>twitter-common</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
 		<!-- supplier javadocs -->
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
@@ -104,12 +109,22 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>s3-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>tcp-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>time-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>twitter-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
@@ -174,9 +189,9 @@
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud.stream.app</groupId>
-			<artifactId>router-sink</artifactId>
-			<version>${router-sink.version}</version>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>s3-consumer</artifactId>
+			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
@@ -186,6 +201,11 @@
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>tcp-consumer</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>twitter-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
@@ -216,7 +236,17 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>task-launch-request-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>tasklauncher-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>twitter-function</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<!-- Apps don't use external functions as baseline, but contain @ConfigurationProperties -->
@@ -224,6 +254,11 @@
 			<groupId>org.springframework.cloud.stream.app</groupId>
 			<artifactId>load-generator-source</artifactId>
 			<version>${load-generator-source.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.stream.app</groupId>
+			<artifactId>router-sink</artifactId>
+			<version>${router-sink.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.stream.app</groupId>

@@ -33,11 +33,23 @@ include::{stream-apps-root}/{branch}/applications/source/mqtt-source/README.adoc
 [[spring-cloud-stream-modules-rabbit-source]]
 include::{stream-apps-root}/{branch}/applications/source/rabbit-source/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-s3-source]]
+include::{stream-apps-root}/{branch}/applications/source/s3-source/README.adoc[tags=ref-doc]
+
 [[spring-cloud-stream-modules-tcp-source]]
 include::{stream-apps-root}/{branch}/applications/source/tcp-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-time-source]]
 include::{stream-apps-root}/{branch}/applications/source/time-source/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-twitter-message-source]]
+include::{stream-apps-root}/{branch}/applications/source/twitter-message-source/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-twitter-search-source]]
+include::{stream-apps-root}/{branch}/applications/source/twitter-search-source/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-twitter-stream-source]]
+include::{stream-apps-root}/{branch}/applications/source/twitter-stream-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-websocket-source]]
 include::{stream-apps-root}/{branch}/applications/source/websocket-source/README.adoc[tags=ref-doc]

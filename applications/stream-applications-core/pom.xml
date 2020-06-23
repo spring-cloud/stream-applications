@@ -17,17 +17,17 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <stream-apps-core.version>3.0.0-SNAPSHOT</stream-apps-core.version>
-        <spring-boot.version>2.3.0.RELEASE</spring-boot.version>
-        <app-metadata-maven-plugin-version>2.0.1.M1</app-metadata-maven-plugin-version>
+        <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
+        <stream-apps-core.version>${project.version}</stream-apps-core.version>
+        <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
         <scst-app-maven-plugin.version>2.0.0.M2</scst-app-maven-plugin.version>
+        <app-metadata-maven-plugin-version>2.0.1.M1</app-metadata-maven-plugin-version>
         <stream-apps-docs-plugin.version>3.0.0.M1</stream-apps-docs-plugin.version>
         <spring-cloud-stream.version>3.0.2.RELEASE</spring-cloud-stream.version>
         <spring-cloud-function-dependencies.version>3.0.8.RELEASE</spring-cloud-function-dependencies.version>
-        <spring-cloud-dependencies.version>Hoxton.BUILD-SNAPSHOT</spring-cloud-dependencies.version>
+        <spring-cloud-dependencies.version>Hoxton.SR6</spring-cloud-dependencies.version>
         <spring-cloud-stream-dependencies.version>Horsham.SR6</spring-cloud-stream-dependencies.version>
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
-        <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
         <prometheus-rsocket.version>0.9.0</prometheus-rsocket.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
@@ -47,8 +47,6 @@
         <nohttp-checkstyle.version>0.0.2.RELEASE</nohttp-checkstyle.version>
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.7</spring-javaformat-checkstyle.version>
-        <spring-cloud-build.version>3.0.0-SNAPSHOT</spring-cloud-build.version>
-
         <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
 		<mockserver.version>5.10</mockserver.version>
     </properties>
@@ -320,7 +318,6 @@
             </plugins>
         </pluginManagement>
 
-
         <plugins>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -379,11 +376,6 @@
                         <groupId>io.spring.javaformat</groupId>
                         <artifactId>spring-javaformat-checkstyle</artifactId>
                         <version>${spring-javaformat-checkstyle.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.springframework.cloud</groupId>
-                        <artifactId>spring-cloud-build-tools</artifactId>
-                        <version>${spring-cloud-build.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>io.spring.nohttp</groupId>
