@@ -33,8 +33,9 @@ public class TwitterTrendFunctionProperties {
 	private static final Expression DEFAULT_EXPRESSION = new SpelExpressionParser().parseExpression("payload");
 
 	enum TrendQueryType {
-		/** modes */
+		/** Retrieve trending places. */
 		trend,
+		/** Retrieve the Locations of trending places. */
 		trendLocation
 	}
 
