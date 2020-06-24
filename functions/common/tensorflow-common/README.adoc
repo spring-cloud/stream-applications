@@ -12,23 +12,24 @@ The Pre and Post processing steps could become very complex (check https://githu
 
 Additionally, the unnecessary shuffling of data between the JVM and the native TF impacts the overall performance of the flow. The issue is apparent when multiple pre-trained TF models are combined (composed) or the same TF models are evaluated iteratively. In those cases the processed data is repeatedly being moved between the JVM Heap and the TF native memory.
 
-Recently introduced Java Ops API (v.1.13 +) exposes the native https://www.tensorflow.org/versions/r1.9/api_docs/cc?hl=en[TF C++ Core API] offering comprehensive, native math, image, io and alike utilities. Later is useful for implementing the computational intensive logic by using the same TF tools and infrastructure used for running the pre-trained models.
+The `Java Ops API` exposes the native https://www.tensorflow.org/versions/r1.9/api_docs/cc?hl=en[TF C++ Core API] offering comprehensive, native math, image, io and alike utilities. Later is useful for implementing the computational intensive logic by using the same TF tools and infrastructure used for running the pre-trained models.
 
 Proposed programming model builds on the https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html[Java Function API], the Java Ops API and a basic data structure that together help to unify and streamline the building of TensorFlow inference pipelines. While focused on model-inference, this programming model is likely to be useful for building model-training pipelines as well.
 
-The programming model is centred around a single functional definition:
+The programming model is focused around a single functional definition:
 
-|===
-|Function<Map<String, Tensor<?>>,  Map<String, Tensor<?>>>
+[source,Java]
+----
+Function<Map<String, Tensor<?>>,  Map<String, Tensor<?>>>
+----
 
-|===
 
-and corresponding method expression
+and the  corresponding method expression
 
-|===
-|Map<String, Tensor<?>> apply( Map<String, Tensor<?>> feeds)
-
-|===
+[source,Java]
+----
+Map<String, Tensor<?>> apply( Map<String, Tensor<?>> feeds)
+----
 
 This function receives a map of named Tensors as an input and in turn returns a map of named Tensors. Because the input and the output formats are equivalent, functions with this signature can be reused and composed into larger, complex functions.
 
