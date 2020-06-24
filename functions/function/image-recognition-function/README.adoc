@@ -82,7 +82,7 @@ IOUtils.write(augmentedImage, new FileOutputStream("./image-recognition/target/i
 <2> Stores the augmented image as `image-augmented.jpg` image file.
 
 .Augmented image-augmented.jpg file
-image:{images-asciidoc}/image-recogniyion-panda-augmented.jpg[alt=Augmented,width=60%]
+image:{images-asciidoc}/image-recognition-panda-augmented.jpg[alt=Augmented,width=60%]
 
 ## Models
 
