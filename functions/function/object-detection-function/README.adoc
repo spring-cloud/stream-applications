@@ -1,10 +1,12 @@
+:images-asciidoc: https://raw.githubusercontent.com/tzolov/stream-applications/tensorflow-redesign/functions/function/object-detection-function/src/main/resources/images/
+
 # Object Detection Function
 
 Java model inference library for the https://github.com/tensorflow/models/blob/master/research/object_detection/README.md[TensorFlow Object Detection API]. Allows real-time localization and identification of multiple objects in a single or batch of images. Works with all https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md[pre-trained zoo models] and ttps://github.com/tensorflow/models/tree/865c14c/research/object_detection/data[object labels].
 
 [cols="1,2", frame=none, grid=none]
 |===
-| image:{imagesdir}/../object_detection_1.jpg[alt=Object Detection 1, width=100%]
+| image:{imagesdir}/object_detection_1.jpg[alt=Object Detection 1, width=100%]
 |The https://github.com/tzolov/mind-model-services/blob/master/object-detection/src/main/java/io/mindmodel/services/object/detection/ObjectDetectionService.java[ObjectDetectionService]
 takes an image or a batch of images and outputs a list of predicted objects bounding boxes
 represented by https://github.com/tzolov/mind-model-services/blob/master/object-detection/src/main/java/io/mindmodel/services/object/detection/domain/ObjectDetection.java[ObjectDetection].
