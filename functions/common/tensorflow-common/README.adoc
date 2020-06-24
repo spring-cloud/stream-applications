@@ -34,56 +34,64 @@ Map<String, Tensor<?>> apply( Map<String, Tensor<?>> feeds)
 This function receives a map of named Tensors as an input and in turn returns a map of named Tensors. Because the input and the output formats are equivalent, functions with this signature can be reused and composed into larger, complex functions.
 
 The names used in the inputs and the outputs maps are strings of the form *operation_name*** **: *output_index* (output_index defaults to 0 if skipped). The names must match the indexed operations inside the underlying TF graph.  +
-*TODO*: Explore how to use wildcards indexe expressions (eg. :*) and support sparse Tensors - @Karl
 
-The https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor[Tensor] class is a reference to the data used natively in the TF engine. The referenced data is not moved to JVM Heap unless explicitly materialized with Tensor.copyTo().  Exchanging Tensor references between functions prevens unnecessarily copying the data to the JVM heap.  +
-*TODO*: Explore the implications of sharing Tensors between different native TF C++ processes. Find what is the data churn when connecting and exchanging Tensors between separate TF inference models in C.
+The https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor[Tensor] class is a reference to the data used natively in the TF engine. The referenced data is not moved to JVM Heap unless explicitly materialized with `Tensor.copyTo()`.  Exchanging Tensor references between functions prevents unnecessarily copying the data to the JVM heap.  +
 
 Proposed data structure fits well with existing https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Session.Runner[Session.Runner API], which accepts https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Session.Runner.html#feed(java.lang.String,%20org.tensorflow.Tensor%3C?%3E)[indexed operations] as an input feed and returns list of tensors predefined by https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Session.Runner.html#fetch(java.lang.String)[fetch indexed operations].
 
 The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java[GraphRunner] and the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphDefinition.java[GraphDefinition] are the core abstractions used to define, load and inference TensorFlow models. https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java[GraphRunner] implements the Function (e.g. Fn<Map<S,T>, Map<S,T>>) definition and uses the TF Java API to run the underlying TF graph. The input Tensor map is fed to the Session Runner. After the graph is evaluated, a list of predefined fetch names is used to retrieve selected Tensors from the result as a named Tensor map. The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java#L45[withGraphDefintition(GraphDefinition)] method is used to define a new or to load a pre-trained TF graph,  while the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java#L60[withSavedModel(path)] method helps to load a Tensorflow SavedModel. +
 The GraphDefinition argument is a functional interface and can therefore be used as the assignment target for a lambda expression or method reference.
 
-Following snippets illustrates how to use the withGraphDefintiont to define a new TF Graph that computes y1 = x1 * 2:
+Following snippets illustrates how to use the `withGraphDefinition` to define a new TF Graph that computes the `y1 = x1 * 2` expression:
 
-|===
-|myGraph = new GraphRunner("x1", "y1")
-
-|===
+[source,Java]
+----
+myGraph = new GraphRunner("x1", "y1")
+   .withGraphDefinition(  tf ->
+      tf.withName("y1").math.mul(
+         tf.withName("x1").placeholder(Integer.class),
+         tf.constant(2)));
+----
 
 The x1 and y1 constructor arguments define the input and output Tensor names (technically indexed operation names) used to feed in and fetch out data to and from the defined model.
 
 The GraphRunner https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/AbstractGraphRunner.java#L49[apply] method helps evaluate/inference the so defined graph:
 
-|===
-|Map<String, Tensor<?>> input = Collections.singletonMap("x1", Tensor.create(666));
-
-|===
+[source,Java]
+----
+Map<String, Tensor<?>> input = Collections.singletonMap("x1", Tensor.create(666));
+result = myGraph.apply(input);
+----
 
 Similarly we can load a frozen/pre-trained model (https://github.com/tensorflow/models/tree/master/research/slim/nets/mobilenet#pretrained-models[MobileNetV2] model in this case) from an archive using the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/ProtoBufGraphDefinition.java[ProtoBufGraphDefinitions] helper class.
 
-|===
-|mibileNetV2 = new GraphRunner("input", "MobilenetV2/Predictions/Reshape_1")
+[source,Java]
+----
+mibileNetV2 = new GraphRunner("input", "MobilenetV2/Predictions/Reshape_1")
+   .withGraphDefinition(
+      new ProtoBufGraphDefinition(
+"https://storage.googleapis.com/mobilenet_v2/checkpoints/mobilenet_v2_1.4_224.tgz#mobilenet_v2_1.4_224_frozen.pb",
+         cacheModel));
+----
 
-|===
-You can load archives from http://, file:// or classpath:// locations
+You can load archives from `http://`, `file://` or `classpath://` locations.
 
 For loading a *SavedModel* from the local file system use the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java#L68[withSavedModel] method like this:
 
-|===
-|ssdMibileNetV1Coco = new GraphRunner( Arrays.asList("image_tensor"),
-
-|===
+[source,Java]
+----
+ssdMibileNetV1Coco = new GraphRunner( Arrays.asList("image_tensor"),
+          Arrays.asList("detection_boxes", “detection_scores”, “detection_classes”))
+   .withSavedModel( ”./ssd_mobilenet_v1_coco_2017_11_17/saved_model”, "serve");
+----
 
 An example inference pipeline based on the proposed Functional Programming Model would look similar to this:
 
+Every GraphRunner instance in the pipeline uses either an in-place defined, or a pre-trained TF graph.
 
+In practice, it would still be required to implement some input and output adapters for the logic that cannot be (or are not feasible to be) implemented with the native Java Ops API. But you have the freedom to choose what part of the processing logic to run as natively (e.g. Java Ops API) cod and what is a plain Java.
 
-Every GraphRunner instance in the pipeline uses either an in-place defined or a pre-trained TF graph.
-
-In practice it would still be required to implement some input and output adapters for the logic that can not be (or are not feasible to be) implemented with the native Java Ops API. But you have the freedom to choose what part of the processing logic to run as natively (e.g. Java Ops API) cod and what is a plain Java.
-
-Furthermore we are not limited to GraphRunner but any custom https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html[Function]<Map<String, Tensor>, Map<String, Tensor>> implementations can be used in the processing pipelines. In fact the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/Functions.java[Functions] utilities use this approach.  +
+Furthermore, we are not limited to GraphRunner but any custom https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html[Function]<Map<String, Tensor>, Map<String, Tensor>> implementations can be used in the processing pipelines. In fact the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/Functions.java[Functions] utilities use this approach.  +
 When appropriate any custom Function, https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html[Supplier]<Map<String, Tensor>>, https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html[Consumer]<Map<String, Tensor>> or the rest of the https://docs.oracle.com/javase/8/docs/api/java/util/function/package-frame.html[java.util.function] classes and interfaces can be used.
 
 For real time examples check the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/image-recognition/src/main/java/io/mindmodel/services/image/recognition/ImageRecognition.java[image-recognition] and https://github.com/tzolov/mind-model-services/blob/ops-programming-model/semantic-segmentation/src/main/java/io/mindmodel/services/semantic/segmentation/SemanticSegmentation.java[semantic-segmentation] implementations.
@@ -96,10 +104,10 @@ Following paragraphs discusses some features and techniques useful for composing
 
 The GraphRunner constructor expects two compulsory list fields: *feedNames* - list of names that the graph accepts as input Tensors and *fetchNames *- list of (Tensor) names that the graph would return.
 
-|===
-|public GraphRunner(List<String> feedNames, List<String> fetchedNames)
-
-|===
+[source,Java]
+----
+public GraphRunner(List<String> feedNames, List<String> fetchedNames)
+----
 
 Together those two lists define the input and output contract of the graph runner. +
 The names used in the inputs and the outputs maps are strings of the form *operation_name*** **: *output_index* (output_index defaults to 0 if skipped). The names must match the indexed operations inside the underlying TF graph.
@@ -108,12 +116,12 @@ The names used in the inputs and the outputs maps are strings of the form *opera
 
 Because the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java[GraphRunner] function signature uses the same type for input and output parameters, the https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html[Functional] interface allows us compose multiple graph https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java[GraphRunner] functions into a larger composite function:
 
-|===
-|           composed-graph = graph1.*andThen*(graph2)....*andThen*(graphN)
+[source,Java]
+----
+           composed-graph = graph1.*andThen*(graph2)....*andThen*(graphN)
+----
 
-|===
-
-For example let's take two simple graphs: G1 (y1 = x1 * 2) and G2 (y2 = x2 + 20). The composed graph G = G1.andThen(G2) is equivalent to y = (x * 2 ) + 20.
+For example let's take two simple graphs: `G1 (y1 = x1 * 2)` and `G2 (y2 = x2 + 20)`. The composed graph `G = G1.andThen(G2)` is equivalent to `y = (x * 2 ) + 20`.
 
 The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/test/java/io/mindmodel/services/common/examples/FunctionComposition.java[FunctionComposition example] demonstrates how this works:
 
