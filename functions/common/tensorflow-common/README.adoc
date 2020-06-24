@@ -1,30 +1,16 @@
+:images-asciidoc: https://raw.githubusercontent.com/tzolov/stream-applications/tensorflow-redesign/functions/common/tensorflow-common/src/main/resources/images/
+
 = Programming Model for TensorFlow Inference
-
-
-Programming Model	2
-Features	5
-Input and Output Contracts	5
-Composition	6
-Multiple inputs/outputs	6
-Save and Close Obsolete Tensors	8
-Enrich Graph Inputs	9
-Enrich Inputs from Saved Tensors	9
-Load Frozen Models from Remote Archives	10
-Classe Hierarchy	10
-Summary	12
-Related work	13
-DL4J GraphRunner	13
-TODOs	13
-
 
 == Programming Model
 
 Implementing a real-time TensorFlow Inference in Java, typically leverages the TF Java API for loading and scoring the pre-trained models. But the logic used to convert the upstream data into model input Tensors (e.g. pre-processor)  and in turn to convert the inferred Tensors back into application data (e.g. post-processor) is commonly implemented in plain Java:
 
+image::{images-asciidoc}/programming_model.png[Counter Architecture, scaledwidth="70%"]
 
 The Pre and Post processing steps could become very complex (check https://github.com/ildoonet/tf-pose-estimation[Pose Estimation] or https://github.com/davidsandberg/facenet[Face Recognition]) and computationally intensive.  E.g.  tons of math and image operations that are better fit for optimized TF utilities rather the plain Java math or  AWT/2D/Canvas such.
 
-Additionally the unnecessary shuffling of data between the JVM and the native TF impacts the overall performance of the flow. The issue is apparent when multiple pre-trained TF models are combined (composed) or the same TF models are evaluated iteratively. In those cases the processed data is repeatedly being moved between the JVM Heap and the TF native memory.
+Additionally, the unnecessary shuffling of data between the JVM and the native TF impacts the overall performance of the flow. The issue is apparent when multiple pre-trained TF models are combined (composed) or the same TF models are evaluated iteratively. In those cases the processed data is repeatedly being moved between the JVM Heap and the TF native memory.
 
 Recently introduced Java Ops API (v.1.13 +) exposes the native https://www.tensorflow.org/versions/r1.9/api_docs/cc?hl=en[TF C++ Core API] offering comprehensive, native math, image, io and alike utilities. Later is useful for implementing the computational intensive logic by using the same TF tools and infrastructure used for running the pre-trained models.
 
