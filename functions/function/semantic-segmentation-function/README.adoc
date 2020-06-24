@@ -9,7 +9,7 @@ Image Semantic Segmentation based on the state-of-art https://github.com/tensorf
 | image:{images-asciidoc}/VikiMaxiAdi-all.png[width=100%]
 |Semantic Segmentation is the process of associating each pixel of an image with a class label, (such as flower, person, road, sky, ocean, or car).
 Unlike the `Instance Segmentation`, which produces instance-aware region masks, the `Semantic Segmentation` produces class-aware masks.
-For implementing `Instance Segmentation` consult the link:#object-detection[Object Detection Service] instead.
+For implementing `Instance Segmentation` consult the https://github.com/tzolov/stream-applications/tree/tensorflow-redesign/functions/function/object-detection-function[Object Detection Service] instead.
 |===
 
 The https://github.com/tzolov/mind-model-services/blob/master/common/src/main/java/io/mindmodel/services/common/JsonMapperFunction.java[JsonMapperFunction] permits
