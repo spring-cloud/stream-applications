@@ -1,0 +1,86 @@
+# SFTP Supplier
+
+This module provides a SFTP supplier that can be reused and composed in other applications.
+The `Supplier` uses various `Sftp` inbound adapters from Spring Integration to support a range of modes to consume data from an SFTP server.
+These include:
+
+* Synchronize remote files to a local directory and supplying the File contents, the File reference, or a message per line.
+* Stream remote file contents as a byte array directly without copying to a local directory.
+* List the remote file names only.
+
+Messages emitted by the supplier are provided as a byte array by default. However, this can be customized using the `--mode` option:
+
+- *ref* Provides a `java.io.File` reference
+- *lines* Will split files line-by-line and emit a new message for each line
+- *contents* The default. Provides the contents of a file as a byte array
+
+
+NOTE: When using `--mode=lines`, you can provide an additional option `--withMarkers=true`.
+If set to `true`, the underlying `FileSplitter` will emit additional _start-of-file_ and _end-of-file_ marker messages before and after the actual data.
+The payload of these 2 additional marker messages is of type `FileSplitter.FileMarker`.
+The option `withMarkers` defaults to `false` if not explicitly set.
+
+When configuring the `sftp.factory.known-hosts-expression` option, the root object of the evaluation is the application context, an example might be `sftp.factory.known-hosts-expression = @systemProperties['user.home'] + '/.ssh/known_hosts'`.
+
+## Idempotency
+
+By default the supplier uses a https://docs.spring.io/spring-integration/api/org/springframework/integration/metadata/SimpleMetadataStore.html[SimpleMetadataStore], storing the last modified time to track files that have already been processed in memory.
+If an application using this supplier is restarted, any existing files will be reprocessed. You can inject on of the persistent https://docs.spring.io/spring-integration/reference/html/meta-data-store.html[MetadataStore implementations] provided by Spring Integration, or your own of course, to maintain this state permanently.
+See also link:../../common/metadata-store-common/README.adoc[`MetadataStore`] options for possible shared persistent store configuration for the `SftpPersistentAcceptOnceFileListFilter` used in the SFTP Source.
+
+
+## Multiple SFTP Servers
+This source supports consuming from multiple SFTP servers.
+This requires configuring an SFTP Session Factory for each server.
+The labels `one` and `two` shown below can be replaced by any names you want.
+The following configuration will rotate between two SFTP servers (this can also be used for multiple directories on the same server), consuming files in a round-robin fashion:
+
+```
+sftp.supplier.factories.one.host=host1
+sftp.supplier.factories.one.port=1234,
+sftp.supplier.factories.one.username = user1,
+sftp.supplier.factories.one.password = pass1,
+...
+sftp.supplier.factories.two.host=host2,
+sftp.supplier.factories.two.port=2345,
+sftp.supplier.factories.two.username = user2,
+sftp.supplier.factories.two.password = pass2,
+sftp.supplier.directories=one.sftpSource,two.sftpSecondSource,
+sftp.supplier.max-fetch=1,
+sftp.supplier.fair=true
+```
+---
+
+
+
+`SFtpSupplier` is implemented as a `java.util.function.Supplier`.
+This supplier gives you a reactive stream of objects from the provided directory(ies) as the supplier has a signature of `Supplier<Flux<Message<?>>>`.
+Users have to subscribe to this `Flux` and receive the data.
+
+## Beans for injection
+
+You can import the `SftpSupplierConfiguration` in the application and then inject the following bean.
+
+`sftpSupplier`
+
+You need to inject this as `Supplier<Flux<Message<?>>>`.
+
+You can use `sftpSupplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it and then subscribe to the returned `Flux`.
+
+## Configuration Options
+
+All configuration properties are prefixed with `ftp.supplier`.
+There are also properties that need to be used with the prefix `file.consumer`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/sftp/SftpSupplierProperties.java[SftpSupplierProperties].
+Also see link:src/main/java/org/springframework/cloud/fn/supplier/file/FileConsumerProperties.java[FileConsumerProperties].
+
+## Examples
+
+See this link:src/test/java/org/springframework/cloud/fn/supplier/sftp/SftpSupplierApplicationTests.java[test suite] for the various ways, this supplier is used.
+
+## Other usage
+
+See this link:../../../applications/source/sftp-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application that provides an Sftp Source.

@@ -60,13 +60,13 @@ public class SftpTestSupport extends RemoteFileTestSupport {
 		server = SshServer.setUpDefaultServer();
 		server.setPasswordAuthenticator((username, password, session) ->
 				StringUtils.hasText(password) && !"badPassword".equals(password)); // fail if pub key validation failed
-		server.setPublickeyAuthenticator((username, key, session) -> key.equals(decodePublicKey("id_rsa_pp.pub.rename2")));
+		server.setPublickeyAuthenticator((username, key, session) -> key.equals(decodePublicKey("id_rsa_pp.pub")));
 		server.setPort(0);
 		server.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(new File("hostkey.ser")));
 		server.setSubsystemFactories(Collections.singletonList(new SftpSubsystemFactory()));
 		server.setFileSystemFactory(new VirtualFileSystemFactory(remoteTemporaryFolder));
 		server.start();
-		System.setProperty("sftp.consumer.factory.port", String.valueOf(server.getPort()));
+		System.setProperty("sftp.factory.port", String.valueOf(server.getPort()));
 		System.setProperty("sftp.consumer.localDir",
 				localTemporaryFolder + File.separator + "localTarget");
 	}
@@ -78,7 +78,7 @@ public class SftpTestSupport extends RemoteFileTestSupport {
 		if (hostkey.exists()) {
 			hostkey.delete();
 		}
-		System.clearProperty("sftp.consumer.factory.port");
+		System.clearProperty("sftp.factory.port");
 		System.clearProperty("sftp.consumer.localDir");
 	}
 

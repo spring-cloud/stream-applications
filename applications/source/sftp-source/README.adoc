@@ -1,0 +1,117 @@
+//tag::ref-doc[]
+= SFTP Source
+This source application supports transfer of files using the SFTP protocol.
+Files are transferred from the `remote` directory to the `local` directory where the app is deployed.
+Messages emitted by the source are provided as a byte array by default. However, this can be
+customized using the `--mode` option:
+
+- *ref* Provides a `java.io.File` reference
+- *lines* Will split files line-by-line and emit a new message for each line
+- *contents* The default. Provides the contents of a file as a byte array
+
+When using `--mode=lines`, you can also provide the additional option `--withMarkers=true`.
+If set to `true`, the underlying `FileSplitter` will emit additional _start-of-file_ and _end-of-file_ marker messages before and after the actual data.
+The payload of these 2 additional marker messages is of type `FileSplitter.FileMarker`. The option `withMarkers` defaults to `false` if not explicitly set.
+
+See link:../../../functions/supplier/sftp-supplier/README.adoc[`sftp-supplier`] for advanced configuration options.
+
+== Input
+
+N/A (Fetches files from an SFTP server).
+
+== Output
+
+=== mode = contents
+
+==== Headers:
+
+* `Content-Type: application/octet-stream`
+* `file_name: <file name>`
+* `file_remoteFileInfo <file metadata>`
+* `file_remoteHostPort: <host:port>`
+* `file_remoteDirectory: <relative-path>`
+* `file_remoteFile: <file-name>`
+* `sftp_selectedServer: <server-key>` (if multi-source)
+
+==== Payload:
+
+A `byte[]` filled with the file contents.
+
+=== mode = lines
+
+==== Headers:
+
+* `Content-Type: text/plain`
+* `file_name: <file name>`
+* `correlationId: <UUID>` (same for each line)
+* `sequenceNumber: <n>`
+* `sequenceSize: 0` (number of lines is not know until the file is read)
+* `file_marker : <file marker>` (if with-markers is enabled)
+
+==== Payload:
+
+A `String` for each line.
+
+The first line is optionally preceded by a message with a `START` marker payload.
+The last line is optionally followed by a message with an `END` marker payload.
+
+Marker presence and format are determined by the `with-markers` and `markers-json` properties.
+
+=== mode = ref
+
+==== Headers:
+
+* `file_remoteHostPort: <host:port>`
+* `file_remoteDirectory: <relative-path>`
+* `file_remoteFile: <file-name>`
+* `file_originalFile: <absolute-path-of-local-file>`
+* `file_name <local-file-name>`
+* `file_relativePath`
+* `file_remoteFile: <remote-file-name>`
+* `sftp_selectedServer: <server-key>` (if multi-source)
+
+==== Payload:
+
+A `java.io.File` object.
+
+== Options
+
+The **$$ftp$$** $$source$$ has the following options:
+
+//tag::configuration-properties[]
+$$file.consumer.markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$true$$`)*
+$$file.consumer.mode$$:: $$The FileReadingMode to use for file reading sources. Values are 'ref' - The File object, 'lines' - a message per line, or 'contents' - the contents as bytes.$$ *($$FileReadingMode$$, default: `$$<none>$$`, possible values: `ref`,`lines`,`contents`)*
+$$file.consumer.with-markers$$:: $$Set to true to emit start of file/end of file marker messages before/after the data. Only valid with FileReadingMode 'lines'.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$sftp.supplier.auto-create-local-dir$$:: $$Set to true to create the local directory if it does not exist.$$ *($$Boolean$$, default: `$$true$$`)*
+$$sftp.supplier.delay-when-empty$$:: $$Duration of delay when no new files are detected.$$ *($$Duration$$, default: `$$1s$$`)*
+$$sftp.supplier.delete-remote-files$$:: $$Set to true to delete remote files after successful transfer.$$ *($$Boolean$$, default: `$$false$$`)*
+$$sftp.supplier.directories$$:: $$A list of factory "name.directory" pairs.$$ *($$String[]$$, default: `$$<none>$$`)*
+$$sftp.supplier.factories$$:: $$A map of factory names to factories.$$ *($$Map<String, Factory>$$, default: `$$<none>$$`)*
+$$sftp.supplier.factory.allow-unknown-keys$$:: $$True to allow an unknown or changed key.$$ *($$Boolean$$, default: `$$false$$`)*
+$$sftp.supplier.factory.host$$:: $$The host name of the server.$$ *($$String$$, default: `$$localhost$$`)*
+$$sftp.supplier.factory.known-hosts-expression$$:: $$A SpEL expression resolving to the location of the known hosts file.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$sftp.supplier.factory.pass-phrase$$:: $$Passphrase for user's private key.$$ *($$String$$, default: `$$<empty string>$$`)*
+$$sftp.supplier.factory.password$$:: $$The password to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
+$$sftp.supplier.factory.port$$:: $$The port of the server.$$ *($$Integer$$, default: `$$22$$`)*
+$$sftp.supplier.factory.private-key$$:: $$Resource location of user's private key.$$ *($$Resource$$, default: `$$<none>$$`)*
+$$sftp.supplier.factory.username$$:: $$The username to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
+$$sftp.supplier.fair$$:: $$True for fair rotation of multiple servers/directories. This is false by default so if a source has more than one entry, these will be received before the other sources are visited.$$ *($$Boolean$$, default: `$$false$$`)*
+$$sftp.supplier.filename-pattern$$:: $$A filter pattern to match the names of files to transfer.$$ *($$String$$, default: `$$<none>$$`)*
+$$sftp.supplier.filename-regex$$:: $$A filter regex pattern to match the names of files to transfer.$$ *($$Pattern$$, default: `$$<none>$$`)*
+$$sftp.supplier.list-only$$:: $$Set to true to return file metadata without the entire payload.$$ *($$Boolean$$, default: `$$false$$`)*
+$$sftp.supplier.local-dir$$:: $$The local directory to use for file transfers.$$ *($$File$$, default: `$$<none>$$`)*
+$$sftp.supplier.max-fetch$$:: $$The maximum number of remote files to fetch per poll; default unlimited. Does not apply when listing files or building task launch requests.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$sftp.supplier.preserve-timestamp$$:: $$Set to true to preserve the original timestamp.$$ *($$Boolean$$, default: `$$true$$`)*
+$$sftp.supplier.remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$/$$`)*
+$$sftp.supplier.remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$/$$`)*
+$$sftp.supplier.stream$$:: $$Set to true to stream the file rather than copy to a local directory.$$ *($$Boolean$$, default: `$$false$$`)*
+$$sftp.supplier.tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
+//end::configuration-properties[]
+
+== Examples
+
+```
+java -jar sftp_source.jar --sftp.supplier.remote-dir=foo --file.mode=lines --sftp.supplier.factory.host=sftpserver \
+         --sftp.supplier.factory.username=user --ftp.supplier.factory.password=pw --sftp.supplier.local-dir=/foo
+```
+//end::ref-doc[]
