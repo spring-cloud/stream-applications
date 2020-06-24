@@ -34,7 +34,7 @@ Add the `object-detection` dependency to the pom (use the latest version availab
 
 #### Example 1: Object Detection
 
-The https://github.com/tzolov/mind-model-services/blob/master/object-detection/src/test/java/io/mindmodel/services/object/detection/examples/ExampleObjectDetection.java[ExampleObjectDetection.java]
+The https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/function/object-detection-function/src/test/java/org/springframework/cloud/fn/object/detection/examples/ExampleObjectDetection.java[ExampleObjectDetection.java]
 sample demonstrates how to use the `ObjectDetectionService` for detecting objects in input images. It also shows how to
 convert the result into JSON format and augment the input image with the detected object bounding boxes.
 
@@ -78,25 +78,25 @@ System.out.println(jsonObjectDetections);
  {"name":"kite","estimate":0.988,"x1":0.206,"y1":0.263,"x2":0.225,"y2":0.314,"cid":38}]]
 ----
 
-Use the https://github.com/tzolov/mind-model-services/blob/master/object-detection/src/main/java/io/mindmodel/services/object/detection/ObjectDetectionImageAugmenter.java[ObjectDetectionImageAugmenter]
+Use the https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/function/object-detection-function/src/main/java/org/springframework/cloud/fn/object/detection/ObjectDetectionImageAugmenter.java[ObjectDetectionImageAugmenter]
 to draw the detected objects on top of the input image.
 
 [source,java,linenums]
 ----
 byte[] annotatedImage = new ObjectDetectionImageAugmenter().apply(image, detectedObjects); // <1>
-IOUtils.write(annotatedImage, new FileOutputStream("./object-detection/target/object-detection-augmented.jpg")); //<2>
+IOUtils.write(annotatedImage, new FileOutputStream("./object-detection-function/target/object-detection-augmented.jpg")); //<2>
 ----
 <1> Augment the image with the detected object bounding boxes (Uses Java2D internally).
 <2> Stores the augmented image as `object-detection-augmented.jpg` image file.
 
 .Augmented object-detection-augmented.jpg file
-image:{imagesdir}/../object-detection-augmented.jpg[alt=Object Detection, width=60%]
+image:{images-asciidoc}/object-detection-augmented.jpg[alt=Object Detection, width=60%]
 
 TIP: Set the `ObjectDetectionImageAugmenter#agnosticColors` property to `true` to use a monochrome color schema.
 
 #### Example 2: Instance Segmentation
 
-The https://github.com/tzolov/mind-model-services/blob/master/object-detection/src/test/java/io/mindmodel/services/object/detection/examples/ExampleInstanceSegmentation.java[ExampleInstanceSegmentation.java]
+The https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/function/object-detection-function/src/test/java/org/springframework/cloud/fn/object/detection/examples/ExampleInstanceSegmentation.java[ExampleInstanceSegmentation.java]
 sample shows how to use the `ObjectDetectionService` for `Instance Segmentation`.
 NOTE: It requires a trained model that supports `Masks` as well as setting the instance segmentation (e.g. `useMasks`) flag to `true`.
 
@@ -118,11 +118,11 @@ System.out.println(jsonObjectDetections);
 
 byte[] annotatedImage = new ObjectDetectionImageAugmenter(true) // <8>
     .apply(image, detectedObjects);
-IOUtils.write(annotatedImage, new FileOutputStream("./object-detection/target/object-detection-segmentation-augmented.jpg"));
+IOUtils.write(annotatedImage, new FileOutputStream("./object-detection-function/target/object-detection-segmentation-augmented.jpg"));
 ----
 <1> Uses one of the 4 MASK pre-trained models
 <2> Object category labels (e.g. names) for the model
-<3> Confidence threshold - Only object with estimate above the threshold are returned
+<3> Confidence threshold - Only object with estimate above the threshold are returned.
 <4> Use masks output - For the pre-trained models instruct to use the extended fetch names that include instance segmentation masks as well.
 <5> Cache model - Create a local copy of the model to speed up consecutive runs.
 <6> Evaluate the model to predict the object in the input image.
@@ -131,7 +131,7 @@ IOUtils.write(annotatedImage, new FileOutputStream("./object-detection/target/ob
 If false only the bounding boxes will be shown.
 
 .Result augmented object-detection-segmentation-augmented.jpg file
-image:{imagesdir}/../object-detection-segmentation-augmented.jpg[alt=Object Detection Augmented, width=60%]
+image:{images-asciidoc}/object-detection-segmentation-augmented.jpg[alt=Object Detection Augmented, width=60%]
 
 ## Models
 All pre-trained https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md[detection_model_zoo.md]
