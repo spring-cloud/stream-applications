@@ -6,16 +6,16 @@ Java model inference library for the https://github.com/tensorflow/models/blob/m
 
 [cols="1,2", frame=none, grid=none]
 |===
-| image:{imagesdir}/object_detection_1.jpg[alt=Object Detection 1, width=100%]
-|The https://github.com/tzolov/mind-model-services/blob/master/object-detection/src/main/java/io/mindmodel/services/object/detection/ObjectDetectionService.java[ObjectDetectionService]
+| image:{images-asciidoc}/object_detection_1.jpg[alt=Object Detection 1, width=100%]
+|The https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/function/object-detection-function/src/main/java/org/springframework/cloud/fn/object/detection/ObjectDetectionService.java[ObjectDetectionService]
 takes an image or a batch of images and outputs a list of predicted objects bounding boxes
-represented by https://github.com/tzolov/mind-model-services/blob/master/object-detection/src/main/java/io/mindmodel/services/object/detection/domain/ObjectDetection.java[ObjectDetection].
+represented by https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/function/object-detection-function/src/main/java/org/springframework/cloud/fn/object/detection/domain/ObjectDetection.java[ObjectDetection].
 For the models supporting https://github.com/tensorflow/models/tree/master/research/object_detection#february-9-2018[Instance Segmentation],
 the `ObjectDetectionService` can predict the instance segmentation `masks` in addition to object bounding boxes.
 
-The https://github.com/tzolov/mind-model-services/blob/master/common/src/main/java/io/mindmodel/services/common/JsonMapperFunction.java[JsonMapperFunction] permits
+The https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/deprecated/JsonMapperFunction.java[JsonMapperFunction] permits
 converting the `List<ObjectDetection>` into JSON objects and the
-https://github.com/tzolov/mind-model-services/blob/master/object-detection/src/main/java/io/mindmodel/services/object/detection/ObjectDetectionImageAugmenter.java[ObjectDetectionImageAugmenter]
+https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/function/object-detection-function/src/main/java/org/springframework/cloud/fn/object/detection/ObjectDetectionImageAugmenter.java[ObjectDetectionImageAugmenter]
 allow to augment the input image with the detected bounding boxes and segmentation masks.
 |===
 
