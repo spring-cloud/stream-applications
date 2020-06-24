@@ -16,7 +16,7 @@ The `Java Ops API` exposes the native https://www.tensorflow.org/versions/r1.9/a
 
 Proposed programming model builds on the https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html[Java Function API], the Java Ops API and a basic data structure that together help to unify and streamline the building of TensorFlow inference pipelines. While focused on model-inference, this programming model is likely to be useful for building model-training pipelines as well.
 
-The programming model is focused around a single functional definition:
+The programming model leverages the following functional definition:
 
 [source,Java]
 ----
@@ -32,7 +32,7 @@ Map<String, Tensor<?>> apply( Map<String, Tensor<?>> feeds)
 
 This function receives a map of named Tensors as an input and in turn returns a map of named Tensors. Because the input and the output formats are equivalent, functions with this signature can be reused and composed into larger, complex functions.
 
-The names used in the inputs and the outputs maps are strings of the form *operation_name*** **: *output_index* (output_index defaults to 0 if skipped). The names must match the indexed operations inside the underlying TF graph.  +
+The names used in the inputs, and the outputs maps are strings of the form `operation_name: output_index` (output_index defaults to 0). The names must match the indexed operations inside the underlying TF graph.  +
 
 The https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor[Tensor] class is a reference to the data used natively in the TF engine. The referenced data is not moved to JVM Heap unless explicitly materialized with `Tensor.copyTo()`.  Exchanging Tensor references between functions prevents unnecessarily copying the data to the JVM heap.  +
 
@@ -75,7 +75,7 @@ mibileNetV2 = new GraphRunner("input", "MobilenetV2/Predictions/Reshape_1")
 
 You can load archives from `http://`, `file://` or `classpath://` locations.
 
-For loading a *SavedModel* from the local file system use the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java#L68[withSavedModel] method like this:
+For loading a `SavedModel` from the local file system use the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java#L68[withSavedModel] method like this:
 
 [source,Java]
 ----
@@ -104,7 +104,7 @@ Following paragraphs discusses some features and techniques useful for composing
 
 === Input and Output Contracts
 
-The GraphRunner constructor expects two compulsory list fields: *feedNames* - list of names that the graph accepts as input Tensors and *fetchNames *- list of (Tensor) names that the graph would return.
+The GraphRunner constructor expects two compulsory list fields: `feedNames` - list of names that the graph accepts as input Tensors and `fetchNames` - list of (Tensor) names that the graph would return.
 
 [source,Java]
 ----
@@ -112,7 +112,7 @@ public GraphRunner(List<String> feedNames, List<String> fetchedNames)
 ----
 
 Together those two lists define the input and output contract of the graph runner. +
-The names used in the inputs, and the outputs maps are strings of the form *operation_name*** **: *output_index* (output_index defaults to 0 if skipped). The names must match the indexed operations inside the underlying TF graph.
+The names used in the inputs, and the outputs maps are strings of the form `operation_name : output_index` (output_index defaults to 0). The names must match the indexed operations inside the underlying TF graph.
 
 === Composition
 
@@ -120,7 +120,7 @@ Because the https://github.com/tzolov/mind-model-services/blob/ops-programming-m
 
 [source,Java]
 ----
-           composed-graph = graph1.*andThen*(graph2)....*andThen*(graphN)
+composed-graph = graph1.andThen(graph2)....andThen(graphN)
 ----
 
 For example let's take two simple graphs: `G1 (y1 = x1 * 2)` and `G2 (y2 = x2 + 20)`. The composed graph `G = G1.andThen(G2)` is equivalent to `y = (x * 2 ) + 20`.
@@ -169,7 +169,7 @@ The composed graph would look like this:
 
 [source,Java]
 ----
-Composed = Graph1.andThen( *map: y11 -> x21 and y12 -> x22*).andThen(Graph2)
+Composed = Graph1.andThen( map: y11 -> x21 and y12 -> x22).andThen(Graph2)
 ----
 
 The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/Functions.java#L52[Functions#rename] utility helps to define the input/output mappings as illustrated in the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/test/java/io/mindmodel/services/common/examples/FunctionCompositionMultipleInputsOutputs.java[FunctionCompositionMultipleInputsOutputs] example:
