@@ -12,9 +12,9 @@ Unlike the `Instance Segmentation`, which produces instance-aware region masks, 
 For implementing `Instance Segmentation` consult the https://github.com/tzolov/stream-applications/tree/tensorflow-redesign/functions/function/object-detection-function[Object Detection Service] instead.
 |===
 
-The https://github.com/tzolov/mind-model-services/blob/master/common/src/main/java/io/mindmodel/services/common/JsonMapperFunction.java[JsonMapperFunction] permits
-converting the `List<ObjectDetection>` into JSON objects and the
-https://github.com/tzolov/mind-model-services/blob/master/object-detection/src/main/java/io/mindmodel/services/object/detection/ObjectDetectionImageAugmenter.java[ObjectDetectionImageAugmenter]
+The https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/deprecated/JsonMapperFunction.java[JsonMapperFunction] permits
+converting the `List<ObjectDetection>` into JSON objects, and the
+https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/function/object-detection-function/src/main/java/org/springframework/cloud/fn/object/detection/ObjectDetectionImageAugmenter.java[ObjectDetectionImageAugmenter]
 allow to augment the input image with the detected bounding boxes and segmentation masks.
 
 ## Usage
@@ -26,6 +26,12 @@ Add the `semantic-segmentation` dependency to your pom (_use the latest version 
 <dependency>
     <groupId>org.springframework.cloud.fn</groupId>
     <artifactId>semantic-segmentation-function</artifactId>
+    <version>${spring-cloud-fn.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.cloud.fn</groupId>
+    <artifactId>object-detection-function</artifactId>
     <version>${spring-cloud-fn.version}</version>
 </dependency>
 ----
