@@ -22,10 +22,11 @@
         <module>mongodb-source</module>
         <module>tcp-source</module>
         <module>rabbit-source</module>
-        <module>websocket-source</module>
         <module>s3-source</module>
+        <module>sftp-source</module>
         <module>twitter-stream-source</module>
         <module>twitter-search-source</module>
         <module>twitter-message-source</module>
+        <module>websocket-source</module>
     </modules>
 </project>
