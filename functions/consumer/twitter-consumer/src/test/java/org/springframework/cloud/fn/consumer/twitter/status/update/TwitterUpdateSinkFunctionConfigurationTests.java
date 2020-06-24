@@ -53,7 +53,7 @@ public class TwitterUpdateSinkFunctionConfigurationTests {
 	}
 
 	@Test
-	public void testToStatusUpdateQueryFunction() {
+	public void testMessageToStatusUpdateFunction() {
 		TwitterUpdateConsumerProperties properties = new TwitterUpdateConsumerProperties();
 
 		properties.setAttachmentUrl(expression("'attachmentUrl'"));
@@ -64,10 +64,10 @@ public class TwitterUpdateSinkFunctionConfigurationTests {
 		properties.getLocation().setLat(expression("'37.78217'"));
 		properties.getLocation().setLon(expression("'-122.40062'"));
 
-		Function<Message<?>, StatusUpdate> toStatusUpdateQueryFunction =
-				new TwitterUpdateConsumerConfiguration().toStatusUpdateQuery(properties);
+		Function<Message<?>, StatusUpdate> messageToStatusUpdateFunction =
+				new TwitterUpdateConsumerConfiguration().messageToStatusUpdateFunction(properties);
 
-		StatusUpdate result = toStatusUpdateQueryFunction.apply(new GenericMessage<>("Hello World"));
+		StatusUpdate result = messageToStatusUpdateFunction.apply(new GenericMessage<>("Hello World"));
 
 		assertThat(result).isNotNull();
 		assertThat(result.getStatus()).isEqualTo("Hello World");

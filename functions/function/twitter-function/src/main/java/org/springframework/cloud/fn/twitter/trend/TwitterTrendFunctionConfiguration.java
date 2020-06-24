@@ -80,7 +80,7 @@ public class TwitterTrendFunctionConfiguration {
 	}
 
 	@Bean
-	public Function<Message<?>, Message<byte[]>> trendOrTrendLocationsFunction(
+	public Function<Message<?>, Message<byte[]>> twitterTrendFunction(
 			Function<Object, Message<byte[]>> managedJson, Function<Message<?>, Trends> trend,
 			TwitterTrendFunctionProperties properties, Function<Message<?>,
 			List<Location>> closestOrAvailableTrends) {

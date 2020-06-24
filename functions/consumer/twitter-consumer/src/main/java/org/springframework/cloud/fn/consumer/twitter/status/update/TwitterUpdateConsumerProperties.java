@@ -81,7 +81,7 @@ public class TwitterUpdateConsumerProperties {
 	/**
 	 * (SpEL expression) The location this Tweet refers to. Ignored if geo_enabled for the user is false!
 	 */
-	private Location location = new Location();
+	private final Location location = new Location();
 
 	public Expression getText() {
 		return text;

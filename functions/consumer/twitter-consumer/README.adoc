@@ -22,9 +22,9 @@ You can import `TwitterUpdateConsumerConfiguration` in the application and then 
 
 - `Consumer<StatusUpdate> updateStatus` - if you have an `StatusUpdate` instance you can use the `updateStatus` to apply it.
 
-- `Function<Message<?>, StatusUpdate> toStatusUpdateQuery` - function that converts a `Message<?>`  text into a `StatusUpdate` instance using the `TwitterUpdateConsumerProperties` properties.
+- `Function<Message<?>, StatusUpdate> messageToStatusUpdateFunction` - function that converts a `Message<?>`  text into a `StatusUpdate` instance using the `TwitterUpdateConsumerProperties` properties.
 
-- `Consumer<Message<?>> twitterStatusUpdateConsumer` - composes `toStatusUpdateQuery` and `updateStatus` to update the twitter status from Message text.
+- `Consumer<Message<?>> twitterStatusUpdateConsumer` - composes `messageToStatusUpdateFunction` and `updateStatus` to update the twitter status from Message text.
 
 Note: the Message content is expected to be in text format. Consider using the `byteArrayTextToString` utility `Function`.
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.sink.twitter.update;
+package org.springframework.cloud.fn.common.twitter.util;
 
 
 import java.io.IOException;

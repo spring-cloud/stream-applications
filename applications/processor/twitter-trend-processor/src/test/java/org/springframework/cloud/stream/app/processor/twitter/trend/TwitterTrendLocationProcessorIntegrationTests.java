@@ -35,6 +35,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.common.twitter.TwitterConnectionProperties;
+import org.springframework.cloud.fn.common.twitter.util.TwitterTestUtils;
 import org.springframework.cloud.fn.twitter.trend.TwitterTrendFunctionConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
@@ -45,6 +46,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.util.SocketUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.matchers.Times.exactly;
@@ -59,7 +61,7 @@ public class TwitterTrendLocationProcessorIntegrationTests {
 
 	private static final String MOCK_SERVER_IP = "127.0.0.1";
 
-	private static final Integer MOCK_SERVER_PORT = 1080;
+	private static final Integer MOCK_SERVER_PORT = SocketUtils.findAvailableTcpPort();
 
 	private static ClientAndServer mockServer;
 
@@ -91,9 +93,9 @@ public class TwitterTrendLocationProcessorIntegrationTests {
 	@Test
 	public void testTwitterAvailableTrends() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(TwitterTrendProcessorIntegrationTests.TestTwitterTrendProcessorApplication.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterTrendLocationProcessorApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=trendOrTrendLocationsFunction",
+				.run("--spring.cloud.stream.function.definition=twitterTrendFunction",
 
 						"--twitter.trend.trendQueryType=trendLocation",
 						"--twitter.connection.rawJson=false",
@@ -126,9 +128,9 @@ public class TwitterTrendLocationProcessorIntegrationTests {
 	@Test
 	public void testTwitterAvailableTrendsTwitterJson() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(TwitterTrendProcessorIntegrationTests.TestTwitterTrendProcessorApplication.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterTrendLocationProcessorApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=trendOrTrendLocationsFunction",
+				.run("--spring.cloud.stream.function.definition=twitterTrendFunction",
 
 						"--twitter.trend.trendQueryType=trendLocation",
 						"--twitter.connection.rawJson=true",
@@ -162,9 +164,9 @@ public class TwitterTrendLocationProcessorIntegrationTests {
 	@Test
 	public void testTwitterClosestTrends() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(TwitterTrendProcessorIntegrationTests.TestTwitterTrendProcessorApplication.class))
+				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterTrendLocationProcessorApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=trendOrTrendLocationsFunction",
+				.run("--spring.cloud.stream.function.definition=twitterTrendFunction",
 
 						"--twitter.trend.trendQueryType=trendLocation",
 						"--twitter.connection.rawJson=true",

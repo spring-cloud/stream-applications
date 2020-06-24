@@ -39,9 +39,6 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.MimeTypeUtils;
 
-//import org.springframework.cloud.stream.config.BindingProperties;
-// import org.springframework.integration.support.MutableMessage;
-
 /**
  *
  * @author Christian Tzolov

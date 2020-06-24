@@ -33,6 +33,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.common.twitter.TwitterConnectionProperties;
+import org.springframework.cloud.fn.common.twitter.util.TwitterTestUtils;
 import org.springframework.cloud.fn.consumer.twitter.status.update.TwitterUpdateConsumerConfiguration;
 import org.springframework.cloud.fn.consumer.twitter.status.update.TwitterUpdateConsumerProperties;
 import org.springframework.cloud.stream.binder.test.InputDestination;
@@ -42,6 +43,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.util.SocketUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.matchers.Times.unlimited;
@@ -56,7 +58,7 @@ public class TwitterUpdateSinkIntegrationTests {
 
 	private static final String MOCK_SERVER_IP = "127.0.0.1";
 
-	private static final Integer MOCK_SERVER_PORT = 1080;
+	private static final Integer MOCK_SERVER_PORT = SocketUtils.findAvailableTcpPort();
 
 	private static ClientAndServer mockServer;
 

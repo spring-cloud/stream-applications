@@ -32,13 +32,13 @@ $$twitter.update.text$$:: $$(SpEL expression) The text of the text update. URL e
 
 `TwitterUpdateConsumerConfiguration` exposes 2 composable functions:
 
-* `Function<Message<?>, StatusUpdate> toStatusUpdateQuery(TwitterUpdateConsumerProperties updateProperties)` - Converts input message into `StatusUpdate` query object.
+* `Function<Message<?>, StatusUpdate> messageToStatusUpdateFunction(TwitterUpdateConsumerProperties updateProperties)` - Converts input message into `StatusUpdate` query object.
 * `Consumer<StatusUpdate> updateStatus(Twitter twitter)` - Sends the input `StatusUpdate` argument as Twitter text update.
 
 Use `@Import(TwitterUpdateConsumerConfiguration.class)` to compose those functions.
 
 By default the `twitter-update` implements the following composite function chain:
-`spring.cloud.stream.function.definition=byteArrayTextToString|toStatusUpdateQuery|updateStatus` or (`byteArrayTextToString|twitterStatusUpdateConsumer`)
+`spring.cloud.stream.function.definition=byteArrayTextToString|messageToStatusUpdateFunction|updateStatus` or (`byteArrayTextToString|twitterStatusUpdateConsumer`)
 
 
 == Examples
