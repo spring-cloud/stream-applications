@@ -2,6 +2,19 @@
 
 = Programming Model for TensorFlow Inference
 
+Programming model builds on the https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html[Java Function API], the `TF Java Ops API` and few basic data structure that together help to unify and streamline the building of TensorFlow inference pipelines.
+
+Quick Start: just add the following dependency:
+
+[source,XML]
+----
+    <dependency>
+        <groupId>org.springframework.cloud.fn</groupId>
+        <artifactId>tensorflow-common</artifactId>
+        <version>${spring-cloud-fn.version}</version>
+    </dependency>
+----
+
 == Programming Model
 
 Implementing a real-time TensorFlow Inference in Java, typically leverages the TF Java API for loading and scoring the pre-trained models. But the logic used to convert the upstream data into model input Tensors (e.g. pre-processor)  and in turn to convert the inferred Tensors back into application data (e.g. post-processor) is commonly implemented in plain Java:
