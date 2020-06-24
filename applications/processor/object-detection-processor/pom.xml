@@ -61,9 +61,9 @@
 
                     <dependencies>
                         <dependency>
-                            <groupId>org.springframework.cloud.fn</groupId>
-                            <artifactId>object-detection-function</artifactId>
-                            <version>${java-functions.version}</version>
+                            <groupId>org.springframework.cloud.stream.app</groupId>
+                            <artifactId>object-detection-processor</artifactId>
+                            <version>${project.version}</version>
                         </dependency>
                     </dependencies>
 
