@@ -31,9 +31,16 @@ import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
@@ -123,5 +130,23 @@ public class TwitterConnectionConfiguration {
 	public Function<Object, Message<byte[]>> managedJson(TwitterConnectionProperties properties,
 			Function<Object, Object> rawJsonExtractor, Function<Object, Message<byte[]>> json) {
 		return list -> (properties.isRawJson()) ? rawJsonExtractor.andThen(json).apply(list) : json.apply(list);
+	}
+
+	@Bean
+	public Function<String, Expression> stringToSpelFunction(
+			@Qualifier(IntegrationContextUtils.INTEGRATION_EVALUATION_CONTEXT_BEAN_NAME)
+			@Lazy EvaluationContext evaluationContext) {
+		return new StringToSpelConversionFunction(evaluationContext);
+	}
+
+	@Bean
+	@ConfigurationPropertiesBinding
+	public Converter<String, Expression> propertiesSpelConverter(Function<String, Expression> stringToSpelFunction) {
+		return new Converter<String, Expression>() { // NOTE Using lambda causes Java Generics issues.
+			@Override
+			public Expression convert(String source) {
+				return stringToSpelFunction.apply(source);
+			}
+		};
 	}
 }

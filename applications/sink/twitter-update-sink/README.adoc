@@ -41,22 +41,3 @@ By default the `twitter-update` implements the following composite function chai
 `spring.cloud.stream.function.definition=byteArrayTextToString|messageToStatusUpdateFunction|updateStatus` or (`byteArrayTextToString|twitterStatusUpdateConsumer`)
 
 
-== Examples
-
-```
-java -jar twitter-update-sink.jar
-
-  --twitter.connection.consumerKey= ...
-  --twitter.connection.consumerSecret= ...
-  --twitter.connection.accessToken= ...
-  --twitter.connection.accessTokenSecret= ...
-```
-
-and send message to the `input` channel.
-
-And here is a example pipeline that uses twitter-update:
-
-```
-twitter-update-stream= time | twitter-update --twitter.connection.consumerKey= ... --twitter.connection.consumerSecret= ... --twitter.connection.accessToken= ... --twitter.connection.accessTokenSecret= ...
-```
-
