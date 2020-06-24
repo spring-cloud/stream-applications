@@ -81,7 +81,7 @@
 		<module>function/twitter-function</module>
 		<module>function/image-recognition-function</module>
 		<module>function/object-detection-function</module>
-
+		<module>function/semantic-segmentation-function</module>
 
 		<module>supplier/file-supplier</module>
 		<module>supplier/ftp-supplier</module>
