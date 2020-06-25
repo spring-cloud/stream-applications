@@ -1,4 +1,4 @@
-:images-asciidoc: https://raw.githubusercontent.com/tzolov/stream-applications/tensorflow-redesign/functions/function/image-recognition-function/src/main/resources/images/
+:images-asciidoc: https://raw.githubusercontent.com/spring-cloud/stream-applications/master/functions/function/image-recognition-function/src/main/resources/images/
 
 # Image Recognition
 
@@ -9,11 +9,11 @@ Provides real-time recognition of the https://dl.bintray.com/big-data/generic/im
 [cols="1,2",frame=none,grid=none]
 |===
 | image:{images-asciidoc}/image-augmented.jpg[alt=Inception 1,width=100%]
-|The https://github.com/tzolov/stream-applications/tree/tensorflow-redesign/functions/function/image-recognition-function/src/main/java/org/springframework/cloud/fn/image/recognition[ImageRecognition] takes an image and outputs a list of probable categories the image contains. The response is represented by https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/function/image-recognition-function/src/main/java/org/springframework/cloud/fn/image/recognition/RecognitionResponse.java[RecognitionResponse] class.
+|The https://github.com/spring-cloud/stream-applications/blob/master/functions/function/image-recognition-function/src/main/java/org/springframework/cloud/fn/image/recognition/ImageRecognition.java[ImageRecognition] takes an image and outputs a list of probable categories the image contains. The response is represented by https://github.com/spring-cloud/stream-applications/blob/master/functions/function/image-recognition-function/src/main/java/org/springframework/cloud/fn/image/recognition/RecognitionResponse.java[RecognitionResponse] class.
 
-The https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/deprecated/JsonMapperFunction.java[JsonMapperFunction] permits
+The https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/deprecated/JsonMapperFunction.java[JsonMapperFunction] permits
 converting the `RecognitionResponse` into JSON objects and the
-https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/function/image-recognition-function/src/main/java/org/springframework/cloud/fn/image/recognition/ImageRecognitionAugmenter.java[ImageRecognitionAugmenter] can augment the input image with the detected categories (as shown in pic. 1).
+https://github.com/spring-cloud/stream-applications/blob/master/functions/function/image-recognition-function/src/main/java/org/springframework/cloud/fn/image/recognition/ImageRecognitionAugmenter.java[ImageRecognitionAugmenter] can augment the input image with the detected categories (as shown in pic. 1).
 |===
 
 ## Usage
@@ -50,13 +50,13 @@ List<RecognitionResponse> recognizedObjects = recognitionService.recognize(input
 Mind that on first attempt it will download few hundreds of MBs.
 The consecutive runs will use the cached copy (5) instead.
 The category labels for the MobileNetV2 are resolved from `src/main/resources/labels/mobilenet_labels.txt`.
-<2> The wxh sieze of the input nomralized image.
+<2> The wxh seize of the input normalized image.
 <3> Top K result to return.
 <4> Cache the model on the local file system.
 <5> Load the image to recognise.
 <6> Return a map of the top-k most probable category names and their probabilities.
 
-The `ImageRecognition.mobilenetModeV1` and `ImageRecognition.inception` factory methods help to load and configure pretrained mobilenetModeV1 and and Inception models.
+The `ImageRecognition.mobilenetModeV1` and `ImageRecognition.inception` factory methods help to load and configure pre-trained mobilenetModeV1 and and Inception models.
 
 Next you can convert the result in JSON format.
 
