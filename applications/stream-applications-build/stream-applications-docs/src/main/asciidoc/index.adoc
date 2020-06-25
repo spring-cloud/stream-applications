@@ -15,7 +15,7 @@ Sabby Anandan; Artem Bilan; Marius Bogoevici; Eric Bottard; Mark Fisher; Ilayape
 
 :stream-apps-asciidoc: https://raw.githubusercontent.com/spring-cloud/stream-applications/master/applications/stream-applications-build/stream-applications-docs/src/main/asciidoc
 
-:scst-core-version: 3.0.3.RELEASE
+:scst-core-version: 3.0.6.RELEASE
 
 ifdef::backend-html5[]
 

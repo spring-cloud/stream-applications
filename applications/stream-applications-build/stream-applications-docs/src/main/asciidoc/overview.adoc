@@ -1,7 +1,7 @@
 [[overview]]
 
 This section provides you with a detailed overview of the out-of-the-box Spring Cloud Stream Applications.
-It assumes familiarity with general Spring Cloud Stream concepts, which you can find in the Spring Cloud Stream https://cloud.spring.io/spring-cloud-static/spring-cloud-stream/{scst-core-version}/[reference documentation].
+It assumes familiarity with general Spring Cloud Stream concepts, which you can find in the Spring Cloud Stream https://cloud.spring.io/spring-cloud-static/spring-cloud-stream/{scst-core-version}/reference/html/[reference documentation].
 
 These Spring Cloud Stream Applications provide you with out-of-the-box Spring Cloud Stream utility applications that you can run independently or with Spring Cloud Data Flow. They include:
 
@@ -10,6 +10,9 @@ These Spring Cloud Stream Applications provide you with out-of-the-box Spring Cl
 * Generic processors that you can customize with https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html[Spring Expression Language (SpEL)] or by scripting.
 
 You can find a detailed listing of all the applications and their options in the <<starters,corresponding>> section of this guide.
+
+Most of these applications are based on core elements that are exposed as a `java.util.function` component.
+You can learn more about these foundational elements and how they are all connected to the applications by reading this https://github.com/spring-cloud/stream-applications/blob/master/README.adoc[README].
 
 == Pre-built Applications
 
@@ -31,15 +34,17 @@ Based on their target application type, they can be either:
 
 The prebuilt applications follow a naming convention: `<functionality>-<type>-<binder>`. For example, `rabbit-sink-kafka` is a _Rabbit sink_ that uses the Kafka binder that is running with Kafka as the middleware.
 
-=== Maven and Docker Access
+=== Maven Access
 
 The core functionality of the applications is available as functions.
-See the https://github.com/pivotal/java-functions[Java Functions] repository for more details.
+See the https://github.com/spring-cloud/stream-applications/tree/master/functions[Java Functions] section in the `stream-applications` repository for more details.
 Prebuilt applications are available as Maven artifacts.
 You can download the executable jar artifacts from the Spring Maven repositories.
 The root directory of the Maven repository that hosts release versions is https://repo.spring.io/release/org/springframework/cloud/stream/app/.
-From there, you can navigate to the latest released version of a specific app -- for example, link:https://repo.spring.io/release/org/springframework/cloud/stream/app/log-sink-rabbit/2.0.2.RELEASE/log-sink-rabbit-1.1.1.RELEASE.jar[log-sink-rabbit-2.0.2.RELEASE.jar].
-You need to use the link:https://repo.spring.io/milestone/org/springframework/cloud/stream/app[Milestone] and link:https://repo.spring.io/snapshot/org/springframework/cloud/stream/app[Snapshot] repository locations for Milestone and Snapshot executable jar artifacts.
+From there, you can navigate to the latest released version of a specific app.
+You need to use the link:https://repo.spring.io/release/org/springframework/cloud/stream/app[Release], link:https://repo.spring.io/milestone/org/springframework/cloud/stream/app[Milestone] and link:https://repo.spring.io/snapshot/org/springframework/cloud/stream/app[Snapshot] repository locations for Release, Milestone and Snapshot executable jar artifacts.
+
+=== Docker Access
 
 The Docker versions of the applications are available in Docker Hub, at `https://hub.docker.com/r/springcloudstream/`.
 Naming and versioning follows the same general conventions as Maven -- for example:
@@ -53,50 +58,105 @@ docker pull springcloudstream/cassandra-sink-kafka
 
 The preceding command pulls the latest Docker image of the _Cassandra sink_ with the Kafka binder.
 
-=== Building the Artifacts
+=== Build
 
-You can build the project and generate the artifacts (including the prebuilt applications) on your own.
-This is useful if you want to deploy the artifacts locally or add additional features.
-If you are at the root of the repository, https://github.com/spring-cloud-stream-app-starters/stream-applications[steam-applications], doing a maven build generates the entire binder based apps.
-If you do not want to do that and instead only are interested in a certain application, then `cd` into the right module and invoke the build from there.
-Then run the following Maven command:
+You can build everything from the root of the repository.
 
-====
-[source,bash]
-----
-mvn clean package
-----
-====
+`./mvnw clean install`
 
-This command generates the applications. By default, the generated projects are placed under a directory called `apps`.
-There, you can find the binder based applications, which you can then build and run.
+But, this may not be what you are interested in doing since you are probably interested in a single application or a few of them.
+In order to build the functions and applications that you are interested in, you need to build them selectively as shown below.
 
+==== Building functions
+
+`./mvnw clean install -f functions`
+
+You can also build a single function or group of functions.
+For e.g if you are only interested in jdbc-supplier and log-consumer, do the following.
+
+`./mvnw clean install -pl :jdbc-suppler,:log-consumer`
+
+==== Building core for Stream Applications
+
+`./mvnw clean install -f applications/stream-applications-core`
+
+=== Building the applications
+
+Let's assume that you want to build JDBC Source application based on Kafka Binder in Spring Cloud Stream and Log Sink application based on Rabbit binder.
+Here is what you need to do.
+Assuming that you built both functions and stream-applications-core as above.
+
+```
+./mvnw clean package -pl :jdbc-source
+cd applications/source/jdbc-source/apps/jdbc-source-kafka
+./mvnw clean package
+```
+
+This will generate the Kafka binder based uber jar in the target folder.
+
+Similarly for the log sink, do the following.
+
+```
+./mvnw clean package -pl :log-sink
+cd applications/sink/log-sink/apps/log-sink-rabbit
+./mvnw clean package
+```
 == Patching Pre-built Applications
 
 If you are looking to patch the pre-built applications to accommodate the addition of new dependencies, you can use the following example as the reference.
 To add `mysql` driver to `jdbc-sink` application:
 
-. Clone the GitHub repository at https://github.com/spring-cloud-stream-app-starters/stream-applications
+1. Clone the GitHub repository at https://github.com/spring-cloud/stream-applications
+2.  Find the module that you want to patch and add the additional dependencies, `jdbc-sink` in this case. For example, you can add the following mysql dependency to the application generator plugin's configuration in the pom.xml:
 
-. Open it in an IDE and make the necessary changes in the right generator project. The repository is organized as `source-apps-generator`, `sink-apps-generator`, and `processor-apps-generator`.
-+
-Find the module that you want to patch and make the changes. For example, you can add the following to the generator plugin's configuration in the pom.xml:
-+
-====
-[source,xml]
-----
-<dependencies>
-  <dependency>
+```
+<dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>
     <version>5.1.37</version>
   </dependency>
-  <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
-  </dependency>
-</dependencies>
-----
-====
+```
+This is how the complete plugin configuration should look like.
+```
+ <plugin>
+    <groupId>org.springframework.cloud.stream.app.plugin</groupId>
+    <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+    <configuration>
+        <generatedApp>
+            <name>jdbc</name>
+            <type>sink</type>
+            <version>${project.version}</version>
+            <configClass>org.springframework.cloud.fn.consumer.jdbc.JdbcConsumerConfiguration.class</configClass>
+        </generatedApp>
+        <dependencies>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.37</version>
+              </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud.fn</groupId>
+                <artifactId>jdbc-consumer</artifactId>
+                <version>${java-functions.version}</version>
+            </dependency>
+        </dependencies>
+    </configuration>
+</plugin>
+```
 
-. Generate the binder based apps as specified above and build the apps.
+Once the above changes are done, you can generate the binder based apps as below from the root of the repository.
+
+```
+./mvnw clean install -pl :jdbc-sink
+```
+
+This generates the binder based applications in the `apps` folder under `jdbc-sink` folder.
+In order to build the app with the binder flavor that you are interested in, you need to do the following step.
+
+```
+cd applications/sink/jdbc-sink
+cd jdbc-sink-kafka (or Rabbit if you are interested in that)
+./mvnw clean package
+cd target
+```
+There you will find the binder based uber jar with your changes.
