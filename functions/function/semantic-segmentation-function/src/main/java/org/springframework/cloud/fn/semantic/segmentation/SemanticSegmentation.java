@@ -221,7 +221,7 @@ public class SemanticSegmentation implements AutoCloseable {
 	public static void main(String[] args) throws IOException {
 
 		try (SemanticSegmentation segmentationService = new SemanticSegmentation(
-				"http://download.tensorflow.org/models/deeplabv3_mnv2_cityscapes_train_2018_02_05.tar.gz#frozen_inference_graph.pb",
+				"https://download.tensorflow.org/models/deeplabv3_mnv2_cityscapes_train_2018_02_05.tar.gz#frozen_inference_graph.pb",
 				SegmentationColorMap.loadColorMap("classpath:/colormap/citymap_colormap.json"), null, 0.45f)
 		) {
 			byte[] inputImage = GraphicsUtils.loadAsByteArray("classpath:/images/amsterdam-cityscape1.jpg");
@@ -243,7 +243,7 @@ public class SemanticSegmentation implements AutoCloseable {
 		}
 
 		try (SemanticSegmentation segmentationService = new SemanticSegmentation(
-				"http://download.tensorflow.org/models/deeplabv3_xception_ade20k_train_2018_05_29.tar.gz#frozen_inference_graph.pb",
+				"https://download.tensorflow.org/models/deeplabv3_xception_ade20k_train_2018_05_29.tar.gz#frozen_inference_graph.pb",
 				SegmentationColorMap.loadColorMap("classpath:/colormap/ade20k_colormap.json"), null, 0.45f)
 		) {
 			byte[] inputImage = GraphicsUtils.loadAsByteArray("classpath:/images/interior.jpg");
@@ -263,7 +263,7 @@ public class SemanticSegmentation implements AutoCloseable {
 		}
 
 		try (SemanticSegmentation segmentationService = new SemanticSegmentation(
-				"http://download.tensorflow.org/models/deeplabv3_mnv2_pascal_trainval_2018_01_29.tar.gz#frozen_inference_graph.pb",
+				"https://download.tensorflow.org/models/deeplabv3_mnv2_pascal_trainval_2018_01_29.tar.gz#frozen_inference_graph.pb",
 				SegmentationColorMap.loadColorMap("classpath:/colormap/black_white_colormap.json"), null, 0.45f)
 		) {
 			byte[] inputImage = GraphicsUtils.loadAsByteArray("classpath:/images/VikiMaxiAdi.jpg");

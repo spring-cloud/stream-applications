@@ -73,7 +73,7 @@ public class ObjectDetectionProcessorTests {
 				.web(WebApplicationType.NONE)
 				.run(
 						//"--spring.cloud.function.definition=objectDetection",
-						"--object.detection.model=http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_fgvc_2018_07_19.tar.gz#frozen_inference_graph.pb",
+						"--object.detection.model=https://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_fgvc_2018_07_19.tar.gz#frozen_inference_graph.pb",
 						"--object.detection.labels=https://raw.githubusercontent.com/tensorflow/models/master/research/object_detection/data/fgvc_2854_classes_label_map.pbtxt",
 						"--object.detection..debugOutput=true",
 						"--object.detection..debugOutputPath=./target/object-detection-2.png")) {

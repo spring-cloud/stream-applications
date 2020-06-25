@@ -42,7 +42,7 @@ Following snippet demos how to use the PASCAL VOC model to apply mask to an inpu
 ----
 
 SemanticSegmentation segmentationService = new SemanticSegmentation(
-  "http://download.tensorflow.org/models/deeplabv3_mnv2_pascal_trainval_2018_01_29.tar.gz#frozen_inference_graph.pb", // <1>
+  "https://download.tensorflow.org/models/deeplabv3_mnv2_pascal_trainval_2018_01_29.tar.gz#frozen_inference_graph.pb", // <1>
   true); // <2>
 
 byte[] inputImage = GraphicsUtils.loadAsByteArray("classpath:/images/VikiMaxiAdi.jpg"); // <3>
@@ -87,13 +87,13 @@ Also, convenience there are a couple of models, extracted from the archive and u
 [cols=2*,, frame=none, grid=none]
 |===
 |PASCAL VOC 2012 (default)
-|http://dl.bintray.com/big-data/generic/deeplabv3_mnv2_pascal_train_aug_frozen_inference_graph.pb
+|https://dl.bintray.com/big-data/generic/deeplabv3_mnv2_pascal_train_aug_frozen_inference_graph.pb
 
 |CITYSCAPE
-|http://dl.bintray.com/big-data/generic/deeplabv3_mnv2_cityscapes_train_2018_02_05_frozen_inference_graph.pb
+|https://dl.bintray.com/big-data/generic/deeplabv3_mnv2_cityscapes_train_2018_02_05_frozen_inference_graph.pb
 
 |ADE20K
-|http://dl.bintray.com/big-data/generic/deeplabv3_xception_ade20k_train_2018_05_29_frozen_inference_graph.pb
+|https://dl.bintray.com/big-data/generic/deeplabv3_xception_ade20k_train_2018_05_29_frozen_inference_graph.pb
 |===
 
 ## References:

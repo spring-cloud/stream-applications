@@ -41,7 +41,7 @@ convert the result into JSON format and augment the input image with the detecte
 [source,java,linenums]
 ----
 ObjectDetectionService detectionService = new ObjectDetectionService(
- "http://download.tensorflow.org/models/object_detection/faster_rcnn_nas_coco_2018_01_28.tar.gz#frozen_inference_graph.pb", //<1>
+ "https://download.tensorflow.org/models/object_detection/faster_rcnn_nas_coco_2018_01_28.tar.gz#frozen_inference_graph.pb", //<1>
  "https://raw.githubusercontent.com/tensorflow/models/master/research/object_detection/data/mscoco_label_map.pbtxt", //<2>
  0.4f, //<3>
  false, //<4>
@@ -103,7 +103,7 @@ NOTE: It requires a trained model that supports `Masks` as well as setting the i
 [source,java,linenums]
 ----
 ObjectDetectionService detectionService = new ObjectDetectionService(
-   "http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz#frozen_inference_graph.pb", // <1>
+   "https://download.tensorflow.org/models/object_detection/mask_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz#frozen_inference_graph.pb", // <1>
    "https://raw.githubusercontent.com/tensorflow/models/master/research/object_detection/data/mscoco_label_map.pbtxt", // <2>
    0.4f, // <3>
    true, // <4>
@@ -152,10 +152,10 @@ Following models can be used for `Instance Segmentation` as well:
 
 [frame=none, grid=none]
 |===
-| http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz[mask_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz]
-| http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_v2_coco_2018_01_28.tar.gz[mask_rcnn_inception_v2_coco_2018_01_28.tar.gz]
-| http://download.tensorflow.org/models/object_detection/mask_rcnn_resnet101_atrous_coco_2018_01_28.tar.gz[mask_rcnn_resnet101_atrous_coco_2018_01_28.tar.gz]
-| http://download.tensorflow.org/models/object_detection/mask_rcnn_resnet50_atrous_coco_2018_01_28.tar.gz[mask_rcnn_resnet50_atrous_coco_2018_01_28.tar.gz]
+| https://download.tensorflow.org/models/object_detection/mask_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz[mask_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz]
+| https://download.tensorflow.org/models/object_detection/mask_rcnn_inception_v2_coco_2018_01_28.tar.gz[mask_rcnn_inception_v2_coco_2018_01_28.tar.gz]
+| https://download.tensorflow.org/models/object_detection/mask_rcnn_resnet101_atrous_coco_2018_01_28.tar.gz[mask_rcnn_resnet101_atrous_coco_2018_01_28.tar.gz]
+| https://download.tensorflow.org/models/object_detection/mask_rcnn_resnet50_atrous_coco_2018_01_28.tar.gz[mask_rcnn_resnet50_atrous_coco_2018_01_28.tar.gz]
 |===
 
 In addition to the model, the `ObjectDetectionService` requires a list of labels that correspond to the categories detectable by the selected model.

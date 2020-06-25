@@ -45,7 +45,7 @@ public class SemanticSegmentationProcessorTests {
 				TestChannelBinderConfiguration.getCompleteConfiguration(SemanticSegmentationTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=semanticSegmentationFunction",
-						"--semantic.segmentation.model=http://download.tensorflow.org/models/deeplabv3_mnv2_cityscapes_train_2018_02_05.tar.gz#frozen_inference_graph.pb",
+						"--semantic.segmentation.model=https://download.tensorflow.org/models/deeplabv3_mnv2_cityscapes_train_2018_02_05.tar.gz#frozen_inference_graph.pb",
 						"--semantic.segmentation.colorMapUri=classpath:/colormap/citymap_colormap.json",
 						"--semantic.segmentation.outputType=blended",
 						"--semantic.segmentation.debugOutput=true",

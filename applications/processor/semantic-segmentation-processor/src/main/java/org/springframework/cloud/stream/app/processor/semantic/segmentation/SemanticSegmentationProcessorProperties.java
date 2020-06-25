@@ -36,7 +36,7 @@ public class SemanticSegmentationProcessorProperties {
 	/**
 	 * pre-trained tensorflow semantic segmentation model.
 	 */
-	private String model = "http://download.tensorflow.org/models/deeplabv3_mnv2_cityscapes_train_2018_02_05.tar.gz#frozen_inference_graph.pb";
+	private String model = "https://download.tensorflow.org/models/deeplabv3_mnv2_cityscapes_train_2018_02_05.tar.gz#frozen_inference_graph.pb";
 
 	/**
 	 * Specifies the output image type. You can return either the input image with the computed mask overlay, or

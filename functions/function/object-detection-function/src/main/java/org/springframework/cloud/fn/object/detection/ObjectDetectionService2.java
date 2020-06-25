@@ -94,8 +94,8 @@ public class ObjectDetectionService2 implements AutoCloseable {
 	}
 
 	public static void main(String[] args) throws IOException {
-		String modelUri = "http://dl.bintray.com/big-data/generic/ssdlite_mobilenet_v2_coco_2018_05_09_frozen_inference_graph.pb";
-		String labelUri = "http://dl.bintray.com/big-data/generic/mscoco_label_map.pbtxt";
+		String modelUri = "https://dl.bintray.com/big-data/generic/ssdlite_mobilenet_v2_coco_2018_05_09_frozen_inference_graph.pb";
+		String labelUri = "https://dl.bintray.com/big-data/generic/mscoco_label_map.pbtxt";
 
 		ObjectDetectionOutputConverter outputAdapter = new ObjectDetectionOutputConverter(
 				new DefaultResourceLoader().getResource(labelUri), 0.4f, FETCH_NAMES);

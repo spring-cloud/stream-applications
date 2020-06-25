@@ -40,9 +40,9 @@ public class ExampleObjectDetection {
 		// You can download pre-trained models directly from the zoo: https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
 		// Just use the notation <zoo model tar.gz url>#<name of the frozen model file name>
 		// For performance reasons you may consider downloading the model locally and use the file:/<path to my model> URI instead!
-		String model = "http://download.tensorflow.org/models/object_detection/faster_rcnn_nas_coco_2018_01_28.tar.gz#frozen_inference_graph.pb";
-		//Resource model = resourceLoader.getResource("http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_fgvc_2018_07_19.tar.gz#frozen_inference_graph.pb");
-		//Resource model = resourceLoader.getResource("http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet50_fgvc_2018_07_19.tar.gz#frozen_inference_graph.pb");
+		String model = "https://download.tensorflow.org/models/object_detection/faster_rcnn_nas_coco_2018_01_28.tar.gz#frozen_inference_graph.pb";
+		//Resource model = resourceLoader.getResource("https://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_fgvc_2018_07_19.tar.gz#frozen_inference_graph.pb");
+		//Resource model = resourceLoader.getResource("https://download.tensorflow.org/models/object_detection/faster_rcnn_resnet50_fgvc_2018_07_19.tar.gz#frozen_inference_graph.pb");
 
 		// All labels for the pre-trained models are available at:
 		// https://github.com/tensorflow/models/tree/master/research/object_detection/data
