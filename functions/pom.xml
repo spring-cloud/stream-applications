@@ -37,7 +37,6 @@
 		<nohttp-checkstyle.version>0.0.2.RELEASE</nohttp-checkstyle.version>
 		<disable.nohttp.checks>true</disable.nohttp.checks>
 		<spring-javaformat-checkstyle.version>0.0.7</spring-javaformat-checkstyle.version>
-		<spring-cloud-build.version>3.0.0-SNAPSHOT</spring-cloud-build.version>
 	</properties>
 
   	<modules>
@@ -186,11 +185,6 @@
 						<groupId>io.spring.javaformat</groupId>
 						<artifactId>spring-javaformat-checkstyle</artifactId>
 						<version>${spring-javaformat-checkstyle.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.springframework.cloud</groupId>
-						<artifactId>spring-cloud-build-tools</artifactId>
-						<version>${spring-cloud-build.version}</version>
 					</dependency>
 					<dependency>
 						<groupId>io.spring.nohttp</groupId>
