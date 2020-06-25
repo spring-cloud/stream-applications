@@ -24,6 +24,9 @@ include::{stream-apps-root}/{branch}/applications/processor/image-recognition-pr
 [[spring-cloud-stream-modules-object-detection-processor]]
 include::{stream-apps-root}/{branch}/applications/processor/object-detection-processor/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-semantic-segmentation-processor]]
+include::{stream-apps-root}/{branch}/applications/processor/semantic-segmentation-processor/README.adoc[tags=ref-doc]
+
 [[spring-cloud-stream-modules-script-processor]]
 include::{stream-apps-root}/{branch}/applications/processor/script-processor/README.adoc[tags=ref-doc]
 
