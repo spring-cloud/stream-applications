@@ -5,18 +5,21 @@ if [ "$#" -ne 2 ]; then
     exit
 fi
 
+VERSION=$1
+
 function git_commit_push {
  echo "in git commit"
- git commit -am"Stream Applications Core: Release - $1"
- git push origin master
+ git commit -am"Stream Applications Core: Release - $VERSION"
+ git push origin master && git push upstream master
 }
 
 pushd ../..
 
-VERSION=$1
 ./mvnw -f applications/stream-applications-core versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false
 
+cd applications/stream-applications-core
 sed -i '' 's/<java-functions.version>.*/<java-functions.version>'"$2"'<\/java-functions.version>/g' pom.xml
+cd ../..
 
 if [[ $VERSION =~ M[0-9]|RC[0-9] ]]; then
  lines=$(find applications/stream-applications-core -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v regex | wc -l)
