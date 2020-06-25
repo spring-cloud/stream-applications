@@ -1,4 +1,4 @@
-:images-asciidoc: https://raw.githubusercontent.com/tzolov/stream-applications/tensorflow-redesign/functions/function/semantic-segmentation-function/src/main/resources/images/
+:images-asciidoc: https://raw.githubusercontent.com/spring-cloud/stream-applications/master/functions/function/semantic-segmentation-function/src/main/resources/images/
 # Semantic Segmentation
 
 [.lead]
@@ -9,12 +9,12 @@ Image Semantic Segmentation based on the state-of-art https://github.com/tensorf
 | image:{images-asciidoc}/VikiMaxiAdi-all.png[width=100%]
 |Semantic Segmentation is the process of associating each pixel of an image with a class label, (such as flower, person, road, sky, ocean, or car).
 Unlike the `Instance Segmentation`, which produces instance-aware region masks, the `Semantic Segmentation` produces class-aware masks.
-For implementing `Instance Segmentation` consult the https://github.com/tzolov/stream-applications/tree/tensorflow-redesign/functions/function/object-detection-function[Object Detection Service] instead.
+For implementing `Instance Segmentation` consult the https://github.com/spring-cloud/stream-applications/tree/master/functions/function/object-detection-function[Object Detection Service] instead.
 |===
 
-The https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/deprecated/JsonMapperFunction.java[JsonMapperFunction] permits
+The https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/deprecated/JsonMapperFunction.java[JsonMapperFunction] permits
 converting the `List<ObjectDetection>` into JSON objects, and the
-https://github.com/tzolov/stream-applications/blob/tensorflow-redesign/functions/function/object-detection-function/src/main/java/org/springframework/cloud/fn/object/detection/ObjectDetectionImageAugmenter.java[ObjectDetectionImageAugmenter]
+https://github.com/spring-cloud/stream-applications/blob/master/functions/function/object-detection-function/src/main/java/org/springframework/cloud/fn/object/detection/ObjectDetectionImageAugmenter.java[ObjectDetectionImageAugmenter]
 allow to augment the input image with the detected bounding boxes and segmentation masks.
 
 ## Usage
