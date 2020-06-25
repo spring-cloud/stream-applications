@@ -1,4 +1,4 @@
-:images-asciidoc: https://raw.githubusercontent.com/tzolov/stream-applications/tensorflow-redesign/functions/common/tensorflow-common/src/main/resources/images/
+:images-asciidoc: https://raw.githubusercontent.com/spring-cloud/stream-applications/master/functions/common/tensorflow-common/src/main/resources/images/
 
 = Programming Model for TensorFlow Inference
 
@@ -51,7 +51,7 @@ The https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor[Ten
 
 Proposed data structure fits well with existing https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Session.Runner[Session.Runner API], which accepts https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Session.Runner.html#feed(java.lang.String,%20org.tensorflow.Tensor%3C?%3E)[indexed operations] as an input feed and returns list of tensors predefined by https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Session.Runner.html#fetch(java.lang.String)[fetch indexed operations].
 
-The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java[GraphRunner] and the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphDefinition.java[GraphDefinition] are the core abstractions used to define, load and inference TensorFlow models. https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java[GraphRunner] implements the Function (e.g. Fn<Map<S,T>, Map<S,T>>) definition and uses the TF Java API to run the underlying TF graph. The input Tensor map is fed to the Session Runner. After the graph is evaluated, a list of predefined fetch names is used to retrieve selected Tensors from the result as a named Tensor map. The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java#L45[withGraphDefintition(GraphDefinition)] method is used to define a new or to load a pre-trained TF graph,  while the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java#L60[withSavedModel(path)] method helps to load a Tensorflow SavedModel. +
+The https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/GraphRunner.java[GraphRunner] and the https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/GraphDefinition.java[GraphDefinition] are the core abstractions used to define, load and inference TensorFlow models. https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/GraphRunner.java[GraphRunner] implements the Function (e.g. Fn<Map<S,T>, Map<S,T>>) definition and uses the TF Java API to run the underlying TF graph. The input Tensor map is fed to the Session Runner. After the graph is evaluated, a list of predefined fetch names is used to retrieve selected Tensors from the result as a named Tensor map. The https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/GraphRunner.java#L70[withGraphDefinition(GraphDefinition)] method defines a new or loads a pre-trained TF graph, while the https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/GraphRunner.java#L84[withSavedModel(path)] method helps to load a Tensorflow SavedModel.
 The GraphDefinition argument is a functional interface and can therefore be used as the assignment target for a lambda expression or method reference.
 
 Following snippets illustrates how to use the `withGraphDefinition` to define a new TF Graph that computes the `y1 = x1 * 2` expression:
@@ -67,7 +67,7 @@ myGraph = new GraphRunner("x1", "y1")
 
 The x1 and y1 constructor arguments define the input and output Tensor names (technically indexed operation names) used to feed in and fetch out data to and from the defined model.
 
-The GraphRunner https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/AbstractGraphRunner.java#L49[apply] method helps evaluate/inference the so defined graph:
+The GraphRunner https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/AbstractGraphRunner.java#L65[apply] method helps evaluate/inference the so defined graph:
 
 [source,Java]
 ----
@@ -75,7 +75,7 @@ Map<String, Tensor<?>> input = Collections.singletonMap("x1", Tensor.create(666)
 result = myGraph.apply(input);
 ----
 
-Similarly we can load a frozen/pre-trained model (https://github.com/tensorflow/models/tree/master/research/slim/nets/mobilenet#pretrained-models[MobileNetV2] model in this case) from an archive using the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/ProtoBufGraphDefinition.java[ProtoBufGraphDefinitions] helper class.
+Similarly, we can load a frozen/pre-trained model (https://github.com/tensorflow/models/tree/master/research/slim/nets/mobilenet#pretrained-models[MobileNetV2] model in this case) from an archive using the https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/ProtoBufGraphDefinition.java[ProtoBufGraphDefinitions] helper class.
 
 [source,Java]
 ----
@@ -88,7 +88,7 @@ mibileNetV2 = new GraphRunner("input", "MobilenetV2/Predictions/Reshape_1")
 
 You can load archives from `http://`, `file://` or `classpath://` locations.
 
-For loading a `SavedModel` from the local file system use the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java#L68[withSavedModel] method like this:
+For loading a `SavedModel` use the `GraphRunner#withSavedModel method like this:
 
 [source,Java]
 ----
@@ -105,11 +105,11 @@ Every GraphRunner instance in the pipeline uses either an in-place defined, or a
 
 In practice, it would still be required to implement some input and output adapters for the logic that cannot be (or are not feasible to be) implemented with the native Java Ops API. But you have the freedom to choose what part of the processing logic to run as natively (e.g. Java Ops API) code and what is a plain Java.
 
-Furthermore, we are not limited to GraphRunner but any custom https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html[Function]<Map<String, Tensor>, Map<String, Tensor>> implementations can be used in the processing pipelines. In fact the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/Functions.java[Functions] utilities use this approach.
+Furthermore, we are not limited to GraphRunner but any custom https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html[Function]<Map<String, Tensor>, Map<String, Tensor>> implementations can be used in the processing pipelines. In fact the https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/Functions.java[Functions] utilities use this approach.
 
 When appropriate any custom Function, https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html[Supplier]<Map<String, Tensor>>, https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html[Consumer]<Map<String, Tensor>> or the rest of the https://docs.oracle.com/javase/8/docs/api/java/util/function/package-frame.html[java.util.function] classes and interfaces can be used.
 
-For real time examples check the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/image-recognition/src/main/java/io/mindmodel/services/image/recognition/ImageRecognition.java[image-recognition] and https://github.com/tzolov/mind-model-services/blob/ops-programming-model/semantic-segmentation/src/main/java/io/mindmodel/services/semantic/segmentation/SemanticSegmentation.java[semantic-segmentation] implementations.
+For real time examples check the https://github.com/spring-cloud/stream-applications/tree/master/functions/function/image-recognition-function[image-recognition] and https://github.com/spring-cloud/stream-applications/tree/master/functions/function/semantic-segmentation-function[semantic-segmentation] implementations.
 
 == Features
 
@@ -129,7 +129,7 @@ The names used in the inputs, and the outputs maps are strings of the form `oper
 
 === Composition
 
-Because the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java[GraphRunner] function signature uses the same type for input and output parameters, the https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html[Functional] interface allows us compose multiple graph https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java[GraphRunner] functions into a larger composite function:
+Because the https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/GraphRunner.java[GraphRunner] function signature uses the same type for input and output parameters, the https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html[Functional] interface allows us to compose multiple graphs https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/GraphRunner.java[GraphRunner] functions into a larger composite function:
 
 [source,Java]
 ----
@@ -138,7 +138,7 @@ composed-graph = graph1.andThen(graph2)....andThen(graphN)
 
 For example let's take two simple graphs: `G1 (y1 = x1 * 2)` and `G2 (y2 = x2 + 20)`. The composed graph `G = G1.andThen(G2)` is equivalent to `y = (x * 2 ) + 20`.
 
-The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/test/java/io/mindmodel/services/common/examples/FunctionComposition.java[FunctionComposition example] demonstrates how this works:
+The https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/test/java/org/springframework/cloud/fn/common/tensorflow/FunctionComposition.java[FunctionComposition example] demonstrates how this works:
 
 [source,Java]
 ----
@@ -164,7 +164,7 @@ try (
 }
 ----
 
-Note that the GraphRunner https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/AbstractGraphRunner.java#L65[automatically binds] the singleton outputs (e.g fetchs) with the singleton input (e.g. feeds). In the example above the GraphRunner automatically binds the `y1` tensor produced by `graph1` to the `x2` input placeholders expected by `graph2`.
+Note that the GraphRunner https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/AbstractGraphRunner.java#L65[automatically binds] the singleton outputs (e.g fetch) with the singleton input (e.g. feeds). In the example above the GraphRunner automatically binds the `y1` tensor produced by `graph1` to the `x2` input placeholders expected by `graph2`.
 
 ==== Multiple inputs/outputs
 
@@ -185,7 +185,7 @@ The composed graph would look like this:
 Composed = Graph1.andThen( map: y11 -> x21 and y12 -> x22).andThen(Graph2)
 ----
 
-The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/Functions.java#L52[Functions#rename] utility helps to define the input/output mappings as illustrated in the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/test/java/io/mindmodel/services/common/examples/FunctionCompositionMultipleInputsOutputs.java[FunctionCompositionMultipleInputsOutputs] example:
+The https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/Functions.java#L72[Functions#rename] utility helps to define the input/output mappings as illustrated in the https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/test/java/org/springframework/cloud/fn/common/tensorflow/FunctionCompositionMultipleInputsOutputs.java[FunctionCompositionMultipleInputsOutputs] example:
 
 [source,Java]
 ----
@@ -221,7 +221,7 @@ try (
 ----
 
 The Functions#rename(String...mappings) takes an even number of string pairs, where every even parameter represents the from and to name to map. Eg. The y11 above is mapped into x21 and y12 is mapped into x22. +
-The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java#L120[GraphRunner#enableAutoBinding()] and https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunner.java#L115[GraphRunner#disableAutoBinding()] allow altering the autobinding behavior enforcing mapping even of singleton input/output graphs.
+The https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/AbstractGraphRunner.java#L129[GraphRunner#enableAutoBinding()] and https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/AbstractGraphRunner.java#L124[GraphRunner#disableAutoBinding()] allow altering the autobinding behavior enforcing mapping even of singleton input/output graphs.
 
 === Save and Close Obsolete Tensors
 
@@ -229,7 +229,7 @@ The Tensors used as inputs (feeds) and outputs (fetches) by the GraphRunners hav
 
 Because every sub-graph in a composite pipeline produces one or more <String, Tensor> pairs we need to track those references and close them.
 
-The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunnerMemory.java[GraphRunnerMemory] is a handy utility Function implementation that keeps track of all input Tensor parameters passed through. It is https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html[AutoClosable] and will release all tracked Tensors when closed.
+The https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/GraphRunnerMemory.java[GraphRunnerMemory] is a handy utility Function implementation that keeps track of all input Tensor parameters passed through. It is https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html[AutoClosable] and will release all tracked Tensors when closed.
 
 The GraphRunnerMemory implements the same function signatures as the GraphRunner (e.g. Fun<Map<S,T>, Map<S,T>>) and therefore can participate in composite graph definitions:
 
@@ -246,7 +246,7 @@ try ( memory = new GraphRunnerMemory() ) {
 } // releases all Tensors returned by the GraphRunners
 ----
 
-The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/test/java/io/mindmodel/services/common/examples/ReleaseTensorParameters.java[ReleaseTensorParameters] example illustrates how to use the GraphRunnerMemory:
+The https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/test/java/org/springframework/cloud/fn/common/tensorflow/ReleaseTensorParameters.java[ReleaseTensorParameters] example illustrates how to use the GraphRunnerMemory:
 
 [source,Java]
 ----
@@ -272,7 +272,7 @@ Note: the GraphRunnerMemory has some other very useful applications that we will
 
 For particular graphs in the composite pipeline, we can add an additional input parameters that were not produced by the upstream graph.
 
-WIth the help fo the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/Functions.java#L22[Functions#enrichWith(name, Tensor)] utility function we can inject the additional parameters in the graph composition.
+With the help fo the https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/Functions.java#L42[Functions#enrichWith(name, Tensor)] utility function we can inject the additional parameters in the graph composition.
 
 In the following snippet we enrich the graph2’s input with an additional parameter (newParam):
 
@@ -293,11 +293,11 @@ try (
 }
 ----
 
-The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/semantic-segmentation/src/main/java/io/mindmodel/services/semantic/segmentation/SemanticSegmentation.java#L141[SemanticSegmentation] implementation provides a real example how to enrich with parameters.
+The https://github.com/spring-cloud/stream-applications/blob/master/functions/function/semantic-segmentation-function/src/main/java/org/springframework/cloud/fn/semantic/segmentation/SemanticSegmentation.java#L150[SemanticSegmentation] implementation provides a real example how to enrich with parameters.
 
 === Enrich Inputs from Saved Tensors
 
-We can combine the enricher approach with the https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/GraphRunnerMemory.java[GraphRunnerMemory]. This allows us to enrich some downstream Graphs with tensor parameters computed in some of the upstream Graphs. The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/common/src/main/java/io/mindmodel/services/common/Functions.java#L34[Functions#enrichFromMemory(memory, tensorName)] utility function can enrich a graph input parameter by extracting one stored in the memory.
+We can combine the enricher approach with the https://github.com/spring-cloud/stream-applications/blob/master/functions/common/tensorflow-common/src/main/java/org/springframework/cloud/fn/common/tensorflow/GraphRunnerMemory.java[GraphRunnerMemory]. This allows us to enrich some downstream Graphs with tensor parameters computed in some of the upstream Graphs. The `Functions#enrichFromMemory(memory, tensorName)` utility function can enrich a graph input parameter by extracting one stored in the memory.
 
 For example let’s construct the following graph compositions:
 
@@ -339,6 +339,6 @@ the `myarchive.tar.gz` is traversed to uncompress and extract the model.pb file 
 In addition, the CachedModelExtractor allows keeping a local copy (cache) of the model (protobuf) files extracted from the URI archive.
 
 |===
-|The https://github.com/tzolov/mind-model-services/blob/ops-programming-model/image-recognition/src/main/java/io/mindmodel/services/image/recognition/ImageRecognition.java[image-recognition] and https://github.com/tzolov/mind-model-services/blob/ops-programming-model/semantic-segmentation/src/main/java/io/mindmodel/services/semantic/segmentation/SemanticSegmentation.java[semantic-segmentation] inference models implementations demonstrate the suggested programming model.
+|The https://github.com/spring-cloud/stream-applications/tree/master/functions/function/image-recognition-function[image-recognition] and https://github.com/spring-cloud/stream-applications/tree/master/functions/function/semantic-segmentation-function[semantic-segmentation] inference models implementations demonstrate the suggested programming model.
 
 |===
