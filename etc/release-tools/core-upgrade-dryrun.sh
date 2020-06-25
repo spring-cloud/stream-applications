@@ -8,7 +8,7 @@ fi
 pushd ../..
 
 VERSION=$1
-./mvnw -f applications/stream-applications-core versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false
+./mvnw -f applications/stream-applications-core versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false -DupdateMatchingVersions=false
 
 cd applications/stream-applications-core
 sed -i '' 's/<java-functions.version>.*/<java-functions.version>'"$2"'<\/java-functions.version>/g' pom.xml
