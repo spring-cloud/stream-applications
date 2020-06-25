@@ -18,12 +18,6 @@ include::{stream-apps-root}/{branch}/applications/processor/header-enricher-proc
 [[spring-cloud-stream-modules-http-request-processor]]
 include::{stream-apps-root}/{branch}/applications/processor/http-request-processor/README.adoc[tags=ref-doc]
 
-[[spring-cloud-stream-modules-image-recognition-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/image-recognition-processor/README.adoc[tags=ref-doc]
-
-[[spring-cloud-stream-modules-object-detection-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/object-detection-processor/README.adoc[tags=ref-doc]
-
 [[spring-cloud-stream-modules-script-processor]]
 include::{stream-apps-root}/{branch}/applications/processor/script-processor/README.adoc[tags=ref-doc]
 
@@ -33,8 +27,8 @@ include::{stream-apps-root}/{branch}/applications/processor/splitter-processor/R
 [[spring-cloud-stream-modules-transform-processor]]
 include::{stream-apps-root}/{branch}/applications/processor/transform-processor/README.adoc[tags=ref-doc]
 
-[[spring-cloud-stream-modules-twitter-trend-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/twitter-trend-processor/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-transform-processor]]
+include::{stream-apps-root}/{branch}/applications/processor/transform-processor/README.adoc[tags=ref-doc]
 
 :leveloffset: -2
 

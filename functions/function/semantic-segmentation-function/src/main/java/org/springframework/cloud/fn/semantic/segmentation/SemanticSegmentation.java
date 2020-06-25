@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.tensorflow.Operand;
 import org.tensorflow.Tensor;
 import org.tensorflow.op.Ops;
@@ -219,33 +220,31 @@ public class SemanticSegmentation implements AutoCloseable {
 
 	public static void main(String[] args) throws IOException {
 
-		//String inputImageUri = "file:/Users/ctzolov/Dev/projects/mindmodel/mind-model-services/semantic-segmentation/src/test/resources/images/VikiMaxiAdi.jpg";
-		String outputBlendedImagePath = "./semantic-segmentation/target/blendedImage.png";
-		String outputMaskImagePath = "./semantic-segmentation/target/maskImage.png";
-
-
 		try (SemanticSegmentation segmentationService = new SemanticSegmentation(
 				"http://download.tensorflow.org/models/deeplabv3_mnv2_cityscapes_train_2018_02_05.tar.gz#frozen_inference_graph.pb",
-				SegmentationColorMap.CITYMAP_COLORMAP, null, 0.45f)
+				SegmentationColorMap.loadColorMap("classpath:/colormap/citymap_colormap.json"), null, 0.45f)
 		) {
 			byte[] inputImage = GraphicsUtils.loadAsByteArray("classpath:/images/amsterdam-cityscape1.jpg");
 
 			// 1. Mask pixels
 			long[][] maskPixels = segmentationService.maskPixels(inputImage);
 
+			String json = new ObjectMapper().writeValueAsString(maskPixels);
+
 			// 2. Alpha Blending
 			byte[] blended = segmentationService.blendMask(inputImage);
-			ImageIO.write(ImageIO.read(new ByteArrayInputStream(blended)), "png", new File(outputBlendedImagePath));
+			ImageIO.write(ImageIO.read(new ByteArrayInputStream(blended)), "png",
+					new File("./functions/function/semantic-segmentation-function/target/blendedImage.png"));
 
 			// 3. Mask Image
 			byte[] maskImage = segmentationService.maskImage(inputImage);
-			ImageIO.write(ImageIO.read(new ByteArrayInputStream(maskImage)), "png", new File(outputMaskImagePath));
+			ImageIO.write(ImageIO.read(new ByteArrayInputStream(maskImage)), "png",
+					new File("./functions/function/semantic-segmentation-function/target/maskImage.png"));
 		}
-
 
 		try (SemanticSegmentation segmentationService = new SemanticSegmentation(
 				"http://download.tensorflow.org/models/deeplabv3_xception_ade20k_train_2018_05_29.tar.gz#frozen_inference_graph.pb",
-				SegmentationColorMap.ADE20K_COLORMAP, null, 0.45f)
+				SegmentationColorMap.loadColorMap("classpath:/colormap/ade20k_colormap.json"), null, 0.45f)
 		) {
 			byte[] inputImage = GraphicsUtils.loadAsByteArray("classpath:/images/interior.jpg");
 
@@ -255,17 +254,17 @@ public class SemanticSegmentation implements AutoCloseable {
 			// 2. Alpha Blending
 			byte[] blended = segmentationService.blendMask(inputImage);
 			ImageIO.write(ImageIO.read(new ByteArrayInputStream(blended)), "png",
-					new File("./semantic-segmentation/target/inventory-blendedImage.png"));
+					new File("./functions/function/semantic-segmentation-function/target/inventory-blendedImage.png"));
 
 			// 3. Mask Image
 			byte[] maskImage = segmentationService.maskImage(inputImage);
 			ImageIO.write(ImageIO.read(new ByteArrayInputStream(maskImage)), "png",
-					new File("./semantic-segmentation/target/inventory-MaskImage.png"));
+					new File("./functions/function/semantic-segmentation-function/target/inventory-MaskImage.png"));
 		}
 
 		try (SemanticSegmentation segmentationService = new SemanticSegmentation(
 				"http://download.tensorflow.org/models/deeplabv3_mnv2_pascal_trainval_2018_01_29.tar.gz#frozen_inference_graph.pb",
-				SegmentationColorMap.BLACK_WHITE_COLORMAP, null, 0.45f)
+				SegmentationColorMap.loadColorMap("classpath:/colormap/black_white_colormap.json"), null, 0.45f)
 		) {
 			byte[] inputImage = GraphicsUtils.loadAsByteArray("classpath:/images/VikiMaxiAdi.jpg");
 
@@ -275,12 +274,12 @@ public class SemanticSegmentation implements AutoCloseable {
 			// 2. Alpha Blending
 			byte[] blended = segmentationService.blendMask(inputImage);
 			ImageIO.write(ImageIO.read(new ByteArrayInputStream(blended)), "png",
-					new File("./semantic-segmentation/target/pascal-blendedImage.png"));
+					new File("./functions/function/semantic-segmentation-function/target/pascal-blendedImage.png"));
 
 			// 3. Mask Image
 			byte[] maskImage = segmentationService.maskImage(inputImage);
 			ImageIO.write(ImageIO.read(new ByteArrayInputStream(maskImage)), "png",
-					new File("./semantic-segmentation/target/pascal-MaskImage.png"));
+					new File("./functions/function/semantic-segmentation-function/target/pascal-MaskImage.png"));
 		}
 
 	}

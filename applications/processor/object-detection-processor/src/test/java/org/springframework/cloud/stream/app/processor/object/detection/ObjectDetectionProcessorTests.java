@@ -48,8 +48,8 @@ public class ObjectDetectionProcessorTests {
 						"--object.detection.model=https://download.tensorflow.org/models/object_detection/ssdlite_mobilenet_v2_coco_2018_05_09.tar.gz#frozen_inference_graph.pb",
 						"--object.detection.labels=https://storage.googleapis.com/scdf-tensorflow-models/object-detection/mscoco_label_map.pbtxt",
 						"--object.detection.responseSize=10",
-						"--object.detection..debugOutput=true",
-						"--object.detection..debugOutputPath=./target/object-detection-1.png")) {
+						"--object.detection.debugOutput=true",
+						"--object.detection.debugOutputPath=./target/object-detection-1.png")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);

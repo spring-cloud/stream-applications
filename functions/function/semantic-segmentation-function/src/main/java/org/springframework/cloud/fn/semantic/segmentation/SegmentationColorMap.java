@@ -16,6 +16,13 @@
 
 package org.springframework.cloud.fn.semantic.segmentation;
 
+import java.io.InputStream;
+import java.util.Arrays;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.core.io.DefaultResourceLoader;
+
 /**
  *
  * Visualizes the segmentation results via specified color map.
@@ -301,6 +308,56 @@ public final class SegmentationColorMap {
 
 		for (int i = 0; i < _CITYMAP_COLORMAP.length; i++) {
 			System.arraycopy(_CITYMAP_COLORMAP[i], 0, CITYMAP_COLORMAP[i], 0, _CITYMAP_COLORMAP[i].length);
+		}
+	}
+
+	public static int[][] loadColorMap(String resourceUri) {
+		try {
+			InputStream colorMapIs = new DefaultResourceLoader().getResource(resourceUri).getInputStream();
+			ColorMap colorMap = new ObjectMapper().readValue(colorMapIs, ColorMap.class);
+			return colorMap.getColormap();
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+
+	public static class ColorMap {
+		private String name;
+		private String info;
+		private int[][] colormap;
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getInfo() {
+			return info;
+		}
+
+		public void setInfo(String info) {
+			this.info = info;
+		}
+
+		public int[][] getColormap() {
+			return colormap;
+		}
+
+		public void setColormap(int[][] colormap) {
+			this.colormap = colormap;
+		}
+
+		@Override
+		public String toString() {
+			return "ColorMap{" +
+					"name='" + name + '\'' +
+					"info='" + info + '\'' +
+					", colormap=" + Arrays.deepToString(colormap) +
+					'}';
 		}
 	}
 }

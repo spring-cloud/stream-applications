@@ -70,6 +70,5 @@ public class ProtoBufGraphDefinition implements GraphDefinition {
 		while (ops.hasNext()) {
 			System.out.println(ops.next().name());
 		}
-		System.out.println("Boza");
 	}
 }
