@@ -7,10 +7,12 @@ if [ "$#" -ne 1 ]; then
     exit
 fi
 
+VERSION=$1
+
 function git_commit_push {
  echo "in git commit"
- git commit -am"Functions: Release - $1"
- git push origin master
+ git commit -am"Functions: Release - $VERSION"
+ git push upstream master
 }
 
 pushd ../..

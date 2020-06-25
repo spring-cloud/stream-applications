@@ -3,14 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>http-request-function</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-M1</version>
     <name>http-request-function</name>
     <description>Spring Native Function for Submitting an HTTP request</description>
 
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
         <artifactId>spring-functions-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-M1</version>
         <relativePath>../../spring-functions-parent</relativePath>
     </parent>
 
