@@ -62,6 +62,7 @@
         <header-enricher-processor.version>3.0.0-SNAPSHOT</header-enricher-processor.version>
         <http-request-processor.version>3.0.0-SNAPSHOT</http-request-processor.version>
         <image-recognition-processor.version>3.0.0-SNAPSHOT</image-recognition-processor.version>
+        <semantic-segmentation-processor.version>3.0.0-SNAPSHOT</semantic-segmentation-processor.version>
         <object-detection-processor.version>3.0.0-SNAPSHOT</object-detection-processor.version>
         <script-processor.version>3.0.0-SNAPSHOT</script-processor.version>
         <splitter-processor.version>3.0.0-SNAPSHOT</splitter-processor.version>
