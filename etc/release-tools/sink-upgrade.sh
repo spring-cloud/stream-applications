@@ -5,16 +5,17 @@ if [ "$#" -ne 2 ]; then
     exit
 fi
 
+VERSION=$1
+
 function git_commit_push {
  echo "in git commit"
- git commit -am"Sink Applications: Release - $1"
- git push origin master
+ git commit -am"Sink Applications: Release - $VERSION"
+ git push origin master && git push upstream master
 }
 
 pushd ../..
 
-VERSION=$1
-./mvnw -f applications/sink versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false
+./mvnw -f applications/sink versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false -DupdateMatchingVersions=false
 ./mvnw -f applications/sink versions:update-parent -DparentVersion=$2 -Pspring -DgenerateBackupPoms=false
 
 if [[ $VERSION =~ M[0-9]|RC[0-9] ]]; then

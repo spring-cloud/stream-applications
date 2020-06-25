@@ -8,7 +8,7 @@ fi
 pushd ../..
 
 VERSION=$1
-./mvnw -f applications/processor versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false
+./mvnw -f applications/processor versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false -DupdateMatchingVersions=false
 ./mvnw -f applications/processor versions:update-parent -DparentVersion=$2 -Pspring -DgenerateBackupPoms=false
 
 if [[ $VERSION =~ M[0-9]|RC[0-9] ]]; then
