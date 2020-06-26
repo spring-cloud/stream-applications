@@ -30,6 +30,7 @@ if [[ $VERSION =~ M[0-9]|RC[0-9] ]]; then
    echo "Snapshots found. Exiting build"
    find applications/stream-applications-core -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v regex
    git checkout -f
+   exit 1
  fi
 else 
   lines=$(find applications/stream-applications-core -type f -name pom.xml | xargs egrep "SNAPSHOT|M[0-9]|RC[0-9]" | grep -v ".contains(" | grep -v regex | wc -l)
@@ -40,6 +41,7 @@ else
    echo "Non Release versions found. Exiting build"
    find applications/stream-applications-core -type f -name pom.xml | xargs egrep "SNAPSHOT|M[0-9]|RC[0-9]" | grep -v ".contains(" | grep -v regex
    git checkout -f
+   exit 1
   fi
 fi
 

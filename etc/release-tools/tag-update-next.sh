@@ -83,12 +83,15 @@ cd ../..
 
 popd
 
-echo "in git commit"
+echo "Committing and pushing the changes."
+
 COMMIT_MSG="Next version updates
+
   Functions: $FUNCTIONS_NEXT
   Core Apps: $CORE_NEXT
   Apps: $APPS_NEXT
   Aggregate Next:$AGGREGATOR_NEXT"
+
 git commit -am"$COMMIT_MSG"
 git push origin master && git push upstream master
 
