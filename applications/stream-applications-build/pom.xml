@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>stream-applications-build</artifactId>
-    <version>2020.0.0-SNAPSHOT</version>
+    <version>2020.0.0-M1</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -19,55 +19,56 @@
     </modules>
 
     <properties>
-        <file-source.version>3.0.0-SNAPSHOT</file-source.version>
-        <ftp-source.version>3.0.0-SNAPSHOT</ftp-source.version>
-        <geode-source.version>3.0.0-SNAPSHOT</geode-source.version>
-        <http-source.version>3.0.0-SNAPSHOT</http-source.version>
-        <jdbc-source.version>3.0.0-SNAPSHOT</jdbc-source.version>
-        <jms-source.version>3.0.0-SNAPSHOT</jms-source.version>
-        <load-generator-source.version>3.0.0-SNAPSHOT</load-generator-source.version>
-        <mongodb-source.version>3.0.0-SNAPSHOT</mongodb-source.version>
-        <mqtt-source.version>3.0.0-SNAPSHOT</mqtt-source.version>
-        <rabbit-source.version>3.0.0-SNAPSHOT</rabbit-source.version>
-        <s3-source.version>3.0.0-SNAPSHOT</s3-source.version>
-        <tcp-source.version>3.0.0-SNAPSHOT</tcp-source.version>
-        <time-source.version>3.0.0-SNAPSHOT</time-source.version>
-        <twitter-message-source.version>3.0.0-SNAPSHOT</twitter-message-source.version>
-        <twitter-search-source.version>3.0.0-SNAPSHOT</twitter-search-source.version>
-        <twitter-stream-source.version>3.0.0-SNAPSHOT</twitter-stream-source.version>
-        <websocket-source.version>3.0.0-SNAPSHOT</websocket-source.version>
-        <cassandra-sink.version>3.0.0-SNAPSHOT</cassandra-sink.version>
-        <counter-sink.version>3.0.0-SNAPSHOT</counter-sink.version>
-        <file-sink.version>3.0.0-SNAPSHOT</file-sink.version>
-        <ftp-sink.version>3.0.0-SNAPSHOT</ftp-sink.version>
-        <geode-sink.version>3.0.0-SNAPSHOT</geode-sink.version>
-        <jdbc-sink.version>3.0.0-SNAPSHOT</jdbc-sink.version>
-        <log-sink.version>3.0.0-SNAPSHOT</log-sink.version>
-        <mongodb-sink.version>3.0.0-SNAPSHOT</mongodb-sink.version>
-        <mqtt-sink.version>3.0.0-SNAPSHOT</mqtt-sink.version>
-        <rabbit-sink.version>3.0.0-SNAPSHOT</rabbit-sink.version>
-        <redis-sink.version>3.0.0-SNAPSHOT</redis-sink.version>
-        <router-sink.version>3.0.0-SNAPSHOT</router-sink.version>
-        <s3-sink.version>3.0.0-SNAPSHOT</s3-sink.version>
-        <sftp-sink.version>3.0.0-SNAPSHOT</sftp-sink.version>
-        <tasklauncher-sink.version>3.0.0-SNAPSHOT</tasklauncher-sink.version>
-        <tcp-sink.version>3.0.0-SNAPSHOT</tcp-sink.version>
-        <throughput-sink.version>3.0.0-SNAPSHOT</throughput-sink.version>
-        <twitter-message-sink.version>3.0.0-SNAPSHOT</twitter-message-sink.version>
-        <twitter-update-sink.version>3.0.0-SNAPSHOT</twitter-update-sink.version>
-        <websocket-sink.version>3.0.0-SNAPSHOT</websocket-sink.version>
-        <bridge-processor.version>3.0.0-SNAPSHOT</bridge-processor.version>
-        <filter-processor.version>3.0.0-SNAPSHOT</filter-processor.version>
-        <groovy-processor.version>3.0.0-SNAPSHOT</groovy-processor.version>
-        <header-enricher-processor.version>3.0.0-SNAPSHOT</header-enricher-processor.version>
-        <http-request-processor.version>3.0.0-SNAPSHOT</http-request-processor.version>
-        <image-recognition-processor.version>3.0.0-SNAPSHOT</image-recognition-processor.version>
-        <semantic-segmentation-processor.version>3.0.0-SNAPSHOT</semantic-segmentation-processor.version>
-        <object-detection-processor.version>3.0.0-SNAPSHOT</object-detection-processor.version>
-        <script-processor.version>3.0.0-SNAPSHOT</script-processor.version>
-        <splitter-processor.version>3.0.0-SNAPSHOT</splitter-processor.version>
-        <transform-processor.version>3.0.0-SNAPSHOT</transform-processor.version>
-        <twitter-trend-processor.version>3.0.0-SNAPSHOT</twitter-trend-processor.version>
+        <apps.version>3.0.0-M1</apps.version>
+        <file-source.version>${apps.version}</file-source.version>
+        <ftp-source.version>${apps.version}</ftp-source.version>
+        <geode-source.version>${apps.version}</geode-source.version>
+        <http-source.version>${apps.version}</http-source.version>
+        <jdbc-source.version>${apps.version}</jdbc-source.version>
+        <jms-source.version>${apps.version}</jms-source.version>
+        <load-generator-source.version>${apps.version}</load-generator-source.version>
+        <mongodb-source.version>${apps.version}</mongodb-source.version>
+        <mqtt-source.version>${apps.version}</mqtt-source.version>
+        <rabbit-source.version>${apps.version}</rabbit-source.version>
+        <s3-source.version>${apps.version}</s3-source.version>
+        <tcp-source.version>${apps.version}</tcp-source.version>
+        <time-source.version>${apps.version}</time-source.version>
+        <twitter-message-source.version>${apps.version}</twitter-message-source.version>
+        <twitter-search-source.version>${apps.version}</twitter-search-source.version>
+        <twitter-stream-source.version>${apps.version}</twitter-stream-source.version>
+        <websocket-source.version>${apps.version}</websocket-source.version>
+        <cassandra-sink.version>${apps.version}</cassandra-sink.version>
+        <counter-sink.version>${apps.version}</counter-sink.version>
+        <file-sink.version>${apps.version}</file-sink.version>
+        <ftp-sink.version>${apps.version}</ftp-sink.version>
+        <geode-sink.version>${apps.version}</geode-sink.version>
+        <jdbc-sink.version>${apps.version}</jdbc-sink.version>
+        <log-sink.version>${apps.version}</log-sink.version>
+        <mongodb-sink.version>${apps.version}</mongodb-sink.version>
+        <mqtt-sink.version>${apps.version}</mqtt-sink.version>
+        <rabbit-sink.version>${apps.version}</rabbit-sink.version>
+        <redis-sink.version>${apps.version}</redis-sink.version>
+        <router-sink.version>${apps.version}</router-sink.version>
+        <s3-sink.version>${apps.version}</s3-sink.version>
+        <sftp-sink.version>${apps.version}</sftp-sink.version>
+        <tasklauncher-sink.version>${apps.version}</tasklauncher-sink.version>
+        <tcp-sink.version>${apps.version}</tcp-sink.version>
+        <throughput-sink.version>${apps.version}</throughput-sink.version>
+        <twitter-message-sink.version>${apps.version}</twitter-message-sink.version>
+        <twitter-update-sink.version>${apps.version}</twitter-update-sink.version>
+        <websocket-sink.version>${apps.version}</websocket-sink.version>
+        <bridge-processor.version>${apps.version}</bridge-processor.version>
+        <filter-processor.version>${apps.version}</filter-processor.version>
+        <groovy-processor.version>${apps.version}</groovy-processor.version>
+        <header-enricher-processor.version>${apps.version}</header-enricher-processor.version>
+        <http-request-processor.version>${apps.version}</http-request-processor.version>
+        <image-recognition-processor.version>${apps.version}</image-recognition-processor.version>
+        <semantic-segmentation-processor.version>${apps.version}</semantic-segmentation-processor.version>
+        <object-detection-processor.version>${apps.version}</object-detection-processor.version>
+        <script-processor.version>${apps.version}</script-processor.version>
+        <splitter-processor.version>${apps.version}</splitter-processor.version>
+        <transform-processor.version>${apps.version}</transform-processor.version>
+        <twitter-trend-processor.version>${apps.version}</twitter-trend-processor.version>
     </properties>
 
     <profiles>

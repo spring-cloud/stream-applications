@@ -1,19 +1,25 @@
 #!/bin/bash
 
-if [ "$#" -ne 2 ]; then
-    echo "Please specify the release and core parent versions"
+if [ "$#" -ne 3 ]; then
+    echo "Please specify the release, core parent and apps versions"
     exit
 fi
 
+VERSION=$1
+
 function git_commit_push {
  echo "in git commit"
- git commit -am"Aggregating docs/descriptors : Release - $1"
- git push origin master
+ git commit -am"Aggregating docs/descriptors : Release - $VERSION"
+ git push origin master && git push upstream master
 }
 
 pushd ../..
 
-VERSION=$1
+
+cd applications/stream-applications-build
+sed -i '' 's/<apps.version>.*/<apps.version>'"$2"'<\/apps.version>/g' pom.xml
+cd -
+
 ./mvnw -f applications/stream-applications-build versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false
 ./mvnw -f applications/stream-applications-build versions:update-parent -DparentVersion=$2 -Pspring -DgenerateBackupPoms=false
 
