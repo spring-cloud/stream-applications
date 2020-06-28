@@ -33,6 +33,21 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class CounterConsumerProperties {
 
+	enum MeterType {
+		/** Uses the Micrometer Counter meter type. It accumulates intermediate counts toward the point where
+		 * the data is sent to the metrics backend.*/
+		counter,
+		/** Uses the Micrometer Gauge meter type. Gauges sample the input time series. Any intermediate values set on
+		 * a gauge are lost by the time the gauge value is reported to a metrics backend.
+		 * TIP: Never gauge something you can count with a Counter!*/
+		gauge
+	}
+
+	/**
+	 * Micrometer meter type used to report the metrics to the backend.
+	 */
+	private MeterType meterType = MeterType.counter;
+
 	/**
 	 * The default name of the increment.
 	 */
@@ -66,10 +81,18 @@ public class CounterConsumerProperties {
 	/**
 	 * Fixed and computed tags to be assignee with the counter increment measurement.
 	 */
-	private MetricsTag tag = new MetricsTag();
+	private final MetricsTag tag = new MetricsTag();
 
 	public MetricsTag getTag() {
 		return tag;
+	}
+
+	public MeterType getMeterType() {
+		return meterType;
+	}
+
+	public void setMeterType(MeterType meterType) {
+		this.meterType = meterType;
 	}
 
 	public String getName() {

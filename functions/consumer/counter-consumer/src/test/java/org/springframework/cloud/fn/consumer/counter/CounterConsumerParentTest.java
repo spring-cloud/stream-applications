@@ -27,7 +27,8 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
+		properties = { "management.metrics.export.wavefront.enabled=false" })
 @DirtiesContext
 public class CounterConsumerParentTest {
 

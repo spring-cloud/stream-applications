@@ -22,10 +22,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
@@ -51,8 +55,10 @@ import org.springframework.util.StringUtils;
  * @author Christian Tzolov
  */
 @Configuration
-@EnableConfigurationProperties({CounterConsumerProperties.class})
+@EnableConfigurationProperties({ CounterConsumerProperties.class })
 public class CounterConsumerConfiguration {
+
+	private final Map<Meter.Id, AtomicLong> gaugeValues = new ConcurrentHashMap<>();
 
 	@Bean
 	public Function<String, Expression> stringToSpelFunction(@Lazy EvaluationContext evaluationContext) {
@@ -72,19 +78,19 @@ public class CounterConsumerConfiguration {
 
 	@Bean(name = "counterConsumer")
 	public Consumer<Message<?>> counterConsumer(CounterConsumerProperties properties, MeterRegistry[] meterRegistries,
-												@Qualifier(IntegrationContextUtils.INTEGRATION_EVALUATION_CONTEXT_BEAN_NAME) EvaluationContext context) {
+			@Qualifier(IntegrationContextUtils.INTEGRATION_EVALUATION_CONTEXT_BEAN_NAME) EvaluationContext context) {
 
 		return message -> {
 
-			String counterName = properties.getComputedNameExpression().getValue(context, message, CharSequence.class).toString();
+			String meterName = properties.getComputedNameExpression().getValue(context, message, CharSequence.class).toString();
 
-			// All fixed tags together are passed with every counter increment.
+			// All fixed tags together are passed with every meter update.
 			Tags fixedTags = this.toTags(properties.getTag().getFixed());
 
 			double amount = properties.getComputedAmountExpression().getValue(context, message, double.class);
 
 			Map<String, List<Tag>> allGroupedTags = new HashMap<>();
-			// Tag Expressions Counter
+			// Tag Expressions
 			if (properties.getTag().getExpression() != null) {
 
 				Map<String, List<Tag>> groupedTags = properties.getTag().getExpression().entrySet().stream()
@@ -93,11 +99,11 @@ public class CounterConsumerConfiguration {
 								toList(namedExpression.getValue().getValue(context, message)).stream()
 										.map(tagValue -> Tag.of(namedExpression.getKey(), tagValue))
 										.collect(Collectors.toList())).flatMap(List::stream)
-						.collect(Collectors.groupingBy(tag -> tag.getKey(), Collectors.toList()));
+						.collect(Collectors.groupingBy(Tag::getKey, Collectors.toList()));
 				allGroupedTags.putAll(groupedTags);
 			}
 
-			this.count(meterRegistries, counterName, fixedTags, allGroupedTags, amount);
+			this.recordMetrics(meterRegistries, meterName, fixedTags, allGroupedTags, amount, properties.getMeterType());
 		};
 	}
 
@@ -117,7 +123,7 @@ public class CounterConsumerConfiguration {
 
 	/**
 	 * Converts the input value into an list of values. If the value is not a collection/array type the result
-	 * is a single element list. For collection/array input value the result is the list of stringifie content of
+	 * is a single element list. For collection/array input value the result is the list of stringified content of
 	 * this collection.
 	 *
 	 * @param value input value can be array, collection or single value.
@@ -133,17 +139,18 @@ public class CounterConsumerConfiguration {
 					: Arrays.asList(ObjectUtils.toObjectArray(value));
 
 			return valueCollection.stream()
-					.filter(v -> v != null)
+					.filter(Objects::nonNull)
 					.map(Object::toString)
 					.filter(StringUtils::hasText)
 					.collect(Collectors.toList());
 		}
 		else {
-			return Arrays.asList(value.toString());
+			return Collections.singletonList(value.toString());
 		}
 	}
 
-	private void count(MeterRegistry[] meterRegistries, String counterName, Tags fixedTags, Map<String, List<Tag>> groupedTags, double amount) {
+	private void recordMetrics(MeterRegistry[] meterRegistries, String meterName, Tags fixedTags, Map<String,
+			List<Tag>> groupedTags, double amount, CounterConsumerProperties.MeterType meterType) {
 		if (!CollectionUtils.isEmpty(groupedTags)) {
 			groupedTags.values().stream().map(List::size).max(Integer::compareTo).ifPresent(
 					max -> {
@@ -155,20 +162,46 @@ public class CounterConsumerConfiguration {
 										currentTags.and(Tags.of(e.getKey(), ""));
 							}
 
-							// Increment the counterName increment for every configured MaterRegistry.
-							for (MeterRegistry meterRegistry : meterRegistries) {
-								meterRegistry.counter(counterName, currentTags).increment(amount);
-							}
+							// Update the meterName for every configured MaterRegistry.
+							record(meterRegistries, meterName, currentTags, amount, meterType);
 						}
 					}
 			);
 		}
 		else {
-			// Increment the counterName increment for every configured MaterRegistry.
-			for (MeterRegistry meterRegistry : meterRegistries) {
-				meterRegistry.counter(counterName, fixedTags).increment(amount);
+			// Update the meterName for every configured MaterRegistry.
+			record(meterRegistries, meterName, fixedTags, amount, meterType);
+		}
+	}
+
+	private void record(MeterRegistry[] meterRegistries, String meterName,
+			Iterable<Tag> tags, double meterAmount, CounterConsumerProperties.MeterType meterType) {
+
+		for (MeterRegistry meterRegistry : meterRegistries) {
+			if (meterType == CounterConsumerProperties.MeterType.gauge) {
+				Meter.Id gaugeId = new Meter.Id(meterName, Tags.of(tags), null, null, Meter.Type.GAUGE);
+				if (!this.gaugeValues.containsKey(gaugeId)) {
+					this.gaugeValues.put(gaugeId, new AtomicLong((long) meterAmount));
+				}
+				else {
+					this.gaugeValues.get(gaugeId).set((long) meterAmount);
+				}
+				if (!isMeterRegistryContainsGauge(meterRegistry, gaugeId)) {
+					meterRegistry.gauge(meterName, tags, this.gaugeValues.get(gaugeId), AtomicLong::doubleValue);
+				}
+			}
+			else if (meterType == CounterConsumerProperties.MeterType.counter) {
+				meterRegistry.counter(meterName, tags).increment(meterAmount);
+			}
+			else {
+				throw new RuntimeException("Unknown meter type:" + meterType);
 			}
 		}
+	}
+
+	private boolean isMeterRegistryContainsGauge(MeterRegistry meterRegistry, Meter.Id gaugeId) {
+		return meterRegistry.find(gaugeId.getName()).gauges().stream()
+				.anyMatch(gauge -> gauge.getId().equals(gaugeId));
 	}
 
 	@Bean

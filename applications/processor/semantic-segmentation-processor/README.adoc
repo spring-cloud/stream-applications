@@ -34,7 +34,7 @@ $$semantic.segmentation.color-map-uri$$:: $$Every pre-trained model is based on 
 $$semantic.segmentation.debug-output$$:: $$save output image inn the local debugOutputPath path.$$ *($$Boolean$$, default: `$$false$$`)*
 $$semantic.segmentation.debug-output-path$$:: $$<documentation missing>$$ *($$String$$, default: `$$semantic-segmentation-result.png$$`)*
 $$semantic.segmentation.mask-transparency$$:: $$The alpha color of the computed segmentation mask image.$$ *($$Float$$, default: `$$0.45$$`)*
-$$semantic.segmentation.model$$:: $$pre-trained tensorflow semantic segmentation model.$$ *($$String$$, default: `$$http://download.tensorflow.org/models/deeplabv3_mnv2_cityscapes_train_2018_02_05.tar.gz#frozen_inference_graph.pb$$`)*
+$$semantic.segmentation.model$$:: $$pre-trained tensorflow semantic segmentation model.$$ *($$String$$, default: `$$https://download.tensorflow.org/models/deeplabv3_mnv2_cityscapes_train_2018_02_05.tar.gz#frozen_inference_graph.pb$$`)*
 $$semantic.segmentation.output-type$$:: $$Specifies the output image type. You can return either the input image with the computed mask overlay, or the mask alone.$$ *($$OutputType$$, default: `$$<none>$$`, possible values: `blended`,`mask`)*
 //end::configuration-properties[]
 
