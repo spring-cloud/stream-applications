@@ -38,7 +38,7 @@
         <twitter-stream-source.version>${apps.version}</twitter-stream-source.version>
         <websocket-source.version>${apps.version}</websocket-source.version>
         <cassandra-sink.version>${apps.version}</cassandra-sink.version>
-        <counter-sink.version>${apps.version}</counter-sink.version>
+        <analytics-sink.version>${apps.version}</analytics-sink.version>
         <file-sink.version>${apps.version}</file-sink.version>
         <ftp-sink.version>${apps.version}</ftp-sink.version>
         <geode-sink.version>${apps.version}</geode-sink.version>

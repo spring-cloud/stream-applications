@@ -10,8 +10,8 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>analytics-sink</module>
         <module>cassandra-sink</module>
-        <module>counter-sink</module>
         <module>file-sink</module>
         <module>ftp-sink</module>
         <module>geode-sink</module>

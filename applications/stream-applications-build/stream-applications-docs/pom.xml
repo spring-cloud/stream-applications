@@ -140,7 +140,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>counter-consumer</artifactId>
+			<artifactId>analytics-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>

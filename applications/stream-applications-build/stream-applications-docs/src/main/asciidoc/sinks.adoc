@@ -6,8 +6,8 @@
 [[spring-cloud-stream-modules-cassandra-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/cassandra-sink/README.adoc[tags=ref-doc]
 
-[[spring-cloud-stream-modules-counter-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/counter-sink/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-analytics-sink]]
+include::{stream-apps-root}/{branch}/applications/sink/analytics-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-file-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/file-sink/README.adoc[tags=ref-doc]

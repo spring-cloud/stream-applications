@@ -53,7 +53,7 @@
 		<module>common/tensorflow-common</module>
 
 		<module>consumer/cassandra-consumer</module>
-		<module>consumer/counter-consumer</module>
+		<module>consumer/analytics-consumer</module>
 		<module>consumer/file-consumer</module>
 		<module>consumer/ftp-consumer</module>
 		<module>consumer/geode-consumer</module>

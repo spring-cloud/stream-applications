@@ -79,8 +79,8 @@
                 "${websocket-source.version}".contains('SNAPSHOT') ? 'latest' : "${websocket-source.version}"
         pom.properties['cassandra-sink-docker.tag']=
                 "${cassandra-sink.version}".contains('SNAPSHOT') ? 'latest' : "${cassandra-sink.version}"
-        pom.properties['counter-sink-docker.tag']=
-                "${counter-sink.version}".contains('SNAPSHOT') ? 'latest' : "${counter-sink.version}"
+        pom.properties['analytics-sink-docker.tag']=
+                "${analytics-sink.version}".contains('SNAPSHOT') ? 'latest' : "${analytics-sink.version}"
         pom.properties['file-sink-docker.tag']=
                 "${file-sink.version}".contains('SNAPSHOT') ? 'latest' : "${file-sink.version}"
         pom.properties['ftp-sink-docker.tag']=
