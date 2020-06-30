@@ -40,6 +40,12 @@ import org.springframework.integration.json.JsonPropertyAccessor;
 @AutoConfigureAfter(name = "org.springframework.cloud.stream.config.SpelExpressionConverterConfiguration")
 @ConditionalOnMissingClass("org.springframework.cloud.stream.config.SpelExpressionConverterConfiguration")
 public class SpelExpressionConverterConfiguration {
+
+	/**
+	 * Specific Application Context name to be used as Bean qualifier when the {@link EvaluationContext} is injected.
+	 */
+	public static final String INTEGRATION_EVALUATION_CONTEXT = "integrationEvaluationContext";
+
 	@Bean
 	public static SpelPropertyAccessorRegistrar spelPropertyAccessorRegistrar() {
 		return (new SpelPropertyAccessorRegistrar())
@@ -57,7 +63,7 @@ public class SpelExpressionConverterConfiguration {
 		private SpelExpressionParser parser = new SpelExpressionParser();
 
 		@Autowired
-		@Qualifier("integrationEvaluationContext")
+		@Qualifier(INTEGRATION_EVALUATION_CONTEXT)
 		@Lazy
 		private EvaluationContext evaluationContext;
 

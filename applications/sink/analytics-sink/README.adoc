@@ -1,20 +1,28 @@
 //tag::ref-doc[]
-:images-asciidoc: https://github.com/spring-cloud-stream-app-starters/stream-applications/raw/master/sink/analytics-sink/src/main/resources
+:images-asciidoc: https://github.com/spring-cloud/stream-applications/raw/master/applications/sink/analytics-sink/src/main/resources
+
 = Analytics Sink
 
-Meter that compute multiple metrics from the received messages. It leverages the Micrometer library and can use various popular TSDB to  persist the meter values.
+Sink application, built on top of the https://github.com/spring-cloud/stream-applications/tree/master/functions/consumer/analytics-consumer[Analytics Consumer], that computes analytics from the input messages and publishes the analytics as metrics to various monitoring systems. It leverages the https://micrometer.io[micrometer library] for providing a uniform programming experience across the most popular https://micrometer.io/docs[monitoring systems] and exposes https://docs.spring.io/spring-integration/reference/html/spel.html#spel[Spring Expression Language (SpEL)] properties for defining how the metric Name, Values and Tags are computed from the input data.
 
-By default the Analytics Sink increments the `message`.`name` meter on every received message.
+The analytics sink can produce two metrics types:
 
-If tag expressions are provided (via the `analytics.tag.expression.<tagKey>=<tagValue SpEL expression> property) then the `name` meter is incremented. Note that each SpEL  expression can evaluate into multiple values resulting into multiple meter increments (one fore every value resolved).
+- https://micrometer.io/docs/concepts#_counters[Counter] - reports a single metric, a count, that increments by a fixed, positive amount. Counters can be used for computing the rates of how the data changes in time.
+- https://micrometer.io/docs/concepts#_gauges[Gauge] - reports the current value. Typical examples for gauges would be the size of a collection or map or number of threads in a running state.
+
+A https://micrometer.io/docs/concepts#_meters[Meter] (e.g Counter or Gauge) is uniquely identified by its `name` and `dimensions` (the term dimensions and tags is used interchangeably). Dimensions allow a particular named metric to be sliced to drill down and reason about the data.
+
+NOTE: As a metrics is uniquely identified by its `name` and `dimensions`, you can assign multiple tags (e.g. key/value pairs) to every metric, but you cannot randomly change those tags afterwards! Monitoring systems such as Prometheus will complain if a metric with the same name has different sets of tags.
+The output metrics name is set by either the `analytics.name` or `analytics.name-expression` properties or defaults to the applications name.
+
+
+If `tag` expressions are provided (via the `analytics.tag.expression.<tagKey>=<tagValue SpEL expression> property) then the `name` meter is incremented. Note that each SpEL  expression can evaluate into multiple values resulting into multiple meter increments (one for every value resolved).
 
 If fixed tags are provided they are include in all message and expression meter increment measurements.
 
-Analytics's implementation is based on the https://micrometer.io/[Micrometer library] which is a Vendor-neutral application metrics facade that supports the most popular monitoring systems.
-See the https://micrometer.io/docs[Micrometer documentation] for the list of supported monitoring systems. Starting with Spring Boot 2.0, Micrometer is the instrumentation library powering the delivery of application metrics from Spring Boot.
 
-All Spring Cloud Stream App Starters are configured to support two of the most popular monitoring systems, Prometheus and InfluxDB. You can declaratively select which monitoring system to use.
-If you are not using Prometheus or InfluxDB, you can customise the App starters to use a different monitoring system as well as include your preferred micrometer monitoring system library in your own custom applications.
+All Stream Applications support, ouf of the box, three of the most popular monitoring systems, `Wavefront`, `Prometheus` and `InfluxDB` and you can enable each of them declaratively.
+But if you are not using Wavefront, Prometheus or InfluxDB, you can customise the stream app to use a different monitoring system by adding a micrometer meter-registry dependency.
 
 https://grafana.com/[Grafana] is a popular platform for building visualization dashboards.
 
@@ -42,19 +50,19 @@ NOTE: if the https://docs.spring.io/spring-cloud-dataflow/docs/2.0.0.BUILD-SNAPS
 
 Following diagram illustrates Analytics' information collection and processing flow.
 
-image::{images-asciidoc}/MicrometerCounterAppStarter.png[Analytics Architecture, scaledwidth="70%"]
+image::{images-asciidoc}/AnalyticsSinkArchitecture[Analytics Architecture, scaledwidth="70%"]
 
 === Payload
 
 == Options
 
 //tag::configuration-properties[]
-$$analytics.amount-expression$$:: $$A SpEL expression (against the incoming Message) to derive the amount to add to the meter. If not set the meter is incremented by 1.0$$ *($$Expression$$, default: `$$<none>$$`)*
+$$analytics.amount-expression$$:: $$A SpEL expression to compute the output metrics value (e.g. amount). It defaults to 1.0$$ *($$Expression$$, default: `$$<none>$$`)*
 $$analytics.meter-type$$:: $$Micrometer meter type used to report the metrics to the backend.$$ *($$MeterType$$, default: `$$<none>$$`, possible values: `counter`,`gauge`)*
-$$analytics.name$$:: $$The name of the meter to increment. The 'name' and 'nameExpression' are mutually exclusive. Only one can be set.$$ *($$String$$, default: `$$<none>$$`)*
-$$analytics.name-expression$$:: $$A SpEL expression (against the incoming Message) to derive the name of the meter to increment. The 'name' and 'nameExpression' are mutually exclusive. Only one can be set.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$analytics.name$$:: $$The name of the output metrics. The 'name' and 'nameExpression' are mutually exclusive. Only one of them can be set.$$ *($$String$$, default: `$$<none>$$`)*
+$$analytics.name-expression$$:: $$A SpEL expression to compute the output metrics name from the input message. The 'name' and 'nameExpression' are mutually exclusive. Only one of them can be set.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$analytics.tag.expression$$:: $$Computes tags from SpEL expression. Single SpEL expression can produce an array of values, which in turn means distinct name/value tags. Every name/value tag will produce a separate meter increment. Tag expression format is: analytics.tag.expression.[tag-name]=[SpEL expression]$$ *($$Map<String, Expression>$$, default: `$$<none>$$`)*
-$$analytics.tag.fixed$$:: $$Custom tags assigned to every meter increment measurements. This is a map so the property convention fixed tags is: analytics.tag.fixed.[tag-name]=[tag-value]$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+$$analytics.tag.fixed$$:: $$Custom, fixed Tags. Those tags have constant values, created once and then sent along with every published metrics. The convention to define a fixed Tags is: <code>   analytics.tag.fixed.[tag-name]=[tag-value] </code>$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

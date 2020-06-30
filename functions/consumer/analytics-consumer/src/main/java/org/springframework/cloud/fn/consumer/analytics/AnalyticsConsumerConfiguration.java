@@ -37,6 +37,7 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.SpelExpressionConverterConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -50,15 +51,14 @@ import org.springframework.util.StringUtils;
  * @author Christian Tzolov
  */
 @Configuration
-@EnableConfigurationProperties({ AnalyticsConsumerProperties.class })
+@EnableConfigurationProperties(AnalyticsConsumerProperties.class)
 public class AnalyticsConsumerConfiguration {
 
 	private final Map<Meter.Id, AtomicLong> gaugeValues = new ConcurrentHashMap<>();
 
 	@Bean(name = "analyticsConsumer")
 	public Consumer<Message<?>> analyticsConsumer(AnalyticsConsumerProperties properties, MeterRegistry[] meterRegistries,
-			@Lazy
-			@Qualifier("integrationEvaluationContext") EvaluationContext context) {
+			@Lazy @Qualifier(SpelExpressionConverterConfiguration.INTEGRATION_EVALUATION_CONTEXT) EvaluationContext context) {
 
 		return message -> {
 

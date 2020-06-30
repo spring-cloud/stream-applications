@@ -49,31 +49,32 @@ public class AnalyticsConsumerProperties {
 	private MeterType meterType = MeterType.counter;
 
 	/**
-	 * The default name of the increment.
-	 */
-	@Value("${spring.application.name:counts}")
-	private String defaultName;
-
-	/**
-	 * The name of the meter to increment. The 'name' and 'nameExpression' are mutually exclusive.
-	 * Only one can be set.
+	 * The name of the output metrics.
+	 * The 'name' and 'nameExpression' are mutually exclusive. Only one of them can be set.
 	 */
 	private String name;
 
 	/**
-	 * A SpEL expression (against the incoming Message) to derive the name of the meter to increment.
-	 * The 'name' and 'nameExpression' are mutually exclusive. Only one can be set.
+	 * A SpEL expression to compute the output metrics name from the input message.
+	 * The 'name' and 'nameExpression' are mutually exclusive. Only one of them can be set.
 	 */
 	private Expression nameExpression;
 
 	/**
-	 * A SpEL expression (against the incoming Message) to derive the amount to add to the meter.
-	 * If not set the meter is incremented by 1.0
+	 * If neither `name` nor `nameExpression` is set the name of the output metrics defaults to the
+	 * Spring application name.
+	 */
+	@Value("${spring.application.name:analytics}")
+	private String defaultName;
+
+	/**
+	 * A SpEL expression to compute the output metrics value (e.g. amount).
+	 * It defaults to 1.0
 	 */
 	private Expression amountExpression;
 
 	/**
-	 * Fixed and computed tags to be assignee with the meter increment measurement.
+	 * Fixed and computed tags to be assignee with the output metric.
 	 */
 	private final MetricsTag tag = new MetricsTag();
 
@@ -141,8 +142,11 @@ public class AnalyticsConsumerProperties {
 	public static class MetricsTag {
 
 		/**
-		 * Custom tags assigned to every meter increment measurements.
-		 * This is a map so the property convention fixed tags is: analytics.tag.fixed.[tag-name]=[tag-value]
+		 * Custom, fixed Tags. Those tags have constant values, created once and then sent along with every
+		 * published metrics. The convention to define a fixed Tags is:
+		 * <code>
+		 *   analytics.tag.fixed.[tag-name]=[tag-value]
+		 * </code>
 		 */
 		private Map<String, String> fixed;
 
