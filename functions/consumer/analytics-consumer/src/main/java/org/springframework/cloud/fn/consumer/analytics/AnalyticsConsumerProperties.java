@@ -142,12 +142,15 @@ public class AnalyticsConsumerProperties {
 	public static class MetricsTag {
 
 		/**
+		 * DEPRECATED: Please use the analytics.tag.expression with literal SpEL expression.
+		 *
 		 * Custom, fixed Tags. Those tags have constant values, created once and then sent along with every
 		 * published metrics. The convention to define a fixed Tags is:
 		 * <code>
 		 *   analytics.tag.fixed.[tag-name]=[tag-value]
 		 * </code>
 		 */
+		@Deprecated
 		private Map<String, String> fixed;
 
 		/**

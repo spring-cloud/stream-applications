@@ -23,9 +23,9 @@ The `SpEL` expressions use the `headers` and `payload` keywords to access messag
 TIP: You can use literals (e.g. `'fixed value'`) to set tags with fixed values.
 
 All Stream Applications support, ouf of the box, three of the most popular monitoring systems, `Wavefront`, `Prometheus` and `InfluxDB` and you can enable each of them declaratively.
-You can enable support for a different monitoring system by just adding its micrometer meter-registry dependency to the Analytics Sink application.
+You can add support for additional monitoring systems by just adding their micrometer meter-registry dependencies to the `Analytics Sink` applications.
 
-Please consult the https://dataflow.spring.io/docs/2.6.0.SNAPSHOT/feature-guides/streams/monitoring/[Spring Cloud Data Flow Stream Monitoring] instructions about configuring different Monitoring Systems. Below are provided quick snipptes that can help you sart.
+Please visit the https://dataflow.spring.io/docs/2.6.0.SNAPSHOT/feature-guides/streams/monitoring/[Spring Cloud Data Flow Stream Monitoring] for detailed instructions for configuring the Monitoring Systems. The following quick snippets can help you start.
 
 * To enable the Prometheus meter registry, set the following properties.
 ```
@@ -65,7 +65,7 @@ $$analytics.meter-type$$:: $$Micrometer meter type used to report the metrics to
 $$analytics.name$$:: $$The name of the output metrics. The 'name' and 'nameExpression' are mutually exclusive. Only one of them can be set.$$ *($$String$$, default: `$$<none>$$`)*
 $$analytics.name-expression$$:: $$A SpEL expression to compute the output metrics name from the input message. The 'name' and 'nameExpression' are mutually exclusive. Only one of them can be set.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$analytics.tag.expression$$:: $$Computes tags from SpEL expression. Single SpEL expression can produce an array of values, which in turn means distinct name/value tags. Every name/value tag will produce a separate meter increment. Tag expression format is: analytics.tag.expression.[tag-name]=[SpEL expression]$$ *($$Map<String, Expression>$$, default: `$$<none>$$`)*
-$$analytics.tag.fixed$$:: $$Custom, fixed Tags. Those tags have constant values, created once and then sent along with every published metrics. The convention to define a fixed Tags is: <code>   analytics.tag.fixed.[tag-name]=[tag-value] </code>$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+$$analytics.tag.fixed$$:: $$DEPRECATED: Please use the analytics.tag.expression with literal SpEL expression. Custom, fixed Tags. Those tags have constant values, created once and then sent along with every published metrics. The convention to define a fixed Tags is: <code>   analytics.tag.fixed.[tag-name]=[tag-value] </code>$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
