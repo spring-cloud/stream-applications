@@ -1,9 +1,9 @@
 //tag::ref-doc[]
-:image-root: https://raw.githubusercontent.com/spring-cloud-stream-app-starters/tensorflow/master/images
+:image-root: https://github.com/spring-cloud/stream-applications/raw/master/applications/processor/object-detection-processor/src/test/resources/images
 
 = Object Detection Processor
 
-The https://github.com/spring-cloud-stream-app-starters/tensorflow/tree/master/spring-cloud-starter-stream-processor-object-detection[Object Detection] processor provides out-of-the-box support for the https://github.com/tensorflow/models/blob/master/research/object_detection/README.md[TensorFlow Object Detection API]. It allows for real-time localization and identification of multiple objects in a single image or image stream. The Object Detection processor uses one of the pre-trained https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md[object detection] models and corresponding https://github.com/tensorflow/models/tree/865c14c/research/object_detection/data[object labels].
+The Object Detection processor provides out-of-the-box support for the https://github.com/tensorflow/models/blob/master/research/object_detection/README.md[TensorFlow Object Detection API]. It allows for real-time localization and identification of multiple objects in a single image or image stream. The Object Detection processor is built on top of the https://github.com/spring-cloud/stream-applications/tree/master/functions/function/object-detection-function[Object Detection Function]. It one of the pre-trained https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md[object detection] models and corresponding https://github.com/tensorflow/models/tree/865c14c/research/object_detection/data[object labels].
 
 Sensible defaults when the pre-trained model is not configured:
 
@@ -15,7 +15,7 @@ The following diagram illustrates a Spring Cloud Data Flow a streaming pipeline 
 
 image::{image-root}/scdf-tensorflow-object-detection-arch.png[]
 
-Processor's input is an image byte array, and the output is an augmented image byte array and  a JSON header `detected_objects` in this format:
+Processor's input is an image byte array, and the output is an augmented image byte array, and a JSON header `detected_objects` in this format:
 
 ```json
 {
@@ -28,10 +28,10 @@ Processor's input is an image byte array, and the output is an augmented image b
 }
 ```
 
-The output JSON format is:
+The output `detected_objects` header contains the following filed:
 
 * *object-name*:**confidence** - human readable name of the detected object (e.g. label) with its confidence as a float between [0-1]
-* *x1*, *y1*, *x2*, *y2* - Response also provides the bounding box of the detected objects represented as (x1, y1, x2, y2). The coordinates are relative to the size of the image size.
+* *x1*, *y1*, *x2*, *y2* - Response also provides the bounding box of the detected objects represented as `(x1, y1, x2, y2)`. The coordinates are relative to the size of the image size.
 * *cid*  - Classification identifier as defined in the provided https://github.com/tensorflow/models/tree/865c14c/research/object_detection/data[labels] configuration file.
 
 === Payload
