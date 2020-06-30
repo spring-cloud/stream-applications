@@ -13,44 +13,47 @@ The analytics sink can produce two metrics types:
 A https://micrometer.io/docs/concepts#_meters[Meter] (e.g Counter or Gauge) is uniquely identified by its `name` and `dimensions` (the term dimensions and tags is used interchangeably). Dimensions allow a particular named metric to be sliced to drill down and reason about the data.
 
 NOTE: As a metrics is uniquely identified by its `name` and `dimensions`, you can assign multiple tags (e.g. key/value pairs) to every metric, but you cannot randomly change those tags afterwards! Monitoring systems such as Prometheus will complain if a metric with the same name has different sets of tags.
-The output metrics name is set by either the `analytics.name` or `analytics.name-expression` properties or defaults to the applications name.
 
+Use the `analytics.name` or `analytics.name-expression` properties set the name of the output analytics metrics. If not set the metrics name defaults to the applications name.
 
-If `tag` expressions are provided (via the `analytics.tag.expression.<tagKey>=<tagValue SpEL expression> property) then the `name` meter is incremented. Note that each SpEL  expression can evaluate into multiple values resulting into multiple meter increments (one for every value resolved).
+Use the `analytics.tag.expression.<TAG_NAME>=<TAG_VALUE>`, property for adding one or many tags to your metrics. the `TAG_NAME` used in the property definition will appear as tag name in the metrics. The TAG_VALUE is a `SpEL` expression that dynamically computes the tag value from the incoming message.
 
-If fixed tags are provided they are include in all message and expression meter increment measurements.
+The `SpEL` expressions use the `headers` and `payload` keywords to access message’s headers and payload values.
 
+TIP: You can use literals (e.g. `'fixed value'`) to set tags with fixed values.
 
 All Stream Applications support, ouf of the box, three of the most popular monitoring systems, `Wavefront`, `Prometheus` and `InfluxDB` and you can enable each of them declaratively.
-But if you are not using Wavefront, Prometheus or InfluxDB, you can customise the stream app to use a different monitoring system by adding a micrometer meter-registry dependency.
+You can enable support for a different monitoring system by just adding its micrometer meter-registry dependency to the Analytics Sink application.
 
-https://grafana.com/[Grafana] is a popular platform for building visualization dashboards.
+Please consult the https://dataflow.spring.io/docs/2.6.0.SNAPSHOT/feature-guides/streams/monitoring/[Spring Cloud Data Flow Stream Monitoring] instructions about configuring different Monitoring Systems. Below are provided quick snipptes that can help you sart.
 
-To enable Micrometer’s Prometheus meter registry for Spring Cloud Stream application starters, set the following properties.
-
+* To enable the Prometheus meter registry, set the following properties.
 ```
 management.metrics.export.prometheus.enabled=true
-management.endpoints.web.exposure.include=prometheus
+management.metrics.export.prometheus.rsocket.enabled=true
+management.metrics.export.prometheus.rsocket.host=<YOUR PROMETHEUS-RSOKET PROXI URI
+management.metrics.export.prometheus.rsocket.port=7001
 ```
 
-and disable the application’s security which allows for a simple Prometheus configuration to scrape meter information by setting the following property.
-
+* To enable Wavefront meter registry, set the following properties.
 ```
-spring.cloud.streamapp.security.enabled=false
+management.metrics.export.wavefront.enabled=true
+management.metrics.export.wavefront.api-token=YOUR WAVEFRONT KEY
+management.metrics.export.wavefront.uri=YOUR WAVEFRONT URI
+management.metrics.export.wavefront.source=UNIQUE NAME TO IDENTIFY YOUR APP
 ```
 
-To enable Micrometer’s Influx meter registry for Spring Cloud Stream application starters, set the following property.
-
+* To enable InfluxDB meter registry, set the following property.
 ```
 management.metrics.export.influx.enabled=true
 management.metrics.export.influx.uri={influxdb-server-url}
 ```
 
-NOTE: if the https://docs.spring.io/spring-cloud-dataflow/docs/2.0.0.BUILD-SNAPSHOT/reference/htmlsingle/#streams-monitoring[Data Flow Server metrics] is enabled then the `Analytics` will reuse the exiting configurations.
+NOTE: If the https://dataflow.spring.io/docs/2.6.0.SNAPSHOT/feature-guides/streams/monitoring/[Data Flow Server Monitoring] is enabled then the `Analytics Sink` will reuse the provided metrics configurations.
 
-Following diagram illustrates Analytics' information collection and processing flow.
+Following diagram illustrates how the `Analytics Sink` helps to collection business insides for stock-exchange, real-time pipeline.
 
-image::{images-asciidoc}/AnalyticsSinkArchitecture[Analytics Architecture, scaledwidth="70%"]
+image::{images-asciidoc}/AnalyticsSinkArchitecture.png[Analytics Architecture, scaledwidth="70%"]
 
 === Payload
 
