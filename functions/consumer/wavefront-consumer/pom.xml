@@ -38,9 +38,9 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.jayway.jsonpath</groupId>
-			<artifactId>json-path</artifactId>
-			<version>${json-path.version}</version>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>config-common</artifactId>
+			<version>${spring-cloud-fn.version}</version>
 		</dependency>
 
 		<dependency>

@@ -29,6 +29,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.fn.consumer.wavefront.service.WavefrontService;
+import org.springframework.context.ApplicationContext;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 
@@ -38,16 +39,19 @@ import org.springframework.messaging.support.GenericMessage;
 @SpringBootTest(properties = {
 		"wavefront.metric-name=vehicle-location",
 		"wavefront.source=vehicle-api",
-		"wavefront.metric-json-path=$.mileage",
-		"wavefront.timestamp-json-path=$.receivedAt",
-		"wavefront.point-tags-json-paths-point-value.vin=$.vin",
-		"wavefront.point-tags-json-paths-point-value.latitude=$.location.latitude",
+		"wavefront.metric-expression=#jsonPath(payload,'$.mileage')",
+		"wavefront.timestamp-expression=#jsonPath(payload,'$.receivedAt')",
+		"wavefront.point-tags-expressions-point-value.vin=#jsonPath(payload,'$.vin')",
+		"wavefront.point-tags-expressions-point-value.latitude=#jsonPath(payload,'$.location.latitude')",
 		"wavefront.wavefront-proxy-url=testUrl"
 })
 class WavefrontConsumerConfigurationTest {
 
 	@Autowired
 	private Consumer<Message<String>> wavefrontConsumer;
+
+	@Autowired
+	private ApplicationContext applicationContext;
 
 	@MockBean
 	private WavefrontService wavefrontServiceMock;

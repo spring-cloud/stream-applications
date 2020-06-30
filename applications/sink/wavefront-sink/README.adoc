@@ -15,12 +15,12 @@ format: `Valid characters are: a-z, A-Z, 0-9, hyphen ("-"), underscore ("_"), do
 $$wavefront.source$$:: $$(Required) The source of the metric.$$ *($$String$$, default: `<none>`,
 format: `Valid characters are: a-z, A-Z, 0-9, hyphen ("-"), underscore ("_"), dot ("."). The length of the source field
 should be no more than 128 characters`)*
-$$wavefront.metric-json-path$$:: $$(Required) The json path for the metric value.$$ *($$String$$, default: `<none>`,
+$$wavefront.metric-expression$$:: $$(Required) A SpEL expression that evaluates to a metric value.$$ *($$Expression$$, default: `<none>`,
 format: `The metric has to be a number that can be parsed into a double-precision floating point number or a long integer.
 It can be positive, negative, or 0`)*
-$$timestamp-json-path$$:: $$(Optional) The json path for a timestamp of the metric.$$ *($$String$$, default: `timestamp is set to the current time`,
+$$timestamp-expression$$:: $$(Optional) A SpEL expression that evaluates to a timestamp of the metric.$$ *($$Expression$$, default: `timestamp is set to the current time`,
 format: `Number that reflects the epoch seconds of the metric (e.g. 1382754475)`)*
-$$wavefront.point-tags-json-paths-point-value$$:: $$(Optional) Collection of custom metadata associated with the metric.$$ *($$String$$, default: `<none>`,
+$$wavefront.point-tags-expressions-point-value$$:: $$(Optional) Collection of custom metadata associated with the metric.$$ *($$Map<String, Expression>$$, default: `<none>`,
 format: `Point tags cannot be empty. Valid characters for keys: alphanumeric, hyphen ("-"), underscore ("_"), dot (".").
 For values any character is allowed, including spaces. To include a double quote, escape it with a backslash, for
 example, \". A backslash cannot be the last character in the tag value. Maximum allowed length for a combination of a

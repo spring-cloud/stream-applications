@@ -26,6 +26,9 @@ import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -33,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class WavefrontConsumerPropertiesTest {
 
+	private final Expression testExpression = new SpelExpressionParser().parseExpression("#jsonPath(payload,'$')");
 	private Validator validator;
 
 	@BeforeEach
@@ -43,7 +47,7 @@ class WavefrontConsumerPropertiesTest {
 
 	@Test
 	void testRequiredProperties() {
-		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("v", "v", "v", null, null, null, null, null);
+		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("v", "v", testExpression, null, null, null, null, null);
 		final List<String> emptyValues = Arrays.asList(null, "");
 
 		emptyValues.forEach(emptyValue -> {
@@ -56,17 +60,16 @@ class WavefrontConsumerPropertiesTest {
 			properties.setSource(emptyValue);
 			assertThat(validator.validate(properties).isEmpty()).isFalse();
 			properties.setSource("v");
-
-			assertThat(validator.validate(properties).isEmpty()).isTrue();
-			properties.setMetricJsonPath(emptyValue);
-			assertThat(validator.validate(properties).isEmpty()).isFalse();
-			properties.setMetricJsonPath("v");
 		});
+		assertThat(validator.validate(properties).isEmpty()).isTrue();
+		properties.setMetricExpression(null);
+		assertThat(validator.validate(properties).isEmpty()).isFalse();
+		properties.setMetricExpression(testExpression);
 	}
 
 	@Test
 	void testValidMetricNameValues() {
-		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("v", "v", "v", null, null, null, null, null);
+		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("v", "v", testExpression, null, null, null, null, null);
 		final List<String> validMetricNameValues = Arrays.asList("b", "B", "2", ".", "/", "_", ",", "-", "c.8W-2h_dE_,J-h/");
 		assertThat(validator.validate(properties).isEmpty()).isTrue();
 
@@ -84,7 +87,7 @@ class WavefrontConsumerPropertiesTest {
 
 	@Test
 	void testValidSourceValues() {
-		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("v", "v", "v", null, null, null, null, null);
+		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("v", "v", testExpression, null, null, null, null, null);
 		final List<String> validSourceValues = Arrays.asList("b", "B", "2", ".", "_", "-", "c.8W-2h_dE_J-h",
 				createStringOfLength(128));
 		assertThat(validator.validate(properties).isEmpty()).isTrue();

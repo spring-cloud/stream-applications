@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.fn.consumer.wavefront;
 
-import java.io.IOException;
 import java.util.function.Consumer;
 
 import javax.validation.ValidationException;
@@ -51,15 +50,8 @@ public class WavefrontConsumerConfiguration {
 												final WavefrontService service) {
 		return message -> {
 			log.info("Received event");
-			final WavefrontFormat wavefrontFormat = new WavefrontFormat(properties, message.getPayload());
-			String formattedString;
-			try {
-				formattedString = wavefrontFormat.getFormattedString();
-			}
-			catch (IOException e) {
-				log.error("Unable to transform input into Wavefront format", e);
-				return;
-			}
+			final WavefrontFormat wavefrontFormat = new WavefrontFormat(properties, message);
+			final String formattedString = wavefrontFormat.getFormattedString();
 			log.debug(formattedString);
 			service.send(formattedString);
 		};

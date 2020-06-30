@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.fn.consumer.wavefront;
 
-import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
@@ -28,7 +27,10 @@ import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.integration.json.JsonPathUtils;
+import org.springframework.expression.EvaluationException;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.SpelEvaluationException;
+import org.springframework.messaging.Message;
 
 /**
  * @author Timo Salm
@@ -38,46 +40,46 @@ public class WavefrontFormat {
 	private final Logger log = LoggerFactory.getLogger(WavefrontFormat.class);
 
 	private final WavefrontConsumerProperties properties;
-	private final String dataJsonString;
+	private final Message<String> message;
 
-	public WavefrontFormat(final WavefrontConsumerProperties properties, String dataJsonString) {
+	public WavefrontFormat(final WavefrontConsumerProperties properties, Message<String> message) {
 		this.properties = properties;
-		this.dataJsonString = dataJsonString;
+		this.message = message;
 	}
 
-	public String getFormattedString() throws IOException {
-		final Number metricValue = extractMetricValueFromJson();
+	public String getFormattedString() {
+		final Number metricValue = extractMetricValueFromPayload();
 
-		final Map<String, Object> pointTagsMap = extractPointTagsMapFromJson(
-				properties.getPointTagsJsonPathsPointValue(), dataJsonString);
+		final Map<String, Object> pointTagsMap = extractPointTagsMapFromPayload(
+				properties.getPointTagsExpressionsPointValue(), message);
 		validatePointTagsKeyValuePairs(pointTagsMap);
 		final String formattedPointTagsPart = getFormattedPointTags(pointTagsMap);
 
-		if (properties.getTimestampJsonPath() == null) {
+		if (properties.getTimestampExpression() == null) {
 			return String.format("\"%s\" %s source=%s %s", properties.getMetricName(), metricValue,
 					properties.getSource(), formattedPointTagsPart).trim();
 		}
 
-		final Long timestamp = extractTimestampFromJson();
+		final Long timestamp = extractTimestampFromPayload();
 		return String.format("\"%s\" %s %d source=%s %s", properties.getMetricName(), metricValue, timestamp,
 				properties.getSource(), formattedPointTagsPart).trim();
 	}
 
-	private Long extractTimestampFromJson() throws IOException {
+	private Long extractTimestampFromPayload() {
 		try {
-			return JsonPathUtils.evaluate(dataJsonString, properties.getTimestampJsonPath());
+			return properties.getTimestampExpression().getValue(message, Long.class);
 		}
-		catch (ClassCastException e) {
+		catch (SpelEvaluationException e) {
 			throw new ValidationException("The timestamp value has to be a number that reflects the epoch seconds of the " +
 					"metric (e.g. 1382754475).", e);
 		}
 	}
 
-	private Number extractMetricValueFromJson() throws IOException {
+	private Number extractMetricValueFromPayload() {
 		try {
-			return JsonPathUtils.evaluate(dataJsonString, properties.getMetricJsonPath());
+			return properties.getMetricExpression().getValue(message, Number.class);
 		}
-		catch (ClassCastException e) {
+		catch (SpelEvaluationException e) {
 			throw new ValidationException("The metric value has to be a double-precision floating point number or a " +
 					"long integer. It can be positive, negative, or 0.", e);
 		}
@@ -89,15 +91,15 @@ public class WavefrontFormat {
 				.collect(Collectors.joining(" "));
 	}
 
-	private Map<String, Object> extractPointTagsMapFromJson(Map<String, String> pointTagsJsonPathsPointValue, String dataJsonString) {
-		return pointTagsJsonPathsPointValue.entrySet().stream()
+	private Map<String, Object> extractPointTagsMapFromPayload(Map<String, Expression> pointTagsExpressionsPointValue, Message<String> message) {
+		return pointTagsExpressionsPointValue.entrySet().stream()
 				.map(it -> {
 					try {
-						final Object pointValue = JsonPathUtils.evaluate(dataJsonString, it.getValue());
+						final Object pointValue = it.getValue().getValue(message);
 						return new AbstractMap.SimpleEntry<>(it.getKey(), pointValue);
 					}
-					catch (IOException e) {
-						log.warn("Unable to extract point tag for key " + it.getKey() + " from json data", e);
+					catch (EvaluationException e) {
+						log.warn("Unable to extract point tag for key " + it.getKey() + " from payload", e);
 						return null;
 					}
 				})

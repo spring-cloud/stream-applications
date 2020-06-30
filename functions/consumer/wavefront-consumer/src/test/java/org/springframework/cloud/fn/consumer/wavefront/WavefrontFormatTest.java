@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.fn.consumer.wavefront;
 
-import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +36,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpression;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.integration.json.JsonPathUtils;
+import org.springframework.messaging.support.GenericMessage;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -43,52 +51,54 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class WavefrontFormatTest {
 
+	private final SpelExpressionParser parser = new SpelExpressionParser();
+
 	@BeforeEach
 	public void init() {
 		Locale.setDefault(Locale.US);
 	}
 
 	@Test
-	void testGetFormattedString() throws IOException {
+	void testGetFormattedString() {
 		final long timestamp = new Date().getTime();
 		final String dataJsonString = "{ \"value\": 1.5, \"timestamp\": " + timestamp + ", "
 				+ "\"testProp1\": \"testvalue1\", \"testProp2\": \"testvalue2\" }";
 
-		final Map<String, String> pointTagsJsonPathsPointValueMap = Stream.of(
-				new AbstractMap.SimpleEntry<>("testpoint1", "$.testProp1"),
-				new AbstractMap.SimpleEntry<>("testpoint2", "$.testProp2")
+		final Map<String, Expression> pointTagsExpressionsPointValueMap = Stream.of(
+				new AbstractMap.SimpleEntry<>("testpoint1", expression("$.testProp1")),
+				new AbstractMap.SimpleEntry<>("testpoint2", expression("$.testProp2"))
 		).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("testMetricName", "testSource",
-				"$.value", "$.timestamp", pointTagsJsonPathsPointValueMap, null, null, null);
+				expression("$.value"), expression("$.timestamp"), pointTagsExpressionsPointValueMap, null, null, null);
 
-		final String result = new WavefrontFormat(properties, dataJsonString).getFormattedString();
+		final String result = new WavefrontFormat(properties, new GenericMessage<>(dataJsonString)).getFormattedString();
 		assertThat(result).isEqualTo("\"testMetricName\" 1.5 " + timestamp + " source=testSource testpoint2=\"testvalue2\""
 				+ " testpoint1=\"testvalue1\"", result);
 	}
 
 	@Test
-	void testGetFormattedStringWithoutTimeStamp() throws IOException {
+	void testGetFormattedStringWithoutTimeStamp() {
 		final String dataJsonString = "{ \"value\": 1.5, \"testProp1\": \"testvalue1\", \"testProp2\": \"testvalue2\" }";
 
-		final Map<String, String> pointTagsJsonPathsPointValueMap =
-				Stream.of(new AbstractMap.SimpleEntry<>("testpoint1", "$.testProp1"))
+		final Map<String, Expression> pointTagsExpressionsPointValueMap =
+				Stream.of(new AbstractMap.SimpleEntry<>("testpoint1", expression("$.testProp1")))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("testMetricName", "testSource",
-				"$.value", null, pointTagsJsonPathsPointValueMap, null, null, null);
+				expression("$.value"), null, pointTagsExpressionsPointValueMap, null, null, null);
 
-		final String result = new WavefrontFormat(properties, dataJsonString).getFormattedString();
+		final String result = new WavefrontFormat(properties, new GenericMessage<>(dataJsonString)).getFormattedString();
 		assertThat(result).isEqualTo("\"testMetricName\" 1.5 source=testSource testpoint1=\"testvalue1\"");
 	}
 
 	@Test
-	void testGetFormattedStringWithoutPointTags() throws IOException {
+	void testGetFormattedStringWithoutPointTags() {
 		final long timestamp = new Date().getTime();
 		final String dataJsonString = "{ \"value\": 1.5, \"timestamp\": " + timestamp + "}";
 
 		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("testMetricName", "testSource",
-				"$.value", "$.timestamp", Collections.emptyMap(), null, null, null);
+				expression("$.value"), expression("$.timestamp"), Collections.emptyMap(), null, null, null);
 
-		final String result = new WavefrontFormat(properties, dataJsonString).getFormattedString();
+		final String result = new WavefrontFormat(properties, new GenericMessage<>(dataJsonString)).getFormattedString();
 		assertThat(result).isEqualTo("\"testMetricName\" 1.5 " + timestamp + " source=testSource");
 	}
 
@@ -96,9 +106,9 @@ class WavefrontFormatTest {
 	void testInvalidMetricValue() {
 		final String dataJsonString = "{ \"value\": a}";
 		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("testMetricName", "testSource",
-				"$.value", null, Collections.emptyMap(), null, null, null);
+				expression("$.value"), null, Collections.emptyMap(), null, null, null);
 		final Exception exception = Assertions.assertThrows(RuntimeException.class, () ->
-				new WavefrontFormat(properties, dataJsonString).getFormattedString());
+				new WavefrontFormat(properties, new GenericMessage<>(dataJsonString)).getFormattedString());
 		assertThat(exception.getLocalizedMessage().startsWith("The metric value has to be a double-precision floating"))
 				.isTrue();
 	}
@@ -107,14 +117,14 @@ class WavefrontFormatTest {
 	void testInvalidTimestampValue() {
 		final String dataJsonString = "{ \"value\": 1.5, \"timestamp\": 2020-06-02T13:53:18+0000}";
 		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("testMetricName", "testSource",
-				"$.value", "$.timestamp", Collections.emptyMap(), null, null, null);
+				expression("$.value"), expression("$.timestamp"), Collections.emptyMap(), null, null, null);
 		final Exception exception = Assertions.assertThrows(RuntimeException.class,
-				() -> new WavefrontFormat(properties, dataJsonString).getFormattedString());
+				() -> new WavefrontFormat(properties, new GenericMessage<>(dataJsonString)).getFormattedString());
 		assertThat(exception.getLocalizedMessage().startsWith("The timestamp value has to be a number")).isTrue();
 	}
 
 	@Test
-	void testInvalidPointTagsLengthWarning() throws IOException {
+	void testInvalidPointTagsLengthWarning() {
 		final Logger logger = (Logger) LoggerFactory.getLogger(WavefrontFormat.class);
 		final ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
 		listAppender.start();
@@ -122,22 +132,22 @@ class WavefrontFormatTest {
 
 		final String testPointTagKey = createStringOfLength(127);
 
-		final Map<String, String> pointTagsJsonPathsPointValueMap =
-				Stream.of(new AbstractMap.SimpleEntry<>(testPointTagKey, "$.testPoint1"))
+		final Map<String, Expression> pointTagsExpressionsPointValueMap =
+				Stream.of(new AbstractMap.SimpleEntry<>(testPointTagKey, expression("$.testPoint1")))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("testMetricName", "testSource",
-				"$.value", null, pointTagsJsonPathsPointValueMap, null, null, null);
+				expression("$.value"), null, pointTagsExpressionsPointValueMap, null, null, null);
 
 		final String dataJsonString = "{ \"value\": 1.5, \"testPoint1\": \"" +
 				createStringOfLength(254 - testPointTagKey.length()) + "\" }";
-		new WavefrontFormat(properties, dataJsonString).getFormattedString();
+		new WavefrontFormat(properties, new GenericMessage<>(dataJsonString)).getFormattedString();
 		assertThat(listAppender.list.stream()
 				.filter(event -> event.getMessage().startsWith("Maximum allowed length for a combination"))
 				.count()).isEqualTo(0);
 
 		final String dataJsonStringWithTooLongValue = "{ \"value\": 1.5, \"testPoint1\": \"" +
 				createStringOfLength(255 - testPointTagKey.length()) + "\" }";
-		new WavefrontFormat(properties, dataJsonStringWithTooLongValue).getFormattedString();
+		new WavefrontFormat(properties, new GenericMessage<>(dataJsonStringWithTooLongValue)).getFormattedString();
 
 		assertThat(listAppender.list.stream()
 				.filter(event -> event.getMessage().startsWith("Maximum allowed length for a combination")
@@ -146,31 +156,30 @@ class WavefrontFormatTest {
 	}
 
 	@Test
-	void testInvalidPointTagKeys() throws IOException {
+	void testInvalidPointTagKeys() {
 		final String dataJsonString = "{ \"value\": 1.5, \"testPoint1\": \"testvalue1\" }";
 
 		final List<String> validPointTagKeys = Arrays.asList("b", "B", "2", ".", "_", "-", "c.8W-2h_dE_J-h");
 		for (String validPointTagKey : validPointTagKeys) {
-			final Map<String, String> pointTagsJsonPathsPointValueMap =
-					Stream.of(new AbstractMap.SimpleEntry<>(validPointTagKey, "$.testPoint1"))
+			final Map<String, Expression> pointTagsExpressionsPointValueMap =
+					Stream.of(new AbstractMap.SimpleEntry<>(validPointTagKey, expression("$.testPoint1")))
 							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 			final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("testMetricName", "testSource",
-					"$.value", null, pointTagsJsonPathsPointValueMap, null, null, null);
-			new WavefrontFormat(properties, dataJsonString).getFormattedString();
+					expression("$.value"), null, pointTagsExpressionsPointValueMap, null, null, null);
+			new WavefrontFormat(properties, new GenericMessage<>(dataJsonString)).getFormattedString();
 		}
 
 		final List<String> invalidPointTagKeys = Arrays.asList(" ", ":", "a B", "#", "/", ",");
 
 		invalidPointTagKeys.forEach(invalidPointTagKey -> {
-			final Map<String, String> pointTagsJsonPathsPointValueMap =
-					Stream.of(new AbstractMap.SimpleEntry<>(invalidPointTagKey, "$.testPoint1"))
+			final Map<String, Expression> pointTagsExpressionsPointValueMap =
+					Stream.of(new AbstractMap.SimpleEntry<>(invalidPointTagKey, expression("$.testPoint1")))
 							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 			final WavefrontConsumerProperties properties = new WavefrontConsumerProperties("testMetricName", "testSource",
-					"$.value", null, pointTagsJsonPathsPointValueMap, null, null, null);
+					expression("$.value"), null, pointTagsExpressionsPointValueMap, null, null, null);
 
-			final Exception exception = Assertions.assertThrows(RuntimeException.class, () -> {
-				new WavefrontFormat(properties, dataJsonString).getFormattedString();
-			});
+			final Exception exception = Assertions.assertThrows(RuntimeException.class,
+					() -> new WavefrontFormat(properties, new GenericMessage<>(dataJsonString)).getFormattedString());
 			assertThat(exception.getLocalizedMessage()
 					.startsWith("Point tag key \"" + invalidPointTagKey + "\" contains invalid characters")).isTrue();
 		});
@@ -180,5 +189,12 @@ class WavefrontFormatTest {
 		char[] chars = new char[length];
 		Arrays.fill(chars, 'a');
 		return new String(chars);
+	}
+
+	private Expression expression(final String jsonPathExpression) {
+		final Expression expression = parser.parseExpression("#jsonPath(payload,'" + jsonPathExpression + "')");
+		final StandardEvaluationContext evaluationContext = (StandardEvaluationContext) ((SpelExpression) expression).getEvaluationContext();
+		evaluationContext.registerFunction("jsonPath", Objects.requireNonNull(BeanUtils.resolveSignature("evaluate", JsonPathUtils.class)));
+		return expression;
 	}
 }

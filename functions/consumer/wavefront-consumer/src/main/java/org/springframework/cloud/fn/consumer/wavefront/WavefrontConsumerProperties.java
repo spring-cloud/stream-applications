@@ -21,10 +21,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.expression.Expression;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -38,22 +40,22 @@ public class WavefrontConsumerProperties {
 
 	private String source;
 
-	private String metricJsonPath;
+	private Expression metricExpression;
 
-	private String timestampJsonPath;
+	private Expression timestampExpression;
 
-	private Map<String, String> pointTagsJsonPathsPointValue;
+	private Map<String, Expression> pointTagsExpressionsPointValue;
 
 	public WavefrontConsumerProperties() { }
 
-	public WavefrontConsumerProperties(final String metricName, final String source, final String metricJsonPath,
-		final String timestampJsonPath, final Map<String, String> pointTagsJsonPathsPointValue,
-		final String wavefrontDomain, final String wavefrontToken, final String wavefrontProxyUrl) {
+	public WavefrontConsumerProperties(final String metricName, final String source, final Expression metricExpression,
+										final Expression timestampExpression, final Map<String, Expression> pointTagsExpressionsPointValue,
+										final String wavefrontDomain, final String wavefrontToken, final String wavefrontProxyUrl) {
 		setMetricName(metricName);
 		setSource(source);
-		setMetricJsonPath(metricJsonPath);
-		setTimestampJsonPath(timestampJsonPath);
-		setPointTagsJsonPathsPointValue(pointTagsJsonPathsPointValue);
+		setMetricExpression(metricExpression);
+		setTimestampExpression(timestampExpression);
+		setPointTagsExpressionsPointValue(pointTagsExpressionsPointValue);
 		setWavefrontDomain(wavefrontDomain);
 		setWavefrontToken(wavefrontToken);
 		setWavefrontProxyUrl(wavefrontProxyUrl);
@@ -86,29 +88,29 @@ public class WavefrontConsumerProperties {
 		this.source = source;
 	}
 
-	@NotEmpty
-	public String getMetricJsonPath() {
-		return metricJsonPath;
+	@NotNull
+	public Expression getMetricExpression() {
+		return metricExpression;
 	}
 
-	public void setMetricJsonPath(String metricJsonPath) {
-		this.metricJsonPath = metricJsonPath;
+	public void setMetricExpression(Expression metricExpression) {
+		this.metricExpression = metricExpression;
 	}
 
-	public String getTimestampJsonPath() {
-		return timestampJsonPath;
+	public Expression getTimestampExpression() {
+		return timestampExpression;
 	}
 
-	public void setTimestampJsonPath(String timestampJsonPath) {
-		this.timestampJsonPath = timestampJsonPath;
+	public void setTimestampExpression(Expression timestampExpression) {
+		this.timestampExpression = timestampExpression;
 	}
 
-	public Map<String, String> getPointTagsJsonPathsPointValue() {
-		return pointTagsJsonPathsPointValue;
+	public Map<String, Expression> getPointTagsExpressionsPointValue() {
+		return pointTagsExpressionsPointValue;
 	}
 
-	public void setPointTagsJsonPathsPointValue(Map<String, String> pointTagsJsonPathsPointValue) {
-		this.pointTagsJsonPathsPointValue = Optional.ofNullable(pointTagsJsonPathsPointValue)
+	public void setPointTagsExpressionsPointValue(Map<String, Expression> pointTagsExpressionsPointValue) {
+		this.pointTagsExpressionsPointValue = Optional.ofNullable(pointTagsExpressionsPointValue)
 				.orElse(Collections.emptyMap());
 	}
 

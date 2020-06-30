@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.context.annotation.UserConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.cloud.fn.common.config.SpelExpressionConverterConfiguration;
 import org.springframework.cloud.fn.consumer.wavefront.WavefrontConsumerConfiguration;
 import org.springframework.core.NestedExceptionUtils;
 
@@ -34,14 +35,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 class WavefrontServiceConditionTest {
 
 	private final ApplicationContextRunner runner = new ApplicationContextRunner()
-			.withConfiguration(UserConfigurations.of(WavefrontConsumerConfiguration.class));
+			.withConfiguration(UserConfigurations.of(WavefrontConsumerConfiguration.class,
+					SpelExpressionConverterConfiguration.class));
 
 	@Test
 	public void proxyConnectionShouldBeUsedIfWavefrontProxyAddressSet() {
 		runner.withPropertyValues(
 				"wavefront.metric-name=vehicle-location",
 				"wavefront.source=vehicle-api",
-				"wavefront.metric-json-path=$.mileage",
+				"wavefront.metric-expression=#jsonPath(payload,'$.mileage')",
 				"wavefront.wavefront-proxy-url=http://wavefront-proxy.internal:2878",
 				"wavefront.wavefront-domain=",
 				"wavefront.wavefront-token="
@@ -56,7 +58,7 @@ class WavefrontServiceConditionTest {
 		runner.withPropertyValues(
 				"wavefront.metric-name=vehicle-location",
 				"wavefront.source=vehicle-api",
-				"wavefront.metric-json-path=$.mileage",
+				"wavefront.metric-expression=#jsonPath(payload,'$.mileage')",
 				"wavefront.wavefront-proxy-url=http://wavefront-proxy.internal:2878",
 				"wavefront.wavefront-domain=https://my.wavefront.com",
 				"wavefront.wavefront-token=" + UUID.randomUUID()
@@ -71,7 +73,7 @@ class WavefrontServiceConditionTest {
 		runner.withPropertyValues(
 				"wavefront.metric-name=vehicle-location",
 				"wavefront.source=vehicle-api",
-				"wavefront.metric-json-path=$.mileage",
+				"wavefront.metric-expression=#jsonPath(payload,'$.mileage')",
 				"wavefront.wavefront-proxy-url=",
 				"wavefront.wavefront-domain=https://my.wavefront.com",
 				"wavefront.wavefront-token=" + UUID.randomUUID()
@@ -86,7 +88,7 @@ class WavefrontServiceConditionTest {
 		runner.withPropertyValues(
 				"wavefront.metric-name=vehicle-location",
 				"wavefront.source=vehicle-api",
-				"wavefront.metric-json-path=$.mileage",
+				"wavefront.metric-expression=#jsonPath(payload,'$.mileage')",
 				"wavefront.wavefront-proxy-url=",
 				"wavefront.wavefront-domain=",
 				"wavefront.wavefront-token="
