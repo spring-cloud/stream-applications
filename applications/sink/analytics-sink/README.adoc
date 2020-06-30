@@ -57,6 +57,8 @@ image::{images-asciidoc}/AnalyticsSinkArchitecture.png[Analytics Architecture, s
 
 === Payload
 
+The incoming message can contain any type of payload.
+
 == Options
 
 //tag::configuration-properties[]

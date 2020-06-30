@@ -12,7 +12,7 @@ Change kafka to rabbit if you want to run it against RabbitMQ.
 
 === Payload
 
-Incoming message can contain any type of payload.
+The incoming message can contain any type of payload.
 
 == Options
 
