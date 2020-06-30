@@ -146,7 +146,12 @@ or any combination of the above, without requiring a separate processor.
 For example, the time source executed, as shown below, will perform a series of transformations to publish a task launch request every second to the rabbit exchange `time-test`.
 
 ```
-java -jar target/time-source-rabbit-3.0.0-SNAPSHOT.jar --spring.cloud.stream.bindings.output.destination=time-test --spring.cloud.stream.function.definition="timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction"  --spel.function.expression="payload.length()" --header.enricher.headers=task-id=payload*2 --task.launch.request.task-name-expression="'task-'+headers['task-id']"
+java -jar target/time-source-rabbit-3.0.0-SNAPSHOT.jar \
+     --spring.cloud.stream.bindings.output.destination=time-test \
+     --spring.cloud.stream.function.definition="timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction" \
+     --spel.function.expression="payload.length()" \
+     --header.enricher.headers=task-id=payload*2 \
+     --task.launch.request.task-name-expression="'task-'+headers['task-id']"
 ```
 
 The transformed message looks like this:
