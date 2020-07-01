@@ -18,18 +18,21 @@ package org.springframework.cloud.fn.consumer.s3;
 
 import java.util.function.Consumer;
 
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.transfer.internal.S3ProgressListener;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.aws.core.env.ResourceIdResolver;
+import org.springframework.cloud.aws.core.region.RegionProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.aws.outbound.S3MessageHandler;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.util.StringUtils;
 
 @Configuration
 @EnableConfigurationProperties(AwsS3ConsumerProperties.class)
@@ -67,5 +70,14 @@ public class AwsS3ConsumerConfiguration {
 		s3MessageHandler.setUploadMetadataProvider(this.uploadMetadataProvider);
 		s3MessageHandler.setProgressListener(this.s3ProgressListener);
 		return s3MessageHandler;
+	}
+
+	@Bean
+	public EndpointConfiguration endpointConfiguration(AwsS3ConsumerProperties s3ConsumerProperties,
+													RegionProvider regionProvider) {
+		if (!StringUtils.isEmpty(s3ConsumerProperties.getEndpointUrl())) {
+			return new EndpointConfiguration(s3ConsumerProperties.getEndpointUrl(), regionProvider.getRegion().getName());
+		}
+		return null;
 	}
 }

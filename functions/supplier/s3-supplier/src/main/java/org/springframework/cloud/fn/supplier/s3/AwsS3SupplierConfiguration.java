@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.reactivestreams.Publisher;
@@ -27,6 +28,7 @@ import reactor.core.publisher.Flux;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.aws.core.env.ResourceIdResolver;
+import org.springframework.cloud.aws.core.region.RegionProvider;
 import org.springframework.cloud.fn.common.file.FileConsumerProperties;
 import org.springframework.cloud.fn.common.file.FileUtils;
 import org.springframework.context.annotation.Bean;
@@ -112,5 +114,14 @@ public class AwsS3SupplierConfiguration {
 	@Bean
 	public Supplier<Flux<Message<?>>> s3Supplier() {
 		return () -> Flux.from(s3SupplierFlow());
+	}
+
+	@Bean
+	public EndpointConfiguration endpointConfiguration(AwsS3SupplierProperties s3SupplierProperties,
+																		RegionProvider regionProvider) {
+		if (!StringUtils.isEmpty(s3SupplierProperties.getEndpointUrl())) {
+			return new EndpointConfiguration(s3SupplierProperties.getEndpointUrl(), regionProvider.getRegion().getName());
+		}
+		return null;
 	}
 }

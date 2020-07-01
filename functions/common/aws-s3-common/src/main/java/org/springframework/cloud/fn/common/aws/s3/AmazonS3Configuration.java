@@ -16,7 +16,10 @@
 
 package org.springframework.cloud.fn.common.aws.s3;
 
+import java.util.Optional;
+
 import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
@@ -28,6 +31,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Artem Bilan
+ * @author Timo Salm
  */
 @Configuration
 @ConditionalOnMissingAmazonClient(AmazonS3.class)
@@ -35,10 +39,15 @@ public class AmazonS3Configuration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public AmazonS3 amazonS3(AWSCredentialsProvider awsCredentialsProvider, RegionProvider regionProvider) {
-		return AmazonS3ClientBuilder.standard()
+	public AmazonS3 amazonS3(AWSCredentialsProvider awsCredentialsProvider, RegionProvider regionProvider,
+							Optional<EndpointConfiguration> endpointConfiguration) {
+		final AmazonS3ClientBuilder builder = AmazonS3ClientBuilder.standard();
+		endpointConfiguration.ifPresentOrElse(
+				builder::setEndpointConfiguration,
+				() -> builder.setRegion(regionProvider.getRegion().getName())
+		);
+		return builder
 				.withCredentials(awsCredentialsProvider)
-				.withRegion(regionProvider.getRegion().getName())
 				.build();
 	}
 

@@ -57,6 +57,11 @@ public class AwsS3ConsumerProperties {
 	 */
 	private Expression aclExpression;
 
+	/**
+	 * S3 endpoint url to connect to s3 compatible storage.
+	 */
+	private String endpointUrl;
+
 	@Length(min = 3)
 	public String getBucket() {
 		return this.bucket;
@@ -96,6 +101,14 @@ public class AwsS3ConsumerProperties {
 
 	public void setAclExpression(Expression aclExpression) {
 		this.aclExpression = aclExpression;
+	}
+
+	public String getEndpointUrl() {
+		return endpointUrl;
+	}
+
+	public void setEndpointUrl(String endpointUrl) {
+		this.endpointUrl = endpointUrl;
 	}
 
 	@AssertTrue(message = "Exactly one of 'bucket' or 'bucketExpression' must be set")

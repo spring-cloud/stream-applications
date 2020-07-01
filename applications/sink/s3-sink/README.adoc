@@ -19,6 +19,7 @@ $$s3.consumer.acl$$:: $$S3 Object access control list.$$ *($$CannedAccessControl
 $$s3.consumer.acl-expression$$:: $$Expression to evaluate S3 Object access control list.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$s3.consumer.bucket$$:: $$AWS bucket for target file(s) to store.$$ *($$String$$, default: `$$<none>$$`)*
 $$s3.consumer.bucket-expression$$:: $$Expression to evaluate AWS bucket name.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$s3.consumer.endpoint-url$$:: $$S3 endpoint url to connect to s3 compatible storage.$$ *($$String$$, default: `$$<none>$$`)*
 $$s3.consumer.key-expression$$:: $$Expression to evaluate S3 Object key.$$ *($$Expression$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
