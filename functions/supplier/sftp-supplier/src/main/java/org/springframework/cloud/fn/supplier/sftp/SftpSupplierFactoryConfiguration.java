@@ -19,6 +19,8 @@ package org.springframework.cloud.fn.supplier.sftp;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.jcraft.jsch.ChannelSftp.LsEntry;
+
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -30,8 +32,6 @@ import org.springframework.integration.file.remote.session.DelegatingSessionFact
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
 import org.springframework.lang.Nullable;
-
-import com.jcraft.jsch.ChannelSftp.LsEntry;
 
 /**
  * Session factory configuration.

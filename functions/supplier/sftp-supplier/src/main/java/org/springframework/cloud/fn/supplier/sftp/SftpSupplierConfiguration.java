@@ -23,7 +23,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.jcraft.jsch.ChannelSftp.LsEntry;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
@@ -67,9 +69,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.util.StringUtils;
-
-import com.jcraft.jsch.ChannelSftp.LsEntry;
-import reactor.core.publisher.Flux;
 
 /**
  * @author Gary Russell
