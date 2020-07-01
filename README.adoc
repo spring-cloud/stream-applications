@@ -51,19 +51,19 @@ The following are the four major components of this repository.
 |link:functions/supplier/s3-supplier/README.adoc[AWS S3]
 |link:functions/consumer/rabbit-consumer/README.adoc[RabbitMQ]
 |link:functions/function/tasklauncher-function/README.adoc[Task Launcher]
-|link:functions/supplier/tcp-supplier/README.adoc[TCP]
+|link:functions/supplier/sftp-supplier/README.adoc[SFTP]
 |link:functions/consumer/redis-consumer/README.adoc[Redis]
 |link:functions/function/twitter-function/README.adoc[Twitter]
-|link:functions/supplier/time-supplier/README.adoc[Time]
+|link:functions/supplier/tcp-supplier/README.adoc[TCP]
 |link:functions/consumer/s3-consumer/README.adoc[AWS S3]
 |
-|link:functions/supplier/twitter-supplier/README.adoc[Twitter]
+|link:functions/supplier/time-supplier/README.adoc[Time]
 |link:functions/consumer/sftp-consumer/README.adoc[SFTP]
 |
-|link:functions/supplier/websocket-supplier/README.adoc[Websocket]
+|link:functions/supplier/twitter-supplier/README.adoc[Twitter]
 |link:functions/consumer/tcp-consumer/README.adoc[TCP]
 |
-|
+|link:functions/supplier/websocket-supplier/README.adoc[Websocket]
 |link:functions/consumer/twitter-consumer/README.adoc[Twitter]
 |
 |
@@ -112,25 +112,25 @@ The following are the four major components of this repository.
 |link:applications/source/s3-source/README.adoc[AWS S3]
 |link:applications/sink/redis-sink/README.adoc[Redis]
 |link:applications/processor/transform-processor/README.adoc[Transform]
-|link:applications/source/tcp-source/README.adoc[TCP]
+|link:applications/source/sftp-source/README.adoc[SFTP]
 |link:applications/sink/router-sink/README.adoc[Router]
 |link:applications/processor/twitter-trend-processor/README.adoc[Twitter Trend]
-|link:applications/source/time-source/README.adoc[Time]
+|link:applications/source/tcp-source/README.adoc[TCP]
 |link:applications/sink/sftp-sink/README.adoc[SFTP]
 |
-|link:applications/source/twitter-message-source/README.adoc[Twitter Message]
+|link:applications/source/time-source/README.adoc[Time]
 |link:applications/sink/tasklauncher-sink/README.adoc[Task Launcher]
 |
-|link:applications/source/twitter-search-source/README.adoc[Twitter Search]
+|link:applications/source/twitter-message-source/README.adoc[Twitter Message]
 |link:applications/sink/tcp-sink/README.adoc[TCP]
 |
-|link:applications/source/twitter-stream-source/README.adoc[Twitter Stream]
+|link:applications/source/twitter-search-source/README.adoc[Twitter Search]
 |link:applications/sink/throughput-sink/README.adoc[Throughput]
 |
-|link:applications/source/websocket-source/README.adoc[Websocket]
+|link:applications/source/twitter-stream-source/README.adoc[Twitter Stream]
 |link:applications/sink/twitter-message-sink/README.adoc[Twitter Message]
 |
-|
+|link:applications/source/websocket-source/README.adoc[Websocket]
 |link:applications/sink/twitter-update-sink/README.adoc[Twitter Update]
 |
 |link:applications/sink/wavefront-sink/README.adoc[Wavefront]

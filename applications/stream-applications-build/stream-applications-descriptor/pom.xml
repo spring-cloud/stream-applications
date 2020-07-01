@@ -65,6 +65,8 @@
                 "${rabbit-source.version}".contains('SNAPSHOT') ? 'latest' : "${rabbit-source.version}"
         pom.properties['s3-source-docker.tag']=
                 "${s3-source.version}".contains('SNAPSHOT') ? 'latest' : "${s3-source.version}"
+        pom.properties['sftp-source-docker.tag']=
+                "${sftp-source.version}".contains('SNAPSHOT') ? 'latest' : "${sftp-source.version}"
         pom.properties['tcp-source-docker.tag']=
                 "${tcp-source.version}".contains('SNAPSHOT') ? 'latest' : "${tcp-source.version}"
         pom.properties['time-source-docker.tag']=

@@ -36,6 +36,9 @@ include::{stream-apps-root}/{branch}/applications/source/rabbit-source/README.ad
 [[spring-cloud-stream-modules-s3-source]]
 include::{stream-apps-root}/{branch}/applications/source/s3-source/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-sftp-source]]
+include::{stream-apps-root}/{branch}/applications/source/sftp-source/README.adoc[tags=ref-doc]
+
 [[spring-cloud-stream-modules-tcp-source]]
 include::{stream-apps-root}/{branch}/applications/source/tcp-source/README.adoc[tags=ref-doc]
 

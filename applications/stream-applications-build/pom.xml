@@ -31,6 +31,7 @@
         <mqtt-source.version>${apps.version}</mqtt-source.version>
         <rabbit-source.version>${apps.version}</rabbit-source.version>
         <s3-source.version>${apps.version}</s3-source.version>
+        <sftp-source.version>${apps.version}</sftp-source.version>
         <tcp-source.version>${apps.version}</tcp-source.version>
         <time-source.version>${apps.version}</time-source.version>
         <twitter-message-source.version>${apps.version}</twitter-message-source.version>
