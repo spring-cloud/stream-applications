@@ -38,6 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 				"sftp.consumer.factory.username = foo",
 				"sftp.consumer.factory.password = foo",
 				"sftp.consumer.mode = FAIL",
+				"sftp.consumer.factory.port = ${sftp.factory.port}",
 				"sftp.consumer.filenameExpression = payload.name.toUpperCase()",
 				"sftp.consumer.factory.allowUnknownKeys = true"
 		})
