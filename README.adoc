@@ -1,155 +1,173 @@
-== Stream applications
+== Stream Applications
 
-This repository provides a collection of components that help with various data integration use cases.
-It provides standalone Java functions that can be reused in end-user applications.
+In this repository, you will find a collection of components that can meet various data integration use cases and requirements.
 
-In addition to providing these functions, this repository is also used to generate out of the box Spring Cloud Stream applications those using the functions as a baseline.
-These applications can be run standalone as Spring Cloud Stream applications or as part of a data flow such as the one orchestrated using Spring Cloud Data Flow.
+The repository's primary focus is to provide a set of standalone Java functions that can be useful in the end-user
+applications as-is.
 
-The repository is divided into two sections - `Functions` and `Applications`. The former is used for hosting the various functions and the latter is for generating the apps.
+Besides, this repository builds on the Java functions to generate standalone Spring Cloud Stream applications that can run
+against Spring Cloud Stream's RabbitMQ or Apache Kafka binder implementations. It is also possible to extend the generator
+to bundle the Java functions with the other supported binder implementations.
+
+These applications can run standalone or as part of a data flow, such as the one orchestrated using Spring Cloud Data Flow.
+
+=== Project Structure
+
+The repository includes two sections - `Functions` and `Applications`. The former hosts the various Java functions, and
+the latter is for generating the standalone Spring Cloud Stream applications.
 
 The following are the four major components of this repository.
 
-* https://github.com/spring-cloud/stream-applications/tree/master/functions[Standalone Java Functions] as java.util.function.Function/Consumer/Supplier
-* https://github.com/spring-cloud/stream-applications/tree/master/applications/stream-applications-core[Core components] for the out of the box applications
-* https://github.com/spring-cloud/stream-applications/tree/master/applications[Out of the box Spring Cloud Stream applications] as Source/Sink/Processor
-* https://github.com/spring-cloud/stream-applications/tree/master/applications/stream-applications-build[Aggregator] for the out of the box applications.
+* https://github.com/spring-cloud/stream-applications/tree/master/functions[Standalone Java Functions]
+* https://github.com/spring-cloud/stream-applications/tree/master/applications/stream-applications-core[Common Core]
+* https://github.com/spring-cloud/stream-applications/tree/master/applications[Spring Cloud Stream Applications]
+* https://github.com/spring-cloud/stream-applications/tree/master/applications/stream-applications-build[Docs / Tools]
 
-=== Available Functions
-
+=== Reusable Functions
 
 |===
-|Supplier |Consumer |Function
+| `java.util.Supplier` | `java.util.Function` | `java.util.Consumer`
 
 |link:functions/supplier/file-supplier/README.adoc[File]
-|link:functions/consumer/cassandra-consumer/README.adoc[Cassandra]
 |link:functions/function/filter-function/README.adoc[Filter]
+|link:functions/consumer/cassandra-consumer/README.adoc[Cassandra]
 |link:functions/supplier/ftp-supplier/README.adoc[FTP]
-|link:functions/consumer/analytics-consumer/README.adoc[Analytics]
 |link:functions/function/header-enricher-function/README.adoc[Header-Enricher]
+|link:functions/consumer/analytics-consumer/README.adoc[Analytics]
 |link:functions/supplier/geode-supplier/README.adoc[Geode]
-|link:functions/consumer/file-consumer/README.adoc[File]
 |link:functions/function/http-request-function/README.adoc[HTTP Request]
+|link:functions/consumer/file-consumer/README.adoc[File]
 |link:functions/supplier/http-supplier/README.adoc[HTTP]
-|link:functions/consumer/ftp-consumer/README.adoc[FTP]
 |link:functions/function/image-recognition-function/README.adoc[Image Recognition(Tensorflow)]
+|link:functions/consumer/ftp-consumer/README.adoc[FTP]
 |link:functions/supplier/jdbc-supplier/README.adoc[JDBC]
-|link:functions/consumer/geode-consumer/README.adoc[Geode]
 |link:functions/function/object-detection-function/README.adoc[Object Detection(Tensorflow)]
+|link:functions/consumer/geode-consumer/README.adoc[Geode]
 |link:functions/supplier/jms-supplier/README.adoc[JMS]
-|link:functions/consumer/jdbc-consumer/README.adoc[JDBC]
 |link:functions/function/semantic-segmentation-function/README.adoc[Semantic Segmentation(Tensorflow)]
+|link:functions/consumer/jdbc-consumer/README.adoc[JDBC]
 |link:functions/supplier/mongodb-supplier/README.adoc[MongoDB]
-|link:functions/consumer/log-consumer/README.adoc[Log]
 |link:functions/function/spel-function/README.adoc[SpEL]
+|link:functions/consumer/log-consumer/README.adoc[Log]
 |link:functions/supplier/mqtt-supplier/README.adoc[MQTT]
-|link:functions/consumer/mongodb-consumer/README.adoc[MongoDB]
 |link:functions/function/splitter-function/README.adoc[Splitter]
+|link:functions/consumer/mongodb-consumer/README.adoc[MongoDB]
 |link:functions/supplier/rabbit-supplier/README.adoc[RabbitMQ]
-|link:functions/consumer/mqtt-consumer/README.adoc[MQTT]
 |link:functions/function/task-launch-request-function/README.adoc[Task Launch Request]
+|link:functions/consumer/mqtt-consumer/README.adoc[MQTT]
 |link:functions/supplier/s3-supplier/README.adoc[AWS S3]
-|link:functions/consumer/rabbit-consumer/README.adoc[RabbitMQ]
 |link:functions/function/tasklauncher-function/README.adoc[Task Launcher]
+|link:functions/consumer/rabbit-consumer/README.adoc[RabbitMQ]
 |link:functions/supplier/sftp-supplier/README.adoc[SFTP]
-|link:functions/consumer/redis-consumer/README.adoc[Redis]
 |link:functions/function/twitter-function/README.adoc[Twitter]
+|link:functions/consumer/redis-consumer/README.adoc[Redis]
 |link:functions/supplier/tcp-supplier/README.adoc[TCP]
+|
 |link:functions/consumer/s3-consumer/README.adoc[AWS S3]
-|
 |link:functions/supplier/time-supplier/README.adoc[Time]
+|
 |link:functions/consumer/sftp-consumer/README.adoc[SFTP]
-|
 |link:functions/supplier/twitter-supplier/README.adoc[Twitter]
-|link:functions/consumer/tcp-consumer/README.adoc[TCP]
 |
+|link:functions/consumer/tcp-consumer/README.adoc[TCP]
 |link:functions/supplier/websocket-supplier/README.adoc[Websocket]
+|
 |link:functions/consumer/twitter-consumer/README.adoc[Twitter]
 |
 |
-|link:functions/consumer/websocket-consumer/README.adoc[Websocker]
+|link:functions/consumer/websocket-consumer/README.adoc[Websocket]
 |
 |
 |link:functions/consumer/wavefront-consumer/README.adoc[Wavefront]
-|
 |===
 
-=== Available Spring Cloud Stream Applications
+=== Reusable Spring Cloud Stream Applications
 
 |===
-|Source |Sink |Processor
+| Source | Processor | Sink
 
 |link:applications/source/file-source/README.adoc[File]
-|link:applications/sink/cassandra-sink/README.adoc[Cassandra]
 |link:applications/processor/bridge-processor/README.adoc[Bridge]
+|link:applications/sink/cassandra-sink/README.adoc[Cassandra]
 |link:applications/source/ftp-source/README.adoc[FTP]
-|link:applications/sink/analytics-sink/README.adoc[Analytics]
 |link:applications/processor/filter-processor/README.adoc[Filter]
+|link:applications/sink/analytics-sink/README.adoc[Analytics]
 |link:applications/source/geode-source/README.adoc[Geode]
-|link:applications/sink/file-sink/README.adoc[Fiile]
 |link:applications/processor/groovy-processor/README.adoc[Groovy]
+|link:applications/sink/file-sink/README.adoc[Fiile]
 |link:applications/source/http-source/README.adoc[HTTP]
-|link:applications/sink/ftp-sink/README.adoc[FTP]
 |link:applications/processor/header-enricher-processor/README.adoc[Header-Enricher]
+|link:applications/sink/ftp-sink/README.adoc[FTP]
 |link:applications/source/jdbc-source/README.adoc[JDBC]
-|link:applications/sink/geode-sink/README.adoc[Geode]
 |link:applications/processor/http-request-processor/README.adoc[HTTP Request]
+|link:applications/sink/geode-sink/README.adoc[Geode]
 |link:applications/source/jms-source/README.adoc[JMS]
-|link:applications/sink/jdbc-sink/README.adoc[JDBC]
 |link:applications/processor/image-recognition-processor/README.adoc[Image Recognition(Tensorflow)]
+|link:applications/sink/jdbc-sink/README.adoc[JDBC]
 |link:applications/source/load-generator-source/README.adoc[Load-Generator]
-|link:applications/sink/log-sink/README.adoc[Log]
 |link:applications/processor/object-detection-processor/README.adoc[Object Detection(Tensorflow)]
+|link:applications/sink/log-sink/README.adoc[Log]
 |link:applications/source/mongodb-source/README.adoc[MongoDB]
-|link:applications/sink/mongodb-sink/README.adoc[MongoDB]
 |link:applications/processor/semantic-segmentation-processor/README.adoc[Semantic Segmentation(Tensorflow)]
+|link:applications/sink/mongodb-sink/README.adoc[MongoDB]
 |link:applications/source/mqtt-source/README.adoc[MQTT]
-|link:applications/sink/mqtt-sink/README.adoc[MQTT]
 |link:applications/processor/script-processor/README.adoc[Script]
+|link:applications/sink/mqtt-sink/README.adoc[MQTT]
 |link:applications/source/rabbit-source/README.adoc[RabbitMQ]
-|link:applications/sink/rabbit-sink/README.adoc[RabbitMQ]
 |link:applications/processor/splitter-processor/README.adoc[Splitter]
+|link:applications/sink/rabbit-sink/README.adoc[RabbitMQ]
 |link:applications/source/s3-source/README.adoc[AWS S3]
-|link:applications/sink/redis-sink/README.adoc[Redis]
 |link:applications/processor/transform-processor/README.adoc[Transform]
+|link:applications/sink/redis-sink/README.adoc[Redis]
 |link:applications/source/sftp-source/README.adoc[SFTP]
-|link:applications/sink/router-sink/README.adoc[Router]
 |link:applications/processor/twitter-trend-processor/README.adoc[Twitter Trend]
+|link:applications/sink/router-sink/README.adoc[Router]
 |link:applications/source/tcp-source/README.adoc[TCP]
+|
 |link:applications/sink/sftp-sink/README.adoc[SFTP]
-|
 |link:applications/source/time-source/README.adoc[Time]
+|
 |link:applications/sink/tasklauncher-sink/README.adoc[Task Launcher]
-|
 |link:applications/source/twitter-message-source/README.adoc[Twitter Message]
+|
 |link:applications/sink/tcp-sink/README.adoc[TCP]
-|
 |link:applications/source/twitter-search-source/README.adoc[Twitter Search]
+|
 |link:applications/sink/throughput-sink/README.adoc[Throughput]
-|
 |link:applications/source/twitter-stream-source/README.adoc[Twitter Stream]
-|link:applications/sink/twitter-message-sink/README.adoc[Twitter Message]
 |
+|link:applications/sink/twitter-message-sink/README.adoc[Twitter Message]
 |link:applications/source/websocket-source/README.adoc[Websocket]
+|
 |link:applications/sink/twitter-update-sink/README.adoc[Twitter Update]
 |
+|
 |link:applications/sink/wavefront-sink/README.adoc[Wavefront]
-|
-|
 |===
 
-=== Composite Function Support
+=== Composable Functions
 
-By default, the `source` applications are auto-configured with link:functions/function[functions] which may optionally be included in a composite function definition.
-This feature enables the sources to do things like
- - execute SpEL transformations
- - enrich message headers
- - filter events
- - produce task launch requests
+Spring Cloud Stream includes integration with Spring Cloud Function's function-based programming model that lets the
+business logic of an application be modeled as a `java.util.Supplier`, a `java.util.Function`, and a `java.util.Consumer`,
+representing the roles of a `Source`, a `Processor`, and a Sink, respectively.
 
-or any combination of the above, without requiring a separate processor.
+Building on this foundation, we can extend existing `Source` and `Sink` applications by importing the configuration of an
+existing `Source` or `Sink` and adding code that defines a `java.util.Function` — this delivers a lot of powerful composition
+possibilities.
 
-For example, the time source executed, as shown below, will perform a series of transformations to publish a task launch request every second to the rabbit exchange `time-test`.
+Take for instance, the `Source` applications are auto-configured with link:functions/function[functions], which may optionally
+be included in a composite function definition.
+
+With this, the same Source application can potentially do one or all of the following without having to build it out as a
+standalone processor.
+
+- execute SpEL transformations
+- enrich message headers
+- filter events
+- produce task launch requests on upstream events
+
+For example, the `time` source when it is running, as shown below, will perform a series of internal transformations to
+finally publish a task launch request every second to the rabbit exchange with the name `time-test`.
 
 ```
 java -jar target/time-source-rabbit-3.0.0-SNAPSHOT.jar \
@@ -160,39 +178,49 @@ java -jar target/time-source-rabbit-3.0.0-SNAPSHOT.jar \
      --task.launch.request.task-name-expression="'task-'+headers['task-id']"
 ```
 
-The transformed message looks like this:
+Now, the transformed message would look like:
 
 ```
 headers:
-task-id:	34
-content_type:	application/json
+task-id:   34
+content_type:  application/json
 Payload
 49 bytes
 Encoding: string
 {"args":[],"deploymentProps":{},"name":"task-34"}
 ```
 
-Let's upack this function definition:
+Let us unpack what is happening behind the scenes. We will start with the following function definition.
 
 `timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction`
 
-This creates a composed Supplier beginning with the default `timeSupplier` which is the foundation for `time-source`.
-This produces a String like `06/18/20 16:01:38`.  We transform this using the SpEL expression `payload.length()`.
-The `spelFunction` applies to a `Message` from which we can extract and transform the `payload` or `headers`, in accordance with common Spring Integration conventions.
+- Here, the function definition creates a composite Supplier beginning with the default `timeSupplier` Java function included
+in this repository, which is the foundation for `time-source`.
 
-The output of `spelFunction` is the length of the date-time String, `17`.
-From here we apply the header enricher to add a Message header, `task-id` with the value of `payload*2` or ,`34`.
-We use the `task-id` header to generate the task name for the task launch request using the SpEL expression "'task-'+headers['task-id']", or `task-34`.
+- The `spelFunction` applies to a `Message` from which we can extract and transform the `payload` or `headers`, by following
+standard Spring Integration conventions.
 
-This somewhat contrived example is intended to show the power of function composition.
-Even so, if you have `task-34` as a task definition in Data Flow, you could build a simple pipeline `time | tasklauncher` to launch the task every second.
+- The output of `spelFunction` is the length of the date-time String, `17`.
 
-Prior to `3.0` release of Stream Applications, this composition required extensive customization.
+- From here, we apply the header-enricher Java function to add a Message header, `task-id` with the value of `payload*2`.
+That would be `34`.
 
-Please see the individual function documentation for an explanation of its configuration properties.
+- We use the `task-id` in the header to generate the "task name", and to programmatically derive the task launch request
+using the SpEL expression "'task-'+headers['task-id']", or `task-34`.
 
-NOTE: Support for composite functions includes auto-configuration for conventional binding name mappings (`input` and `output`) derived from the function definition and the presence of `spring.cloud.stream.bindings.output...`.
-In this example, `--spring.cloud.stream.bindings.output.destination=time-test` is enabled behind the scenes by the auto-configured property
+This somewhat contrived example, but the goal here was to highlight the power of function composition.
+
+If you have had a task definition in Spring Cloud Data Flow with the name `task-34`, you could build a `time | tasklauncher`
+streaming data pipeline to launch that task every second.
+
+Before the `3.0` release of Stream Applications, this composition required extensive customization. And a lot more manual
+configuration changes, extensions, and custom build of the applications.
+
+NOTE: Support for composite functions includes auto-configuration for conventional binding name mappings (`input` and `output`)
+derived from the function definition and the presence of `spring.cloud.stream.bindings.output...`.
+
+In this example, `--spring.cloud.stream.bindings.output.destination=time-test` is enabled behind the scenes by the auto-configured
+property
 `--spring.cloud.stream.function.bindings.timeSupplierspelFunctionheaderEnricherFunctiontaskLaunchRequestFunction-out-0=output`.
 
 === Build
@@ -201,27 +229,32 @@ You can build everything from the root of the repository.
 
 `./mvnw clean install`
 
-But, this may not be what you are interested in doing since you are probably interested in a single application or a few of them.
-In order to build the functions and applications that you are interested in, you need to build them selectively as shown below.
+However, this may not be what you are interested in since you are probably interested in a single application or a few of them.
 
-==== Building functions
+To build the functions and applications that you are interested in, you need to build them selectively, as shown below.
+
+==== Building Functions
 
 `./mvnw clean install -f functions`
 
 You can also build a single function or group of functions.
-For e.g if you are only interested in jdbc-supplier and log-consumer, do the following.
+For example, if you are only interested in `jdbc-supplier` and `log-consumer`, do the following.
 
 `./mvnw clean install -pl :jdbc-suppler,:log-consumer`
 
-==== Building core for Stream Applications
+==== Building Stream Applications Core
+
+If you want to re-run the common core build, you can build it with the following.
 
 `./mvnw clean install -f applications/stream-applications-core`
 
-=== Building the applications
+=== Building Stream applications
 
-Let's assume that you want to build JDBC Source application based on Kafka Binder in Spring Cloud Stream and Log Sink application based on Rabbit binder.
+Let's assume that you want to build a `jdbc-source` application based on Kafka Binder in Spring Cloud Stream and Log Sink
+application based on Rabbit binder.
+
 Here is what you need to do.
-Assuming that you built both functions and stream-applications-core as above.
+Assuming that you already built both functions and stream-applications-core as above,
 
 ```
 ./mvnw clean package -pl :jdbc-source
@@ -229,9 +262,9 @@ cd applications/source/jdbc-source/apps/jdbc-source-kafka
 ./mvnw clean package
 ```
 
-This will generate the Kafka binder based uber jar in the target folder.
+This will generate the Kafka binder based uber-jar in the target folder.
 
-Similarly for the log sink, do the following.
+Similarly, for the `log-sink`, do the following.
 
 ```
 ./mvnw clean package -pl :log-sink
