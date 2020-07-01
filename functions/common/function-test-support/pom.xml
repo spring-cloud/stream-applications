@@ -18,6 +18,7 @@
         <test-containers.version> 1.14.2</test-containers.version>
         <apache-ftpserver.version>1.1.1</apache-ftpserver.version>
         <geode-starter.version>1.2.7.RELEASE</geode-starter.version>
+        <awaitility.version>4.0.3</awaitility.version>
     </properties>
 
     <dependencies>
@@ -60,6 +61,11 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
         </dependency>
     </dependencies>
 

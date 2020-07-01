@@ -97,8 +97,6 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 				});
 	}
 
-
-
 	@Test
 	void supplierForFileRef() {
 		defaultApplicationContextRunner
@@ -148,7 +146,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 							.expectNextMatches(message -> message.getPayload().length > 0)
 							.thenCancel()
 							.verify(Duration.ofSeconds(10));
-					await().atMost(org.awaitility.Duration.TEN_SECONDS)
+					await().atMost(Duration.ofSeconds(10))
 							.until(() -> getSourceRemoteDirectory().list().length == 0);
 				});
 

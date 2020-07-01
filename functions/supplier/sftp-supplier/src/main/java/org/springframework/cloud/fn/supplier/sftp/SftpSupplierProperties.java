@@ -43,7 +43,6 @@ import org.springframework.validation.annotation.Validated;
  * @author Chris Schaefer
  * @author David Turanski
  */
-@SuppressWarnings("ConfigurationProperties")
 @ConfigurationProperties("sftp.supplier")
 @Validated
 public class SftpSupplierProperties {
@@ -76,7 +75,7 @@ public class SftpSupplierProperties {
 	/**
 	 * The local directory to use for file transfers.
 	 */
-	private File localDir = new File(System.getProperty("java.io.tmpdir"), "sftp-source");
+	private File localDir = new File(System.getProperty("java.io.tmpdir"), "sftp-supplier");
 
 	/**
 	 * Set to true to create the local directory if it does not exist.

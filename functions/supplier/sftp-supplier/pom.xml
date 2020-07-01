@@ -13,10 +13,6 @@
         <relativePath>../../spring-functions-parent</relativePath>
     </parent>
 
-    <properties>
-        <awaitility.version>3.0.0</awaitility.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.integration</groupId>
@@ -73,12 +69,6 @@
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>function-test-support</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
-            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

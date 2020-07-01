@@ -16,23 +16,11 @@
 
 package org.springframework.cloud.fn.supplier.sftp;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import org.springframework.integration.core.MessageSource;
-import org.springframework.integration.expression.ExpressionEvalMap;
-import org.springframework.integration.expression.FunctionExpression;
 import org.springframework.integration.file.remote.aop.RotatingServerAdvice;
 import org.springframework.integration.file.remote.aop.StandardRotationPolicy;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
-
-import static org.springframework.cloud.fn.supplier.sftp.SftpHeaders.SFTP_HOST_PROPERTY_KEY;
-import static org.springframework.cloud.fn.supplier.sftp.SftpHeaders.SFTP_PASSWORD_PROPERTY_KEY;
-import static org.springframework.cloud.fn.supplier.sftp.SftpHeaders.SFTP_PORT_PROPERTY_KEY;
-import static org.springframework.cloud.fn.supplier.sftp.SftpHeaders.SFTP_SELECTED_SERVER_PROPERTY_KEY;
-import static org.springframework.cloud.fn.supplier.sftp.SftpHeaders.SFTP_USERNAME_PROPERTY_KEY;
 
 /**
  * An {@link RotatingServerAdvice} for listing files on multiple directories/servers.
@@ -43,6 +31,8 @@ import static org.springframework.cloud.fn.supplier.sftp.SftpHeaders.SFTP_USERNA
  */
 public class SftpSupplierRotator extends RotatingServerAdvice {
 
+	private static String SFTP_SELECTED_SERVER_PROPERTY_KEY = "sftp_selectedServer";
+
 	private final SftpSupplierProperties properties;
 
 	private final StandardRotationPolicy rotationPolicy;
@@ -51,32 +41,6 @@ public class SftpSupplierRotator extends RotatingServerAdvice {
 		super(rotationPolicy);
 		this.properties = properties;
 		this.rotationPolicy = rotationPolicy;
-	}
-
-	/**
-	 * Build a {@code Map<String,Expression>} whose values are obtained by dynamically
-	 * evaluating the expressions. The values are dependent on the selected session factory in
-	 * the rotation.
-	 * @return the map as {@code Map<String, Object> } to use as an argument for
-	 * {@code IntegrationFlowBuilder.enrichHeaders()}.
-	 */
-	public Map<String, Object> headers() {
-		Supplier<SftpSupplierProperties.Factory> factory = () -> {
-			SftpSupplierProperties.Factory selected = this.properties.getFactories().get(this.getCurrentKey());
-			if (selected == null) {
-				// missing key used default factory
-				selected = this.properties.getFactory();
-			}
-			return selected;
-		};
-
-		Map<String, Object> map = new HashMap<>();
-		map.put(SFTP_SELECTED_SERVER_PROPERTY_KEY, new FunctionExpression<>(m -> this.getCurrentKey()));
-		map.put(SFTP_HOST_PROPERTY_KEY, new FunctionExpression<>(m -> factory.get().getHost()));
-		map.put(SFTP_PORT_PROPERTY_KEY, new FunctionExpression<>(m -> factory.get().getPort()));
-		map.put(SFTP_USERNAME_PROPERTY_KEY, new FunctionExpression<>(m -> factory.get().getUsername()));
-		map.put(SFTP_PASSWORD_PROPERTY_KEY, new FunctionExpression<>(m -> factory.get().getPassword()));
-		return map;
 	}
 
 	public String getCurrentKey() {
@@ -95,15 +59,5 @@ public class SftpSupplierRotator extends RotatingServerAdvice {
 		}
 		this.rotationPolicy.afterReceive(result != null, source);
 		return result;
-	}
-
-	/**
-	 * Evaluate the headers.
-	 * @return a {@code Map<String,Object>}
-	 */
-	public Map<String, Object> evaluateHeaders() {
-		return ExpressionEvalMap.from(headers())
-				.usingSimpleCallback()
-				.build();
 	}
 }

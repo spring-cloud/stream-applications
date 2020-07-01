@@ -26,8 +26,7 @@ import java.util.stream.Stream;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
+import reactor.util.context.Context;
 
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
@@ -58,7 +57,6 @@ import org.springframework.integration.metadata.ConcurrentMetadataStore;
 import org.springframework.integration.sftp.dsl.Sftp;
 import org.springframework.integration.sftp.filters.SftpPersistentAcceptOnceFileListFilter;
 import org.springframework.integration.sftp.filters.SftpRegexPatternFileListFilter;
-import org.springframework.integration.sftp.inbound.SftpInboundFileSynchronizingMessageSource;
 import org.springframework.integration.sftp.session.SftpRemoteFileTemplate;
 import org.springframework.integration.util.IntegrationReactiveUtils;
 import org.springframework.lang.Nullable;
@@ -95,21 +93,15 @@ public class SftpSupplierConfiguration {
 	public Supplier<Flux<Message<?>>> sftpSupplier(MessageSource sftpMessageSource,
 			@Nullable Publisher<Message<Object>> sftpReadingFlow,
 			SftpSupplierProperties sftpSupplierProperties) {
-		if (sftpMessageSource instanceof Lifecycle) {
-			((Lifecycle) sftpMessageSource).start();
-		}
-		if (sftpReadingFlow == null) {
-			return () -> sftpMessageFlux(sftpMessageSource, sftpSupplierProperties);
-		}
 
-		return () -> Flux.from(sftpReadingFlow);
-	}
+		Flux<Message<?>> flux = sftpReadingFlow == null ? sftpMessageFlux(sftpMessageSource, sftpSupplierProperties)
+				: Flux.from(sftpReadingFlow);
 
-	@Bean
-	public String remoteDirectory(SftpSupplierProperties sftpSupplierProperties) {
-		return sftpSupplierProperties.isMultiSource()
-				? SftpSupplierProperties.keyDirectories(sftpSupplierProperties).get(0).getDirectory()
-				: sftpSupplierProperties.getRemoteDir();
+		return () -> flux.doOnSubscribe(s -> {
+			if (sftpMessageSource instanceof Lifecycle) {
+				((Lifecycle) sftpMessageSource).start();
+			}
+		});
 	}
 
 	@Bean
@@ -163,12 +155,18 @@ public class SftpSupplierConfiguration {
 	 */
 	private Flux<Message<?>> sftpMessageFlux(MessageSource sftpMessageSource,
 			SftpSupplierProperties sftpSupplierProperties) {
-		return Mono
-				.<Message<?>>create(
-						monoSink -> monoSink.onRequest(value -> monoSink.success(sftpMessageSource.receive())))
-				.subscribeOn(Schedulers.boundedElastic())
-				.repeatWhenEmpty(it -> it.delayElements(sftpSupplierProperties.getDelayWhenEmpty()))
-				.repeat();
+
+		return IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
+				// TODO: Not clear why I need this cast.
+				.subscriberContext(context -> ((Context) context).put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
+						sftpSupplierProperties.getDelayWhenEmpty()));
+
+	}
+
+	private static String remoteDirectory(SftpSupplierProperties sftpSupplierProperties) {
+		return sftpSupplierProperties.isMultiSource()
+				? SftpSupplierProperties.keyDirectories(sftpSupplierProperties).get(0).getDirectory()
+				: sftpSupplierProperties.getRemoteDir();
 	}
 
 	@Configuration
@@ -188,11 +186,10 @@ public class SftpSupplierConfiguration {
 		@Bean
 		public MessageSource targetMessageSource(SftpRemoteFileTemplate sftpTemplate,
 				SftpSupplierProperties sftpSupplierProperties,
-				String remoteDirectory,
 				FileListFilter<LsEntry> fileListFilter) {
 
 			return Sftp.inboundStreamingAdapter(sftpTemplate)
-					.remoteDirectory(remoteDirectory)
+					.remoteDirectory(remoteDirectory(sftpSupplierProperties))
 					.remoteFileSeparator(sftpSupplierProperties.getRemoteFileSeparator())
 					.filter(fileListFilter)
 					.maxFetchSize(sftpSupplierProperties.getMaxFetch()).get();
@@ -201,10 +198,15 @@ public class SftpSupplierConfiguration {
 		@Bean
 		public Publisher<Message<Object>> sftpReadingFlow(
 				MessageSource sftpMessageSource,
+				SftpSupplierProperties sftpSupplierProperties,
 				FileConsumerProperties fileConsumerProperties) {
 
 			return FileUtils.enhanceStreamFlowForReadingMode(IntegrationFlows
-					.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)),
+					.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
+							// TODO: Not clear why I need this cast.
+							.subscriberContext(
+									context -> ((Context) context).put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
+											sftpSupplierProperties.getDelayWhenEmpty()))),
 					fileConsumerProperties)
 					.toReactivePublisher();
 		}
@@ -248,26 +250,20 @@ public class SftpSupplierConfiguration {
 		@Bean
 		public MessageSource targetMessageSource(SftpSupplierProperties sftpSupplierProperties,
 				DelegatingFactoryWrapper delegatingFactoryWrapper,
-				FileListFilter<LsEntry> fileListFilter,
-				String remoteDirectory,
-				BeanFactory beanFactory) {
+				FileListFilter<LsEntry> fileListFilter) {
 
-			MessageSource messageSource = Sftp
+			return Sftp
 					.inboundAdapter(delegatingFactoryWrapper.getFactory())
 					.preserveTimestamp(sftpSupplierProperties.isPreserveTimestamp())
 					.autoCreateLocalDirectory(sftpSupplierProperties.isAutoCreateLocalDir())
 					.deleteRemoteFiles(sftpSupplierProperties.isDeleteRemoteFiles())
 					.localDirectory(sftpSupplierProperties.getLocalDir())
-					.remoteDirectory(remoteDirectory)
+					.remoteDirectory(remoteDirectory(sftpSupplierProperties))
 					.remoteFileSeparator(sftpSupplierProperties.getRemoteFileSeparator())
 					.temporaryFileSuffix(sftpSupplierProperties.getTmpFileSuffix())
 					.metadataStorePrefix(METADATA_STORE_PREFIX)
 					.maxFetchSize(sftpSupplierProperties.getMaxFetch())
 					.filter(fileListFilter).get();
-
-			// TODO: Get a nasty WARNING if I don't do this.
-			((SftpInboundFileSynchronizingMessageSource) messageSource).getSynchronizer().setBeanFactory(beanFactory);
-			return messageSource;
 		}
 
 	}
@@ -295,10 +291,10 @@ public class SftpSupplierConfiguration {
 
 		@Bean
 		public SftpListingMessageProducer sftpListingMessageProducer(SftpSupplierProperties sftpSupplierProperties,
-				String remoteDirectory,
 				DelegatingFactoryWrapper delegatingFactoryWrapper) {
 
-			return new SftpListingMessageProducer(delegatingFactoryWrapper.getFactory(), remoteDirectory,
+			return new SftpListingMessageProducer(delegatingFactoryWrapper.getFactory(),
+					remoteDirectory(sftpSupplierProperties),
 					sftpSupplierProperties.getRemoteFileSeparator());
 		}
 
