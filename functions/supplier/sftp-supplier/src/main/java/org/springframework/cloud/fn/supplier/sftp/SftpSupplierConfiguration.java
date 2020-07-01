@@ -26,7 +26,6 @@ import java.util.stream.Stream;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
-import reactor.util.context.Context;
 
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
@@ -90,11 +89,12 @@ public class SftpSupplierConfiguration {
 	private static final String METADATA_STORE_PREFIX = "sftpSource/";
 
 	@Bean
-	public Supplier<Flux<Message<?>>> sftpSupplier(MessageSource sftpMessageSource,
+	public Supplier<Flux<? extends Message<?>>> sftpSupplier(MessageSource<?> sftpMessageSource,
 			@Nullable Publisher<Message<Object>> sftpReadingFlow,
 			SftpSupplierProperties sftpSupplierProperties) {
 
-		Flux<Message<?>> flux = sftpReadingFlow == null ? sftpMessageFlux(sftpMessageSource, sftpSupplierProperties)
+		Flux<? extends Message<?>> flux = sftpReadingFlow == null
+				? sftpMessageFlux(sftpMessageSource, sftpSupplierProperties)
 				: Flux.from(sftpReadingFlow);
 
 		return () -> flux.doOnSubscribe(s -> {
@@ -107,7 +107,7 @@ public class SftpSupplierConfiguration {
 	@Bean
 	@Primary
 	public MessageSource sftpMessageSource(
-			MessageSource messageSource,
+			MessageSource<?> messageSource,
 			BeanFactory beanFactory,
 			@Nullable List<ReceiveMessageAdvice> receiveMessageAdvice) {
 
@@ -153,12 +153,11 @@ public class SftpSupplierConfiguration {
 	/*
 	 * Create a Flux from a MessageSource that will be used by the supplier.
 	 */
-	private Flux<Message<?>> sftpMessageFlux(MessageSource sftpMessageSource,
+	private Flux<? extends Message<?>> sftpMessageFlux(MessageSource<?> sftpMessageSource,
 			SftpSupplierProperties sftpSupplierProperties) {
 
 		return IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
-				// TODO: Not clear why I need this cast.
-				.subscriberContext(context -> ((Context) context).put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
+				.subscriberContext(context -> context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
 						sftpSupplierProperties.getDelayWhenEmpty()));
 
 	}
@@ -197,16 +196,15 @@ public class SftpSupplierConfiguration {
 
 		@Bean
 		public Publisher<Message<Object>> sftpReadingFlow(
-				MessageSource sftpMessageSource,
+				MessageSource<?> sftpMessageSource,
 				SftpSupplierProperties sftpSupplierProperties,
 				FileConsumerProperties fileConsumerProperties) {
 
 			return FileUtils.enhanceStreamFlowForReadingMode(IntegrationFlows
 					.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
-							// TODO: Not clear why I need this cast.
 							.subscriberContext(
-									context -> ((Context) context).put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
-											sftpSupplierProperties.getDelayWhenEmpty()))),
+									context -> (context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
+											sftpSupplierProperties.getDelayWhenEmpty())))),
 					fileConsumerProperties)
 					.toReactivePublisher();
 		}
@@ -233,7 +231,7 @@ public class SftpSupplierConfiguration {
 		@Bean
 		@ConditionalOnExpression("environment['file.consumer.mode']!='ref' && environment['sftp.supplier.list-only']!='true'")
 		public Publisher<Message<Object>> sftpReadingFlow(
-				MessageSource sftpMessageSource,
+				MessageSource<?> sftpMessageSource,
 				FileConsumerProperties fileConsumerProperties) {
 
 			return FileUtils.enhanceFlowForReadingMode(IntegrationFlows
@@ -300,7 +298,7 @@ public class SftpSupplierConfiguration {
 
 		@Bean
 		public IntegrationFlow listingFlow(MessageProducerSupport messageProducerSupport,
-				MessageChannel listingChannel, MessageProcessor metadataWriter) {
+				MessageChannel listingChannel, MessageProcessor<?> metadataWriter) {
 
 			return IntegrationFlows.from(messageProducerSupport)
 					.split()
