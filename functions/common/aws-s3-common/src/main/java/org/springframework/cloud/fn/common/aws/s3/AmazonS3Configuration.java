@@ -42,10 +42,10 @@ public class AmazonS3Configuration {
 	public AmazonS3 amazonS3(AWSCredentialsProvider awsCredentialsProvider, RegionProvider regionProvider,
 							Optional<EndpointConfiguration> endpointConfiguration) {
 		final AmazonS3ClientBuilder builder = AmazonS3ClientBuilder.standard();
-		endpointConfiguration.ifPresentOrElse(
-				builder::setEndpointConfiguration,
-				() -> builder.setRegion(regionProvider.getRegion().getName())
-		);
+		endpointConfiguration.ifPresent(builder::setEndpointConfiguration);
+		if (!endpointConfiguration.isPresent()) {
+			builder.setRegion(regionProvider.getRegion().getName());
+		}
 		return builder
 				.withCredentials(awsCredentialsProvider)
 				.build();

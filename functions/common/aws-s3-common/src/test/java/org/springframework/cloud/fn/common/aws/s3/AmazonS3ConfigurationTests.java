@@ -24,15 +24,15 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3Client;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.cloud.aws.core.region.StaticRegionProvider;
 
 /**
  * @author Timo Salm
  */
-public class AmazonS3ConfigurationTest {
+public class AmazonS3ConfigurationTests {
 
 	private final AWSCredentials credentials = new BasicAWSCredentials("accessKey", "secretKey");
 	private final AWSCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(credentials);
@@ -43,9 +43,9 @@ public class AmazonS3ConfigurationTest {
 		final StaticRegionProvider regionProvider = new StaticRegionProvider(testRegionName);
 		final AmazonS3Client amazonS3 = (AmazonS3Client) new AmazonS3Configuration()
 				.amazonS3(credentialsProvider, regionProvider, Optional.empty());
-		Assert.assertNotNull(amazonS3);
-		Assert.assertEquals(regionProvider.getRegion().getName(), amazonS3.getRegionName());
-		Assert.assertTrue(amazonS3.getResourceUrl("b", "k").startsWith("https://s3.eu-central-1.amazonaws.com"));
+		Assertions.assertNotNull(amazonS3);
+		Assertions.assertEquals(regionProvider.getRegion().getName(), amazonS3.getRegionName());
+		Assertions.assertTrue(amazonS3.getResourceUrl("b", "k").startsWith("https://s3.eu-central-1.amazonaws.com"));
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class AmazonS3ConfigurationTest {
 				testRegionName);
 		final AmazonS3Client amazonS3 = (AmazonS3Client) new AmazonS3Configuration()
 				.amazonS3(credentialsProvider, new StaticRegionProvider(testRegionName), Optional.of(endpointConfiguration));
-		Assert.assertNotNull(amazonS3);
-		Assert.assertTrue(amazonS3.getResourceUrl("b", "k").startsWith("https://object.ecstestdrive.com"));
+		Assertions.assertNotNull(amazonS3);
+		Assertions.assertTrue(amazonS3.getResourceUrl("b", "k").startsWith("https://object.ecstestdrive.com"));
 	}
 }
