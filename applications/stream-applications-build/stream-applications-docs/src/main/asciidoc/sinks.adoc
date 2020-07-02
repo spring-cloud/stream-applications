@@ -9,9 +9,6 @@ include::{stream-apps-root}/{branch}/applications/sink/cassandra-sink/README.ado
 [[spring-cloud-stream-modules-analytics-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/analytics-sink/README.adoc[tags=ref-doc]
 
-[[spring-cloud-stream-modules-wavefront-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/wavefront-sink/README.adoc[tags=ref-doc]
-
 [[spring-cloud-stream-modules-file-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/file-sink/README.adoc[tags=ref-doc]
 
@@ -62,6 +59,9 @@ include::{stream-apps-root}/{branch}/applications/sink/twitter-message-sink/READ
 
 [[spring-cloud-stream-modules-twitter-update-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/twitter-update-sink/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-wavefront-sink]]
+include::{stream-apps-root}/{branch}/applications/sink/wavefront-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-websocket-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/websocket-sink/README.adoc[tags=ref-doc]

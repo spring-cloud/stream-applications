@@ -57,6 +57,7 @@
         <throughput-sink.version>${apps.version}</throughput-sink.version>
         <twitter-message-sink.version>${apps.version}</twitter-message-sink.version>
         <twitter-update-sink.version>${apps.version}</twitter-update-sink.version>
+        <wavefront-sink.version>${apps.version}</wavefront-sink.version>
         <websocket-sink.version>${apps.version}</websocket-sink.version>
         <bridge-processor.version>${apps.version}</bridge-processor.version>
         <filter-processor.version>${apps.version}</filter-processor.version>
