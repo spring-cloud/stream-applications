@@ -44,7 +44,7 @@ public class TaskLaunchRequestFunctionApplicationTests {
 
 	@BeforeEach
 	public void setUp() {
-		springApplicationBuilder = new SpringApplicationBuilder(TestApplication.class)
+		springApplicationBuilder = new SpringApplicationBuilder(TaskLaunchRequestFunctionTestApplication.class)
 				.web(WebApplicationType.NONE);
 	}
 
@@ -194,7 +194,7 @@ public class TaskLaunchRequestFunctionApplicationTests {
 	}
 
 	@SpringBootApplication
-	protected static class TestApplication {
+	protected static class TaskLaunchRequestFunctionTestApplication {
 
 		@Bean
 		@ConditionalOnProperty("customTaskNameExtractor")

@@ -195,7 +195,7 @@ public abstract class TwitterStreamSupplierTests {
 	@SpringBootConfiguration
 	@EnableAutoConfiguration
 	@Import(TwitterStreamSupplierConfiguration.class)
-	public static class TestTwitterStreamSourceApplication {
+	public static class TwitterStreamSupplierTestApplication {
 
 		@Bean
 		@Primary

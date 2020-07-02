@@ -92,6 +92,6 @@ class MongodbSupplierApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class MongoDbSupplierTestApplication {
 	}
 }

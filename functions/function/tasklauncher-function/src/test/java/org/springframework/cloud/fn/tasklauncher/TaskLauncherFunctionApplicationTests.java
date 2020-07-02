@@ -146,6 +146,6 @@ public class TaskLauncherFunctionApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class TaskLauncherFunctionTestApplication {
 	}
 }

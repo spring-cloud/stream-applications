@@ -105,7 +105,7 @@ public class AbstractTcpSupplierTests {
 	}
 
 	@SpringBootApplication
-	public static class TcpConsumerTestApplication {
+	public static class TcpSupplierTestApplication {
 
 	}
 }

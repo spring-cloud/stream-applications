@@ -122,7 +122,7 @@ public abstract class TwitterTrendFunctionTests {
 	@SpringBootConfiguration
 	@EnableAutoConfiguration
 	@Import(TwitterTrendFunctionConfiguration.class)
-	public static class TestTwitterTrendFunctionApplication {
+	public static class TwitterTrendFunctionTestApplication {
 		@Bean
 		@Primary
 		public twitter4j.conf.Configuration twitterConfiguration2(TwitterConnectionProperties properties,

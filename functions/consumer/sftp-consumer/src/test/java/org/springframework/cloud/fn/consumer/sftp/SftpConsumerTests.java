@@ -73,7 +73,7 @@ public class SftpConsumerTests extends SftpTestSupport {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class SftpConsumerTestApplication {
 	}
 }
 

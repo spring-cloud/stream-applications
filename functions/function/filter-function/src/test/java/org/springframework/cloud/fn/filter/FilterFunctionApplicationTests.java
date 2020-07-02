@@ -49,6 +49,6 @@ public class FilterFunctionApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class FilterFunctionTestApplication {
 	}
 }

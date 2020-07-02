@@ -38,6 +38,6 @@ public abstract class TimeSupplierApplicationTests {
 	protected abstract void testTimeSupplier();
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class TimeSupplierTestApplication {
 	}
 }

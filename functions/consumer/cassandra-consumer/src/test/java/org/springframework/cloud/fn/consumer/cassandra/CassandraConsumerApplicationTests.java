@@ -98,7 +98,7 @@ abstract class CassandraConsumerApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class CassandraConsumerTestApplication {
 
 	}
 

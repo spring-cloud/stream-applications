@@ -54,7 +54,7 @@ public class SpelFunctionApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class SpelFunctionTestApplication {
 
 	}
 }

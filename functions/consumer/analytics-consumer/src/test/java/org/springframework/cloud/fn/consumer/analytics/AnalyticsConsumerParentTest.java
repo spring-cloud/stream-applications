@@ -43,6 +43,6 @@ public class AnalyticsConsumerParentTest {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class AnalyticsConsumerTestApplication {
 	}
 }

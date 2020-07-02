@@ -69,7 +69,7 @@ public class MqttConsumerTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class MqttConsumerTestApplication {
 
 		@Autowired
 		private MqttPahoClientFactory mqttClientFactory;

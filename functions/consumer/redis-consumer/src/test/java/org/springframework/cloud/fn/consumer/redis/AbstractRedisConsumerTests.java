@@ -43,7 +43,7 @@ public class AbstractRedisConsumerTests {
 	StringRedisTemplate redisTemplate;
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class RedisConsumerTestApplication {
 
 	}
 }

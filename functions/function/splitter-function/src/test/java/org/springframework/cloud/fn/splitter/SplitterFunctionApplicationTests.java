@@ -44,6 +44,6 @@ public class SplitterFunctionApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class SplitterFunctionTestApplication {
 	}
 }

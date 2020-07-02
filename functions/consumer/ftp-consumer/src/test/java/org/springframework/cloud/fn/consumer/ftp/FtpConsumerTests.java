@@ -71,6 +71,6 @@ public class FtpConsumerTests extends FtpTestSupport {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class FtpConsumerTestApplication {
 	}
 }

@@ -133,7 +133,7 @@ public class HttpSupplierApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class HttpSupplierTestApplication {
 	}
 
 }

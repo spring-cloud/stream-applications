@@ -119,7 +119,7 @@ public abstract class AbstractAwsS3SupplierMockTests {
 	}
 
 	@SpringBootApplication
-	public static class S3SupplierApplication {
+	public static class S3SupplierTestApplication {
 
 		@Bean
 		@Primary

@@ -53,7 +53,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 	@BeforeEach
 	void setUpDefaultProperties() {
 		defaultApplicationContextRunner = new ApplicationContextRunner()
-				.withUserConfiguration(TestApp.class)
+				.withUserConfiguration(SftpSupplierTestApplication.class)
 				.withPropertyValues(
 						"sftp.supplier.factory.host=localhost",
 						"sftp.supplier.factory.port=${sftp.factory.port}",
@@ -199,7 +199,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 				Paths.get(remoteTemporaryFolder.toString(), "sftpSecondSource", "doesNotMatter.txt"),
 				"source3");
 		new ApplicationContextRunner()
-				.withUserConfiguration(TestApp.class)
+				.withUserConfiguration(SftpSupplierTestApplication.class)
 				.withPropertyValues(
 						"sftp.supplier.stream=true",
 						"sftp.supplier.factories.one.host=localhost",
@@ -247,7 +247,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 				Paths.get(remoteTemporaryFolder.toString(), "sftpSecondSource", "sftpSource3.txt"),
 				"doesNotMatter");
 		new ApplicationContextRunner()
-				.withUserConfiguration(TestApp.class)
+				.withUserConfiguration(SftpSupplierTestApplication.class)
 				.withPropertyValues(
 						"file.consumer.mode = ref",
 						"sftp.supplier.localDir=" + this.targetLocalDirectory.getAbsolutePath(),
@@ -308,7 +308,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 	}
 
 	@SpringBootApplication
-	static class TestApp {
+	static class SftpSupplierTestApplication {
 
 	}
 }

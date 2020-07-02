@@ -44,7 +44,7 @@ import org.springframework.messaging.support.MessageBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class HttpRequestFunctionApplicationTests {
+public class HttpRequestFunctionTestApplicationTests {
 	private MockWebServer server;
 
 	private ApplicationContextRunner runner;
@@ -53,7 +53,7 @@ public class HttpRequestFunctionApplicationTests {
 	void setup() {
 		this.server = new MockWebServer();
 		this.runner = new ApplicationContextRunner()
-				.withUserConfiguration(HttpRequestFunctionApplication.class)
+				.withUserConfiguration(HttpRequestFunctionTestApplication.class)
 				.withPropertyValues(
 						"http.request.url=" + url());
 	}
@@ -193,6 +193,6 @@ public class HttpRequestFunctionApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class HttpRequestFunctionApplication {
+	static class HttpRequestFunctionTestApplication {
 	}
 }

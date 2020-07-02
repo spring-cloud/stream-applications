@@ -82,7 +82,7 @@ public class FtpSupplierTests extends FtpTestSupport {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class FtpSupplierTestApplication {
 
 		// These properties can be moved into the SpringBootApplication annotation, but providing here
 		// as a way to demonstrate how we can provide ConfigurationProperties as a bean in the application itself

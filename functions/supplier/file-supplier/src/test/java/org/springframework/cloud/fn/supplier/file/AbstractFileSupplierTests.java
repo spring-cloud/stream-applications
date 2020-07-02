@@ -56,6 +56,6 @@ public class AbstractFileSupplierTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class FileSupplierTestApplication {
 	}
 }

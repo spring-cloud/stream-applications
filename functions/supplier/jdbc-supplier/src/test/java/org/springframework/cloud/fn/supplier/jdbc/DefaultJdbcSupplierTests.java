@@ -77,6 +77,6 @@ public class DefaultJdbcSupplierTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class JdbcSupplierTestApplication {
 	}
 }

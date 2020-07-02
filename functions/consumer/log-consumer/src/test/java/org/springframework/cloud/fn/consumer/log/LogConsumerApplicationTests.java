@@ -87,6 +87,6 @@ class LogConsumerApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class LogConsumerTestApplication {
 	}
 }

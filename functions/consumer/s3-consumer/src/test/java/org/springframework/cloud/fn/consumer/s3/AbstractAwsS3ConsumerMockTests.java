@@ -103,7 +103,7 @@ public abstract class AbstractAwsS3ConsumerMockTests {
 	}
 
 	@SpringBootApplication
-	public static class S3ConsumerApplication {
+	public static class S3ConsumerTestApplication {
 
 		@Bean
 		public CountDownLatch aclLatch() {

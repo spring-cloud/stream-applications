@@ -262,7 +262,7 @@ public abstract class TwitterGeoFunctionTest {
 	@SpringBootConfiguration
 	@EnableAutoConfiguration
 	@Import(TwitterGeoFunctionConfiguration.class)
-	public static class TestTwitterGeoProcessorApplication {
+	public static class TwitterGeoFunctionTestApplication {
 		@Bean
 		@Primary
 		public twitter4j.conf.Configuration twitterConfiguration2(TwitterConnectionProperties properties,

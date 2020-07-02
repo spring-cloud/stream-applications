@@ -87,6 +87,6 @@ class MongoDbConsumerApplicationTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class MongoDbConsumerTestApplication {
 	}
 }

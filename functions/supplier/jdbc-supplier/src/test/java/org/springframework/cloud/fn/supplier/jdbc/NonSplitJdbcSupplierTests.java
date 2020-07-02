@@ -59,6 +59,6 @@ public class NonSplitJdbcSupplierTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class JdbcSupplierTestApplication {
 	}
 }

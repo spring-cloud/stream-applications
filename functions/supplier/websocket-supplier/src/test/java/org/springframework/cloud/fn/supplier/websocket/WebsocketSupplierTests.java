@@ -97,6 +97,6 @@ public class WebsocketSupplierTests {
 	}
 
 	@SpringBootApplication
-	static class TestApplication {
+	static class WebsocketSupplierTestApplication {
 	}
 }

@@ -187,7 +187,7 @@ public abstract class TwitterUsersFunctionTests {
 	@SpringBootConfiguration
 	@EnableAutoConfiguration
 	@Import(TwitterUsersFunctionConfiguration.class)
-	static class TestTwitterUsersApplication {
+	static class TwitterUsersFunctionTestApplication {
 		@Bean
 		@Primary
 		public twitter4j.conf.Configuration twitterConfiguration2(TwitterConnectionProperties properties,
