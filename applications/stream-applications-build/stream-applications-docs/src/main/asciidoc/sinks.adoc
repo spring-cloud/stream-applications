@@ -9,6 +9,9 @@ include::{stream-apps-root}/{branch}/applications/sink/cassandra-sink/README.ado
 [[spring-cloud-stream-modules-analytics-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/analytics-sink/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-wavefront-sink]]
+include::{stream-apps-root}/{branch}/applications/sink/wavefront-sink/README.adoc[tags=ref-doc]
+
 [[spring-cloud-stream-modules-file-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/file-sink/README.adoc[tags=ref-doc]
 
