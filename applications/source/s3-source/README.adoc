@@ -55,7 +55,6 @@ $$file.consumer.mode$$:: $$The FileReadingMode to use for file reading sources. 
 $$file.consumer.with-markers$$:: $$Set to true to emit start of file/end of file marker messages before/after the data. Only valid with FileReadingMode 'lines'.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$s3.supplier.auto-create-local-dir$$:: $$Create or not the local directory.$$ *($$Boolean$$, default: `$$true$$`)*
 $$s3.supplier.delete-remote-files$$:: $$Delete or not remote files after processing.$$ *($$Boolean$$, default: `$$false$$`)*
-$$s3.supplier.endpoint-url$$:: $$S3 endpoint url to connect to s3 compatible storage.$$ *($$String$$, default: `$$<none>$$`)*
 $$s3.supplier.filename-pattern$$:: $$The pattern to filter remote files.$$ *($$String$$, default: `$$<none>$$`)*
 $$s3.supplier.filename-regex$$:: $$The regexp to filter remote files.$$ *($$Pattern$$, default: `$$<none>$$`)*
 $$s3.supplier.local-dir$$:: $$The local directory to store files.$$ *($$File$$, default: `$$<none>$$`)*

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,29 +17,35 @@
 package org.springframework.cloud.fn.common.aws.s3;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.cloud.aws.context.annotation.ConditionalOnMissingAmazonClient;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.aws.core.region.RegionProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /**
- * @author Artem Bilan
+ * @author Timo Salm
  */
 @Configuration
-@ConditionalOnMissingAmazonClient(AmazonS3.class)
-public class AmazonS3Configuration {
+@EnableConfigurationProperties(AmazonS3Properties.class)
+public class CompatibleStorageAmazonS3Configuration {
 
 	@Bean
-	@ConditionalOnMissingBean
-	public AmazonS3 amazonS3(AWSCredentialsProvider awsCredentialsProvider, RegionProvider regionProvider) {
-		return AmazonS3ClientBuilder.standard()
+	@Primary
+	@ConditionalOnProperty("s3.common.endpoint-url")
+	public AmazonS3 compatibleStorageAmazonS3(AWSCredentialsProvider awsCredentialsProvider, RegionProvider regionProvider,
+							AmazonS3Properties amazonS3Properties) {
+		final AmazonS3ClientBuilder builder = AmazonS3ClientBuilder.standard();
+		final EndpointConfiguration endpointConfiguration = new EndpointConfiguration(
+				amazonS3Properties.getEndpointUrl(), regionProvider.getRegion().getName());
+		builder.setEndpointConfiguration(endpointConfiguration);
+		return builder
 				.withCredentials(awsCredentialsProvider)
-				.withRegion(regionProvider.getRegion().getName())
 				.build();
 	}
-
 }

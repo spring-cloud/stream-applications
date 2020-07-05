@@ -80,11 +80,6 @@ public class AwsS3SupplierProperties {
 	 */
 	private boolean preserveTimestamp = true;
 
-	/**
-	 * S3 endpoint url to connect to s3 compatible storage.
-	 */
-	private String endpointUrl;
-
 	@Length(min = 3)
 	public String getRemoteDir() {
 		return this.remoteDir;
@@ -159,14 +154,6 @@ public class AwsS3SupplierProperties {
 
 	public void setPreserveTimestamp(boolean preserveTimestamp) {
 		this.preserveTimestamp = preserveTimestamp;
-	}
-
-	public String getEndpointUrl() {
-		return endpointUrl;
-	}
-
-	public void setEndpointUrl(String endpointUrl) {
-		this.endpointUrl = endpointUrl;
 	}
 
 	@AssertTrue(message = "filenamePattern and filenameRegex are mutually exclusive")
