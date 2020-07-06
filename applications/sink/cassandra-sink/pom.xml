@@ -24,7 +24,6 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>cassandra-consumer</artifactId>
-            <version>${java-functions.version}</version>
         </dependency>
     </dependencies>
 
@@ -51,7 +50,6 @@
                         <dependency>
                             <groupId>org.springframework.cloud.fn</groupId>
                             <artifactId>cassandra-consumer</artifactId>
-                            <version>${java-functions.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>

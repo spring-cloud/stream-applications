@@ -20,7 +20,6 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>analytics-consumer</artifactId>
-            <version>${java-functions.version}</version>
         </dependency>
 
         <dependency>
@@ -68,7 +67,6 @@
                         <dependency>
                             <groupId>org.springframework.cloud.fn</groupId>
                             <artifactId>analytics-consumer</artifactId>
-                            <version>${java-functions.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>

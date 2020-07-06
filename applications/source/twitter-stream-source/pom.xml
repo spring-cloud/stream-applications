@@ -19,12 +19,10 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>twitter-supplier</artifactId>
-            <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>function-test-support</artifactId>
-            <version>${java-functions.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -63,7 +61,6 @@
                         <dependency>
                             <groupId>org.springframework.cloud.fn</groupId>
                             <artifactId>twitter-supplier</artifactId>
-                            <version>${java-functions.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>

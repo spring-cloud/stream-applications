@@ -24,7 +24,6 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>s3-consumer</artifactId>
-            <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
@@ -53,7 +52,6 @@
                         <dependency>
                             <groupId>org.springframework.cloud.fn</groupId>
                             <artifactId>s3-consumer</artifactId>
-                            <version>${java-functions.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>

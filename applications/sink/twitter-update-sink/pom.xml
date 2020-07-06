@@ -24,7 +24,6 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>twitter-consumer</artifactId>
-            <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
@@ -72,7 +71,6 @@
                         <dependency>
                             <groupId>org.springframework.cloud.fn</groupId>
                             <artifactId>twitter-consumer</artifactId>
-                            <version>${java-functions.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>

@@ -35,7 +35,6 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>image-recognition-function</artifactId>
-            <version>${java-functions.version}</version>
         </dependency>
 
     </dependencies>
@@ -62,7 +61,6 @@
                         <dependency>
                             <groupId>org.springframework.cloud.stream.app</groupId>
                             <artifactId>image-recognition-processor</artifactId>
-                            <version>${project.version}</version>
                         </dependency>
                     </dependencies>
 

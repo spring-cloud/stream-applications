@@ -24,7 +24,6 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>mqtt-consumer</artifactId>
-            <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -54,7 +53,6 @@
                         <dependency>
                             <groupId>org.springframework.cloud.fn</groupId>
                             <artifactId>mqtt-consumer</artifactId>
-                            <version>${java-functions.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>

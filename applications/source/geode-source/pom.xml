@@ -20,7 +20,6 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>geode-supplier</artifactId>
-            <version>${java-functions.version}</version>
         </dependency>
 
         <dependency>
@@ -38,7 +37,6 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>function-test-support</artifactId>
-            <version>${java-functions.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -65,12 +63,11 @@
                         <dependency>
                             <groupId>org.springframework.cloud.fn</groupId>
                             <artifactId>geode-supplier</artifactId>
-                            <version>${java-functions.version}</version>
                         </dependency>
                         <dependency>
                             <groupId>org.springframework.cloud.stream.app</groupId>
                             <artifactId>stream-applications-composite-function-support</artifactId>
-                            <version>${project.version}</version>
+                            <version>${stream-apps-core.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>

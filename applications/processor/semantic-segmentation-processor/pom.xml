@@ -36,12 +36,10 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>semantic-segmentation-function</artifactId>
-            <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>object-detection-function</artifactId>
-            <version>${java-functions.version}</version>
         </dependency>
 
     </dependencies>

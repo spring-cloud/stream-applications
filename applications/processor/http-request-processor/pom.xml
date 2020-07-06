@@ -34,7 +34,6 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>http-request-function</artifactId>
-            <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
@@ -70,7 +69,6 @@
                         <dependency>
                             <groupId>org.springframework.cloud.stream.app</groupId>
                             <artifactId>http-request-processor</artifactId>
-                            <version>${project.version}</version>
                         </dependency>
                     </dependencies>
 
