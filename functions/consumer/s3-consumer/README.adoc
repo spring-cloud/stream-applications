@@ -14,8 +14,10 @@ You can use `s3Consumer` as a qualifier when injecting.
 ## Configuration Options
 
 All configuration properties are prefixed with `s3.consumer`.
+There are also properties that need to be used with the prefix `s3.common`.
 
-For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/s3/AwsS3ConsumerProperties.java[AwsS3ConsumerProperties].
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/s3/AwsS3ConsumerProperties.java[AwsS3ConsumerProperties] and
+link:../../common/aws-s3-common/src/main/java/org/springframework/cloud/fn/common/aws/s3/AmazonS3Properties.java[AmazonS3Properties].
 
 ## Examples
 
