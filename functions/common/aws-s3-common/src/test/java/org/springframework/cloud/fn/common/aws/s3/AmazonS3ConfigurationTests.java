@@ -55,12 +55,12 @@ public class AmazonS3ConfigurationTests {
 	@Test
 	public void testAmazonS3ConfigurationForS3CompatibleStorage() {
 		runner.withPropertyValues(
-				"s3.common.endpoint-url=https://object.ecstestdrive.com"
+				"s3.common.endpoint-url=http://localhost:8080"
 		).run(context -> {
 			final AmazonS3Client amazonS3 = (AmazonS3Client) context.getBean(AmazonS3.class);
 			Assertions.assertNotNull(amazonS3);
 			Assertions.assertTrue(amazonS3.getResourceUrl("b", "k")
-					.startsWith("https://object.ecstestdrive.com"));
+					.startsWith("http://localhost:8080"));
 		});
 	}
 
