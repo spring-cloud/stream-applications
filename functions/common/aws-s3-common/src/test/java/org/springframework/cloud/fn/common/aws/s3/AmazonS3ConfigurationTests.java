@@ -36,8 +36,8 @@ import org.springframework.context.annotation.Bean;
 public class AmazonS3ConfigurationTests {
 
 	private final ApplicationContextRunner runner = new ApplicationContextRunner()
-			.withConfiguration(UserConfigurations.of(AmazonS3Configuration.class,
-					CompatibleStorageAmazonS3Configuration.class, TestConfiguration.class));
+			.withConfiguration(UserConfigurations.of(CompatibleStorageAmazonS3Configuration.class,
+					AmazonS3Configuration.class, TestConfiguration.class));
 
 	private final String testRegionName = "eu-central-1";
 

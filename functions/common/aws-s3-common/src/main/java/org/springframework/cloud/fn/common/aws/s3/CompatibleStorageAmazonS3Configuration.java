@@ -21,22 +21,22 @@ import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.aws.core.region.RegionProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 /**
  * @author Timo Salm
  */
 @Configuration
 @EnableConfigurationProperties(AmazonS3Properties.class)
+@AutoConfigureBefore(AmazonS3Configuration.class)
 public class CompatibleStorageAmazonS3Configuration {
 
 	@Bean
-	@Primary
 	@ConditionalOnProperty("s3.common.endpoint-url")
 	public AmazonS3 compatibleStorageAmazonS3(AWSCredentialsProvider awsCredentialsProvider, RegionProvider regionProvider,
 							AmazonS3Properties amazonS3Properties) {
