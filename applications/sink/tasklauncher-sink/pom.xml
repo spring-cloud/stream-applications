@@ -51,6 +51,7 @@
                         <dependency>
                             <groupId>org.springframework.cloud.stream.app</groupId>
                             <artifactId>tasklauncher-sink</artifactId>
+                            <version>${project.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>

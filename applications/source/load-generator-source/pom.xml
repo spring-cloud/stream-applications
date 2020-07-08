@@ -50,6 +50,7 @@
                         <dependency>
                             <groupId>org.springframework.cloud.stream.app</groupId>
                             <artifactId>load-generator-source</artifactId>
+                            <version>${project.version}</version>
                         </dependency>
                     </dependencies>
                 </configuration>
