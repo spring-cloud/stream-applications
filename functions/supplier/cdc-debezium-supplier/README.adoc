@@ -1,0 +1,45 @@
+# CDC Debezium Supplier
+
+This module provides a CDC Debezium supplier that can be reused and composed in other applications.
+The `Supplier` uses the `Debezium` library.
+`cdcSupplier` is implemented as a `java.util.function.Supplier`.
+This supplier gives you a reactive stream from CDC sources. The supplier has a signature of `Supplier<Flux<Message<?>>>`.
+Users have to subscribe to this `Flux` and then receive the data.
+
+https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) `source` that captures and streams change events from various databases.
+Currently, it supports `MySQL`, `PostgreSQL`, `MongoDB`, `Oracle` and `SQL Server` databases.
+
+Build upon https://debezium.io/docs/embedded/[Debezium Embedded Connector], the `CDC Source` allows capturing and streaming database changes over different message binders such Apache Kafka, RabbitMQ and all Spring Cloud Stream supporter brokers.
+
+## Beans for injection
+
+You can import the `CdcSupplierConfiguration` in the application and then inject the following bean.
+
+`cdcSupplier`
+
+You need to inject this as `Supplier<Flux<Message<?>>>`.
+
+You can use `cdcSupplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it and then subscribe to the returned `Flux`.
+
+## Configuration Options
+
+All configuration properties are prefixed with `cdc`.
+Use the `cdc.config.` prefix to inject native, Debezium properties. Convenient shortcuts for the most frequently used
+Debezium properties are available.
+Uses `BackingOffsetStore` configuration, based on the [MetadataStore](https://github.com/spring-cloud/stream-applications/tree/master/functions/common/metadata-store-common) service.
+Later provides various microservices friendly ways for storing the offset metadata.
+
+For more information on the various options available, please see:
+ * link:../../common/cdc-debezium-common/src/main/java/org/springframework/cloud/fn/common/cdc/CdcCommonProperties.java[CdcCommonProperties].
+ * link:src/main/java/org/springframework/cloud/fn/supplier/cdc-debezium-supplier/CdcSupplierProperties.java[CdcSupplierProperties].
+
+## Examples
+See this link:../../../applications/source/cdc-debezium-source/src/test/java/org/springframework/cloud/stream/app/source/cdc[test suite] for the various ways, this supplier is used.
+
+## Other usage
+
+See this link:../../../applications/source/cdc-debezium-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream CDC Source.
+
+Also check link:../../common/cdc-debezium-boot-starter/README.adoc[README] to see how the core CDC can be used a Spring Boot Starter.

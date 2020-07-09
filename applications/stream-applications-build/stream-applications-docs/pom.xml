@@ -28,6 +28,11 @@
 		<!-- common javadocs -->
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>cdc-debezium-common</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>file-common</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
@@ -62,6 +67,11 @@
 			<version>${java-functions.version}</version>
 		</dependency>
 		<!-- supplier javadocs -->
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>cdc-debezium-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>file-supplier</artifactId>

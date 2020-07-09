@@ -51,6 +51,8 @@
 		<module>common/tcp-common</module>
 		<module>common/twitter-common</module>
 		<module>common/tensorflow-common</module>
+		<module>common/cdc-debezium-common</module>
+		<module>common/cdc-debezium-boot-starter</module>
 
 		<module>consumer/cassandra-consumer</module>
 		<module>consumer/analytics-consumer</module>
@@ -98,6 +100,7 @@
 		<module>supplier/websocket-supplier</module>
 		<module>supplier/s3-supplier</module>
 		<module>supplier/twitter-supplier</module>
+		<module>supplier/cdc-debezium-supplier</module>
 
 		<module>spring-functions-parent</module>
 		<module>function-dependencies</module>

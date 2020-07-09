@@ -1,0 +1,20 @@
+{
+  "source": {
+    "version": "${json-unit.ignore}",
+    "connector": "mysql",
+    "name": "my-app-connector",
+    "ts_ms": 0,
+    "snapshot": "true",
+    "db": "inventory",
+    "table": "addresses",
+    "server_id": 0,
+    "gtid": null,
+    "file": "${json-unit.ignore}",
+    "pos": "${json-unit.ignore}",
+    "row": 0,
+    "thread": null,
+    "query": null
+  },
+  "databaseName": "inventory",
+  "ddl": "DROP TABLE IF EXISTS `inventory`.`addresses`"
+}

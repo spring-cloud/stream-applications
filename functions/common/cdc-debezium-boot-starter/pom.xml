@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>cdc-debezium-boot-starter</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>cdc-debezium-boot-starter</name>
+	<description>Change Data Capture (CDC) Debezium Boot Starter</description>
+
+	<parent>
+		<groupId>org.springframework.cloud.fn</groupId>
+		<artifactId>spring-functions-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../../spring-functions-parent</relativePath>
+	</parent>
+
+	<properties>
+		<version.debezium>1.2.1.Final</version.debezium>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>cdc-debezium-common</artifactId>
+			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- -->
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-mysql</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>mysql-connector-java</artifactId>
+					<groupId>mysql</groupId>
+				</exclusion>
+			</exclusions>
+			<version>${version.debezium}</version>
+		</dependency>
+
+<!--		<dependency>-->
+<!--			<groupId>io.debezium</groupId>-->
+<!--			<artifactId>debezium-connector-mongodb</artifactId>-->
+<!--			<exclusions>-->
+<!--				<exclusion>-->
+<!--					<artifactId>slf4j-log4j12</artifactId>-->
+<!--					<groupId>org.slf4j</groupId>-->
+<!--				</exclusion>-->
+<!--			</exclusions>-->
+<!--			<version>${version.debezium}</version>-->
+<!--		</dependency>-->
+
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-postgres</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+			<version>${version.debezium}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-oracle</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+			<version>${version.debezium}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-sqlserver</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+			<version>${version.debezium}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.13</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.33.0</version>
+				<configuration>
+					<images>
+						<image>
+							<alias>mysql</alias>
+							<name>debezium/example-mysql:1.0</name>
+							<run>
+								<env>
+									<MYSQL_ROOT_PASSWORD>debezium</MYSQL_ROOT_PASSWORD>
+									<MYSQL_USER>mysqluser</MYSQL_USER>
+									<MYSQL_PASSWORD>mysqlpw</MYSQL_PASSWORD>
+								</env>
+								<ports>
+									<port>3306:3306</port>
+								</ports>
+								<wait>
+									<log>port: 3306</log>
+									<time>30000</time>
+								</wait>
+							</run>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>start</id>
+						<!--<phase>pre-integration-test</phase>-->
+						<phase>generate-test-resources</phase>
+						<goals>
+							<goal>build</goal>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>stop-pre</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
