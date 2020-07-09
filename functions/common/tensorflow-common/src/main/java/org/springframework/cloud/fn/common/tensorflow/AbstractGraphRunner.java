@@ -22,10 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.Validate;
 import org.tensorflow.Session;
 import org.tensorflow.Tensor;
-
-import org.springframework.util.Assert;
 
 /**
  * @author Christian Tzolov
@@ -103,8 +102,8 @@ public abstract class AbstractGraphRunner implements Function<Map<String, Tensor
 		return this.feedNames;
 	}
 
-	public String getSingleøøƶFeedName() {
-		Assert.isTrue(feedNames.size() == 1, "Assumes a single feed input");
+	public String getSingleFeedName() {
+		Validate.isTrue(feedNames.size() == 1, "Assumes a single feed input");
 		return this.feedNames.get(0);
 	}
 
@@ -113,7 +112,7 @@ public abstract class AbstractGraphRunner implements Function<Map<String, Tensor
 	}
 
 	public String getSingleFetchName() {
-		Assert.isTrue(this.fetchNames.size() == 1, "Assumes a single fetch output");
+		Validate.isTrue(this.fetchNames.size() == 1, "Assumes a single fetch output");
 		return this.fetchNames.get(0);
 	}
 

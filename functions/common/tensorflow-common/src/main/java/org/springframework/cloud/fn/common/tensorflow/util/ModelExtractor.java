@@ -36,12 +36,13 @@ import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
-import org.springframework.util.StreamUtils;
-import org.springframework.util.StringUtils;
+
 
 /**
  * Extracts a pre-trained (frozen) Tensorflow model URI into byte array. The 'http://', 'file://' and 'classpath://'
@@ -79,7 +80,7 @@ public class ModelExtractor {
 
 	public byte[] getModel(Resource modelResource) {
 
-		Assert.notNull(modelResource, "Not null model resource is required!");
+		Validate.notNull(modelResource, "Not null model resource is required!");
 
 		try (InputStream is = modelResource.getInputStream(); InputStream bi = new BufferedInputStream(is)) {
 
@@ -88,27 +89,28 @@ public class ModelExtractor {
 			String compressor = archiveCompressor[1];
 			String fragment = modelResource.getURI().getFragment();
 
-			if (StringUtils.hasText(compressor)) {
+
+			if (StringUtils.isNotBlank(compressor)) {
 				try (CompressorInputStream cis = new CompressorStreamFactory().createCompressorInputStream(compressor, bi)) {
-					if (StringUtils.hasText(archive)) {
+					if (StringUtils.isNotBlank(archive)) {
 						try (ArchiveInputStream ais = new ArchiveStreamFactory().createArchiveInputStream(archive, cis)) {
 							// Compressor fromMemory Archive
 							return findInArchiveStream(fragment, ais);
 						}
 					}
 					else { // Compressor only
-						return StreamUtils.copyToByteArray(cis);
+						return IOUtils.toByteArray(cis);
 					}
 				}
 			}
-			else if (StringUtils.hasText(archive)) { // Archive only
+			else if (StringUtils.isNotBlank(archive)) { // Archive only
 				try (ArchiveInputStream ais = new ArchiveStreamFactory().createArchiveInputStream(archive, bi)) {
 					return findInArchiveStream(fragment, ais);
 				}
 			}
 			else {
 				// No compressor nor Archive
-				return StreamUtils.copyToByteArray(bi);
+				return IOUtils.toByteArray(bi);
 			}
 		}
 		catch (Exception e) {
@@ -131,9 +133,9 @@ public class ModelExtractor {
 			//System.out.println(entry.getName() + " : " + entry.isDirectory());
 
 			if (archive.canReadEntryData(entry) && !entry.isDirectory()) {
-				if ((StringUtils.hasText(modelFileNameInArchive) && entry.getName().endsWith(modelFileNameInArchive)) ||
-						(!StringUtils.hasText(modelFileNameInArchive) && entry.getName().endsWith(this.frozenGraphFileExtension))) {
-					return StreamUtils.copyToByteArray(archive);
+				if ((StringUtils.isNotBlank(modelFileNameInArchive) && entry.getName().endsWith(modelFileNameInArchive)) ||
+						(!StringUtils.isNotBlank(modelFileNameInArchive) && entry.getName().endsWith(this.frozenGraphFileExtension))) {
+					return IOUtils.toByteArray(archive);
 				}
 			}
 		}

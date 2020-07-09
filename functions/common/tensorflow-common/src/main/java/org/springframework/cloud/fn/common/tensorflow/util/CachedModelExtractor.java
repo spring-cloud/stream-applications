@@ -19,15 +19,15 @@ package org.springframework.cloud.fn.common.tensorflow.util;
 import java.io.File;
 import java.io.FileInputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StreamUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * Extends the {@link ModelExtractor} to allow keeping a local copy (cache) of the loaded model (protobuf) files.
@@ -72,7 +72,7 @@ public class CachedModelExtractor extends ModelExtractor {
 				rootFolder.mkdirs();
 			}
 
-			Assert.isTrue(rootFolder.isDirectory(), "The cache root folder must be a Directory");
+			Validate.isTrue(rootFolder.isDirectory(), "The cache root folder must be a Directory");
 
 			String fileName = modelResource.getFilename();
 			String fragment = modelResource.getURI().getFragment();
@@ -80,13 +80,13 @@ public class CachedModelExtractor extends ModelExtractor {
 					new File(rootFolder, fileName + "_" + fragment);
 			if (cachedFile.exists()) {
 				logger.info("Load model " + modelResource.toString() + " from cache: " + cacheRootDirectory);
-				return StreamUtils.copyToByteArray(new FileInputStream(cachedFile));
+				return IOUtils.toByteArray(new FileInputStream(cachedFile));
 			}
 
 			byte[] model = super.getModel(modelResource);
 
 			// cache the file
-			FileCopyUtils.copy(model, cachedFile);
+			FileUtils.writeByteArrayToFile(cachedFile, model);
 			logger.info("Caching the " + modelResource.toString() + " model at: " + cachedFile);
 
 			return model;

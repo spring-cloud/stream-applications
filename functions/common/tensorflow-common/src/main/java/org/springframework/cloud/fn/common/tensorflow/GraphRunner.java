@@ -19,11 +19,11 @@ package org.springframework.cloud.fn.common.tensorflow;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.Validate;
 import org.tensorflow.SavedModelBundle;
 import org.tensorflow.Session;
 import org.tensorflow.op.Ops;
 
-import org.springframework.util.Assert;
 
 /**
  * @author Christian Tzolov
@@ -36,6 +36,7 @@ public class GraphRunner extends AbstractGraphRunner implements AutoCloseable {
 	public GraphRunner(List<String> feedNames, String fetchedName) {
 		super(feedNames, Arrays.asList(fetchedName));
 	}
+
 	public GraphRunner(String feedName, List<String> fetchedNames) {
 		super(Arrays.asList(feedName), fetchedNames);
 	}
@@ -68,7 +69,7 @@ public class GraphRunner extends AbstractGraphRunner implements AutoCloseable {
 	}
 
 	public GraphRunner withGraphDefinition(GraphDefinition graphDefinition) {
-		Assert.isNull(this.savedModelBundle, "Either SavedModel or GraphDefinition can be set! " +
+		Validate.isTrue(this.savedModelBundle == null, "Either SavedModel or GraphDefinition can be set! " +
 				"SavedModelBundle is found: " + this.savedModelBundle);
 
 		this.autoCloseableSession = new AutoCloseableSession() {
@@ -82,7 +83,7 @@ public class GraphRunner extends AbstractGraphRunner implements AutoCloseable {
 	}
 
 	public GraphRunner withSavedModel(String savedModelDir, String... tags) {
-		Assert.isNull(this.autoCloseableSession, "Either SavedModel or GraphDefinition can be set! " +
+		Validate.isTrue(this.autoCloseableSession == null, "Either SavedModel or GraphDefinition can be set! " +
 				"AutoCloseableSession is found: " + this.autoCloseableSession);
 		this.savedModelBundle = SavedModelBundle.load(savedModelDir, tags);
 		return this;

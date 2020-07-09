@@ -33,9 +33,11 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
+
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
-import org.springframework.util.StreamUtils;
+
 
 /**
  * Utility class used to provide some handy image manipulation functions. Among others it can provide contrast colors
@@ -617,7 +619,7 @@ public final class GraphicsUtils {
 
 	public static byte[] toImageToBytes(String imageUri) throws IOException {
 		try (InputStream is = new DefaultResourceLoader().getResource(imageUri).getInputStream()) {
-			return StreamUtils.copyToByteArray(is);
+			return IOUtils.toByteArray(is);
 		}
 	}
 
@@ -630,7 +632,7 @@ public final class GraphicsUtils {
 	public static byte[] loadAsByteArray(String resourceUri) throws IOException {
 		Resource expectedPoseResponse = new DefaultResourceLoader().getResource(resourceUri);
 		try (InputStream is = expectedPoseResponse.getInputStream()) {
-			return StreamUtils.copyToByteArray(is);
+			return IOUtils.toByteArray(is);
 		}
 	}
 
