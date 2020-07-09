@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>cdc-debezium-common</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>cdc-debezium-common</name>
+	<description>Change Data Capture (CDC) Debezium Common</description>
+
+	<parent>
+		<groupId>org.springframework.cloud.fn</groupId>
+		<artifactId>spring-functions-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../../spring-functions-parent</relativePath>
+	</parent>
+
+	<properties>
+		<version.debezium>1.2.1.Final</version.debezium>
+		<!-- Note: postgresql version MUST match the version used by the Debezium postgres connector -->
+		<postgresql.version>42.2.5</postgresql.version>
+		<spring-jdbc.version>5.2.1.RELEASE</spring-jdbc.version>
+		<!-- Debezium requires a particular mysql-connector version -->
+		<mysql-connector-java>5.1.46</mysql-connector-java>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-embedded</artifactId>
+			<version>${version.debezium}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-mysql</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>mysql-connector-java</artifactId>
+					<groupId>mysql</groupId>
+				</exclusion>
+			</exclusions>
+			<optional>true</optional>
+			<version>${version.debezium}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<optional>true</optional>
+			<version>${mysql-connector-java}</version>
+		</dependency>
+
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.kafka</groupId>-->
+<!--			<artifactId>spring-kafka</artifactId>-->
+<!--			<version>${spring-kafka.version}</version>-->
+<!--			<optional>true</optional>-->
+<!--		</dependency>-->
+
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-postgres</artifactId>
+			<optional>true</optional>
+			<version>${version.debezium}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-mongodb</artifactId>
+			<optional>true</optional>
+			<version>${version.debezium}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-oracle</artifactId>
+			<optional>true</optional>
+			<version>${version.debezium}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-sqlserver</artifactId>
+			<optional>true</optional>
+			<version>${version.debezium}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>metadata-store-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-json</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-ip</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>config-common</artifactId>
+			<version>${spring-cloud-fn.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+</project>

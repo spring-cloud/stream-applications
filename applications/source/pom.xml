@@ -28,5 +28,6 @@
         <module>twitter-search-source</module>
         <module>twitter-message-source</module>
         <module>websocket-source</module>
+        <module>cdc-debezium-source</module>
     </modules>
 </project>

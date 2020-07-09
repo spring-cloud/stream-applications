@@ -1,0 +1,274 @@
+//tag::ref-doc[]
+= CDC Source
+
+https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) `source` that captures and streams change events from various databases.
+Currently, it supports `MySQL`, `PostgreSQL`, `MongoDB`, `Oracle` and `SQL Server` databases.
+
+Build upon https://debezium.io/docs/embedded/[Debezium Embedded Connector], the `CDC Source` allows capturing and streaming database changes over different message binders such Apache Kafka, RabbitMQ and all Spring Cloud Stream supporter brokers.
+
+It supports all Debezium configuration properties. Just add the `cdc.config.` prefix to the existing Debezium properties. For example to set the Debezium's `connector.class` property use the `cdc.config.connector.class` source property instead.
+
+We provide convenient shortcuts for the most frequently used Debezium properties. For example instead of the long `cdc.config.connector.class=io.debezium.connector.mysql.MySqlConnector` Debezium property you can use our `cdc.connector=mysql` shortcut. The table below lists all available shortcuts along with the Debezium properties they represent.
+The Debezium properties (e.g. `cdc.config.XXX`) always have precedence over the shortcuts!
+
+The CDC Source introduces a new default `BackingOffsetStore` configuration, based on the [MetadataStore](https://github.com/spring-cloud/stream-applications/tree/master/functions/common/metadata-store-common) service. Later provides various microservices friendly ways for storing the offset metadata.
+
+== Options
+
+//tag::configuration-properties[]
+//end::configuration-properties[]
+
+==== Debezium property Shortcut mapping
+
+The table below lists all available shortcuts along with the Debezium properties they represent.
+
+.Table Shortcut Properties Mapping
+|===
+| Shortcut | Original | Description
+
+|cdc.connector
+|cdc.config.connector.class
+|`mysql` : MySqlConnector, `postgres` : PostgresConnector, `mongodb` : MongodbSourceConnector, `oracle` : OracleConnector, `sqlserver` : SqlServerConnector
+
+|cdc.name
+|cdc.config.name
+|
+
+|cdc.offset.flush-interval
+|cdc.config.offset.flush.interval.ms
+|
+
+|cdc.offset.commit-timeout
+|cdc.config.offset.flush.timeout.ms
+|
+
+|cdc.offset.policy
+|cdc.config.offset.commit.policy
+|`periodic` : PeriodicCommitOffsetPolicy, `always` : AlwaysCommitOffsetPolicy
+
+|cdc.offset.storage
+|cdc.config.offset.storage
+|`metadata` : MetadataStoreOffsetBackingStore, `file` : FileOffsetBackingStore, `kafka` : KafkaOffsetBackingStore, `memory` : MemoryOffsetBackingStore
+
+|cdc.flattering.drop-tombstones
+|cdc.config.drop.tombstones
+|
+
+|cdc.flattering.delete-handling-mode
+|cdc.config.delete.handling.mode
+|`none` : none, `drop` : drop, `rewrite` : rewrite
+
+|===
+
+== Database Support
+
+The `CDC Source` uses the Debezium utilities, and currently supports CDC for five datastores: `MySQL`, `PostgreSQL`, `MongoDB`, `Oracle` and `SQL Server` databases.
+
+== Examples and Testing
+
+The [CdcSourceIntegrationTest](), [CdcDeleteHandlingIntegrationTest]() and [CdcFlatteringIntegrationTest]() integration tests use test databases fixtures, running on the local machine.
+We use pre-build debezium docker database images.
+The Maven builds create the test databases fixtures with the help of the  `docker-maven-plugin`.
+
+To run and debug the tests from your IDE you need to deploy the required database images from the command line.
+Instructions below explains how to run pre-configured test databases form Docker images.
+
+==== MySQL
+
+Start the `debezium/example-mysql` in a docker:
+[source, bash]
+----
+docker run -it --rm --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql:1.0
+----
+
+[TIP]
+====
+(optional) Use `mysql` client to connected to the database and to create a `debezium` user with required credentials:
+[source, bash]
+----
+docker run -it --rm --name mysqlterm --link mysql --rm mysql:5.7 sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+mysql> GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'debezium' IDENTIFIED BY 'dbz';
+----
+====
+
+Use following properties to connect the CDC Source to the MySQL DB:
+
+[source]
+----
+cdc.connector=mysql # <1>
+
+cdc.name=my-sql-connector # <2>
+cdc.config.database.server.id=85744 # <2>
+cdc.config.database.server.name=my-app-connector # <2>
+
+cdc.config.database.user=debezium  # <3>
+cdc.config.database.password=dbz # <3>
+cdc.config.database.hostname=localhost # <3>
+cdc.config.database.port=3306 # <3>
+
+cdc.schema=true # <4>
+cdc.flattering.enabled=true # <5>
+----
+<1> Configures the CDC Source to use https://debezium.io/docs/connectors/mysql/[MySqlConnector]. (equivalent to setting `cdc.config.connector.class=io.debezium.connector.mysql.MySqlConnector`).
+<2> Metadata used to identify and dispatch the incoming events.
+<3> Connection to the MySQL server running on `localhost:3306` as `debezium` user.
+<4> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `SourceRecord` events.
+<5> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattering].
+
+You can run also the `CdcSourceIntegrationTests#CdcMysqlTests` using this mysql configuration.
+
+==== PostgreSQL
+
+Start a pre-configured postgres server from the `debezium/example-postgres:1.0` Docker image:
+[source, bash]
+----
+docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:1.0
+----
+
+You can connect to this server like this:
+[source, bash]
+----
+psql -U postgres -h localhost -p 5432
+----
+
+Use following properties to connect the CDC Source to the PostgreSQL:
+
+[source]
+----
+cdc.connector=postgres # <1>
+cdc.offset.storage=memory #<2>
+
+cdc.name=my-sql-connector # <3>
+cdc.config.database.server.id=85744 # <3>
+cdc.config.database.server.name=my-app-connector # <3>
+
+cdc.config.database.user=postgres  # <4>
+cdc.config.database.password=postgres # <4>
+cdc.config.database..dbname=postgres # <4>
+cdc.config.database.hostname=localhost # <4>
+cdc.config.database.port=5432 # <4>
+
+cdc.schema=true # <5>
+cdc.flattering.enabled=true # <6>
+----
+
+<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/postgresql/[PostgresConnector]. Equivalent for setting `cdc.config.connector.class=io.debezium.connector.postgresql.PostgresConnector`.
+<2> Configures the Debezium engine to use `memory` (e.g. `cdc.config.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore) backing offset store.
+<3> Metadata used to identify and dispatch the incoming events.
+<4> Connection to the PostgreSQL server running on `localhost:5432` as `postgres` user.
+<5> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `SourceRecord` events.
+<6> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattering].
+
+You can run also the `CdcSourceIntegrationTests#CdcPostgresTests` using this mysql configuration.
+
+==== MongoDB
+
+Start a pre-configured mongodb from the `debezium/example-mongodb:0.10` Docker image:
+[source, bash]
+----
+docker run -it --rm --name mongodb -p 27017:27017 -e MONGODB_USER=debezium -e MONGODB_PASSWORD=dbz  debezium/example-mongodb:0.10
+----
+
+Initialize the inventory collections
+[source, bash]
+----
+docker exec -it mongodb sh -c 'bash -c /usr/local/bin/init-inventory.sh'
+----
+
+In the `mongodb` terminal output, search for a log entry like `host: "3f95a8a6516e:27017"` :
+[source, bash]
+----
+2019-01-10T13:46:10.004+0000 I COMMAND  [conn1] command local.oplog.rs appName: "MongoDB Shell" command: replSetInitiate { replSetInitiate: { _id: "rs0", members: [ { _id: 0.0, host: "3f95a8a6516e:27017" } ] }, lsid: { id: UUID("5f477a16-d80d-41f2-9ab4-4ebecea46773") }, $db: "admin" } numYields:0 reslen:22 locks:{ Global: { acquireCount: { r: 36, w: 20, W: 2 }, acquireWaitCount: { W: 1 }, timeAcquiringMicros: { W: 312 } }, Database: { acquireCount: { r: 6, w: 4, W: 16 } }, Collection: { acquireCount: { r: 4, w: 2 } }, oplog: { acquireCount: { r: 2, w: 3 } } } protocol:op_msg 988ms
+----
+
+Add `127.0.0.1    3f95a8a6516e` entry to your `/etc/hosts`
+
+
+Use following properties to connect the CDC Source to the MongoDB:
+
+[source]
+----
+cdc.connector=mongodb # <1>
+cdc.offset.storage=memory #<2>
+
+cdc.config.mongodb.hosts=rs0/localhost:27017 # <3>
+cdc.config.mongodb.name=dbserver1 # <3>
+cdc.config.mongodb.user=debezium # <3>
+cdc.config.mongodb.password=dbz # <3>
+cdc.config.database.whitelist=inventory # <3>
+
+cdc.config.tasks.max=1 # <4>
+
+cdc.schema=true # <5>
+cdc.flattering.enabled=true # <6>
+----
+
+<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/mongodb/[MongoDB Connector]. This maps into `cdc.config.connector.class=io.debezium.connector.mongodb.MongodbSourceConnector`.
+<2> Configures the Debezium engine to use `memory` (e.g. `cdc.config.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore) backing offset store.
+<3> Connection to the MongoDB running on `localhost:27017` as `debezium` user.
+<4> https://debezium.io/docs/connectors/mongodb/#tasks
+<5> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `SourceRecord` events.
+<6> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattering].
+
+You can run also the `CdcSourceIntegrationTests#CdcPostgresTests` using this mysql configuration.
+
+==== SQL Server
+
+Start a `sqlserver` from the `debezium/example-postgres:1.0` Docker image:
+[source, bash]
+----
+docker run -it --rm --name sqlserver -p 1433:1433 -e ACCEPT_EULA=Y -e MSSQL_PID=Standard -e SA_PASSWORD=Password! -e MSSQL_AGENT_ENABLED=true microsoft/mssql-server-linux:2017-CU9-GDR2
+----
+
+Populate with sample data form  debezium's sqlserver tutorial:
+[source, bash]
+----
+wget https://raw.githubusercontent.com/debezium/debezium-examples/master/tutorial/debezium-sqlserver-init/inventory.sql
+cat ./inventory.sql | docker exec -i sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
+----
+
+Use following properties to connect the CDC Source to the SQLServer:
+
+[source]
+----
+cdc.connector=sqlserver # <1>
+cdc.offset.storage=memory #<2>
+
+cdc.name=my-sql-connector # <3>
+cdc.config.database.server.id=85744 # <3>
+cdc.config.database.server.name=my-app-connector # <3>
+
+cdc.config.database.user=sa  # <4>
+cdc.config.database.password=Password! # <4>
+cdc.config.database..dbname=testDB # <4>
+cdc.config.database.hostname=localhost # <4>
+cdc.config.database.port=1433 # <4>
+----
+
+<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/sqlserver/[SqlServerConnector]. Equivalent for setting `cdc.config.connector.class=io.debezium.connector.sqlserver.SqlServerConnector`.
+<2> Configures the Debezium engine to use `memory` (e.g. `cdc.config.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore) backing offset store.
+<3> Metadata used to identify and dispatch the incoming events.
+<4> Connection to the SQL Server running on `localhost:1433` as `sa` user.
+
+You can run also the `CdcSourceIntegrationTests#CdcSqlServerTests` using this mysql configuration.
+
+==== Oracle
+
+Start Oracle reachable from localhost and set up with the configuration, users and grants described in the https://github.com/debezium/oracle-vagrant-box[Debezium Vagrant set-up]
+
+Populate with sample data form Debezium's Oracle tutorial:
+[source, bash]
+----
+wget https://raw.githubusercontent.com/debezium/debezium-examples/master/tutorial/debezium-with-oracle-jdbc/init/inventory.sql
+cat ./inventory.sql | docker exec -i dbz_oracle sqlplus debezium/dbz@//localhost:1521/ORCLPDB1
+----
+
+//end::ref-doc[]
+
+
+== Run standalone
+
+```
+java -jar cdc-debezium-source.jar --cdc.connector=mysql --cdc.name=my-sql-connector --cdc.config.database.server.id=85744 --cdc.config.database.server.name=my-app-connector --cdc.config.database.user=debezium --cdc.config.database.password=dbz --cdc.config.database.hostname=localhost --cdc.config.database.port=3306 --cdc.schema=true --cdc.flattering.enabled=true
+```
+

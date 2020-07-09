@@ -1,0 +1,124 @@
+= Debezium Spring Boot Starter
+
+Spring Boot Starter for easy integration of https://debezium.io[Debezium] in Spring Boot applications.
+
+To use it you just add the `cdc-debezium-boot-starter` dependency to your application POM and implement your own `Consumer<SourceRecord>` handler to process the incoming database change events. Follow the link below for further instructions.
+
+https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) Spring Boot Starter that allows capturing change events from various databases including `MySQL`, `PostgreSQL`, `MongoDB`, `Oracle` and `SQL Server`.
+
+== Quick Start
+
+https://start.spring.io/[Start new Spring Boot project] and add the following starter dependency to activate the CDC:
+
+[source, xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud.fn</groupId>
+    <artifactId>cdc-debezium-boot-starter</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+----
+
+NOTE: for MySQL you need to adjust the mysql client version to `mysql:mysql-connector-java:8.0.13`.
+
+The CDC starter setups an embedded https://debezium.io/documentation/reference/0.10/connectors/index.html[debezium connector] to capture the database changes.
+
+Then implement a `Consumer<SourceRecord>` bean handler to receive and process the CDC notifications:
+
+[source, java]
+----
+@Bean
+public Consumer<SourceRecord> mySourceRecordConsumer( # <1>
+        Function<SourceRecord, byte[]> keySerializer, # <2>
+        Function<SourceRecord, byte[]> valueSerializer) { # <3>
+
+    return sourceRecord -> {
+        System.out.println(sourceRecord.topic() # <4>
+            + " : " + new String(keySerializer.apply(sourceRecord)) # <5>
+            + " : " + new String(valueSerializer.apply(sourceRecord))); # <6>
+    };
+}
+----
+
+<1> CDC event listener that is called on every data change.
+<2> Optional keySerializer converter that allows to serialize the keys of the SourceRecord into a compact binary format.
+<3> Optional valueSerializer converter (by default JsonConverter) that allows to serialize the SourceRecord into a compact binary format.
+<4> The `topic()` provides a logical identifier of the changed data (e.g. cdc-name.DB-name.table-name)
+<5> Convert kay to text message using the keySerializer
+<6> Convert payload to JSON message using the valueSerializer.
+
+NOTE: you may have to add `@AutoConfigureBefore(CdcAutoConfiguration.class)` to your Boot class to ensure that your record consumer overrides the default handlers.
+
+Above handler will produce output messages like this:
+[source, bash]
+----
+my-app-connector.inventory.addresses : {"id":10,"customer_id":1001,"street":"3183 Moore Avenue","city":"Euless","state":"Texas","zip":"76036","type":"SHIPPING"}
+my-app-connector.inventory.customers : {"id":1004,"first_name":"Anne","last_name":"Kretchmar","email":"annek@noanswer.org"}
+my-app-connector.inventory.orders : {"order_number":10001,"order_date":16816,"purchaser":1001,"quantity":1,"product_id":102}
+my-app-connector.inventory.products : {"id":109,"name":"spare tire","description":"24 inch spare tire","weight":22.200000762939453}
+my-app-connector.inventory.products_on_hand : {"product_id":101,"quantity":3}
+----
+
+All Debezium connector properties are supported. Just prefix those properties with `cdc.config` prefix.
+
+Following snipped shows how to configure the https://debezium.io/docs/connectors/mysql/[MySqlConnector] to connect to a local MySQL database run via the `debezium/example-mysql` docker image:
+[source, bash]
+----
+docker run -it --rm --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql:1.0
+----
+
+[TIP]
+====
+(optional) Use `mysql` client to connected to the database and to create a `debezium` user with required credentials:
+[source, bash]
+----
+docker run -it --rm --name mysqlterm --link mysql --rm mysql:5.7 sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+mysql> GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'debezium' IDENTIFIED BY 'dbz';
+----
+====
+
+Configure `cdc-debezium-boot-starter` for consuming cdc events from the MySQL:
+
+[source]
+----
+cdc.name=my-sql-connector # <1>
+
+cdc.connector=mysql # <2>
+
+cdc.config.database.server.id=85744 # <3>
+cdc.config.database.server.name=my-app-connector # <3>
+cdc.config.database.user=debezium # <3>
+cdc.config.database.password=dbz # <3>
+cdc.config.database.hostname=localhost # <3>
+cdc.config.database.port=3306 # <3>
+
+cdc.schema=false # <4>
+
+cdc.flattering.enabled=true # <5>
+----
+
+<1> Metadata used to identify and dispatch the events received by this cdc consumer instance.
+<2> Configures the CDC Source to use https://debezium.io/docs/connectors/mysql/[MySqlConnector]. (equivalent to setting `cdc.config.connector.class=io.debezium.connector.mysql.MySqlConnector`).
+<3> Connector specific configurations. MySQL server logical name, connect location and access credentials.
+<4> Do not serialize the record's schema in the output messages.
+<5> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattering] feature.
+
+The full list of properties:
+
+==== Options
+
+//tag::configuration-properties[]
+$$cdc.config$$:: $$Spring pass-trough wrapper for the debezium configuration properties. All properties with 'cdc.config' prefix are converted into Debezium `io.debezium.config.Configuration` properties and the prefix is removed.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+$$cdc.connector$$:: $$Shortcut for the cdc.config.connector.class property. Either of those can be used as long as they do not contradict with each other.$$ *($$ConnectorType$$, default: `$$<none>$$`, possible values: `mysql`,`postgres`,`mongodb`,`oracle`,`sqlserver`)*
+$$cdc.flattering.add-source-fields$$:: $$Fields from the change event’s source structure to add as metadata (prefixed with "__") to the flattened record$$ *($$String$$, default: `$$<none>$$`)*
+$$cdc.flattering.delete-handling-mode$$:: $$How to handle delete records. Options are: (1) none - records are passed, (2) drop - records are removed and (3) rewrite - adds '__deleted' field to the records.$$ *($$DeleteHandlingMode$$, default: `$$<none>$$`, possible values: `drop`,`rewrite`,`none`)*
+$$cdc.flattering.drop-tombstones$$:: $$Debezium by default generates a tombstone record to enable Kafka compaction after a delete record was generated. This record is usually filtered out to avoid duplicates as a delete record is converted to a tombstone record, too.$$ *($$Boolean$$, default: `$$true$$`)*
+$$cdc.flattering.enabled$$:: $$Enable flattering the source record events (https://debezium.io/docs/configuration/event-flattening).$$ *($$Boolean$$, default: `$$true$$`)*
+$$cdc.flattering.operation-header$$:: $$The adds the event operation (as obtained from the op field of the original record) as a message header called cdc_operation$$ *($$Boolean$$, default: `$$false$$`)*
+$$cdc.name$$:: $$Unique name for this sourceConnector instance.$$ *($$String$$, default: `$$<none>$$`)*
+$$cdc.offset.commit-timeout$$:: $$Maximum number of milliseconds to wait for records to flush and partition offset data to be committed to offset storage before cancelling the process and restoring the offset data to be committed in a future attempt.$$ *($$Duration$$, default: `$$5000ms$$`)*
+$$cdc.offset.flush-interval$$:: $$Interval at which to try committing offsets. The default is 1 minute.$$ *($$Duration$$, default: `$$60000ms$$`)*
+$$cdc.offset.policy$$:: $$Offset storage commit policy.$$ *($$OffsetPolicy$$, default: `$$<none>$$`)*
+$$cdc.offset.storage$$:: $$When a Kafka Connect connector runs, it reads information from the source and periodically records "offsets" that define how much of that information it has processed. Should the connector be restarted, it will use the last recorded offset to know where in the source information it should resume reading.$$ *($$OffsetStorageType$$, default: `$$<none>$$`, possible values: `memory`,`file`,`kafka`,`metadata`)*
+$$cdc.schema$$:: $$If set then the value's schema is included as part of the the outbound message.$$ *($$Boolean$$, default: `$$false$$`)*
+

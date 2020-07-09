@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>cdc-debezium-source</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <name>cdc-debezium-source</name>
+    <description>CDC Debezium source apps</description>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>org.springframework.cloud.stream.app</groupId>
+        <artifactId>stream-applications-core</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud.fn</groupId>
+            <artifactId>cdc-debezium-supplier</artifactId>
+            <version>${java-functions.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud.fn</groupId>
+            <artifactId>function-test-support</artifactId>
+            <version>${java-functions.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>2.5.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.javacrumbs.json-unit</groupId>
+            <artifactId>json-unit</artifactId>
+            <version>1.25.1</version>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
+			<version>3.0.6.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.cloud.stream.app.plugin</groupId>
+                <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+                <configuration>
+                    <generatedApp>
+                        <name>cdc-debezium</name>
+                        <type>source</type>
+                        <version>${project.version}</version>
+                        <configClass>org.springframework.cloud.fn.supplier.cdc.CdcSupplierConfiguration.class</configClass>
+                        <functionDefinition>cdcSupplier</functionDefinition>
+                    </generatedApp>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.springframework.cloud.fn</groupId>
+                            <artifactId>cdc-debebzium-supplier</artifactId>
+                            <version>${java-functions.version}</version>
+                        </dependency>
+                    </dependencies>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.33.0</version>
+                <configuration>
+                    <images>
+                        <!--						<image>-->
+                        <!--							<alias>test-mongodb2</alias>-->
+                        <!--							<name>%a/example-mongodb:${project.version}</name>-->
+                        <!--							<build>-->
+                        <!--								<dockerFileDir>${project.basedir}/src/test/docker/mongodb</dockerFileDir>-->
+                        <!--								<filter>@</filter>-->
+                        <!--							</build>-->
+                        <!--							<run>-->
+                        <!--								<hostname>localhost</hostname>-->
+                        <!--								<env>-->
+                        <!--									<MONGODB_USER>debezium</MONGODB_USER>-->
+                        <!--									<MONGODB_PASSWORD>dbz</MONGODB_PASSWORD>-->
+                        <!--								</env>-->
+                        <!--								<ports>-->
+                        <!--									<port>27017:27017</port>-->
+                        <!--								</ports>-->
+                        <!--								<wait>-->
+                        <!--									<log>port: 3306</log>-->
+                        <!--									<time>300000</time>-->
+                        <!--								</wait>-->
+                        <!--							</run>-->
+                        <!--						</image>-->
+                        <!--<image>-->
+                        <!--<alias>test-mongodb</alias>-->
+                        <!--<name>debezium/example-mongodb:1.0</name>-->
+                        <!--<run>-->
+                        <!--<hostname>localhost</hostname>-->
+                        <!--<env>-->
+                        <!--<MONGODB_USER>debezium</MONGODB_USER>-->
+                        <!--<MONGODB_PASSWORD>dbz</MONGODB_PASSWORD>-->
+                        <!--</env>-->
+                        <!--<ports>-->
+                        <!--<port>27017:27017</port>-->
+                        <!--</ports>-->
+                        <!--<wait>-->
+                        <!--<log>port: 3306</log>-->
+                        <!--<time>300000</time>-->
+                        <!--</wait>-->
+                        <!--</run>-->
+                        <!--</image>-->
+                        <image>
+                            <alias>mysql</alias>
+                            <name>debezium/example-mysql:1.0</name>
+                            <run>
+                                <env>
+                                    <MYSQL_ROOT_PASSWORD>debezium</MYSQL_ROOT_PASSWORD>
+                                    <MYSQL_USER>mysqluser</MYSQL_USER>
+                                    <MYSQL_PASSWORD>mysqlpw</MYSQL_PASSWORD>
+                                </env>
+                                <ports>
+                                    <port>3306:3306</port>
+                                </ports>
+                                <wait>
+                                    <log>port: 3306</log>
+                                    <time>30000</time>
+                                </wait>
+                            </run>
+                        </image>
+                        <image>
+                            <alias>postgres</alias>
+                            <name>debezium/example-postgres:1.0</name>
+                            <run>
+                                <env>
+                                    <POSTGRES_USER>postgres</POSTGRES_USER>
+                                    <POSTGRES_PASSWORD>postgres</POSTGRES_PASSWORD>
+                                </env>
+                                <ports>
+                                    <port>5432:5432</port>
+                                </ports>
+                                <wait>
+                                    <log>PostgreSQL init process complete</log>
+                                    <time>30000</time>
+                                </wait>
+                            </run>
+                        </image>
+                        <image>
+                            <external>
+                                <type>properties</type>
+                                <prefix>docker</prefix>
+                                <mode>override</mode>
+                            </external>
+                            <name>%a/sqlserver-example:${project.version}</name>
+                            <build>
+                                <dockerFileDir>${project.basedir}/src/test/docker/sqlserver</dockerFileDir>
+                                <filter>@</filter>
+                            </build>
+                            <run>
+                                <env>
+                                    <ACCEPT_EULA>Y</ACCEPT_EULA>
+                                    <MSSQL_PID>Standard</MSSQL_PID>
+                                    <SA_PASSWORD>Password!</SA_PASSWORD>
+                                    <MSSQL_AGENT_ENABLED>true</MSSQL_AGENT_ENABLED>
+                                </env>
+                                <ports>
+                                    <port>1433:1433</port>
+                                </ports>
+                                <wait>
+                                    <log>1 rows affected</log>
+                                    <time>40000</time>
+                                </wait>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start</id>
+                        <!--<phase>pre-integration-test</phase>-->
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-pre</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/libs-snapshot-local</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/libs-milestone-local</url>
+        </repository>
+    </repositories>
+
+</project>

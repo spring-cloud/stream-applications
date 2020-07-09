@@ -1,0 +1,28 @@
+{
+  "before": {
+    "id": "${json-unit.ignore}",
+    "first_name": "Test666",
+    "last_name": "Test999",
+    "email": "Test666@spring.org"
+  },
+  "after": null,
+  "source": {
+    "version": "${json-unit.ignore}",
+    "connector": "mysql",
+    "name": "my-app-connector",
+    "ts_ms": "${json-unit.ignore}",
+    "snapshot": "false",
+    "db": "inventory",
+    "table": "customers",
+    "server_id": "${json-unit.ignore}",
+    "gtid": null,
+    "file": "${json-unit.ignore}",
+    "pos": "${json-unit.ignore}",
+    "row": 0,
+    "thread": "${json-unit.ignore}",
+    "query": null
+  },
+  "op": "d",
+  "ts_ms": "${json-unit.ignore}",
+  "transaction": null
+}
