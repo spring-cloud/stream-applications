@@ -149,7 +149,7 @@ The following are the four major components of this repository.
 
 Spring Cloud Stream includes integration with Spring Cloud Function's function-based programming model that lets the
 business logic of an application be modeled as a `java.util.Supplier`, a `java.util.Function`, and a `java.util.Consumer`,
-representing the roles of a `Source`, a `Processor`, and a Sink, respectively.
+representing the roles of a `Source`, a `Processor`, and a `Sink`, respectively.
 
 Building on this foundation, we can extend existing `Source` and `Sink` applications by importing the configuration of an
 existing `Source` or `Sink` and adding code that defines a `java.util.Function` — this delivers a lot of powerful composition
@@ -194,7 +194,7 @@ Let us unpack what is happening behind the scenes. We will start with the follow
 
 `timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction`
 
-- Here, the function definition creates a composite Supplier beginning with the default `timeSupplier` Java function included
+- Here, the function definition creates a composite `Supplier` beginning with the default `timeSupplier` Java function included
 in this repository, which is the foundation for `time-source`.
 
 - The `spelFunction` applies to a `Message` from which we can extract and transform the `payload` or `headers`, by following
@@ -262,7 +262,7 @@ cd applications/source/jdbc-source/apps/jdbc-source-kafka
 ./mvnw clean package
 ```
 
-This will generate the Kafka binder based uber-jar in the target folder.
+This will generate the Kafka binder based uber jar in the target folder.
 
 Similarly, for the `log-sink`, do the following.
 
