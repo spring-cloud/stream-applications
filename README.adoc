@@ -272,6 +272,208 @@ cd applications/sink/log-sink/apps/log-sink-rabbit
 ./mvnw clean package
 ```
 
+=== Contributing a new function component to the repository
+
+If you are not finding a function that you are interested in, we encourage you to write that function by yourself and contribute to the repository.
+Below, you can find detailed instructions on how one may contribute a new function.
+
+==== Decide what kind of function that you want to write
+
+   a. Do you want to produce information within your application? (poll an external source, receive data on demand etc.)
+      If so, then you need to write a `java.util.function.Supplier`.
+   b. Does your use case require you to write an application that consumes data and then send that to an external system (or other kind of operations on the received data)?
+      In that case, you need to write a `java.util.function.Consumer`.
+   c. Do you need to consume data, process it and then produce in the application?
+      In that case, you need to write a `java.util.function.Function`.
+
+If your functions are very trivial and don't need any Spring components, you can certainly start there.
+For example, here is a simple echo function.
+
+```
+public class EchoFunction implements Function<String, String> {
+	@Override
+	public String apply(String s) {
+		return s;
+	}
+}
+```
+
+However, it is likely that your enterprise use cases are much more complex than this and you need additional capability.
+You probably need to add extra configuration properties, create extra Spring beans and use them inside your functions and make an existing Spring Integration adapter fit into this functional model etc.
+In the following sections, we go through these various scenarios and guide you through writing such a function.
+Keep in mind that, we are only describing the basic framework required for contributing a function.
+The implementation details need to be thought through and well defined before you can contribute a pull request.
+
+==== Writing a new Supplier function
+
+===== Retrieving data from an external system on each invocation of the Supplier.
+
+This is a pattern in which a Supplier when invoked gives you the data from an external system.
+Here is a simple form of how that Supplier might look like.
+
+```
+  @Bean
+  public Supplier<String> mySupplier() {
+     return () -> {
+       //here you write code for how you get data.
+     }
+  }
+```
+
+Here is an example: link:functions/supplier/time-supplier/src/main/java/org/springframework/cloud/fn/supplier/time/TimeSupplierConfiguration.java[TimeSupplierConfiguration].
+
+If you want to add additional information as part of the payload produced (for e.g adding some headers), then instead of returning `Supplier<String>`, you can change the signature to `Supplier<Message<?>>`.
+
+Then inside your application, you can call `mySupplier().get()` and retrieve the data.
+
+===== Supplying data using reactive patterns.
+
+Below, we are discussing two patterns using which you can write reactive suppliers.
+
+a. Let's say that you have a Spring Integration based message driven adapter that you want to recieva data as soon as it is available.
+You want to produce this data through a supplier for your clients.
+You can use the following primitives as a starting point for that.
+We use the TCP adapter as an example here:
+
+```
+
+@Bean
+public Supplier<Flux<Message<?>>> tcpSupplier() {
+    return () -> Flux.from(output())
+            .doOnSubscribe(subscription -> adapter().start());
+}
+
+@Bean
+public FluxMessageChannel output() {
+    return new FluxMessageChannel();
+}
+
+@Bean
+public TcpReceivingChannelAdapter adapter() {
+    TcpReceivingChannelAdapter adapter = new TcpReceivingChannelAdapter();
+    adapter.setOutputChannel(output());
+    adapter.setAutoStartup(false);
+    ...
+    return adapter;
+}
+```
+
+b. If you have a custom mechanism (non Spring Integration) and want to produce data reactively, you can follow the blueprint below.
+
+```
+@Bean
+public Publisher<Message<byte[]>> myPublisher() {
+    ...
+}
+
+@Bean
+public Supplier<Flux<Message<?>>> mySupplier() {
+    return () -> Flux.from(myPublisher())
+            .doOnSubscribe(subscription -> adapter().start());
+}
+```
+
+Please take a look at the various suppliers provided link:functions/supplier[here] more usage examples of these various types of suppliers.
+
+===== Common conventions used when writing a Supplier
+
+Following are the expected conventions when writing a new Supplier, taking Google Spanner as an example.
+
+* The name of the configuration class - `SpannerSupplierConfiguration`
+* The name of the supplier method - `spannerSupplier`.
+* `ConfigurationProperties` class is named as - `SpannerSupplierProperties`.
+
+==== Writing a new Consumer function
+
+Writing a consumer functions is more straightforward than writeing a `Supplier`.
+You can simple provide a `Consumer` bean as below.
+
+```
+@Bean
+public Consumer<String> myConsumer() {
+    return data -> sendDataT();
+}
+```
+
+Or if you are relying on some Spring Integration message handlers,
+
+```
+@Bean
+public Consumer<Message<?>> fileConsumer() {
+    return fileWritingMessageHandler()::handleMessage;
+}
+```
+
+link:functions/consumer[Here] are all the consumer functions we currently have.
+
+===== Common conventions used when writing a Consumer
+
+Following are the expected conventions when writing a new Consumer, taking Google Spanner as an example.
+
+* The name of the configuration class - `SpannerConsumeronfiguration`
+* The name of the supplier method - `spannerConsumer`.
+* `ConfigurationProperties` class is named as - `SpannerConsumerProperties`.
+
+==== Writing a new Function
+
+Imaging a use case in which you are consuming data, but then you want to process it and then produce that information.
+You can write a `java.util.function.Function` as shown below.
+
+```
+@Bean
+public Function<Message<?>, Message<?>> myFunction() {
+    return message -> transform(message);
+}
+```
+
+link:functions/function[Here] are all the functions we currently have.
+
+===== Common conventions used when writing a Function
+
+Following are the expected conventions when writing a new Function, taking Uppercase function as an example.
+
+* The name of the configuration class - `UppercaseFunctiononfiguration`
+* The name of the supplier method - `uppercaseFunction`.
+* `ConfigurationProperties` class is named as - `UppercaseFunctionProperties`.
+
+=== Testing
+
+There is no single strategy for unit testing these functions.
+Based on what your use case is and what type of function variant you write, you can employ varying levels of testing capabilities.
+Please take a look at the various tests we provide as part of the functions and pick the one that works for you.
+
+=== Other things to keep mind
+
+If your function module has `ConfigurationProperties`, make sure to add the `spring-boot-configuration-processor` dependency.
+It is probably better to start with the maven configuration for an existing function.
+If your modules have Spring in them, make sure to use `spring-functions-parent` as the parent, otherwise you can use `java-functions-parent`.
+
+You can prepare a pull request at this point for the function, but if you want to generate Spring Cloud Stream applications from the function you wrote, please read on.
+
+=== Generating Spring Cloud Stream applications
+
+Now that you have a function, you can generate Spring Cloud Stream applications based on that.
+All the application generation modules are using `stream-applications-core` as the parent.
+
+For the most part, you can simply generate the applications based on a cookie cutter pattern.
+Take a look at the many examples we provide link:applications/source[sources], link:applications/sink[sinks] or link:applications/processor[processors].
+
+If you have custom code to add at the application level, then it becomes a bit more involved, but still relatively straight forward.
+link:applications/processor/image-recognition-processor[Here] is an example for how you can add extra customizations at the application level.
+Pay attention to the code that is changed there and the maven configuration.
+
+If you don't see the need for anything at the function layer and want to write a straight up Spring Cloud Stream application, then that pattern is supported as well.
+Here is an link:applications/processor/bridge-processor[example] that doest exactly that.
+
+==== Testing a Spring Cloud Stream application
+
+It is important that you add some basic tests using the Spring Cloud Stream test binder as part of your application.
+The parent will provide the test binder as a transitive dependency.
+Source, Sink and Processor applications are tested slightly differently.
+Take a look at the existing tests provided for more information.
+
+when you are ready, please send a pull request and we will help reviewing it and get that merged.
+
 === Code of Conduct
 
 Please see our https://github.com/spring-projects/.github/blob/master/CODE_OF_CONDUCT.md[Code of Conduct]
