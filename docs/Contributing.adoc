@@ -1,0 +1,100 @@
+= Contributing a new function component to this repository
+
+If you do not see a function or application that you are interested in, we encourage you to contribute to this repository.
+In most cases, you start by writing the function.
+Once the function is ready, you set up a Maven project for the corresponding stream application, provide the pom, and configuration properties metadata, and some basic tests.
+If you have followed the prescribed structure and naming conventions, the Maven build will generate the application.
+
+Here are some things you need to know before contributing a new function.
+
+== Creating a function
+
+What kind of function do you want to write? If you are not sure, consult the table below.
+We expect the majority of contributions to be either suppliers or consumers.
+The reason for this is that it is fairly straightforward to create a reusable component to integrate with an external system and
+there are continual opportunities to do so as new technology becomes available.
+On the other hand, data transformation typically requires custom logic.
+We have provided a few generic functions as processors for which simple logic can be configured using the Spring Expression Language (SpEL).
+If you want write a custom application or function, this repository contains many useful examples, but the following sections are intended for those interested in contributing.
+
+=== Project structure
+
+Each function is a Maven project under the link:../functions[functions] directory.
+They are organized by type:
+
+.Function Types
+|===
+|Type | Purpose | Package Name
+|link:../functions/supplier/[Supplier]
+|produce information (poll an external source, receive data on demand, etc.)
+|org.springframework.cloud.fn.supplier.<function_name>
+
+|link:../functions/consumer/[Consumer]
+|consume data and send it to an external system
+|org.springframework.cloud.fn.consumer.<function_name>
+
+|link:../functions/function/[Function]
+|consume data, process it, and produce a result
+|org.springframework.cloud.fn.<function_name>
+|===
+
+There is also link:../functions/common/[common] for code that is shared across multiple functions.
+
+It is easiest to start with the maven configuration for an existing function.
+If your function module includes `ConfigurationProperties`, make sure to add the `spring-boot-configuration-processor` dependency.
+
+If your modules require Spring, make sure to use `spring-functions-parent` as the parent, otherwise you can use `java-functions-parent`.
+
+=== Naming conventions
+
+Following are required conventions when writing a new function.
+Aside from enforcing a consistent structure, the Maven plugin used to generate the application may rely on some of these conventions.
+
+Any function module that uses Spring is expected to contain at a minimum:
+
+* The function configuration class - `<FunctionName><FunctionType>Configuration`. For example, if writing a Supplier for Google Spanner,
+the configuration class should be `SpannerSupplierConfiguration`
+* The name of the function bean  - `<functionName><FunctionType`: `spannerSupplier`
+* `ConfigurationProperties` class is named as - `<FunctionName><FunctionType>Properties`:  `SpannerSupplierProperties`.
+
+=== Documentation
+
+Please follow the conventions used for the existing documentation.
+
+=== Testing
+
+All contributions must include unit tests. There is no single strategy for unit testing these functions.
+Based on your use case and what type of function variant you write, you can employ varying levels of testing capabilities.
+Take a look at the existing tests and pick the one that works for you.
+
+== Generating Spring Cloud Stream applications
+
+We will gladly consider a pull request for just the function, but if you want to generate Spring Cloud Stream applications from the function you wrote, please read on.
+
+Now that you have a function, you can generate Spring Cloud Stream applications.
+All the application generation modules use `stream-applications-core` as the parent.
+
+For the most part, you can simply generate the applications based on a cookie cutter pattern.
+Take a look at the many examples we provide for
+link:../applications/source[sources], link:../applications/sink[sinks] or link:../applications/processor[processors].
+
+If you have custom code to add at the application level, then it becomes a bit more involved, but still relatively straightforward.
+link:../applications/processor/image-recognition-processor[Here] is an example showing how you can add extra customizations at the application level.
+Pay close attention to the code that is provided there and the Maven configuration.
+
+If you don't see the need for anything at the function layer and want to write a straight up Spring Cloud Stream application, then that pattern is supported as well.
+Here is an link:../applications/processor/bridge-processor[example] that does exactly that.
+
+=== Documentation
+
+Please follow the conventions used for the existing documentation. If you are using Spring ConfigurationProperties, the properties section of the
+README is generated by a Maven plugin. Also take a look at the contents of `src/main/resources/META-INF`.
+
+=== Testing a Spring Cloud Stream application
+
+It is important that you add some basic tests using the Spring Cloud Stream test binder as part of your application.
+The parent will provide the test binder as a transitive dependency.
+Source, Sink and Processor applications are tested slightly differently.
+Take a look at the existing tests for more information.
+
+When you are ready, please send a pull request so we can review it and merge it.
