@@ -35,8 +35,8 @@ endif::backend-html5[]
 = Reference Guide
 include::overview.adoc[]
 
-[[starters]]
-= Starters
+[[applications]]
+= Applications
 include::sources.adoc[]
 
 include::processors.adoc[]
