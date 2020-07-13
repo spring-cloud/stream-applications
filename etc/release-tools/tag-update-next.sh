@@ -16,7 +16,10 @@ pushd ../..
 git tag $TAG
 git push upstream $TAG
 
-./mvnw -Ddisable.checks=true -f functions versions:set -DnewVersion=$FUNCTIONS_NEXT -DgenerateBackupPoms=false 
+echo "Waiting for 20 seconds..."
+sleep 20
+
+./mvnw -Ddisable.checks=true -f functions versions:set -DnewVersion=$FUNCTIONS_NEXT -DgenerateBackupPoms=false
 
 ./mvnw -Ddisable.checks=true -f applications/stream-applications-core versions:set -DnewVersion=$CORE_NEXT -DgenerateBackupPoms=false -DupdateMatchingVersions=false
 
@@ -83,7 +86,8 @@ cd ../..
 
 popd
 
-echo "Committing and pushing the changes."
+echo "Committing and pushing the changes, but waiting for 30 seconds before doing so..."
+sleep 30
 
 COMMIT_MSG="Next version updates
 

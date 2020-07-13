@@ -3,14 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tasklauncher-function</artifactId>
-    <version>1.0.0-M2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>tasklauncher-function</name>
     <description>Spring Native Function for applying filter SpEL expressions</description>
 
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
         <artifactId>spring-functions-parent</artifactId>
-        <version>1.0.0-M2</version>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../../spring-functions-parent</relativePath>
     </parent>
 
