@@ -1,0 +1,1251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ActiveLayerIndex</key>
+	<integer>0</integer>
+	<key>ApplicationVersion</key>
+	<array>
+		<string>com.omnigroup.OmniGraffle6</string>
+		<string>169.23.0.276662</string>
+	</array>
+	<key>AutoAdjust</key>
+	<true/>
+	<key>BackgroundGraphic</key>
+	<dict>
+		<key>Bounds</key>
+		<string>{{0, 0}, {2046, 1258}}</string>
+		<key>Class</key>
+		<string>SolidGraphic</string>
+		<key>ID</key>
+		<integer>2</integer>
+		<key>Style</key>
+		<dict>
+			<key>stroke</key>
+			<dict>
+				<key>Draws</key>
+				<string>NO</string>
+			</dict>
+		</dict>
+	</dict>
+	<key>BaseZoom</key>
+	<integer>0</integer>
+	<key>CanvasOrigin</key>
+	<string>{0, 0}</string>
+	<key>CanvasSize</key>
+	<string>{2046, 1258}</string>
+	<key>ColumnAlign</key>
+	<integer>1</integer>
+	<key>ColumnSpacing</key>
+	<real>36</real>
+	<key>CreationDate</key>
+	<string>2020-07-07 13:23:05 +0000</string>
+	<key>Creator</key>
+	<string>David Turanski</string>
+	<key>DisplayScale</key>
+	<string>1.0 pt = 1.0 px</string>
+	<key>FileType</key>
+	<string>auto</string>
+	<key>GraphDocumentVersion</key>
+	<integer>12</integer>
+	<key>GraphicsList</key>
+	<array>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica</string>
+				<key>Size</key>
+				<real>12</real>
+			</dict>
+			<key>Head</key>
+			<dict>
+				<key>ID</key>
+				<integer>54</integer>
+			</dict>
+			<key>ID</key>
+			<integer>55</integer>
+			<key>Points</key>
+			<array>
+				<string>{390.28712487220764, 40}</string>
+				<string>{390, 163.5}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Legacy</key>
+					<false/>
+					<key>LineType</key>
+					<integer>1</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+			<key>Tail</key>
+			<dict>
+				<key>ID</key>
+				<integer>41</integer>
+				<key>Position</key>
+				<real>0.7138829231262207</real>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{329, 71.5}, {122, 184}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Color</key>
+				<dict>
+					<key>b</key>
+					<string>0.462745</string>
+					<key>g</key>
+					<string>0.215686</string>
+					<key>r</key>
+					<string>0</string>
+				</dict>
+				<key>Size</key>
+				<real>11</real>
+			</dict>
+			<key>ID</key>
+			<integer>54</integer>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Align</key>
+				<integer>0</integer>
+				<key>RTFD</key>
+				<data>
+				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
+				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
+				bmcBlIQBK4EZAUFzIG1vcmUgYnVzaW5lc3NlcyBtb3Zl
+				IHRvIHRoZSBwdWJsaWMgY2xvdWQsIGl0IGJlY29tZXMg
+				Y2xlYXIgdGhhdCBmaW5lLWdyYWluZWQgc2VydmljZXMg
+				YXJlIGRyaXZpbmcgY29zdHMgYW5kIGNvbXBsZXhpdHku
+				IERldmVsb3BlcnMgYXJlIGxvb2tpbmcgZm9yIHdheXMg
+				dG8gdXNlIHRoZSBhcHAgc3RhcnRlcnMgdG8gY3VzdG9t
+				aXplIG9yIGNvbWJpbmUgcHJvY2Vzc2luZyBzdGVwcyBp
+				bnRvIGEgc2luZ2xlIGFwcGxpY2F0aW9uLiBUaGlzIGlz
+				IGhhcmRlciB0aGFuIGl0IHNob3VsZCBiZS4ghoQCaUkB
+				gRkBkoSEhAxOU0RpY3Rpb25hcnkAlIQBaQWShJaWBk5T
+				Rm9udIaShISEBk5TRm9udB6UmRiEBVsyNGNdBgAAABAA
+				AAD//kEAcgBpAGEAbABNAFQAhAFmC4QBYwCdAZ0AnQCG
+				koSWlgZOU0tlcm6GkoSEhAhOU051bWJlcgCEhAdOU1Zh
+				bHVlAJSEASqEhAFkoQCGkoSWlgdOU0NvbG9yhpKEhIQH
+				TlNDb2xvcgCUnQGEBGZmZmYAg9fdXD6Dke3sPgGGkoSW
+				lhBOU1BhcmFncmFwaFN0eWxlhpKEhIQXTlNNdXRhYmxl
+				UGFyYWdyYXBoU3R5bGUAhIQQTlNQYXJhZ3JhcGhTdHls
+				ZQCUhARDQ0BTAACEhIQHTlNBcnJheQCUmQCGgQAChARb
+				MWZdJIaShJaWDU5TU3Ryb2tlQ29sb3KGkoSjnQGjAAAA
+				AYaGhg==
+				</data>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;\red0\green55\blue118;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c21569\c46275;\cssrgb\c0\c0\c0;}
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs22 \cf2 \expnd0\expndtw0\kerning0
+As more businesses move to the public cloud, it becomes clear that fine-grained services are driving costs and complexity. Developers are looking for ways to use the app starters to customize or combine processing steps into a single application. This is harder than it should be. }</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{459.4375, 96.5}, {187, 159}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Color</key>
+				<dict>
+					<key>b</key>
+					<string>0.462745</string>
+					<key>g</key>
+					<string>0.215686</string>
+					<key>r</key>
+					<string>0</string>
+				</dict>
+				<key>Size</key>
+				<real>11</real>
+			</dict>
+			<key>ID</key>
+			<integer>52</integer>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Align</key>
+				<integer>0</integer>
+				<key>RTFD</key>
+				<data>
+				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
+				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
+				bmcBlIQBK4F6AUphdmEgOCBmdW5jdGlvbnMgYW5kIGxh
+				bWJkYSBzdXBwb3J0IGhhcyBiZWVuIHdpZGVseSBhZG9w
+				dGVkIGluIHRoZSBKYXZhIGNvbW11bml0eSBmb3Igc29t
+				ZSB0aW1lICBhbmQgdGhpcyBpcyBkcml2aW5nIGRlbWFu
+				ZCBmb3IgSmF2YSBpbiBzZXJ2ZXJsZXNzIGVudmlyb25t
+				ZW50cy4gU3ByaW5nIENsb3VkIFN0cmVhbSAzLjAuMCBi
+				dWlsZHMgb24gU3ByaW5nIENsb3VkIEZ1bmN0aW9uIHRv
+				IHN1cHBvcnQgYSBwdXJlbHkgZnVuY3Rpb25hbCBwcm9n
+				cmFtbWluZyBtb2RlbCBmb3IgZGF0YSBtaWNyb3NlcnZp
+				Y2VzLiBTcHJpbmcgQ2xvdWQgU3RyZWFtIGFwcCBzdGFy
+				dGVycyBhcmUgcmVkZXNpZ25lZCB0byBmdWxseSBlbWJy
+				YWNlIHRoZSBmdW5jdGlvbmFsIG1vZGVsLoaEAmlJAYGh
+				AJKEhIQMTlNEaWN0aW9uYXJ5AJSEAWkFkoSWlgZOU0Zv
+				bnSGkoSEhAZOU0ZvbnQelJkYhAVbMjRjXQYAAAAQAAAA
+				//5BAHIAaQBhAGwATQBUAIQBZguEAWMAnQGdAJ0AhpKE
+				lpYGTlNLZXJuhpKEhIQITlNOdW1iZXIAhIQHTlNWYWx1
+				ZQCUhAEqhIQBZKEAhpKElpYHTlNDb2xvcoaShISEB05T
+				Q29sb3IAlJ0BhARmZmZmAIPX3Vw+g5Ht7D4BhpKElpYQ
+				TlNQYXJhZ3JhcGhTdHlsZYaShISEF05TTXV0YWJsZVBh
+				cmFncmFwaFN0eWxlAISEEE5TUGFyYWdyYXBoU3R5bGUA
+				lIQEQ0NAUwAAhISEB05TQXJyYXkAlJkAhoEAAoQEWzFm
+				XSSGkoSWlg1OU1N0cm9rZUNvbG9yhpKEo50BowAAAAGG
+				hpcCGpKEmJkFkpmShJuZJIQFWzM2Y10GAAAAGgAAAP/+
+				QQByAGkAYQBsAC0AQgBvAGwAZABNAFQAAACcC50AnQGd
+				AJ0AhpKckp2SoZKEo50BowCD191cPoOR7ew+AYaSpJKE
+				pqYAAKiBAAKoJIaSqpKrhpcBCpcCFZcBgaAAhg==
+				</data>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 ArialMT;\f1\fswiss\fcharset0 Arial-BoldMT;}
+{\colortbl;\red255\green255\blue255;\red0\green55\blue118;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c21569\c46275;\cssrgb\c0\c0\c0;}
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs22 \cf2 \expnd0\expndtw0\kerning0
+Java 8 functions and lambda support has been widely adopted in the Java community for some time  and this is driving demand for Java in serverless environments. 
+\f1\b \cf2 Spring Cloud Stream 3.0.0 
+\f0\b0 \cf2 builds on 
+\f1\b \cf2 Spring Cloud Function
+\f0\b0 \cf2  to support a purely functional programming model for data microservices. Spring Cloud Stream app starters are redesigned to fully embrace the functional model.}</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{294, 264}, {251.5, 134}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Color</key>
+				<dict>
+					<key>b</key>
+					<string>0.462745</string>
+					<key>g</key>
+					<string>0.215686</string>
+					<key>r</key>
+					<string>0</string>
+				</dict>
+				<key>Size</key>
+				<real>11</real>
+			</dict>
+			<key>ID</key>
+			<integer>50</integer>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Align</key>
+				<integer>0</integer>
+				<key>RTFD</key>
+				<data>
+				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
+				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
+				bmcBlIQBK4GwAVNwcmluZyBYRCBpcyByZWRlc2lnbmVk
+				IHRvIGRyb3AgdGhlIHJ1bnRpbWUgY29udGFpbmVyIGlu
+				IGZhdm9yIG9mIGRlcGxveWluZyBkaXN0cmlidXRlZCBT
+				cHJpbmcgQm9vdCBkYXRhIG1pY3JvIHNlcnZpY2VzIHRv
+				IGFueSBQYWFTIGluY2x1ZGluZyBDbG91ZCBGb3VuZHJ5
+				LCBLdWJlcm5ldGVzLCBhbmQgb3RoZXJzLiAgU3ByaW5n
+				IENsb3VkIFN0cmVhbSBhbmQgU3ByaW5nIENsb3VkIERh
+				dGEgRmxvdyBhcmUgYm9ybiBvdXQgb2YgdGhpcyBlZmZv
+				cnQuIFNwcmluZyBYRCBtb2R1bGVzIGFyZSBjb252ZXJ0
+				ZWQgdG8gU3ByaW5nIENsb3VkIFN0cmVhbSBhcHAgc3Rh
+				cnRlcnMuIERhdGEgRmxvdyByZXRhaW5zIGNvcmUgU3By
+				aW5nIFhEIGZlYXR1cmVzLCBpbmNsdWRpbmcgdGhlIERT
+				TCwgYXBwIHJlZ2lzdHJhdGlvbiwgYW5kIGxpZmVjeWNs
+				ZSBtYW5hZ2VtZW50LoaEAmlJAYG2AJKEhIQMTlNEaWN0
+				aW9uYXJ5AJSEAWkFkoSWlgZOU0ZvbnSGkoSEhAZOU0Zv
+				bnQelJkYhAVbMjRjXQYAAAAQAAAA//5BAHIAaQBhAGwA
+				TQBUAIQBZguEAWMAnQGdAJ0AhpKElpYGTlNLZXJuhpKE
+				hIQITlNOdW1iZXIAhIQHTlNWYWx1ZQCUhAEqhIQBZKEA
+				hpKElpYHTlNDb2xvcoaShISEB05TQ29sb3IAlJ0BhARm
+				ZmZmAIPX3Vw+g5Ht7D4BhpKElpYQTlNQYXJhZ3JhcGhT
+				dHlsZYaShISEF05TTXV0YWJsZVBhcmFncmFwaFN0eWxl
+				AISEEE5TUGFyYWdyYXBoU3R5bGUAlIQEQ0NAUwAAhISE
+				B05TQXJyYXkAlJkAhoEAAoQEWzFmXSSGkoSWlg1OU1N0
+				cm9rZUNvbG9yhpKEo50BowAAAAGGhpcCE5KEmJkFkpmS
+				hJuZJIQFWzM2Y10GAAAAGgAAAP/+QQByAGkAYQBsAC0A
+				QgBvAGwAZABNAFQAAACcC50AnQGdAJ0AhpKckp2SoZKE
+				o50BowCD191cPoOR7ew+AYaSpJKEpqYAAKiBAAKoJIaS
+				qpKrhpcBBZcCFpcBQZcCIJcBa4Y=
+				</data>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 ArialMT;\f1\fswiss\fcharset0 Arial-BoldMT;}
+{\colortbl;\red255\green255\blue255;\red0\green55\blue118;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c21569\c46275;\cssrgb\c0\c0\c0;}
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs22 \cf2 \expnd0\expndtw0\kerning0
+Spring XD is redesigned to drop the runtime container in favor of deploying distributed Spring Boot data micro services to any PaaS including Cloud Foundry, Kubernetes, and others.  
+\f1\b \cf2 Spring Cloud Stream
+\f0\b0 \cf2  and 
+\f1\b \cf2 Spring Cloud Data Flow
+\f0\b0 \cf2  are born out of this effort. Spring XD modules are converted to 
+\f1\b \cf2 Spring Cloud Stream app starters
+\f0\b0 \cf2 . Data Flow retains core Spring XD features, including the DSL, app registration, and lifecycle management.}</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{183, 96.5}, {129, 134}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Color</key>
+				<dict>
+					<key>b</key>
+					<string>0.462745</string>
+					<key>g</key>
+					<string>0.215686</string>
+					<key>r</key>
+					<string>0</string>
+				</dict>
+				<key>Size</key>
+				<real>11</real>
+			</dict>
+			<key>ID</key>
+			<integer>47</integer>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Align</key>
+				<integer>0</integer>
+				<key>RTFD</key>
+				<data>
+				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
+				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
+				bmcBlIQBK4HcAFNwcmluZyBCb290IDEuMCBpcyByZWxl
+				YXNlZCwgcHJvdmlkaW5nIG1hbnkgaW5ub3ZhdGlvbnMg
+				Zm9yIEphdmEgZGV2ZWxvcGVycyB0byBidWlsZCBhbmQg
+				ZGVwbG95IGNsb3VkLW5hdGl2ZSBhcHBsaWNhdGlvbnMu
+				IFNwcmluZyBJbnRlZ3JhdGlvbiBhZGFwdGVycyBjYW4g
+				YmUgcGFja2FnZWQgYXMgU3ByaW5nIEJvb3QgYXBwbGlj
+				YXRpb25zIGFuZCBkZXBsb3llZCB0byBhbnkgUGFhUy6G
+				hAJpSQGB3ACShISEDE5TRGljdGlvbmFyeQCUhAFpBZKE
+				lpYGTlNGb250hpKEhIQGTlNGb250HpSZGIQFWzI0Y10G
+				AAAAEAAAAP/+QQByAGkAYQBsAE0AVACEAWYLhAFjAJ0B
+				nQCdAIaShJaWBk5TS2VyboaShISECE5TTnVtYmVyAISE
+				B05TVmFsdWUAlIQBKoSEAWShAIaShJaWB05TQ29sb3KG
+				koSEhAdOU0NvbG9yAJSdAYQEZmZmZgCD191cPoOR7ew+
+				AYaShJaWEE5TUGFyYWdyYXBoU3R5bGWGkoSEhBdOU011
+				dGFibGVQYXJhZ3JhcGhTdHlsZQCEhBBOU1BhcmFncmFw
+				aFN0eWxlAJSEBENDQFMAAISEhAdOU0FycmF5AJSZAIaB
+				AAKEBFsxZl0khpKElpYNTlNTdHJva2VDb2xvcoaShKOd
+				AaMAAAABhoaG
+				</data>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;\red0\green55\blue118;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c21569\c46275;\cssrgb\c0\c0\c0;}
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs22 \cf2 \expnd0\expndtw0\kerning0
+Spring Boot 1.0 is released, providing many innovations for Java developers to build and deploy cloud-native applications. Spring Integration adapters can be packaged as Spring Boot applications and deployed to any PaaS.}</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{78.5, 264}, {187, 134}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Color</key>
+				<dict>
+					<key>b</key>
+					<string>0.462745</string>
+					<key>g</key>
+					<string>0.215686</string>
+					<key>r</key>
+					<string>0</string>
+				</dict>
+				<key>Size</key>
+				<real>11</real>
+			</dict>
+			<key>ID</key>
+			<integer>46</integer>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Align</key>
+				<integer>0</integer>
+				<key>RTFD</key>
+				<data>
+				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
+				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
+				bmcBlIQBK4FNAVRoZSBiaWcgZGF0YSBib29tIGRyaXZl
+				cyBzb2x1dGlvbnMgdGhhdCBhcmUgbW9yZSBzY2FsYWJs
+				ZSBhbmQgd29yayBpbiBhIGRpc3RyaWJ1dGVkIGVudmly
+				b25tZW50LiBTcHJpbmcgdGVhbSBkZXZlbG9wcyBTcHJp
+				bmcgWEQsIGFsbG93aW5nIHlvdSB0byBydW4geW91ciBh
+				cHBsaWNhdGlvbnMgaW4gU3ByaW5nIFhEIGNvbnRhaW5l
+				cnMgYXMgbW9kdWxlcy4gU3ByaW5nIEludGVncmF0aW9u
+				IGNoYW5uZWwgYWRhcHRlcnMgYXJlIHByb3ZpZGVkIGFz
+				IFNwcmluZyBYRCBtb2R1bGVzIHdoaWNoIGNhbiBiZSBv
+				cmNoZXN0cmF0ZWQgaW50byBwaXBlbGluZXMgdXNpbmcg
+				YSBzaW1wbGUgRFNMLoaEAmlJAXaShISEDE5TRGljdGlv
+				bmFyeQCUhAFpBZKElpYGTlNGb250hpKEhIQGTlNGb250
+				HpSZGIQFWzI0Y10GAAAAEAAAAP/+QQByAGkAYQBsAE0A
+				VACEAWYLhAFjAJ0BnQCdAIaShJaWBk5TS2VyboaShISE
+				CE5TTnVtYmVyAISEB05TVmFsdWUAlIQBKoSEAWShAIaS
+				hJaWB05TQ29sb3KGkoSEhAdOU0NvbG9yAJSdAYQEZmZm
+				ZgCD191cPoOR7ew+AYaShJaWEE5TUGFyYWdyYXBoU3R5
+				bGWGkoSEhBdOU011dGFibGVQYXJhZ3JhcGhTdHlsZQCE
+				hBBOU1BhcmFncmFwaFN0eWxlAJSEBENDQFMAAISEhAdO
+				U0FycmF5AJSZAIaBAAKEBFsxZl0khpKElpYNTlNTdHJv
+				a2VDb2xvcoaShKOdAaMAAAABhoaXAgqShJiZBZKZkoSb
+				mSSEBVszNmNdBgAAABoAAAD//kEAcgBpAGEAbAAtAEIA
+				bwBsAGQATQBUAAAAnAudAJ0BnQCdAIaSnJKdkqGShKOd
+				AaMAg9fdXD6Dke3sPgGGkqSShKamAACogQACqCSGkqqS
+				q4aXAYHNAIY=
+				</data>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 ArialMT;\f1\fswiss\fcharset0 Arial-BoldMT;}
+{\colortbl;\red255\green255\blue255;\red0\green55\blue118;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c21569\c46275;\cssrgb\c0\c0\c0;}
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs22 \cf2 \expnd0\expndtw0\kerning0
+The big data boom drives solutions that are more scalable and work in a distributed environment. Spring team develops 
+\f1\b \cf2 Spring XD,
+\f0\b0 \cf2  allowing you to run your applications in Spring XD containers as modules. Spring Integration channel adapters are provided as Spring XD modules which can be orchestrated into pipelines using a simple DSL.}</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{4.5, 96.5}, {122, 134}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Color</key>
+				<dict>
+					<key>b</key>
+					<string>0.462745</string>
+					<key>g</key>
+					<string>0.215686</string>
+					<key>r</key>
+					<string>0</string>
+				</dict>
+				<key>Size</key>
+				<real>11</real>
+			</dict>
+			<key>ID</key>
+			<integer>43</integer>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Align</key>
+				<integer>0</integer>
+				<key>RTFD</key>
+				<data>
+				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
+				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
+				bmcBlIQBK4HFAFNwcmluZyBJbnRlZ3JhdGlvbiBpcyBi
+				b3JuIHRvIGltcGxlbWVudCBlbnRlcnByaXNlIGludGVn
+				cmF0aW9uIHBhdHRlcm5zLCBwcm92aWRpbmcgY2hhbm5l
+				bCBhZGFwdGVycyB0byBpbnRlZ3JhdGUgd2l0aCBjb21t
+				b24gZGF0YSBzdG9yZXMsIG1lc3NhZ2UgYnJva2Vycywg
+				d2ViIHNlcnZpY2VzLCBhbmQgY29tbXVuaWNhdGlvbiBw
+				cm90b2NvbHMuhoQCaUkBgcUAkoSEhAxOU0RpY3Rpb25h
+				cnkAlIQBaQWShJaWBk5TRm9udIaShISEBk5TRm9udB6U
+				mRiEBVsyNGNdBgAAABAAAAD//kEAcgBpAGEAbABNAFQA
+				hAFmC4QBYwCdAZ0AnQCGkoSWlgZOU0tlcm6GkoSEhAhO
+				U051bWJlcgCEhAdOU1ZhbHVlAJSEASqEhAFkoQCGkoSW
+				lgdOU0NvbG9yhpKEhIQHTlNDb2xvcgCUnQGEBGZmZmYA
+				g9fdXD6Dke3sPgGGkoSWlhBOU1BhcmFncmFwaFN0eWxl
+				hpKEhIQXTlNNdXRhYmxlUGFyYWdyYXBoU3R5bGUAhIQQ
+				TlNQYXJhZ3JhcGhTdHlsZQCUhARDQ0BTAACEhIQHTlNB
+				cnJheQCUmQCGgQAChARbMWZdJIaShJaWDU5TU3Ryb2tl
+				Q29sb3KGkoSjnQGjAAAAAYaGhg==
+				</data>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;\red0\green55\blue118;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c21569\c46275;\cssrgb\c0\c0\c0;}
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs22 \cf2 \expnd0\expndtw0\kerning0
+Spring Integration is born to implement enterprise integration patterns, providing channel adapters to integrate with common data stores, message brokers, web services, and communication protocols.}</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{459.4375, 0}, {46, 30}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>ID</key>
+			<integer>39</integer>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\deftab720
+\pard\pardeftab720\qc\partightenfactor0
+
+\f0\fs32 \cf0 2020}</string>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{413.4375, 0}, {46, 30}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>ID</key>
+			<integer>38</integer>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\deftab720
+\pard\pardeftab720\qc\partightenfactor0
+
+\f0\fs32 \cf0 2019}</string>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{294, 0}, {46, 30}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>ID</key>
+			<integer>36</integer>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\deftab720
+\pard\pardeftab720\qc\partightenfactor0
+
+\f0\fs32 \cf0 2016}</string>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{200.5, 0}, {46, 30}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>ID</key>
+			<integer>35</integer>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\deftab720
+\pard\pardeftab720\qc\partightenfactor0
+
+\f0\fs32 \cf0 2013}</string>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{134.5, 0}, {46, 30}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>ID</key>
+			<integer>34</integer>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\deftab720
+\pard\pardeftab720\qc\partightenfactor0
+
+\f0\fs32 \cf0 2011}</string>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{0, 2.5}, {46, 30}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>YES</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>ID</key>
+			<integer>32</integer>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\deftab720
+\pard\pardeftab720\qc\partightenfactor0
+
+\f0\fs32 \cf0 2007}</string>
+			</dict>
+			<key>Wrap</key>
+			<string>NO</string>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica</string>
+				<key>Size</key>
+				<real>12</real>
+			</dict>
+			<key>ID</key>
+			<integer>30</integer>
+			<key>Points</key>
+			<array>
+				<string>{484.28484502082733, 41}</string>
+				<string>{485.28484502082733, 117}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Legacy</key>
+					<false/>
+					<key>LineType</key>
+					<integer>1</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica</string>
+				<key>Size</key>
+				<real>12</real>
+			</dict>
+			<key>ID</key>
+			<integer>27</integer>
+			<key>Points</key>
+			<array>
+				<string>{322.78484502082728, 41}</string>
+				<string>{321.78484502082728, 269}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Legacy</key>
+					<false/>
+					<key>LineType</key>
+					<integer>1</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica</string>
+				<key>Size</key>
+				<real>12</real>
+			</dict>
+			<key>Head</key>
+			<dict>
+				<key>ID</key>
+				<integer>46</integer>
+			</dict>
+			<key>ID</key>
+			<integer>25</integer>
+			<key>Points</key>
+			<array>
+				<string>{174.78484502082728, 43.458429276765173}</string>
+				<string>{172, 331}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Legacy</key>
+					<false/>
+					<key>LineType</key>
+					<integer>1</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica</string>
+				<key>Size</key>
+				<real>12</real>
+			</dict>
+			<key>ID</key>
+			<integer>42</integer>
+			<key>Points</key>
+			<array>
+				<string>{17.905671563465148, 40}</string>
+				<string>{17.5, 111}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Legacy</key>
+					<false/>
+					<key>LineType</key>
+					<integer>1</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+			<key>Tail</key>
+			<dict>
+				<key>ID</key>
+				<integer>41</integer>
+				<key>Position</key>
+				<real>0.0092822546139359474</real>
+			</dict>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica</string>
+				<key>Size</key>
+				<real>12</real>
+			</dict>
+			<key>ID</key>
+			<integer>41</integer>
+			<key>Points</key>
+			<array>
+				<string>{13, 40}</string>
+				<string>{541.5, 40}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>HeadArrow</key>
+					<string>FilledArrow</string>
+					<key>Legacy</key>
+					<false/>
+					<key>LineType</key>
+					<integer>1</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+					<key>Width</key>
+					<real>6</real>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>FontInfo</key>
+			<dict>
+				<key>Font</key>
+				<string>Helvetica</string>
+				<key>Size</key>
+				<real>12</real>
+			</dict>
+			<key>ID</key>
+			<integer>49</integer>
+			<key>Points</key>
+			<array>
+				<string>{232.00585407018661, 40}</string>
+				<string>{231.94921875, 134}</string>
+				<string>{231.94921875, 134}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Legacy</key>
+					<false/>
+					<key>LineType</key>
+					<integer>1</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+			<key>Tail</key>
+			<dict>
+				<key>ID</key>
+				<integer>41</integer>
+				<key>Position</key>
+				<real>0.41439139842987061</real>
+			</dict>
+		</dict>
+	</array>
+	<key>GridInfo</key>
+	<dict>
+		<key>GridSpacing</key>
+		<real>1</real>
+		<key>MajorGridColor</key>
+		<dict>
+			<key>a</key>
+			<string>0.1</string>
+			<key>b</key>
+			<string>0</string>
+			<key>g</key>
+			<string>0</string>
+			<key>r</key>
+			<string>0</string>
+		</dict>
+		<key>MajorGridSpacing</key>
+		<integer>4</integer>
+		<key>ShowsGrid</key>
+		<string>YES</string>
+	</dict>
+	<key>GuidesLocked</key>
+	<string>NO</string>
+	<key>GuidesVisible</key>
+	<string>YES</string>
+	<key>HPages</key>
+	<integer>4</integer>
+	<key>ImageCounter</key>
+	<integer>1</integer>
+	<key>KeepToScale</key>
+	<false/>
+	<key>Layers</key>
+	<array>
+		<dict>
+			<key>Lock</key>
+			<string>NO</string>
+			<key>Name</key>
+			<string>Layer 1</string>
+			<key>Print</key>
+			<string>YES</string>
+			<key>Slices</key>
+			<string>NO</string>
+			<key>View</key>
+			<string>YES</string>
+		</dict>
+	</array>
+	<key>LayoutInfo</key>
+	<dict>
+		<key>Animate</key>
+		<string>NO</string>
+		<key>circoMinDist</key>
+		<real>18</real>
+		<key>circoSeparation</key>
+		<real>0.0</real>
+		<key>layoutEngine</key>
+		<string>dot</string>
+		<key>neatoLineLength</key>
+		<real>0.20000000298023224</real>
+		<key>neatoSeparation</key>
+		<real>0.0</real>
+		<key>twopiSeparation</key>
+		<real>0.0</real>
+	</dict>
+	<key>LinksVisible</key>
+	<string>NO</string>
+	<key>MagnetsVisible</key>
+	<string>NO</string>
+	<key>MasterSheets</key>
+	<array/>
+	<key>ModificationDate</key>
+	<string>2020-07-13 21:32:05 +0000</string>
+	<key>Modifier</key>
+	<string>David Turanski</string>
+	<key>NotesVisible</key>
+	<string>NO</string>
+	<key>Orientation</key>
+	<integer>2</integer>
+	<key>OriginVisible</key>
+	<string>NO</string>
+	<key>PageBreaks</key>
+	<string>NO</string>
+	<key>PrintInfo</key>
+	<dict>
+		<key>NSBottomMargin</key>
+		<array>
+			<string>float</string>
+			<string>40</string>
+		</array>
+		<key>NSHorizonalPagination</key>
+		<array>
+			<string>coded</string>
+			<string>BAtzdHJlYW10eXBlZIHoA4QBQISEhAhOU051bWJlcgCEhAdOU1ZhbHVlAISECE5TT2JqZWN0AIWEASqEhAFxlwCG</string>
+		</array>
+		<key>NSLeftMargin</key>
+		<array>
+			<string>float</string>
+			<string>18</string>
+		</array>
+		<key>NSPaperSize</key>
+		<array>
+			<string>size</string>
+			<string>{611.99997901916504, 792}</string>
+		</array>
+		<key>NSPrintReverseOrientation</key>
+		<array>
+			<string>coded</string>
+			<string>BAtzdHJlYW10eXBlZIHoA4QBQISEhAhOU051bWJlcgCEhAdOU1ZhbHVlAISECE5TT2JqZWN0AIWEASqEhAFxlwCG</string>
+		</array>
+		<key>NSRightMargin</key>
+		<array>
+			<string>float</string>
+			<string>18</string>
+		</array>
+		<key>NSTopMargin</key>
+		<array>
+			<string>float</string>
+			<string>18</string>
+		</array>
+	</dict>
+	<key>PrintOnePage</key>
+	<false/>
+	<key>ReadOnly</key>
+	<string>NO</string>
+	<key>RowAlign</key>
+	<integer>1</integer>
+	<key>RowSpacing</key>
+	<real>36</real>
+	<key>SheetTitle</key>
+	<string>Canvas 1</string>
+	<key>SmartAlignmentGuidesActive</key>
+	<string>YES</string>
+	<key>SmartDistanceGuidesActive</key>
+	<string>YES</string>
+	<key>UniqueID</key>
+	<integer>1</integer>
+	<key>UseEntirePage</key>
+	<false/>
+	<key>VPages</key>
+	<integer>2</integer>
+	<key>WindowInfo</key>
+	<dict>
+		<key>CurrentSheet</key>
+		<integer>0</integer>
+		<key>Expanded_Canvases</key>
+		<array/>
+		<key>Frame</key>
+		<string>{{0, 0}, {2560, 1417}}</string>
+		<key>ShowInfo</key>
+		<true/>
+		<key>ShowRuler</key>
+		<true/>
+		<key>Sidebar</key>
+		<true/>
+		<key>SidebarWidth</key>
+		<integer>200</integer>
+		<key>TopSlabHeight</key>
+		<real>33</real>
+		<key>VisibleRegion</key>
+		<string>{{0, 0}, {1023, 629}}</string>
+		<key>Zoom</key>
+		<real>2</real>
+		<key>ZoomValues</key>
+		<array>
+			<array>
+				<string>Canvas 1</string>
+				<real>2</real>
+				<real>1</real>
+			</array>
+		</array>
+	</dict>
+</dict>
+</plist>
