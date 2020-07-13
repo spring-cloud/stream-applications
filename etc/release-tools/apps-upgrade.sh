@@ -7,7 +7,7 @@ fi
 
 function git_commit_push {
  echo "in git commit"
- git commit -am"Source Applications: Release - $VERSION"
+ git commit -am"Applications: Release - $VERSION"
  git push origin master && git push upstream master
 }
 
