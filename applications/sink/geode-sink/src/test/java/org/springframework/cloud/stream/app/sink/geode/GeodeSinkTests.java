@@ -63,7 +63,7 @@ public class GeodeSinkTests {
 	void consumeWithJsonEnabled() {
 		applicationContextRunner
 				.withPropertyValues(
-						"spring.cloud.stream.function.definition=geodeConsumer",
+						"spring.cloud.function.definition=geodeConsumer",
 						"geode.region.regionName=Stocks",
 						"geode.consumer.json=true",
 						"geode.consumer.key-expression=payload.getField('symbol')",
@@ -85,7 +85,7 @@ public class GeodeSinkTests {
 	void consumeWithoutJsonEnabled() {
 		applicationContextRunner
 				.withPropertyValues(
-						"spring.cloud.stream.function.definition=geodeConsumer",
+						"spring.cloud.function.definition=geodeConsumer",
 						"geode.region.regionName=Stocks",
 						"geode.consumer.key-expression='key'",
 						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())

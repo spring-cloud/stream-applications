@@ -33,7 +33,7 @@ import org.springframework.test.annotation.DirtiesContext;
  * @author Soby Chacko
  * @author Artem Bilan
  */
-@SpringBootTest(properties = "spring.cloud.stream.function.definition=jdbcSupplier")
+@SpringBootTest(properties = "spring.cloud.function.definition=jdbcSupplier")
 @DirtiesContext
 public class JdbcSourceIntegrationTests {
 

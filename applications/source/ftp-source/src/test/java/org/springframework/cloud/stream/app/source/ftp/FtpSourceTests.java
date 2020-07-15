@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 				"ftp.factory.password = foo",
 				"file.consumer.mode = ref",
 				"ftp.factory.cacheSessions = true",
-				"spring.cloud.stream.function.definition=ftpSupplier"
+				"spring.cloud.function.definition=ftpSupplier"
 		})
 @DirtiesContext
 public class FtpSourceTests extends FtpTestSupport {

@@ -97,7 +97,7 @@ public class GeodeSourceTests {
 	void pdxReadSerialized() {
 		applicationContextRunner
 				.withPropertyValues(
-						"spring.cloud.stream.function.definition=geodeSupplier",
+						"spring.cloud.function.definition=geodeSupplier",
 						"geode.region.regionName=myRegion",
 						"geode.client.pdx-read-serialized=true",
 						"geode.supplier.query=Select * from /myRegion where symbol='XXX' and price > 140",

@@ -38,7 +38,7 @@ import org.springframework.messaging.SubscribableChannel;
 import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(
-		properties = {"spring.cloud.stream.function.definition=rabbitConsumer", "spring.rabbitmq.port = ${spring.rabbitmq.test.port}"},
+		properties = {"spring.cloud.function.definition=rabbitConsumer", "spring.rabbitmq.port = ${spring.rabbitmq.test.port}"},
 		webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @DirtiesContext
 @Import(RabbitSinkIntegrationTests.FooConfiguration.class)

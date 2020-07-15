@@ -103,7 +103,7 @@ public class TwitterStreamSourceTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterStreamSourceApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=twitterStreamSupplier",
+				.run("--spring.cloud.function.definition=twitterStreamSupplier",
 
 						"--twitter.connection.consumerKey=consumerKey666",
 						"--twitter.connection.consumerSecret=consumerSecret666",

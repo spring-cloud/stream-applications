@@ -55,7 +55,7 @@ public class MyTwitterTrendBootApp {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MyTwitterTrendBootApp.class,
-		    "--spring.cloud.stream.function.definition=trend|twitterTrendFunction|managedJson");
+		    "--spring.cloud.function.definition=trend|twitterTrendFunction|managedJson");
 	}
 }
 ----
@@ -110,7 +110,7 @@ public class MyTwitterGeoProcessorBootApp {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MyTwitterGeoProcessorBootApp.class,
-		    "--spring.cloud.stream.function.definition=messageToGeoQueryFunction|twitterSearchPlacesFunction|managedJson");
+		    "--spring.cloud.function.definition=messageToGeoQueryFunction|twitterSearchPlacesFunction|managedJson");
 	}
 }
 ----

@@ -111,7 +111,7 @@ public class TwitterMessageSinkIntegrationTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterMessageSinkApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=byteArrayTextToString|sendDirectMessageConsumer",
+				.run("--spring.cloud.function.definition=byteArrayTextToString|sendDirectMessageConsumer",
 
 						"--twitter.message.update.screenName='user666'",
 
@@ -149,7 +149,7 @@ public class TwitterMessageSinkIntegrationTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterMessageSinkApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=byteArrayTextToString|sendDirectMessageConsumer",
+				.run("--spring.cloud.function.definition=byteArrayTextToString|sendDirectMessageConsumer",
 
 						"--twitter.message.update.userId='1075751718749659136'",
 
@@ -178,7 +178,7 @@ public class TwitterMessageSinkIntegrationTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterMessageSinkApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=byteArrayTextToString|sendDirectMessageConsumer",
+				.run("--spring.cloud.function.definition=byteArrayTextToString|sendDirectMessageConsumer",
 
 						"--twitter.message.update.userId=headers['user']",
 						"--twitter.message.update.text=payload.concat(\" with suffix \")",

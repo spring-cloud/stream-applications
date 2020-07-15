@@ -108,7 +108,7 @@ public class TwitterSearchSourceIntegrationTests {
 						.getCompleteConfiguration(TestTwitterSearchSourceApplication.class))
 
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=twitterSearchSupplier",
+				.run("--spring.cloud.function.definition=twitterSearchSupplier",
 						"--twitter.connection.consumerKey=consumerKey666",
 						"--twitter.connection.consumerSecret=consumerSecret666",
 						"--twitter.connection.accessToken=accessToken666",
@@ -136,7 +136,7 @@ public class TwitterSearchSourceIntegrationTests {
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(TestTwitterSearchSourceApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=twitterSearchSupplier",
+				.run("--spring.cloud.function.definition=twitterSearchSupplier",
 						"--twitter.connection.consumerKey=consumerKey666",
 						"--twitter.connection.consumerSecret=consumerSecret666",
 						"--twitter.connection.accessToken=accessToken666",

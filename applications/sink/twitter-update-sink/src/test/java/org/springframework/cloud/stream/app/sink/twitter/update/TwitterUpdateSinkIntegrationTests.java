@@ -89,7 +89,7 @@ public class TwitterUpdateSinkIntegrationTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterUpdateSinkApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=byteArrayTextToString|twitterStatusUpdateConsumer",
+				.run("--spring.cloud.function.definition=byteArrayTextToString|twitterStatusUpdateConsumer",
 						"--twitter.connection.consumerKey=myConsumerKey",
 						"--twitter.connection.consumerSecret=myConsumerSecret",
 						"--twitter.connection.accessToken=myAccessToken",
@@ -117,7 +117,7 @@ public class TwitterUpdateSinkIntegrationTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterUpdateSinkApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=byteArrayTextToString|twitterStatusUpdateConsumer",
+				.run("--spring.cloud.function.definition=byteArrayTextToString|twitterStatusUpdateConsumer",
 						"--twitter.update.text=payload.toUpperCase().concat(\" With Suffix\")",
 
 						"--twitter.connection.consumerKey=myConsumerKey",
@@ -157,7 +157,7 @@ public class TwitterUpdateSinkIntegrationTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterUpdateSinkApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=byteArrayTextToString|twitterStatusUpdateConsumer",
+				.run("--spring.cloud.function.definition=byteArrayTextToString|twitterStatusUpdateConsumer",
 
 						"--twitter.update.attachmentUrl='http://attachementUrl'",
 						"--twitter.update.placeId='myPlaceId'",

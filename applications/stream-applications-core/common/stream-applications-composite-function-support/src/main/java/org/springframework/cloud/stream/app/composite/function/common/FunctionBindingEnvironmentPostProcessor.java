@@ -100,6 +100,8 @@ public class FunctionBindingEnvironmentPostProcessor implements EnvironmentPostP
 
 	private String functionDefinition(Environment environment) {
 		if (environment.containsProperty(SPRING_CLOUD_STREAM_FUNCTION_DEFINITION)) {
+			log.warn("The property '" + SPRING_CLOUD_STREAM_FUNCTION_DEFINITION + "' is deprecated. Please use '"
+					+ SPRING_CLOUD_FUNCTION_DEFINITION + "'");
 			return environment.getProperty(SPRING_CLOUD_STREAM_FUNCTION_DEFINITION);
 		}
 		else if (environment.containsProperty(SPRING_CLOUD_FUNCTION_DEFINITION)) {

@@ -47,7 +47,7 @@ public class SftpSourceTests extends SftpTestSupport {
 						"sftp.supplier.factory.port =${sftp.factory.port}",
 						"sftp.supplier.factory.allowUnknownKeys=true",
 						"sftp.supplier.remoteDir=sftpSource",
-						"spring.cloud.stream.function.definition=sftpSupplier")
+						"spring.cloud.function.definition=sftpSupplier")
 				.run(context -> {
 					OutputDestination output = context.getBean(OutputDestination.class);
 					SftpSupplierProperties config = context.getBean(SftpSupplierProperties.class);
@@ -73,7 +73,7 @@ public class SftpSourceTests extends SftpTestSupport {
 						"sftp.supplier.localDir=" + this.targetLocalDirectory.toString(),
 						"--task.launch.request.arg-expressions=fileName=payload",
 						"--task.launch.request.task-name=myTask",
-						"spring.cloud.stream.function.definition=sftpSupplier|taskLaunchRequestFunction")
+						"spring.cloud.function.definition=sftpSupplier|taskLaunchRequestFunction")
 				.run(context -> {
 					OutputDestination output = context.getBean(OutputDestination.class);
 					SftpSupplierProperties config = context.getBean(SftpSupplierProperties.class);

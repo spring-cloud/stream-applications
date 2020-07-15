@@ -54,7 +54,7 @@ public class TaskLaunchRequestFunctionApplicationTests {
 
 		ApplicationContext context = springApplicationBuilder.properties(
 				"spring.jmx.enabled=false",
-				"spring.cloud.stream.function.definition=taskLaunchRequestFunction",
+				"spring.cloud.function.definition=taskLaunchRequestFunction",
 				"task.launch.request.task-name=foo")
 				.run();
 
@@ -70,7 +70,7 @@ public class TaskLaunchRequestFunctionApplicationTests {
 	public void dataflowTaskLaunchRequestWithArgsAndDeploymentProperties() throws IOException {
 
 		ApplicationContext context = springApplicationBuilder.properties(
-				"spring.jmx.enabled=false", "spring.cloud.stream.function.definition=taskLaunchRequestFunction",
+				"spring.jmx.enabled=false", "spring.cloud.function.definition=taskLaunchRequestFunction",
 				"task.launch.request.task-name=foo", "task.launch.request.args=foo=bar,baz=boo",
 				"task.launch.request.deploymentProperties=count=3")
 				.run();
@@ -87,7 +87,7 @@ public class TaskLaunchRequestFunctionApplicationTests {
 	public void taskLaunchRequestWithCommandLineArgsMessageMapper() throws IOException {
 
 		ApplicationContext context = springApplicationBuilder.properties(
-				"spring.jmx.enabled=false", "spring.cloud.stream.function.definition=taskLaunchRequestFunction",
+				"spring.jmx.enabled=false", "spring.cloud.function.definition=taskLaunchRequestFunction",
 				"task.launch.request.task-name=foo", "enhanceTLRArgs=true")
 				.run();
 
@@ -104,7 +104,7 @@ public class TaskLaunchRequestFunctionApplicationTests {
 	public void taskLaunchRequestWithArgExpressions() throws IOException {
 		ApplicationContext context = springApplicationBuilder.properties(
 				"spring.jmx.enabled=false",
-				"spring.cloud.stream.function.definition=taskLaunchRequestFunction",
+				"spring.cloud.function.definition=taskLaunchRequestFunction",
 				"task.launch.request.task-name=foo",
 				"task.launch.request.arg-expressions=foo=payload.toUpperCase(),bar=payload.substring(0,2)")
 				.run();
@@ -124,7 +124,7 @@ public class TaskLaunchRequestFunctionApplicationTests {
 	@DirtiesContext
 	public void taskLaunchRequestWithIntPayload() throws IOException {
 		ApplicationContext context = springApplicationBuilder.properties(
-				"spring.jmx.enabled=false", "spring.cloud.stream.function.definition=taskLaunchRequestFunction",
+				"spring.jmx.enabled=false", "spring.cloud.function.definition=taskLaunchRequestFunction",
 				"task.launch.request.task-name=foo",
 				"task.launch.request.arg-expressions=i=payload")
 				.run();
@@ -145,7 +145,7 @@ public class TaskLaunchRequestFunctionApplicationTests {
 	@DirtiesContext
 	public void taskNameExpression() throws IOException {
 		ApplicationContext context = springApplicationBuilder.properties(
-				"spring.jmx.enabled=false", "spring.cloud.stream.function.definition=taskLaunchRequestFunction",
+				"spring.jmx.enabled=false", "spring.cloud.function.definition=taskLaunchRequestFunction",
 				"task.launch.request.task-name-expression=payload+'_task'")
 				.run();
 
@@ -164,7 +164,7 @@ public class TaskLaunchRequestFunctionApplicationTests {
 	@DirtiesContext
 	public void customTaskNameExtractor() throws IOException {
 		ApplicationContext context = springApplicationBuilder.properties(
-				"spring.jmx.enabled=false", "spring.cloud.stream.function.definition=taskLaunchRequestFunction",
+				"spring.jmx.enabled=false", "spring.cloud.function.definition=taskLaunchRequestFunction",
 				"customTaskNameExtractor=true")
 				.run();
 		TaskLaunchRequestFunction taskLaunchRequestFunction = context.getBean(TaskLaunchRequestFunction.class);

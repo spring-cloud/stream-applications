@@ -89,7 +89,7 @@ public class TwitterTrendProcessorIntegrationTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterTrendProcessorApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=twitterTrendFunction",
+				.run("--spring.cloud.function.definition=twitterTrendFunction",
 
 						"--twitter.trend.locationId='2972'",
 						"--twitter.connection.rawJson=true",
