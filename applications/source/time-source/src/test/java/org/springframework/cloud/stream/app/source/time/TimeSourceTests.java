@@ -66,18 +66,19 @@ public class TimeSourceTests {
 	}
 
 	@Test
-	public void testSourceComposedWithSpel() {
+	public void testSourceComposedWithSpelAndFilter() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(TimeSourceTestApplication.class))
 								.web(WebApplicationType.NONE)
-								.run("--spring.cloud.stream.function.definition=timeSupplier|spelFunction",
-										"--spel.function.expression=payload.length()")) {
+								.run("--spring.cloud.stream.function.definition=timeSupplier|spelFunction|filterFunction",
+										"--spel.function.expression=payload.substring(payload.length() - 2)",
+										"--filter.function.expression=payload.endsWith(7)")) {
 
 			OutputDestination target = context.getBean(OutputDestination.class);
 			Message<byte[]> sourceMessage = target.receive(10000);
 			final String actual = new String(sourceMessage.getPayload());
-			assertThat(Integer.valueOf(actual)).isEqualTo(17);
+			assertThat(actual).endsWith("7");
 		}
 	}
 

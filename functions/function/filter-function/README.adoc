@@ -14,11 +14,11 @@ Once injected, you can use the `apply` method of the `Function` to invoke it and
 
 ## Configuration Options
 
-The filter function makes uses of link:../spel-function/README.adoc[SpEL function].
+All configuration properties are prefixed with `filter.function`.
 
-For more information on the various options available, please see link:../spel-function/src/main/java/org/springframework/cloud/fn/spel/SpelFunctionProperties.java[SpelFunctionProperties.java]
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/filter/FilterFunctionProperties.java[FilterFunctionProperties.java]
 
-## Tests
+## Examples
 
 See this link:src/test/java/org/springframework/cloud/fn/filter/FilterFunctionApplicationTests.java[test suite] for examples of how this function is used.
 
