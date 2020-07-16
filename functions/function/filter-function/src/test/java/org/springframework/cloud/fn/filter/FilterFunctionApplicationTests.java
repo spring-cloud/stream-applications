@@ -30,7 +30,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(properties = "spel.function.expression=payload.length() > 5")
+@SpringBootTest(properties = "filter.function.expression=payload.length() > 5")
 @DirtiesContext
 public class FilterFunctionApplicationTests {
 

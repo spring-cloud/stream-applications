@@ -17,8 +17,12 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>spel-function</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <artifactId>payload-converter-function</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-integration</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

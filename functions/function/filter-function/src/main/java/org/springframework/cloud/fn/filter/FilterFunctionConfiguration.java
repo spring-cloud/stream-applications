@@ -19,25 +19,36 @@ package org.springframework.cloud.fn.filter;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cloud.fn.spel.SpelFunctionConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.integration.transformer.ExpressionEvaluatingTransformer;
 import org.springframework.messaging.Message;
 
+/**
+ * @author Artem Bilan
+ * @author David Turanski
+ */
 @Configuration
-@Import(SpelFunctionConfiguration.class)
+@EnableConfigurationProperties(FilterFunctionProperties.class)
 public class FilterFunctionConfiguration {
 
 	@Bean
 	public Function<Message<?>, Message<?>> filterFunction(
-			@Qualifier("spelFunction") Function<Message<?>, Message<?>> spelFunction) {
+			ExpressionEvaluatingTransformer filterExpressionEvaluatingTransformer) {
 
-		return message ->
-				Optional.of(message)
-						.filter(m -> (Boolean) spelFunction.apply(m).getPayload())
-						.orElse(null);
+		return message -> Optional.of(message)
+				.filter(m -> (Boolean) filterExpressionEvaluatingTransformer.transform(m).getPayload())
+				.orElse(null);
+	}
+
+	@Bean
+	public ExpressionEvaluatingTransformer filterExpressionEvaluatingTransformer(
+			FilterFunctionProperties filterFunctionProperties) {
+
+		return new ExpressionEvaluatingTransformer(new SpelExpressionParser()
+				.parseExpression(filterFunctionProperties.getExpression()));
 	}
 
 }
