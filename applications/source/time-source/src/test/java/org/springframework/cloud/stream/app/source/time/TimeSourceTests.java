@@ -71,14 +71,15 @@ public class TimeSourceTests {
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(TimeSourceTestApplication.class))
 								.web(WebApplicationType.NONE)
-								.run("--spring.cloud.stream.function.definition=timeSupplier|spelFunction|filterFunction",
-										"--spel.function.expression=payload.substring(payload.length() - 2)",
-										"--filter.function.expression=payload.endsWith(7)")) {
+								.run("--spring.cloud.function.definition=timeSupplier|headerEnricherFunction|filterFunction",
+										"--header.enricher.headers=seconds=T(java.lang.Integer).valueOf(payload.substring(payload.length() - 2))",
+										"--filter.function.expression=headers[seconds]%2==0")) {
 
 			OutputDestination target = context.getBean(OutputDestination.class);
 			Message<byte[]> sourceMessage = target.receive(10000);
 			final String actual = new String(sourceMessage.getPayload());
-			assertThat(actual).endsWith("7");
+			System.out.println(actual);
+			assertThat(((int) sourceMessage.getHeaders().get("seconds")) % 2).isZero();
 		}
 	}
 
@@ -89,7 +90,7 @@ public class TimeSourceTests {
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(TimeSourceTestApplication.class))
 								.web(WebApplicationType.NONE)
-								.run("--spring.cloud.stream.function.definition=timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction",
+								.run("--spring.cloud.function.definition=timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction",
 										"--spel.function.expression=payload.length()",
 										"--header.enricher.headers=task-id=payload*2",
 										"--spring.cloud.stream.bindings.output.destination=foo",
