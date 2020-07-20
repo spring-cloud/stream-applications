@@ -37,7 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Bootstraps a Netty server using the {@link WebsocketConsumerServerInitializer}. Also adds
- * a {@link LoggingHandler} and uses the <tt>logLevel</tt>
+ * a {@link LoggingHandler} and uses the <code>logLevel</code>
  * from {@link WebsocketConsumerProperties#logLevel}.
  *
  * @author Oliver Moser

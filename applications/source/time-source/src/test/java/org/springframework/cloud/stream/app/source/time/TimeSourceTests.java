@@ -71,7 +71,7 @@ public class TimeSourceTests {
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(TimeSourceTestApplication.class))
 								.web(WebApplicationType.NONE)
-								.run("--spring.cloud.stream.function.definition=timeSupplier|spelFunction",
+								.run("--spring.cloud.function.definition=timeSupplier|spelFunction",
 										"--spel.function.expression=payload.length()")) {
 
 			OutputDestination target = context.getBean(OutputDestination.class);
@@ -88,7 +88,7 @@ public class TimeSourceTests {
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(TimeSourceTestApplication.class))
 								.web(WebApplicationType.NONE)
-								.run("--spring.cloud.stream.function.definition=timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction",
+								.run("--spring.cloud.function.definition=timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction",
 										"--spel.function.expression=payload.length()",
 										"--header.enricher.headers=task-id=payload*2",
 										"--spring.cloud.stream.bindings.output.destination=foo",

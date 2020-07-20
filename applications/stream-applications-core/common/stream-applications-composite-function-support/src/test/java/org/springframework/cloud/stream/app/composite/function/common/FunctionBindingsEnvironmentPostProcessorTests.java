@@ -31,7 +31,7 @@ public class FunctionBindingsEnvironmentPostProcessorTests {
 		ApplicationContext context = new SpringApplication(TestApp.class).run(
 				"--spring.cloud.stream.bindings.output.destination=foo",
 				"--spring.cloud.stream.bindings.input.destination=bar",
-				"--spring.cloud.stream.function.definition=firstFunction|secondFunction");
+				"--spring.cloud.function.definition=firstFunction|secondFunction");
 		assertThat(context.getEnvironment().getProperty("spring.cloud.stream.function.bindings.firstFunctionsecondFunction-out-0"))
 				.isEqualTo("output");
 		assertThat(context.getEnvironment().getProperty("spring.cloud.stream.function.bindings.firstFunctionsecondFunction-in-0"))

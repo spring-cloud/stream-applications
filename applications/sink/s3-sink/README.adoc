@@ -20,7 +20,6 @@ $$s3.consumer.acl-expression$$:: $$Expression to evaluate S3 Object access contr
 $$s3.consumer.bucket$$:: $$AWS bucket for target file(s) to store.$$ *($$String$$, default: `$$<none>$$`)*
 $$s3.consumer.bucket-expression$$:: $$Expression to evaluate AWS bucket name.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$s3.consumer.key-expression$$:: $$Expression to evaluate S3 Object key.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$s3.common.endpoint-url$$:: $$Optional endpoint url to connect to s3 compatible storage.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 The target generated application based on the `AmazonS3SinkConfiguration` can be enhanced with the `S3MessageHandler.UploadMetadataProvider` and/or `S3ProgressListener`, which are injected into `S3MessageHandler` bean.

@@ -62,7 +62,6 @@ $$s3.supplier.preserve-timestamp$$:: $$To transfer or not the timestamp of the r
 $$s3.supplier.remote-dir$$:: $$AWS S3 bucket resource.$$ *($$String$$, default: `$$bucket$$`)*
 $$s3.supplier.remote-file-separator$$:: $$Remote File separator.$$ *($$String$$, default: `$$/$$`)*
 $$s3.supplier.tmp-file-suffix$$:: $$Temporary file suffix.$$ *($$String$$, default: `$$.tmp$$`)*
-$$s3.common.endpoint-url$$:: $$Optional endpoint url to connect to s3 compatible storage.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 == Amazon AWS common options

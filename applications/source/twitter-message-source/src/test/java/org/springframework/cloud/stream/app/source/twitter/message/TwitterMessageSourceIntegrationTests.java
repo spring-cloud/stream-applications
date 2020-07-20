@@ -94,7 +94,7 @@ public class TwitterMessageSourceIntegrationTests {
 						.getCompleteConfiguration(TestTwitterMessageSourceApplication.class))
 
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.stream.function.definition=twitterMessageSupplier",
+				.run("--spring.cloud.function.definition=twitterMessageSupplier",
 
 						"--twitter.connection.consumerKey=consumerKey666",
 						"--twitter.connection.consumerSecret=consumerSecret666",
