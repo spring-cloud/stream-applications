@@ -198,47 +198,49 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 		Path newSource = createNewRemoteSource(
 				Paths.get(remoteTemporaryFolder.toString(), "sftpSecondSource", "doesNotMatter.txt"),
 				"source3");
-		new ApplicationContextRunner()
-				.withUserConfiguration(SftpSupplierTestApplication.class)
-				.withPropertyValues(
-						"sftp.supplier.stream=true",
-						"sftp.supplier.factories.one.host=localhost",
-						"sftp.supplier.factories.one.port=${sftp.factory.port}",
-						"sftp.supplier.factories.one.username=user",
-						"sftp.supplier.factories.one.password=pass",
-						"sftp.supplier.factories.one.cache-sessions=true",
-						"sftp.supplier.factories.one.allowUnknownKeys=true",
-						"sftp.supplier.factories.two.host=localhost",
-						"sftp.supplier.factories.two.port=${sftp.factory.port}",
-						"sftp.supplier.factories.two.username = user",
-						"sftp.supplier.factories.two.password = pass",
-						"sftp.supplier.factories.two.cache-sessions = true",
-						"sftp.supplier.factories.two.allowUnknownKeys = true",
-						"sftp.supplier.directories=one.sftpSource,two.sftpSecondSource",
-						"sftp.supplier.max-fetch=1",
-						"sftp.supplier.fair=true")
-				.run(context -> {
+		try {
+			new ApplicationContextRunner()
+					.withUserConfiguration(SftpSupplierTestApplication.class)
+					.withPropertyValues(
+							"sftp.supplier.stream=true",
+							"sftp.supplier.factories.one.host=localhost",
+							"sftp.supplier.factories.one.port=${sftp.factory.port}",
+							"sftp.supplier.factories.one.username=user",
+							"sftp.supplier.factories.one.password=pass",
+							"sftp.supplier.factories.one.cache-sessions=true",
+							"sftp.supplier.factories.one.allowUnknownKeys=true",
+							"sftp.supplier.factories.two.host=localhost",
+							"sftp.supplier.factories.two.port=${sftp.factory.port}",
+							"sftp.supplier.factories.two.username = user",
+							"sftp.supplier.factories.two.password = pass",
+							"sftp.supplier.factories.two.cache-sessions = true",
+							"sftp.supplier.factories.two.allowUnknownKeys = true",
+							"sftp.supplier.directories=one.sftpSource,two.sftpSecondSource",
+							"sftp.supplier.max-fetch=1",
+							"sftp.supplier.fair=true")
+					.run(context -> {
 
-					Supplier<Flux<Message<byte[]>>> sftpSupplier = context.getBean("sftpSupplier", Supplier.class);
-					HashSet<String> contents = new HashSet<>();
-					contents.add("source1");
-					contents.add("source2");
-					final AtomicReference<Set<String>> expectedContentsOfAllFiles = new AtomicReference<>(contents);
+						Supplier<Flux<Message<byte[]>>> sftpSupplier = context.getBean("sftpSupplier", Supplier.class);
+						HashSet<String> contents = new HashSet<>();
+						contents.add("source1");
+						contents.add("source2");
+						final AtomicReference<Set<String>> expectedContentsOfAllFiles = new AtomicReference<>(contents);
 
-					StepVerifier.create(sftpSupplier.get())
-							.assertNext(message -> {
-								String payload = new String(message.getPayload());
-								assertThat(expectedContentsOfAllFiles.get()).contains(payload);
-								expectedContentsOfAllFiles.get().remove(payload);
-							})
-							.expectNextMatches(message -> new String(message.getPayload()).equals("source3"))
-							.expectNextMatches(message -> expectedContentsOfAllFiles.get()
-									.contains(new String(message.getPayload())))
-							.thenCancel()
-							.verify(Duration.ofSeconds(10));
-				});
-
-		deleteNewSource(newSource);
+						StepVerifier.create(sftpSupplier.get())
+								.assertNext(message -> {
+									String payload = new String(message.getPayload());
+									assertThat(expectedContentsOfAllFiles.get()).contains(payload);
+									expectedContentsOfAllFiles.get().remove(payload);
+								})
+								.expectNextMatches(message -> new String(message.getPayload()).equals("source3"))
+								.expectNextMatches(message -> expectedContentsOfAllFiles.get()
+										.contains(new String(message.getPayload())))
+								.thenCancel()
+								.verify(Duration.ofSeconds(10));
+					});
+		} finally {
+			deleteNewSource(newSource);
+		}
 	}
 
 	@Test
@@ -246,54 +248,57 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 		Path newSource = createNewRemoteSource(
 				Paths.get(remoteTemporaryFolder.toString(), "sftpSecondSource", "sftpSource3.txt"),
 				"doesNotMatter");
-		new ApplicationContextRunner()
-				.withUserConfiguration(SftpSupplierTestApplication.class)
-				.withPropertyValues(
-						"file.consumer.mode = ref",
-						"sftp.supplier.localDir=" + this.targetLocalDirectory.getAbsolutePath(),
-						"sftp.supplier.factories.one.host=localhost",
-						"sftp.supplier.factories.one.port=${sftp.factory.port}",
-						"sftp.supplier.factories.one.username = user",
-						"sftp.supplier.factories.one.password = pass",
-						"sftp.supplier.factories.one.cache-sessions = true",
-						"sftp.supplier.factories.one.allowUnknownKeys = true",
-						"sftp.supplier.factories.two.host=localhost",
-						"sftp.supplier.factories.two.port=${sftp.factory.port}",
-						"sftp.supplier.factories.two.username = user",
-						"sftp.supplier.factories.two.password = pass",
-						"sftp.supplier.factories.two.cache-sessions = true",
-						"sftp.supplier.factories.two.allowUnknownKeys = true",
-						"sftp.supplier.factories.empty.host=localhost",
-						"sftp.supplier.factories.empty.port=${sftp.factory.port}",
-						"sftp.supplier.factories.empty.username=user",
-						"sftp.supplier.factories.empty.password=pass",
-						"sftp.supplier.factories.empty.allowUnknownKeys = true",
-						"sftp.supplier.directories=one.sftpSource,two.sftpSecondSource,empty.sftpSource",
-						"sftp.supplier.max-fetch=1",
-						"sftp.supplier.fair=true")
-				.run(context -> {
-					Supplier<Flux<Message<File>>> sftpSupplier = context.getBean("sftpSupplier", Supplier.class);
-					SftpSupplierProperties properties = context.getBean(SftpSupplierProperties.class);
-					String localDir = properties.getLocalDir().getPath();
-					HashSet<String> firstSourceFiles = new HashSet<>();
-					firstSourceFiles.add(Paths.get(localDir, "sftpSource1.txt").toString());
-					firstSourceFiles.add(Paths.get(localDir, "sftpSource2.txt").toString());
-					final AtomicReference<Set<String>> expectedFirstSourcePaths = new AtomicReference<>(
-							firstSourceFiles);
+		try {
+			new ApplicationContextRunner()
+					.withUserConfiguration(SftpSupplierTestApplication.class)
+					.withPropertyValues(
+							"file.consumer.mode = ref",
+							"sftp.supplier.localDir=" + this.targetLocalDirectory.getAbsolutePath(),
+							"sftp.supplier.factories.one.host=localhost",
+							"sftp.supplier.factories.one.port=${sftp.factory.port}",
+							"sftp.supplier.factories.one.username = user",
+							"sftp.supplier.factories.one.password = pass",
+							"sftp.supplier.factories.one.cache-sessions = true",
+							"sftp.supplier.factories.one.allowUnknownKeys = true",
+							"sftp.supplier.factories.two.host=localhost",
+							"sftp.supplier.factories.two.port=${sftp.factory.port}",
+							"sftp.supplier.factories.two.username = user",
+							"sftp.supplier.factories.two.password = pass",
+							"sftp.supplier.factories.two.cache-sessions = true",
+							"sftp.supplier.factories.two.allowUnknownKeys = true",
+							"sftp.supplier.factories.empty.host=localhost",
+							"sftp.supplier.factories.empty.port=${sftp.factory.port}",
+							"sftp.supplier.factories.empty.username=user",
+							"sftp.supplier.factories.empty.password=pass",
+							"sftp.supplier.factories.empty.allowUnknownKeys = true",
+							"sftp.supplier.directories=one.sftpSource,two.sftpSecondSource,empty.sftpSource",
+							"sftp.supplier.max-fetch=1",
+							"sftp.supplier.fair=true")
+					.run(context -> {
+						Supplier<Flux<Message<File>>> sftpSupplier = context.getBean("sftpSupplier", Supplier.class);
+						SftpSupplierProperties properties = context.getBean(SftpSupplierProperties.class);
+						String localDir = properties.getLocalDir().getPath();
+						HashSet<String> firstSourceFiles = new HashSet<>();
+						firstSourceFiles.add(Paths.get(localDir, "sftpSource1.txt").toString());
+						firstSourceFiles.add(Paths.get(localDir, "sftpSource2.txt").toString());
+						final AtomicReference<Set<String>> expectedFirstSourcePaths = new AtomicReference<>(
+								firstSourceFiles);
 
-					StepVerifier.create(sftpSupplier.get())
-							.assertNext(message -> {
-								assertThat(expectedFirstSourcePaths.get()).contains(message.getPayload().getPath());
-								expectedFirstSourcePaths.get().remove(message.getPayload().getPath());
-							})
-							.expectNextMatches(message -> message.getPayload().getPath().equals(
-									Paths.get(localDir, "sftpSource3.txt").toString()))
-							.expectNextMatches(message -> expectedFirstSourcePaths.get()
-									.contains(message.getPayload().getPath()))
-							.thenCancel()
-							.verify(Duration.ofSeconds(10));
-				});
-		deleteNewSource(newSource);
+						StepVerifier.create(sftpSupplier.get())
+								.assertNext(message -> {
+									assertThat(expectedFirstSourcePaths.get()).contains(message.getPayload().getPath());
+									expectedFirstSourcePaths.get().remove(message.getPayload().getPath());
+								})
+								.expectNextMatches(message -> message.getPayload().getPath().equals(
+										Paths.get(localDir, "sftpSource3.txt").toString()))
+								.expectNextMatches(message -> expectedFirstSourcePaths.get()
+										.contains(message.getPayload().getPath()))
+								.thenCancel()
+								.verify(Duration.ofSeconds(10));
+					});
+		} finally {
+			deleteNewSource(newSource);
+		}
 	}
 
 	private Path createNewRemoteSource(Path remotePath, String contents) throws Exception {
