@@ -238,7 +238,8 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 								.thenCancel()
 								.verify(Duration.ofSeconds(10));
 					});
-		} finally {
+		}
+		finally {
 			deleteNewSource(newSource);
 		}
 	}
@@ -296,7 +297,8 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 								.thenCancel()
 								.verify(Duration.ofSeconds(10));
 					});
-		} finally {
+		}
+		finally {
 			deleteNewSource(newSource);
 		}
 	}
