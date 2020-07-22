@@ -55,6 +55,11 @@
 
                     <dependencies>
                         <dependency>
+                            <groupId>org.springframework.cloud.stream.app</groupId>
+                            <artifactId>stream-applications-postprocessor-common</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                        <dependency>
                             <groupId>org.springframework.cloud.fn</groupId>
                             <artifactId>spel-function</artifactId>
                         </dependency>
