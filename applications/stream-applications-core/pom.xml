@@ -287,10 +287,6 @@
                                 <artifactId>micrometer-registry-prometheus</artifactId>
                             </dependency>
                             <dependency>
-                                <groupId>io.micrometer</groupId>
-                                <artifactId>micrometer-registry-wavefront</artifactId>
-                            </dependency>
-                            <dependency>
                                 <groupId>io.micrometer.prometheus</groupId>
                                 <artifactId>prometheus-rsocket-spring</artifactId>
                                 <version>${prometheus-rsocket.version}</version>
@@ -299,6 +295,19 @@
                                 <groupId>io.micrometer</groupId>
                                 <artifactId>micrometer-registry-datadog</artifactId>
                             </dependency>
+                            <dependency>
+                                <groupId>io.micrometer</groupId>
+                                <artifactId>micrometer-registry-wavefront</artifactId>
+                            </dependency>
+                            <!-- Override the WF SDK dependency to resolve the https://github.com/wavefrontHQ/wavefront-sdk-java/pull/152
+								 TODO: removed this dependency when Micrometer and Boot catch up with WF SDC 2.6.+ (likely Micrometer 1.5.3+).
+								 -->
+                            <dependency>
+                                <groupId>com.wavefront</groupId>
+                                <artifactId>wavefront-sdk-java</artifactId>
+                                <version>2.6.0</version>
+                            </dependency>
+
                             <dependency>
                                 <groupId>io.pivotal.cfenv</groupId>
                                 <artifactId>java-cfenv-boot</artifactId>
