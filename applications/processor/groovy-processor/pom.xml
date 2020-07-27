@@ -20,6 +20,7 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-groovy</artifactId>
@@ -96,11 +97,6 @@
                     </generatedApp>
 
                     <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.cloud.stream.app</groupId>
-                            <artifactId>stream-applications-postprocessor-common</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
                         <dependency>
                             <groupId>org.springframework.cloud.stream.app</groupId>
                             <artifactId>groovy-processor</artifactId>
