@@ -20,9 +20,9 @@
         <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
         <stream-apps-core.version>${project.version}</stream-apps-core.version>
         <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
-        <scst-app-maven-plugin.version>2.0.0.M2</scst-app-maven-plugin.version>
-        <app-metadata-maven-plugin-version>2.0.1.M1</app-metadata-maven-plugin-version>
-        <stream-apps-docs-plugin.version>3.0.0.M1</stream-apps-docs-plugin.version>
+        <scst-app-maven-plugin.version>2.0.0.BUILD-SNAPSHOT</scst-app-maven-plugin.version>
+        <app-metadata-maven-plugin-version>2.0.1.BUILD-SNAPSHOT</app-metadata-maven-plugin-version>
+        <stream-apps-docs-plugin.version>3.0.0.BUILD-SNAPSHOT</stream-apps-docs-plugin.version>
         <spring-cloud-stream.version>3.0.2.RELEASE</spring-cloud-stream.version>
         <spring-cloud-function-dependencies.version>3.0.8.RELEASE</spring-cloud-function-dependencies.version>
         <spring-cloud-dependencies.version>Hoxton.SR6</spring-cloud-dependencies.version>
