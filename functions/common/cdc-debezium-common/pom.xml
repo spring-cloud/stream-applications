@@ -50,13 +50,6 @@
 			<version>${mysql-connector-java}</version>
 		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.kafka</groupId>-->
-<!--			<artifactId>spring-kafka</artifactId>-->
-<!--			<version>${spring-kafka.version}</version>-->
-<!--			<optional>true</optional>-->
-<!--		</dependency>-->
-
 		<dependency>
 			<groupId>io.debezium</groupId>
 			<artifactId>debezium-connector-postgres</artifactId>
