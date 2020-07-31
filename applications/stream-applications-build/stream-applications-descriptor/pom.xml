@@ -43,6 +43,8 @@
         pom.properties['repo-spring-io']=
                 "${jdbc-source.version}".contains('SNAPSHOT') ? 'repo.spring.io/snapshot' :
                         "${jdbc-source.version}".contains('-') ? 'repo.spring.io/milestone' : 'repo.spring.io/release'
+        pom.properties['cdc-debezium-source-docker.tag']=
+                "${cdc-debezium-source.version}".contains('SNAPSHOT') ? 'latest' : "${cdc-debezium-source.version}"
         pom.properties['file-source-docker.tag']=
                 "${file-source.version}".contains('SNAPSHOT') ? 'latest' : "${file-source.version}"
         pom.properties['ftp-source-docker.tag']=

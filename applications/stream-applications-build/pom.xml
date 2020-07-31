@@ -20,6 +20,7 @@
 
     <properties>
         <apps.version>3.0.0-SNAPSHOT</apps.version>
+        <cdc-debezium-source.version>${apps.version}</cdc-debezium-source.version>
         <file-source.version>${apps.version}</file-source.version>
         <ftp-source.version>${apps.version}</ftp-source.version>
         <geode-source.version>${apps.version}</geode-source.version>
