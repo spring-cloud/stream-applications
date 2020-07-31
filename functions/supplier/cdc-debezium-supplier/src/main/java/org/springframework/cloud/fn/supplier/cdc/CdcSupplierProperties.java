@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.fn.supplier.cdc;
 
-import org.apache.kafka.connect.header.Header;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -41,7 +39,7 @@ public class CdcSupplierProperties {
 	public static class Header {
 
 		/**
-		 * When true the source record's offset metadata is serialized into the outbound message header under cdc.offset.
+		 * Serializes the source record's offset metadata into the outbound message header under cdc.offset.
 		 */
 		private boolean offset = false;
 

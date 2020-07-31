@@ -16,6 +16,21 @@ The CDC Source introduces a new default `BackingOffsetStore` configuration, base
 == Options
 
 //tag::configuration-properties[]
+$$cdc.config$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a 'cdc.config.' prefix are native Debezium properties. The prefix is removed, converting them into Debezium io.debezium.config.Configuration.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+$$cdc.connector$$:: $$Shortcut for the cdc.config.connector.class property. Either of those can be used as long as they do not contradict with each other.$$ *($$ConnectorType$$, default: `$$<none>$$`, possible values: `mysql`,`postgres`,`mongodb`,`oracle`,`sqlserver`)*
+$$cdc.flattering.add-fields$$:: $$Comma separated list of metadata fields to add to the flattened message. The fields will be prefixed with "__" or "__[<]struct]__", depending on the specification of the struct.$$ *($$String$$, default: `$$<none>$$`)*
+$$cdc.flattering.add-headers$$:: $$Comma separated list specify a list of metadata fields to add to the header of the flattened message. The fields will be prefixed with "__" or "__[struct]__".$$ *($$String$$, default: `$$<none>$$`)*
+$$cdc.flattering.delete-handling-mode$$:: $$Options for handling deleted records: (1) none - pass the records through, (2) drop - remove the records and (3) rewrite - add a '__deleted' field to the records.$$ *($$DeleteHandlingMode$$, default: `$$<none>$$`, possible values: `drop`,`rewrite`,`none`)*
+$$cdc.flattering.drop-tombstones$$:: $$By default Debezium generates tombstone records to enable Kafka compaction on deleted records. The dropTombstones can suppress the tombstone records.$$ *($$Boolean$$, default: `$$true$$`)*
+$$cdc.flattering.enabled$$:: $$Enable flattering the source record events (https://debezium.io/docs/configuration/event-flattening).$$ *($$Boolean$$, default: `$$true$$`)*
+$$cdc.name$$:: $$Unique name for this sourceConnector instance.$$ *($$String$$, default: `$$<none>$$`)*
+$$cdc.offset.commit-timeout$$:: $$Maximum number of milliseconds to wait for records to flush and partition offset data to be committed to offset storage before cancelling the process and restoring the offset data to be committed in a future attempt.$$ *($$Duration$$, default: `$$5000ms$$`)*
+$$cdc.offset.flush-interval$$:: $$Interval at which to try committing offsets. The default is 1 minute.$$ *($$Duration$$, default: `$$60000ms$$`)*
+$$cdc.offset.policy$$:: $$Offset storage commit policy.$$ *($$OffsetPolicy$$, default: `$$<none>$$`)*
+$$cdc.offset.storage$$:: $$Kafka connector tracks the number processed records and regularly stores the count (as "offsets") in a preconfigured metadata storage. On restart the connector resumes the reading from the last recorded source offset.$$ *($$OffsetStorageType$$, default: `$$<none>$$`, possible values: `memory`,`file`,`kafka`,`metadata`)*
+$$cdc.schema$$:: $$Include the schema's as part of the outbound message.$$ *($$Boolean$$, default: `$$false$$`)*
+$$cdc.stream.header.convert-connect-headers$$:: $$When true the {@link org.apache.kafka.connect.header.Header} are converted into message headers with the {@link org.apache.kafka.connect.header.Header#key()} as name and {@link org.apache.kafka.connect.header.Header#value()}.$$ *($$Boolean$$, default: `$$true$$`)*
+$$cdc.stream.header.offset$$:: $$Serializes the source record's offset metadata into the outbound message header under cdc.offset.$$ *($$Boolean$$, default: `$$false$$`)*
 //end::configuration-properties[]
 
 ==== Debezium property Shortcut mapping

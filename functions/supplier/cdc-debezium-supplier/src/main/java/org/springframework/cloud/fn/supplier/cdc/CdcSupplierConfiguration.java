@@ -46,8 +46,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.MimeTypeUtils;
 
 /**
- * CDC source that uses the Debezium Connectors to monitor and record all of the
- * row-level changes in the databases.
+ * CDC source that uses the Debezium Connectors to monitor and record all of the row-level changes in the databases.
  * https://debezium.io/docs/connectors
  *
  * @author Christian Tzolov

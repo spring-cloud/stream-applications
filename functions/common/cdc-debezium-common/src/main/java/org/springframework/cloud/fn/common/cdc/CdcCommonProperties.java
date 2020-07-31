@@ -51,7 +51,7 @@ public class CdcCommonProperties {
 	private final Offset offset = new Offset();
 
 	/**
-	 * If set then the value's schema is included as part of the the outbound message.
+	 * Include the schema's as part of the outbound message.
 	 */
 	private boolean schema = false;
 
@@ -61,8 +61,9 @@ public class CdcCommonProperties {
 	private final Flattering flattering = new Flattering();
 
 	/**
-	 * Spring pass-trough wrapper for the debezium configuration properties. All properties with 'cdc.config' prefix
-	 * are converted into Debezium io.debezium.config.Configuration and the prefix is dropped.
+	 * Spring pass-trough wrapper for debezium configuration properties.
+	 * All properties with a 'cdc.config.' prefix are native Debezium properties.
+	 * The prefix is removed, converting them into Debezium io.debezium.config.Configuration.
 	 */
 	private Map<String, String> config = defaultConfig();
 
@@ -133,9 +134,8 @@ public class CdcCommonProperties {
 		private OffsetPolicy policy = OffsetPolicy.periodic;
 
 		/**
-		 * When a Kafka Connect connector runs, it reads information from the source and periodically records "offsets"
-		 * that define how much of that information it has processed. Should the connector be restarted, it will use the
-		 * last recorded offset to know where in the source information it should resume reading.
+		 * Kafka connector tracks the number processed records and regularly stores the count (as "offsets") in a
+		 * preconfigured metadata storage. On restart the connector resumes the reading from the last recorded source offset.
 		 */
 		private OffsetStorageType storage = OffsetStorageType.metadata;
 
@@ -246,14 +246,14 @@ public class CdcCommonProperties {
 		private boolean enabled = true;
 
 		/**
-		 * Debezium by default generates a tombstone record to enable Kafka compaction after a delete record was generated.
-		 * This record is usually filtered out to avoid duplicates as a delete record is converted to a tombstone record, too.
+		 * By default Debezium generates tombstone records to enable Kafka compaction on deleted records.
+		 * The dropTombstones can suppress the tombstone records.
 		 */
 		private boolean dropTombstones = true;
 
 		/**
-		 * How to handle delete records. Options are: (1) none - records are passed, (2) drop - records are removed and
-		 * (3) rewrite - adds '__deleted' field to the records.
+		 * Options for handling deleted records: (1) none - pass the records through, (2) drop - remove the records and
+		 * (3) rewrite - add a '__deleted' field to the records.
 		 */
 		private DeleteHandlingMode deleteHandlingMode = DeleteHandlingMode.drop;
 
