@@ -15,8 +15,8 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<spring-boot.version>2.3.1.RELEASE</spring-boot.version>
-		<spring-cloud-function.version>3.0.8.RELEASE</spring-cloud-function.version>
+		<spring-boot.version>2.3.2.RELEASE</spring-boot.version>
+		<spring-cloud-function.version>3.0.9.RELEASE</spring-cloud-function.version>
 		<spring-cloud-fn.version>${project.version}</spring-cloud-fn.version>
 	</properties>
 	<dependencyManagement>
