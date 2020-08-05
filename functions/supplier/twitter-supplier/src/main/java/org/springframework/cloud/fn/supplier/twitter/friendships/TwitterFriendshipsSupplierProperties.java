@@ -66,7 +66,7 @@ public class TwitterFriendshipsSupplierProperties {
 	private boolean skipStatus = false;
 
 	/**
-	 * The user object entities node will be disincluded when set to false.
+	 * The user object entities node will be included when set to false.
 	 */
 	private boolean includeUserEntities = true;
 

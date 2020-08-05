@@ -42,9 +42,9 @@ public class TwitterStreamSupplierProperties {
 		 * clients to use a single connection to the Streaming API. Placing long parameters in the URL may cause the
 		 * request to be rejected for excessive URL length.<br>
 		 * The default access level allows up to 200 track keywords, 400 follow userids and 10 1-degree location boxes.
-		 * Increased access levels allow 80,000 follow userids ("shadow" role), 400,000 follow userids ("birddog" role),
-		 * 10,000 track keywords ("restricted track" role),  200,000 track keywords ("partner track" role),
-		 * and 200 10-degree location boxes ("locRestricted" role). Increased track access levels also pass a higher
+		 * Increased access levels allow 80,000 follow userids ('shadow' role), 400,000 follow userids ('birddog' role),
+		 * 10,000 track keywords ('restricted track' role),  200,000 track keywords ('partner track' role),
+		 * and 200 10-degree location boxes ('locRestricted' role). Increased track access levels also pass a higher
 		 * proportion of statuses before limiting the stream.*/
 		filter,
 

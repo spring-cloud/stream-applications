@@ -57,12 +57,12 @@ public class TwitterGeoFunctionProperties {
 
 	/**
 	 * Hints for the number of results to return. This does not guarantee that the number of results
-	 * returned will equal max_results, but instead informs how many "nearby" results to return.
+	 * returned will equal max_results, but instead informs how many 'nearby' results to return.
 	 */
 	private int maxResults = -1;
 
 	/**
-	 * Sets a hint on the "region" in which to search. If a number, then this is a radius in meters, but it
+	 * Sets a hint on the 'region' in which to search. If a number, then this is a radius in meters, but it
 	 * can also take a string that is suffixed with ft to specify feet. If this is not passed in, then it is
 	 * assumed to be 0m. If coming from a device, in practice, this value is whatever accuracy the device
 	 * has measuring its location (whether it be coming from a GPS, WiFi triangulation, etc.).
@@ -139,7 +139,7 @@ public class TwitterGeoFunctionProperties {
 	public static class Search {
 		/**
 		 * An IP address. Used when attempting to fix geolocation based off of the user's IP address.
-		 * Applicable only for "search" geo type.
+		 * Applicable only for 'search' geo type.
 		 */
 		private Expression ip = null;
 

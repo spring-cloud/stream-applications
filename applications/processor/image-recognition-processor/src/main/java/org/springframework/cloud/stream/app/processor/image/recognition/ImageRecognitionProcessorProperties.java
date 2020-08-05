@@ -35,12 +35,12 @@ public class ImageRecognitionProcessorProperties {
 	/**
 	 * Supports three different pre-trained tensorflow image recognition models: Inception, MobileNetV1 and MobileNetV2
 	 *
-	 * 1. Inception graph uses "input" as input and "output" as output.
+	 * 1. Inception graph uses 'input' as input and 'output' as output.
 	 * 2. MobileNetV2 pre-trained models: https://github.com/tensorflow/models/tree/master/research/slim/nets/mobilenet#pretrained-models
 	 * 	 - normalized image size is always square (e.g. H=W)
-	 * 	 - graph uses "input" as input and "MobilenetV2/Predictions/Reshape_1" as output.
+	 * 	 - graph uses 'input' as input and 'MobilenetV2/Predictions/Reshape_1' as output.
 	 *  3. MobileNetV1 pre-trained models: https://github.com/tensorflow/models/blob/master/research/slim/nets/mobilenet_v1.md#pre-trained-models
-	 * 	 - graph uses "input" as input and "MobilenetV1/Predictions/Reshape_1" as output.
+	 * 	 - graph uses 'input' as input and 'MobilenetV1/Predictions/Reshape_1' as output.
 	 */
 	private ModelType modelType = ModelType.mobilenetv2;
 

@@ -75,7 +75,7 @@ public class HttpSupplierProperties {
 	public static class Cors {
 
 		/**
-		 * List of allowed origins, e.g. "https://domain1.com".
+		 * List of allowed origins, e.g. https://domain1.com.
 		 */
 		private String[] allowedOrigins = {CorsConfiguration.ALL};
 

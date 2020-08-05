@@ -60,11 +60,11 @@ public class WavefrontConsumerProperties {
 
 	/**
 	 * Collection of custom metadata associated with the metric.Point tags cannot be empty.
-	 * Valid characters for keys: alphanumeric, hyphen ("-"), underscore ("_"), dot (".").
-	 * For values any character is allowed, including spaces. To include a double quote, escape it with a backslash, for
-	 * example, \". A backslash cannot be the last character in the tag value.
+	 * Valid characters for keys: alphanumeric, hyphen ('-'), underscore ('_'), dot ('.').
+	 * For values any character is allowed, including spaces. To include a double quote, escape it with a backslash,
+	 * A backslash cannot be the last character in the tag value.
 	 * Maximum allowed length for a combination of a point tag key and value is 254 characters
-	 * (255 including the "=" separating key and value).
+	 * (255 including the '=' separating key and value).
 	 * If the value is longer, the point is rejected and logged
 	 */
 	private Map<String, Expression> tagExpression;
