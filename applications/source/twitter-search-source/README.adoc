@@ -30,7 +30,7 @@ $$twitter.search.count$$:: $$Number of tweets to return per page (e.g. per singl
 $$twitter.search.geocode.latitude$$:: $$User's latitude.$$ *($$Double$$, default: `$$-1$$`)*
 $$twitter.search.geocode.longitude$$:: $$User's longitude.$$ *($$Double$$, default: `$$-1$$`)*
 $$twitter.search.geocode.radius$$:: $$Radius (in kilometers) around the (latitude, longitude) point.$$ *($$Double$$, default: `$$-1$$`)*
-$$twitter.search.lang$$:: $$Restricts searched tweets to the given language, given by an <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1 code</a>.$$ *($$String$$, default: `$$<none>$$`)*
+$$twitter.search.lang$$:: $$Restricts searched tweets to the given language, given by an http://en.wikipedia.org/wiki/ISO_639-1 .$$ *($$String$$, default: `$$<none>$$`)*
 $$twitter.search.page$$:: $$Number of pages (e.g. requests) to search backwards (from most recent to the oldest tweets) before start the search from the most recent tweets again. The total amount of tweets searched backwards is (page * count)$$ *($$Integer$$, default: `$$3$$`)*
 $$twitter.search.query$$:: $$Search tweets by search query string.$$ *($$String$$, default: `$$<none>$$`)*
 $$twitter.search.restart-from-most-recent-on-empty-response$$:: $$Restart search from the most recent tweets on empty response. Applied only after the first restart (e.g. when since_id != UNBOUNDED)$$ *($$Boolean$$, default: `$$false$$`)*

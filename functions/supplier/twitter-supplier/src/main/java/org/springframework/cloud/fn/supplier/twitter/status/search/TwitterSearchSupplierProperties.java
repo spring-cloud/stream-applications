@@ -57,7 +57,7 @@ public class TwitterSearchSupplierProperties {
 	private int count = 100;
 
 	/**
-	 * Restricts searched tweets to the given language, given by an http://en.wikipedia.org/wiki/ISO_639-1
+	 * Restricts searched tweets to the given language, given by an http://en.wikipedia.org/wiki/ISO_639-1 .
 	 */
 	private String lang = null;
 
