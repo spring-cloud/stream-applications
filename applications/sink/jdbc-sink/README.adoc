@@ -8,7 +8,7 @@ In this case the value is evaluated via generated expression like `payload.COLUM
 For example we have a JSON payload like:
 ```
 {
-  "name": "My Name"
+  "name": "My Name",
   "address": {
      "city": "Big City",
      "street": "Narrow Alley"
