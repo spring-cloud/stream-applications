@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.consumer.mongo;
 
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(properties = {
 		"spring.data.mongodb.port=0",
-		"mongodb.consumer.collection=testing"})
+		"mongodb.consumer.collection=testing" })
 class MongoDbConsumerApplicationTests {
 
 	@Autowired
@@ -64,10 +65,12 @@ class MongoDbConsumerApplicationTests {
 		Flux<Message<?>> messages = Flux.just(
 				new GenericMessage<>(data1),
 				new GenericMessage<>(data2),
-				new GenericMessage<>("{\"my_data\": \"THE DATA\"}")
-		);
+				new GenericMessage<>("{\"my_data\": \"THE DATA\"}"));
 
-		messages.subscribe(mongodbConsumer::accept);
+		messages.map(message -> {
+			mongodbConsumer.accept(message);
+			return message;
+		}).blockLast(Duration.ofSeconds(10));
 
 		StepVerifier.create(this.mongoTemplate.findAll(Document.class, properties.getCollection())
 				.sort(Comparator.comparing(d -> d.get("_id").toString())))

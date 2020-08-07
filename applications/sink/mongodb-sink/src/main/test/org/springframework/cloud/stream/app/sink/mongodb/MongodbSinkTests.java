@@ -41,7 +41,6 @@ public class MongodbSinkTests {
 					ReactiveMongoTemplate template = context.getBean(ReactiveMongoTemplate.class);
 					InputDestination inputDestination = context.getBean(InputDestination.class);
 					inputDestination.send(new GenericMessage("{\"foo\":\"bar\"}".getBytes()));
-					Thread.sleep(3000);
 					StepVerifier.create(template.findAll(Document.class, "demo"))
 							.assertNext(document -> document.containsKey("foo"))
 							.thenCancel()
