@@ -45,7 +45,7 @@ public class FilterProcessorTests {
 				TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|filterFunction",
-						"--spel.function.expression=payload.length() > 5")) {
+						"--filter.function.expression=payload.length() > 5")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
