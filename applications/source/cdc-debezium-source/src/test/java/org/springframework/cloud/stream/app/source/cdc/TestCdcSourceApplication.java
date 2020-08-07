@@ -21,16 +21,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.cloud.fn.supplier.cdc.CdcSupplierConfiguration;
-import org.springframework.cloud.stream.annotation.StreamMessageConverter;
 import org.springframework.cloud.stream.binder.kafka.KafkaNullConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.kafka.support.KafkaNull;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.converter.AbstractMessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
-import org.springframework.util.MimeTypeUtils;
 
 /**
  * @author Christian Tzolov
@@ -40,40 +34,12 @@ import org.springframework.util.MimeTypeUtils;
 @Import(CdcSupplierConfiguration.class)
 public class TestCdcSourceApplication {
 
+	/**
+	 * This is only required for testing. In production the KafkaNullConverter bean is auto-configured.
+	 */
 	@Bean
-	@StreamMessageConverter
 	@ConditionalOnMissingBean(KafkaNullConverter.class)
 	MessageConverter kafkaNullConverter() {
-		return new KafkaNullConverter2();
+		return new KafkaNullConverter();
 	}
-
-	public static class KafkaNullConverter2 extends AbstractMessageConverter {
-
-		public KafkaNullConverter2() {
-			super(MimeTypeUtils.APPLICATION_JSON);
-		}
-
-		@Override
-		protected boolean supports(Class<?> aClass) {
-			return KafkaNull.class.equals(aClass);
-		}
-
-		@Override
-		protected boolean canConvertFrom(Message<?> message, Class<?> targetClass) {
-			return message.getPayload() instanceof KafkaNull;
-		}
-
-		@Override
-		protected Object convertFromInternal(Message<?> message, Class<?> targetClass,
-				Object conversionHint) {
-			return message.getPayload();
-		}
-
-		@Override
-		protected Object convertToInternal(Object payload, MessageHeaders headers,
-				Object conversionHint) {
-			return payload;
-		}
-	}
-
 }

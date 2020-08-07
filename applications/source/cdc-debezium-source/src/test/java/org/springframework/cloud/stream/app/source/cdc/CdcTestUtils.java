@@ -53,7 +53,7 @@ public final class CdcTestUtils {
 		List<Message<?>> list = new ArrayList<>();
 		Message<?> received;
 		do {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis());
+			received = outputDestination.receive(Duration.ofSeconds(20).toMillis());
 			if (received != null) {
 				list.add(received);
 			}
