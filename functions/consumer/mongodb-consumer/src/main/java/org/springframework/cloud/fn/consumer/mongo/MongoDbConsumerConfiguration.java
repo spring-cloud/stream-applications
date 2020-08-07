@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.consumer.mongo;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import reactor.core.publisher.Mono;
@@ -52,7 +53,12 @@ public class MongoDbConsumerConfiguration {
 	}
 
 	@Bean
-	public Function<Message<?>, Mono<Void>> mongodbConsumer(ReactiveMessageHandler mongoConsumerMessageHandler) {
+	public Consumer<Message<?>> mongodbConsumer(Function<Message<?>, Mono<Void>> mongodbConsumerFunction) {
+		return message -> mongodbConsumerFunction.apply(message).subscribe();
+	}
+
+	@Bean
+	public Function<Message<?>, Mono<Void>> mongodbConsumerFunction(ReactiveMessageHandler mongoConsumerMessageHandler) {
 		return mongoConsumerMessageHandler::handleMessage;
 	}
 

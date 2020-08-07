@@ -16,16 +16,14 @@
 
 package org.springframework.cloud.fn.consumer.mongo;
 
-import java.time.Duration;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +47,7 @@ class MongoDbConsumerApplicationTests {
 	private MongoDbConsumerProperties properties;
 
 	@Autowired
-	private Function<Message<?>, Mono<Void>> mongoDbConsumer;
+	private Consumer<Message<?>> mongodbConsumer;
 
 	@Autowired
 	private ReactiveMongoTemplate mongoTemplate;
@@ -69,7 +67,7 @@ class MongoDbConsumerApplicationTests {
 				new GenericMessage<>("{\"my_data\": \"THE DATA\"}")
 		);
 
-		messages.flatMap(mongoDbConsumer::apply).blockLast(Duration.ofSeconds(10));
+		messages.subscribe(mongodbConsumer::accept);
 
 		StepVerifier.create(this.mongoTemplate.findAll(Document.class, properties.getCollection())
 				.sort(Comparator.comparing(d -> d.get("_id").toString())))

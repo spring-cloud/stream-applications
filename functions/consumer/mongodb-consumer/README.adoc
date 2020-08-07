@@ -4,11 +4,13 @@ A consumer that allows you to insert records into MongoDB.
 
 ## Beans for injection
 
-You can import `MongoDbConsumerConfiguration` in the application and then inject the following bean.
+You can import `MongoDbConsumerConfiguration` in the application and then inject one of the following beans.
 
-`Function<Message<?>, Mono<Void>> mongodbConsumer`
+`Function<Message<?>, Mono<Void>> mongodbConsumerFunction` - Allows you to subscribe.
 
-You can use `mongodbConsumer` as a qualifier when injecting.
+`Consumer<Message<?>> mongodbConsumer` - Wraps the function with a no-op subscriber.
+
+You can use `mongodbConsumer` or `mongodbConsumerFunction` as a qualifier when injecting.
 
 The return value from the function can be ignored as this is used as a consumer to send records to MongoDB.
 
@@ -18,7 +20,7 @@ All configuration properties are prefixed with `mongodb.consumer`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/mongo/MongoDBConsumerProperties.java[MongoDBConsumerProperties].
 
-## Tests
+## Examples
 
 See this link:src/test/java/org/springframework/cloud/fn/consumer/mongo/MongoDBConsumerApplicationTests.java[test suite] for the various ways, this consumer is used.
 
