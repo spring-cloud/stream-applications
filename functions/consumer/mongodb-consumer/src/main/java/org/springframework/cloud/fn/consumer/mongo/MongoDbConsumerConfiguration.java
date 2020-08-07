@@ -54,7 +54,7 @@ public class MongoDbConsumerConfiguration {
 
 	@Bean
 	public Consumer<Message<?>> mongodbConsumer(Function<Message<?>, Mono<Void>> mongodbConsumerFunction) {
-		return message -> mongodbConsumerFunction.apply(message).subscribe();
+		return message -> mongodbConsumerFunction.apply(message).block();
 	}
 
 	@Bean

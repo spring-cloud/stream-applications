@@ -51,7 +51,7 @@
                         <name>mongodb</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.stream.app.sink.mongodb.MongoDbConsumerConfiguration.class
+                        <configClass>org.springframework.cloud.fn.consumer.mongo.MongoDbConsumerConfiguration.class
                         </configClass>
                         <functionDefinition>mongodbConsumer</functionDefinition>
                     </generatedApp>
