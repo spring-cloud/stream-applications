@@ -20,12 +20,11 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +41,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(properties = {
 		"spring.data.mongodb.port=0",
-		"mongodb.consumer.collection=testing"})
+		"mongodb.consumer.collection=testing" })
 class MongoDbConsumerApplicationTests {
 
 	@Autowired
 	private MongoDbConsumerProperties properties;
 
 	@Autowired
-	private Function<Message<?>, Mono<Void>> mongoDbConsumer;
+	private Consumer<Message<?>> mongodbConsumer;
 
 	@Autowired
 	private ReactiveMongoTemplate mongoTemplate;
@@ -66,10 +65,12 @@ class MongoDbConsumerApplicationTests {
 		Flux<Message<?>> messages = Flux.just(
 				new GenericMessage<>(data1),
 				new GenericMessage<>(data2),
-				new GenericMessage<>("{\"my_data\": \"THE DATA\"}")
-		);
+				new GenericMessage<>("{\"my_data\": \"THE DATA\"}"));
 
-		messages.flatMap(mongoDbConsumer::apply).blockLast(Duration.ofSeconds(10));
+		messages.map(message -> {
+			mongodbConsumer.accept(message);
+			return message;
+		}).blockLast(Duration.ofSeconds(10));
 
 		StepVerifier.create(this.mongoTemplate.findAll(Document.class, properties.getCollection())
 				.sort(Comparator.comparing(d -> d.get("_id").toString())))

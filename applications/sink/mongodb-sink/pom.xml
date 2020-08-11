@@ -17,13 +17,23 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.cloud.fn</groupId>
+            <artifactId>mongodb-consumer</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>mongodb-consumer</artifactId>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -43,6 +53,7 @@
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.fn.consumer.mongo.MongoDbConsumerConfiguration.class
                         </configClass>
+                        <functionDefinition>mongodbConsumer</functionDefinition>
                     </generatedApp>
                     <dependencies>
                         <dependency>
