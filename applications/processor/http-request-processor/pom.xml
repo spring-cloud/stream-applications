@@ -60,15 +60,15 @@
                         <name>http-request</name>
                         <type>processor</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.stream.app.processor.http.request.HttpRequestProcessorConfiguration.class
+                        <configClass>org.springframework.cloud.fn.http.request.HttpRequestFunctionConfiguration.class
                         </configClass>
-                        <functionDefinition>httpRequestProcessor</functionDefinition>
+                        <functionDefinition>httpRequestFunction</functionDefinition>
                     </generatedApp>
 
                     <dependencies>
                         <dependency>
-                            <groupId>org.springframework.cloud.stream.app</groupId>
-                            <artifactId>http-request-processor</artifactId>
+                            <groupId>org.springframework.cloud.fn</groupId>
+                            <artifactId>http-request-function</artifactId>
                             <version>${project.version}</version>
                         </dependency>
                     </dependencies>

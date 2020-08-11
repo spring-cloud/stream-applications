@@ -23,7 +23,7 @@ All configuration properties are prefixed with `http.request`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/http/request/HttpRequestFunctionProperties.java[HttpRequestFunctionProperties.java]
 
-## Tests
+## Examples
 
 See this link:src/test/java/org/springframework/cloud/fn/http/request/HttpRequestFunctionApplicationTests.java[test suite] for examples of how this function is used.
 

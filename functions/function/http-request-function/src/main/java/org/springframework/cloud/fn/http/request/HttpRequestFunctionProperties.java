@@ -16,12 +16,11 @@
 
 package org.springframework.cloud.fn.http.request;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -35,25 +34,9 @@ import org.springframework.validation.annotation.Validated;
  */
 @Validated
 @ConfigurationProperties("http.request")
-public class HttpRequestFunctionProperties implements HttpRequestProperties {
-	private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.GET;
+public class HttpRequestFunctionProperties {
 
 	private static final Class<?> DEFAULT_RESPONSE_TYPE = String.class;
-	/**
-	 * The URL to issue an http request to, as a static value.
-	 */
-	private String url;
-
-	/**
-	 * The (static) request body; if neither this nor bodyExpression is provided, the payload
-	 * will be used.
-	 */
-	private Object body;
-
-	/**
-	 * The kind of http method to use.
-	 */
-	private HttpMethod httpMethod = DEFAULT_HTTP_METHOD;
 
 	/**
 	 * The type used to interpret the response.
@@ -66,33 +49,49 @@ public class HttpRequestFunctionProperties implements HttpRequestProperties {
 	private long timeout = 30_000;
 
 	/**
-	 * A Map of HTTP request headers.
+	 * A SpEL expression against incoming message to determine the URL to use.
 	 */
-	private HttpHeaders headers = new HttpHeaders();
+	private Expression urlExpression;
 
-	@NotEmpty
-	@Override
-	public String getUrl() {
-		return this.url;
+	/**
+	 * A SpEL expression to derive the request method from the incoming message.
+	 */
+	private Expression httpMethodExpression = new SpelExpressionParser().parseExpression("'GET'");
+
+	/**
+	 * A SpEL expression to derive the request body from the incoming message.
+	 */
+	private Expression bodyExpression;
+
+	/**
+	 * A SpEL expression used to derive the http headers map to use.
+	 */
+	private Expression headersExpression;
+
+	/**
+	 * A SpEL expression used to compute the final result, applied against the whole http
+	 * {@link org.springframework.http.ResponseEntity}.
+	 */
+	private Expression replyExpression = new SpelExpressionParser().parseExpression("body");
+
+	@NotNull
+	public Expression getUrlExpression() {
+		return urlExpression;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setUrlExpression(Expression urlExpression) {
+		this.urlExpression = urlExpression;
+	}
+
+	public Expression getHttpMethodExpression() {
+		return httpMethodExpression;
+	}
+
+	public void setHttpMethodExpression(Expression httpMethodExpression) {
+		this.httpMethodExpression = httpMethodExpression;
 	}
 
 	@NotNull
-	@Override
-	public HttpMethod getHttpMethod() {
-		return httpMethod;
-	}
-
-	public void setHttpMethod(HttpMethod httpMethod) {
-		this.httpMethod = httpMethod;
-	}
-
-
-	@NotNull
-	@Override
 	public Class<?> getExpectedResponseType() {
 		return expectedResponseType;
 	}
@@ -101,16 +100,6 @@ public class HttpRequestFunctionProperties implements HttpRequestProperties {
 		this.expectedResponseType = expectedResponseType;
 	}
 
-	@Override
-	public Object getBody() {
-		return body;
-	}
-
-	public void setBody(Object body) {
-		this.body = body;
-	}
-
-	@Override
 	public long getTimeout() {
 		return this.timeout;
 	}
@@ -119,13 +108,29 @@ public class HttpRequestFunctionProperties implements HttpRequestProperties {
 		this.timeout = timeout;
 	}
 
-	@Override
-	public HttpHeaders getHeaders() {
-		return headers;
+	public Expression getBodyExpression() {
+		return bodyExpression;
 	}
 
-	public void setHeaders(HttpHeaders headers) {
-		this.headers = headers;
+	public void setBodyExpression(Expression bodyExpression) {
+		this.bodyExpression = bodyExpression;
+	}
+
+	public Expression getHeadersExpression() {
+		return headersExpression;
+	}
+
+	public void setHeadersExpression(Expression headersExpression) {
+		this.headersExpression = headersExpression;
+	}
+
+	@NotNull
+	public Expression getReplyExpression() {
+		return replyExpression;
+	}
+
+	public void setReplyExpression(Expression replyExpression) {
+		this.replyExpression = replyExpression;
 	}
 
 }
