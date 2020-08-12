@@ -17,6 +17,7 @@
 package org.springframework.cloud.fn.http.request;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.function.Function;
 
 import reactor.core.publisher.Flux;
@@ -25,6 +26,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.Message;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -50,7 +53,7 @@ public class HttpRequestFunctionConfiguration {
 	}
 
 	@Bean
-	public HttpRequestFunction httpRequestFunction(WebClient webClient, HttpRequestProperties properties) {
+	public HttpRequestFunction httpRequestFunction(WebClient webClient, HttpRequestFunctionProperties properties) {
 		return new HttpRequestFunction(webClient, properties);
 	}
 
@@ -58,28 +61,57 @@ public class HttpRequestFunctionConfiguration {
 	 * Function that accepts a {@code Flux<Message<?>>} containing body and headers and
 	 * returns a {@code Flux<ResponseEntity<?>>}.
 	 */
-	public static class HttpRequestFunction implements Function<Flux<Message<?>>, Flux<ResponseEntity<?>>> {
+	public static class HttpRequestFunction implements Function<Flux<Message<?>>, Flux<?>> {
 		private final WebClient webClient;
 
 		private final UriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
 
-		private final HttpRequestProperties properties;
+		private final HttpRequestFunctionProperties properties;
 
-		public HttpRequestFunction(WebClient webClient, HttpRequestProperties properties) {
+		public HttpRequestFunction(WebClient webClient, HttpRequestFunctionProperties properties) {
 			this.webClient = webClient;
 			this.properties = properties;
 		}
 
 		@Override
-		public Flux<ResponseEntity<?>> apply(Flux<Message<?>> messageFlux) {
+		public Flux<?> apply(Flux<Message<?>> messageFlux) {
 			return messageFlux.flatMap(message -> this.webClient
-					.method(properties.getHttpMethod())
-					.uri(uriBuilderFactory.uriString(properties.getUrl()).build())
-					.bodyValue(properties.getBody() == null ? message.getPayload() : properties.getBody())
-					.headers(httpHeaders -> httpHeaders.addAll(properties.getHeaders()))
+					.method(resolveHttpMethod(message))
+					.uri(uriBuilderFactory.uriString(resolveUrl(message)).build())
+					.bodyValue(resolveBody(message))
+					.headers(httpHeaders -> httpHeaders.addAll(resolveHeaders(message)))
 					.retrieve()
 					.toEntity(properties.getExpectedResponseType())
+					.map(responseEntity -> properties.getReplyExpression().getValue(responseEntity))
 					.timeout(Duration.ofMillis(properties.getTimeout())));
 		}
+
+		private String resolveUrl(Message<?> message) {
+			return properties.getUrlExpression().getValue(message, String.class);
+		}
+
+		private HttpMethod resolveHttpMethod(Message<?> message) {
+			return properties.getHttpMethodExpression().getValue(message, HttpMethod.class);
+		}
+
+		private Object resolveBody(Message<?> message) {
+			return properties.getBodyExpression() != null ? properties.getBodyExpression().getValue(message)
+					: message.getPayload();
+		}
+
+		private HttpHeaders resolveHeaders(Message<?> message) {
+			HttpHeaders headers = new HttpHeaders();
+			if (properties.getHeadersExpression() != null) {
+				Map<?, ?> headersMap = properties.getHeadersExpression().getValue(message, Map.class);
+				for (Map.Entry<?, ?> header : headersMap.entrySet()) {
+					if (header.getKey() != null && header.getValue() != null) {
+						headers.add(header.getKey().toString(),
+								header.getValue().toString());
+					}
+				}
+			}
+			return headers;
+		}
+
 	}
 }

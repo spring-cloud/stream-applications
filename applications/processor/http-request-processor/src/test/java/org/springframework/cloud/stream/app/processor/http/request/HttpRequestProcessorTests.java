@@ -32,9 +32,11 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.cloud.fn.http.request.HttpRequestFunctionConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.Message;
@@ -42,7 +44,6 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 public class HttpRequestProcessorTests {
 
@@ -79,14 +80,14 @@ public class HttpRequestProcessorTests {
 	}
 
 	@Test
-	void requestUsingExpressions() throws IOException {
+	void requestUsingExpressions() {
 		applicationContextRunner
 				.withPropertyValues(
-						"http.request.processor.url-expression=headers['url']",
-						"http.request.processor.http-method-expression=headers['method']",
-						"http.request.processor.body-expression=headers['body']",
-						"http.request.processor.headers-expression={Accept:'application/json'}",
-						"http.request.processor.reply-expression=#root")
+						"http.request.reply-expression=#root",
+						"http.request.url-expression=headers['url']",
+						"http.request.http-method-expression=headers['method']",
+						"http.request.body-expression=headers['body']"
+						)
 				.run(context -> {
 					Message<?> message = MessageBuilder.withPayload("")
 							.setHeader("url", url())
@@ -98,12 +99,10 @@ public class HttpRequestProcessorTests {
 					ObjectMapper objectMapper = context.getBean(ObjectMapper.class);
 
 					inputDestination.send(message);
-					Message<byte[]> reply = outputDestination.receive(100);
+					Message<byte[]> reply = outputDestination.receive(10000);
 
 					// Cannot deserialize ResponseEntity directly.
 					Map responseEntityAsMap = objectMapper.readValue(reply.getPayload(), HashMap.class);
-
-					System.out.println(responseEntityAsMap);
 
 					assertThat(responseEntityAsMap.get("statusCode")).isEqualTo("OK");
 					assertThat(responseEntityAsMap.get("body")).isEqualTo(message.getHeaders().get("body"));
@@ -116,11 +115,11 @@ public class HttpRequestProcessorTests {
 	void requestUsingReturnType() throws IOException {
 		applicationContextRunner
 				.withPropertyValues(
-						"http.request.processor.url=" + url(),
-						"http.request.processor.httpMethod=POST",
-						"http.request.processor.headers[Accept]=application/octet-stream",
-						"http.request.processor.expectedResponseType=byte[]",
-						"spring.cloud.stream.bindings.httpRequestProcessor-out-0.contentType=application/octet-stream")
+						"http.request.url-expression='" + url() + "'",
+						"http.request.http-method-expression='POST'",
+						"http.request.headers-expression={Accept:'application/octet-stream'}",
+						"http.request.expected-response-type=byte[]",
+						"spring.cloud.stream.bindings.httpRequestFunction-out-0.contentType=application/octet-stream")
 				.run(context -> {
 					Message<?> message = MessageBuilder.withPayload("hello")
 							.build();
@@ -128,7 +127,7 @@ public class HttpRequestProcessorTests {
 					OutputDestination outputDestination = context.getBean(OutputDestination.class);
 
 					inputDestination.send(message);
-					Message<byte[]> reply = outputDestination.receive(100);
+					Message<byte[]> reply = outputDestination.receive(10000);
 					assertThat(new String(reply.getPayload())).isEqualTo(message.getPayload());
 					assertThat(reply.getHeaders().get(MessageHeaders.CONTENT_TYPE))
 							.isEqualTo(MediaType.APPLICATION_OCTET_STREAM);
@@ -139,8 +138,8 @@ public class HttpRequestProcessorTests {
 	void requestUsingJsonPathMethodExpression() throws IOException {
 		applicationContextRunner
 				.withPropertyValues(
-						"http.request.processor.url=" + url(),
-						"http.request.processor.httpMethodExpression=#jsonPath(payload,'$.myMethod')")
+						"http.request.url-expression='" + url() + "'",
+						"http.request.http-method-expression=#jsonPath(payload,'$.myMethod')")
 				.run(context -> {
 					Message<?> message = MessageBuilder
 							.withPayload("{\"name\":\"Fred\",\"age\":41, \"myMethod\":\"POST\"}")
@@ -149,48 +148,13 @@ public class HttpRequestProcessorTests {
 					OutputDestination outputDestination = context.getBean(OutputDestination.class);
 
 					inputDestination.send(message);
-					Message<byte[]> reply = outputDestination.receive(100);
+					Message<byte[]> reply = outputDestination.receive(10000);
 					assertThat(new String(reply.getPayload())).isEqualTo(message.getPayload());
 				});
 	}
 
-	@Test
-	void cannotSpecifyBothUrlandUrlExpression() {
-		applicationContextRunner
-				.withPropertyValues("http.request.processor.url=http://example.com",
-						"http.request.processor.url-expression=headers['url']")
-				.run(context -> {
-					assertThatIllegalStateException().isThrownBy(() -> {
-						context.start();
-					});
-				});
-	}
-
-	@Test
-	void cannotSpecifyBothHttpMethosdandHttpMethodExpression() {
-		applicationContextRunner
-				.withPropertyValues("http.request.processor.http-method=POST",
-						"http.request.processor.http-method-expression=headers['method']")
-				.run(context -> {
-					assertThatIllegalStateException().isThrownBy(() -> {
-						context.start();
-					});
-				});
-	}
-
-	@Test
-	void cannotSpecifyBothHeadersAndHeadersExpression() {
-		applicationContextRunner
-				.withPropertyValues("http.request.processor.headers[Content-Type]=application/json",
-						"http.request.processor.headers-expression={'Content-Type': headers['content']}")
-				.run(context -> {
-					assertThatIllegalStateException().isThrownBy(() -> {
-						context.start();
-					});
-				});
-	}
-
 	@SpringBootApplication
+	@Import(HttpRequestFunctionConfiguration.class)
 	static class HttpRequestProcessorApp {
 	}
 }
