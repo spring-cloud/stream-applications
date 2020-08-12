@@ -20,7 +20,10 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.expression.Expression;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.integration.expression.FunctionExpression;
+import org.springframework.integration.expression.ValueExpression;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -56,7 +59,7 @@ public class HttpRequestFunctionProperties {
 	/**
 	 * A SpEL expression to derive the request method from the incoming message.
 	 */
-	private Expression httpMethodExpression = new SpelExpressionParser().parseExpression("'GET'");
+	private Expression httpMethodExpression = new ValueExpression(HttpMethod.GET);
 
 	/**
 	 * A SpEL expression to derive the request body from the incoming message.
@@ -72,7 +75,7 @@ public class HttpRequestFunctionProperties {
 	 * A SpEL expression used to compute the final result, applied against the whole http
 	 * {@link org.springframework.http.ResponseEntity}.
 	 */
-	private Expression replyExpression = new SpelExpressionParser().parseExpression("body");
+	private Expression replyExpression = new FunctionExpression<ResponseEntity>(ResponseEntity::getBody);
 
 	@NotNull
 	public Expression getUrlExpression() {
