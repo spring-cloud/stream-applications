@@ -70,7 +70,7 @@ class MongoDbConsumerApplicationTests {
 		messages.map(message -> {
 			mongodbConsumer.accept(message);
 			return message;
-		}).blockLast(Duration.ofSeconds(10));
+		}).blockLast(Duration.ofSeconds(30));
 
 		StepVerifier.create(this.mongoTemplate.findAll(Document.class, properties.getCollection())
 				.sort(Comparator.comparing(d -> d.get("_id").toString())))
