@@ -47,8 +47,10 @@ public class HttpRequestFunctionConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(WebClient.class)
-	public WebClient webClient() {
+	public WebClient webClient(HttpRequestFunctionProperties properties) {
 		return WebClient.builder()
+				.codecs(clientCodecConfigurer ->
+						clientCodecConfigurer.defaultCodecs().maxInMemorySize(properties.getMaximumBufferSize()))
 				.build();
 	}
 
