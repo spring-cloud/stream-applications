@@ -35,6 +35,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 /**
  * @author David Turanski
@@ -70,7 +71,11 @@ class MongoDbConsumerApplicationTests {
 		messages.map(message -> {
 			mongodbConsumer.accept(message);
 			return message;
-		}).blockLast(Duration.ofSeconds(30));
+
+		}).subscribe();
+
+		await().timeout(Duration.ofSeconds(10))
+				.until(() -> mongoTemplate.findAll(Document.class, properties.getCollection()).count().block() == 3L);
 
 		StepVerifier.create(this.mongoTemplate.findAll(Document.class, properties.getCollection())
 				.sort(Comparator.comparing(d -> d.get("_id").toString())))
