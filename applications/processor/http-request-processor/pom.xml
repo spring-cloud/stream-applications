@@ -69,7 +69,6 @@
                         <dependency>
                             <groupId>org.springframework.cloud.fn</groupId>
                             <artifactId>http-request-function</artifactId>
-                            <version>${project.version}</version>
                         </dependency>
                     </dependencies>
 
