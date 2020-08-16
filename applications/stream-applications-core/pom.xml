@@ -22,14 +22,14 @@
         <stream-apps-core.version>${project.version}</stream-apps-core.version>
         <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
         <scst-app-maven-plugin.version>2.0.0.BUILD-SNAPSHOT</scst-app-maven-plugin.version>
-        <app-metadata-maven-plugin-version>2.0.1.BUILD-SNAPSHOT</app-metadata-maven-plugin-version>
+        <app-metadata-maven-plugin-version>2.0.2.BUILD-SNAPSHOT</app-metadata-maven-plugin-version>
         <stream-apps-docs-plugin.version>3.0.0.BUILD-SNAPSHOT</stream-apps-docs-plugin.version>
         <spring-cloud-stream.version>3.0.2.RELEASE</spring-cloud-stream.version>
         <spring-cloud-function-dependencies.version>3.0.9.RELEASE</spring-cloud-function-dependencies.version>
         <spring-cloud-dependencies.version>Hoxton.SR7</spring-cloud-dependencies.version>
         <spring-cloud-stream-dependencies.version>Horsham.SR7</spring-cloud-stream-dependencies.version>
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
-        <prometheus-rsocket.version>0.9.0</prometheus-rsocket.version>
+        <prometheus-rsocket.version>1.0.0</prometheus-rsocket.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
         <disable.checks>false</disable.checks>
