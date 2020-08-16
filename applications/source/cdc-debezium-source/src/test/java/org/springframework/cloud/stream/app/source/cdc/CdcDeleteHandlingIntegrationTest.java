@@ -119,7 +119,7 @@ public class CdcDeleteHandlingIntegrationTest {
 				(rs, rowNum) -> rs.getString("id"), "Test666").iterator().next();
 
 		List<Message<?>> messages = receiveAll(outputDestination);
-		assertThat(messages).hasSize(53);
+		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
 		JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 

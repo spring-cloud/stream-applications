@@ -65,7 +65,7 @@ public class CdcBootStarterIntegrationTest {
 					JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 
 					Thread.sleep(10000);
-					assertThat(testConsumer.recordList).hasSize(52);
+					assertThat(testConsumer.recordList).hasSizeGreaterThanOrEqualTo(52);
 				});
 	}
 

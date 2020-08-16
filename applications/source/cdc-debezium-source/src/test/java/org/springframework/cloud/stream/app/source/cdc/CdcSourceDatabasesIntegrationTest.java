@@ -61,7 +61,7 @@ public class CdcSourceDatabasesIntegrationTest<b> {
 			// Using local region here
 			List<Message<?>> messages = receiveAll(outputDestination);
 			assertThat(messages).isNotNull();
-			assertThat(messages).hasSize(52);
+			assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 		}
 	}
 

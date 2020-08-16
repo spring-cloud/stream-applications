@@ -88,7 +88,7 @@ public class CdcFlatteringIntegrationTest {
 		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL, context.getClassLoader());
 
 		List<Message<?>> messages = receiveAll(outputDestination);
-		assertThat(messages).hasSize(52);
+		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
 		assertJsonEquals(resourceToString(
 				"classpath:/json/mysql_ddl_drop_inventory_address_table.json"),
@@ -172,7 +172,7 @@ public class CdcFlatteringIntegrationTest {
 		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL, context.getClassLoader());
 
 		List<Message<?>> messages = receiveAll(outputDestination);
-		assertThat(messages).hasSize(52);
+		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
 		CdcCommonProperties.Flattering flatteringProps = context.getBean(CdcCommonProperties.class).getFlattering();
 
