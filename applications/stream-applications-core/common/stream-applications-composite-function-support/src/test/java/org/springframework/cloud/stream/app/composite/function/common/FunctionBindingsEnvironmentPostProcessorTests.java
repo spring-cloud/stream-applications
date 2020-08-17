@@ -37,6 +37,17 @@ public class FunctionBindingsEnvironmentPostProcessorTests {
 		assertThat(context.getEnvironment().getProperty("spring.cloud.stream.function.bindings.firstFunctionsecondFunction-in-0"))
 				.isEqualTo("input");
 	}
+	@Test
+	void destinationBindingsWithCommaDelimiter() {
+		ApplicationContext context = new SpringApplication(TestApp.class).run(
+				"--spring.cloud.stream.bindings.output.destination=foo",
+				"--spring.cloud.stream.bindings.input.destination=bar",
+				"--spring.cloud.function.definition=firstFunction,secondFunction");
+		assertThat(context.getEnvironment().getProperty("spring.cloud.stream.function.bindings.firstFunctionsecondFunction-out-0"))
+				.isEqualTo("output");
+		assertThat(context.getEnvironment().getProperty("spring.cloud.stream.function.bindings.firstFunctionsecondFunction-in-0"))
+				.isEqualTo("input");
+	}
 
 	@SpringBootApplication
 	static class TestApp {

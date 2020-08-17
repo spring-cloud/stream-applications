@@ -95,7 +95,7 @@ public class FunctionBindingEnvironmentPostProcessor implements EnvironmentPostP
 	}
 
 	private String functionDefinitionToChannelName(String functionDefinition) {
-		return functionDefinition.replaceAll("\\|", "");
+		return functionDefinition.replaceAll("\\||,", "");
 	}
 
 	private String functionDefinition(Environment environment) {
