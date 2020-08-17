@@ -1,0 +1,32 @@
+# Syslog Supplier
+
+Syslog supplier that produces both TCP and UDP based syslog events.
+The `Supplier` uses the `TcpSyslogReceivingChannelAdapter` and `UdpSyslogReceivingChannelAdapter` from Spring Integration.
+This supplier gives you a reactive stream of messages and the supplier has a signature of `Supplier<Flux<Message<?>>>`.
+Users have to subscribe to this `Flux` and receive the data.
+
+## Beans for injection
+
+You can import the `SyslogSupplierConfiguration` in the application and then inject the following bean.
+
+`syslogSupplier`
+
+You need to inject this as `Supplier<Flux<Message<?>>>`.
+
+You can use `syslogSupplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it and then subscribe to the returned `Flux`.
+
+## Configuration Options
+
+All configuration properties are prefixed with `syslog.supplier`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/syslog/SyslogSupplierProperties.java[SyslogSupplierProperties].
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/supplier/syslog[test suite] for the various ways, this supplier is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/syslog-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application where it makes a Syslog Source.
