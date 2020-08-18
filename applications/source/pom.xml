@@ -29,5 +29,6 @@
         <module>twitter-message-source</module>
         <module>websocket-source</module>
         <module>cdc-debezium-source</module>
+        <module>syslog-source</module>
     </modules>
 </project>
