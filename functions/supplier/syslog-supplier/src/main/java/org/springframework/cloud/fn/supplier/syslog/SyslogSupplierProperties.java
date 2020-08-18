@@ -32,9 +32,9 @@ public class SyslogSupplierProperties {
 	private int bufferSize = 2048;
 
 	/**
-	 * tcp or udp.
+	 * Protocol used for SYSLOG (tcp or udp).
 	 */
-	private String protocol = "tcp";
+	private Protocol protocol = Protocol.tcp;
 
 	/**
 	 * The port to listen on.
@@ -69,11 +69,11 @@ public class SyslogSupplierProperties {
 		this.bufferSize = bufferSize;
 	}
 
-	public String getProtocol() {
+	public Protocol getProtocol() {
 		return protocol;
 	}
 
-	public void setProtocol(String protocol) {
+	public void setProtocol(Protocol protocol) {
 		this.protocol = protocol;
 	}
 
@@ -125,6 +125,23 @@ public class SyslogSupplierProperties {
 
 	@AssertTrue(message = "protocol must be 'udp' or 'tcp' or 'both'")
 	public boolean isSupportedProtocol() {
-		return "tcp".equals(this.protocol) || "udp".equals(this.protocol) || "both".equals(this.protocol);
+		return "tcp".equals(this.protocol.name()) || "udp".equals(this.protocol.name()) || "both".equals(this.protocol.name());
+	}
+
+	public enum Protocol {
+		/**
+		 * TCP protocol.
+		 */
+		tcp,
+
+		/**
+		 * UDP protocol.
+		 */
+		udp,
+
+		/**
+		 * Represents both TCP and UDP.
+		 */
+		both;
 	}
 }
