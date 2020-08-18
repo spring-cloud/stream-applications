@@ -123,7 +123,7 @@ public class SyslogSupplierProperties {
 		return "5424".equals(this.rfc) || "3164".equals(this.rfc);
 	}
 
-	@AssertTrue(message = "protocl must be 'udp' or 'tcp' or 'both'")
+	@AssertTrue(message = "protocol must be 'udp' or 'tcp' or 'both'")
 	public boolean isSupportedProtocol() {
 		return "tcp".equals(this.protocol) || "udp".equals(this.protocol) || "both".equals(this.protocol);
 	}

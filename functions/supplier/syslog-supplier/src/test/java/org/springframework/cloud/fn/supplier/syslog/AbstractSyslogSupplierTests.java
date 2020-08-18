@@ -24,7 +24,6 @@ import java.util.function.Supplier;
 
 import javax.net.SocketFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.DirectFieldAccessor;
@@ -40,7 +39,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = "syslog.supplier.port = 0")
+@SpringBootTest(properties = "syslog.supplier.port = 0")
 @DirtiesContext
 public class AbstractSyslogSupplierTests {
 
@@ -51,8 +50,6 @@ public class AbstractSyslogSupplierTests {
 					+ "[exampleSDID@32473 iut=\\\"3\\\" eventSource=\\\"Application\\\" eventID=\\\"1011\\\"]"
 					+ "[exampleSDID@32473 iut=\\\"3\\\" eventSource=\\\"Application\\\" eventID=\\\"1011\\\"] "
 					+ "Removing instance";
-
-	protected final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Autowired
 	Supplier<Flux<Message<?>>> syslogSupplier;

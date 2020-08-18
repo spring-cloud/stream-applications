@@ -41,7 +41,7 @@
                         <name>syslog</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.syslog.TcpSupplierConfiguration.class</configClass>
+                        <configClass>org.springframework.cloud.fn.supplier.syslog.SyslogSupplierConfiguration.class</configClass>
                     </generatedApp>
                     <dependencies>
                         <dependency>
