@@ -84,7 +84,7 @@
                     <dependencies>
                         <dependency>
                             <groupId>org.springframework.cloud.fn</groupId>
-                            <artifactId>cdc-debebzium-supplier</artifactId>
+                            <artifactId>cdc-debezium-supplier</artifactId>
                         </dependency>
                     </dependencies>
                 </configuration>
