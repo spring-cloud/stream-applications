@@ -57,7 +57,7 @@ public class SyslogSupplierProperties {
 	private int socketTimeout;
 
 	/**
-	 * '5424' or '3164' - the syslog format according the the RFC; 3164 is aka 'BSD' format.
+	 * '5424' or '3164' - the syslog format according to the RFC; 3164 is aka 'BSD' format.
 	 */
 	private String rfc = "3164";
 
@@ -121,11 +121,6 @@ public class SyslogSupplierProperties {
 	@AssertTrue(message = "rfc must be 5424 or 3164")
 	public boolean isSupportedRfc() {
 		return "5424".equals(this.rfc) || "3164".equals(this.rfc);
-	}
-
-	@AssertTrue(message = "protocol must be 'udp' or 'tcp' or 'both'")
-	public boolean isSupportedProtocol() {
-		return "tcp".equals(this.protocol.name()) || "udp".equals(this.protocol.name()) || "both".equals(this.protocol.name());
 	}
 
 	public enum Protocol {
