@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.springframework.cloud.fn.aggregator.AggregatorFunctionConfiguration
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  org.springframework.cloud.fn.aggregator.ExcludeStoresAutoConfigurationEnvironmentPostProcessor

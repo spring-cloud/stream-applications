@@ -1,0 +1,25 @@
+# Aggregator Function
+
+This module provides an aggregation function that can be reused and composed in other applications.
+
+## Beans for injection
+
+You can import the `AggregatorFunctionConfiguration` in a Spring Boot application and then inject the following bean.
+
+`aggregatorFunction`
+
+You can use `aggregatorFunction` as a qualifier when injecting.
+
+Once injected, you can use the `apply` method of the `Function` to invoke it and get the result.
+
+## Configuration Options
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/aggregator/AggregatorFunctionProperties.java[AggregatorFunctionProperties.java]
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/aggregator/AggregatorFunctionApplicationTests.java[test suite] for examples of how this function is used.
+
+## Other usage
+
+See this link:../../../applications/processor/aggregator-processor/README.adoc[README] where this function is used to create a Spring Cloud Stream application.

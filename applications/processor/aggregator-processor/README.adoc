@@ -1,0 +1,64 @@
+//tag::ref-doc[]
+= Aggregator Processor
+
+Aggregator processor enables an application to aggregates incoming messages into groups and release them into an output destination.
+
+`java -jar aggregator-processor-kafka-<version>.jar --aggregator.message-store-type=jdbc`
+
+Change kafka to rabbit if you want to run it against RabbitMQ.
+
+=== Payload
+
+== Options
+
+//tag::configuration-properties[]
+$$aggregator.aggregation$$:: $$SpEL expression for aggregation strategy. Default is collection of payloads.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$aggregator.correlation$$:: $$SpEL expression for correlation key. Default to correlationId header.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$aggregator.group-timeout$$:: $$SpEL expression for timeout to expiring uncompleted groups.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$aggregator.message-store-entity$$:: $$Persistence message store entity: table prefix in RDBMS, collection name in MongoDb, etc.$$ *($$String$$, default: `$$<none>$$`)*
+$$aggregator.message-store-type$$:: $$Message store type.$$ *($$String$$, default: `$$<none>$$`)*
+$$aggregator.release$$:: $$SpEL expression for release strategy. Default is based on the sequenceSize header.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.authentication-database$$:: $$Authentication database name.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.auto-index-creation$$:: $$Whether to enable auto-index creation.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.database$$:: $$Database name.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.field-naming-strategy$$:: $$Fully qualified name of the FieldNamingStrategy to use.$$ *($$Class<?>$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.grid-fs-database$$:: $$GridFS database name.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.host$$:: $$Mongo server host. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.password$$:: $$Login password of the mongo server. Cannot be set with URI.$$ *($$Character[]$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.port$$:: $$Mongo server port. Cannot be set with URI.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.replica-set-name$$:: $$Required replica set name for the cluster. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.uri$$:: $$Mongo database URI. Cannot be set with host, port, credentials and replica set name.$$ *($$String$$, default: `$$mongodb://localhost/test$$`)*
+$$spring.data.mongodb.username$$:: $$Login user of the mongo server. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.uuid-representation$$:: $$Representation to use when converting a UUID to a BSON binary value.$$ *($$UuidRepresentation$$, default: `$$java-legacy$$`, possible values: `UNSPECIFIED`,`STANDARD`,`C_SHARP_LEGACY`,`JAVA_LEGACY`,`PYTHON_LEGACY`)*
+$$spring.datasource.continue-on-error$$:: $$Whether to stop if an error occurs while initializing the database.$$ *($$Boolean$$, default: `$$false$$`)*
+$$spring.datasource.data$$:: $$Data (DML) script resource references.$$ *($$List<String>$$, default: `$$<none>$$`)*
+$$spring.datasource.data-password$$:: $$Password of the database to execute DML scripts (if different).$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.data-username$$:: $$Username of the database to execute DML scripts (if different).$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.driver-class-name$$:: $$Fully qualified name of the JDBC driver. Auto-detected based on the URL by default.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.generate-unique-name$$:: $$Whether to generate a random datasource name.$$ *($$Boolean$$, default: `$$true$$`)*
+$$spring.datasource.initialization-mode$$:: $$Initialize the datasource with available DDL and DML scripts.$$ *($$DataSourceInitializationMode$$, default: `$$embedded$$`, possible values: `ALWAYS`,`EMBEDDED`,`NEVER`)*
+$$spring.datasource.jndi-name$$:: $$JNDI location of the datasource. Class, url, username and password are ignored when set.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.name$$:: $$Name of the datasource. Default to "testdb" when using an embedded database.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.password$$:: $$Login password of the database.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.platform$$:: $$Platform to use in the DDL or DML scripts (such as schema-${platform}.sql or data-${platform}.sql).$$ *($$String$$, default: `$$all$$`)*
+$$spring.datasource.schema$$:: $$Schema (DDL) script resource references.$$ *($$List<String>$$, default: `$$<none>$$`)*
+$$spring.datasource.schema-password$$:: $$Password of the database to execute DDL scripts (if different).$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.schema-username$$:: $$Username of the database to execute DDL scripts (if different).$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.separator$$:: $$Statement separator in SQL initialization scripts.$$ *($$String$$, default: `$$;$$`)*
+$$spring.datasource.sql-script-encoding$$:: $$SQL scripts encoding.$$ *($$Charset$$, default: `$$<none>$$`)*
+$$spring.datasource.type$$:: $$Fully qualified name of the connection pool implementation to use. By default, it is auto-detected from the classpath.$$ *($$Class<DataSource>$$, default: `$$<none>$$`)*
+$$spring.datasource.url$$:: $$JDBC URL of the database.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.datasource.username$$:: $$Login username of the database.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.mongodb.embedded.features$$:: $$Comma-separated list of features to enable. Uses the defaults of the configured version by default.$$ *($$Set<Feature>$$, default: `$$[sync_delay]$$`)*
+$$spring.mongodb.embedded.version$$:: $$Version of Mongo to use.$$ *($$String$$, default: `$$3.5.5$$`)*
+$$spring.redis.client-name$$:: $$Client name to be set on connections with CLIENT SETNAME.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.redis.database$$:: $$Database index used by the connection factory.$$ *($$Integer$$, default: `$$0$$`)*
+$$spring.redis.host$$:: $$Redis server host.$$ *($$String$$, default: `$$localhost$$`)*
+$$spring.redis.password$$:: $$Login password of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.redis.port$$:: $$Redis server port.$$ *($$Integer$$, default: `$$6379$$`)*
+$$spring.redis.ssl$$:: $$Whether to enable SSL support.$$ *($$Boolean$$, default: `$$false$$`)*
+$$spring.redis.timeout$$:: $$Connection timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$spring.redis.url$$:: $$Connection URL. Overrides host, port, and password. User is ignored. Example: redis://user:password@example.com:6379$$ *($$String$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]

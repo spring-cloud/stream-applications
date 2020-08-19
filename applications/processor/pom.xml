@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>aggregator-processor</module>
         <module>bridge-processor</module>
         <module>filter-processor</module>
         <module>groovy-processor</module>
