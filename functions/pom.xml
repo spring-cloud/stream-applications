@@ -72,6 +72,7 @@
 		<module>consumer/twitter-consumer</module>
 		<module>consumer/wavefront-consumer</module>
 
+		<module>function/aggregator-function</module>
 		<module>function/filter-function</module>
 		<module>function/header-enricher-function</module>
 		<module>function/http-request-function</module>
