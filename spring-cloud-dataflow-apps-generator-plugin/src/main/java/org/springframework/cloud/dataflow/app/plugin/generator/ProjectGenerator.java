@@ -37,7 +37,7 @@ import org.springframework.util.Assert;
 /**
  * @author Christian Tzolov
  */
-public class ProjectGenerator {
+public final class ProjectGenerator {
 
 	private ProjectGenerator() {
 	}
@@ -214,7 +214,7 @@ public class ProjectGenerator {
 
 	private void copyResource(String resourcePath, File toFile) throws IOException {
 		try (InputStream resourcesStream =
-					 Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(resourcePath))) {
+					Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(resourcePath))) {
 			Files.copy(resourcesStream, toFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
 	}

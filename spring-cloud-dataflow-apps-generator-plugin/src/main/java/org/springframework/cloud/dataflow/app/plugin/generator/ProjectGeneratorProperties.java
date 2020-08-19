@@ -25,12 +25,12 @@ import java.util.List;
 public class ProjectGeneratorProperties {
 
 	/**
-	 * Common pom versions
+	 * Common pom versions.
 	 */
 	private AppBom appBom;
 
 	/**
-	 * Source, processor and sink application configuration
+	 * Source, processor and sink application configuration.
 	 */
 	private AppDefinition appDefinition;
 

@@ -36,7 +36,7 @@ public class AppDefinition {
 	private List<String> mavenDependencies = new ArrayList<>();
 	private List<String> mavenPlugins = new ArrayList<>();
 	/**
-	 * Allow to generate either Docker or OCI image formats
+	 * Allow to generate either Docker or OCI image formats.
 	 */
 	private ContainerImageFormat containerImageFormat = ContainerImageFormat.Docker;
 	/**
@@ -178,7 +178,29 @@ public class AppDefinition {
 		this.functionDefinition = functionDefinition;
 	}
 
-	public enum ContainerImageFormat {Docker, OCI}
+	public enum ContainerImageFormat {
+		/**
+		 * Docker image format.
+		 */
+		Docker,
+		/**
+		 * OCI format.
+		 */
+		OCI
+	}
 
-	public enum AppType {source, processor, sink}
+	public enum AppType {
+		/**
+		 * source type.
+		 */
+		source,
+		/**
+		 * processor type.
+		 */
+		processor,
+		/**
+		 * sink type.
+		 */
+		sink
+	}
 }
