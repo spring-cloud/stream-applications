@@ -54,6 +54,7 @@ import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.handler.MessageProcessor;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
 import org.springframework.integration.sftp.dsl.Sftp;
+import org.springframework.integration.sftp.dsl.SftpInboundChannelAdapterSpec;
 import org.springframework.integration.sftp.filters.SftpPersistentAcceptOnceFileListFilter;
 import org.springframework.integration.sftp.filters.SftpRegexPatternFileListFilter;
 import org.springframework.integration.sftp.session.SftpRemoteFileTemplate;
@@ -79,8 +80,8 @@ import org.springframework.util.StringUtils;
  */
 
 @Configuration
-@EnableConfigurationProperties({SftpSupplierProperties.class, FileConsumerProperties.class})
-@Import({SftpSupplierFactoryConfiguration.class})
+@EnableConfigurationProperties({ SftpSupplierProperties.class, FileConsumerProperties.class })
+@Import({ SftpSupplierFactoryConfiguration.class })
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class SftpSupplierConfiguration {
 
@@ -199,10 +200,10 @@ public class SftpSupplierConfiguration {
 				FileConsumerProperties fileConsumerProperties) {
 
 			return FileUtils.enhanceStreamFlowForReadingMode(IntegrationFlows
-							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
-									.subscriberContext(
-											context -> (context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
-													sftpSupplierProperties.getDelayWhenEmpty())))),
+					.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
+							.subscriberContext(
+									context -> (context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
+											sftpSupplierProperties.getDelayWhenEmpty())))),
 					fileConsumerProperties)
 					.toReactivePublisher();
 		}
@@ -234,7 +235,7 @@ public class SftpSupplierConfiguration {
 				FileConsumerProperties fileConsumerProperties) {
 
 			return FileUtils.enhanceFlowForReadingMode(IntegrationFlows
-							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)),
+					.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)),
 					fileConsumerProperties)
 					.toReactivePublisher();
 		}
@@ -245,7 +246,7 @@ public class SftpSupplierConfiguration {
 		 */
 		@ConditionalOnExpression("environment['sftp.supplier.list-only'] != 'true'")
 		@Bean
-		public MessageSource targetMessageSource(SftpSupplierProperties sftpSupplierProperties,
+		public SftpInboundChannelAdapterSpec targetMessageSource(SftpSupplierProperties sftpSupplierProperties,
 				SftpSupplierFactoryConfiguration.DelegatingFactoryWrapper delegatingFactoryWrapper,
 				FileListFilter<LsEntry> fileListFilter) {
 
@@ -260,7 +261,7 @@ public class SftpSupplierConfiguration {
 					.temporaryFileSuffix(sftpSupplierProperties.getTmpFileSuffix())
 					.metadataStorePrefix(METADATA_STORE_PREFIX)
 					.maxFetchSize(sftpSupplierProperties.getMaxFetch())
-					.filter(fileListFilter).get();
+					.filter(fileListFilter);
 		}
 
 	}

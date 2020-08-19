@@ -88,7 +88,7 @@ public class FtpSupplierConfiguration {
 	}
 
 	@Bean
-	public MessageSource<File> ftpMessageSource() {
+	public FtpInboundChannelAdapterSpec ftpMessageSource() {
 		FtpInboundChannelAdapterSpec messageSourceBuilder = Ftp.inboundAdapter(ftpSessionFactory)
 				.preserveTimestamp(this.ftpSupplierProperties.isPreserveTimestamp())
 				.remoteDirectory(this.ftpSupplierProperties.getRemoteDir())
@@ -110,7 +110,7 @@ public class FtpSupplierConfiguration {
 		chainFileListFilter.addFilter(new FtpPersistentAcceptOnceFileListFilter(this.metadataStore, "ftpSource/"));
 
 		messageSourceBuilder.filter(chainFileListFilter);
-		return messageSourceBuilder.get();
+		return messageSourceBuilder;
 	}
 
 	@Bean
@@ -127,7 +127,7 @@ public class FtpSupplierConfiguration {
 	@ConditionalOnExpression("environment['file.consumer.mode'] != 'ref'")
 	public Publisher<Message<Object>> ftpReadingFlow() {
 		return FileUtils.enhanceFlowForReadingMode(IntegrationFlows
-				.from(IntegrationReactiveUtils.messageSourceToFlux(ftpMessageSource())), fileConsumerProperties)
+				.from(IntegrationReactiveUtils.messageSourceToFlux(ftpMessageSource().get())), fileConsumerProperties)
 				.toReactivePublisher();
 	}
 
