@@ -1,0 +1,185 @@
+= spring-cloud-stream-app-maven-plugin
+Maven plugin for generating spring cloud stream applications from the spring-cloud-stream-app-starters repository
+
+== Build
+
+mvn clean package [Requires JDK 8]
+
+== Sample Configuration for generating spring cloud stream apps
+
+[source, xml]
+----
+    <plugin>
+        <groupId>org.springframework.cloud.stream.app.plugin</groupId>
+        <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+        <version>2.0.1.BUILD-SNAPSHOT</version>
+        <configuration>
+            <javaVersion>1.8</javaVersion>
+            <bootVersion>${spring-boot.version}</bootVersion>
+            <metadataPluginVersion>${app-metadata-maven-plugin-version}</metadataPluginVersion>
+            <additionalBoms>
+                <bom>
+                    <name>app-starters-core-dependencies</name>
+                    <groupId>org.springframework.cloud.stream.app</groupId>
+                    <artifactId>app-starters-core-dependencies</artifactId>
+                    <version>${app-starters-core-dependencies.version}</version>
+                </bom>
+            </additionalBoms>
+            <binders>
+                <kafka/>
+                <rabbit/>
+            </binders>
+            <generatedApp>
+                <name>counter</name>
+                <type>sink</type>
+                <version>${project.version}</version>
+                <configClass>io.pivotal.java.function.counter.consumer.CounterConsumerConfiguration.class</configClass>
+                <functionDefinition>counterConsumer</functionDefinition>
+            </generatedApp>
+            <globalAppProperties>
+                <globalAppProperty>spring.cloud.stream.propagateOriginalContentType=false</globalAppProperty>
+            </globalAppProperties>
+            <dependencies>
+                <dependency>
+                    <groupId>io.pivotal.java.function</groupId>
+                    <artifactId>counter-consumer</artifactId>
+                    <version>${java-functions.version}</version>
+                </dependency>
+            </dependencies>
+            <additionalGlobalDependencies>
+                <dependency>
+                    <groupId>org.springframework.cloud.stream.app</groupId>
+                    <artifactId>app-starters-security-common</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-config</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.springframework.cloud.stream.app</groupId>
+                    <artifactId>app-starters-micrometer-common</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>io.micrometer</groupId>
+                    <artifactId>micrometer-registry-influx</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>io.micrometer</groupId>
+                    <artifactId>micrometer-registry-prometheus</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-spring-service-connector</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>io.micrometer.prometheus</groupId>
+                    <artifactId>prometheus-rsocket-spring</artifactId>
+                </dependency>
+            </additionalGlobalDependencies>
+        </configuration>
+    </plugin>
+----
+
+The bom for stream apps is specified in spring-cloud-stream-app-dependencies
+(group id: org.springframework.cloud.stream.app)
+
+and for tasks it is spring-cloud-task-app-dependencies
+(group id: org.springframework.cloud.task.app).
+
+Extra dependency management can be added as additional boms to the plugin using the property
+-DbomsWithHigherPrecedence and value based on the pattern groupId:artfiactId:version. This can
+ be a comma separated collection of boms. Any bom added like this will get priority in the order
+ they are specified over any default values used in the plugin configuration.
+
+ Spring Boot version used in the generated app can be overridden using the plugin property
+ -DbootVersion=<spring boot version>.
+
+
+==== Copy Third-Party Resources
+The `copyResources` configuration block permits copying Resources from third-party jar dependencies into the
+generated App Starter classpath.
+
+Form example if you want to copy a truststore and a self-signed certificate (`clientKeyStore.jks`, `cacerts`)  bundled inside the
+`org.springframework.cloud.stream.app:coap-app-starters-common:2.0.0.BUILD-SNAPSHOT` dependency you can add this to the
+`spring-cloud-stream-app-maven-plugin` configuration:
+
+[source, xml]
+----
+			<plugin>
+				<groupId>org.springframework.cloud.stream.app.plugin</groupId>
+				<artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+				<configuration>
+					<generatedProjectHome>${session.executionRootDirectory}/apps</generatedProjectHome>
+					<generatedProjectVersion>${project.version}</generatedProjectVersion>
+					<bom>....</bom>
+					<generatedApps>
+						<coap-server-source/>
+					</generatedApps>
+					<copyResources>
+						<copyResource>
+                             <groupId>org.springframework.cloud.stream.app</groupId>
+                             <artifactId>coap-app-starters-common</artifactId>
+                             <version>2.0.0.BUILD-SNAPSHOT</version>
+                             <includes>clientKeyStore.jks,cacerts</includes>
+						</copyResource>
+					</copyResources>
+				</configuration>
+			</plugin>
+		</plugins>
+----
+
+Later will add the following `maven-dependency-plugin` definition to the generated aps starter pom:
+
+[source, xml]
+----
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.springframework.cloud.stream.app</groupId>
+                  <artifactId>coap-app-starters-common</artifactId>
+                  <version>2.0.0.BUILD-SNAPSHOT</version>
+                  <includes>clientKeyStore.jks,cacerts</includes>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}/classes/</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+----
+
+This will ensure that the clientKeyStore.jks,cacerts files will be copied to the AppStarter's `BOOT-INF/classes/`
+
+==== Insert additional properties into the application.properties file for the created app.
+The `additionalAppProperties` configuration block permits adding of additional properties to the application.properties file.
+[source, xml]
+----
+<plugin>
+    <groupId>org.springframework.cloud.stream.app.plugin</groupId>
+    <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+    <configuration>
+        <generatedProjectHome>${session.executionRootDirectory}/apps</generatedProjectHome>
+        <generatedProjectVersion>${project.version}</generatedProjectVersion>
+        <bom>....</bom>
+        <generatedApps>
+            <coap-server-source/>
+        </generatedApps>
+        <additionalAppProperties>
+            <additionalAppProperty>spring.cloud.task.closecontextEnabled=true</additionalAppProperty>
+        </additionalAppProperties>
+    </configuration>
+    </configuration>
+</plugin>
+----
+In the example above we added the`spring.cloud.task.closecontextEnabled` property to the application.properties of the created app.

@@ -10,6 +10,7 @@
 	<suppress files=".*sample.*" checks="(Javadoc*|HideUtility*)"/>
 	<suppress files=".*example.*" checks="(Javadoc*|HideUtility*)"/>
 	<suppress files=".*integration-tests.*" checks="(Javadoc*|HideUtility*)"/>
+	<suppress files="(.*MavenXmlWriter\.java)" checks="Javadoc*"/>
 	<suppress files="(.*Tests\.java|.*Tests\.groovy)" checks="Javadoc*"/>
 	<suppress files=".*src.test.java.*" checks="Javadoc*"/>
 	<suppress files="generated-sources" checks="[a-zA-Z0-9]*"/>
