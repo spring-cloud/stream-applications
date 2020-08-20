@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.fn.supplier.ftp;
 
-import java.io.File;
 import java.util.function.Supplier;
 
 import org.apache.commons.net.ftp.FTPFile;
@@ -37,7 +36,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.file.filters.ChainFileListFilter;
 import org.springframework.integration.file.remote.session.SessionFactory;
@@ -60,7 +58,7 @@ import org.springframework.util.StringUtils;
  * @author Christian Tzolov
  */
 @Configuration
-@EnableConfigurationProperties({FtpSupplierProperties.class, FileConsumerProperties.class})
+@EnableConfigurationProperties({ FtpSupplierProperties.class, FileConsumerProperties.class })
 @Import(FtpSessionFactoryConfiguration.class)
 public class FtpSupplierConfiguration {
 
@@ -78,9 +76,9 @@ public class FtpSupplierConfiguration {
 	private FtpInboundFileSynchronizingMessageSource ftpMessageSource;
 
 	public FtpSupplierConfiguration(FtpSupplierProperties ftpSupplierProperties,
-									FileConsumerProperties fileConsumerProperties,
-									ConcurrentMetadataStore metadataStore,
-									SessionFactory<FTPFile> ftpSessionFactory) {
+			FileConsumerProperties fileConsumerProperties,
+			ConcurrentMetadataStore metadataStore,
+			SessionFactory<FTPFile> ftpSessionFactory) {
 		this.ftpSupplierProperties = ftpSupplierProperties;
 		this.fileConsumerProperties = fileConsumerProperties;
 		this.metadataStore = metadataStore;
