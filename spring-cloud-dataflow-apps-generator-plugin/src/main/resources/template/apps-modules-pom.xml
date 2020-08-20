@@ -8,8 +8,8 @@
 	<version>{{app.version}}</version>
 	<packaging>pom</packaging>
 
-	<name>Apps Container</name>
-	<description>Container project for generated apps</description>
+	<name>Apps Modules</name>
+	<description>Parent project for generated apps project modules</description>
 	<url>http://spring.io/spring-cloud</url>
 	<licenses>
 		<license>
@@ -57,7 +57,7 @@
 
 	<modules>
 		{{#binders}}
-		<module>{{app.name}}-{{app.type}}-{{this}}</module>
+		<module>{{app.name}}-{{app.type}}-{{this.name}}</module>
 		{{/binders}}
 	</modules>
 

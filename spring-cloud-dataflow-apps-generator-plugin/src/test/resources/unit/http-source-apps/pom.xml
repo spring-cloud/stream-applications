@@ -45,8 +45,28 @@
 						<bootVersion>${spring-boot.version}</bootVersion>
 
 						<binders>
-							<binder>kafka</binder>
-							<binder>rabbit</binder>
+							<binder>
+								<name>kafka</name>
+								<maven>
+									<dependencies>
+										<dependency>
+											<groupId>org.springframework.cloud</groupId>
+											<artifactId>spring-cloud-stream-binder-kafka</artifactId>
+										</dependency>
+									</dependencies>
+								</maven>
+							</binder>
+							<binder>
+								<name>rabbit</name>
+								<maven>
+									<dependencies>
+										<dependency>
+											<groupId>org.springframework.cloud</groupId>
+											<artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+										</dependency>
+									</dependencies>
+								</maven>
+							</binder>
 						</binders>
 						<boms>
 							<dependency>

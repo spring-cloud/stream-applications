@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>{{bom.springBootVersion}}</version>
+		<version>{{app.springBootVersion}}</version>
 		<relativePath></relativePath>
 	</parent>
 	<groupId>org.springframework.cloud.stream.app</groupId>
-	<artifactId>{{app.name}}-{{app.type}}-{{app-binder}}</artifactId>
+	<artifactId>{{app.name}}-{{app.type}}-{{app-binder.name}}</artifactId>
 	<version>{{app.version}}</version>
-	<name>{{app.name}}-{{app.type}}-{{app-binder}}</name>
-	<description>Spring Cloud Stream {{#camelCase}}{{app.name}}{{/camelCase}} {{#capitalize}}{{app.type}}{{/capitalize}} {{#capitalize}}{{app-binder}}{{/capitalize}} Binder Application
+	<name>{{app.name}}-{{app.type}}-{{app-binder.name}}</name>
+	<description>Spring Cloud Stream {{#camelCase}}{{app.name}}{{/camelCase}} {{#capitalize}}{{app.type}}{{/capitalize}} {{#capitalize}}{{app-binder.name}}{{/capitalize}} Binder Application
 	</description>
 
 	<distributionManagement>
@@ -32,28 +32,37 @@
 	<properties>
 		<skipTests>true</skipTests>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- (begin) maven properties -->
+		{{#app-binder.maven.properties}}
+		{{this}}
+		{{/app-binder.maven.properties}}
+		<!-- (end) maven properties -->
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<!-- (begin) managed dependencies -->
-			{{#app.mavenManagedDependencies}}
+			{{#app.maven.managedDependencies}}
 			{{this}}
-			{{/app.mavenManagedDependencies}}
+			{{/app.maven.managedDependencies}}
+
+			{{#app-binder.maven.managedDependencies}}
+			{{this}}
+			{{/app-binder.maven.managedDependencies}}
 			<!-- (end) managed dependencies -->
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
 		<!-- (begin) additional dependencies -->
-		{{#app.mavenDependencies}}
+		{{#app.maven.dependencies}}
 		{{this}}
-		{{/app.mavenDependencies}}
+		{{/app.maven.dependencies}}
+
+		{{#app-binder.maven.dependencies}}
+		{{this}}
+		{{/app-binder.maven.dependencies}}
 		<!-- (end) additional dependencies -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-binder-{{app-binder}}</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.stream.app</groupId>
 			<artifactId>stream-applications-postprocessor-common</artifactId>
@@ -105,9 +114,13 @@
 	<build>
 		<plugins>
 			<!-- (begin) additional plugins -->
-			{{#app.mavenPlugins}}
+			{{#app.maven.plugins}}
 			{{this}}
-			{{/app.mavenPlugins}}
+			{{/app.maven.plugins}}
+
+			{{#app-binder.maven.plugins}}
+			{{this}}
+			{{/app-binder.maven.plugins}}
 			<!-- (end) additional plugins -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -123,26 +136,26 @@
 						<image>springcloud/openjdk</image>
 					</from>
 					<to>
-						<image>{{app.containerImageOrgName}}/${project.artifactId}</image>
+						<image>{{app.containerImage.orgName}}/${project.artifactId}</image>
 						<tags>
-							<tag>{{app.containerImageTag}}</tag>
+							<tag>{{app.containerImage.tag}}</tag>
 						</tags>
 					</to>
 					<container>
 						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
-						<format>{{app.containerImageFormat}}</format>
-						{{#app.enableContainerImageMetadata}}
+						<format>{{app.containerImage.format}}</format>
+						{{#app.containerImage.enableMetadata}}
 						<labels>
 							<org.springframework.cloud.dataflow.spring-configuration-metadata.json>
 								${org.springframework.cloud.dataflow.spring.configuration.metadata.json}
 							</org.springframework.cloud.dataflow.spring-configuration-metadata.json>
 						</labels>
-						{{/app.enableContainerImageMetadata}}
+						{{/app.containerImage.enableMetadata}}
 					</container>
 				</configuration>
 			</plugin>
 
-			{{#app.enableContainerImageMetadata}}
+			{{#app.containerImage.enableMetadata}}
 			<!--
 			 Use of properties-maven-plugin to load the encoded metadata properties created by the jib-maven-plugin
 			 Use: Use: ./mvnw clean install jib:dockerBuild or ./mvnw clean install jib:build
@@ -167,14 +180,14 @@
 					</execution>
 				</executions>
 			</plugin>
-			{{/app.enableContainerImageMetadata}}
+			{{/app.containerImage.enableMetadata}}
 
 			<plugin>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-app-starter-metadata-maven-plugin</artifactId>
-				<version>{{bom.appMetadataMavenPluginVersion}}</version>
+				<version>{{app.metadata.mavenPluginVersion}}</version>
 				<configuration>
-					{{#app.enableContainerImageMetadata}}
+					{{#app.containerImage.enableMetadata}}
 					<storeFilteredMetadata>true</storeFilteredMetadata>
 					<metadataFilter>
 						<names>
@@ -183,12 +196,12 @@
 							{{/app.metadataNameFilters}}
 						</names>
 						<sourceTypes>
-							{{#app.metadataSourceTypeFilters}}
+							{{#app.metadata.sourceTypeFilters}}
 							<filter>{{this}}</filter>
-							{{/app.metadataSourceTypeFilters}}
+							{{/app.metadata.sourceTypeFilters}}
 						</sourceTypes>
 					</metadataFilter>
-					{{/app.enableContainerImageMetadata}}
+					{{/app.containerImage.enableMetadata}}
 				</configuration>
 				<executions>
 					<execution>

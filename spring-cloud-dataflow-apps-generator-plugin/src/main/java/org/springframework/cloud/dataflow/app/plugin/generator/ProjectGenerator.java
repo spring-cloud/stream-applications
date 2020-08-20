@@ -88,21 +88,20 @@ public final class ProjectGenerator {
 
 	public void generate(ProjectGeneratorProperties generatorProperties) throws IOException {
 
-		Map<String, Object> containerTemplateProperties = new HashMap<>();
+		Map<String, Object> modulesTemplateProperties = new HashMap<>();
 		// register {{#capitalize}}...{{/capitalize}} function.
-		containerTemplateProperties.put("capitalize", (Mustache.Lambda) (frag, out) -> out.write(capitalize(frag.execute().trim())));
+		modulesTemplateProperties.put("capitalize", (Mustache.Lambda) (frag, out) -> out.write(capitalize(frag.execute().trim())));
 		// register {{#camelCase}}...{{/camelCase}} function.
-		containerTemplateProperties.put("camelCase", (Mustache.Lambda) (frag, out) -> out.write(camelCase(frag.execute().trim())));
+		modulesTemplateProperties.put("camelCase", (Mustache.Lambda) (frag, out) -> out.write(camelCase(frag.execute().trim())));
 
-		containerTemplateProperties.put("bom", generatorProperties.getAppBom());
-		containerTemplateProperties.put("app", generatorProperties.getAppDefinition());
-		containerTemplateProperties.put("binders", generatorProperties.getBinders());
+		modulesTemplateProperties.put("app", generatorProperties.getAppDefinition());
+		modulesTemplateProperties.put("binders", generatorProperties.getBinders());
 
 		// ---------------------------------
 		// Generate apps container POM
 		// ---------------------------------
 		File appParentDir = mkdirs(generatorProperties.getOutputFolder());
-		copy(materialize("template/apps-container-pom.xml", containerTemplateProperties),
+		copy(materialize("template/apps-modules-pom.xml", modulesTemplateProperties),
 				file(appParentDir, "pom.xml"));
 		// maven wrapper
 		copyMavenWrapper(appParentDir);
@@ -111,24 +110,24 @@ public final class ProjectGenerator {
 		// Generate App projects
 		// ---------------------------------
 		Assert.notEmpty(generatorProperties.getBinders(), "At least one Binder must be provided");
-		for (String binder : generatorProperties.getBinders()) {
-			generateAppProject(appParentDir, containerTemplateProperties, generatorProperties.getAppDefinition(),
+		for (BinderDefinition binder : generatorProperties.getBinders()) {
+			generateAppProject(appParentDir, modulesTemplateProperties, generatorProperties.getAppDefinition(),
 					generatorProperties.getProjectResourcesDirectory(), binder);
 		}
 	}
 
 	private void generateAppProject(File appRootDirectory, Map<String, Object> containerTemplateProperties,
-									AppDefinition appDefinition, File projectResourcesDirectory, String binder) throws IOException {
+			AppDefinition appDefinition, File projectResourcesDirectory, BinderDefinition binder) throws IOException {
 
 		String appClassName = String.format("%s%s%sApplication",
 				camelCase(appDefinition.getName()),
 				capitalize(appDefinition.getType().name()),
-				capitalize(binder));
+				capitalize(binder.getName()));
 
 		String appPackageName = String.format("org.springframework.cloud.stream.app.%s.%s.%s",
 				toPkg(appDefinition.getName()),
 				appDefinition.getType(),
-				binder);
+				binder.getName());
 
 		Map<String, Object> appTemplateProperties = new HashMap<>(containerTemplateProperties);
 
@@ -139,7 +138,7 @@ public final class ProjectGenerator {
 
 		// app POM
 		File appDir =
-				mkdirs(file(appRootDirectory, appDefinition.getName() + "-" + appDefinition.getType() + "-" + binder));
+				mkdirs(file(appRootDirectory, appDefinition.getName() + "-" + appDefinition.getType() + "-" + binder.getName()));
 
 		copy(materialize("template/app-pom.xml", appTemplateProperties), file(appDir, "pom.xml"));
 
@@ -213,8 +212,8 @@ public final class ProjectGenerator {
 	}
 
 	private void copyResource(String resourcePath, File toFile) throws IOException {
-		try (InputStream resourcesStream =
-					Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(resourcePath))) {
+		try (InputStream resourcesStream = Objects.requireNonNull(
+				this.getClass().getClassLoader().getResourceAsStream(resourcePath))) {
 			Files.copy(resourcesStream, toFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
 	}

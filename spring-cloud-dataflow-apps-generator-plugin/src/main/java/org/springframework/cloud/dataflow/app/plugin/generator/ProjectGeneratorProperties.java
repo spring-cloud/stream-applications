@@ -25,11 +25,6 @@ import java.util.List;
 public class ProjectGeneratorProperties {
 
 	/**
-	 * Common pom versions.
-	 */
-	private AppBom appBom;
-
-	/**
 	 * Source, processor and sink application configuration.
 	 */
 	private AppDefinition appDefinition;
@@ -42,7 +37,7 @@ public class ProjectGeneratorProperties {
 	/**
 	 * List of binders to generate applications for.
 	 */
-	private List<String> binders;
+	private List<BinderDefinition> binders;
 
 	/**
 	 * The location of a project's src/main/resources directory.
@@ -57,14 +52,6 @@ public class ProjectGeneratorProperties {
 		this.outputFolder = outputFolder;
 	}
 
-	public AppBom getAppBom() {
-		return appBom;
-	}
-
-	public void setAppBom(AppBom appBom) {
-		this.appBom = appBom;
-	}
-
 	public AppDefinition getAppDefinition() {
 		return appDefinition;
 	}
@@ -73,11 +60,11 @@ public class ProjectGeneratorProperties {
 		this.appDefinition = appDefinition;
 	}
 
-	public List<String> getBinders() {
+	public List<BinderDefinition> getBinders() {
 		return binders;
 	}
 
-	public void setBinders(List<String> binders) {
+	public void setBinders(List<BinderDefinition> binders) {
 		this.binders = binders;
 	}
 

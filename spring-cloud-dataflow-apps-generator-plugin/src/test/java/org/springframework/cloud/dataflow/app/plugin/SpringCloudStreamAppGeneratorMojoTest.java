@@ -82,8 +82,21 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		dep.setVersion("1.0.0.BUILD-SNAPSHOT");
 		setMojoProperty("dependencies", Arrays.asList(dep));
 
+		SpringCloudStreamAppGeneratorMojo.Binder kafkaBinder = new SpringCloudStreamAppGeneratorMojo.Binder();
+		kafkaBinder.setName("kafka");
+		Dependency kafkaDep = new Dependency();
+		kafkaDep.setGroupId("org.springframework.cloud");
+		kafkaDep.setArtifactId("spring-cloud-stream-binder-kafka");
+		kafkaBinder.getMaven().getDependencies().add(kafkaDep);
 
-		setMojoProperty("binders", Arrays.asList("kafka", "rabbit"));
+		SpringCloudStreamAppGeneratorMojo.Binder rabbitBinder = new SpringCloudStreamAppGeneratorMojo.Binder();
+		rabbitBinder.setName("rabbit");
+		Dependency rabbitDep = new Dependency();
+		rabbitDep.setGroupId("org.springframework.cloud");
+		rabbitDep.setArtifactId("spring-cloud-stream-binder-rabbit");
+		rabbitBinder.getMaven().getDependencies().add(rabbitDep);
+
+		setMojoProperty("binders", Arrays.asList(kafkaBinder, rabbitBinder));
 
 		// BOM
 		setMojoProperty("bootVersion", "2.3.0.M1");

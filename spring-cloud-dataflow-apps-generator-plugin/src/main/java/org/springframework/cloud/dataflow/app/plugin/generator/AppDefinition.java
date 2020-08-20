@@ -24,27 +24,55 @@ import java.util.List;
  */
 public class AppDefinition {
 
+	/**
+	 * Application name.
+	 */
 	private String name;
+
+	/**
+	 * Application type.
+	 */
 	private AppType type;
+
+	/**
+	 * Application version.
+	 */
 	private String version;
+
+	/**
+	 * Spring Boot version used as a parent by the application.
+	 */
+	private String springBootVersion;
+
+	/**
+	 * Application's backing Spring configuration class.
+	 */
 	private String configClass;
+
+	/**
+	 * Spring Cloud Function defintion.
+	 */
 	private String functionDefinition;
-	private List<String> metadataSourceTypeFilters = new ArrayList<>();
-	private List<String> metadataNameFilters = new ArrayList<>();
-	private List<String> additionalProperties = new ArrayList<>();
-	private List<String> mavenManagedDependencies = new ArrayList<>();
-	private List<String> mavenDependencies = new ArrayList<>();
-	private List<String> mavenPlugins = new ArrayList<>();
+
 	/**
-	 * Allow to generate either Docker or OCI image formats.
+	 * Additional application properties.
 	 */
-	private ContainerImageFormat containerImageFormat = ContainerImageFormat.Docker;
+	private List<String> properties = new ArrayList<>();
+
 	/**
-	 * True will attempt to inline the (white) filtered Spring Boot metadata as Base64 encoded property.
+	 * Maven related configurations to be applied for this App definition.
 	 */
-	private boolean enableContainerImageMetadata = false;
-	private String containerImageOrgName = "springcloudstream";
-	private String containerImageTag = "latest";
+	private final Maven maven = new Maven();
+
+	/**
+	 * ContainerImage related configurations to be applied for this App definition.
+	 */
+	private final ContainerImage containerImage = new ContainerImage();
+
+	/**
+	 * Application metadata related configurations to be applied for this App definition.
+	 */
+	private final Metadata metadata = new Metadata();
 
 	public String getName() {
 		return name;
@@ -70,36 +98,32 @@ public class AppDefinition {
 		this.version = version;
 	}
 
-	public List<String> getAdditionalProperties() {
-		return additionalProperties;
+	public String getSpringBootVersion() {
+		return springBootVersion;
 	}
 
-	public void setAdditionalProperties(List<String> additionalProperties) {
-		this.additionalProperties = additionalProperties;
+	public void setSpringBootVersion(String springBootVersion) {
+		this.springBootVersion = springBootVersion;
 	}
 
-	public List<String> getMavenDependencies() {
-		return mavenDependencies;
+	public List<String> getProperties() {
+		return properties;
 	}
 
-	public void setMavenDependencies(List<String> mavenDependencies) {
-		this.mavenDependencies = mavenDependencies;
+	public void setProperties(List<String> properties) {
+		this.properties = properties;
 	}
 
-	public List<String> getMavenManagedDependencies() {
-		return mavenManagedDependencies;
+	public Maven getMaven() {
+		return maven;
 	}
 
-	public void setMavenManagedDependencies(List<String> mavenManagedDependencies) {
-		this.mavenManagedDependencies = mavenManagedDependencies;
+	public ContainerImage getContainerImage() {
+		return containerImage;
 	}
 
-	public List<String> getMavenPlugins() {
-		return mavenPlugins;
-	}
-
-	public void setMavenPlugins(List<String> mavenPlugins) {
-		this.mavenPlugins = mavenPlugins;
+	public Metadata getMetadata() {
+		return metadata;
 	}
 
 	public boolean isSupplier() {
@@ -120,54 +144,6 @@ public class AppDefinition {
 
 	public void setConfigClass(String configClass) {
 		this.configClass = configClass;
-	}
-
-	public List<String> getMetadataSourceTypeFilters() {
-		return metadataSourceTypeFilters;
-	}
-
-	public void setMetadataSourceTypeFilters(List<String> metadataSourceTypeFilters) {
-		this.metadataSourceTypeFilters = metadataSourceTypeFilters;
-	}
-
-	public List<String> getMetadataNameFilters() {
-		return metadataNameFilters;
-	}
-
-	public void setMetadataNameFilters(List<String> metadataNameFilters) {
-		this.metadataNameFilters = metadataNameFilters;
-	}
-
-	public ContainerImageFormat getContainerImageFormat() {
-		return containerImageFormat;
-	}
-
-	public void setContainerImageFormat(ContainerImageFormat containerImageFormat) {
-		this.containerImageFormat = containerImageFormat;
-	}
-
-	public boolean isEnableContainerImageMetadata() {
-		return enableContainerImageMetadata;
-	}
-
-	public void setEnableContainerImageMetadata(boolean enableContainerImageMetadata) {
-		this.enableContainerImageMetadata = enableContainerImageMetadata;
-	}
-
-	public String getContainerImageOrgName() {
-		return containerImageOrgName;
-	}
-
-	public void setContainerImageOrgName(String containerImageOrgName) {
-		this.containerImageOrgName = containerImageOrgName;
-	}
-
-	public String getContainerImageTag() {
-		return containerImageTag;
-	}
-
-	public void setContainerImageTag(String containerImageTag) {
-		this.containerImageTag = containerImageTag;
 	}
 
 	public String getFunctionDefinition() {
@@ -202,5 +178,110 @@ public class AppDefinition {
 		 * sink type.
 		 */
 		sink
+	}
+
+	public static class Maven {
+		private List<String> managedDependencies = new ArrayList<>();
+		private List<String> dependencies = new ArrayList<>();
+		private List<String> plugins = new ArrayList<>();
+
+		public List<String> getManagedDependencies() {
+			return managedDependencies;
+		}
+
+		public void setManagedDependencies(List<String> managedDependencies) {
+			this.managedDependencies = managedDependencies;
+		}
+
+		public List<String> getDependencies() {
+			return dependencies;
+		}
+
+		public void setDependencies(List<String> dependencies) {
+			this.dependencies = dependencies;
+		}
+
+		public List<String> getPlugins() {
+			return plugins;
+		}
+
+		public void setPlugins(List<String> plugins) {
+			this.plugins = plugins;
+		}
+	}
+
+	public static class ContainerImage {
+		/**
+		 * Allow to generate either Docker or OCI image formats.
+		 */
+		private ContainerImageFormat format = ContainerImageFormat.Docker;
+		/**
+		 * True will attempt to inline the (white) filtered Spring Boot metadata as Base64 encoded property.
+		 */
+		private boolean enableMetadata = false;
+		private String orgName = "springcloudstream";
+		private String tag = "latest";
+
+		public ContainerImageFormat getFormat() {
+			return format;
+		}
+
+		public void setFormat(ContainerImageFormat format) {
+			this.format = format;
+		}
+
+		public boolean isEnableMetadata() {
+			return enableMetadata;
+		}
+
+		public void setEnableMetadata(boolean enableMetadata) {
+			this.enableMetadata = enableMetadata;
+		}
+
+		public String getOrgName() {
+			return orgName;
+		}
+
+		public void setOrgName(String orgName) {
+			this.orgName = orgName;
+		}
+
+		public String getTag() {
+			return tag;
+		}
+
+		public void setTag(String tag) {
+			this.tag = tag;
+		}
+	}
+
+	public static class Metadata {
+		private List<String> sourceTypeFilters = new ArrayList<>();
+		private List<String> nameFilters = new ArrayList<>();
+		private String mavenPluginVersion;
+
+		public List<String> getSourceTypeFilters() {
+			return sourceTypeFilters;
+		}
+
+		public void setSourceTypeFilters(List<String> sourceTypeFilters) {
+			this.sourceTypeFilters = sourceTypeFilters;
+		}
+
+		public List<String> getNameFilters() {
+			return nameFilters;
+		}
+
+		public void setNameFilters(List<String> nameFilters) {
+			this.nameFilters = nameFilters;
+		}
+
+		public String getMavenPluginVersion() {
+			return mavenPluginVersion;
+		}
+
+		public void setMavenPluginVersion(String mavenPluginVersion) {
+			this.mavenPluginVersion = mavenPluginVersion;
+		}
 	}
 }
