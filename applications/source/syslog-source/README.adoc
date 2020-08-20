@@ -11,7 +11,7 @@ $$syslog.supplier.nio$$:: $$whether or not to use NIO (when supporting a large n
 $$syslog.supplier.port$$:: $$The port to listen on.$$ *($$Integer$$, default: `$$1514$$`)*
 $$syslog.supplier.protocol$$:: $$Protocol used for SYSLOG (tcp or udp).$$ *($$Protocol$$, default: `$$<none>$$`, possible values: `tcp`,`udp`,`both`)*
 $$syslog.supplier.reverse-lookup$$:: $$whether or not to perform a reverse lookup on the incoming socket.$$ *($$Boolean$$, default: `$$false$$`)*
-$$syslog.supplier.rfc$$:: $$'5424' or '3164' - the syslog format according the the RFC; 3164 is aka 'BSD' format.$$ *($$String$$, default: `$$3164$$`)*
+$$syslog.supplier.rfc$$:: $$'5424' or '3164' - the syslog format according to the RFC; 3164 is aka 'BSD' format.$$ *($$String$$, default: `$$3164$$`)*
 $$syslog.supplier.socket-timeout$$:: $$the socket timeout.$$ *($$Integer$$, default: `$$0$$`)*
 //end::configuration-properties[]
 
