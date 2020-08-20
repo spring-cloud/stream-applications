@@ -34,8 +34,8 @@
                 <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.springframework.cloud.stream.app.plugin</groupId>
-                <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
                 <configuration>
                     <application>
                         <name>syslog</name>
