@@ -43,34 +43,36 @@
                 <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.springframework.cloud.stream.app.plugin</groupId>
-                <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
                 <configuration>
-                    <generatedApp>
+                    <application>
                         <name>http</name>
                         <type>source</type>
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.fn.supplier.http.HttpSupplierConfiguration.class</configClass>
-                    </generatedApp>
 
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.cloud.fn</groupId>
-                            <artifactId>http-supplier</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.springframework.cloud.stream.app</groupId>
-                            <artifactId>stream-applications-composite-function-support</artifactId>
-                            <version>${stream-apps-core.version}</version>
-                        </dependency>
-                    </dependencies>
+                        <properties>
+                            <property>spring.main.web-application-type=reactive</property>
+                            <property>spring.cloud.streamapp.security.enabled=false</property>
+                            <property>spring.cloud.streamapp.security.csrf-enabled=false</property>
+                        </properties>
 
-                    <additionalAppProperties>
-                        <additionalAppProperty>spring.main.web-application-type=reactive</additionalAppProperty>
-                        <additionalAppProperty>spring.cloud.streamapp.security.enabled=false</additionalAppProperty>
-                        <additionalAppProperty>spring.cloud.streamapp.security.csrf-enabled=false
-                        </additionalAppProperty>
-                    </additionalAppProperties>
+                        <maven>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.fn</groupId>
+                                    <artifactId>http-supplier</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.stream.app</groupId>
+                                    <artifactId>stream-applications-composite-function-support</artifactId>
+                                    <version>${stream-apps-core.version}</version>
+                                </dependency>
+                            </dependencies>
+                        </maven>
+                    </application>
+
                 </configuration>
             </plugin>
 

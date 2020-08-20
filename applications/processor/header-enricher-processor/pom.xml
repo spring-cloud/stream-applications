@@ -46,23 +46,24 @@
                 <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.springframework.cloud.stream.app.plugin</groupId>
-                <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
                 <configuration>
-                    <generatedApp>  
+                    <application>
                         <name>header-enricher</name>
                         <type>processor</type>
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.fn.header.enricher.HeaderEnricherFunctionConfiguration.class</configClass>
                         <functionDefinition>headerEnricherFunction</functionDefinition>
-                    </generatedApp>
-
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.cloud.fn</groupId>
-                            <artifactId>header-enricher-function</artifactId>
-                        </dependency>
-                    </dependencies>
+                        <maven>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.fn</groupId>
+                                    <artifactId>header-enricher-function</artifactId>
+                                </dependency>
+                            </dependencies>
+                        </maven>
+                    </application>
                 </configuration>
             </plugin>
         </plugins>

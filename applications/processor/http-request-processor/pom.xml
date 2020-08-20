@@ -53,28 +53,28 @@
                 <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.springframework.cloud.stream.app.plugin</groupId>
-                <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
                 <configuration>
-                    <generatedApp>
+                    <application>
                         <name>http-request</name>
                         <type>processor</type>
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.fn.http.request.HttpRequestFunctionConfiguration.class
                         </configClass>
                         <functionDefinition>httpRequestFunction</functionDefinition>
-                    </generatedApp>
 
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.cloud.fn</groupId>
-                            <artifactId>http-request-function</artifactId>
-                        </dependency>
-                    </dependencies>
+                        <maven>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.fn</groupId>
+                                    <artifactId>http-request-function</artifactId>
+                                </dependency>
+                            </dependencies>
+                        </maven>
+                    </application>
 
-                    <containerImage>
-                        <enableMetadata>true</enableMetadata>
-                    </containerImage>
+
                 </configuration>
             </plugin>
         </plugins>

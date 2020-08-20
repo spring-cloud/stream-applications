@@ -44,23 +44,26 @@
                 <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.springframework.cloud.stream.app.plugin</groupId>
-                <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
                 <configuration>
-                    <generatedApp>
+                    <application>
                         <name>mongodb</name>
                         <type>sink</type>
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.fn.consumer.mongo.MongoDbConsumerConfiguration.class
                         </configClass>
                         <functionDefinition>mongodbConsumer</functionDefinition>
-                    </generatedApp>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.cloud.fn</groupId>
-                            <artifactId>mongodb-consumer</artifactId>
-                        </dependency>
-                    </dependencies>
+
+                        <maven>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.fn</groupId>
+                                    <artifactId>mongodb-consumer</artifactId>
+                                </dependency>
+                            </dependencies>
+                        </maven>
+                    </application>
                 </configuration>
             </plugin>
 

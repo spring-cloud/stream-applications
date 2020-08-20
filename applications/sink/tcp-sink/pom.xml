@@ -34,21 +34,23 @@
                 <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.springframework.cloud.stream.app.plugin</groupId>
-                <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
                 <configuration>
-                    <generatedApp>
+                    <application>
                         <name>tcp</name>
                         <type>sink</type>
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.fn.consumer.tcp.TcpConsumerConfiguration.class</configClass>
-                    </generatedApp>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.cloud.fn</groupId>
-                            <artifactId>tcp-consumer</artifactId>
-                        </dependency>
-                    </dependencies>
+                        <maven>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.fn</groupId>
+                                    <artifactId>tcp-consumer</artifactId>
+                                </dependency>
+                            </dependencies>
+                        </maven>
+                    </application>
                 </configuration>
             </plugin>
         </plugins>

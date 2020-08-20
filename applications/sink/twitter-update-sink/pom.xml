@@ -57,22 +57,25 @@
                 <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.springframework.cloud.stream.app.plugin</groupId>
-                <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
                 <configuration>
-                    <generatedApp>
+                    <application>
                         <name>twitter-update</name>
                         <type>sink</type>
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.fn.consumer.twitter.status.update.TwitterUpdateConsumerConfiguration.class</configClass>
                         <functionDefinition>byteArrayTextToString|twitterStatusUpdateConsumer</functionDefinition>
-                    </generatedApp>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.cloud.fn</groupId>
-                            <artifactId>twitter-consumer</artifactId>
-                        </dependency>
-                    </dependencies>
+
+                        <maven>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.fn</groupId>
+                                    <artifactId>twitter-consumer</artifactId>
+                                </dependency>
+                            </dependencies>
+                        </maven>
+                    </application>
                 </configuration>
             </plugin>
 

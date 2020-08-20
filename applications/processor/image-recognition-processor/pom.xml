@@ -46,28 +46,26 @@
                 <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.springframework.cloud.stream.app.plugin</groupId>
-                <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
                 <configuration>
-                    <generatedApp>
+                    <application>
                         <name>image-recognition</name>
                         <type>processor</type>
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.stream.app.processor.image.recognition.ImageRecognitionProcessorConfiguration.class</configClass>
                         <functionDefinition>imageRecognitionFunction</functionDefinition>
-                    </generatedApp>
 
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.cloud.stream.app</groupId>
-                            <artifactId>image-recognition-processor</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
-                    </dependencies>
-
-                    <containerImage>
-                        <enableMetadata>true</enableMetadata>
-                    </containerImage>
+                        <maven>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.stream.app</groupId>
+                                    <artifactId>image-recognition-processor</artifactId>
+                                    <version>${project.version}</version>
+                                </dependency>
+                            </dependencies>
+                        </maven>
+                    </application>
                 </configuration>
             </plugin>
         </plugins>

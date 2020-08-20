@@ -83,10 +83,10 @@
                 <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.springframework.cloud.stream.app.plugin</groupId>
-                <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
                 <configuration>
-                    <generatedApp>
+                    <application>
                         <name>groovy</name>
                         <type>processor</type>
                         <version>${project.version}</version>
@@ -94,15 +94,16 @@
                             org.springframework.cloud.stream.app.processor.groovy.GroovyProcessorConfiguration.class
                         </configClass>
                         <functionDefinition>byteArrayTextToString|groovyProcessorFunction</functionDefinition>
-                    </generatedApp>
-
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.cloud.stream.app</groupId>
-                            <artifactId>groovy-processor</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
-                    </dependencies>
+                        <maven>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.stream.app</groupId>
+                                    <artifactId>groovy-processor</artifactId>
+                                    <version>${project.version}</version>
+                                </dependency>
+                            </dependencies>
+                        </maven>
+                    </application>
                 </configuration>
             </plugin>
         </plugins>

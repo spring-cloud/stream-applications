@@ -21,7 +21,7 @@
         <spring-boot.version>2.3.2.RELEASE</spring-boot.version>
         <stream-apps-core.version>${project.version}</stream-apps-core.version>
         <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
-        <scst-app-maven-plugin.version>2.0.0.BUILD-SNAPSHOT</scst-app-maven-plugin.version>
+        <apps-generator-plugin.version>1.0.0-SNAPSHOT</apps-generator-plugin.version>
         <app-metadata-maven-plugin-version>2.0.2.BUILD-SNAPSHOT</app-metadata-maven-plugin-version>
         <stream-apps-docs-plugin.version>3.0.0.BUILD-SNAPSHOT</stream-apps-docs-plugin.version>
         <spring-cloud-stream.version>3.0.2.RELEASE</spring-cloud-stream.version>
@@ -291,9 +291,9 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <groupId>org.springframework.cloud.stream.app.plugin</groupId>
-                    <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
-                    <version>${scst-app-maven-plugin.version}</version>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
+                    <version>${apps-generator-plugin.version}</version>
                     <executions>
                         <execution>
                             <id>app-gen</id>
@@ -305,107 +305,136 @@
                     </executions>
                     <configuration>
                         <generatedProjectHome>${basedir}/apps</generatedProjectHome>
-                        <javaVersion>1.8</javaVersion>
-                        <bootVersion>${spring-boot.version}</bootVersion>
+                        <global>
+                            <application>
+                                <bootVersion>${spring-boot.version}</bootVersion>
+                                <containerImage>
+                                    <enableMetadata>true</enableMetadata>
+                                </containerImage>
 
-                        <binders>
-                            <item>kafka</item>
-                            <item>rabbit</item>
-                        </binders>
-                        <boms>
-                            <dependency>
-                                <groupId>org.springframework.cloud.fn</groupId>
-                                <artifactId>function-dependencies</artifactId>
-                                <version>${java-functions.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.springframework.cloud</groupId>
-                                <artifactId>spring-cloud-stream-dependencies</artifactId>
-                                <version>${spring-cloud-stream-dependencies.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.springframework.cloud</groupId>
-                                <artifactId>spring-cloud-function-dependencies</artifactId>
-                                <version>${spring-cloud-function-dependencies.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.springframework.cloud</groupId>
-                                <artifactId>spring-cloud-dependencies</artifactId>
-                                <version>${spring-cloud-dependencies.version}</version>
-                            </dependency>
-                        </boms>
-                        <globalDependencies>
-                            <dependency>
-                                <groupId>org.springframework.cloud.stream.app</groupId>
-                                <artifactId>stream-applications-security-common</artifactId>
-                                <version>${stream-apps-core.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.springframework.cloud.stream.app</groupId>
-                                <artifactId>stream-applications-micrometer-common</artifactId>
-                                <version>${stream-apps-core.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.springframework.cloud.stream.app</groupId>
-                                <artifactId>stream-applications-postprocessor-common</artifactId>
-                                <version>${stream-apps-core.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>io.micrometer</groupId>
-                                <artifactId>micrometer-registry-influx</artifactId>
-                            </dependency>
-                            <dependency>
-                                <groupId>io.micrometer</groupId>
-                                <artifactId>micrometer-registry-prometheus</artifactId>
-                            </dependency>
-                            <dependency>
-                                <groupId>io.micrometer.prometheus</groupId>
-                                <artifactId>prometheus-rsocket-spring</artifactId>
-                                <version>${prometheus-rsocket.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>io.micrometer</groupId>
-                                <artifactId>micrometer-registry-datadog</artifactId>
-                            </dependency>
-                            <dependency>
-                                <groupId>io.micrometer</groupId>
-                                <artifactId>micrometer-registry-wavefront</artifactId>
-                            </dependency>
-                            <!-- Override the WF SDK dependency to resolve the https://github.com/wavefrontHQ/wavefront-sdk-java/pull/152
-								 TODO: removed this dependency when Micrometer and Boot catch up with WF SDC 2.6.+ (likely Micrometer 1.5.3+).
-								 -->
-                            <dependency>
-                                <groupId>com.wavefront</groupId>
-                                <artifactId>wavefront-sdk-java</artifactId>
-                                <version>2.6.0</version>
-                            </dependency>
+                                <metadata>
+                                    <mavenPluginVersion>2.0.2.BUILD-SNAPSHOT</mavenPluginVersion>
+                                </metadata>
+                                <maven>
+                                    <dependencyManagement>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud.fn</groupId>
+                                            <artifactId>function-dependencies</artifactId>
+                                            <version>${java-functions.version}</version>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud</groupId>
+                                            <artifactId>spring-cloud-stream-dependencies</artifactId>
+                                            <version>${spring-cloud-stream-dependencies.version}</version>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud</groupId>
+                                            <artifactId>spring-cloud-function-dependencies</artifactId>
+                                            <version>${spring-cloud-function-dependencies.version}</version>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud</groupId>
+                                            <artifactId>spring-cloud-dependencies</artifactId>
+                                            <version>${spring-cloud-dependencies.version}</version>
+                                        </dependency>
+                                    </dependencyManagement>
+                                    <dependencies>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud.stream.app</groupId>
+                                            <artifactId>stream-applications-security-common</artifactId>
+                                            <version>${stream-apps-core.version}</version>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud.stream.app</groupId>
+                                            <artifactId>stream-applications-micrometer-common</artifactId>
+                                            <version>${stream-apps-core.version}</version>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud.stream.app</groupId>
+                                            <artifactId>stream-applications-postprocessor-common</artifactId>
+                                            <version>${stream-apps-core.version}</version>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>io.micrometer</groupId>
+                                            <artifactId>micrometer-registry-influx</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>io.micrometer</groupId>
+                                            <artifactId>micrometer-registry-prometheus</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>io.micrometer.prometheus</groupId>
+                                            <artifactId>prometheus-rsocket-spring</artifactId>
+                                            <version>${prometheus-rsocket.version}</version>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>io.micrometer</groupId>
+                                            <artifactId>micrometer-registry-datadog</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>io.micrometer</groupId>
+                                            <artifactId>micrometer-registry-wavefront</artifactId>
+                                        </dependency>
+                                        <!-- Override the WF SDK dependency to resolve the https://github.com/wavefrontHQ/wavefront-sdk-java/pull/152
+                                             TODO: removed this dependency when Micrometer and Boot catch up with WF SDC 2.6.+ (likely Micrometer 1.5.3+).
+                                             -->
+                                        <dependency>
+                                            <groupId>com.wavefront</groupId>
+                                            <artifactId>wavefront-sdk-java</artifactId>
+                                            <version>2.6.0</version>
+                                        </dependency>
 
-                            <dependency>
-                                <groupId>io.pivotal.cfenv</groupId>
-                                <artifactId>java-cfenv-boot</artifactId>
-                                <version>${java-cfenv-boot.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.springframework.boot</groupId>
-                                <artifactId>spring-boot-configuration-processor</artifactId>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.springframework.boot</groupId>
-                                <artifactId>spring-boot-starter-actuator</artifactId>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.springframework.boot</groupId>
-                                <artifactId>spring-boot-starter-web</artifactId>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.springframework.boot</groupId>
-                                <artifactId>spring-boot-starter-logging</artifactId>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.springframework.boot</groupId>
-                                <artifactId>spring-boot-starter-security</artifactId>
-                            </dependency>
-                        </globalDependencies>
+                                        <dependency>
+                                            <groupId>io.pivotal.cfenv</groupId>
+                                            <artifactId>java-cfenv-boot</artifactId>
+                                            <version>${java-cfenv-boot.version}</version>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.boot</groupId>
+                                            <artifactId>spring-boot-configuration-processor</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.boot</groupId>
+                                            <artifactId>spring-boot-starter-actuator</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.boot</groupId>
+                                            <artifactId>spring-boot-starter-web</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.boot</groupId>
+                                            <artifactId>spring-boot-starter-logging</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.boot</groupId>
+                                            <artifactId>spring-boot-starter-security</artifactId>
+                                        </dependency>
+                                    </dependencies>
+                                </maven>
+                            </application>
+                            <binders>
+                                <kafka>
+                                    <maven>
+                                        <dependencies>
+                                            <dependency>
+                                                <groupId>org.springframework.cloud</groupId>
+                                                <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+                                            </dependency>
+                                        </dependencies>
+                                    </maven>
+                                </kafka>
+                                <rabbit>
+                                    <maven>
+                                        <dependencies>
+                                            <dependency>
+                                                <groupId>org.springframework.cloud</groupId>
+                                                <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+                                            </dependency>
+                                        </dependencies>
+                                    </maven>
+                                </rabbit>
+                            </binders>
+                        </global>
                     </configuration>
                 </plugin>
             </plugins>
