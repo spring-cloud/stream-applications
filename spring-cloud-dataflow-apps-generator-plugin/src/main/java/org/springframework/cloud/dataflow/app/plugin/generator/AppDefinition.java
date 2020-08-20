@@ -181,16 +181,16 @@ public class AppDefinition {
 	}
 
 	public static class Maven {
-		private List<String> managedDependencies = new ArrayList<>();
+		private List<String> dependencyManagement = new ArrayList<>();
 		private List<String> dependencies = new ArrayList<>();
 		private List<String> plugins = new ArrayList<>();
 
-		public List<String> getManagedDependencies() {
-			return managedDependencies;
+		public List<String> getDependencyManagement() {
+			return dependencyManagement;
 		}
 
-		public void setManagedDependencies(List<String> managedDependencies) {
-			this.managedDependencies = managedDependencies;
+		public void setDependencyManagement(List<String> dependencyManagement) {
+			this.dependencyManagement = dependencyManagement;
 		}
 
 		public List<String> getDependencies() {

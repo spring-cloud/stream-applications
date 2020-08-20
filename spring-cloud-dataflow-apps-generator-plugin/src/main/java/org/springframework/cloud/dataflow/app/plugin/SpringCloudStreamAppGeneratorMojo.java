@@ -21,7 +21,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
@@ -31,6 +33,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -64,70 +67,116 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 	@Parameter(defaultValue = "./apps", required = true)
 	private String generatedProjectHome;
 
-	@Parameter
-	private ContainerImage containerImage = new ContainerImage();
+	//@Parameter
+	//private ContainerImage containerImage = new ContainerImage();
 
 	@Parameter(required = true)
-	private GeneratedApp generatedApp;
+	private Application application;
+
+	//@Parameter
+	//List<String> additionalAppProperties;
+
+	//@Parameter
+	//List<String> metadataSourceTypeFilters = new ArrayList<>();
+	//
+	//@Parameter
+	//List<String> metadataNameFilters = new ArrayList<>();
+
+	//@Parameter
+	//List<Dependency> boms = new ArrayList<>();
+
+	//@Parameter
+	//List<Dependency> dependencies = new ArrayList<>();
 
 	@Parameter
-	List<String> additionalAppProperties;
+	Global global = new Global();
+	//@Parameter
+	//List<Dependency> globalDependencies = new ArrayList<>();
+	//
+	//@Parameter
+	//List<Plugin> additionalPlugins = new ArrayList<>();
 
 	@Parameter
-	List<String> metadataSourceTypeFilters = new ArrayList<>();
-
-	@Parameter
-	List<String> metadataNameFilters = new ArrayList<>();
-
-	@Parameter
-	List<Dependency> boms = new ArrayList<>();
-
-	@Parameter
-	List<Dependency> dependencies = new ArrayList<>();
-
-	@Parameter
-	List<Dependency> globalDependencies = new ArrayList<>();
-
-	@Parameter
-	List<Plugin> additionalPlugins = new ArrayList<>();
-
-	@Parameter
-	List<Binder> binders = new ArrayList<>();
+	Map<String, Binder> binders = new HashMap<>();
 
 	// Versions
-	@Parameter(defaultValue = "2.3.3", required = true)
-	private String bootVersion;
+	//@Parameter(defaultValue = "2.3.3", required = true)
+	//private String bootVersion;
 
-	@Parameter(defaultValue = "${app-metadata-maven-plugin-version}")
-	private String appMetadataMavenPluginVersion;
+//	@Parameter(defaultValue = "${app-metadata-maven-plugin-version}")
+//	private String appMetadataMavenPluginVersion;
 
 	@Override
-	public void execute() throws MojoFailureException {
+	public void execute() throws MojoFailureException, MojoExecutionException {
 
 		AppDefinition app = new AppDefinition();
-		app.setSpringBootVersion(this.bootVersion);
-		app.setName(this.generatedApp.getName());
-		app.setType(this.generatedApp.getType());
-		app.setVersion(this.generatedApp.getVersion());
-		app.setConfigClass(this.generatedApp.getConfigClass());
-		app.setFunctionDefinition(this.generatedApp.getFunctionDefinition());
+		String bootVersion = StringUtils.isEmpty(this.application.getBootVersion()) ?
+				this.global.getApplication().getBootVersion() : this.application.getBootVersion();
+		if (StringUtils.isEmpty(bootVersion)) {
+			throw new MojoExecutionException("The application.bootVersion parameter is required!");
+		}
+		app.setSpringBootVersion(bootVersion);
 
-		this.populateVisiblePropertiesFromFile(this.metadataSourceTypeFilters, this.metadataNameFilters);
+		String applicationName = StringUtils.isEmpty(this.application.getName()) ?
+				this.global.getApplication().getName() : this.application.getName();
+		if (StringUtils.isEmpty(applicationName)) {
+			throw new MojoExecutionException("The application.name parameter is required!");
+		}
+		app.setName(applicationName);
 
-		app.getMetadata().setMavenPluginVersion(this.appMetadataMavenPluginVersion);
+		AppDefinition.AppType applicationType = (this.application.getType() == null) ?
+				this.global.getApplication().getType() : this.application.getType();
+		if (applicationType == null) {
+			throw new MojoExecutionException("The application.type parameter is required!");
+		}
+		app.setType(applicationType);
 
-		if (!CollectionUtils.isEmpty(this.metadataSourceTypeFilters)) {
-			app.getMetadata().setSourceTypeFilters(this.metadataSourceTypeFilters);
+		String applicationVersion = StringUtils.isEmpty(this.application.getVersion()) ?
+				this.global.getApplication().getVersion() : this.application.getVersion();
+		if (StringUtils.isEmpty(applicationVersion)) {
+			throw new MojoExecutionException("The application.version parameter is required!");
+		}
+		app.setVersion(applicationVersion);
+
+		String applicationConfigClass = StringUtils.isEmpty(this.application.getConfigClass()) ?
+				this.global.getApplication().getConfigClass() : this.application.getConfigClass();
+		app.setConfigClass(applicationConfigClass); // TODO is applicationConfigClass a required parameter?
+
+		String applicationFunctionDefinition = StringUtils.isEmpty(this.application.getFunctionDefinition()) ?
+				this.global.getApplication().getFunctionDefinition() : this.application.getFunctionDefinition();
+		app.setFunctionDefinition(applicationFunctionDefinition); //TODO is applicationFunctionDefinition required?
+
+		String metadataMavenPluginVersion = StringUtils.isEmpty(this.application.getMetadata().getMavenPluginVersion()) ?
+				this.global.getApplication().getMetadata().getMavenPluginVersion() : this.application.getMetadata().getMavenPluginVersion();
+		if (StringUtils.isEmpty(metadataMavenPluginVersion)) {
+			throw new MojoExecutionException("The application.metadata.mavenPluginVersion parameter is required!");
+		}
+		app.getMetadata().setMavenPluginVersion(metadataMavenPluginVersion);
+
+		List<String> allSourceTypeFilters = new ArrayList<>(this.global.getApplication().getMetadata().getSourceTypeFilters());
+		allSourceTypeFilters.addAll(this.application.getMetadata().getSourceTypeFilters());
+		List<String> allNamedFilters = new ArrayList<>(this.global.getApplication().getMetadata().getNameFilters());
+		allNamedFilters.addAll(this.application.getMetadata().getNameFilters());
+
+		this.populateVisiblePropertiesFromFile(allSourceTypeFilters, allNamedFilters);
+
+		if (!CollectionUtils.isEmpty(allSourceTypeFilters)) {
+			app.getMetadata().setSourceTypeFilters(allSourceTypeFilters);
 		}
 
-		if (!CollectionUtils.isEmpty(this.metadataNameFilters)) {
-			app.getMetadata().setNameFilters(this.metadataNameFilters);
+		if (!CollectionUtils.isEmpty(allNamedFilters)) {
+			app.getMetadata().setNameFilters(allNamedFilters);
 		}
 
-		app.setProperties(this.additionalAppProperties);
+		// Application properties
+		List<String> allApplicationProperties = new ArrayList<>(this.global.getApplication().getProperties());
+		allApplicationProperties.addAll(this.application.getProperties());
+		app.setProperties(allApplicationProperties);
 
 		// BOM
-		app.getMaven().setManagedDependencies(this.boms.stream()
+		List<Dependency> allManagedDependencies = new ArrayList<>(this.global.getApplication().getMaven().getDependencyManagement());
+		allManagedDependencies.addAll(this.application.getMaven().getDependencyManagement());
+		app.getMaven().setDependencyManagement(allManagedDependencies.stream()
 				.filter(Objects::nonNull)
 				.map(dependency -> {
 					dependency.setScope("import");
@@ -139,49 +188,64 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 				.collect(Collectors.toList()));
 
 		// Dependencies
-		List<Dependency> allDependenciesMerged = new ArrayList<>(this.dependencies);
-		allDependenciesMerged.addAll(this.globalDependencies);
-		app.getMaven().setDependencies(allDependenciesMerged.stream()
+		List<Dependency> allDependencies = new ArrayList<>(this.global.getApplication().getMaven().getDependencies());
+		allDependencies.addAll(this.application.getMaven().getDependencies());
+		app.getMaven().setDependencies(allDependencies.stream()
 				.map(MavenXmlWriter::toXml)
 				.map(xml -> MavenXmlWriter.indent(xml, 8))
 				.collect(Collectors.toList()));
 
 		// Plugins
-		app.getMaven().setPlugins(this.additionalPlugins.stream()
+		List<Plugin> allPlugins = new ArrayList<>(this.global.getApplication().getMaven().getPlugins());
+		allPlugins.addAll(this.application.getMaven().getPlugins());
+		app.getMaven().setPlugins(allPlugins.stream()
 				.map(MavenXmlWriter::toXml)
 				.map(d -> MavenXmlWriter.indent(d, 12))
 				.collect(Collectors.toList()));
 
 		// Container Image configuration
-		app.getContainerImage().setFormat(this.containerImage.getFormat());
-		app.getContainerImage().setEnableMetadata(this.containerImage.isEnableMetadata());
-		if (StringUtils.hasText(this.containerImage.getOrgName())) {
-			app.getContainerImage().setOrgName(this.containerImage.getOrgName());
+		AppDefinition.ContainerImageFormat containerImageFormat = (this.application.getContainerImage().getFormat() != null) ?
+				this.application.getContainerImage().getFormat() : this.global.getApplication().getContainerImage().getFormat();
+		containerImageFormat = (containerImageFormat == null) ? AppDefinition.ContainerImageFormat.Docker : containerImageFormat;
+		app.getContainerImage().setFormat(containerImageFormat);
+
+		// TODO how to choose between global an app metadata enabling?
+		app.getContainerImage().setEnableMetadata(this.application.getContainerImage().isEnableMetadata());
+
+		if (StringUtils.hasText(this.application.getContainerImage().getOrgName())) {
+			app.getContainerImage().setOrgName(this.application.getContainerImage().getOrgName());
+		}
+		else if (StringUtils.hasText(this.global.getApplication().getContainerImage().getOrgName())) {
+			app.getContainerImage().setOrgName(this.global.getApplication().getContainerImage().getOrgName());
 		}
 
-		app.getContainerImage().setTag(this.generatedApp.getVersion());
+		app.getContainerImage().setTag(applicationVersion);
 
 		// Generator Properties
 		ProjectGeneratorProperties generatorProperties = new ProjectGeneratorProperties();
 
-		generatorProperties.setBinders(this.binders.stream()
-				.map(mavenBinder -> {
+		Map<String, Binder> allBinders = new HashMap<>();
+		allBinders.putAll(this.global.getBinders());
+		allBinders.putAll(this.binders);
+
+		generatorProperties.setBinders(allBinders.entrySet().stream()
+				.map(es -> {
 					BinderDefinition bd = new BinderDefinition();
-					bd.setName(mavenBinder.getName());
-					bd.setProperties(mavenBinder.getProperties());
-					bd.getMaven().setProperties(mavenBinder.getMaven().getProperties());
+					bd.setName(es.getKey());
+					bd.setProperties(es.getValue().getProperties());
+					bd.getMaven().setProperties(es.getValue().getMaven().getProperties());
 					bd.getMaven().setDependencies(
-							mavenBinder.getMaven().getDependencies().stream()
+							es.getValue().getMaven().getDependencies().stream()
 									.map(MavenXmlWriter::toXml)
 									.map(xml -> MavenXmlWriter.indent(xml, 8))
 									.collect(Collectors.toList()));
 					bd.getMaven().setManagedDependencies(
-							mavenBinder.getMaven().getManagedDependencies().stream()
+							es.getValue().getMaven().getDependencyManagement().stream()
 									.map(MavenXmlWriter::toXml)
 									.map(xml -> MavenXmlWriter.indent(xml, 8))
 									.collect(Collectors.toList()));
 					bd.getMaven().setPlugins(
-							mavenBinder.getMaven().getPlugins().stream()
+							es.getValue().getMaven().getPlugins().stream()
 									.map(MavenXmlWriter::toXml)
 									.map(d -> MavenXmlWriter.indent(d, 12))
 									.collect(Collectors.toList()));
@@ -258,13 +322,65 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		}
 	}
 
-	public static class GeneratedApp {
+	public static class Global {
+
+		private final Application application = new Application();
+
+		private final Map<String, Binder> binders = new HashMap<>();
+
+		public Application getApplication() {
+			return application;
+		}
+
+		public Map<String, Binder> getBinders() {
+			return binders;
+		}
+	}
+
+	public static class Application {
 
 		private String name;
 		private String version;
 		private AppDefinition.AppType type;
 		private String configClass;
 		private String functionDefinition;
+		private String bootVersion;
+
+		private List<String> properties = new ArrayList<>();
+
+		private final Maven maven = new Maven();
+
+		private final Metadata metadata = new Metadata();
+
+		private final ContainerImage containerImage = new ContainerImage();
+
+		public List<String> getProperties() {
+			return properties;
+		}
+
+		public void setProperties(List<String> properties) {
+			this.properties = properties;
+		}
+
+		public Maven getMaven() {
+			return maven;
+		}
+
+		public Metadata getMetadata() {
+			return metadata;
+		}
+
+		public ContainerImage getContainerImage() {
+			return containerImage;
+		}
+
+		public String getBootVersion() {
+			return bootVersion;
+		}
+
+		public void setBootVersion(String bootVersion) {
+			this.bootVersion = bootVersion;
+		}
 
 		public String getName() {
 			return name;
@@ -318,10 +434,40 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 			}
 			throw new IllegalArgumentException("Unknown App type:" + this.type);
 		}
+
+		public static class Metadata {
+			private List<String> sourceTypeFilters = new ArrayList<>();
+			private List<String> nameFilters = new ArrayList<>();
+			private String mavenPluginVersion;
+
+			public List<String> getSourceTypeFilters() {
+				return sourceTypeFilters;
+			}
+
+			public void setSourceTypeFilters(List<String> sourceTypeFilters) {
+				this.sourceTypeFilters = sourceTypeFilters;
+			}
+
+			public List<String> getNameFilters() {
+				return nameFilters;
+			}
+
+			public void setNameFilters(List<String> nameFilters) {
+				this.nameFilters = nameFilters;
+			}
+
+			public String getMavenPluginVersion() {
+				return mavenPluginVersion;
+			}
+
+			public void setMavenPluginVersion(String mavenPluginVersion) {
+				this.mavenPluginVersion = mavenPluginVersion;
+			}
+		}
 	}
 
 	public static class ContainerImage {
-		private AppDefinition.ContainerImageFormat format = AppDefinition.ContainerImageFormat.Docker;
+		private AppDefinition.ContainerImageFormat format = null;
 		private String orgName = "springcloudstream";
 		private boolean enableMetadata = true;
 
@@ -352,19 +498,16 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 
 	public static class Binder {
 
-		private String name;
-
-		private final Maven maven = new Maven();
-
+		/**
+		 * Application properties specific for the binder.
+		 */
 		private List<String> properties = new ArrayList<>();
 
-		public String getName() {
-			return name;
-		}
+		/**
+		 * Maven configuraiton specific for the binder.
+		 */
+		private final Maven maven = new Maven();
 
-		public void setName(String name) {
-			this.name = name;
-		}
 
 		public Maven getMaven() {
 			return maven;
@@ -377,48 +520,48 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		public void setProperties(List<String> properties) {
 			this.properties = properties;
 		}
+	}
 
-		public static class Maven {
+	public static class Maven {
 
-			private List<String> properties = new ArrayList<>();
+		private List<String> properties = new ArrayList<>();
 
-			private List<Dependency> managedDependencies = new ArrayList<>();
+		private List<Dependency> dependencyManagement = new ArrayList<>();
 
-			private List<Dependency> dependencies = new ArrayList<>();
+		private List<Dependency> dependencies = new ArrayList<>();
 
-			private List<Plugin> plugins = new ArrayList<>();
+		private List<Plugin> plugins = new ArrayList<>();
 
-			public List<String> getProperties() {
-				return properties;
-			}
+		public List<String> getProperties() {
+			return properties;
+		}
 
-			public void setProperties(List<String> properties) {
-				this.properties = properties;
-			}
+		public void setProperties(List<String> properties) {
+			this.properties = properties;
+		}
 
-			public List<Dependency> getManagedDependencies() {
-				return managedDependencies;
-			}
+		public List<Dependency> getDependencyManagement() {
+			return dependencyManagement;
+		}
 
-			public void setManagedDependencies(List<Dependency> managedDependencies) {
-				this.managedDependencies = managedDependencies;
-			}
+		public void setDependencyManagement(List<Dependency> dependencyManagement) {
+			this.dependencyManagement = dependencyManagement;
+		}
 
-			public List<Dependency> getDependencies() {
-				return dependencies;
-			}
+		public List<Dependency> getDependencies() {
+			return dependencies;
+		}
 
-			public void setDependencies(List<Dependency> dependencies) {
-				this.dependencies = dependencies;
-			}
+		public void setDependencies(List<Dependency> dependencies) {
+			this.dependencies = dependencies;
+		}
 
-			public List<Plugin> getPlugins() {
-				return plugins;
-			}
+		public List<Plugin> getPlugins() {
+			return plugins;
+		}
 
-			public void setPlugins(List<Plugin> plugins) {
-				this.plugins = plugins;
-			}
+		public void setPlugins(List<Plugin> plugins) {
+			this.plugins = plugins;
 		}
 	}
 

@@ -33,6 +33,10 @@
 		<skipTests>true</skipTests>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- (begin) maven properties -->
+		{{#app.maven.properties}}
+		{{this}}
+		{{/app.maven.properties}}
+
 		{{#app-binder.maven.properties}}
 		{{this}}
 		{{/app-binder.maven.properties}}
@@ -42,13 +46,13 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- (begin) managed dependencies -->
-			{{#app.maven.managedDependencies}}
+			{{#app.maven.dependencyManagement}}
 			{{this}}
-			{{/app.maven.managedDependencies}}
+			{{/app.maven.dependencyManagement}}
 
-			{{#app-binder.maven.managedDependencies}}
+			{{#app-binder.maven.dependencyManagement}}
 			{{this}}
-			{{/app-binder.maven.managedDependencies}}
+			{{/app-binder.maven.dependencyManagement}}
 			<!-- (end) managed dependencies -->
 		</dependencies>
 	</dependencyManagement>
@@ -130,7 +134,7 @@
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
-				<version>2.0.0</version>
+				<version>2.5.2</version>
 				<configuration>
 					<from>
 						<image>springcloud/openjdk</image>

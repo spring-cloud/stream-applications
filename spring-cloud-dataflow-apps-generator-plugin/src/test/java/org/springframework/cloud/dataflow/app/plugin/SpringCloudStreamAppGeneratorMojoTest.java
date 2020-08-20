@@ -21,8 +21,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -53,54 +54,56 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 
 	private Class<? extends SpringCloudStreamAppGeneratorMojo> mojoClazz = springCloudStreamAppMojo.getClass();
 
+	private SpringCloudStreamAppGeneratorMojo.Application application;
+
 	@Before
 	public void before() throws NoSuchFieldException {
 
-		SpringCloudStreamAppGeneratorMojo.ContainerImage containerImage = new SpringCloudStreamAppGeneratorMojo.ContainerImage();
-		containerImage.setFormat(AppDefinition.ContainerImageFormat.Docker);
+		application = new SpringCloudStreamAppGeneratorMojo.Application();
+		application.setName("log");
+		application.setType(AppDefinition.AppType.sink);
+		application.setVersion("3.0.0.BUILD-SNAPSHOT");
+		application.setConfigClass("io.pivotal.java.function.log.consumer.LogConsumerConfiguration.class");
 
-		setMojoProperty("containerImage", containerImage);
+		application.getContainerImage().setFormat(AppDefinition.ContainerImageFormat.Docker);
 
-		SpringCloudStreamAppGeneratorMojo.GeneratedApp generatedApp = new SpringCloudStreamAppGeneratorMojo.GeneratedApp();
-		generatedApp.setName("log");
-		generatedApp.setType(AppDefinition.AppType.sink);
-		generatedApp.setVersion("3.0.0.BUILD-SNAPSHOT");
-		generatedApp.setConfigClass("io.pivotal.java.function.log.consumer.LogConsumerConfiguration.class");
+		application.getMetadata().getSourceTypeFilters().add("io.pivotal.java.function.log.consumer.LogConsumerProperties");
+		application.getMetadata().getNameFilters().add("server.port");
 
-		setMojoProperty("generatedApp", generatedApp);
-
-		setMojoProperty("metadataSourceTypeFilters", Arrays.asList("io.pivotal.java.function.log.consumer.LogConsumerProperties"));
-		setMojoProperty("metadataNameFilters", Arrays.asList("server.port"));
-
-		setMojoProperty("additionalAppProperties", Arrays.asList(
-				"spring.cloud.streamapp.security.enabled=false",
-				"spring.cloud.streamapp.security.csrf-enabled=false"));
+		application.getProperties().add("spring.cloud.streamapp.security.enabled=false");
+		application.getProperties().add("spring.cloud.streamapp.security.csrf-enabled=false");
 
 		Dependency dep = new Dependency();
 		dep.setGroupId("io.pivotal.java.function");
 		dep.setArtifactId("log-consumer");
 		dep.setVersion("1.0.0.BUILD-SNAPSHOT");
-		setMojoProperty("dependencies", Arrays.asList(dep));
 
+		application.getMaven().getDependencies().add(dep);
+
+		// BOM
+		application.setBootVersion("2.3.0.M1");
+		application.getMetadata().setMavenPluginVersion("1.0.2.BUILD-SNAPSHOT");
+
+		setMojoProperty("application", application);
+
+		//Binders
 		SpringCloudStreamAppGeneratorMojo.Binder kafkaBinder = new SpringCloudStreamAppGeneratorMojo.Binder();
-		kafkaBinder.setName("kafka");
 		Dependency kafkaDep = new Dependency();
 		kafkaDep.setGroupId("org.springframework.cloud");
 		kafkaDep.setArtifactId("spring-cloud-stream-binder-kafka");
 		kafkaBinder.getMaven().getDependencies().add(kafkaDep);
 
 		SpringCloudStreamAppGeneratorMojo.Binder rabbitBinder = new SpringCloudStreamAppGeneratorMojo.Binder();
-		rabbitBinder.setName("rabbit");
 		Dependency rabbitDep = new Dependency();
 		rabbitDep.setGroupId("org.springframework.cloud");
 		rabbitDep.setArtifactId("spring-cloud-stream-binder-rabbit");
 		rabbitBinder.getMaven().getDependencies().add(rabbitDep);
 
-		setMojoProperty("binders", Arrays.asList(kafkaBinder, rabbitBinder));
+		Map<String, SpringCloudStreamAppGeneratorMojo.Binder> binders = new HashMap<>();
+		binders.put("kafka", kafkaBinder);
+		binders.put("rabbit", rabbitBinder);
 
-		// BOM
-		setMojoProperty("bootVersion", "2.3.0.M1");
-		setMojoProperty("appMetadataMavenPluginVersion", "1.0.2.BUILD-SNAPSHOT");
+		setMojoProperty("binders", binders);
 
 		//setMojoProperty("generatedProjectHome", "./target/apps");
 		setMojoProperty("generatedProjectHome", projectHome.getRoot().getAbsolutePath());
@@ -110,11 +113,9 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 	public void testWithDisabledContainerMetadata() throws Exception {
 
 		// disable metadata in container image (Default)
-		SpringCloudStreamAppGeneratorMojo.ContainerImage containerImage = new SpringCloudStreamAppGeneratorMojo.ContainerImage();
-		containerImage.setEnableMetadata(false);
-		setMojoProperty("containerImage", containerImage);
+		application.getContainerImage().setEnableMetadata(false);
 
-		this.springCloudStreamAppMojo.execute();
+		springCloudStreamAppMojo.execute();
 
 		//Model pomModel = getModel(new File("./target/apps"));
 		Model pomModel = getModel(new File(projectHome.getRoot().getAbsolutePath()));
@@ -136,17 +137,15 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 	public void testDefaultProjectCreationByPlugin() throws Exception {
 
 		// Enable Metadata in Container Image!
-		SpringCloudStreamAppGeneratorMojo.ContainerImage containerImage = new SpringCloudStreamAppGeneratorMojo.ContainerImage();
-		containerImage.setEnableMetadata(true);
-		setMojoProperty("containerImage", containerImage);
+		application.getContainerImage().setEnableMetadata(true);
 
-		this.springCloudStreamAppMojo.execute();
+		springCloudStreamAppMojo.execute();
 
 		//assertGeneratedPomXml(new File("./target/apps"));
 		assertGeneratedPomXml(new File(projectHome.getRoot().getAbsolutePath()));
 	}
 
-	private void assertGeneratedPomXml(File rootPath) throws Exception {
+	private void assertGeneratedPomXml(File rootPath) {
 
 		Model pomModel = getModel(rootPath);
 
@@ -197,8 +196,8 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 	}
 
 	private void setMojoProperty(String propertyName, Object value) throws NoSuchFieldException {
-		Field mojoProperty = this.mojoClazz.getDeclaredField(propertyName);
+		Field mojoProperty = mojoClazz.getDeclaredField(propertyName);
 		mojoProperty.setAccessible(true);
-		ReflectionUtils.setField(mojoProperty, this.springCloudStreamAppMojo, value);
+		ReflectionUtils.setField(mojoProperty, springCloudStreamAppMojo, value);
 	}
 }
