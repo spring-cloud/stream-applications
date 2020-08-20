@@ -41,6 +41,7 @@
 
   	<modules>
 		<module>spring-cloud-dataflow-apps-generator-plugin</module>
+		<module>spring-cloud-dataflow-apps-metadata-plugin</module>
 	</modules>
 
 	<licenses>

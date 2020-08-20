@@ -1,0 +1,95 @@
+= Spring Cloud Stream & Task Maven Metadata Plugin
+
+Maven plugin for aggregating Spring Boot metadata from all dependencies of a project into
+a single metadata-only artifact.
+
+== Usage
+
+To use this plugin, configure this plugin for your app project (either directly or through a parent POM):
+```
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.cloud.stream.app.plugin</groupId>
+				<artifactId>spring-cloud-app-starter-metadata-maven-plugin</artifactId>
+				<version>2.0.0.BUILD-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>aggregate-metadata</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>aggregate-metadata</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+```
+
+This will produce and attach to the build a jar file named `<artifactId>-<version>-metadata.jar` (`metadata` being the
+maven classifier used for the artifact, which can be customized as such:)
+```
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.cloud.stream.app.plugin</groupId>
+				<artifactId>spring-cloud-app-starter-metadata-maven-plugin</artifactId>
+				<version>2.0.0.BUILD-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>aggregate-metadata</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>aggregate-metadata</goal>
+						</goals>
+						<configuration>
+						    <classifier>foobar</classifier>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+```
+
+You can filter in subset of the gathered metadata and store it into a java property file: `META-INF/spring-configuration-metadata-encoded.properties`.
+This file has single property `org.springframework.cloud.dataflow.spring.configuration.metadata.json` which contains the pre-filtered metadata encoded as Base64.
+To activate this feature you need to set the `storeFilteredMetadata` parameter to `true`. Use the `metadataFilter` to configure the whitelisted metadata content to include.
+For example:
+```
+<build>
+  <plugins>
+      <plugin>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-app-starter-metadata-maven-plugin</artifactId>
+        <version>2.0.0.BUILD-SNAPSHOT</version>
+
+        <configuration>
+          <storeFilteredMetadata>true</storeFilteredMetadata>
+
+          <metadataFilter>
+            <names>
+              <filter>server.port</filter>
+            </names>
+            <sourceTypes>
+              <filter>io.pivotal.java.function.http.supplier.HttpSourceProperties</filter>
+              <filter>io.pivotal.java.function.http.supplier.HttpSourceProperties$Cors</filter>
+            </sourceTypes>
+          </metadataFilter>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>aggregate-metadata</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>aggregate-metadata</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+  </plugins>
+</build>
+```
+
