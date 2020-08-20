@@ -49,6 +49,10 @@ public final class MavenXmlWriter {
 	 * <p>
 	 * If above name conventions don't hold or additional processing is required implement a dedicated overload method.
 	 * For example see {@link #toXml(Plugin)}
+	 *
+	 * @param element instance of a org.apache.maven.model.* class.
+	 * @param <T> element type.
+	 * @return XML text serialization of the element.
 	 */
 	public static <T> String toXml(T element) {
 		String privateMethodName = "write" + element.getClass().getSimpleName();
@@ -62,27 +66,30 @@ public final class MavenXmlWriter {
 	 * requires special handling to convert String values into Xpp3Dom object before writing.
 	 * <p>
 	 * For Plugin Configuration you must nest the configuration content into a CDATA block like shown here:
-	 * <code>
+	 * <pre>{@code
 	 * <additionalPlugins>
-	 * <plugin>
-	 * <groupId>com.google.cloud.tools</groupId>
-	 * <artifactId>jib-maven-plugin</artifactId>
-	 * <version>2.0.0</version>
-	 * <configuration>
-	 * <![CDATA[
-	 * <from><image>springcloud/openjdk</image></from>
-	 * <to>
-	 * <image>springcloudstream:${project.artifactId}</image>
-	 * <tags><tag>latest</tag></tags>
-	 * </to>
-	 * <container>
-	 * <format>Docker</format>
-	 * </container>
-	 * ]]>
-	 * </configuration>
-	 * </plugin>
+	 *   <plugin>
+	 *     <groupId>com.google.cloud.tools</groupId>
+	 *     <artifactId>jib-maven-plugin</artifactId>
+	 *     <version>2.0.0</version>
+	 *     <configuration>
+	 *       <![CDATA[
+	 *         <from><image>springcloud/openjdk</image></from>
+	 *         <to>
+	 *           <image>springcloudstream:${project.artifactId}</image>
+	 *           <tags><tag>latest</tag></tags>
+	 *         </to>
+	 *         <container>
+	 *           <format>Docker</format>
+	 *         </container>
+	 *       ]]>
+	 *     </configuration>
+	 *   </plugin>
 	 * </additionalPlugins>
-	 * </code>
+	 * }</pre>
+	 *
+	 * @param plugin Plugin instance to serialize.
+	 * @return POM/XML serialization of the plugin.
 	 */
 	public static String toXml(Plugin plugin) {
 		try {
@@ -100,6 +107,13 @@ public final class MavenXmlWriter {
 				plugin, "writePlugin", "plugin", serializer));
 	}
 
+	/**
+	 * Template method that helps generating well-formed and valid XML segments. It uses the {@link XmlSerializer}
+	 * to create the create the XML structure and delegates to the #elementWriter callback to fill in the content.
+	 *
+	 * @param elementWriter Callback handler that contributes the XML content.
+	 * @return Returns well-formed XML element.
+	 */
 	public static String write(Consumer<XmlSerializer> elementWriter) {
 		try {
 			Writer writer = new StringWriter();
@@ -131,7 +145,7 @@ public final class MavenXmlWriter {
 	 * @param serializer          The XmlSerializer used to write the xml.
 	 */
 	public static <T> void invokeMavenXppWriteMethod(T modelElementToWrite, String writeMethodName,
-													String xmlTagName, XmlSerializer serializer) {
+			String xmlTagName, XmlSerializer serializer) {
 
 		try {
 			MavenXpp3Writer pomWriter = new MavenXpp3Writer();
@@ -145,6 +159,12 @@ public final class MavenXmlWriter {
 		}
 	}
 
+	/**
+	 * Indent the input string by the provided  indentation steps.
+	 * @param input String to indent.
+	 * @param indentation Number of indentation steps.
+	 * @return Returns the formatted string.
+	 */
 	public static String indent(String input, int indentation) {
 		String indentPrefix = "\n" + IntStream.range(0, indentation).mapToObj(i -> " ").collect(Collectors.joining());
 		String indentedInput = input.replace("\n", indentPrefix);
