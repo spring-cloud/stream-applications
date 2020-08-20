@@ -62,7 +62,7 @@ public class AppDefinition {
 	/**
 	 * Maven related configurations to be applied for this App definition.
 	 */
-	private final Maven maven = new Maven();
+	private final MavenDefinition maven = new MavenDefinition();
 
 	/**
 	 * ContainerImage related configurations to be applied for this App definition.
@@ -114,7 +114,7 @@ public class AppDefinition {
 		this.properties = properties;
 	}
 
-	public Maven getMaven() {
+	public MavenDefinition getMaven() {
 		return maven;
 	}
 
@@ -178,36 +178,6 @@ public class AppDefinition {
 		 * sink type.
 		 */
 		sink
-	}
-
-	public static class Maven {
-		private List<String> dependencyManagement = new ArrayList<>();
-		private List<String> dependencies = new ArrayList<>();
-		private List<String> plugins = new ArrayList<>();
-
-		public List<String> getDependencyManagement() {
-			return dependencyManagement;
-		}
-
-		public void setDependencyManagement(List<String> dependencyManagement) {
-			this.dependencyManagement = dependencyManagement;
-		}
-
-		public List<String> getDependencies() {
-			return dependencies;
-		}
-
-		public void setDependencies(List<String> dependencies) {
-			this.dependencies = dependencies;
-		}
-
-		public List<String> getPlugins() {
-			return plugins;
-		}
-
-		public void setPlugins(List<String> plugins) {
-			this.plugins = plugins;
-		}
 	}
 
 	public static class ContainerImage {

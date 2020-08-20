@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -67,44 +68,14 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 	@Parameter(defaultValue = "./apps", required = true)
 	private String generatedProjectHome;
 
-	//@Parameter
-	//private ContainerImage containerImage = new ContainerImage();
-
 	@Parameter(required = true)
 	private Application application;
 
-	//@Parameter
-	//List<String> additionalAppProperties;
-
-	//@Parameter
-	//List<String> metadataSourceTypeFilters = new ArrayList<>();
-	//
-	//@Parameter
-	//List<String> metadataNameFilters = new ArrayList<>();
-
-	//@Parameter
-	//List<Dependency> boms = new ArrayList<>();
-
-	//@Parameter
-	//List<Dependency> dependencies = new ArrayList<>();
-
 	@Parameter
 	Global global = new Global();
-	//@Parameter
-	//List<Dependency> globalDependencies = new ArrayList<>();
-	//
-	//@Parameter
-	//List<Plugin> additionalPlugins = new ArrayList<>();
 
 	@Parameter
 	Map<String, Binder> binders = new HashMap<>();
-
-	// Versions
-	//@Parameter(defaultValue = "2.3.3", required = true)
-	//private String bootVersion;
-
-//	@Parameter(defaultValue = "${app-metadata-maven-plugin-version}")
-//	private String appMetadataMavenPluginVersion;
 
 	@Override
 	public void execute() throws MojoFailureException, MojoExecutionException {
@@ -173,7 +144,7 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		allApplicationProperties.addAll(this.application.getProperties());
 		app.setProperties(allApplicationProperties);
 
-		// BOM
+		//Maven BOM
 		List<Dependency> allManagedDependencies = new ArrayList<>(this.global.getApplication().getMaven().getDependencyManagement());
 		allManagedDependencies.addAll(this.application.getMaven().getDependencyManagement());
 		app.getMaven().setDependencyManagement(allManagedDependencies.stream()
@@ -187,7 +158,7 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 				.map(xml -> MavenXmlWriter.indent(xml, 12))
 				.collect(Collectors.toList()));
 
-		// Dependencies
+		//Maven Dependencies
 		List<Dependency> allDependencies = new ArrayList<>(this.global.getApplication().getMaven().getDependencies());
 		allDependencies.addAll(this.application.getMaven().getDependencies());
 		app.getMaven().setDependencies(allDependencies.stream()
@@ -195,13 +166,22 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 				.map(xml -> MavenXmlWriter.indent(xml, 8))
 				.collect(Collectors.toList()));
 
-		// Plugins
+		//Maven Plugins
 		List<Plugin> allPlugins = new ArrayList<>(this.global.getApplication().getMaven().getPlugins());
 		allPlugins.addAll(this.application.getMaven().getPlugins());
 		app.getMaven().setPlugins(allPlugins.stream()
 				.map(MavenXmlWriter::toXml)
 				.map(d -> MavenXmlWriter.indent(d, 12))
 				.collect(Collectors.toList()));
+
+		// Maven Repositories
+		List<Repository> allRepositories = new ArrayList<>(this.global.getApplication().getMaven().getRepositories());
+		allRepositories.addAll(this.application.getMaven().getRepositories());
+		app.getMaven().setRepositories(allRepositories.stream()
+				.map(MavenXmlWriter::toXml)
+				.map(d -> MavenXmlWriter.indent(d, 12))
+				.collect(Collectors.toList()));
+
 
 		// Container Image configuration
 		AppDefinition.ContainerImageFormat containerImageFormat = (this.application.getContainerImage().getFormat() != null) ?
@@ -239,7 +219,7 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 									.map(MavenXmlWriter::toXml)
 									.map(xml -> MavenXmlWriter.indent(xml, 8))
 									.collect(Collectors.toList()));
-					bd.getMaven().setManagedDependencies(
+					bd.getMaven().setDependencyManagement(
 							es.getValue().getMaven().getDependencyManagement().stream()
 									.map(MavenXmlWriter::toXml)
 									.map(xml -> MavenXmlWriter.indent(xml, 8))
@@ -249,6 +229,11 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 									.map(MavenXmlWriter::toXml)
 									.map(d -> MavenXmlWriter.indent(d, 12))
 									.collect(Collectors.toList()));
+					bd.getMaven().setRepositories(es.getValue().getMaven().getRepositories().stream()
+							.map(MavenXmlWriter::toXml)
+							.map(d -> MavenXmlWriter.indent(d, 12))
+							.collect(Collectors.toList()));
+
 					return bd;
 				})
 				.collect(Collectors.toList()));
@@ -436,6 +421,7 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		}
 
 		public static class Metadata {
+
 			private List<String> sourceTypeFilters = new ArrayList<>();
 			private List<String> nameFilters = new ArrayList<>();
 			private String mavenPluginVersion;
@@ -467,6 +453,7 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 	}
 
 	public static class ContainerImage {
+
 		private AppDefinition.ContainerImageFormat format = null;
 		private String orgName = "springcloudstream";
 		private boolean enableMetadata = true;
@@ -532,6 +519,8 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 
 		private List<Plugin> plugins = new ArrayList<>();
 
+		private List<Repository> repositories = new ArrayList<>();
+
 		public List<String> getProperties() {
 			return properties;
 		}
@@ -562,6 +551,14 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 
 		public void setPlugins(List<Plugin> plugins) {
 			this.plugins = plugins;
+		}
+
+		public List<Repository> getRepositories() {
+			return repositories;
+		}
+
+		public void setRepositories(List<Repository> repositories) {
+			this.repositories = repositories;
 		}
 	}
 

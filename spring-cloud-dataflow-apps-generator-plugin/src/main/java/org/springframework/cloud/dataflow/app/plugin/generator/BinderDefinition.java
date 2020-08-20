@@ -26,7 +26,7 @@ public class BinderDefinition {
 
 	private String name;
 
-	private final Maven maven = new Maven();
+	private final MavenDefinition maven = new MavenDefinition();
 
 	private List<String> properties = new ArrayList<>();
 
@@ -38,7 +38,7 @@ public class BinderDefinition {
 		this.name = name;
 	}
 
-	public Maven getMaven() {
+	public MavenDefinition getMaven() {
 		return maven;
 	}
 
@@ -48,48 +48,5 @@ public class BinderDefinition {
 
 	public void setProperties(List<String> properties) {
 		this.properties = properties;
-	}
-
-	public static class Maven {
-
-		private List<String> properties = new ArrayList<>();
-
-		private List<String> managedDependencies = new ArrayList<>();
-
-		private List<String> dependencies = new ArrayList<>();
-
-		private List<String> plugins = new ArrayList<>();
-
-		public List<String> getProperties() {
-			return properties;
-		}
-
-		public void setProperties(List<String> properties) {
-			this.properties = properties;
-		}
-
-		public List<String> getManagedDependencies() {
-			return managedDependencies;
-		}
-
-		public void setManagedDependencies(List<String> managedDependencies) {
-			this.managedDependencies = managedDependencies;
-		}
-
-		public List<String> getDependencies() {
-			return dependencies;
-		}
-
-		public void setDependencies(List<String> dependencies) {
-			this.dependencies = dependencies;
-		}
-
-		public List<String> getPlugins() {
-			return plugins;
-		}
-
-		public void setPlugins(List<String> plugins) {
-			this.plugins = plugins;
-		}
 	}
 }

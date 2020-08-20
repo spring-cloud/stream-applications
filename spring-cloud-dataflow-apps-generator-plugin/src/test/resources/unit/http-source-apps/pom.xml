@@ -149,6 +149,16 @@
 											</executions>
 										</plugin>
 									</plugins>
+									<repositories>
+										<repository>
+											<snapshots>
+												<enabled>false</enabled>
+											</snapshots>
+											<id>bintray-global</id>
+											<name>bintray-global</name>
+											<url>https://dl.bintray.com/globbals/maven</url>
+										</repository>
+									</repositories>
 								</maven>
 							</application>
 							<binders>
@@ -160,6 +170,16 @@
 												<artifactId>spring-cloud-stream-binder-kafka</artifactId>
 											</dependency>
 										</dependencies>
+										<repositories>
+											<repository>
+												<snapshots>
+													<enabled>false</enabled>
+												</snapshots>
+												<id>bintray-binder</id>
+												<name>bintray-binder</name>
+												<url>https://dl.bintray.com/binder/maven</url>
+											</repository>
+										</repositories>
 									</maven>
 								</kafka>
 								<rabbit>
@@ -216,6 +236,16 @@
 									<version>${java-functions.version}</version>
 								</dependency>
 							</dependencies>
+							<repositories>
+								<repository>
+									<snapshots>
+										<enabled>false</enabled>
+									</snapshots>
+									<id>bintray-application</id>
+									<name>bintray-app</name>
+									<url>https://dl.bintray.com/app/maven</url>
+								</repository>
+							</repositories>
 						</maven>
 
 						<metadata>

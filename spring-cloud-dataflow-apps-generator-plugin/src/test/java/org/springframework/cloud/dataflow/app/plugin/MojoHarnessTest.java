@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -98,7 +99,10 @@ public class MojoHarnessTest {
 		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>testspringcloud/${project.artifactId}</image>");
 		assertThat(jibPlugin.getConfiguration().toString()).contains("<tag>3.0.0.BUILD-SNAPSHOT</tag>");
 
-		assertThat(pomModel.getRepositories().size()).isEqualTo(2);
+		assertThat(pomModel.getRepositories().size()).isEqualTo(5);
+
+		assertThat(pomModel.getRepositories().stream().map(r -> r.getId()).collect(Collectors.toList()))
+				.contains("bintray-global", "bintray-application", "bintray-binder");
 	}
 
 	private Model getModel(File rootPath) {

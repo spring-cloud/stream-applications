@@ -80,6 +80,16 @@
 	</dependencies>
 
 	<repositories>
+		<!-- (begin) additional repositories -->
+		{{#app.maven.repositories}}
+		{{this}}
+		{{/app.maven.repositories}}
+
+		{{#app-binder.maven.repositories}}
+		{{this}}
+		{{/app-binder.maven.repositories}}
+		<!-- (end) additional repositories -->
+
 		<repository>
 			<snapshots>
 				<enabled>true</enabled>
