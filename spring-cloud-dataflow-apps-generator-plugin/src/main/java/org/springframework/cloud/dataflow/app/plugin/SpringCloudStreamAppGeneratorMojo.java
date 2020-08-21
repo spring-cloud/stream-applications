@@ -33,6 +33,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Repository;
+import org.apache.maven.model.RepositoryBase;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -145,44 +146,65 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		}
 
 		// Application properties
-		List<String> allApplicationProperties = new ArrayList<>(this.global.getApplication().getProperties());
-		allApplicationProperties.addAll(this.application.getProperties());
-		app.setProperties(allApplicationProperties);
+		Map<String, String> allApplicationProperties = new HashMap<>(this.global.getApplication().getProperties());
+		allApplicationProperties.putAll(this.application.getProperties());
+		app.setProperties(allApplicationProperties.entrySet().stream()
+				.map(e -> e.getKey() + "=" + e.getValue())
+				.collect(Collectors.toList()));
+
+		// Maven properties
+		Map<String, String> allMavenProperties = new HashMap<>(this.global.getApplication().getMaven().getProperties());
+		allMavenProperties.putAll(this.application.getMaven().getProperties());
+		app.getMaven().setProperties(allMavenProperties.entrySet().stream()
+				.map(es -> "<" + es.getKey() + ">" + es.getValue() + "</" + es.getKey() + ">")
+				.collect(Collectors.toList()));
 
 		//Maven BOM
-		List<Dependency> allManagedDependencies = new ArrayList<>(this.global.getApplication().getMaven().getDependencyManagement());
-		allManagedDependencies.addAll(this.application.getMaven().getDependencyManagement());
-		app.getMaven().setDependencyManagement(allManagedDependencies.stream()
+		Map<String, Dependency> allDependencyManagementMap =
+				this.global.getApplication().getMaven().getDependencyManagement().stream()
+						.collect(Collectors.toMap(d -> d.getGroupId() + ":" + d.getArtifactId(), d -> d));
+		// Ensure that for dependencies with same maven coordinates that application definition overrides the global one.
+		allDependencyManagementMap.putAll(this.application.getMaven().getDependencyManagement().stream()
+				.collect(Collectors.toMap(d -> d.getGroupId() + ":" + d.getArtifactId(), d -> d)));
+		app.getMaven().setDependencyManagement(allDependencyManagementMap.values().stream()
 				.filter(Objects::nonNull)
-				.map(dependency -> {
+				.peek(dependency -> {
 					dependency.setScope("import");
 					dependency.setType("pom");
-					return dependency;
 				})
 				.map(MavenXmlWriter::toXml)
 				.map(xml -> MavenXmlWriter.indent(xml, 12))
 				.collect(Collectors.toList()));
 
 		//Maven Dependencies
-		List<Dependency> allDependencies = new ArrayList<>(this.global.getApplication().getMaven().getDependencies());
-		allDependencies.addAll(this.application.getMaven().getDependencies());
-		app.getMaven().setDependencies(allDependencies.stream()
+		Map<String, Dependency> allDependenciesMap = this.global.getApplication().getMaven().getDependencies().stream()
+				.collect(Collectors.toMap(d -> d.getGroupId() + ":" + d.getArtifactId(), d -> d));
+		// Ensure that for dependencies with same maven coordinates that application definition overrides the global one.
+		allDependenciesMap.putAll(this.application.getMaven().getDependencies().stream()
+				.collect(Collectors.toMap(d -> d.getGroupId() + ":" + d.getArtifactId(), d -> d)));
+		app.getMaven().setDependencies(allDependenciesMap.values().stream()
 				.map(MavenXmlWriter::toXml)
 				.map(xml -> MavenXmlWriter.indent(xml, 8))
 				.collect(Collectors.toList()));
 
 		//Maven Plugins
-		List<Plugin> allPlugins = new ArrayList<>(this.global.getApplication().getMaven().getPlugins());
-		allPlugins.addAll(this.application.getMaven().getPlugins());
-		app.getMaven().setPlugins(allPlugins.stream()
+		Map<String, Plugin> allPluginsMap = this.global.getApplication().getMaven().getPlugins().stream()
+				.collect(Collectors.toMap(p -> p.getGroupId() + ":" + p.getArtifactId(), p -> p));
+		// Ensure that for plugins with same maven coordinates that application definition overrides the global one.
+		allPluginsMap.putAll(this.application.getMaven().getPlugins().stream()
+				.collect(Collectors.toMap(p -> p.getGroupId() + ":" + p.getArtifactId(), p -> p)));
+		app.getMaven().setPlugins(allPluginsMap.values().stream()
 				.map(MavenXmlWriter::toXml)
 				.map(d -> MavenXmlWriter.indent(d, 12))
 				.collect(Collectors.toList()));
 
 		// Maven Repositories
-		List<Repository> allRepositories = new ArrayList<>(this.global.getApplication().getMaven().getRepositories());
-		allRepositories.addAll(this.application.getMaven().getRepositories());
-		app.getMaven().setRepositories(allRepositories.stream()
+		Map<String, Repository> allRepositoriesMap = this.global.getApplication().getMaven().getRepositories().stream()
+				.collect(Collectors.toMap(RepositoryBase::getId, r -> r));
+		// Ensure that for repos with same maven coordinates that application definition overrides the global one.
+		allRepositoriesMap.putAll(this.application.getMaven().getRepositories().stream()
+				.collect(Collectors.toMap(RepositoryBase::getId, r -> r)));
+		app.getMaven().setRepositories(allRepositoriesMap.values().stream()
 				.map(MavenXmlWriter::toXml)
 				.map(d -> MavenXmlWriter.indent(d, 12))
 				.collect(Collectors.toList()));
@@ -214,7 +236,7 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 
 		Map<String, Binder> allBinders = new HashMap<>(this.global.getBinders());
 		// Note: The Application concrete Binder definitions will replace any global
-		// Binder definitions with the same names.
+		// Binder definitions with the same names. E.g. you can replace but not extend global binders configurations.
 		allBinders.putAll(this.binders);
 
 		if (CollectionUtils.isEmpty(allBinders)) {
@@ -227,7 +249,10 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 					BinderDefinition bd = new BinderDefinition();
 					bd.setName(es.getKey());
 					bd.setProperties(es.getValue().getProperties());
-					bd.getMaven().setProperties(es.getValue().getMaven().getProperties());
+					bd.getMaven().setProperties(es.getValue().getMaven().getProperties()
+							.entrySet().stream()
+							.map(pes -> "<" + pes.getKey() + ">" + pes.getValue() + "</" + pes.getKey() + ">")
+							.collect(Collectors.toList()));
 					bd.getMaven().setDependencies(
 							es.getValue().getMaven().getDependencies().stream()
 									.map(MavenXmlWriter::toXml)
@@ -329,7 +354,8 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 	}
 
 	/**
-	 *
+	 * Section that allow to define Application and Binder configurations common across multiple applications
+	 * and binders.
 	 */
 	public static class Global {
 
@@ -386,7 +412,7 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		/**
 		 * Custom application properties to contribute to the generated application.properties file.
 		 */
-		private List<String> properties = new ArrayList<>();
+		private Map<String, String> properties = new HashMap<>();
 
 		/**
 		 * Parameters used to tune the Application metadata generation.
@@ -397,11 +423,11 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 
 		private final Maven maven = new Maven();
 
-		public List<String> getProperties() {
+		public Map<String, String> getProperties() {
 			return properties;
 		}
 
-		public void setProperties(List<String> properties) {
+		public void setProperties(Map<String, String> properties) {
 			this.properties = properties;
 		}
 
@@ -611,7 +637,7 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		/**
 		 * Custom maven properties. Contributed to the generated POM's properties section.
 		 */
-		private List<String> properties = new ArrayList<>();
+		private Map<String, String> properties = new HashMap<>();
 
 		/**
 		 * Custom maven management dependencies. Contributed to the generated POM's dependencyManagement section.
@@ -638,11 +664,11 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		 */
 		private List<Repository> repositories = new ArrayList<>();
 
-		public List<String> getProperties() {
+		public Map<String, String> getProperties() {
 			return properties;
 		}
 
-		public void setProperties(List<String> properties) {
+		public void setProperties(Map<String, String> properties) {
 			this.properties = properties;
 		}
 

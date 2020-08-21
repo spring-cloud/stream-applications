@@ -46,7 +46,15 @@
 								<metadata>
 									<mavenPluginVersion>2.0.2.BUILD-SNAPSHOT</mavenPluginVersion>
 								</metadata>
+								<properties>
+									<appProperty1>value1</appProperty1>
+									<appProperty2>value2</appProperty2>
+								</properties>
 								<maven>
+									<properties>
+										<global.maven.prop1>value1</global.maven.prop1>
+										<global.maven.prop2>value2</global.maven.prop2>
+									</properties>
 									<dependencyManagement>
 										<dependency>
 											<groupId>org.springframework.cloud</groupId>
@@ -215,9 +223,11 @@
 						<configClass>io.pivotal.java.function.http.supplier.HttpSupplierConfiguration.class</configClass>
 
 						<properties>
-							<additionalAppProperty>spring.main.web-application-type=reactive</additionalAppProperty>
-							<additionalAppPropertiy>spring.cloud.streamapp.security.enabled=false</additionalAppPropertiy>
-							<additionalAppProperty>spring.cloud.streamapp.security.csrf-enabled=false</additionalAppProperty>
+							<spring.main.web-application-type>reactive</spring.main.web-application-type>
+							<spring.cloud.streamapp.security.enabled>false</spring.cloud.streamapp.security.enabled>
+							<spring.cloud.streamapp.security.csrf-enabled>false</spring.cloud.streamapp.security.csrf-enabled>
+							<!-- override global property -->
+							<appProperty2>value2Updated</appProperty2>
 						</properties>
 
 						<containerImage>
@@ -226,6 +236,9 @@
 						</containerImage>
 
 						<maven>
+							<properties>
+								<random.maven.prop>value1</random.maven.prop>
+							</properties>
 							<dependencies>
 								<dependency>
 									<groupId>io.pivotal.java.function</groupId>

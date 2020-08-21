@@ -70,8 +70,8 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		application.getMetadata().getSourceTypeFilters().add("io.pivotal.java.function.log.consumer.LogConsumerProperties");
 		application.getMetadata().getNameFilters().add("server.port");
 
-		application.getProperties().add("spring.cloud.streamapp.security.enabled=false");
-		application.getProperties().add("spring.cloud.streamapp.security.csrf-enabled=false");
+		application.getProperties().put("spring.cloud.streamapp.security.enabled", "false");
+		application.getProperties().put("spring.cloud.streamapp.security.csrf-enabled", "false");
 
 		Dependency dep = new Dependency();
 		dep.setGroupId("io.pivotal.java.function");
