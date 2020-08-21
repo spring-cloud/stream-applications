@@ -260,8 +260,13 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 									.collect(Collectors.toList()));
 					bd.getMaven().setDependencyManagement(
 							es.getValue().getMaven().getDependencyManagement().stream()
+									.filter(Objects::nonNull)
+									.peek(dependency -> {
+										dependency.setScope("import");
+										dependency.setType("pom");
+									})
 									.map(MavenXmlWriter::toXml)
-									.map(xml -> MavenXmlWriter.indent(xml, 8))
+									.map(xml -> MavenXmlWriter.indent(xml, 12))
 									.collect(Collectors.toList()));
 					bd.getMaven().setPlugins(
 							es.getValue().getMaven().getPlugins().stream()

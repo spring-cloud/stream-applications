@@ -211,17 +211,11 @@ To generate applications for https://github.com/SolaceProducts/spring-cloud-stre
         ....
         <solace>
             <maven>
-                <dependencyManagement>
-                    <dependency>
-                        <groupId>com.solace.spring.cloud</groupId>
-                        <artifactId>spring-cloud-starter-stream-solace</artifactId>
-                        <version>1.2.1</version>
-                    </dependency>
-                </dependencyManagement>
                 <dependencies>
                     <dependency>
                         <groupId>com.solace.spring.cloud</groupId>
                         <artifactId>spring-cloud-starter-stream-solace</artifactId>
+                        <version>1.2.1</version>
                     </dependency>
                 </dependencies>
             </maven>
