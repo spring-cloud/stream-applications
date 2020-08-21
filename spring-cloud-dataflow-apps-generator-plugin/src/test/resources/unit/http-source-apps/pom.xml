@@ -161,6 +161,7 @@
 									</repositories>
 								</maven>
 							</application>
+
 							<binders>
 								<kafka>
 									<maven>
@@ -193,11 +194,7 @@
 									</maven>
 								</rabbit>
 							</binders>
-
 						</global>
-						<!--						<generatedProjectHome>${basedir}/apps</generatedProjectHome>-->
-						<!--												<javaVersion>1.8</javaVersion>-->
-						<!--						<bootVersion>${spring-boot.version}</bootVersion>-->
 					</configuration>
 				</plugin>
 			</plugins>

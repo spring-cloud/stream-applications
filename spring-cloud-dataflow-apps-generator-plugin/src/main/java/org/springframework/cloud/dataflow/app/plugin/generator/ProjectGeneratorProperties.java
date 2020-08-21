@@ -64,7 +64,7 @@ public class ProjectGeneratorProperties {
 		return binders;
 	}
 
-	public void setBinders(List<BinderDefinition> binders) {
+	public void setBinderDefinitions(List<BinderDefinition> binders) {
 		this.binders = binders;
 	}
 

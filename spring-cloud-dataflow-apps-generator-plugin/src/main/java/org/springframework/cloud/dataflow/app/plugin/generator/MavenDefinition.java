@@ -20,13 +20,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Maven configurations used by the {@link AppDefinition} and {@link BinderDefinition} to parametrize the generated POMs.
+ *
  * @author Christian Tzolov
  */
 public class MavenDefinition {
+	/**
+	 * Contributes the properties to the Maven's properties section.
+	 */
 	private List<String> properties = new ArrayList<>();
+
+	/**
+	 * Contributes the dependencyManagement entries to the Maven's dependencyManagement dependencies.
+	 */
 	private List<String> dependencyManagement = new ArrayList<>();
+
+	/**
+	 * Contributes the dependency entries to the Maven's dependencies section.
+	 */
 	private List<String> dependencies = new ArrayList<>();
+
+	/**
+	 * Contributes the plugin entries to the Maven's plugins section.
+	 */
 	private List<String> plugins = new ArrayList<>();
+
+	/**
+	 * Contributes the repository entries to the Maven's repositories section.
+	 */
 	private List<String> repositories = new ArrayList<>();
 
 	public List<String> getProperties() {

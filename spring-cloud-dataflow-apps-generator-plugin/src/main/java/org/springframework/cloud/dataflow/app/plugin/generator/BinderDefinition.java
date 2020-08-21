@@ -20,14 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Binder configurations used to parameterize the project templates.
+ *
  * @author Christian Tzolov
  */
 public class BinderDefinition {
 
+	/**
+	 * Binder name.
+	 */
 	private String name;
 
+	/**
+	 * Binder specific, Maven configurations contributed to the generated poms.
+	 */
 	private final MavenDefinition maven = new MavenDefinition();
 
+	/**
+	 * Binder specific application properties contributed to the generated application.properties.
+	 */
 	private List<String> properties = new ArrayList<>();
 
 	public String getName() {

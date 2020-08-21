@@ -68,19 +68,24 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 	@Parameter(defaultValue = "./apps", required = true)
 	private String generatedProjectHome;
 
+	@Parameter
+	private Global global = new Global();
+
 	@Parameter(required = true)
 	private Application application;
 
 	@Parameter
-	Global global = new Global();
-
-	@Parameter
-	Map<String, Binder> binders = new HashMap<>();
+	private Map<String, Binder> binders = new HashMap<>();
 
 	@Override
 	public void execute() throws MojoFailureException, MojoExecutionException {
 
+		// ----------------------------------------------------------------------------------------------------------
+		//                               Application Configuration
+		// ----------------------------------------------------------------------------------------------------------
+
 		AppDefinition app = new AppDefinition();
+
 		String bootVersion = StringUtils.isEmpty(this.application.getBootVersion()) ?
 				this.global.getApplication().getBootVersion() : this.application.getBootVersion();
 		if (StringUtils.isEmpty(bootVersion)) {
@@ -182,7 +187,6 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 				.map(d -> MavenXmlWriter.indent(d, 12))
 				.collect(Collectors.toList()));
 
-
 		// Container Image configuration
 		AppDefinition.ContainerImageFormat containerImageFormat = (this.application.getContainerImage().getFormat() != null) ?
 				this.application.getContainerImage().getFormat() : this.global.getApplication().getContainerImage().getFormat();
@@ -204,11 +208,21 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		// Generator Properties
 		ProjectGeneratorProperties generatorProperties = new ProjectGeneratorProperties();
 
-		Map<String, Binder> allBinders = new HashMap<>();
-		allBinders.putAll(this.global.getBinders());
+		// ----------------------------------------------------------------------------------------------------------
+		//                               Binders Configuration
+		// ----------------------------------------------------------------------------------------------------------
+
+		Map<String, Binder> allBinders = new HashMap<>(this.global.getBinders());
+		// Note: The Application concrete Binder definitions will replace any global
+		// Binder definitions with the same names.
 		allBinders.putAll(this.binders);
 
-		generatorProperties.setBinders(allBinders.entrySet().stream()
+		if (CollectionUtils.isEmpty(allBinders)) {
+			throw new MojoExecutionException("At least one Binder configuration is required!");
+		}
+
+		// Converts Mojo's Binder configurations into BinderDefinitions.
+		List<BinderDefinition> bindersDefinitions = allBinders.entrySet().stream()
 				.map(es -> {
 					BinderDefinition bd = new BinderDefinition();
 					bd.setName(es.getKey());
@@ -236,23 +250,28 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 
 					return bd;
 				})
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList());
 
-		generatorProperties.setOutputFolder(new File(this.generatedProjectHome));
+		// ----------------------------------------------------------------------------------------------------------
+		//                                 Project Generator
+		// ----------------------------------------------------------------------------------------------------------
+
 		generatorProperties.setAppDefinition(app);
+		generatorProperties.setBinderDefinitions(bindersDefinitions);
+		generatorProperties.setOutputFolder(new File(this.generatedProjectHome));
 		generatorProperties.setProjectResourcesDirectory(this.projectResourcesDir);
 
 		try {
 			ProjectGenerator.getInstance().generate(generatorProperties);
 		}
 		catch (IOException e) {
-			throw new MojoFailureException("Project generation failure");
+			throw new MojoFailureException("Project generation failure", e);
 		}
 	}
 
 	/**
-	 * If the visible metadata properties file is provided in the source project, add
-	 * its type and name filters to the existing visible configurations.
+	 * If the visible metadata properties files are provided in the source project, add theirs' type and name filters
+	 * to the existing visible configurations.
 	 *
 	 * @param sourceTypeFilters existing source type filters configured via the mojo parameter.
 	 * @param nameFilters       existing name filters configured via the mojo parameter.
@@ -262,7 +281,8 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 			return;
 		}
 		Optional<Properties> optionalProperties =
-				loadVisiblePropertiesFromResource(FileUtils.getFile(projectResourcesDir, "META-INF", VISIBLE_PROPERTIES_FILE_NAME));
+				loadVisiblePropertiesFromResource(FileUtils.getFile(projectResourcesDir, "META-INF",
+						VISIBLE_PROPERTIES_FILE_NAME));
 		optionalProperties.ifPresent(properties -> {
 			addToFilters(properties.getProperty(CONFIGURATION_PROPERTIES_CLASSES), sourceTypeFilters);
 			addToFilters(properties.getProperty(CONFIGURATION_PROPERTIES_NAMES), nameFilters);
@@ -271,7 +291,8 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 			return;
 		}
 
-		loadVisiblePropertiesFromResource(FileUtils.getFile(projectResourcesDir, "META-INF", DEPRECATED_WHITELIST_FILE_NAME))
+		loadVisiblePropertiesFromResource(FileUtils.getFile(
+				projectResourcesDir, "META-INF", DEPRECATED_WHITELIST_FILE_NAME))
 				.ifPresent(properties -> {
 					getLog().warn(DEPRECATED_WHITELIST_FILE_NAME + " is deprecated." +
 							" Please use " + VISIBLE_PROPERTIES_FILE_NAME + " instead");
@@ -307,6 +328,9 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		}
 	}
 
+	/**
+	 *
+	 */
 	public static class Global {
 
 		private final Application application = new Application();
@@ -322,22 +346,56 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		}
 	}
 
+	/**
+	 * Allow defining the target application configuration, excluding the Binder specific configurations.
+	 */
 	public static class Application {
 
+		/**
+		 * Unique name of the application for the given type.
+		 * The generated binder specific, applications have names that combine this application name, type as well
+		 * as the name of the binder they are produced for.
+		 */
 		private String name;
-		private String version;
+
+		/**
+		 * Application type. Cloud be of type (source, processor, sink).
+		 */
 		private AppDefinition.AppType type;
-		private String configClass;
-		private String functionDefinition;
+
+		/**
+		 * Version to be used for the generated application.
+		 */
+		private String version;
+
+		/**
+		 * The Spring Boot version the generated application is configured to inherit from.
+		 */
 		private String bootVersion;
 
+		/**
+		 * Spring configuration class used to instantiate the application.
+		 */
+		private String configClass;
+
+		/**
+		 * The Spring Cloud Function definition. Could be a composition definition as well.
+		 */
+		private String functionDefinition;
+
+		/**
+		 * Custom application properties to contribute to the generated application.properties file.
+		 */
 		private List<String> properties = new ArrayList<>();
 
-		private final Maven maven = new Maven();
-
+		/**
+		 * Parameters used to tune the Application metadata generation.
+		 */
 		private final Metadata metadata = new Metadata();
 
 		private final ContainerImage containerImage = new ContainerImage();
+
+		private final Maven maven = new Maven();
 
 		public List<String> getProperties() {
 			return properties;
@@ -420,10 +478,29 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 			throw new IllegalArgumentException("Unknown App type:" + this.type);
 		}
 
+		/**
+		 * Parameters used to tune the Application metadata generation. It allows to set a type or name based filters
+		 * that filer-in the subset all application configuration metadata. In addition to the explicitly specified
+		 * filters, the Mojo automatically populates the filters with values found in the
+		 * 'dataflow-configuration-metadata-whitelist.properties" or 'dataflow-configuration-metadata.properties' files.
+		 *
+		 * You can also specify the version of the metadata generation plugin.
+		 */
 		public static class Metadata {
 
+			/**
+			 * list of source types from application's configuration metadata to include in the visible metadata.
+			 */
 			private List<String> sourceTypeFilters = new ArrayList<>();
+
+			/**
+			 * list of property names from application's configuration metadata to include in the visible metadata.
+			 */
 			private List<String> nameFilters = new ArrayList<>();
+
+			/**
+			 * Version of the metadata maven plugin to be used.
+			 */
 			private String mavenPluginVersion;
 
 			public List<String> getSourceTypeFilters() {
@@ -450,48 +527,65 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 				this.mavenPluginVersion = mavenPluginVersion;
 			}
 		}
+
+		/**
+		 * Configuration for injection the application's visible, configuration metadata into the Container image.
+		 */
+		public static class ContainerImage {
+
+			/**
+			 * Target container image. Docker and OCI are supported. If not specified the Docker is selected.
+			 */
+			private AppDefinition.ContainerImageFormat format = null;
+
+			/**
+			 * Target container image organization name.
+			 */
+			private String orgName = "springcloudstream";
+
+			/**
+			 * Enable or disable the inclusion of application's metadata into the image's labels.
+			 */
+			private boolean enableMetadata = true;
+
+			public AppDefinition.ContainerImageFormat getFormat() {
+				return format;
+			}
+
+			public void setFormat(AppDefinition.ContainerImageFormat format) {
+				this.format = format;
+			}
+
+			public String getOrgName() {
+				return orgName;
+			}
+
+			public void setOrgName(String orgName) {
+				this.orgName = orgName;
+			}
+
+			public boolean isEnableMetadata() {
+				return enableMetadata;
+			}
+
+			public void setEnableMetadata(boolean enableMetadata) {
+				this.enableMetadata = enableMetadata;
+			}
+		}
 	}
 
-	public static class ContainerImage {
-
-		private AppDefinition.ContainerImageFormat format = null;
-		private String orgName = "springcloudstream";
-		private boolean enableMetadata = true;
-
-		public AppDefinition.ContainerImageFormat getFormat() {
-			return format;
-		}
-
-		public void setFormat(AppDefinition.ContainerImageFormat format) {
-			this.format = format;
-		}
-
-		public String getOrgName() {
-			return orgName;
-		}
-
-		public void setOrgName(String orgName) {
-			this.orgName = orgName;
-		}
-
-		public boolean isEnableMetadata() {
-			return enableMetadata;
-		}
-
-		public void setEnableMetadata(boolean enableMetadata) {
-			this.enableMetadata = enableMetadata;
-		}
-	}
-
+	/**
+	 * Binder specific properties to be applied in addition to the {@link Application} parameters.
+	 */
 	public static class Binder {
 
 		/**
-		 * Application properties specific for the binder.
+		 * Application properties specific for the binder. Contributed to the generated application.properties file.
 		 */
 		private List<String> properties = new ArrayList<>();
 
 		/**
-		 * Maven configuraiton specific for the binder.
+		 * Binder specific maven configurations. Applied in addition to the {@link Application}'s maven configurations.
 		 */
 		private final Maven maven = new Maven();
 
@@ -509,16 +603,39 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		}
 	}
 
+	/**
+	 * Maven configuration used inside the {@link Application} and {@link Binder} configurations.
+	 */
 	public static class Maven {
 
+		/**
+		 * Custom maven properties. Contributed to the generated POM's properties section.
+		 */
 		private List<String> properties = new ArrayList<>();
 
+		/**
+		 * Custom maven management dependencies. Contributed to the generated POM's dependencyManagement section.
+		 */
 		private List<Dependency> dependencyManagement = new ArrayList<>();
 
+		/**
+		 * Custom maven dependencies. Contributed to the generated POM's dependencies section.
+		 */
 		private List<Dependency> dependencies = new ArrayList<>();
 
+		/**
+		 * Custom maven plugins. Contributed to the generated POM's plugins section.
+		 *
+		 * Note: if the plugin definition uses a configuration block then the content must be wrapped within a
+		 * <pre>@code{
+		 * <![CDATA[ ... ]]>
+		 * }</pre> section! Find more: {@link MavenXmlWriter#toXml(Plugin)}.
+		 */
 		private List<Plugin> plugins = new ArrayList<>();
 
+		/**
+		 * Custom maven repositories. Contributed to the generated POM's repositories section.
+		 */
 		private List<Repository> repositories = new ArrayList<>();
 
 		public List<String> getProperties() {

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Application configurations used to parameterize the project templates.
+ *
  * @author Christian Tzolov
  */
 public class AppDefinition {
