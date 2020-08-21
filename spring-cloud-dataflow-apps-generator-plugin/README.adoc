@@ -199,3 +199,63 @@ to the global:
   ...
 </plugins>
 ----
+
+
+== Configure Solace and Pubsub binders support
+
+To generate applications for https://github.com/SolaceProducts/spring-cloud-stream-binder-solace[Solace] binders, extend your `binders` section with following configuration:
+
+[source, xml]
+----
+    <binders>
+        ....
+        <solace>
+            <maven>
+                <dependencyManagement>
+                    <dependency>
+                        <groupId>com.solace.spring.cloud</groupId>
+                        <artifactId>spring-cloud-starter-stream-solace</artifactId>
+                        <version>1.2.1</version>
+                    </dependency>
+                </dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.solace.spring.cloud</groupId>
+                        <artifactId>spring-cloud-starter-stream-solace</artifactId>
+                    </dependency>
+                </dependencies>
+            </maven>
+        </solace>
+        ....
+    </binders>
+----
+
+You can add it either to your application's POM or to the parent's `global` POM sections.
+
+Similar to generate application for the https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-pubsub-stream-binder[PubSub]
+binders and to your binders section configuration like this:
+
+[source, xml]
+----
+<binders>
+...
+    <pubsub>
+        <maven>
+            <dependencyManagement>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-gcp-dependencies</artifactId>
+                    <version>1.2.4.RELEASE</version>
+                </dependency>
+            </dependencyManagement>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-gcp-pubsub-stream-binder</artifactId>
+                </dependency>
+            </dependencies>
+        </maven>
+    </pubsub>
+...
+</binders>
+----
