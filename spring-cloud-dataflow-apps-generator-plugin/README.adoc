@@ -1,6 +1,19 @@
 = spring-cloud-dataflow-apps-generator-plugin
 
 Maven plugin for generating spring cloud stream applications: https://github.com/spring-cloud/stream-applications
+It generates a separate maven project for every configured binder.
+
+Plugin `Application` section helps to configure the application project independently form the Binders that
+can be used. The `Binders` section helps to define the Binder specific configurations, that are merged to
+the `Application` configurations to generate the binder specific maven projects.
+
+The `Global` section (e.g. `global.application` and `global.binders`) helps to define configurations sharable
+between many Applications and Binders.
+
+As the following diagram illustrates, both the `Application` and the
+`Binder` allow configuring various application and maven properties:
+
+image::src/main/resources/doc/MojoConfiguration.jpg[]
 
 == Build
 
@@ -8,155 +21,189 @@ mvn clean package [Requires JDK 8]
 
 == Sample Configuration for generating spring cloud stream apps
 
+In the parent POM define the `Application` and `Binder` configurations common for all applications to be generated.
+Do this under the `pluginManagement` pom section and use the plugin's `global` configuration:
+
 [source, xml]
 ----
-    <plugin>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-        <configuration>
-            <javaVersion>1.8</javaVersion>
-            <bootVersion>${spring-boot.version}</bootVersion>
-            <metadataPluginVersion>${app-metadata-maven-plugin-version}</metadataPluginVersion>
-            <additionalBoms>
-                <bom>
-                    <name>app-starters-core-dependencies</name>
-                    <groupId>org.springframework.cloud.stream.app</groupId>
-                    <artifactId>app-starters-core-dependencies</artifactId>
-                    <version>${app-starters-core-dependencies.version}</version>
-                </bom>
-            </additionalBoms>
-            <binders>
-                <kafka/>
-                <rabbit/>
-            </binders>
-            <generatedApp>
-                <name>counter</name>
-                <type>sink</type>
-                <version>${project.version}</version>
-                <configClass>io.pivotal.java.function.counter.consumer.CounterConsumerConfiguration.class</configClass>
-                <functionDefinition>counterConsumer</functionDefinition>
-            </generatedApp>
-            <globalAppProperties>
-                <globalAppProperty>spring.cloud.stream.propagateOriginalContentType=false</globalAppProperty>
-            </globalAppProperties>
-            <dependencies>
-                <dependency>
-                    <groupId>io.pivotal.java.function</groupId>
-                    <artifactId>counter-consumer</artifactId>
-                    <version>${java-functions.version}</version>
-                </dependency>
-            </dependencies>
-            <additionalGlobalDependencies>
-                <dependency>
-                    <groupId>org.springframework.cloud.stream.app</groupId>
-                    <artifactId>app-starters-security-common</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-starter-config</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.springframework.cloud.stream.app</groupId>
-                    <artifactId>app-starters-micrometer-common</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>io.micrometer</groupId>
-                    <artifactId>micrometer-registry-influx</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>io.micrometer</groupId>
-                    <artifactId>micrometer-registry-prometheus</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-spring-service-connector</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>io.micrometer.prometheus</groupId>
-                    <artifactId>prometheus-rsocket-spring</artifactId>
-                </dependency>
-            </additionalGlobalDependencies>
-        </configuration>
-    </plugin>
+<pluginManagement>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <executions>
+                <execution>
+                    <id>app-gen</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>generate-app</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <generatedProjectHome>${basedir}/apps</generatedProjectHome>
+
+                <global>
+                    <application>
+
+                        <bootVersion>${spring-boot.version}</bootVersion>
+
+                        <containerImage>
+                            <enableMetadata>true</enableMetadata>
+                        </containerImage>
+
+                        <metadata>
+                            <mavenPluginVersion>2.0.2.BUILD-SNAPSHOT</mavenPluginVersion>
+                        </metadata>
+
+                        <maven>
+                            <dependencyManagement>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.fn</groupId>
+                                    <artifactId>function-dependencies</artifactId>
+                                    <version>${java-functions.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud</groupId>
+                                    <artifactId>spring-cloud-stream-dependencies</artifactId>
+                                    <version>${spring-cloud-stream-dependencies.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud</groupId>
+                                    <artifactId>spring-cloud-function-dependencies</artifactId>
+                                    <version>${spring-cloud-function-dependencies.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud</groupId>
+                                    <artifactId>spring-cloud-dependencies</artifactId>
+                                    <version>${spring-cloud-dependencies.version}</version>
+                                </dependency>
+                            </dependencyManagement>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.stream.app</groupId>
+                                    <artifactId>stream-applications-security-common</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.stream.app</groupId>
+                                    <artifactId>stream-applications-micrometer-common</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.stream.app</groupId>
+                                    <artifactId>stream-applications-postprocessor-common</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>io.micrometer</groupId>
+                                    <artifactId>micrometer-registry-prometheus</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>io.micrometer.prometheus</groupId>
+                                    <artifactId>prometheus-rsocket-spring</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>io.micrometer</groupId>
+                                    <artifactId>micrometer-registry-wavefront</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>io.pivotal.cfenv</groupId>
+                                    <artifactId>java-cfenv-boot</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.boot</groupId>
+                                    <artifactId>spring-boot-configuration-processor</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.boot</groupId>
+                                    <artifactId>spring-boot-starter-actuator</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.boot</groupId>
+                                    <artifactId>spring-boot-starter-web</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.boot</groupId>
+                                    <artifactId>spring-boot-starter-logging</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.boot</groupId>
+                                    <artifactId>spring-boot-starter-security</artifactId>
+                                </dependency>
+                            </dependencies>
+                        </maven>
+                    </application>
+                    <binders>
+                        <kafka>
+                            <maven>
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>org.springframework.cloud</groupId>
+                                        <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+                                    </dependency>
+                                </dependencies>
+                            </maven>
+                        </kafka>
+                        <rabbit>
+                            <maven>
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>org.springframework.cloud</groupId>
+                                        <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+                                    </dependency>
+                                </dependencies>
+                            </maven>
+                        </rabbit>
+                    </binders>
+                </global>
+            </configuration>
+        </plugin>
+    </plugins>
+</pluginManagement>
 ----
+
+Above global configurations will be reused by all children applications.
+
+In addition, the child application can add application specific configurations, contributed to the inherited from
+to the global:
+
+[source, xml]
+----
+<plugins>
+  <plugin>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <configuration>
+          <application>
+              <name>syslog</name>
+              <type>source</type>
+              <version>${project.version}</version>
+              <configClass>org.springframework.cloud.fn.supplier.syslog.SyslogSupplierConfiguration.class</configClass>
+
+              <maven>
+                  <dependencies>
+                      <dependency>
+                          <groupId>org.springframework.cloud.fn</groupId>
+                          <artifactId>syslog-supplier</artifactId>
+                      </dependency>
+                      <dependency>
+                          <groupId>org.springframework.cloud.stream.app</groupId>
+                          <artifactId>stream-applications-composite-function-support</artifactId>
+                          <version>${stream-apps-core.version}</version>
+                      </dependency>
+                  </dependencies>
+              </maven>
+          </application>
+      </configuration>
+  </plugin>
+  ...
+</plugins>
+----
+
 
 The `bom` for stream apps is specified in `spring-cloud-stream-app-dependencies` (group id: org.springframework.cloud.stream.app)
 and for tasks it is spring-cloud-task-app-dependencies (group id: org.springframework.cloud.task.app).
 
-Extra dependency management can be added as additional `boms` to the plugin using the property
-`-DbomsWithHigherPrecedence` and value based on the pattern `groupId:artfiactId:version`. This can
- be a comma separated collection of boms. Any bom added like this will get priority in the order
- they are specified over any default values used in the plugin configuration.
-
-Spring Boot version used in the generated app can be overridden using the plugin property
- `-DbootVersion=<spring boot version>`.
-
-
-==== Copy Third-Party Resources
-The `copyResources` configuration block permits copying Resources from third-party jar dependencies into the
-generated App Starter classpath.
-
-Form example if you want to copy a truststore and a self-signed certificate (`clientKeyStore.jks`, `cacerts`)  bundled inside the
-`org.springframework.cloud.stream.app:coap-app-starters-common:2.0.0.BUILD-SNAPSHOT` dependency you can add this to the
-`spring-cloud-dataflow-apps-generator-plugin` configuration:
-
-[source, xml]
-----
- <plugin>
-     <groupId>org.springframework.cloud</groupId>
-     <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
-     <configuration>
-         <generatedProjectHome>${session.executionRootDirectory}/apps</generatedProjectHome>
-         <generatedProjectVersion>${project.version}</generatedProjectVersion>
-         <bom>....</bom>
-         <generatedApps>
-             <coap-server-source/>
-         </generatedApps>
-         <copyResources>
-             <copyResource>
-                  <groupId>org.springframework.cloud.stream.app</groupId>
-                  <artifactId>coap-app-starters-common</artifactId>
-                  <version>2.0.0.BUILD-SNAPSHOT</version>
-                  <includes>clientKeyStore.jks,cacerts</includes>
-             </copyResource>
-         </copyResources>
-     </configuration>
- </plugin>
-----
-
-Later will add the following `maven-dependency-plugin` definition to the generated aps starter pom:
-
-[source, xml]
-----
-<plugin>
-  <artifactId>maven-dependency-plugin</artifactId>
-  <executions>
-    <execution>
-      <goals>
-        <goal>unpack</goal>
-      </goals>
-      <configuration>
-        <artifactItems>
-          <artifactItem>
-            <groupId>org.springframework.cloud.stream.app</groupId>
-            <artifactId>coap-app-starters-common</artifactId>
-            <version>2.0.0.BUILD-SNAPSHOT</version>
-            <includes>clientKeyStore.jks,cacerts</includes>
-          </artifactItem>
-        </artifactItems>
-        <outputDirectory>${project.build.directory}/classes/</outputDirectory>
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
-----
-
-This will ensure that the clientKeyStore.jks,cacerts files will be copied to the AppStarter's `BOOT-INF/classes/`
 
 ==== Insert additional properties into the application.properties file for the created app.
 The `additionalAppProperties` configuration block permits adding of additional properties to the application.properties file.
