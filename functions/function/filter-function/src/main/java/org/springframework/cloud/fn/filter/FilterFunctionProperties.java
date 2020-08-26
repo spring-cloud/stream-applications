@@ -34,13 +34,13 @@ public class FilterFunctionProperties {
 	/**
 	 * A SpEL expression to apply.
 	 */
-	private String expression = DEFAULT_EXPRESSION.getExpressionString();
+	private Expression expression = DEFAULT_EXPRESSION;
 
-	public String getExpression() {
+	public Expression getExpression() {
 		return this.expression;
 	}
 
-	public void setExpression(String expression) {
+	public void setExpression(Expression expression) {
 		this.expression = expression;
 	}
 

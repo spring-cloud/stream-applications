@@ -30,25 +30,39 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
+
+/**
+ * @author Artem Bilan
+ * @author David Turanski
+ */
 @SpringBootTest(properties = "filter.function.expression=payload.length() > 5")
 @DirtiesContext
 public class FilterFunctionApplicationTests {
 
 	@Autowired
 	@Qualifier("filterFunction")
-	Function<Message<?>, Message<?>> filter;
+	Function<Flux<Message<?>>, Flux<Message<?>>> filter;
 
 	@Test
 	public void testFilter() {
-		Message<?> filtered = this.filter.apply(new GenericMessage<>("hello"));
-		assertThat(filtered).isNull();
-		filtered = this.filter.apply(new GenericMessage<>("hello world"));
-		assertThat(filtered).isNotNull()
-				.extracting(Message::getPayload)
-				.isEqualTo("hello world");
+		Flux<Message<?>> messageFlux =
+				Flux.just("hello", "hello world")
+						.map(GenericMessage::new);
+		Flux<Message<?>> result = this.filter.apply(messageFlux);
+		result
+				.map(Message::getPayload)
+				.cast(String.class)
+				.as(StepVerifier::create)
+				.expectNext("hello world")
+				.expectComplete()
+				.verify();
 	}
 
 	@SpringBootApplication
 	static class FilterFunctionTestApplication {
+
 	}
+
 }
