@@ -30,7 +30,7 @@ import reactor.core.publisher.Flux;
  * @author Artem Bilan
  * @author David Turanski
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(FilterFunctionProperties.class)
 public class FilterFunctionConfiguration {
 
