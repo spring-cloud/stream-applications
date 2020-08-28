@@ -65,6 +65,9 @@
                                 </dependency>
                             </dependencies>
                         </maven>
+                        <containerImage>
+                            <baseImage>${apps.base-image}</baseImage>
+                        </containerImage>
                     </application>
                 </configuration>
             </plugin>

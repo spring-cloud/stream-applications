@@ -66,13 +66,10 @@
                                 </dependency>
                             </dependencies>
                         </maven>
+                        <containerImage>
+                            <baseImage>${apps.base-image}</baseImage>
+                        </containerImage>
                     </application>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.cloud.fn</groupId>
-                            <artifactId>websocket-consumer</artifactId>
-                        </dependency>
-                    </dependencies>
                 </configuration>
             </plugin>
         </plugins>
