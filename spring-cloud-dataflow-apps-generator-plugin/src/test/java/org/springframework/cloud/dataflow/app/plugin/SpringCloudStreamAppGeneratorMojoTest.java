@@ -66,6 +66,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		application.setConfigClass("io.pivotal.java.function.log.consumer.LogConsumerConfiguration.class");
 
 		application.getContainerImage().setFormat(AppDefinition.ContainerImageFormat.Docker);
+		application.getContainerImage().setBaseImage("base/image");
 
 		application.getMetadata().getSourceTypeFilters().add("io.pivotal.java.function.log.consumer.LogConsumerProperties");
 		application.getMetadata().getNameFilters().add("server.port");
@@ -181,6 +182,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 				.contains("<org.springframework.cloud.dataflow.spring-configuration-metadata.json>" +
 						"${org.springframework.cloud.dataflow.spring.configuration.metadata.json}" +
 						"</org.springframework.cloud.dataflow.spring-configuration-metadata.json>");
+		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>base/image</image>");
 
 		assertThat(pomModel.getRepositories().size()).isEqualTo(2);
 	}

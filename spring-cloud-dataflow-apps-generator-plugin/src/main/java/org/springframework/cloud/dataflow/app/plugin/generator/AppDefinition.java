@@ -187,12 +187,18 @@ public class AppDefinition {
 		 * Allow to generate either Docker or OCI image formats.
 		 */
 		private ContainerImageFormat format = ContainerImageFormat.Docker;
+
 		/**
-		 * True will attempt to inline the (white) filtered Spring Boot metadata as Base64 encoded property.
+		 * True will attempt to inline the (white) filtered Spring Boot metadata as Base64 encoded
+		 * property.
 		 */
 		private boolean enableMetadata = false;
+
 		private String orgName = "springcloudstream";
+
 		private String tag = "latest";
+
+		private String baseImage = "springcloud/openjdk";
 
 		public ContainerImageFormat getFormat() {
 			return format;
@@ -225,11 +231,21 @@ public class AppDefinition {
 		public void setTag(String tag) {
 			this.tag = tag;
 		}
+
+		public String getBaseImage() {
+			return baseImage;
+		}
+
+		public void setBaseImage(String baseImage) {
+			this.baseImage = baseImage;
+		}
 	}
 
 	public static class Metadata {
 		private List<String> sourceTypeFilters = new ArrayList<>();
+
 		private List<String> nameFilters = new ArrayList<>();
+
 		private String mavenPluginVersion;
 
 		public List<String> getSourceTypeFilters() {

@@ -227,6 +227,13 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 
 		app.getContainerImage().setTag(applicationVersion);
 
+		if (StringUtils.hasText(this.application.getContainerImage().getBaseImage())) {
+			app.getContainerImage().setBaseImage(this.application.getContainerImage().getBaseImage());
+		}
+		else if (StringUtils.hasText(this.global.getApplication().getContainerImage().getBaseImage())) {
+			app.getContainerImage().setBaseImage(this.global.getApplication().getContainerImage().getBaseImage());
+		}
+
 		// Generator Properties
 		ProjectGeneratorProperties generatorProperties = new ProjectGeneratorProperties();
 
@@ -574,6 +581,8 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 			 */
 			private String orgName = "springcloudstream";
 
+			private String baseImage = "springcloud/openjdk";
+
 			/**
 			 * Enable or disable the inclusion of application's metadata into the image's labels.
 			 */
@@ -601,6 +610,14 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 
 			public void setEnableMetadata(boolean enableMetadata) {
 				this.enableMetadata = enableMetadata;
+			}
+
+			public String getBaseImage() {
+				return baseImage;
+			}
+
+			public void setBaseImage(String baseImage) {
+				this.baseImage = baseImage;
 			}
 		}
 	}

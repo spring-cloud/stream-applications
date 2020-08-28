@@ -147,7 +147,7 @@
 				<version>2.5.2</version>
 				<configuration>
 					<from>
-						<image>springcloud/openjdk</image>
+						<image>{{app.containerImage.baseImage}}</image>
 					</from>
 					<to>
 						<image>{{app.containerImage.orgName}}/${project.artifactId}</image>
