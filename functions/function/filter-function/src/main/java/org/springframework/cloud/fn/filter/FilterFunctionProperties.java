@@ -18,7 +18,7 @@ package org.springframework.cloud.fn.filter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.expression.Expression;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.integration.expression.ValueExpression;
 
 /**
  * Configuration properties for the SpEL function.
@@ -29,18 +29,16 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 @ConfigurationProperties("filter.function")
 public class FilterFunctionProperties {
 
-	private static final Expression DEFAULT_EXPRESSION = new SpelExpressionParser().parseExpression("payload");
-
 	/**
-	 * A SpEL expression to apply.
+	 * Boolean SpEL expression to apply against request message to filter.
 	 */
-	private String expression = DEFAULT_EXPRESSION.getExpressionString();
+	private Expression expression = new ValueExpression<>(true);
 
-	public String getExpression() {
+	public Expression getExpression() {
 		return this.expression;
 	}
 
-	public void setExpression(String expression) {
+	public void setExpression(Expression expression) {
 		this.expression = expression;
 	}
 

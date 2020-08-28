@@ -16,39 +16,38 @@
 
 package org.springframework.cloud.fn.filter;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.integration.transformer.ExpressionEvaluatingTransformer;
 import org.springframework.messaging.Message;
+
+import reactor.core.publisher.Flux;
 
 /**
  * @author Artem Bilan
  * @author David Turanski
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(FilterFunctionProperties.class)
 public class FilterFunctionConfiguration {
 
 	@Bean
-	public Function<Message<?>, Message<?>> filterFunction(
+	public Function<Flux<Message<?>>, Flux<Message<?>>> filterFunction(
 			ExpressionEvaluatingTransformer filterExpressionEvaluatingTransformer) {
 
-		return message -> Optional.of(message)
-				.filter(m -> (Boolean) filterExpressionEvaluatingTransformer.transform(m).getPayload())
-				.orElse(null);
+		return flux ->
+				flux.filter((message) ->
+						(Boolean) filterExpressionEvaluatingTransformer.transform(message).getPayload());
 	}
 
 	@Bean
 	public ExpressionEvaluatingTransformer filterExpressionEvaluatingTransformer(
 			FilterFunctionProperties filterFunctionProperties) {
 
-		return new ExpressionEvaluatingTransformer(new SpelExpressionParser()
-				.parseExpression(filterFunctionProperties.getExpression()));
+		return new ExpressionEvaluatingTransformer(filterFunctionProperties.getExpression());
 	}
 
 }
