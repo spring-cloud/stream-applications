@@ -311,7 +311,21 @@
                                 <containerImage>
                                     <enableMetadata>true</enableMetadata>
                                 </containerImage>
+                                <properties>
+                                    <!-- Disable all meter repositories by default.  -->
+                                    <management.metrics.export.wavefront.enabled>false</management.metrics.export.wavefront.enabled>
+                                    <management.metrics.export.influx.enabled>false</management.metrics.export.influx.enabled>
+                                    <management.metrics.export.prometheus.enabled>false</management.metrics.export.prometheus.enabled>
+                                    <management.metrics.export.prometheus.rsocket.enabled>false</management.metrics.export.prometheus.rsocket.enabled>
+                                    <management.metrics.export.datadog.enabled>false</management.metrics.export.datadog.enabled>
 
+                                    <!-- Add SCDF stream metrics tags. -->
+                                    <management.metrics.tags.stream.name>"${spring.cloud.dataflow.stream.name:unknown}"</management.metrics.tags.stream.name>
+                                    <management.metrics.tags.application.name>"${spring.cloud.dataflow.stream.app.label:unknown}"</management.metrics.tags.application.name>
+                                    <management.metrics.tags.application.type>"${spring.cloud.dataflow.stream.app.type:unknown}"</management.metrics.tags.application.type>
+                                    <management.metrics.tags.instance.index>"${spring.cloud.stream.instanceIndex:0}"</management.metrics.tags.instance.index>
+                                    <management.metrics.tags.application.guid>"${spring.cloud.application.guid:unknown}"</management.metrics.tags.application.guid>
+                                </properties>
                                 <metadata>
                                     <mavenPluginVersion>2.0.2.BUILD-SNAPSHOT</mavenPluginVersion>
                                 </metadata>
@@ -344,11 +358,11 @@
                                             <artifactId>stream-applications-security-common</artifactId>
                                             <version>${stream-apps-core.version}</version>
                                         </dependency>
-                                        <dependency>
-                                            <groupId>org.springframework.cloud.stream.app</groupId>
-                                            <artifactId>stream-applications-micrometer-common</artifactId>
-                                            <version>${stream-apps-core.version}</version>
-                                        </dependency>
+<!--                                        <dependency>-->
+<!--                                            <groupId>org.springframework.cloud.stream.app</groupId>-->
+<!--                                            <artifactId>stream-applications-micrometer-common</artifactId>-->
+<!--                                            <version>${stream-apps-core.version}</version>-->
+<!--                                        </dependency>-->
                                         <dependency>
                                             <groupId>org.springframework.cloud.stream.app</groupId>
                                             <artifactId>stream-applications-postprocessor-common</artifactId>
