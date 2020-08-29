@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -146,17 +147,19 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		}
 
 		// Application properties
-		Map<String, String> allApplicationProperties = new HashMap<>(this.global.getApplication().getProperties());
+		Map<String, String> allApplicationProperties = new TreeMap<>(this.global.getApplication().getProperties());
 		allApplicationProperties.putAll(this.application.getProperties());
 		app.setProperties(allApplicationProperties.entrySet().stream()
-				.map(e -> e.getKey() + "=" + e.getValue())
+				.map(e -> e.getKey() + "=" + (StringUtils.hasText(e.getValue()) ?
+						e.getValue().replaceAll("^\"|\"$", "") : ""))
 				.collect(Collectors.toList()));
 
 		// Maven properties
-		Map<String, String> allMavenProperties = new HashMap<>(this.global.getApplication().getMaven().getProperties());
+		Map<String, String> allMavenProperties = new TreeMap<>(this.global.getApplication().getMaven().getProperties());
 		allMavenProperties.putAll(this.application.getMaven().getProperties());
 		app.getMaven().setProperties(allMavenProperties.entrySet().stream()
-				.map(es -> "<" + es.getKey() + ">" + es.getValue() + "</" + es.getKey() + ">")
+				.map(es -> "<" + es.getKey() + ">" + (StringUtils.hasText(es.getValue()) ?
+						es.getValue().replaceAll("^\"|\"$", "") : "") + "</" + es.getKey() + ">")
 				.collect(Collectors.toList()));
 
 		//Maven BOM
