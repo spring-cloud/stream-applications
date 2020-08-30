@@ -53,9 +53,9 @@
                         <configClass>org.springframework.cloud.fn.supplier.http.HttpSupplierConfiguration.class</configClass>
 
                         <properties>
-                            <property>spring.main.web-application-type=reactive</property>
-                            <property>spring.cloud.streamapp.security.enabled=false</property>
-                            <property>spring.cloud.streamapp.security.csrf-enabled=false</property>
+                            <spring.main.web-application-type>reactive</spring.main.web-application-type>>
+                            <spring.cloud.streamapp.security.enabled>false</spring.cloud.streamapp.security.enabled>
+                            <spring.cloud.streamapp.security.csrf-enabled>false</spring.cloud.streamapp.security.csrf-enabled>>
                         </properties>
 
                         <maven>
