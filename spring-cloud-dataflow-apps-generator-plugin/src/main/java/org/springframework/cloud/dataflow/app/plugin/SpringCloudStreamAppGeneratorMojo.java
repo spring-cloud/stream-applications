@@ -584,6 +584,9 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 			 */
 			private String orgName = "springcloudstream";
 
+			/**
+			 * Base images to be used by the target container image.
+			 */
 			private String baseImage = "springcloud/openjdk";
 
 			/**
