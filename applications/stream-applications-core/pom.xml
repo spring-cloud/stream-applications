@@ -22,9 +22,8 @@
         <spring-boot.version>2.3.2.RELEASE</spring-boot.version>
         <stream-apps-core.version>${project.version}</stream-apps-core.version>
         <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
-        <apps-generator-plugin.version>1.0.0-SNAPSHOT</apps-generator-plugin.version>
-        <app-metadata-maven-plugin-version>2.0.2.BUILD-SNAPSHOT</app-metadata-maven-plugin-version>
-        <stream-apps-docs-plugin.version>3.0.0.BUILD-SNAPSHOT</stream-apps-docs-plugin.version>
+        <spring-cloud-dataflow-apps-generator-plugin.version>1.0.0-SNAPSHOT</spring-cloud-dataflow-apps-generator-plugin.version>
+        <spring-cloud-dataflow-apps-docs-plugin.version>1.0.0-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-stream.version>3.0.2.RELEASE</spring-cloud-stream.version>
         <spring-cloud-function-dependencies.version>3.0.9.RELEASE</spring-cloud-function-dependencies.version>
         <spring-cloud-dependencies.version>Hoxton.SR7</spring-cloud-dependencies.version>
@@ -279,8 +278,8 @@
                 </plugin>
                 <plugin>
                     <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
-                    <version>${stream-apps-docs-plugin.version}</version>
+                    <artifactId>spring-cloud-dataflow-apps-docs-plugin</artifactId>
+                    <version>${spring-cloud-dataflow-apps-docs-plugin.version}</version>
                     <executions>
                         <execution>
                             <id>generate-documentation</id>
@@ -294,7 +293,7 @@
                 <plugin>
                     <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
-                    <version>${apps-generator-plugin.version}</version>
+                    <version>${spring-cloud-dataflow-apps-generator-plugin.version}</version>
                     <executions>
                         <execution>
                             <id>app-gen</id>

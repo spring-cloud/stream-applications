@@ -46,7 +46,7 @@
         <plugins>
             <plugin>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-app-starter-doc-maven-plugin</artifactId>
+                <artifactId>spring-cloud-dataflow-apps-docs-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.springframework.cloud</groupId>
