@@ -198,7 +198,7 @@
 
 			<plugin>
 				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-app-starter-metadata-maven-plugin</artifactId>
+				<artifactId>spring-cloud-dataflow-apps-metadata-plugin</artifactId>
 				<version>{{app.metadata.mavenPluginVersion}}</version>
 				<configuration>
 					{{#app.containerImage.enableMetadata}}
