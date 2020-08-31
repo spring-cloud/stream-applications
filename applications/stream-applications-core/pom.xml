@@ -17,6 +17,7 @@
     </parent>
 
     <properties>
+        <apps.base-image>springcloud/openjdk</apps.base-image>
         <java.version>1.8</java.version>
         <spring-boot.version>2.3.2.RELEASE</spring-boot.version>
         <stream-apps-core.version>${project.version}</stream-apps-core.version>
@@ -309,6 +310,7 @@
                             <application>
                                 <bootVersion>${spring-boot.version}</bootVersion>
                                 <containerImage>
+                                    <baseImage>${apps.base-image}</baseImage>
                                     <enableMetadata>true</enableMetadata>
                                 </containerImage>
                                 <properties>
