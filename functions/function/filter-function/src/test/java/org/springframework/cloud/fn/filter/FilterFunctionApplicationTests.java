@@ -19,6 +19,8 @@ package org.springframework.cloud.fn.filter;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,11 +29,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.annotation.DirtiesContext;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
 
 /**
  * @author Artem Bilan
