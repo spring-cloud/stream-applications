@@ -18,13 +18,13 @@ package org.springframework.cloud.fn.filter;
 
 import java.util.function.Function;
 
+import reactor.core.publisher.Flux;
+
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.transformer.ExpressionEvaluatingTransformer;
 import org.springframework.messaging.Message;
-
-import reactor.core.publisher.Flux;
 
 /**
  * @author Artem Bilan
