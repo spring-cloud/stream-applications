@@ -328,7 +328,7 @@
                                     <management.metrics.tags.application.guid>"${spring.cloud.application.guid:unknown}"</management.metrics.tags.application.guid>
                                 </properties>
                                 <metadata>
-                                    <mavenPluginVersion>2.0.2.BUILD-SNAPSHOT</mavenPluginVersion>
+                                    <mavenPluginVersion>1.0.0-SNAPSHOT</mavenPluginVersion>
                                 </metadata>
                                 <maven>
                                     <dependencyManagement>
