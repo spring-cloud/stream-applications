@@ -309,6 +309,7 @@
                             <application>
                                 <bootVersion>${spring-boot.version}</bootVersion>
                                 <containerImage>
+                                    <orgName>springcloudstream</orgName>
                                     <baseImage>${apps.base-image}</baseImage>
                                     <enableMetadata>true</enableMetadata>
                                 </containerImage>
