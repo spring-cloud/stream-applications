@@ -73,7 +73,7 @@ The following are the four major components of this repository.
 |link:functions/supplier/websocket-supplier/README.adoc[Websocket]
 |
 |link:functions/consumer/twitter-consumer/README.adoc[Twitter]
-||link:functions/supplier/cdc-debezium-supplier/README.adoc[CDC Debezium]
+|link:functions/supplier/cdc-debezium-supplier/README.adoc[CDC Debezium]
 |
 |link:functions/consumer/websocket-consumer/README.adoc[Websocket]
 |
@@ -140,9 +140,12 @@ The following are the four major components of this repository.
 |link:applications/source/websocket-source/README.adoc[Websocket]
 |
 |link:applications/sink/twitter-update-sink/README.adoc[Twitter Update]
-||link:applications/source/cdc-debezium-source/README.adoc[CDC Debezium]
+|link:applications/source/cdc-debezium-source/README.adoc[CDC Debezium]
 |
 |link:applications/sink/wavefront-sink/README.adoc[Wavefront]
+|
+|
+|link:applications/sink/websocket-sink/README.adoc[Websocket]
 |===
 
 === Build
