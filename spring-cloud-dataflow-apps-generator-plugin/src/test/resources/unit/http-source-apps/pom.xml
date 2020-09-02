@@ -46,6 +46,11 @@
 								<metadata>
 									<mavenPluginVersion>2.0.2.BUILD-SNAPSHOT</mavenPluginVersion>
 								</metadata>
+								<containerImage>
+									<orgName>globalOrgName</orgName>
+									<baseImage>globalBaseImage</baseImage>
+									<enableMetadata>true</enableMetadata>
+								</containerImage>
 								<properties>
 									<appProperty1>value1</appProperty1>
 									<appProperty2>value2</appProperty2>

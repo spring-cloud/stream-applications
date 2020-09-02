@@ -98,7 +98,7 @@ public class MojoHarnessTest {
 						"</org.springframework.cloud.dataflow.spring-configuration-metadata.json>");
 		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>testspringcloud/${project.artifactId}</image>");
 		assertThat(jibPlugin.getConfiguration().toString()).contains("<tag>3.0.0.BUILD-SNAPSHOT</tag>");
-
+		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>globalBaseImage</image>");
 		assertThat(pomModel.getRepositories().size()).isEqualTo(5);
 
 		assertThat(pomModel.getRepositories().stream().map(r -> r.getId()).collect(Collectors.toList()))
