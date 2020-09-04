@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.fn.test.support.geode;
 
+import com.github.dockerjava.api.model.HealthCheck;
+import com.github.dockerjava.api.model.HostConfig;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -44,7 +46,8 @@ public class GeodeContainerIntializer {
 
 	/**
 	 * Create, start, and perform post processing on a {@link GeodeContainer}.
-	 * @param postProcessor a {@code Consumer<GeodeContainer>} to run after the container is started.
+	 * @param postProcessor a {@code Consumer<GeodeContainer>} to run after the container is
+	 *     started.
 	 */
 	public GeodeContainerIntializer(Consumer<GeodeContainer> postProcessor) {
 		cacheServerPort = SocketUtils.findAvailableTcpPort();
@@ -71,11 +74,14 @@ public class GeodeContainerIntializer {
 	private void startContainer() {
 		// There is apparently no way to initialize Geode with random port mapping. Ports
 		// must be the same on client and server.
-		Consumer<CreateContainerCmd> cmd = e -> e.withPortBindings(
-				new PortBinding(Ports.Binding.bindPort(cacheServerPort),
-						new ExposedPort(cacheServerPort)),
-				new PortBinding(Ports.Binding.bindPort(locatorPort), new ExposedPort(locatorPort)));
+		Consumer<CreateContainerCmd> cmd = e -> {
+			e.withHostConfig(new HostConfig().withPortBindings(
+					new PortBinding(Ports.Binding.bindPort(cacheServerPort), new ExposedPort(cacheServerPort)),
+					new PortBinding(Ports.Binding.bindPort(locatorPort), new ExposedPort(locatorPort))));
+		};
+
 		// Wait forever
+
 		geode.withCommand("tail", "-f", "/dev/null").withCreateContainerCmdModifier(cmd).start();
 
 		geode.execGfsh("start locator --name=Locator1 --hostname-for-clients=localhost --port=" + locatorPort);
