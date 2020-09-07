@@ -70,7 +70,8 @@ public class GeodeSourceTests {
 		applicationContextRunner
 				.withPropertyValues("geode.region.regionName=myRegion",
 						"geode.supplier.event-expression=key+':'+newValue",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort(),
+						"geode.pool.connectType=server",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort(),
 						"spring.cloud.function.definition=geodeSupplier")
 				.run(context -> {
 
@@ -101,7 +102,8 @@ public class GeodeSourceTests {
 						"geode.region.regionName=myRegion",
 						"geode.client.pdx-read-serialized=true",
 						"geode.supplier.query=Select * from /myRegion where symbol='XXX' and price > 140",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
+						"geode.pool.connectType=server",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
 				.run(context -> {
 					OutputDestination outputDestination = context.getBean(OutputDestination.class);
 					// Using local region here

@@ -64,7 +64,8 @@ public class GeodeConsumerApplicationTests {
 						"geode.region.regionName=Stocks",
 						"geode.consumer.json=true",
 						"geode.consumer.key-expression=payload.getField('symbol')",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
+						"geode.pool.connectType=server",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
 				.run(context -> {
 					Consumer<Message<?>> geodeConsumer = context.getBean("geodeConsumer", Consumer.class);
 
@@ -84,7 +85,8 @@ public class GeodeConsumerApplicationTests {
 				.withPropertyValues(
 						"geode.region.regionName=Stocks",
 						"geode.consumer.key-expression='key'",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
+						"geode.pool.connectType=server",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
 				.run(context -> {
 					Consumer<Message<?>> geodeConsumer = context.getBean("geodeConsumer", Consumer.class);
 

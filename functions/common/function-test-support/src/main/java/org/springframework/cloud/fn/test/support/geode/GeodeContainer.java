@@ -42,16 +42,24 @@ public class GeodeContainer extends GenericContainer {
 
 	private final int cacheServerPort;
 
+	private final boolean useLocator;
+
 	/**
 	 * Create a Geode container from a Docker image.
 	 * @param dockerImageName the name of the image.
 	 * @param locatorPort the locator port.
 	 * @param cacheServerPort the cache server port.
+	 * @param useLocator set to use a locator.
 	 */
-	public GeodeContainer(@NonNull String dockerImageName, int locatorPort, int cacheServerPort) {
+	public GeodeContainer(@NonNull String dockerImageName, int locatorPort, int cacheServerPort, boolean useLocator) {
 		super(dockerImageName);
 		this.locatorPort = locatorPort;
 		this.cacheServerPort = cacheServerPort;
+		this.useLocator = useLocator;
+	}
+
+	public GeodeContainer(@NonNull String dockerImageName, int locatorPort, int cacheServerPort) {
+		this(dockerImageName, locatorPort, cacheServerPort, false);
 	}
 
 	/**
@@ -61,11 +69,17 @@ public class GeodeContainer extends GenericContainer {
 	 * @param image the image builder.
 	 * @param locatorPort the locator port.
 	 * @param cacheServerPort the server port.
+	 * @param useLocator set to use a locator.
 	 */
-	public GeodeContainer(@NonNull Future<String> image, int locatorPort, int cacheServerPort) {
+	public GeodeContainer(@NonNull Future<String> image, int locatorPort, int cacheServerPort, boolean useLocator) {
 		super(image);
 		this.locatorPort = locatorPort;
 		this.cacheServerPort = cacheServerPort;
+		this.useLocator = useLocator;
+	}
+
+	public GeodeContainer(@NonNull Future<String> image, int locatorPort, int cacheServerPort) {
+		this(image, locatorPort, cacheServerPort, false);
 	}
 
 	/**
@@ -73,7 +87,7 @@ public class GeodeContainer extends GenericContainer {
 	 * @return the connect command String.
 	 */
 	public String connect() {
-		return "connect --locator=" + locators();
+		return useLocator ? "connect --locator=" + locators() : "connect --jmx-manager=localhost[1099]";
 	}
 
 	/**

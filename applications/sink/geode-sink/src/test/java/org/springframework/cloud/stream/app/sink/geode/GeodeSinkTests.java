@@ -67,7 +67,8 @@ public class GeodeSinkTests {
 						"geode.region.regionName=Stocks",
 						"geode.consumer.json=true",
 						"geode.consumer.key-expression=payload.getField('symbol')",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
+						"geode.pool.connectType=server",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
 				.run(context -> {
 					InputDestination inputDestination = context.getBean(InputDestination.class);
 
@@ -88,7 +89,8 @@ public class GeodeSinkTests {
 						"spring.cloud.function.definition=geodeConsumer",
 						"geode.region.regionName=Stocks",
 						"geode.consumer.key-expression='key'",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
+						"geode.pool.connectType=server",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
 				.run(context -> {
 					InputDestination inputDestination = context.getBean(InputDestination.class);
 					inputDestination.send(new GenericMessage<>("value"));

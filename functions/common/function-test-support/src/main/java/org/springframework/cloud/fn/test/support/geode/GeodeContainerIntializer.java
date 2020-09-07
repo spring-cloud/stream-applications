@@ -16,13 +16,12 @@
 
 package org.springframework.cloud.fn.test.support.geode;
 
-import com.github.dockerjava.api.model.HealthCheck;
-import com.github.dockerjava.api.model.HostConfig;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import org.testcontainers.images.builder.ImageFromDockerfile;
@@ -44,12 +43,20 @@ public class GeodeContainerIntializer {
 
 	private Optional<Consumer<GeodeContainer>> postProcessor;
 
+	private final boolean useLocator;
+
 	/**
 	 * Create, start, and perform post processing on a {@link GeodeContainer}.
 	 * @param postProcessor a {@code Consumer<GeodeContainer>} to run after the container is
 	 *     started.
 	 */
 	public GeodeContainerIntializer(Consumer<GeodeContainer> postProcessor) {
+		this(postProcessor, false);
+	}
+
+	public GeodeContainerIntializer(Consumer<GeodeContainer> postProcessor, boolean useLocator) {
+		this.useLocator = useLocator;
+
 		cacheServerPort = SocketUtils.findAvailableTcpPort();
 
 		locatorPort = SocketUtils.findAvailableTcpPort();
@@ -60,7 +67,7 @@ public class GeodeContainerIntializer {
 				.withFileFromClasspath("Dockerfile", "geode/Dockerfile")
 				.withBuildArg("CACHE_SERVER_PORT", String.valueOf(cacheServerPort))
 				.withBuildArg("LOCATOR_PORT", String.valueOf(locatorPort)),
-				locatorPort, cacheServerPort);
+				locatorPort, cacheServerPort, useLocator);
 		startContainer();
 	}
 
@@ -68,7 +75,7 @@ public class GeodeContainerIntializer {
 	 * Create and start a {@link GeodeContainer}.
 	 */
 	public GeodeContainerIntializer() {
-		this(null);
+		this(null, false);
 	}
 
 	private void startContainer() {
@@ -84,9 +91,16 @@ public class GeodeContainerIntializer {
 
 		geode.withCommand("tail", "-f", "/dev/null").withCreateContainerCmdModifier(cmd).start();
 
-		geode.execGfsh("start locator --name=Locator1 --hostname-for-clients=localhost --port=" + locatorPort);
-		geode.execGfsh("connect --locator=" + geode.locators(),
-				"start server --name=Server1 --hostname-for-clients=localhost --server-port=" + cacheServerPort);
+		if (useLocator) {
+			geode.execGfsh("start locator --name=Locator1 --hostname-for-clients=localhost --port=" + locatorPort);
+			geode.execGfsh(geode.connect(),
+					"start server --name=Server1 --hostname-for-clients=localhost --server-port=" + cacheServerPort);
+		}
+		else {
+			geode.execGfsh(
+					"start server --name=Server1 --hostname-for-clients=localhost --server-port=" + cacheServerPort +
+							" --J=-Dgemfire.jmx-manager=true --J=-Dgemfire.jmx-manager-start=true");
+		}
 		postProcessor.ifPresent(geodeContainerConsumer -> geodeContainerConsumer.accept(geode));
 	}
 

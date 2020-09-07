@@ -47,7 +47,7 @@ public class GeodeSupplierApplicationTests {
 
 	private static GeodeContainer geode;
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@BeforeAll
 	static void setup() {
@@ -67,12 +67,13 @@ public class GeodeSupplierApplicationTests {
 		applicationContextRunner
 				.withPropertyValues("geode.region.regionName=myRegion",
 						"geode.supplier.event-expression=#root",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
+						"geode.pool.connectType=server",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
 				.run(context -> {
-					geode.connectAndExecGfsh(
-							"put --key=hello --value=world --region=myRegion",
-							"put --key=foo --value=bar --region=myRegion",
-							"put --key=hello --value=dave --region=myRegion");
+					Region region = context.getBean(Region.class);
+					region.put("hello", "world");
+					region.put("foo", "bar");
+					region.replace("hello", "dave");
 
 					Supplier<Flux<EntryEvent>> geodeSupplier = context.getBean("geodeSupplier", Supplier.class);
 
@@ -99,7 +100,8 @@ public class GeodeSupplierApplicationTests {
 				.withPropertyValues(
 						"geode.region.regionName=myRegion",
 						"geode.client.pdx-read-serialized=true",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
+						"geode.pool.connectType=server",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
 				.run(context -> {
 					Supplier<Flux<String>> geodeSupplier = context.getBean("geodeSupplier", Supplier.class);
 					// Using local region here
@@ -121,34 +123,14 @@ public class GeodeSupplierApplicationTests {
 	}
 
 	@Test
-	void connectTypeServer() {
-		applicationContextRunner
-				.withPropertyValues("geode.region.regionName=myRegion",
-						"geode.pool.connect-type=server",
-						"geode.supplier.event-expression=key+':'+newValue",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
-				.run(context -> {
-
-					// Using local region here since it's faster
-					Region<String, String> region = context.getBean(Region.class);
-
-					region.put("foo", "bar");
-					Supplier<Flux<String>> geodeSupplier = context.getBean("geodeSupplier", Supplier.class);
-
-					StepVerifier.create(geodeSupplier.get()).assertNext(val -> {
-						assertThat(val).isEqualTo("foo:bar");
-					}).thenCancel().verify(Duration.ofSeconds(10));
-				});
-	}
-
-	@Test
 	void continuousQuery() {
 		applicationContextRunner
 				.withPropertyValues(
 						"geode.region.regionName=myRegion",
 						"geode.client.pdx-read-serialized=true",
 						"geode.supplier.query=Select * from /myRegion where symbol='XXX' and price > 140",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getLocatorPort())
+						"geode.pool.connectType=server",
+						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
 				.run(context -> {
 					Supplier<Flux<String>> geodeCqSupplier = context.getBean("geodeSupplier", Supplier.class);
 					// Using local region here
