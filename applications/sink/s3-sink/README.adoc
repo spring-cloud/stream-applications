@@ -15,6 +15,7 @@ Messages accepted by this sink must contain one of the `payload` as:
 The **$$s3$$** $$sink$$ has the following options:
 
 //tag::configuration-properties[]
+$$s3.common.endpoint-url$$:: $$Optional endpoint url to connect to s3 compatible storage.$$ *($$String$$, default: `$$<none>$$`)*
 $$s3.consumer.acl$$:: $$S3 Object access control list.$$ *($$CannedAccessControlList$$, default: `$$<none>$$`, possible values: `private`,`public-read`,`public-read-write`,`authenticated-read`,`log-delivery-write`,`bucket-owner-read`,`bucket-owner-full-control`,`aws-exec-read`)*
 $$s3.consumer.acl-expression$$:: $$Expression to evaluate S3 Object access control list.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$s3.consumer.bucket$$:: $$AWS bucket for target file(s) to store.$$ *($$String$$, default: `$$<none>$$`)*
