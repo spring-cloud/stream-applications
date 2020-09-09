@@ -46,6 +46,7 @@ public class CompatibleStorageAmazonS3Configuration {
 		builder.setEndpointConfiguration(endpointConfiguration);
 		return builder
 				.withCredentials(awsCredentialsProvider)
+				.withPathStyleAccessEnabled(amazonS3Properties.isPathStyleAccess())
 				.build();
 	}
 }

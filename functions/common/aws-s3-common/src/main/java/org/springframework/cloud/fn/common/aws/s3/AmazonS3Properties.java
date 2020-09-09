@@ -20,6 +20,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author Timo Salm
+ * @author David Turanski
  */
 @ConfigurationProperties("s3.common")
 public class AmazonS3Properties {
@@ -28,6 +29,19 @@ public class AmazonS3Properties {
 	 * Optional endpoint url to connect to s3 compatible storage.
 	 */
 	private String endpointUrl;
+
+	/**
+	 * Use path style access.
+	 */
+	private boolean pathStyleAccess;
+
+	public boolean isPathStyleAccess() {
+		return pathStyleAccess;
+	}
+
+	public void setPathStyleAccess(boolean pathStyleAccess) {
+		this.pathStyleAccess = pathStyleAccess;
+	}
 
 	public String getEndpointUrl() {
 		return this.endpointUrl;
