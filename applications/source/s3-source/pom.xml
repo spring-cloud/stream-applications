@@ -54,6 +54,11 @@
                                     <groupId>org.springframework.cloud.fn</groupId>
                                     <artifactId>s3-supplier</artifactId>
                                 </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.stream.app</groupId>
+                                    <artifactId>stream-applications-composite-function-support</artifactId>
+                                    <version>${stream-apps-core.version}</version>
+                                </dependency>
                             </dependencies>
                         </maven>
                     </application>

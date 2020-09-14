@@ -71,8 +71,8 @@ public class SftpSourceTests extends SftpTestSupport {
 						"sftp.supplier.factory.allowUnknownKeys=true",
 						"sftp.supplier.remoteDir=sftpSource",
 						"sftp.supplier.localDir=" + this.targetLocalDirectory.toString(),
-						"--task.launch.request.arg-expressions=fileName=payload",
-						"--task.launch.request.task-name=myTask",
+						"task.launch.request.arg-expressions=fileName=payload",
+						"task.launch.request.task-name=myTask",
 						"spring.cloud.function.definition=sftpSupplier|taskLaunchRequestFunction")
 				.run(context -> {
 					OutputDestination output = context.getBean(OutputDestination.class);
