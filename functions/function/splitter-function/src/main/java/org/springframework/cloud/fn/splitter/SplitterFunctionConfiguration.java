@@ -45,7 +45,7 @@ public class SplitterFunctionConfiguration {
 
 	@Bean
 	public Function<Message<?>, List<Message<?>>> splitterFunction(AbstractMessageSplitter messageSplitter,
-																SplitterFunctionProperties splitterFunctionProperties) {
+			SplitterFunctionProperties splitterFunctionProperties) {
 
 		messageSplitter.setApplySequence(splitterFunctionProperties.isApplySequence());
 		ThreadLocalFluxSinkMessageChannel outputChannel = new ThreadLocalFluxSinkMessageChannel();
@@ -79,7 +79,6 @@ public class SplitterFunctionConfiguration {
 		}
 		return fileSplitter;
 	}
-
 
 	@Bean
 	@ConditionalOnMissingBean

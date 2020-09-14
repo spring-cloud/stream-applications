@@ -53,11 +53,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>splitter-function</artifactId>
-			<version>${java-functions.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>task-launch-request-function</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
