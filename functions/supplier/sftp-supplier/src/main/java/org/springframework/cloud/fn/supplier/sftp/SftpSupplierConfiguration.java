@@ -280,7 +280,6 @@ public class SftpSupplierConfiguration {
 		}
 
 		@Bean
-		@SuppressWarnings("unchecked")
 		public MessageSource<?> targetMessageSource(PollableChannel listingChannel,
 				SftpListingMessageProducer sftpListingMessageProducer) {
 			return () -> {
@@ -305,7 +304,7 @@ public class SftpSupplierConfiguration {
 			if (StringUtils.hasText(sftpSupplierProperties.getFilenamePattern())) {
 				predicate = Pattern.compile(sftpSupplierProperties.getFilenamePattern()).asPredicate();
 			}
-			else if ((StringUtils.hasText(sftpSupplierProperties.getFilenamePattern()))) {
+			else if (sftpSupplierProperties.getFilenameRegex() != null) {
 				predicate = sftpSupplierProperties.getFilenameRegex().asPredicate();
 			}
 
@@ -352,12 +351,16 @@ public class SftpSupplierConfiguration {
 				@Override
 				public boolean accept(Message<?> message) {
 
-					boolean result = !message.getHeaders().get(FILE_MODIFIED_TIME_HEADER).equals(
-							metadataStore.get(METADATA_STORE_PREFIX + message.getPayload()));
+					String lastModifiedTime = (String) message.getHeaders().get(FILE_MODIFIED_TIME_HEADER);
+					String storedLastModifiedTime = metadataStore.get(METADATA_STORE_PREFIX + message.getPayload());
 
-					metadataStore.put(
-							METADATA_STORE_PREFIX + message.getPayload(),
-							message.getHeaders().get(FILE_MODIFIED_TIME_HEADER).toString());
+					boolean result = !lastModifiedTime.equals(storedLastModifiedTime);
+
+					if (result) {
+						metadataStore.put(
+								METADATA_STORE_PREFIX + message.getPayload(),
+								message.getHeaders().get(FILE_MODIFIED_TIME_HEADER).toString());
+					}
 					return result;
 				}
 			};

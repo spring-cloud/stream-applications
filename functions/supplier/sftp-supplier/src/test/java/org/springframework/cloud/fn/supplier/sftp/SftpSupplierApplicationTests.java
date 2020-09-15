@@ -98,6 +98,27 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 	}
 
 	@Test
+	void supplierForListOnlyWithPatternFilter() {
+		defaultApplicationContextRunner
+				.withPropertyValues("sftp.supplier.listOnly=true", "sftp.supplier.file-name-pattern=.*1.txt")
+				.run(context -> {
+					Supplier<Flux<Message<String>>> sftpSupplier = context.getBean("sftpSupplier",
+							Supplier.class);
+					SftpSupplierProperties properties = context.getBean(SftpSupplierProperties.class);
+
+					final AtomicReference<String> expectedFileName = new AtomicReference<>(
+							properties.getRemoteDir() + File.separator + "sftpSource1.txt");
+					StepVerifier.create(sftpSupplier.get())
+							.assertNext(message -> {
+								assertThat(expectedFileName.get()).contains(message.getPayload());
+							})
+							.expectTimeout(Duration.ofMillis(1000))
+							.verify(Duration.ofSeconds(10));
+
+				});
+	}
+
+	@Test
 	void supplierForFileRef() {
 		defaultApplicationContextRunner
 				.withPropertyValues(

@@ -130,16 +130,17 @@ public abstract class AbstractAwsS3SupplierMockTests {
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DATE, 1);
 
+			ObjectListing objectListing = new ObjectListing();
+			List<S3ObjectSummary> objectSummaries = objectListing.getObjectSummaries();
+			for (S3Object s3Object : S3_OBJECTS) {
+				S3ObjectSummary s3ObjectSummary = new S3ObjectSummary();
+				s3ObjectSummary.setBucketName(S3_BUCKET);
+				s3ObjectSummary.setKey(s3Object.getKey());
+				s3ObjectSummary.setLastModified(calendar.getTime());
+				objectSummaries.add(s3ObjectSummary);
+			}
+
 			willAnswer(invocation -> {
-				ObjectListing objectListing = new ObjectListing();
-				List<S3ObjectSummary> objectSummaries = objectListing.getObjectSummaries();
-				for (S3Object s3Object : S3_OBJECTS) {
-					S3ObjectSummary s3ObjectSummary = new S3ObjectSummary();
-					s3ObjectSummary.setBucketName(S3_BUCKET);
-					s3ObjectSummary.setKey(s3Object.getKey());
-					s3ObjectSummary.setLastModified(calendar.getTime());
-					objectSummaries.add(s3ObjectSummary);
-				}
 				return objectListing;
 			}).given(amazonS3).listObjects(any(ListObjectsRequest.class));
 
