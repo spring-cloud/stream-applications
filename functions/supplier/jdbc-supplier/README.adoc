@@ -1,6 +1,6 @@
-# JDBC Supplier
+# Mail Supplier
 
-This module provides a JDBC supplier that can be reused and composed in other applications.
+This module provides a Mail supplier that can be reused and composed in other applications.
 The `Supplier` uses the `JdbcPollingChannelAdapter` from Spring Integration.
 `JdbcSupplier` is implemented as a `java.util.function.Supplier`.
 When you have use-cases such as periodical execution of a Database query, based on some external trigger such as a REST endpoint call for example, then you can use this `Supplier` to query the underlying relational database.

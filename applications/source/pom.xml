@@ -30,5 +30,6 @@
         <module>websocket-source</module>
         <module>cdc-debezium-source</module>
         <module>syslog-source</module>
+        <module>mail-source</module>
     </modules>
 </project>
