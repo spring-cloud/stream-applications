@@ -1,4 +1,4 @@
-# Mail Supplier
+# JDBC Supplier
 
 This module provides a Mail supplier that can be reused and composed in other applications.
 The `Supplier` uses the `JdbcPollingChannelAdapter` from Spring Integration.

@@ -4,7 +4,7 @@
     <artifactId>mail-supplier</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>mail-supplier</name>
-    <description>mail supplier</description>
+    <description>Mail Supplier</description>
 
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
