@@ -45,6 +45,7 @@ public class MetadataStoreProperties {
 
 	/**
 	 * Indicates the type of metadata store to configure (default is 'memory').
+	 * You must include the corresponding Spring Integration dependency to use a persistent store.
 	 */
 	private StoreType type = StoreType.memory;
 

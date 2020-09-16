@@ -87,6 +87,7 @@ $$ftp.supplier.preserve-timestamp$$:: $$Set to true to preserve the original tim
 $$ftp.supplier.remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$/$$`)*
 $$ftp.supplier.remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$/$$`)*
 $$ftp.supplier.tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
+$$metadata.store.type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
 //end::configuration-properties[]
 
 == Examples

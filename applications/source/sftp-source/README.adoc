@@ -82,6 +82,7 @@ The **$$ftp$$** $$source$$ has the following options:
 $$file.consumer.markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$true$$`)*
 $$file.consumer.mode$$:: $$The FileReadingMode to use for file reading sources. Values are 'ref' - The File object, 'lines' - a message per line, or 'contents' - the contents as bytes.$$ *($$FileReadingMode$$, default: `$$<none>$$`, possible values: `ref`,`lines`,`contents`)*
 $$file.consumer.with-markers$$:: $$Set to true to emit start of file/end of file marker messages before/after the data. Only valid with FileReadingMode 'lines'.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$metadata.store.type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
 $$sftp.supplier.auto-create-local-dir$$:: $$Set to true to create the local directory if it does not exist.$$ *($$Boolean$$, default: `$$true$$`)*
 $$sftp.supplier.delay-when-empty$$:: $$Duration of delay when no new files are detected.$$ *($$Duration$$, default: `$$1s$$`)*
 $$sftp.supplier.delete-remote-files$$:: $$Set to true to delete remote files after successful transfer.$$ *($$Boolean$$, default: `$$false$$`)*

@@ -77,7 +77,6 @@ public class TimeSourceTests {
 			OutputDestination target = context.getBean(OutputDestination.class);
 			Message<byte[]> sourceMessage = target.receive(10000);
 			final String actual = new String(sourceMessage.getPayload());
-			System.out.println(actual);
 			assertThat(((int) sourceMessage.getHeaders().get("seconds")) % 2).isZero();
 		}
 	}

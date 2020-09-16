@@ -17,11 +17,16 @@
 package org.springframework.cloud.stream.app.processor.image.recognition;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -42,39 +47,29 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ImageRecognitionProcessorTests {
 
-	@Test
-	@EnabledOnOs(OS.MAC)
-	public void testImageRecognitionProcessorMobileNetV2Mac() throws IOException {
-		testImageRecognitionProcessorMobileNetV2(message -> {
-			String jsonRecognizedObjects = (String) message.getHeaders().get(ImageRecognitionProcessorConfiguration.RECOGNIZED_OBJECTS_HEADER);
-			assertThat(jsonRecognizedObjects)
-					.isEqualTo("[{\"label\":\"giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca\",\"probability\":0.962329626083374}," +
-							"{\"label\":\"badger\",\"probability\":0.006058811210095882}," +
-							"{\"label\":\"ram, tup\",\"probability\":0.0010668420000001788}]");
-		});
-	}
+	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Test
-	@EnabledOnOs(OS.LINUX)
-	public void testImageRecognitionProcessorMobileNetV2Linux() throws IOException {
-		testImageRecognitionProcessorMobileNetV2(message -> {
-			String jsonRecognizedObjects = (String) message.getHeaders().get(ImageRecognitionProcessorConfiguration.RECOGNIZED_OBJECTS_HEADER);
-			assertThat(jsonRecognizedObjects)
-					.isEqualTo("[{\"label\":\"giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca\",\"probability\":0.9623297452926636}," +
-							"{\"label\":\"badger\",\"probability\":0.006058800499886274}," +
-							"{\"label\":\"ram, tup\",\"probability\":0.0010668395552784204}]");
-		});
+	public void testImageRecognitionProcessorMobileNetV2() throws IOException {
+		List<Map<String, Object>> expected = deserializeAndRoundToNPlaces(
+				"[{\"label\":\"giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca\",\"probability\":0.962329626083374},"
+						+
+						"{\"label\":\"badger\",\"probability\":0.006058811210095882}," +
+						"{\"label\":\"ram, tup\",\"probability\":0.0010668420000001788}]",
+				6);
+
+		imageRecognitionProcessorMobileNetV2(verify(expected));
 	}
 
-	private void testImageRecognitionProcessorMobileNetV2(Consumer<Message<byte[]>> consumer) throws IOException {
+	private void imageRecognitionProcessorMobileNetV2(Consumer<Message<byte[]>> consumer) throws IOException {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(ImageRecognitionProcessorTestApplication.class))
-				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=imageRecognitionFunction",
-						"--image.recognition.modelType=mobilenetv2",
-						"--image.recognition.responseSize=3",
-						"--image.recognition.debugOutput=true",
-						"--image.recognition.debugOutputPath=./target/image-recognition-mobilenetv2.png")) {
+						.web(WebApplicationType.NONE)
+						.run("--spring.cloud.function.definition=imageRecognitionFunction",
+								"--image.recognition.modelType=mobilenetv2",
+								"--image.recognition.responseSize=3",
+								"--image.recognition.debugOutput=true",
+								"--image.recognition.debugOutputPath=./target/image-recognition-mobilenetv2.png")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
@@ -87,38 +82,26 @@ public class ImageRecognitionProcessorTests {
 	}
 
 	@Test
-	@EnabledOnOs(OS.MAC)
-	public void testImageRecognitionProcessorMobileNetV1Mac() throws IOException {
-		testImageRecognitionProcessorMobileNetV1(message -> {
-			String jsonRecognizedObjects = (String) message.getHeaders().get(ImageRecognitionProcessorConfiguration.RECOGNIZED_OBJECTS_HEADER);
-			assertThat(jsonRecognizedObjects)
-					.isEqualTo("[{\"label\":\"giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca\",\"probability\":0.984053909778595}," +
-							"{\"label\":\"ram, tup\",\"probability\":0.0019619385711848736}," +
-							"{\"label\":\"Staffordshire bullterrier, Staffordshire bull terrier\",\"probability\":0.0018697341438382864}]");
-		});
+	public void testImageRecognitionProcessorMobileNetV1() throws IOException {
+		List<Map<String, Object>> expected = deserializeAndRoundToNPlaces(
+				"[{\"label\":\"giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca\",\"probability\":0.984053909778595},"
+						+
+						"{\"label\":\"ram, tup\",\"probability\":0.0019619385711848736}," +
+						"{\"label\":\"Staffordshire bullterrier, Staffordshire bull terrier\",\"probability\":0.0018697341438382864}]",
+				6);
+
+		imageRecognitionProcessorMobileNetV1(verify(expected));
 	}
 
-	@Test
-	@EnabledOnOs(OS.LINUX)
-	public void testImageRecognitionProcessorMobileNetV1Linux() throws IOException {
-		testImageRecognitionProcessorMobileNetV1(message -> {
-			String jsonRecognizedObjects = (String) message.getHeaders().get(ImageRecognitionProcessorConfiguration.RECOGNIZED_OBJECTS_HEADER);
-			assertThat(jsonRecognizedObjects)
-					.isEqualTo("[{\"label\":\"giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca\",\"probability\":0.9840537905693054}," +
-							"{\"label\":\"ram, tup\",\"probability\":0.0019619381055235863}," +
-							"{\"label\":\"Staffordshire bullterrier, Staffordshire bull terrier\",\"probability\":0.001869735773652792}]");
-		});
-	}
-
-	private void testImageRecognitionProcessorMobileNetV1(Consumer<Message<byte[]>> consumer) throws IOException {
+	private void imageRecognitionProcessorMobileNetV1(Consumer<Message<byte[]>> consumer) throws IOException {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(ImageRecognitionProcessorTestApplication.class))
-				.web(WebApplicationType.NONE)
-				.run("--image.recognition.model=https://download.tensorflow.org/models/mobilenet_v1_2018_08_02/mobilenet_v1_1.0_224.tgz#mobilenet_v1_1.0_224_frozen.pb",
-						"--image.recognition.modelType=mobilenetv1",
-						"--image.recognition.responseSize=3",
-						"--image.recognition.debugOutput=true",
-						"--image.recognition.debugOutputPath=./target/image-recognition-mobilenetv1.png")) {
+						.web(WebApplicationType.NONE)
+						.run("--image.recognition.model=https://download.tensorflow.org/models/mobilenet_v1_2018_08_02/mobilenet_v1_1.0_224.tgz#mobilenet_v1_1.0_224_frozen.pb",
+								"--image.recognition.modelType=mobilenetv1",
+								"--image.recognition.responseSize=3",
+								"--image.recognition.debugOutput=true",
+								"--image.recognition.debugOutputPath=./target/image-recognition-mobilenetv1.png")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
@@ -131,38 +114,24 @@ public class ImageRecognitionProcessorTests {
 	}
 
 	@Test
-	@EnabledOnOs(OS.MAC)
-	public void testImageRecognitionProcessorInceptionMac() throws IOException {
-		testImageRecognitionProcessorInception(message -> {
-			String jsonRecognizedObjects = (String) message.getHeaders().get(ImageRecognitionProcessorConfiguration.RECOGNIZED_OBJECTS_HEADER);
-			assertThat(jsonRecognizedObjects)
-					.isEqualTo("[{\"label\":\"giant panda\",\"probability\":0.9946685433387756}," +
-							"{\"label\":\"Arctic fox\",\"probability\":0.0036631159018725157}," +
-							"{\"label\":\"ice bear\",\"probability\":3.378273395355791E-4}]");
-		});
+	public void testImageRecognitionProcessorInception() throws IOException {
+		List<Map<String, Object>> expected = deserializeAndRoundToNPlaces(
+				"[{\"label\":\"giant panda\",\"probability\":0.9946685433387756}," +
+						"{\"label\":\"Arctic fox\",\"probability\":0.003663112409412861}," +
+						"{\"label\":\"ice bear\",\"probability\":3.378273395355791E-4}]",
+				6);
+		imageRecognitionProcessorInception(verify(expected));
 	}
 
-	@Test
-	@EnabledOnOs(OS.LINUX)
-	public void testImageRecognitionProcessorInceptionLinux() throws IOException {
-		testImageRecognitionProcessorInception(message -> {
-			String jsonRecognizedObjects = (String) message.getHeaders().get(ImageRecognitionProcessorConfiguration.RECOGNIZED_OBJECTS_HEADER);
-			assertThat(jsonRecognizedObjects)
-					.isEqualTo("[{\"label\":\"giant panda\",\"probability\":0.9946685433387756}," +
-							"{\"label\":\"Arctic fox\",\"probability\":0.003663112409412861}," +
-							"{\"label\":\"ice bear\",\"probability\":3.378273395355791E-4}]");
-		});
-	}
-
-	private void testImageRecognitionProcessorInception(Consumer<Message<byte[]>> consumer) throws IOException {
+	private void imageRecognitionProcessorInception(Consumer<Message<byte[]>> consumer) throws IOException {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(ImageRecognitionProcessorTestApplication.class))
-				.web(WebApplicationType.NONE)
-				.run("--image.recognition.model=https://storage.googleapis.com/scdf-tensorflow-models/image-recognition/tensorflow_inception_graph.pb",
-						"--image.recognition.modelType=inception",
-						"--image.recognition.responseSize=3",
-						"--image.recognition.debugOutput=true",
-						"--image.recognition.debugOutputPath=./target/image-recognition-inception.png")) {
+						.web(WebApplicationType.NONE)
+						.run("--image.recognition.model=https://storage.googleapis.com/scdf-tensorflow-models/image-recognition/tensorflow_inception_graph.pb",
+								"--image.recognition.modelType=inception",
+								"--image.recognition.responseSize=3",
+								"--image.recognition.debugOutput=true",
+								"--image.recognition.debugOutputPath=./target/image-recognition-inception.png")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
@@ -173,6 +142,44 @@ public class ImageRecognitionProcessorTests {
 
 			consumer.accept(sourceMessage);
 		}
+	}
+
+	private Consumer<Message<byte[]>> verify(List<Map<String, Object>> expected) {
+		return message -> {
+			List<Map<String, Object>> actual = deserializeAndRoundToNPlaces((String) message.getHeaders()
+					.get(ImageRecognitionProcessorConfiguration.RECOGNIZED_OBJECTS_HEADER), 6);
+			assertThat(expected)
+					.isEqualTo(actual);
+		};
+	}
+
+	private List<Map<String, Object>> deserializeAndRoundToNPlaces(String json, int places) {
+		List<Map<String, Object>> result = null;
+		try {
+			result = objectMapper.readValue(json, ArrayList.class);
+		}
+		catch (JsonProcessingException e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
+
+		result.forEach(map -> {
+			if (map.containsKey("probability")) {
+				map.put("probability", round((double) map.get("probability"), places));
+			}
+		});
+
+		return result;
+
+	}
+
+	private static double round(double value, int places) {
+		if (places < 0) {
+			throw new IllegalArgumentException();
+		}
+
+		BigDecimal bd = new BigDecimal(Double.toString(value));
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
 
 	@SpringBootApplication

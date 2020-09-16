@@ -62,6 +62,7 @@ public class MetadataStoreAutoConfiguration {
 
 	@Bean
 	@ConditionalOnProperty(prefix = "metadata.store", name = "type", havingValue = "memory", matchIfMissing = true)
+	@ConditionalOnMissingBean
 	public ConcurrentMetadataStore simpleMetadataStore() {
 		return new SimpleMetadataStore();
 	}

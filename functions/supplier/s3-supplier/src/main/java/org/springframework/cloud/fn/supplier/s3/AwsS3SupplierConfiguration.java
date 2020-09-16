@@ -29,13 +29,11 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.aws.core.env.ResourceIdResolver;
 import org.springframework.cloud.fn.common.file.FileConsumerProperties;
 import org.springframework.cloud.fn.common.file.FileUtils;
-import org.springframework.cloud.fn.common.metadata.store.MetadataStoreAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.aws.inbound.S3InboundFileSynchronizer;
@@ -65,7 +63,6 @@ import org.springframework.util.StringUtils;
  */
 @Configuration
 @EnableConfigurationProperties({ AwsS3SupplierProperties.class, FileConsumerProperties.class })
-@AutoConfigureAfter(MetadataStoreAutoConfiguration.class)
 public abstract class AwsS3SupplierConfiguration {
 
 	protected static final String METADATA_STORE_PREFIX = "s3-metadata-";
@@ -91,14 +88,14 @@ public abstract class AwsS3SupplierConfiguration {
 		this.metadataStore = metadataStore;
 	}
 
-	@Bean
-	public Supplier<Flux<Message<?>>> s3Supplier(Publisher<Message<Object>> s3SupplierFlow) {
-		return () -> Flux.from(s3SupplierFlow);
-	}
-
 	@Configuration
 	@ConditionalOnExpression("environment['s3.supplier.list-only'] != 'true'")
 	static class SynchronizingConfiguation extends AwsS3SupplierConfiguration {
+
+		@Bean
+		public Supplier<Flux<Message<?>>> s3Supplier(Publisher<Message<Object>> s3SupplierFlow) {
+			return () -> Flux.from(s3SupplierFlow);
+		}
 
 		@Bean
 		public ChainFileListFilter<S3ObjectSummary> filter(AwsS3SupplierProperties awsS3SupplierProperties,
@@ -114,7 +111,6 @@ public abstract class AwsS3SupplierConfiguration {
 						.addFilter(new S3RegexPatternFileListFilter(this.awsS3SupplierProperties.getFilenameRegex()));
 			}
 
-			// chainFilter.addFilter(Arrays::asList);
 			chainFilter.addFilter(new S3PersistentAcceptOnceFileListFilter(metadataStore, METADATA_STORE_PREFIX));
 			return chainFilter;
 		}
@@ -168,6 +164,11 @@ public abstract class AwsS3SupplierConfiguration {
 				AmazonS3 amazonS3,
 				ResourceIdResolver resourceIdResolver, ConcurrentMetadataStore metadataStore) {
 			super(awsS3SupplierProperties, fileConsumerProperties, amazonS3, resourceIdResolver, metadataStore);
+		}
+
+		@Bean
+		public Supplier<Flux<Message<?>>> s3Supplier(Publisher<Message<Object>> s3SupplierFlow) {
+			return () -> Flux.from(s3SupplierFlow);
 		}
 
 		@Bean
