@@ -2,7 +2,7 @@
 
 This module provides a File supplier that can be reused and composed in other applications.
 The `Supplier` uses the mail IMAP and POP3 support from Spring Integration.
-`mailSupplier` bean is implemented as a `java.util.function.Supplier`.
+The `mailSupplier` bean is implemented as a `java.util.function.Supplier`.
 This supplier gives you a reactive stream of emails from the provided url (imap or pop3).
 The supplier has a signature of `Supplier<Flux<Message<?>>>`.
 Users have to subscribe to this `Flux` and receive the data.
