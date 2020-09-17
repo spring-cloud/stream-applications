@@ -31,7 +31,7 @@ $$cdc.offset.storage$$:: $$Kafka connector tracks the number processed records a
 $$cdc.schema$$:: $$Include the schema's as part of the outbound message.$$ *($$Boolean$$, default: `$$false$$`)*
 $$cdc.stream.header.convert-connect-headers$$:: $$When true the {@link org.apache.kafka.connect.header.Header} are converted into message headers with the {@link org.apache.kafka.connect.header.Header#key()} as name and {@link org.apache.kafka.connect.header.Header#value()}.$$ *($$Boolean$$, default: `$$true$$`)*
 $$cdc.stream.header.offset$$:: $$Serializes the source record's offset metadata into the outbound message header under cdc.offset.$$ *($$Boolean$$, default: `$$false$$`)*
-$$metadata.store.type$$:: $$Indicates the type of metadata store to configure (default is 'memory').$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
+$$metadata.store.type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
 //end::configuration-properties[]
 
 ==== Debezium property Shortcut mapping
