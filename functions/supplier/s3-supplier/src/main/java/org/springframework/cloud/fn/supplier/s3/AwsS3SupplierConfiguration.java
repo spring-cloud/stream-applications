@@ -45,7 +45,6 @@ import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.endpoint.ReactiveMessageSourceProducer;
 import org.springframework.integration.file.filters.ChainFileListFilter;
-import org.springframework.integration.file.filters.FileListFilter;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
 import org.springframework.integration.util.IntegrationReactiveUtils;
 import org.springframework.messaging.Message;
@@ -85,7 +84,7 @@ public abstract class AwsS3SupplierConfiguration {
 
 	@Configuration
 	@ConditionalOnProperty(prefix = "s3.supplier", name = "list-only", havingValue = "false", matchIfMissing = true)
-	static class SynchronizingConfiguation extends AwsS3SupplierConfiguration {
+	static class SynchronizingConfiguration extends AwsS3SupplierConfiguration {
 
 		@Bean
 		public Supplier<Flux<Message<?>>> s3Supplier(Publisher<Message<Object>> s3SupplierFlow) {
@@ -93,10 +92,8 @@ public abstract class AwsS3SupplierConfiguration {
 		}
 
 		@Bean
-		public ChainFileListFilter<S3ObjectSummary> filter(AwsS3SupplierProperties awsS3SupplierProperties,
-				ConcurrentMetadataStore metadataStore) {
+		public ChainFileListFilter<S3ObjectSummary> filter(ConcurrentMetadataStore metadataStore) {
 			ChainFileListFilter<S3ObjectSummary> chainFilter = new ChainFileListFilter<>();
-			FileListFilter<S3ObjectSummary> filter = null;
 			if (StringUtils.hasText(this.awsS3SupplierProperties.getFilenamePattern())) {
 				chainFilter.addFilter(
 						new S3SimplePatternFileListFilter(this.awsS3SupplierProperties.getFilenamePattern()));
@@ -110,7 +107,7 @@ public abstract class AwsS3SupplierConfiguration {
 			return chainFilter;
 		}
 
-		SynchronizingConfiguation(AwsS3SupplierProperties awsS3SupplierProperties,
+		SynchronizingConfiguration(AwsS3SupplierProperties awsS3SupplierProperties,
 				FileConsumerProperties fileConsumerProperties,
 				AmazonS3 amazonS3,
 				ResourceIdResolver resourceIdResolver,

@@ -64,5 +64,6 @@ public class AmazonS3ListOnlyTests extends AbstractAwsS3SupplierMockTests {
 				.verifyLater();
 		standardIntegrationFlow.start();
 		stepVerifier.verify(Duration.ofSeconds(10));
+		standardIntegrationFlow.stop();
 	}
 }

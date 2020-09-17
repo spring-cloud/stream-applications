@@ -13,7 +13,7 @@ When using `--mode=lines`, you can also provide the additional option `--withMar
 If set to `true`, the underlying `FileSplitter` will emit additional _start-of-file_ and _end-of-file_ marker messages before and after the actual data.
 The payload of these 2 additional marker messages is of type `FileSplitter.FileMarker`. The option `withMarkers` defaults to `false` if not explicitly set.
 
-See also https://github.com/spring-cloud/stream-applications/blob/master/functions/common/metadata-store-common/README.adoc[`MetaDataStore`] options for possible shared persistent store configuration for the `FtpPersistentAcceptOnceFileListFilter` used in the FTP Source.
+See also link:../../../functions/common/metadata-store-common/README.adoc[MetadataStore] options for possible shared persistent store configuration used to prevent duplicate messages on restart.
 
 == Input
 
@@ -87,7 +87,22 @@ $$ftp.supplier.preserve-timestamp$$:: $$Set to true to preserve the original tim
 $$ftp.supplier.remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$/$$`)*
 $$ftp.supplier.remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$/$$`)*
 $$ftp.supplier.tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
+$$metadata.store.dynamo-db.create-delay$$:: $$Delay between create table retries.$$ *($$Integer$$, default: `$$1$$`)*
+$$metadata.store.dynamo-db.create-retries$$:: $$Retry number for create table request.$$ *($$Integer$$, default: `$$25$$`)*
+$$metadata.store.dynamo-db.read-capacity$$:: $$Read capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
+$$metadata.store.dynamo-db.table$$:: $$Table name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
+$$metadata.store.dynamo-db.time-to-live$$:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$metadata.store.dynamo-db.write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
+$$metadata.store.gemfire.region$$:: $$Gemfire region name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
+$$metadata.store.jdbc.region$$:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$DEFAULT$$`)*
+$$metadata.store.jdbc.table-prefix$$:: $$Prefix for the custom table name.$$ *($$String$$, default: `$$<none>$$`)*
+$$metadata.store.mongo-db.collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$metadataStore$$`)*
+$$metadata.store.redis.key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 $$metadata.store.type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
+$$metadata.store.zookeeper.connect-string$$:: $$Zookeeper connect string in form HOST:PORT.$$ *($$String$$, default: `$$127.0.0.1:2181$$`)*
+$$metadata.store.zookeeper.encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$, default: `$$UTF-8$$`)*
+$$metadata.store.zookeeper.retry-interval$$:: $$Retry interval for Zookeeper operations in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
+$$metadata.store.zookeeper.root$$:: $$Root node - store entries are children of this node.$$ *($$String$$, default: `$$/SpringIntegration-MetadataStore$$`)*
 //end::configuration-properties[]
 
 == Examples

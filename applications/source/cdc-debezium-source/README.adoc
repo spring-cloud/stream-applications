@@ -11,7 +11,8 @@ It supports all Debezium configuration properties. Just add the `cdc.config.` pr
 We provide convenient shortcuts for the most frequently used Debezium properties. For example instead of the long `cdc.config.connector.class=io.debezium.connector.mysql.MySqlConnector` Debezium property you can use our `cdc.connector=mysql` shortcut. The table below lists all available shortcuts along with the Debezium properties they represent.
 The Debezium properties (e.g. `cdc.config.XXX`) always have precedence over the shortcuts!
 
-The CDC Source introduces a new default `BackingOffsetStore` configuration, based on the [MetadataStore](https://github.com/spring-cloud/stream-applications/tree/master/functions/common/metadata-store-common) service. Later provides various microservices friendly ways for storing the offset metadata.
+The CDC Source introduces a new default `BackingOffsetStore` configuration, based on the link:../../../functions/common/metadata-store-common/README.adoc[MetadataStore] service. Later provides various microservices friendly ways for storing the offset metadata.
+
 
 == Options
 
@@ -31,7 +32,22 @@ $$cdc.offset.storage$$:: $$Kafka connector tracks the number processed records a
 $$cdc.schema$$:: $$Include the schema's as part of the outbound message.$$ *($$Boolean$$, default: `$$false$$`)*
 $$cdc.stream.header.convert-connect-headers$$:: $$When true the {@link org.apache.kafka.connect.header.Header} are converted into message headers with the {@link org.apache.kafka.connect.header.Header#key()} as name and {@link org.apache.kafka.connect.header.Header#value()}.$$ *($$Boolean$$, default: `$$true$$`)*
 $$cdc.stream.header.offset$$:: $$Serializes the source record's offset metadata into the outbound message header under cdc.offset.$$ *($$Boolean$$, default: `$$false$$`)*
+$$metadata.store.dynamo-db.create-delay$$:: $$Delay between create table retries.$$ *($$Integer$$, default: `$$1$$`)*
+$$metadata.store.dynamo-db.create-retries$$:: $$Retry number for create table request.$$ *($$Integer$$, default: `$$25$$`)*
+$$metadata.store.dynamo-db.read-capacity$$:: $$Read capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
+$$metadata.store.dynamo-db.table$$:: $$Table name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
+$$metadata.store.dynamo-db.time-to-live$$:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$metadata.store.dynamo-db.write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
+$$metadata.store.gemfire.region$$:: $$Gemfire region name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
+$$metadata.store.jdbc.region$$:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$DEFAULT$$`)*
+$$metadata.store.jdbc.table-prefix$$:: $$Prefix for the custom table name.$$ *($$String$$, default: `$$<none>$$`)*
+$$metadata.store.mongo-db.collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$metadataStore$$`)*
+$$metadata.store.redis.key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 $$metadata.store.type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
+$$metadata.store.zookeeper.connect-string$$:: $$Zookeeper connect string in form HOST:PORT.$$ *($$String$$, default: `$$127.0.0.1:2181$$`)*
+$$metadata.store.zookeeper.encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$, default: `$$UTF-8$$`)*
+$$metadata.store.zookeeper.retry-interval$$:: $$Retry interval for Zookeeper operations in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
+$$metadata.store.zookeeper.root$$:: $$Root node - store entries are children of this node.$$ *($$String$$, default: `$$/SpringIntegration-MetadataStore$$`)*
 //end::configuration-properties[]
 
 ==== Debezium property Shortcut mapping
