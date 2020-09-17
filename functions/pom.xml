@@ -71,6 +71,7 @@
 		<module>consumer/s3-consumer</module>
 		<module>consumer/twitter-consumer</module>
 		<module>consumer/wavefront-consumer</module>
+		<module>consumer/rsocket-consumer</module>
 
 		<module>function/aggregator-function</module>
 		<module>function/filter-function</module>
