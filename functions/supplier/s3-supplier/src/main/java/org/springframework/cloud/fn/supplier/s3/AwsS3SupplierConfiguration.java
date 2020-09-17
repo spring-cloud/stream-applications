@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -41,17 +40,15 @@ import org.springframework.integration.aws.support.S3SessionFactory;
 import org.springframework.integration.aws.support.filters.S3PersistentAcceptOnceFileListFilter;
 import org.springframework.integration.aws.support.filters.S3RegexPatternFileListFilter;
 import org.springframework.integration.aws.support.filters.S3SimplePatternFileListFilter;
-import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.core.GenericSelector;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.dsl.IntegrationFlows;
-import org.springframework.integration.endpoint.MessageProducerSupport;
+import org.springframework.integration.endpoint.ReactiveMessageSourceProducer;
 import org.springframework.integration.file.filters.ChainFileListFilter;
 import org.springframework.integration.file.filters.FileListFilter;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
 import org.springframework.integration.util.IntegrationReactiveUtils;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.util.StringUtils;
 
@@ -170,17 +167,13 @@ public abstract class AwsS3SupplierConfiguration {
 		}
 
 		@Bean
-		public Publisher<Message<Object>> s3SupplierFlow(MessageSource<?> s3MessageSource,
+		public Publisher<Message<Object>> s3SupplierFlow(ReactiveMessageSourceProducer s3ListingProducer,
 				GenericSelector<S3ObjectSummary> listOnlyFilter) {
 			return IntegrationFlows
-					.from(IntegrationReactiveUtils.messageSourceToFlux(s3MessageSource))
+					.from(s3ListingProducer)
+					.split()
 					.filter(listOnlyFilter)
 					.toReactivePublisher();
-		}
-
-		@Bean
-		PollableChannel listingChannel() {
-			return new QueueChannel();
 		}
 
 		@Bean
@@ -211,30 +204,13 @@ public abstract class AwsS3SupplierConfiguration {
 		}
 
 		@Bean
-		public MessageSource<?> s3MessageSource(PollableChannel listingChannel,
-				S3ListingMessageProducer s3ListingMessageProducer) {
-			return () -> {
-				s3ListingMessageProducer.getObjectMetadata();
-				return (Message<Object>) listingChannel.receive();
-			};
-		}
-
-		@Bean
-		S3ListingMessageProducer s3ListingMessageProducer() {
-			S3ListingMessageProducer messageProducer = new S3ListingMessageProducer();
-			messageProducer.setOutputChannel(listingChannel());
-			return messageProducer;
-		}
-
-		class S3ListingMessageProducer extends MessageProducerSupport {
-			public void getObjectMetadata() {
-				ListObjectsRequest listObjectsRequest = new ListObjectsRequest();
-				listObjectsRequest.setBucketName(awsS3SupplierProperties.getRemoteDir());
-				ObjectListing objectListing = amazonS3.listObjects(listObjectsRequest);
-				objectListing.getObjectSummaries().forEach(summary -> {
-					sendMessage(new GenericMessage<>(summary));
-				});
-			}
+		ReactiveMessageSourceProducer s3ListingMessageProducer(AmazonS3 amazonS3,
+				AwsS3SupplierProperties awsS3SupplierProperties) {
+			ListObjectsRequest listObjectsRequest = new ListObjectsRequest();
+			listObjectsRequest.setBucketName(awsS3SupplierProperties.getRemoteDir());
+			return new ReactiveMessageSourceProducer(
+					(MessageSource<Iterable<S3ObjectSummary>>) () -> new GenericMessage<>(
+							amazonS3.listObjects(listObjectsRequest).getObjectSummaries()));
 		}
 	}
 }
