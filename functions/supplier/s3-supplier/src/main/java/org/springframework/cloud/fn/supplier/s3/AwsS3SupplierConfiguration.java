@@ -17,7 +17,6 @@
 package org.springframework.cloud.fn.supplier.s3;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -29,7 +28,7 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.aws.core.env.ResourceIdResolver;
 import org.springframework.cloud.fn.common.file.FileConsumerProperties;
@@ -52,9 +51,8 @@ import org.springframework.integration.file.filters.FileListFilter;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
 import org.springframework.integration.util.IntegrationReactiveUtils;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.PollableChannel;
-import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.util.StringUtils;
 
 /**
@@ -89,7 +87,7 @@ public abstract class AwsS3SupplierConfiguration {
 	}
 
 	@Configuration
-	@ConditionalOnExpression("environment['s3.supplier.list-only'] != 'true'")
+	@ConditionalOnProperty(prefix = "s3.supplier", name = "list-only", havingValue = "false", matchIfMissing = true)
 	static class SynchronizingConfiguation extends AwsS3SupplierConfiguration {
 
 		@Bean
@@ -157,7 +155,7 @@ public abstract class AwsS3SupplierConfiguration {
 	}
 
 	@Configuration
-	@ConditionalOnExpression("environment['s3.supplier.list-only'] == 'true'")
+	@ConditionalOnProperty(prefix = "s3.supplier", name = "list-only", havingValue = "true")
 	static class ListOnlyConfiguration extends AwsS3SupplierConfiguration {
 		ListOnlyConfiguration(AwsS3SupplierProperties awsS3SupplierProperties,
 				FileConsumerProperties fileConsumerProperties,
@@ -234,7 +232,7 @@ public abstract class AwsS3SupplierConfiguration {
 				listObjectsRequest.setBucketName(awsS3SupplierProperties.getRemoteDir());
 				ObjectListing objectListing = amazonS3.listObjects(listObjectsRequest);
 				objectListing.getObjectSummaries().forEach(summary -> {
-					sendMessage(MessageBuilder.createMessage(summary, new MessageHeaders(Collections.EMPTY_MAP)));
+					sendMessage(new GenericMessage<>(summary));
 				});
 			}
 		}
