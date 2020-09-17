@@ -1,0 +1,34 @@
+# Mail Supplier
+
+This module provides a File supplier that can be reused and composed in other applications.
+The `Supplier` uses the mail IMAP and POP3 support from Spring Integration.
+The `mailSupplier` bean is implemented as a `java.util.function.Supplier`.
+This supplier gives you a reactive stream of emails from the provided url (imap or pop3).
+The supplier has a signature of `Supplier<Flux<Message<?>>>`.
+Users have to subscribe to this `Flux` and receive the data.
+
+## Beans for injection
+
+You can import the `MailSupplierConfiguration` in the application and then inject the following bean.
+
+`mailSupplier`
+
+You need to inject this as `Supplier<Flux<Message<?>>>`.
+
+You can use `mailSupplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it and then subscribe to the returned `Flux`.
+
+## Configuration Options
+
+All configuration properties are prefixed with `mail.supplier`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/mail/MailSupplierProperties.java[MailSupplierProperties].
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/supplier/mail[test suite] for the various ways, this supplier is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/mail-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application where it makes a Mail Source.

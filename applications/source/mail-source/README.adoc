@@ -1,0 +1,21 @@
+//tag::ref-doc[]
+= Mail Source
+
+A source application that listens for Emails and emits the message body as a message payload.
+
+== Options
+
+The **$$mail$$** $$source$$ has the following options:
+
+//tag::configuration-properties[]
+$$mail.supplier.charset$$:: $$The charset for byte[] mail-to-string transformation.$$ *($$String$$, default: `$$UTF-8$$`)*
+$$mail.supplier.delete$$:: $$Set to true to delete email after download.$$ *($$Boolean$$, default: `$$false$$`)*
+$$mail.supplier.expression$$:: $$Configure a SpEL expression to select messages.$$ *($$String$$, default: `$$true$$`)*
+$$mail.supplier.idle-imap$$:: $$Set to true to use IdleImap Configuration.$$ *($$Boolean$$, default: `$$false$$`)*
+$$mail.supplier.java-mail-properties$$:: $$JavaMail properties as a new line delimited string of name-value pairs, e.g. 'foo=bar\n baz=car'.$$ *($$Properties$$, default: `$$<none>$$`)*
+$$mail.supplier.mark-as-read$$:: $$Set to true to mark email as read.$$ *($$Boolean$$, default: `$$false$$`)*
+$$mail.supplier.url$$:: $$Mail connection URL for connection to Mail server e.g. 'imaps://username:password@imap.server.com:993/Inbox'.$$ *($$URLName$$, default: `$$<none>$$`)*
+$$mail.supplier.user-flag$$:: $$The flag to mark messages when the server does not support \Recent.$$ *($$String$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]

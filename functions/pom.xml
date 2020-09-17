@@ -92,6 +92,7 @@
 		<module>supplier/http-supplier</module>
 		<module>supplier/jdbc-supplier</module>
 		<module>supplier/jms-supplier</module>
+		<module>supplier/mail-supplier</module>
 		<module>supplier/mongodb-supplier</module>
 		<module>supplier/mqtt-supplier</module>
 		<module>supplier/sftp-supplier</module>

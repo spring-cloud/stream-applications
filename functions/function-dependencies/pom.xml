@@ -17,6 +17,11 @@
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
+                <artifactId>mail-supplier</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>syslog-supplier</artifactId>
                 <version>${project.version}</version>
             </dependency>
