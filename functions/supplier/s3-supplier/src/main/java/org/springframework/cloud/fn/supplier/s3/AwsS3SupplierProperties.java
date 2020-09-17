@@ -80,6 +80,11 @@ public class AwsS3SupplierProperties {
 	 */
 	private boolean preserveTimestamp = true;
 
+	/**
+	 * Set to true to return s3 object metadata without copying file to a local directory.
+	 */
+	private boolean listOnly = false;
+
 	@Length(min = 3)
 	public String getRemoteDir() {
 		return this.remoteDir;

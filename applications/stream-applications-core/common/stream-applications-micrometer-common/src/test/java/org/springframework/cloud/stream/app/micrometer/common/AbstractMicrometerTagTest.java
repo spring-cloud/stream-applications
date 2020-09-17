@@ -23,7 +23,7 @@ import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.simple.SimpleConfig;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import io.pivotal.cfenv.test.CfEnvTestUtils;
+import io.pivotal.cfenv.test.AbstractCfEnvTests;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -61,11 +61,11 @@ public class AbstractMicrometerTagTest {
 	protected Meter meter;
 
 	@BeforeClass
-	public static void setup() throws IOException {
+	public static void mockVcapServices() throws IOException {
 		String serviceJson = StreamUtils.copyToString(new DefaultResourceLoader().getResource(
 				"classpath:/org/springframework/cloud/stream/app/micrometer/common/pcf-scs-info.json")
 				.getInputStream(), Charset.forName("UTF-8"));
-		CfEnvTestUtils.mockVcapServicesFromString(serviceJson);
+		new Vcap().mockServices(serviceJson);
 	}
 
 	@Before
@@ -93,5 +93,11 @@ public class AbstractMicrometerTagTest {
 		public SimpleConfig simpleConfig(SimpleProperties simpleProperties) {
 			return new SimplePropertiesConfigAdapter(simpleProperties);
 		}
+	}
+}
+
+class Vcap extends AbstractCfEnvTests {
+	public void mockServices(String json) {
+		super.mockVcapServices(json);
 	}
 }

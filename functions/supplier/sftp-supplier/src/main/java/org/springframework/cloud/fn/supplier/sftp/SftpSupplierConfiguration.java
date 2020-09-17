@@ -17,9 +17,10 @@
 package org.springframework.cloud.fn.supplier.sftp;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,8 +42,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.MediaType;
 import org.springframework.integration.aop.ReceiveMessageAdvice;
 import org.springframework.integration.channel.QueueChannel;
+import org.springframework.integration.core.GenericSelector;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
@@ -66,9 +69,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.MimeTypeUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -86,6 +87,8 @@ import org.springframework.util.StringUtils;
 public class SftpSupplierConfiguration {
 
 	private static final String METADATA_STORE_PREFIX = "sftpSource/";
+
+	private static final String FILE_MODIFIED_TIME_HEADER = "FILE_MODIFIED_TIME";
 
 	@Bean
 	public Supplier<Flux<? extends Message<?>>> sftpSupplier(MessageSource<?> sftpMessageSource,
@@ -130,7 +133,7 @@ public class SftpSupplierConfiguration {
 	 * Configure the standard filters for SFTP inbound adapters.
 	 */
 	@Bean
-	public ChainFileListFilter<LsEntry> chainFilter(SftpSupplierProperties sftpSupplierProperties,
+	public FileListFilter<LsEntry> chainFilter(SftpSupplierProperties sftpSupplierProperties,
 			ConcurrentMetadataStore metadataStore) {
 		ChainFileListFilter<LsEntry> chainFilter = new ChainFileListFilter<>();
 
@@ -142,9 +145,7 @@ public class SftpSupplierConfiguration {
 			chainFilter
 					.addFilter(new SftpRegexPatternFileListFilter(sftpSupplierProperties.getFilenameRegex()));
 		}
-		// TODO: Temporary work-around for
-		// https://github.com/spring-projects/spring-integration/issues/3315.
-		chainFilter.addFilter(Arrays::asList);
+
 		chainFilter.addFilter(new SftpPersistentAcceptOnceFileListFilter(metadataStore, METADATA_STORE_PREFIX));
 		return chainFilter;
 	}
@@ -279,7 +280,6 @@ public class SftpSupplierConfiguration {
 		}
 
 		@Bean
-		@SuppressWarnings("unchecked")
 		public MessageSource<?> targetMessageSource(PollableChannel listingChannel,
 				SftpListingMessageProducer sftpListingMessageProducer) {
 			return () -> {
@@ -299,29 +299,70 @@ public class SftpSupplierConfiguration {
 		}
 
 		@Bean
-		public IntegrationFlow listingFlow(MessageProducerSupport messageProducerSupport,
-				MessageChannel listingChannel, MessageProcessor<?> metadataWriter) {
+		GenericSelector<String> listOnlyFilter(SftpSupplierProperties sftpSupplierProperties) {
+			Predicate<String> predicate = s -> true;
+			if (StringUtils.hasText(sftpSupplierProperties.getFilenamePattern())) {
+				predicate = Pattern.compile(sftpSupplierProperties.getFilenamePattern()).asPredicate();
+			}
+			else if (sftpSupplierProperties.getFilenameRegex() != null) {
+				predicate = sftpSupplierProperties.getFilenameRegex().asPredicate();
+			}
 
-			return IntegrationFlows.from(messageProducerSupport)
+			GenericSelector<String> selector = predicate::test;
+
+			return selector;
+		}
+
+		@Bean
+		public IntegrationFlow listingFlow(MessageProducerSupport listingMessageProducer,
+				MessageChannel listingChannel, MessageProcessor<?> lsEntryToStringTransformer,
+				GenericSelector<Message<?>> duplicateFilter,
+				GenericSelector<String> listOnlyFilter) {
+
+			return IntegrationFlows.from(listingMessageProducer)
 					.split()
-					.transform(metadataWriter)
+					.transform(lsEntryToStringTransformer)
+					.filter(duplicateFilter)
+					.filter(listOnlyFilter)
 					.channel(listingChannel)
 					.get();
 		}
 
 		@Bean
-		public MessageProcessor<?> metadataWriter(ConcurrentMetadataStore metadataStore) {
-			return message -> {
-				MessageHeaders messageHeaders = message.getHeaders();
-				Assert.notNull(messageHeaders, "Cannot transform message with null headers");
-				Assert.isTrue(messageHeaders.containsKey(FileHeaders.REMOTE_DIRECTORY),
-						"Remote directory header not found");
-				Assert.hasText((String) message.getPayload(), "Payload must not be empty.");
+		public MessageProcessor<Message<?>> lsEntryToStringTransformer() {
+			return (Message<?> message) -> {
 
-				metadataStore.putIfAbsent(
-						message.getHeaders().get(FileHeaders.REMOTE_DIRECTORY).toString() + message.getPayload(),
-						String.valueOf(message.getHeaders().getTimestamp()));
-				return message;
+				LsEntry lsEntry = (LsEntry) message.getPayload();
+
+				String fileName = message.getHeaders().get(FileHeaders.REMOTE_DIRECTORY) + lsEntry.getFilename();
+
+				return MessageBuilder.withPayload(fileName)
+						.copyHeaders(message.getHeaders())
+						.setHeader(FILE_MODIFIED_TIME_HEADER, String.valueOf(lsEntry.getAttrs().getMTime()))
+						.setHeader(MessageHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN)
+						.build();
+			};
+
+		}
+
+		@Bean
+		GenericSelector<Message<?>> duplicateFilter(ConcurrentMetadataStore metadataStore) {
+			return new GenericSelector<Message<?>>() {
+				@Override
+				public boolean accept(Message<?> message) {
+
+					String lastModifiedTime = (String) message.getHeaders().get(FILE_MODIFIED_TIME_HEADER);
+					String storedLastModifiedTime = metadataStore.get(METADATA_STORE_PREFIX + message.getPayload());
+
+					boolean result = !lastModifiedTime.equals(storedLastModifiedTime);
+
+					if (result) {
+						metadataStore.put(
+								METADATA_STORE_PREFIX + message.getPayload(),
+								message.getHeaders().get(FILE_MODIFIED_TIME_HEADER).toString());
+					}
+					return result;
+				}
 			};
 		}
 
@@ -342,17 +383,19 @@ public class SftpSupplierConfiguration {
 			}
 
 			public void listNames() {
-				String[] names = {};
+				LsEntry[] entries = {};
 				try {
-					names = Stream.of(this.sessionFactory.getSession().listNames(this.remoteDirectory))
-							.map(name -> String.join(this.remoteFileSeparator, this.remoteDirectory, name))
-							.collect(Collectors.toList()).toArray(names);
+					entries = Stream.of(this.sessionFactory.getSession().list(this.remoteDirectory))
+							.filter(o -> {
+								LsEntry lsEntry = (LsEntry) o;
+								return !(lsEntry.getAttrs().isDir() || lsEntry.getAttrs().isLink());
+							})
+							.collect(Collectors.toList()).toArray(entries);
 				}
 				catch (IOException e) {
 					throw new MessagingException(e.getMessage(), e);
 				}
-				sendMessage(MessageBuilder.withPayload(names)
-						.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.TEXT_PLAIN)
+				sendMessage(MessageBuilder.withPayload(entries)
 						.setHeader(FileHeaders.REMOTE_DIRECTORY, this.remoteDirectory + this.remoteFileSeparator)
 						.build());
 			}

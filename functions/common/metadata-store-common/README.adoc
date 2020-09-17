@@ -5,7 +5,7 @@ See Spring Integration "`https://docs.spring.io/spring-integration/docs/5.0.6.RE
 
 In addition to the standard Spring Boot configuration properties this module exposes a `MetadataStoreProperties` with the `metadata.store` prefix.
 
-To auto-configure particular `MetadataStore` you just need to bring respective dependencies into the target app starter:
+To auto-configure particular `MetadataStore` you need to set `metadata.store.type` and include the respective dependencies into the target app starter:
 
 ==== Redis
 

@@ -27,9 +27,9 @@ import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.Region;
 
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.aws.core.region.RegionProvider;
 import org.springframework.context.annotation.Bean;
@@ -52,6 +52,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * @author Artem Bilan
+ * @author David Turanski
  * @since 2.0.2
  */
 @Configuration
@@ -60,47 +61,46 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class MetadataStoreAutoConfiguration {
 
 	@Bean
+	@ConditionalOnProperty(prefix = "metadata.store", name = "type", havingValue = "memory", matchIfMissing = true)
 	@ConditionalOnMissingBean
 	public ConcurrentMetadataStore simpleMetadataStore() {
 		return new SimpleMetadataStore();
 	}
 
-	@ConditionalOnClass(RedisMetadataStore.class)
-	@ConditionalOnBean(RedisTemplate.class)
+	@ConditionalOnProperty(prefix = "metadata.store", name = "type", havingValue = "redis")
 	static class Redis {
 
 		@Bean
 		@ConditionalOnMissingBean
 		public ConcurrentMetadataStore redisMetadataStore(RedisTemplate<String, ?> redisTemplate,
-														MetadataStoreProperties metadataStoreProperties) {
+				MetadataStoreProperties metadataStoreProperties) {
 
 			return new RedisMetadataStore(redisTemplate, metadataStoreProperties.getRedis().getKey());
 		}
 
 	}
 
-	@ConditionalOnClass(MongoDbMetadataStore.class)
-	@ConditionalOnBean(MongoTemplate.class)
+	@ConditionalOnProperty(prefix = "metadata.store", name = "type", havingValue = "mongodb")
 	static class Mongo {
 
 		@Bean
 		@ConditionalOnMissingBean
 		public ConcurrentMetadataStore mongoDbMetadataStore(MongoTemplate mongoTemplate,
-															MetadataStoreProperties metadataStoreProperties) {
+				MetadataStoreProperties metadataStoreProperties) {
 
 			return new MongoDbMetadataStore(mongoTemplate, metadataStoreProperties.getMongoDb().getCollection());
 		}
 
 	}
 
-	@ConditionalOnClass(GemfireMetadataStore.class)
+	@ConditionalOnProperty(prefix = "metadata.store", name = "type", havingValue = "gemfire")
 	@Import(ClientCacheAutoConfiguration.class)
 	static class Gemfire {
 
 		@Bean
 		@ConditionalOnMissingBean
 		public ClientRegionFactoryBean<?, ?> gemfireRegion(GemFireCache cache,
-														MetadataStoreProperties metadataStoreProperties) {
+				MetadataStoreProperties metadataStoreProperties) {
 
 			ClientRegionFactoryBean<?, ?> clientRegionFactoryBean = new ClientRegionFactoryBean<>();
 			clientRegionFactoryBean.setCache(cache);
@@ -111,7 +111,7 @@ public class MetadataStoreAutoConfiguration {
 		@Bean
 		@ConditionalOnMissingBean
 		public ConcurrentMetadataStore gemfireMetadataStore(Region<?, ?> region,
-															ObjectProvider<MetadataStoreListener> metadataStoreListenerObjectProvider) {
+				ObjectProvider<MetadataStoreListener> metadataStoreListenerObjectProvider) {
 
 			@SuppressWarnings("unchecked")
 			GemfireMetadataStore gemfireMetadataStore = new GemfireMetadataStore((Region<String, String>) region);
@@ -122,7 +122,7 @@ public class MetadataStoreAutoConfiguration {
 
 	}
 
-	@ConditionalOnClass(HazelcastMetadataStore.class)
+	@ConditionalOnProperty(prefix = "metadata.store", name = "type", havingValue = "hazelcast")
 	static class Hazelcast {
 
 		@Bean
@@ -134,7 +134,7 @@ public class MetadataStoreAutoConfiguration {
 		@Bean
 		@ConditionalOnMissingBean
 		public ConcurrentMetadataStore hazelcastMetadataStore(HazelcastInstance hazelcastInstance,
-															ObjectProvider<MetadataStoreListener> metadataStoreListenerObjectProvider) {
+				ObjectProvider<MetadataStoreListener> metadataStoreListenerObjectProvider) {
 
 			HazelcastMetadataStore hazelcastMetadataStore = new HazelcastMetadataStore(hazelcastInstance);
 			metadataStoreListenerObjectProvider.ifAvailable(hazelcastMetadataStore::addListener);
@@ -143,7 +143,7 @@ public class MetadataStoreAutoConfiguration {
 
 	}
 
-	@ConditionalOnClass({ZookeeperMetadataStore.class, CuratorFramework.class})
+	@ConditionalOnProperty(prefix = "metadata.store", name = "type", havingValue = "zookeeper")
 	static class Zookeeper {
 
 		@Bean(initMethod = "start")
@@ -157,8 +157,8 @@ public class MetadataStoreAutoConfiguration {
 		@Bean
 		@ConditionalOnMissingBean
 		public ConcurrentMetadataStore zookeeperMetadataStore(CuratorFramework curatorFramework,
-															MetadataStoreProperties metadataStoreProperties,
-															ObjectProvider<MetadataStoreListener> metadataStoreListenerObjectProvider) {
+				MetadataStoreProperties metadataStoreProperties,
+				ObjectProvider<MetadataStoreListener> metadataStoreListenerObjectProvider) {
 
 			MetadataStoreProperties.Zookeeper zookeeperProperties = metadataStoreProperties.getZookeeper();
 			ZookeeperMetadataStore zookeeperMetadataStore = new ZookeeperMetadataStore(curatorFramework);
@@ -170,14 +170,13 @@ public class MetadataStoreAutoConfiguration {
 
 	}
 
-	@ConditionalOnClass(DynamoDbMetadataStore.class)
-	@ConditionalOnBean({AWSCredentialsProvider.class, RegionProvider.class})
+	@ConditionalOnProperty(prefix = "metadata.store", name = "type", havingValue = "dynamodb")
 	static class DynamoDb {
 
 		@Bean
 		@ConditionalOnMissingBean
 		public AmazonDynamoDBAsync dynamoDB(AWSCredentialsProvider awsCredentialsProvider,
-											RegionProvider regionProvider) {
+				RegionProvider regionProvider) {
 
 			return AmazonDynamoDBAsyncClientBuilder.standard()
 					.withCredentials(awsCredentialsProvider)
@@ -190,12 +189,12 @@ public class MetadataStoreAutoConfiguration {
 		@Bean
 		@ConditionalOnMissingBean
 		public ConcurrentMetadataStore dynamoDbMetadataStore(AmazonDynamoDBAsync dynamoDB,
-															MetadataStoreProperties metadataStoreProperties) {
+				MetadataStoreProperties metadataStoreProperties) {
 
 			MetadataStoreProperties.DynamoDb dynamoDbProperties = metadataStoreProperties.getDynamoDb();
 
-			DynamoDbMetadataStore dynamoDbMetadataStore =
-					new DynamoDbMetadataStore(dynamoDB, dynamoDbProperties.getTable());
+			DynamoDbMetadataStore dynamoDbMetadataStore = new DynamoDbMetadataStore(dynamoDB,
+					dynamoDbProperties.getTable());
 
 			dynamoDbMetadataStore.setReadCapacity(dynamoDbProperties.getReadCapacity());
 			dynamoDbMetadataStore.setWriteCapacity(dynamoDbProperties.getWriteCapacity());
@@ -210,14 +209,12 @@ public class MetadataStoreAutoConfiguration {
 
 	}
 
-	@ConditionalOnClass(JdbcMetadataStore.class)
-	@ConditionalOnBean(JdbcTemplate.class)
+	@ConditionalOnProperty(prefix = "metadata.store", name = "type", havingValue = "jdbc")
 	static class Jdbc {
-
 		@Bean
 		@ConditionalOnMissingBean
 		public ConcurrentMetadataStore jdbcMetadataStore(JdbcTemplate jdbcTemplate,
-														MetadataStoreProperties metadataStoreProperties) {
+				MetadataStoreProperties metadataStoreProperties) {
 
 			MetadataStoreProperties.Jdbc jdbcProperties = metadataStoreProperties.getJdbc();
 
