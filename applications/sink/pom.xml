@@ -31,5 +31,6 @@
         <module>twitter-update-sink</module>
         <module>twitter-message-sink</module>
         <module>wavefront-sink</module>
+        <module>rsocket-sink</module>
     </modules>
 </project>
