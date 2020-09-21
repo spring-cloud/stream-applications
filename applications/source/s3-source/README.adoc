@@ -78,6 +78,7 @@ $$s3.supplier.auto-create-local-dir$$:: $$Create or not the local directory.$$ *
 $$s3.supplier.delete-remote-files$$:: $$Delete or not remote files after processing.$$ *($$Boolean$$, default: `$$false$$`)*
 $$s3.supplier.filename-pattern$$:: $$The pattern to filter remote files.$$ *($$String$$, default: `$$<none>$$`)*
 $$s3.supplier.filename-regex$$:: $$The regexp to filter remote files.$$ *($$Pattern$$, default: `$$<none>$$`)*
+$$s3.supplier.list-only$$:: $$Set to true to return s3 object metadata without copying file to a local directory.$$ *($$Boolean$$, default: `$$false$$`)*
 $$s3.supplier.local-dir$$:: $$The local directory to store files.$$ *($$File$$, default: `$$<none>$$`)*
 $$s3.supplier.preserve-timestamp$$:: $$To transfer or not the timestamp of the remote file to the local one.$$ *($$Boolean$$, default: `$$true$$`)*
 $$s3.supplier.remote-dir$$:: $$AWS S3 bucket resource.$$ *($$String$$, default: `$$bucket$$`)*

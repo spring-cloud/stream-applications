@@ -165,4 +165,12 @@ public class AwsS3SupplierProperties {
 	public boolean isExclusivePatterns() {
 		return !(this.filenamePattern != null && this.filenameRegex != null);
 	}
+
+	public boolean isListOnly() {
+		return listOnly;
+	}
+
+	public void setListOnly(boolean listOnly) {
+		this.listOnly = listOnly;
+	}
 }
