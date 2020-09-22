@@ -74,7 +74,7 @@ public final class MavenXmlWriter {
 	 *     <version>2.0.0</version>
 	 *     <configuration>
 	 *       <![CDATA[
-	 *         <from><image>springcloud/openjdk</image></from>
+	 *         <from><image>springcloud/baseimage:1.0.0</image></from>
 	 *         <to>
 	 *           <image>springcloudstream:${project.artifactId}</image>
 	 *           <tags><tag>latest</tag></tags>
