@@ -66,18 +66,16 @@ public class TimeSourceTests {
 	}
 
 	@Test
-	public void testSourceComposedWithSpelAndFilter() {
+	public void testSourceComposedWithheaderEnricher() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(TimeSourceTestApplication.class))
 								.web(WebApplicationType.NONE)
-								.run("--spring.cloud.function.definition=timeSupplier|headerEnricherFunction|filterFunction",
-										"--header.enricher.headers=seconds=T(java.lang.Integer).valueOf(payload.substring(payload.length() - 2))",
-										"--filter.function.expression=headers[seconds]%2==0")) {
+								.run("--spring.cloud.function.definition=timeSupplier|headerEnricherFunction",
+										"--header.enricher.headers=seconds=T(java.lang.Integer).valueOf(payload.substring(payload.length() - 2))")) {
 			OutputDestination target = context.getBean(OutputDestination.class);
 			Message<byte[]> sourceMessage = target.receive(10000);
-			final String actual = new String(sourceMessage.getPayload());
-			assertThat(((int) sourceMessage.getHeaders().get("seconds")) % 2).isZero();
+			assertThat(((int) sourceMessage.getHeaders().get("seconds"))).isBetween(0, 60);
 		}
 	}
 
