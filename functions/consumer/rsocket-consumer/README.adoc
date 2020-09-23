@@ -7,7 +7,7 @@ The consumer uses the RSocket support from https://docs.spring.io/spring/docs/cu
 
 You can import `RSocketConsumerConfiguration` in the application and then inject the following bean.
 
-`Function<Message<?>, Mono<Void>> rsocketConsumer`
+`Function<Flux<Message<?>>, Mono<Void>>`
 
 You can use `rsocketConsumer` as a qualifier when injecting.
 
