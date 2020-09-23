@@ -32,10 +32,11 @@ import org.springframework.boot.rsocket.context.RSocketServerBootstrap;
 import org.springframework.boot.rsocket.server.RSocketServer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.stream.app.rsocket.sink.test.RsocketSinkTestApplication;
+import org.springframework.cloud.fn.consumer.rsocket.RsocketConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -47,7 +48,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 /**
  * @author Soby Chacko
  */
-@SpringBootTest(properties = {"spring.rsocket.server.port=0"})
+@SpringBootTest(properties = {"spring.rsocket.server.port=0"}, classes = RSocketSinkTests.RSocketserverApplication.class)
 @DirtiesContext
 public class RSocketSinkTests {
 
@@ -101,5 +102,12 @@ public class RSocketSinkTests {
 		void someMethod(String payload) {
 			this.fireForgetPayloads.onNext(payload);
 		}
+	}
+
+	@EnableAutoConfiguration
+	@SpringBootConfiguration
+	@Import(RsocketConsumerConfiguration.class)
+	static class RsocketSinkTestApplication {
+
 	}
 }

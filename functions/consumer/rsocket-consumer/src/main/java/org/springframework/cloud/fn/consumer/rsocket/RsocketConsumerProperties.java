@@ -44,7 +44,7 @@ public class RsocketConsumerProperties {
 	private String route;
 
 	public String getHost() {
-		return host;
+		return this.host;
 	}
 
 	public void setHost(String host) {
@@ -52,7 +52,7 @@ public class RsocketConsumerProperties {
 	}
 
 	public int getPort() {
-		return port;
+		return this.port;
 	}
 
 	public void setPort(int port) {
@@ -60,7 +60,7 @@ public class RsocketConsumerProperties {
 	}
 
 	public String getRoute() {
-		return route;
+		return this.route;
 	}
 
 	public void setRoute(String route) {
@@ -68,7 +68,7 @@ public class RsocketConsumerProperties {
 	}
 
 	public URI getUri() {
-		return uri;
+		return this.uri;
 	}
 
 	public void setUri(URI uri) {
