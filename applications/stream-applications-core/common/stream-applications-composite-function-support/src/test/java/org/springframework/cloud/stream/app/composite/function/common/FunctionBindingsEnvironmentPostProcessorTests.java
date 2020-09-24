@@ -36,7 +36,22 @@ public class FunctionBindingsEnvironmentPostProcessorTests {
 				.isEqualTo("output");
 		assertThat(context.getEnvironment().getProperty("spring.cloud.stream.function.bindings.firstFunctionsecondFunction-in-0"))
 				.isEqualTo("input");
+		assertThat(context.getEnvironment().getProperty("spring.cloud.function.definition")).isEqualTo("firstFunction|secondFunction");
 	}
+
+	@Test
+	void destinationBindingsWithSingleQuotes() {
+		ApplicationContext context = new SpringApplication(TestApp.class).run(
+				"--spring.cloud.stream.bindings.output.destination=foo",
+				"--spring.cloud.stream.bindings.input.destination=bar",
+				"--spring.cloud.function.definition='firstFunction|secondFunction'");
+		assertThat(context.getEnvironment().getProperty("spring.cloud.stream.function.bindings.firstFunctionsecondFunction-out-0"))
+				.isEqualTo("output");
+		assertThat(context.getEnvironment().getProperty("spring.cloud.stream.function.bindings.firstFunctionsecondFunction-in-0"))
+				.isEqualTo("input");
+		assertThat(context.getEnvironment().getProperty("spring.cloud.function.definition")).isEqualTo("firstFunction|secondFunction");
+	}
+
 	@Test
 	void destinationBindingsWithCommaDelimiter() {
 		ApplicationContext context = new SpringApplication(TestApp.class).run(
@@ -47,6 +62,7 @@ public class FunctionBindingsEnvironmentPostProcessorTests {
 				.isEqualTo("output");
 		assertThat(context.getEnvironment().getProperty("spring.cloud.stream.function.bindings.firstFunctionsecondFunction-in-0"))
 				.isEqualTo("input");
+		assertThat(context.getEnvironment().getProperty("spring.cloud.function.definition")).isEqualTo("firstFunction|secondFunction");
 	}
 
 	@SpringBootApplication

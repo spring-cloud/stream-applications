@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.composite.function.common;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,6 @@ import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.util.StringUtils;
 
@@ -60,7 +60,7 @@ public class FunctionBindingEnvironmentPostProcessor implements EnvironmentPostP
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-		String functionDefinition = functionDefinition(environment);
+		String functionDefinition = normalizeFunctionDefinition(environment);
 		if (StringUtils.isEmpty(functionDefinition)) {
 			return;
 		}
@@ -95,18 +95,32 @@ public class FunctionBindingEnvironmentPostProcessor implements EnvironmentPostP
 	}
 
 	private String functionDefinitionToChannelName(String functionDefinition) {
-		return functionDefinition.replaceAll("\\||,", "");
+		return functionDefinition.replace("|", "");
 	}
 
-	private String functionDefinition(Environment environment) {
+	private String normalizeFunctionDefinition(ConfigurableEnvironment environment) {
+		String functionDefinition = null;
+		if (environment.containsProperty(SPRING_CLOUD_FUNCTION_DEFINITION)) {
+			functionDefinition = sanitizeActualFunctionDefinition(
+					environment.getProperty(SPRING_CLOUD_FUNCTION_DEFINITION));
+		}
 		if (environment.containsProperty(SPRING_CLOUD_STREAM_FUNCTION_DEFINITION)) {
 			log.warn("The property '" + SPRING_CLOUD_STREAM_FUNCTION_DEFINITION + "' is deprecated. Please use '"
 					+ SPRING_CLOUD_FUNCTION_DEFINITION + "'");
-			return environment.getProperty(SPRING_CLOUD_STREAM_FUNCTION_DEFINITION);
+			functionDefinition = sanitizeActualFunctionDefinition(
+					environment.getProperty(SPRING_CLOUD_STREAM_FUNCTION_DEFINITION));
 		}
-		else if (environment.containsProperty(SPRING_CLOUD_FUNCTION_DEFINITION)) {
-			return environment.getProperty(SPRING_CLOUD_FUNCTION_DEFINITION);
+
+		if (StringUtils.hasText(functionDefinition)) {
+			if (!functionDefinition.equals(environment.getProperty(SPRING_CLOUD_FUNCTION_DEFINITION))) {
+				environment.getPropertySources().addFirst(new MapPropertySource("spring-cloud-function-definition",
+						Collections.singletonMap(SPRING_CLOUD_FUNCTION_DEFINITION, functionDefinition)));
+			}
 		}
-		return null;
+		return environment.getProperty(SPRING_CLOUD_FUNCTION_DEFINITION);
+	}
+
+	private String sanitizeActualFunctionDefinition(String functionDefinition) {
+		return functionDefinition.replaceAll("[\'\"]", "").replace(",", "|");
 	}
 }
