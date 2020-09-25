@@ -24,8 +24,10 @@ import java.util.regex.Pattern;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.MonoProcessor;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscription;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -86,9 +88,11 @@ public abstract class AwsS3SupplierConfiguration {
 	@ConditionalOnProperty(prefix = "s3.supplier", name = "list-only", havingValue = "false", matchIfMissing = true)
 	static class SynchronizingConfiguration extends AwsS3SupplierConfiguration {
 
+		private final MonoProcessor<Subscription> downstreamSubscription = MonoProcessor.create();
+
 		@Bean
-		public Supplier<Flux<Message<?>>> s3Supplier(Publisher<Message<Object>> s3SupplierFlow) {
-			return () -> Flux.from(s3SupplierFlow);
+		public Supplier<Flux<Message<?>>> s3Supplier(Publisher<Message<?>> s3SupplierFlow) {
+			return () -> Flux.from(s3SupplierFlow).doOnSubscribe(this.downstreamSubscription::onNext);
 		}
 
 		@Bean
@@ -118,8 +122,11 @@ public abstract class AwsS3SupplierConfiguration {
 
 		@Bean
 		public Publisher<Message<Object>> s3SupplierFlow(MessageSource<?> s3MessageSource) {
-			return FileUtils.enhanceFlowForReadingMode(IntegrationFlows
-					.from(IntegrationReactiveUtils.messageSourceToFlux(s3MessageSource)), fileConsumerProperties)
+			return FileUtils.enhanceFlowForReadingMode(
+					IntegrationFlows.from(
+							IntegrationReactiveUtils.messageSourceToFlux(s3MessageSource)
+									.delaySubscription(this.downstreamSubscription)),
+					fileConsumerProperties)
 					.toReactivePublisher();
 		}
 
@@ -146,11 +153,13 @@ public abstract class AwsS3SupplierConfiguration {
 			s3MessageSource.setAutoCreateLocalDirectory(this.awsS3SupplierProperties.isAutoCreateLocalDir());
 			return s3MessageSource;
 		}
+
 	}
 
 	@Configuration
 	@ConditionalOnProperty(prefix = "s3.supplier", name = "list-only", havingValue = "true")
 	static class ListOnlyConfiguration extends AwsS3SupplierConfiguration {
+
 		ListOnlyConfiguration(AwsS3SupplierProperties awsS3SupplierProperties,
 				FileConsumerProperties fileConsumerProperties,
 				AmazonS3 amazonS3,
@@ -209,5 +218,7 @@ public abstract class AwsS3SupplierConfiguration {
 					(MessageSource<Iterable<S3ObjectSummary>>) () -> new GenericMessage<>(
 							amazonS3.listObjects(listObjectsRequest).getObjectSummaries()));
 		}
+
 	}
+
 }

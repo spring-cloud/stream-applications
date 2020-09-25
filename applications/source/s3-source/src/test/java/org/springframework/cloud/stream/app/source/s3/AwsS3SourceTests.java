@@ -36,18 +36,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.fn.supplier.s3.AwsS3SupplierConfiguration;
 import org.springframework.cloud.fn.supplier.s3.AwsS3SupplierProperties;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
-import org.springframework.context.Lifecycle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
-import org.springframework.integration.test.context.SpringIntegrationTest;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.FileCopyUtils;
@@ -66,10 +63,8 @@ import static org.mockito.Mockito.mock;
 				"cloud.aws.region.static=" + AwsS3SourceTests.AWS_REGION,
 				"s3.supplier.remoteDir=" + AwsS3SourceTests.S3_BUCKET,
 				"file.consumer.mode=ref",
-				"s3.supplier.filenameRegex=.*\\\\.test$"})
+				"s3.supplier.filenameRegex=.*\\\\.test$" })
 @DirtiesContext
-@SpringIntegrationTest(noAutoStartup =
-		"s3SupplierFlow.org.springframework.integration.config.ConsumerEndpointFactoryBean#0")
 public class AwsS3SourceTests {
 
 	@TempDir
@@ -87,10 +82,6 @@ public class AwsS3SourceTests {
 
 	@Autowired
 	private OutputDestination output;
-
-	@Autowired
-	@Qualifier("s3SupplierFlow.org.springframework.integration.config.ConsumerEndpointFactoryBean#0")
-	Lifecycle consumerEndpoint;
 
 	@Autowired
 	protected AwsS3SupplierProperties awsS3SupplierProperties;
@@ -127,9 +118,7 @@ public class AwsS3SourceTests {
 	}
 
 	@Test
-	//@Disabled("TODO - We will investigate why this test is not passing.")
 	public void testS3SourceWithBinderBasic() {
-		this.consumerEndpoint.start();
 		Message<byte[]> sourceMessage = output.receive(10_000);
 		String actual = new String(sourceMessage.getPayload());
 		assertThat(new File(actual.replaceAll("\"", "")))
@@ -141,7 +130,7 @@ public class AwsS3SourceTests {
 	}
 
 	@SpringBootApplication
-	@Import({TestChannelBinderConfiguration.class, AwsS3SupplierConfiguration.class})
+	@Import({ TestChannelBinderConfiguration.class, AwsS3SupplierConfiguration.class })
 	public static class SampleConfiguration {
 
 		@Bean
