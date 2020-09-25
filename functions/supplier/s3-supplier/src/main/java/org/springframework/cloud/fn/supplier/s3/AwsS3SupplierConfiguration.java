@@ -17,21 +17,22 @@
 package org.springframework.cloud.fn.supplier.s3;
 
 import java.io.File;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.MonoProcessor;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.MonoProcessor;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.aws.core.env.ResourceIdResolver;
 import org.springframework.cloud.fn.common.file.FileConsumerProperties;
 import org.springframework.cloud.fn.common.file.FileUtils;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +43,6 @@ import org.springframework.integration.aws.support.S3SessionFactory;
 import org.springframework.integration.aws.support.filters.S3PersistentAcceptOnceFileListFilter;
 import org.springframework.integration.aws.support.filters.S3RegexPatternFileListFilter;
 import org.springframework.integration.aws.support.filters.S3SimplePatternFileListFilter;
-import org.springframework.integration.core.GenericSelector;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.endpoint.ReactiveMessageSourceProducer;
@@ -69,18 +69,18 @@ public abstract class AwsS3SupplierConfiguration {
 
 	protected final AmazonS3 amazonS3;
 
-	protected final ResourceIdResolver resourceIdResolver;
+	protected final S3SessionFactory s3SessionFactory;
 
 	protected final ConcurrentMetadataStore metadataStore;
 
 	public AwsS3SupplierConfiguration(AwsS3SupplierProperties awsS3SupplierProperties,
 			FileConsumerProperties fileConsumerProperties,
 			AmazonS3 amazonS3,
-			ResourceIdResolver resourceIdResolver, ConcurrentMetadataStore metadataStore) {
+			S3SessionFactory s3SessionFactory, ConcurrentMetadataStore metadataStore) {
 		this.awsS3SupplierProperties = awsS3SupplierProperties;
 		this.fileConsumerProperties = fileConsumerProperties;
 		this.amazonS3 = amazonS3;
-		this.resourceIdResolver = resourceIdResolver;
+		this.s3SessionFactory = s3SessionFactory;
 		this.metadataStore = metadataStore;
 	}
 
@@ -114,9 +114,9 @@ public abstract class AwsS3SupplierConfiguration {
 		SynchronizingConfiguration(AwsS3SupplierProperties awsS3SupplierProperties,
 				FileConsumerProperties fileConsumerProperties,
 				AmazonS3 amazonS3,
-				ResourceIdResolver resourceIdResolver,
+				S3SessionFactory s3SessionFactory,
 				ConcurrentMetadataStore concurrentMetadataStore) {
-			super(awsS3SupplierProperties, fileConsumerProperties, amazonS3, resourceIdResolver,
+			super(awsS3SupplierProperties, fileConsumerProperties, amazonS3, s3SessionFactory,
 					concurrentMetadataStore);
 		}
 
@@ -132,7 +132,7 @@ public abstract class AwsS3SupplierConfiguration {
 
 		@Bean
 		public S3InboundFileSynchronizer s3InboundFileSynchronizer(ChainFileListFilter<S3ObjectSummary> filter) {
-			S3SessionFactory s3SessionFactory = new S3SessionFactory(this.amazonS3, this.resourceIdResolver);
+
 			S3InboundFileSynchronizer synchronizer = new S3InboundFileSynchronizer(s3SessionFactory);
 			synchronizer.setDeleteRemoteFiles(this.awsS3SupplierProperties.isDeleteRemoteFiles());
 			synchronizer.setPreserveTimestamp(this.awsS3SupplierProperties.isPreserveTimestamp());
@@ -162,28 +162,26 @@ public abstract class AwsS3SupplierConfiguration {
 
 		ListOnlyConfiguration(AwsS3SupplierProperties awsS3SupplierProperties,
 				FileConsumerProperties fileConsumerProperties,
-				AmazonS3 amazonS3,
-				ResourceIdResolver resourceIdResolver, ConcurrentMetadataStore metadataStore) {
-			super(awsS3SupplierProperties, fileConsumerProperties, amazonS3, resourceIdResolver, metadataStore);
+				AmazonS3 amazonS3, S3SessionFactory s3SessionFactory, ConcurrentMetadataStore metadataStore) {
+			super(awsS3SupplierProperties, fileConsumerProperties, amazonS3, s3SessionFactory,
+					metadataStore);
+		}
+
+		private final MonoProcessor<Subscription> downstreamSubscription = MonoProcessor.create();
+
+		@Bean
+		public Supplier<Flux<Message<Object>>> s3Supplier(Publisher<Message<Object>> s3SupplierFlow) {
+			return () -> Flux.from(s3SupplierFlow)
+					.doOnSubscribe(downstreamSubscription::onNext);
 		}
 
 		@Bean
-		public Supplier<Flux<Message<?>>> s3Supplier(Publisher<Message<Object>> s3SupplierFlow) {
-			return () -> Flux.from(s3SupplierFlow);
+		public Publisher<Message<Object>> s3SupplierFlow(ReactiveMessageSourceProducer s3ListingProducer) {
+			return IntegrationFlows.from(s3ListingProducer).split().toReactivePublisher();
 		}
 
 		@Bean
-		public Publisher<Message<Object>> s3SupplierFlow(ReactiveMessageSourceProducer s3ListingProducer,
-				GenericSelector<S3ObjectSummary> listOnlyFilter) {
-			return IntegrationFlows
-					.from(s3ListingProducer)
-					.split()
-					.filter(listOnlyFilter)
-					.toReactivePublisher();
-		}
-
-		@Bean
-		GenericSelector<S3ObjectSummary> listOnlyFilter() {
+		Predicate<S3ObjectSummary> listOnlyFilter() {
 			Predicate<S3ObjectSummary> predicate = s -> true;
 			if (StringUtils.hasText(this.awsS3SupplierProperties.getFilenamePattern())) {
 				Pattern pattern = Pattern.compile(this.awsS3SupplierProperties.getFilenamePattern());
@@ -204,21 +202,26 @@ public abstract class AwsS3SupplierConfiguration {
 				return result;
 			});
 
-			GenericSelector<S3ObjectSummary> selector = predicate::test;
-
-			return selector;
+			return predicate;
 		}
 
 		@Bean
 		ReactiveMessageSourceProducer s3ListingMessageProducer(AmazonS3 amazonS3,
-				AwsS3SupplierProperties awsS3SupplierProperties) {
+				AwsS3SupplierProperties awsS3SupplierProperties, Predicate<S3ObjectSummary> filter) {
 			ListObjectsRequest listObjectsRequest = new ListObjectsRequest();
 			listObjectsRequest.setBucketName(awsS3SupplierProperties.getRemoteDir());
 			return new ReactiveMessageSourceProducer(
-					(MessageSource<Iterable<S3ObjectSummary>>) () -> new GenericMessage<>(
-							amazonS3.listObjects(listObjectsRequest).getObjectSummaries()));
+					(MessageSource<List<S3ObjectSummary>>) () -> {
+						List<S3ObjectSummary> summaryList = amazonS3.listObjects(listObjectsRequest)
+								.getObjectSummaries().stream()
+								.filter(filter).collect(Collectors.toList());
+						return summaryList.isEmpty() ? null : new GenericMessage<>(summaryList);
+					}) {
+				@Override
+				protected void subscribeToPublisher(Publisher<? extends Message<?>> publisher) {
+					super.subscribeToPublisher(Flux.from(publisher).delaySubscription(downstreamSubscription));
+				}
+			};
 		}
-
 	}
-
 }

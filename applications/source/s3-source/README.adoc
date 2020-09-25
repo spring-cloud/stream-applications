@@ -75,7 +75,6 @@ $$metadata.store.zookeeper.root$$:: $$Root node - store entries are children of 
 $$s3.common.endpoint-url$$:: $$Optional endpoint url to connect to s3 compatible storage.$$ *($$String$$, default: `$$<none>$$`)*
 $$s3.common.path-style-access$$:: $$Use path style access.$$ *($$Boolean$$, default: `$$false$$`)*
 $$s3.supplier.auto-create-local-dir$$:: $$Create or not the local directory.$$ *($$Boolean$$, default: `$$true$$`)*
-$$s3.supplier.delay-when-empty$$:: $$Duration of delay when no new files are detected.$$ *($$Duration$$, default: `$$1s$$`)*
 $$s3.supplier.delete-remote-files$$:: $$Delete or not remote files after processing.$$ *($$Boolean$$, default: `$$false$$`)*
 $$s3.supplier.filename-pattern$$:: $$The pattern to filter remote files.$$ *($$String$$, default: `$$<none>$$`)*
 $$s3.supplier.filename-regex$$:: $$The regexp to filter remote files.$$ *($$Pattern$$, default: `$$<none>$$`)*
@@ -115,6 +114,6 @@ And for AWS `Stack`:
 == Examples
 
 ```
-java -jar s3-source.jar --s3.remoteDir=/tmp/foo --file.consumer.mode=lines --trigger.fixed-delay=60
+java -jar s3-source.jar --s3.remoteDir=/tmp/foo --file.consumer.mode=lines
 ```
 //end::ref-doc[]

@@ -14,7 +14,7 @@
     </parent>
 
     <properties>
-        <spring-integration-aws.version>2.3.0.RELEASE</spring-integration-aws.version>
+        <spring-integration-aws.version>2.3.3.RELEASE</spring-integration-aws.version>
         <spring-cloud-aws.version>2.2.2.RELEASE</spring-cloud-aws.version>
     </properties>
 
