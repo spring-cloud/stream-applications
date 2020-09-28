@@ -6,7 +6,7 @@ Real-time Tweet streaming https://developer.twitter.com/en/docs/tweets/filter-re
 * The `Filter API` returns public statuses that match one or more filter predicates.
 Multiple parameters allows using a single connection to the Streaming API.
 TIP: The `track`, `follow`, and `locations` fields are combined with an *OR* operator!
-Queries with `track=foo` and `follow=1234` returns Tweets matching `foo` *OR* created by user `1234`.
+Queries with `track=foo` and `follow=1234` returns Tweets matching `test` *OR* created by user `1234`.
 
 * The `Sample API` returns a small random sample of all public statuses.
 The Tweets returned by the default access level are the same, so if two different clients connect to this endpoint, they will see the same Tweets.

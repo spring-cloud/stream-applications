@@ -32,5 +32,6 @@
         <module>twitter-message-sink</module>
         <module>wavefront-sink</module>
         <module>pgcopy-sink</module>
+        <module>rsocket-sink</module>
     </modules>
 </project>
