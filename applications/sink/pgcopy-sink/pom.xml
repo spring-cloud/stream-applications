@@ -48,10 +48,10 @@
 				<artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
 				<configuration>
 					<application>
-						<name>rabbit</name>
+						<name>pgcopy</name>
 						<type>sink</type>
 						<version>${project.version}</version>
-						<configClass>org.springframework.cloud.fn.consumer.rabbit.RabbitConsumerConfiguration.class</configClass>
+						<configClass>org.springframework.cloud.stream.app.pgcopy.sink.PgcopySinkConfiguration.class</configClass>
 
 						<maven>
 							<dependencies>
