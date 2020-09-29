@@ -62,7 +62,7 @@ The following are the four major components of this repository.
 |link:functions/function/twitter-function/README.adoc[Twitter]
 |link:functions/consumer/redis-consumer/README.adoc[Redis]
 |link:functions/supplier/tcp-supplier/README.adoc[TCP]
-|
+|link:functions/function/aggregator-function/README.adoc[aggregator]
 |link:functions/consumer/s3-consumer/README.adoc[AWS S3]
 |link:functions/supplier/time-supplier/README.adoc[Time]
 |
@@ -76,9 +76,12 @@ The following are the four major components of this repository.
 |link:functions/supplier/cdc-debezium-supplier/README.adoc[CDC Debezium]
 |
 |link:functions/consumer/websocket-consumer/README.adoc[Websocket]
-|
+|link:functions/supplier/mail-supplier/README.adoc[Mail]
 |
 |link:functions/consumer/wavefront-consumer/README.adoc[Wavefront]
+|link:functions/supplier/syslog-supplier/README.adoc[Syslog]
+|
+|link:functions/consumer/rsocket-consumer/README.adoc[RSocket]
 |===
 
 === Reusable Spring Cloud Stream Applications
@@ -123,7 +126,7 @@ The following are the four major components of this repository.
 |link:applications/processor/twitter-trend-processor/README.adoc[Twitter Trend]
 |link:applications/sink/router-sink/README.adoc[Router]
 |link:applications/source/tcp-source/README.adoc[TCP]
-|
+|link:applications/processor/aggregator-processor/README.adoc[Aggregator]
 |link:applications/sink/sftp-sink/README.adoc[SFTP]
 |link:applications/source/time-source/README.adoc[Time]
 |
@@ -143,9 +146,15 @@ The following are the four major components of this repository.
 |link:applications/source/cdc-debezium-source/README.adoc[CDC Debezium]
 |
 |link:applications/sink/wavefront-sink/README.adoc[Wavefront]
-|
+|link:applications/source/mail-source/README.adoc[Mail]
 |
 |link:applications/sink/websocket-sink/README.adoc[Websocket]
+|link:applications/source/syslog-source/README.adoc[Syslog]
+|
+|link:applications/sink/pgcopy-sink/README.adoc[Pgcopy]
+|
+|
+|link:applications/sink/rsocket-sink/README.adoc[RSocket]
 |===
 
 === Build
