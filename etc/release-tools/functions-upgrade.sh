@@ -21,7 +21,7 @@ VERSION=$1
 ./mvnw -f functions versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false
 
 if [[ $VERSION =~ M[0-9]|RC[0-9] ]]; then
- lines=$(find functions -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v regex | wc -l)
+ lines=$(find functions -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v integration | grep -v regex | wc -l)
  if [ $lines -eq 0 ]; then
   echo "All good"
   git_commit_push 
