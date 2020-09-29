@@ -87,7 +87,7 @@ cd ../..
 popd
 
 echo "Committing and pushing the changes, but waiting for 30 seconds before doing so..."
-sleep 30
+sleep 60
 
 COMMIT_MSG="Next version updates
 

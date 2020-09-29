@@ -6,7 +6,7 @@
     <artifactId>script-processor</artifactId>
     <name>script-processor</name>
     <description>script processor apps</description>
-    <version>3.0.0-M3</version>
+    <version>3.0.0-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
