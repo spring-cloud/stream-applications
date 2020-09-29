@@ -28,10 +28,12 @@
         <jdbc-source.version>${apps.version}</jdbc-source.version>
         <jms-source.version>${apps.version}</jms-source.version>
         <load-generator-source.version>${apps.version}</load-generator-source.version>
+        <mail-source.version>${apps.version}</mail-source.version>
         <mongodb-source.version>${apps.version}</mongodb-source.version>
         <mqtt-source.version>${apps.version}</mqtt-source.version>
         <rabbit-source.version>${apps.version}</rabbit-source.version>
         <s3-source.version>${apps.version}</s3-source.version>
+        <syslog-source.version>${apps.version}</syslog-source.version>
         <sftp-source.version>${apps.version}</sftp-source.version>
         <tcp-source.version>${apps.version}</tcp-source.version>
         <time-source.version>${apps.version}</time-source.version>
@@ -51,6 +53,8 @@
         <rabbit-sink.version>${apps.version}</rabbit-sink.version>
         <redis-sink.version>${apps.version}</redis-sink.version>
         <router-sink.version>${apps.version}</router-sink.version>
+        <rsocket-sink.version>${apps.version}</rsocket-sink.version>
+        <pgcopy-sink.version>${apps.version}</pgcopy-sink.version>
         <s3-sink.version>${apps.version}</s3-sink.version>
         <sftp-sink.version>${apps.version}</sftp-sink.version>
         <tasklauncher-sink.version>${apps.version}</tasklauncher-sink.version>
@@ -60,6 +64,7 @@
         <twitter-update-sink.version>${apps.version}</twitter-update-sink.version>
         <wavefront-sink.version>${apps.version}</wavefront-sink.version>
         <websocket-sink.version>${apps.version}</websocket-sink.version>
+        <aggregator-processor.version>${apps.version}</aggregator-processor.version>
         <bridge-processor.version>${apps.version}</bridge-processor.version>
         <filter-processor.version>${apps.version}</filter-processor.version>
         <groovy-processor.version>${apps.version}</groovy-processor.version>

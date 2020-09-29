@@ -104,6 +104,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>mail-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>mongodb-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
@@ -125,6 +130,11 @@
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>sftp-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>syslog-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
@@ -210,6 +220,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>rsocket-consumer</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>s3-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
@@ -234,6 +249,11 @@
 			<version>${java-functions.version}</version>
 		</dependency>
 		<!-- function javadocs -->
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>aggregator-function</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>header-enricher-function</artifactId>
@@ -289,6 +309,11 @@
 			<groupId>org.springframework.cloud.stream.app</groupId>
 			<artifactId>router-sink</artifactId>
 			<version>${router-sink.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.stream.app</groupId>
+			<artifactId>pgcopy-sink</artifactId>
+			<version>${pgcopy-sink.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.stream.app</groupId>

@@ -59,6 +59,8 @@
                 "${jms-source.version}".contains('SNAPSHOT') ? 'latest' : "${jms-source.version}"
         pom.properties['load-generator-source-docker.tag']=
                 "${load-generator-source.version}".contains('SNAPSHOT') ? 'latest' : "${load-generator-source.version}"
+        pom.properties['mail-source-docker.tag']=
+                "${mail-source.version}".contains('SNAPSHOT') ? 'latest' : "${mail-source.version}"
         pom.properties['mongodb-source-docker.tag']=
                 "${mongodb-source.version}".contains('SNAPSHOT') ? 'latest' : "${mongodb-source.version}"
         pom.properties['mqtt-source-docker.tag']=
@@ -69,6 +71,8 @@
                 "${s3-source.version}".contains('SNAPSHOT') ? 'latest' : "${s3-source.version}"
         pom.properties['sftp-source-docker.tag']=
                 "${sftp-source.version}".contains('SNAPSHOT') ? 'latest' : "${sftp-source.version}"
+        pom.properties['syslog-source-docker.tag']=
+                "${syslog-source.version}".contains('SNAPSHOT') ? 'latest' : "${syslog-source.version}"
         pom.properties['tcp-source-docker.tag']=
                 "${tcp-source.version}".contains('SNAPSHOT') ? 'latest' : "${tcp-source.version}"
         pom.properties['time-source-docker.tag']=
@@ -101,12 +105,16 @@
                 "${mongodb-sink.version}".contains('SNAPSHOT') ? 'latest' : "${mongodb-sink.version}"
         pom.properties['mqtt-sink-docker.tag']=
                 "${mqtt-sink.version}".contains('SNAPSHOT') ? 'latest' : "${mqtt-sink.version}"
+        pom.properties['pgcopy-sink-docker.tag']=
+                "${pgcopy-sink.version}".contains('SNAPSHOT') ? 'latest' : "${pgcopy-sink.version}"
         pom.properties['rabbit-sink-docker.tag']=
                 "${rabbit-sink.version}".contains('SNAPSHOT') ? 'latest' : "${rabbit-sink.version}"
         pom.properties['redis-sink-docker.tag']=
                 "${redis-sink.version}".contains('SNAPSHOT') ? 'latest' : "${redis-sink.version}"
         pom.properties['router-sink-docker.tag']=
                 "${router-sink.version}".contains('SNAPSHOT') ? 'latest' : "${router-sink.version}"
+        pom.properties['rsocket-sink-docker.tag']=
+                "${rsocket-sink.version}".contains('SNAPSHOT') ? 'latest' : "${rsocket-sink.version}"
         pom.properties['s3-sink-docker.tag']=
                 "${s3-sink.version}".contains('SNAPSHOT') ? 'latest' : "${s3-sink.version}"
         pom.properties['sftp-sink-docker.tag']=
@@ -123,6 +131,8 @@
                 "${twitter-update-sink.version}".contains('SNAPSHOT') ? 'latest' : "${twitter-update-sink.version}"
         pom.properties['websocket-sink-docker.tag']=
                 "${websocket-sink.version}".contains('SNAPSHOT') ? 'latest' : "${websocket-sink.version}"
+        pom.properties['aggregator-processor-docker.tag']=
+                "${aggregator-processor.version}".contains('SNAPSHOT') ? 'latest' : "${aggregator-processor.version}"
         pom.properties['bridge-processor-docker.tag']=
                 "${bridge-processor.version}".contains('SNAPSHOT') ? 'latest' : "${bridge-processor.version}"
         pom.properties['filter-processor-docker.tag']=
