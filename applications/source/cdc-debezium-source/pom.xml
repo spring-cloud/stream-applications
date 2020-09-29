@@ -58,7 +58,7 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
             <!-- 3.0.8.BUILD-SNAPSHOT or newer is required because of an issue with the KafkaNullConverter -->
-			<version>3.0.8.BUILD-SNAPSHOT</version>
+			<version>3.0.8.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 
