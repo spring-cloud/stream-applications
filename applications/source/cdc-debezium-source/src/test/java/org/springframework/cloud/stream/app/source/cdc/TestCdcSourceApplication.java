@@ -18,13 +18,9 @@ package org.springframework.cloud.stream.app.source.cdc;
 
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.cloud.fn.supplier.cdc.CdcSupplierConfiguration;
-import org.springframework.cloud.stream.binder.kafka.KafkaNullConverter;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.messaging.converter.MessageConverter;
 
 /**
  * @author Christian Tzolov
@@ -33,13 +29,4 @@ import org.springframework.messaging.converter.MessageConverter;
 @EnableAutoConfiguration(exclude = MongoAutoConfiguration.class)
 @Import(CdcSupplierConfiguration.class)
 public class TestCdcSourceApplication {
-
-	/**
-	 * This is only required for testing. In production the KafkaNullConverter bean is auto-configured.
-	 */
-	@Bean
-	@ConditionalOnMissingBean(KafkaNullConverter.class)
-	MessageConverter kafkaNullConverter() {
-		return new KafkaNullConverter();
-	}
 }
