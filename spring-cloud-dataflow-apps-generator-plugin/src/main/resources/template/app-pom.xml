@@ -163,6 +163,8 @@
 							<org.springframework.cloud.dataflow.spring-configuration-metadata.json>
 								${org.springframework.cloud.dataflow.spring.configuration.metadata.json}
 							</org.springframework.cloud.dataflow.spring-configuration-metadata.json>
+							<application.name>${project.artifactId}</application.name>
+							<application.version>${project.version}</application.version>
 						</labels>
 						{{/app.containerImage.enableMetadata}}
 					</container>
