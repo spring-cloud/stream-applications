@@ -105,6 +105,7 @@
 		<module>supplier/twitter-supplier</module>
 		<module>supplier/cdc-debezium-supplier</module>
 		<module>supplier/syslog-supplier</module>
+		<module>supplier/zeromq-supplier</module>
 
 		<module>spring-functions-parent</module>
 		<module>function-dependencies</module>
