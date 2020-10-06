@@ -52,10 +52,17 @@ public class ZeroMqSupplierConfiguration {
 	@Bean
 	public ZeroMqMessageProducer adapter(ZContext zContext) {
 
-		ZeroMqMessageProducer zeroMqMessageProducer = new ZeroMqMessageProducer(zContext, properties.getReceiveSocketType());
-		zeroMqMessageProducer.setConnectUrl(properties.getConnectUrl());
+		ZeroMqMessageProducer zeroMqMessageProducer = new ZeroMqMessageProducer(zContext, properties.getSocketType());
+
+		if (properties.getConnectUrl() != null) {
+			zeroMqMessageProducer.setConnectUrl(properties.getConnectUrl());
+		}
+		else {
+			zeroMqMessageProducer.setBindPort(properties.getBoundPort());
+		}
+		zeroMqMessageProducer.setConsumeDelay(properties.getConsumeDelay());
 		zeroMqMessageProducer.setTopics(properties.getTopics());
-		zeroMqMessageProducer.setMessageMapper((object, headers) -> new GenericMessage<>(object));
+		zeroMqMessageProducer.setMessageMapper(GenericMessage::new);
 		zeroMqMessageProducer.setOutputChannel(output);
 		zeroMqMessageProducer.setAutoStartup(false);
 
