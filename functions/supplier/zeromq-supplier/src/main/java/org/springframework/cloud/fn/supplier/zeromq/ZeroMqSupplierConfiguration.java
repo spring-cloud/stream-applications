@@ -34,6 +34,7 @@ import org.springframework.messaging.support.GenericMessage;
  * A source module that receives data from ZeroMQ.
  *
  * @author Daniel Frey
+ * @since 3.1.0
  */
 @Configuration
 @EnableConfigurationProperties(ZeroMqSupplierProperties.class)
