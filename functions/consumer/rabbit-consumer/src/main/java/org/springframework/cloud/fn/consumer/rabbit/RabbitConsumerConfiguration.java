@@ -18,6 +18,9 @@ package org.springframework.cloud.fn.consumer.rabbit;
 
 import java.util.function.Function;
 
+import com.rabbitmq.client.impl.CredentialsProvider;
+import com.rabbitmq.client.impl.CredentialsRefreshService;
+
 import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -36,6 +39,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.expression.Expression;
 import org.springframework.integration.amqp.dsl.Amqp;
 import org.springframework.integration.amqp.dsl.AmqpOutboundChannelAdapterSpec;
@@ -54,6 +58,15 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 
 	@Autowired
 	private RabbitConsumerProperties properties;
+
+	@Autowired
+	private ResourceLoader resourceLoader;
+
+	@Autowired
+	private ObjectProvider<CredentialsProvider> credentialsProvider;
+
+	@Autowired
+	private ObjectProvider<CredentialsRefreshService> credentialsRefreshService;
 
 	@Value("#{${rabbit.converterBeanName:null}}")
 	private MessageConverter messageConverter;
@@ -100,7 +113,8 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 
 	private ConnectionFactory buildLocalConnectionFactory() throws Exception {
 		this.ownConnectionFactory = new AutoConfig.Creator().rabbitConnectionFactory(
-				this.bootProperties, this.connectionNameStrategy);
+				this.bootProperties, this.resourceLoader, this.credentialsProvider, this.credentialsRefreshService,
+				this.connectionNameStrategy);
 		return this.ownConnectionFactory;
 	}
 
@@ -133,12 +147,15 @@ class AutoConfig extends RabbitAutoConfiguration {
 
 	static class Creator extends RabbitConnectionFactoryCreator {
 
-		@Override
-		public CachingConnectionFactory rabbitConnectionFactory(RabbitProperties config,
-																ObjectProvider<ConnectionNameStrategy> connectionNameStrategy)
+		public CachingConnectionFactory rabbitConnectionFactory(
+				RabbitProperties config,
+				ResourceLoader resourceLoader,
+				ObjectProvider<CredentialsProvider> credentialsProvider,
+				ObjectProvider<CredentialsRefreshService> credentialsRefreshService,
+				ObjectProvider<ConnectionNameStrategy> connectionNameStrategy)
 				throws Exception {
-			CachingConnectionFactory cf = super.rabbitConnectionFactory(config,
-					connectionNameStrategy);
+			CachingConnectionFactory cf = super.rabbitConnectionFactory(config, resourceLoader, credentialsProvider,
+					credentialsRefreshService, connectionNameStrategy);
 			cf.setConnectionNameStrategy(
 					connectionFactory -> "rabbit.sink.own.connection");
 			cf.afterPropertiesSet();
