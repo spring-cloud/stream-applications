@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.supplier.zeromq;
 import java.time.Duration;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Range;
 import org.zeromq.SocketType;
@@ -41,17 +42,17 @@ public class ZeroMqSupplierProperties {
 	private SocketType socketType = SocketType.SUB;
 
 	/**
-	 * Connection URL for to the ZeroMQ TCP Server.
+	 * Connection URL for to the ZeroMQ Socket.
 	 */
 	private String connectUrl;
 
 	/**
-	 * Bind Port for connecting to the ZeroMQ TCP Server.
+	 * Bind Port for creating a ZeroMQ Socket; 0 selects a random port.
 	 */
 	private int bindPort;
 
 	/**
-	 * The delay to consume from the ZeroMQ TCP Server when no data received.
+	 * The delay to consume from the ZeroMQ Socket when no data received.
 	 */
 	private Duration consumeDelay = Duration.ofSeconds(1);
 
@@ -67,6 +68,7 @@ public class ZeroMqSupplierProperties {
 		this.socketType = socketType;
 	}
 
+	@NotNull(message = "'socketType' is required")
 	public SocketType getSocketType() {
 		return socketType;
 	}
@@ -78,7 +80,7 @@ public class ZeroMqSupplierProperties {
 
 	/**
 	 *
-	 * @param connectUrl The ZeroMQ TCP server connect url
+	 * @param connectUrl The ZeroMQ server connect url
 	 *
 	 * @see org.springframework.integration.zeromq.inbound.ZeroMqMessageProducer#setConnectUrl(String)
 	 */
@@ -92,7 +94,7 @@ public class ZeroMqSupplierProperties {
 	}
 
 	/**
-	 * @param bindPort The TCP Port to bind to on all interfaces
+	 * @param bindPort The Port to bind to on all interfaces
 	 *
 	 * @see org.springframework.integration.zeromq.inbound.ZeroMqMessageProducer#setBindPort(int)
 	 */
@@ -100,6 +102,7 @@ public class ZeroMqSupplierProperties {
 		this.bindPort = bindPort;
 	}
 
+	@NotNull(message = "'consumeDelay' is required")
 	public Duration getConsumeDelay() {
 		return consumeDelay;
 	}

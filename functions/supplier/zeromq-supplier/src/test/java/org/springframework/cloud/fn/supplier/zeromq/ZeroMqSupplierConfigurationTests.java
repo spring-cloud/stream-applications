@@ -23,6 +23,7 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.DirtiesContext;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZFrame;
@@ -43,6 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * since 3.1.0
  */
 @SpringBootTest(properties = {"zeromq.supplier.topics=test-topic"})
+@DirtiesContext
 public class ZeroMqSupplierConfigurationTests {
 
 	private static final ZContext CONTEXT = new ZContext();
