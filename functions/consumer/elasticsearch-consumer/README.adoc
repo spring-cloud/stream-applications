@@ -1,0 +1,35 @@
+# Elasticsearch Consumer
+
+A consumer that allows you to index document records into Elasticsearch.
+
+## Beans for injection
+
+You can import `ElasticsearchConsumerConfiguration` in the application and then inject the following bean.
+
+`Consumer<Message<?>> elasticsearchConsumer`
+
+After injecting this `Consumer` bean in the application, it's `accept` method can be called programmatically to index Elasticsearch documents.
+This consumer only supports indexing documents with JSON formats.
+The JSON document can be provided using one of the following methods.
+
+*  JSON string
+* `java.util.Map`
+* `XContentBuilder` provided by Elasticsearch
+
+## Configuration Options
+
+All configuration properties are prefixed with `elasticsearch.consumer`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/elasticsearch/ElasticsearchConsumerConfiguration.java[ElasticsearchConsumerProperties].
+
+In addition to these options, the consumer makes use of Spring Boot autoconfiguration for Elasticsearch.
+Therefore you need to use https://github.com/spring-projects/spring-boot/blob/master/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/elasticsearch/ElasticsearchRestClientProperties.java[these properties] for configuration Elasticsearch.
+See this https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-elasticsearch[section] from Spring Boot docs.
+
+## Examples
+
+See this link:src/test/java/org/springframework/cloud/fn/consumer/elasticsearch/ElasticsearchConsumerApplicationTests.java[test suite] for seeing the Elasticsearch consumer in action.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/elasticsearch-sink/README.adoc[README] where this consumer is used for creating an Elasticsearch sink.

@@ -1,0 +1,42 @@
+//tag::ref-doc[]
+= Elasticsearch Sink
+
+Sink that indexes documents into Elasticsearch.
+
+This Elasticsearch sink only supports indexing JSON documents.
+It consumes data from an input destination and then indexes it to Elasticsearch.
+The input data can be a plain json string, or a `java.util.Map` that represents the JSON.
+It also accepts the data as the Elasticsearch provided `XContentBuilder`.
+However, this is a rare case as it is not likely the middleware keeps the records as `XContentBuilder`.
+This is provided mainly for direct invocation of the consumer.
+
+== Options
+
+The **$$Elasticsearch$$** $$sink$$ has the following options:
+
+//tag::configuration-properties[]
+$$elasticsearch.consumer.async$$:: $$Indicates whether the indexing operation is async or not. By default indexing is done synchronously.$$ *($$Boolean$$, default: `$$false$$`)*
+$$elasticsearch.consumer.id$$:: $$The id of the document index.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$elasticsearch.consumer.index$$:: $$Name of the index.$$ *($$String$$, default: `$$<none>$$`)*
+$$elasticsearch.consumer.routing$$:: $$Indicates the shard to route to. If not provided, this resolves to the ID used on the document.$$ *($$String$$, default: `$$<none>$$`)*
+$$elasticsearch.consumer.timeout-seconds$$:: $$Timeout for the shard to be available. If not set, it defaults to 1 minute set by the Elasticsearch client.$$ *($$Long$$, default: `$$0$$`)*
+$$spring.elasticsearch.rest.connection-timeout$$:: $$Connection timeout.$$ *($$Duration$$, default: `$$1s$$`)*
+$$spring.elasticsearch.rest.password$$:: $$Credentials password.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.elasticsearch.rest.read-timeout$$:: $$Read timeout.$$ *($$Duration$$, default: `$$30s$$`)*
+$$spring.elasticsearch.rest.uris$$:: $$Comma-separated list of the Elasticsearch instances to use.$$ *($$List<String>$$, default: `$$[http://localhost:9200]$$`)*
+$$spring.elasticsearch.rest.username$$:: $$Credentials username.$$ *($$String$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+== Examples of running this sink
+
+1. From the folder `elasticsearch-sink`: `./mvnw clean package`
+2. cd apps
+3. cd to the proper binder generated app (Kafka or RabbitMQ)
+4. `./mvnw clean package`
+5. Make sure that you have Elasticsearch running. For example you can run it as a docker container using the following command.
+`docker run -d --name es762 -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.6.2`
+6. Start the middleware (Kafka or RabbitMQ) if it is not already running.
+7. `java -jar target/elasticsearch-sink-<kafka|rabbit>-3.0.0-SNAPSHOT.jar --spring.cloud.stream.bindings.input.destination=els-in --elasticsearch.consumer.index=testing`
+8. Send some JSON data into the middleware destination. For e.g: `"foo":"bar"}`
+9. Verify that the data is indexed: `curl localhost:9200/testing/_search`
+//end::ref-doc[]

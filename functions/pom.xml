@@ -55,6 +55,7 @@
 		<module>common/cdc-debezium-boot-starter</module>
 
 		<module>consumer/cassandra-consumer</module>
+		<module>consumer/elasticsearch-consumer</module>
 		<module>consumer/analytics-consumer</module>
 		<module>consumer/file-consumer</module>
 		<module>consumer/ftp-consumer</module>
