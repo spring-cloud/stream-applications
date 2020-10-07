@@ -17,19 +17,14 @@
 package org.springframework.cloud.fn.supplier.zeromq;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Range;
 import org.zeromq.SocketType;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -44,7 +39,7 @@ public class ZeroMqSupplierProperties {
 	/**
 	 * The {@link SocketType} the connection should make.
 	 */
-	private SocketType socketType;
+	private SocketType socketType = SocketType.SUB;
 
 	/**
 	 * Connection URL for to the ZeroMQ TCP Server.
@@ -54,12 +49,12 @@ public class ZeroMqSupplierProperties {
 	/**
 	 * Bind Port for connecting to the ZeroMQ TCP Server.
 	 */
-	private Integer bindPort;
+	private int bindPort;
 
 	/**
 	 * The delay to consume from the ZeroMQ TCP Server when no data received.
 	 */
-	private Duration consumeDelay;
+	private Duration consumeDelay = Duration.ofSeconds(1);
 
 	/**
 	 * The Topics to subscribe to.
@@ -104,7 +99,7 @@ public class ZeroMqSupplierProperties {
 	 * @see org.springframework.integration.zeromq.inbound.ZeroMqMessageProducer#setBindPort(int)
 	 */
 	@Range(min = 0, message = "'bindPort' must not be negative")
-	public void setBindPort(Integer bindPort) {
+	public void setBindPort(int bindPort) {
 		this.bindPort = bindPort;
 	}
 

@@ -62,7 +62,7 @@ public class ZeroMqSupplierConfiguration {
 			zeroMqMessageProducer.setBindPort(properties.getBindPort());
 		}
 		zeroMqMessageProducer.setConsumeDelay(properties.getConsumeDelay());
-		if(SocketType.SUB.equals(properties.getSocketType())) {
+		if (SocketType.SUB.equals(properties.getSocketType())) {
 			zeroMqMessageProducer.setTopics(properties.getTopics());
 		}
 		zeroMqMessageProducer.setMessageMapper(GenericMessage::new);
