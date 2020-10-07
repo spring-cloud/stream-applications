@@ -19,7 +19,6 @@ package org.springframework.cloud.fn.supplier.zeromq;
 import java.time.Duration;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Range;
 import org.zeromq.SocketType;
@@ -64,7 +63,6 @@ public class ZeroMqSupplierProperties {
 	/**
 	 * @param socketType the {@link SocketType} to establish.
 	 */
-	@NotNull(message = "'socketType' is required")
 	public void setSocketType(SocketType socketType) {
 		this.socketType = socketType;
 	}
@@ -84,11 +82,11 @@ public class ZeroMqSupplierProperties {
 	 *
 	 * @see org.springframework.integration.zeromq.inbound.ZeroMqMessageProducer#setConnectUrl(String)
 	 */
-	@NotEmpty(message = "'connectUrl' must not be empty")
 	public void setConnectUrl(String connectUrl) {
 		this.connectUrl = connectUrl;
 	}
 
+	@Range(min = 0, message = "'bindPort' must not be negative")
 	public int getBindPort() {
 		return bindPort;
 	}
@@ -98,7 +96,6 @@ public class ZeroMqSupplierProperties {
 	 *
 	 * @see org.springframework.integration.zeromq.inbound.ZeroMqMessageProducer#setBindPort(int)
 	 */
-	@Range(min = 0, message = "'bindPort' must not be negative")
 	public void setBindPort(int bindPort) {
 		this.bindPort = bindPort;
 	}
@@ -111,7 +108,6 @@ public class ZeroMqSupplierProperties {
 	 * Specify a {@link Duration} to delay consumption when no data received.
 	 * @param consumeDelay the {@link Duration} to delay consumption when empty.
 	 */
-	@NotNull(message = "'consumeDelay' must not be null")
 	public void setConsumeDelay(Duration consumeDelay) {
 		this.consumeDelay = consumeDelay;
 	}

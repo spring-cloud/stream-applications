@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -30,7 +31,9 @@ import org.zeromq.ZMsg;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import org.springframework.integration.zeromq.inbound.ZeroMqMessageProducer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,37 +42,41 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Daniel Frey
  * since 3.1.0
  */
+@SpringBootTest(properties = {"zeromq.supplier.topics=test-topic"})
 public class ZeroMqSupplierConfigurationTests {
 
 	private static final ZContext CONTEXT = new ZContext();
+	private static ZMQ.Socket socket;
+
+	@Autowired
+	Supplier<Flux<Message<?>>> subject;
+
+	@BeforeAll
+	static void setup() {
+
+		String socketAddress = "tcp://*";
+		socket = CONTEXT.createSocket(SocketType.PUB);
+		int bindPort = socket.bindToRandomPort(socketAddress);
+
+		System.setProperty("zeromq.supplier.connectUrl", "tcp://localhost:" + bindPort);
+
+	}
 
 	@AfterAll
 	static void tearDown() {
+		socket.close();
 		CONTEXT.close();
 	}
 
 	@Test
 	void testSubscriptionConfiguration() throws InterruptedException {
 
-		String socketAddress = "tcp://*";
-		ZMQ.Socket socket = CONTEXT.createSocket(SocketType.PUB);
-		int bindPort = socket.bindToRandomPort(socketAddress);
-
-		ZeroMqSupplierProperties properties = new ZeroMqSupplierProperties();
-		properties.setConnectUrl("tcp://localhost:" + bindPort);
-		properties.setTopics("test-topic");
-
-		ZeroMqSupplierConfiguration configuration = new ZeroMqSupplierConfiguration();
-		ZeroMqMessageProducer adapter = configuration.adapter(properties, CONTEXT, null);
-		Supplier<Flux<Message<?>>> zeromqSupplier = configuration.zeromqSupplier(adapter);
-
 		StepVerifier stepVerifier =
-				StepVerifier.create(zeromqSupplier.get())
+				StepVerifier.create(subject.get())
 						.assertNext((message) ->
 								assertThat(message.getPayload())
 										.asInstanceOf(InstanceOfAssertFactories.type(byte[].class))
 										.isEqualTo("test".getBytes(ZMQ.CHARSET))
-
 						)
 					.thenCancel()
 					.verifyLater();
@@ -82,8 +89,9 @@ public class ZeroMqSupplierConfigurationTests {
 
 		stepVerifier.verify(Duration.ofSeconds(10));
 
-		adapter.destroy();
-		socket.close();
 	}
+
+	@SpringBootApplication
+	public static class ZeroMqSourceTestApplication { }
 
 }
