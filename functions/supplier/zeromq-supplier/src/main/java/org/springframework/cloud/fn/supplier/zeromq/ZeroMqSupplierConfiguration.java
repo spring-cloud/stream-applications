@@ -16,12 +16,14 @@
 
 package org.springframework.cloud.fn.supplier.zeromq;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.zeromq.ZContext;
+import org.zeromq.ZMQ;
 import reactor.core.publisher.Flux;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,9 +42,6 @@ import org.springframework.messaging.support.GenericMessage;
 @EnableConfigurationProperties(ZeroMqSupplierProperties.class)
 public class ZeroMqSupplierConfiguration {
 
-	@Autowired
-	private ZeroMqSupplierProperties properties;
-
 	private FluxMessageChannel output = new FluxMessageChannel();
 
 	@Bean
@@ -51,7 +50,13 @@ public class ZeroMqSupplierConfiguration {
 	}
 
 	@Bean
-	public ZeroMqMessageProducer adapter(ZContext zContext) {
+	@ConditionalOnMissingBean
+	public Consumer<ZMQ.Socket> socketConfigurer() {
+		return (socket) -> { };
+	}
+
+	@Bean
+	public ZeroMqMessageProducer adapter(ZeroMqSupplierProperties properties, ZContext zContext, Consumer<ZMQ.Socket> socketConfigurer) {
 
 		ZeroMqMessageProducer zeroMqMessageProducer = new ZeroMqMessageProducer(zContext, properties.getSocketType());
 
@@ -64,6 +69,7 @@ public class ZeroMqSupplierConfiguration {
 		zeroMqMessageProducer.setConsumeDelay(properties.getConsumeDelay());
 		zeroMqMessageProducer.setTopics(properties.getTopics());
 		zeroMqMessageProducer.setMessageMapper(GenericMessage::new);
+		zeroMqMessageProducer.setSocketConfigurer(socketConfigurer);
 		zeroMqMessageProducer.setOutputChannel(output);
 		zeroMqMessageProducer.setAutoStartup(false);
 
