@@ -19,11 +19,12 @@ package org.springframework.cloud.fn.supplier.zeromq;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import reactor.core.publisher.Flux;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,26 +51,24 @@ public class ZeroMqSupplierConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
-	public Consumer<ZMQ.Socket> socketConfigurer() {
-		return (socket) -> { };
-	}
-
-	@Bean
-	public ZeroMqMessageProducer adapter(ZeroMqSupplierProperties properties, ZContext zContext, Consumer<ZMQ.Socket> socketConfigurer) {
+	public ZeroMqMessageProducer adapter(ZeroMqSupplierProperties properties, ZContext zContext, @Autowired(required = false) Consumer<ZMQ.Socket> socketConfigurer) {
 
 		ZeroMqMessageProducer zeroMqMessageProducer = new ZeroMqMessageProducer(zContext, properties.getSocketType());
 
 		if (properties.getConnectUrl() != null) {
 			zeroMqMessageProducer.setConnectUrl(properties.getConnectUrl());
 		}
-		else {
-			zeroMqMessageProducer.setBindPort(properties.getBoundPort());
+		else if (properties.getBindPort() > 0) {
+			zeroMqMessageProducer.setBindPort(properties.getBindPort());
 		}
 		zeroMqMessageProducer.setConsumeDelay(properties.getConsumeDelay());
-		zeroMqMessageProducer.setTopics(properties.getTopics());
+		if(SocketType.SUB.equals(properties.getSocketType())) {
+			zeroMqMessageProducer.setTopics(properties.getTopics());
+		}
 		zeroMqMessageProducer.setMessageMapper(GenericMessage::new);
-		zeroMqMessageProducer.setSocketConfigurer(socketConfigurer);
+		if (socketConfigurer != null) {
+			zeroMqMessageProducer.setSocketConfigurer(socketConfigurer);
+		}
 		zeroMqMessageProducer.setOutputChannel(output);
 		zeroMqMessageProducer.setAutoStartup(false);
 
