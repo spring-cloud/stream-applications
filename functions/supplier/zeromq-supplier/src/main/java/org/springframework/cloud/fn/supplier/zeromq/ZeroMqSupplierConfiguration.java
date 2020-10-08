@@ -52,7 +52,7 @@ public class ZeroMqSupplierConfiguration {
 
 	@Bean
 	public ZeroMqMessageProducer adapter(ZeroMqSupplierProperties properties, ZContext zContext,
-										 @Autowired(required = false) Consumer<ZMQ.Socket> socketConfigurer) {
+										@Autowired(required = false) Consumer<ZMQ.Socket> socketConfigurer) {
 
 		ZeroMqMessageProducer zeroMqMessageProducer = new ZeroMqMessageProducer(zContext, properties.getSocketType());
 

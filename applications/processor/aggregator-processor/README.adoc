@@ -22,7 +22,7 @@ $$spring.data.mongodb.authentication-database$$:: $$Authentication database name
 $$spring.data.mongodb.auto-index-creation$$:: $$Whether to enable auto-index creation.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$spring.data.mongodb.database$$:: $$Database name.$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.data.mongodb.field-naming-strategy$$:: $$Fully qualified name of the FieldNamingStrategy to use.$$ *($$Class<?>$$, default: `$$<none>$$`)*
-$$spring.data.mongodb.grid-fs-database$$:: $$GridFS database name.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.grid-fs-database$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.data.mongodb.host$$:: $$Mongo server host. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.data.mongodb.password$$:: $$Login password of the mongo server. Cannot be set with URI.$$ *($$Character[]$$, default: `$$<none>$$`)*
 $$spring.data.mongodb.port$$:: $$Mongo server port. Cannot be set with URI.$$ *($$Integer$$, default: `$$<none>$$`)*
@@ -52,13 +52,16 @@ $$spring.datasource.username$$:: $$Login username of the database.$$ *($$String$
 $$spring.mongodb.embedded.features$$:: $$Comma-separated list of features to enable. Uses the defaults of the configured version by default.$$ *($$Set<Feature>$$, default: `$$[sync_delay]$$`)*
 $$spring.mongodb.embedded.version$$:: $$Version of Mongo to use.$$ *($$String$$, default: `$$3.5.5$$`)*
 $$spring.redis.client-name$$:: $$Client name to be set on connections with CLIENT SETNAME.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.redis.client-type$$:: $$Type of client to use. By default, auto-detected according to the classpath.$$ *($$ClientType$$, default: `$$<none>$$`, possible values: `LETTUCE`,`JEDIS`)*
+$$spring.redis.connect-timeout$$:: $$Connection timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$spring.redis.database$$:: $$Database index used by the connection factory.$$ *($$Integer$$, default: `$$0$$`)*
 $$spring.redis.host$$:: $$Redis server host.$$ *($$String$$, default: `$$localhost$$`)*
 $$spring.redis.password$$:: $$Login password of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.redis.port$$:: $$Redis server port.$$ *($$Integer$$, default: `$$6379$$`)*
 $$spring.redis.ssl$$:: $$Whether to enable SSL support.$$ *($$Boolean$$, default: `$$false$$`)*
-$$spring.redis.timeout$$:: $$Connection timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$spring.redis.timeout$$:: $$Read timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$spring.redis.url$$:: $$Connection URL. Overrides host, port, and password. User is ignored. Example: redis://user:password@example.com:6379$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.redis.username$$:: $$Login username of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
