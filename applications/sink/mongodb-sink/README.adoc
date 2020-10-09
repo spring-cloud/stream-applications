@@ -24,7 +24,7 @@ $$spring.data.mongodb.authentication-database$$:: $$Authentication database name
 $$spring.data.mongodb.auto-index-creation$$:: $$Whether to enable auto-index creation.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$spring.data.mongodb.database$$:: $$Database name.$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.data.mongodb.field-naming-strategy$$:: $$Fully qualified name of the FieldNamingStrategy to use.$$ *($$Class<?>$$, default: `$$<none>$$`)*
-$$spring.data.mongodb.grid-fs-database$$:: $$GridFS database name.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.grid-fs-database$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.data.mongodb.host$$:: $$Mongo server host. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
 $$spring.data.mongodb.password$$:: $$Login password of the mongo server. Cannot be set with URI.$$ *($$Character[]$$, default: `$$<none>$$`)*
 $$spring.data.mongodb.port$$:: $$Mongo server port. Cannot be set with URI.$$ *($$Integer$$, default: `$$<none>$$`)*

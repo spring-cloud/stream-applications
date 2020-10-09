@@ -2,24 +2,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<artifactId>java-functions-parent</artifactId>
-		<groupId>org.springframework.cloud.fn</groupId>
-		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.springframework.cloud.fn</groupId>
+		<artifactId>java-functions-parent</artifactId>
+		<version>1.1.0-SNAPSHOT</version>
+		<relativePath/>
+	</parent>
+
 	<artifactId>spring-functions-parent</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
+		<java.version>1.8</java.version>
 		<spring-boot.version>2.4.0-SNAPSHOT</spring-boot.version>
 		<spring-cloud-function.version>3.1.0-M2</spring-cloud-function.version>
 		<spring-cloud-fn.version>${project.version}</spring-cloud-fn.version>
 		<spring-integration-dependencies.version>5.4.0-SNAPSHOT</spring-integration-dependencies.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
