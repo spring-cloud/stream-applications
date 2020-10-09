@@ -12,7 +12,7 @@ After injecting this `Consumer` bean in the application, it's `accept` method ca
 This consumer only supports indexing documents with JSON formats.
 The JSON document can be provided using one of the following methods.
 
-* Plain JSON string
+*  JSON string
 * `java.util.Map`
 * `XContentBuilder` provided by Elasticsearch
 
@@ -26,10 +26,10 @@ In addition to these options, the consumer makes use of Spring Boot autoconfigur
 Therefore you need to use https://github.com/spring-projects/spring-boot/blob/master/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/elasticsearch/ElasticsearchRestClientProperties.java[these properties] for configuration Elasticsearch.
 See this https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-elasticsearch[section] from Spring Boot docs.
 
-## Tests
+## Examples
 
 See this link:src/test/java/org/springframework/cloud/fn/consumer/elasticsearch/ElasticsearchConsumerApplicationTests.java[test suite] for seeing the Elasticsearch consumer in action.
 
 ## Other usage
 
-See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/mqtt-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a MQTT sink.
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/elasticsearch-sink/README.adoc[README] where this consumer is used for creating an Elasticsearch sink.

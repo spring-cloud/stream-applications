@@ -1,12 +1,12 @@
 //tag::ref-doc[]
 = Elasticsearch Sink
 
-Sink that index documents into Elasticsearch.
+Sink that indexes documents into Elasticsearch.
 
 This Elasticsearch sink only supports indexing JSON documents.
-It consumes JSON data from a middleware and then index that to Elasticsearch.
-The data in middleware can be a plain json string, or a `java.util.Map` that represents the JSON.
-It also accepts the data as Elasticsearch provided `XContentBuilder`.
+It consumes data from an input destination and then indexes it to Elasticsearch.
+The input data can be a plain json string, or a `java.util.Map` that represents the JSON.
+It also accepts the data as the Elasticsearch provided `XContentBuilder`.
 However, this is a rare case as it is not likely the middleware keeps the records as `XContentBuilder`.
 This is provided mainly for direct invocation of the consumer.
 

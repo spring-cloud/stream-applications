@@ -59,13 +59,13 @@ public class ElasticsearchConsumerApplicationTests {
 				.withPropertyValues("elasticsearch.consumer.index=foo", "elasticsearch.consumer.id=1",
 						"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
 				.run(context -> {
-					Consumer<Message<?>> elasticserachConsumer = context.getBean("elasticserachConsumer", Consumer.class);
+					Consumer<Message<?>> elasticsearchConsumer = context.getBean("elasticsearchConsumer", Consumer.class);
 
 					String jsonObject = "{\"age\":10,\"dateOfBirth\":1471466076564,"
 							+ "\"fullName\":\"John Doe\"}";
 					final Message<String> message = MessageBuilder.withPayload(jsonObject).build();
 
-					elasticserachConsumer.accept(message);
+					elasticsearchConsumer.accept(message);
 
 					RestHighLevelClient restHighLevelClient = context.getBean(RestHighLevelClient.class);
 					GetRequest getRequest = new GetRequest("foo").id("1");
@@ -82,14 +82,14 @@ public class ElasticsearchConsumerApplicationTests {
 				.withPropertyValues("elasticsearch.consumer.index=foo",
 						"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
 				.run(context -> {
-					Consumer<Message<?>> elasticserachConsumer = context.getBean("elasticserachConsumer", Consumer.class);
+					Consumer<Message<?>> elasticsearchConsumer = context.getBean("elasticsearchConsumer", Consumer.class);
 
 					String jsonObject = "{\"age\":10,\"dateOfBirth\":1471466076564,"
 							+ "\"fullName\":\"John Doe\"}";
 					final Message<String> message = MessageBuilder.withPayload(jsonObject)
 							.setHeader(ElasticsearchConsumerConfiguration.INDEX_ID_HEADER, "2").build();
 
-					elasticserachConsumer.accept(message);
+					elasticsearchConsumer.accept(message);
 
 					RestHighLevelClient restHighLevelClient = context.getBean(RestHighLevelClient.class);
 					GetRequest getRequest = new GetRequest("foo").id("2");
@@ -106,7 +106,7 @@ public class ElasticsearchConsumerApplicationTests {
 				.withPropertyValues("elasticsearch.consumer.index=foo", "elasticsearch.consumer.id=3",
 						"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
 				.run(context -> {
-					Consumer<Message<?>> elasticserachConsumer = context.getBean("elasticserachConsumer", Consumer.class);
+					Consumer<Message<?>> elasticsearchConsumer = context.getBean("elasticsearchConsumer", Consumer.class);
 
 					Map<String, Object> jsonMap = new HashMap<>();
 					jsonMap.put("age", 10);
@@ -114,7 +114,7 @@ public class ElasticsearchConsumerApplicationTests {
 					jsonMap.put("fullName", "John Doe");
 					final Message<Map<String, Object>> message = MessageBuilder.withPayload(jsonMap).build();
 
-					elasticserachConsumer.accept(message);
+					elasticsearchConsumer.accept(message);
 
 					RestHighLevelClient restHighLevelClient = context.getBean(RestHighLevelClient.class);
 					GetRequest getRequest = new GetRequest("foo").id("3");
@@ -135,7 +135,7 @@ public class ElasticsearchConsumerApplicationTests {
 				.withPropertyValues("elasticsearch.consumer.index=foo", "elasticsearch.consumer.id=4",
 						"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
 				.run(context -> {
-					Consumer<Message<?>> elasticserachConsumer = context.getBean("elasticserachConsumer", Consumer.class);
+					Consumer<Message<?>> elasticsearchConsumer = context.getBean("elasticsearchConsumer", Consumer.class);
 
 					XContentBuilder builder = XContentFactory.jsonBuilder();
 					builder.startObject();
@@ -146,7 +146,7 @@ public class ElasticsearchConsumerApplicationTests {
 
 					final Message<XContentBuilder> message = MessageBuilder.withPayload(builder).build();
 
-					elasticserachConsumer.accept(message);
+					elasticsearchConsumer.accept(message);
 
 					RestHighLevelClient restHighLevelClient = context.getBean(RestHighLevelClient.class);
 					GetRequest getRequest = new GetRequest("foo").id("4");
@@ -168,13 +168,13 @@ public class ElasticsearchConsumerApplicationTests {
 						"elasticsearch.consumer.id=5",
 						"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
 				.run(context -> {
-					Consumer<Message<?>> elasticserachConsumer = context.getBean("elasticserachConsumer", Consumer.class);
+					Consumer<Message<?>> elasticsearchConsumer = context.getBean("elasticsearchConsumer", Consumer.class);
 
 					String jsonObject = "{\"age\":10,\"dateOfBirth\":1471466076564,"
 							+ "\"fullName\":\"John Doe\"}";
 					final Message<String> message = MessageBuilder.withPayload(jsonObject).build();
 
-					elasticserachConsumer.accept(message);
+					elasticsearchConsumer.accept(message);
 
 					RestHighLevelClient restHighLevelClient = context.getBean(RestHighLevelClient.class);
 					GetRequest getRequest = new GetRequest("foo").id("5");

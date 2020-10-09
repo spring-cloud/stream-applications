@@ -88,12 +88,14 @@ public class ElasticsearchConsumerConfiguration {
 			restHighLevelClient.indexAsync(request, RequestOptions.DEFAULT, new ActionListener<IndexResponse>() {
 				@Override
 				public void onResponse(IndexResponse indexResponse) {
-					logger.debug("Document with ID: " + indexResponse.getId() + " has been indexed");
+					if (logger.isDebugEnabled()) {
+						logger.debug("Document with ID: " + indexResponse.getId() + " has been indexed");
+					}
 				}
 
 				@Override
 				public void onFailure(Exception e) {
-					logger.error("Error occurred while indexing the document", e);
+					throw new IllegalStateException("Error occurred while indexing the document", e);
 				}
 			});
 		}
@@ -102,7 +104,7 @@ public class ElasticsearchConsumerConfiguration {
 				restHighLevelClient.index(request, RequestOptions.DEFAULT);
 			}
 			catch (IOException e) {
-				logger.error("Error occurred while indexing the document", e);
+				throw new IllegalStateException("Error occurred while indexing the document", e);
 			}
 		}
 	}
