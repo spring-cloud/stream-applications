@@ -33,6 +33,7 @@ import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.cloud.stream.config.BindingServiceConfiguration;
 import org.springframework.context.annotation.Import;
+import org.springframework.integration.zeromq.ZeroMqHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -90,8 +91,10 @@ public class ZeroMqSourceTests {
 		msg.send(socket);
 
 		Message<byte[]> sourceMessage = outputDestination.receive(10000);
-		final String actual = new String(sourceMessage.getPayload());
-		assertThat(actual).isEqualTo("test");
+		final String actualPayload = new String(sourceMessage.getPayload());
+		final String actualHeader = sourceMessage.getHeaders().get(ZeroMqHeaders.TOPIC, String.class);
+		assertThat(actualPayload).isEqualTo("test");
+		assertThat(actualHeader).isEqualTo("test-topic");
 
 	}
 
