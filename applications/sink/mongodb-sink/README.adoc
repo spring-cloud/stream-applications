@@ -18,6 +18,7 @@ The **$$mongodb$$** $$sink$$ has the following options:
 
 
 //tag::configuration-properties[]
+<<<<<<< HEAD
 Properties grouped by prefix:
 
 
@@ -40,6 +41,22 @@ $$replica-set-name$$:: $$Required replica set name for the cluster. Cannot be se
 $$uri$$:: $$Mongo database URI. Cannot be set with host, port, credentials and replica set name.$$ *($$String$$, default: `$$mongodb://localhost/test$$`)*
 $$username$$:: $$Login user of the mongo server. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
 $$uuid-representation$$:: $$Representation to use when converting a UUID to a BSON binary value.$$ *($$UuidRepresentation$$, default: `$$java-legacy$$`, possible values: `UNSPECIFIED`,`STANDARD`,`C_SHARP_LEGACY`,`JAVA_LEGACY`,`PYTHON_LEGACY`)*
+=======
+$$mongodb.consumer.collection$$:: $$The MongoDB collection to store data.$$ *($$String$$, default: `$$<none>$$`)*
+$$mongodb.consumer.collection-expression$$:: $$The SpEL expression to evaluate MongoDB collection.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.authentication-database$$:: $$Authentication database name.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.auto-index-creation$$:: $$Whether to enable auto-index creation.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.database$$:: $$Database name.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.field-naming-strategy$$:: $$Fully qualified name of the FieldNamingStrategy to use.$$ *($$Class<?>$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.grid-fs-database$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.host$$:: $$Mongo server host. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.password$$:: $$Login password of the mongo server. Cannot be set with URI.$$ *($$Character[]$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.port$$:: $$Mongo server port. Cannot be set with URI.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.replica-set-name$$:: $$Required replica set name for the cluster. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.uri$$:: $$Mongo database URI. Cannot be set with host, port, credentials and replica set name.$$ *($$String$$, default: `$$mongodb://localhost/test$$`)*
+$$spring.data.mongodb.username$$:: $$Login user of the mongo server. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
+$$spring.data.mongodb.uuid-representation$$:: $$Representation to use when converting a UUID to a BSON binary value.$$ *($$UuidRepresentation$$, default: `$$java-legacy$$`, possible values: `UNSPECIFIED`,`STANDARD`,`C_SHARP_LEGACY`,`JAVA_LEGACY`,`PYTHON_LEGACY`)*
+>>>>>>> Add zeromq source application
 //end::configuration-properties[]
 
 //end::ref-doc[]

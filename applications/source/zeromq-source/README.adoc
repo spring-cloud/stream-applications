@@ -1,0 +1,49 @@
+//tag::ref-doc[]
+= ZeroMQ Source
+
+The "zeromq" source enables receiving messages from ZeroMQ.
+
+== Input
+
+N/A
+
+== Output
+
+=== Payload
+
+* `byte[]`
+
+== Options
+
+The **$$zeromq$$** $$source$$ has the following options:
+
+//tag::configuration-properties[]
+$$zeromq.supplier.bind-port$$:: $$Bind Port for creating a ZeroMQ Socket; 0 selects a random port.$$ *($$Integer$$, default: `$$0$$`)*
+$$zeromq.supplier.connect-url$$:: $$Connection URL for to the ZeroMQ Socket.$$ *($$String$$, default: `$$<none>$$`)*
+$$zeromq.supplier.consume-delay$$:: $$The delay to consume from the ZeroMQ Socket when no data received.$$ *($$Duration$$, default: `$$1s$$`)*
+$$zeromq.supplier.socket-type$$:: $$The Socket Type the connection should make.$$ *($$SocketType$$, default: `$$<none>$$`, possible values: `PAIR`,`PUB`,`SUB`,`REQ`,`REP`,`DEALER`,`ROUTER`,`PULL`,`PUSH`,`XPUB`,`XSUB`,`STREAM`)*
+$$zeromq.supplier.topics$$:: $$The Topics to subscribe to.$$ *($$String[]$$, default: `$$[]$$`)*
+//end::configuration-properties[]
+
+Also see the https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[Spring Boot Documentation]
+for addition properties for the broker connections and listener properties.
+
+== Build
+
+```
+$ ./mvnw clean install -PgenerateApps
+$ cd apps
+```
+You can find the corresponding binder based projects here.
+You can then cd into one of the folders and build it:
+```
+$ ./mvnw clean package
+```
+
+== Examples
+
+```
+java -jar zeromq-source.jar --zeromq.supplier.connectUrl=tcp://server:port --zeromq.supplier.topics=
+```
+
+//end::ref-doc[]

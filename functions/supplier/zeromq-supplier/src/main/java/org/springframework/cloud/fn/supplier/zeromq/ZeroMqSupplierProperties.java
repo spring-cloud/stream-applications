@@ -37,7 +37,7 @@ import org.springframework.validation.annotation.Validated;
 public class ZeroMqSupplierProperties {
 
 	/**
-	 * The {@link SocketType} the connection should make.
+	 * The Socket Type the connection should make.
 	 */
 	private SocketType socketType = SocketType.SUB;
 
