@@ -2,17 +2,17 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>geode-supplier</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <name>geode-supplier</name>
-    <description>geode supplier</description>
 
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
-        <artifactId>spring-functions-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../../spring-functions-parent</relativePath>
+        <artifactId>java-functions-supplier-parent</artifactId>
+        <version>${revision}</version>
     </parent>
+
+    <artifactId>geode-supplier</artifactId>
+    <name>geode-supplier</name>
+    <description>geode supplier</description>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -27,13 +27,13 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>geode-common</artifactId>
-            <version>${spring-cloud-fn.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>config-common</artifactId>
-            <version>${spring-cloud-fn.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>function-test-support</artifactId>
-            <version>${spring-cloud-fn.version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 

@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>elasticsearch-consumer</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <name>elasticsearch-consumer</name>
-    <description>elasticsearch consumer</description>
 
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
-        <artifactId>spring-functions-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../../spring-functions-parent</relativePath>
+        <artifactId>java-functions-consumer-parent</artifactId>
+        <version>${revision}</version>
     </parent>
 
-    <properties>
-        <test-containers.version>1.14.3</test-containers.version>
-    </properties>
+    <artifactId>elasticsearch-consumer</artifactId>
+    <name>elasticsearch-consumer</name>
+    <description>elasticsearch consumer</description>
 
     <dependencies>
         <dependency>
@@ -43,12 +38,12 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>config-common</artifactId>
-            <version>${spring-cloud-fn.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>payload-converter-function</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
