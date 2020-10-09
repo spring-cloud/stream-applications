@@ -2,17 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>cdc-debezium-boot-starter</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<name>cdc-debezium-boot-starter</name>
-	<description>Change Data Capture (CDC) Debezium Boot Starter</description>
 
 	<parent>
 		<groupId>org.springframework.cloud.fn</groupId>
-		<artifactId>spring-functions-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../../spring-functions-parent</relativePath>
+		<artifactId>java-functions-common-parent</artifactId>
+		<version>${revision}</version>
 	</parent>
+
+	<artifactId>cdc-debezium-boot-starter</artifactId>
+	<name>cdc-debezium-boot-starter</name>
+	<description>Change Data Capture (CDC) Debezium Boot Starter</description>
 
 	<properties>
 		<version.debezium>1.2.1.Final</version.debezium>
@@ -30,17 +29,6 @@
 					<groupId>org.slf4j</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- -->
@@ -118,58 +106,58 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>io.fabric8</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.33.0</version>
-				<configuration>
-					<images>
-						<image>
-							<alias>mysql</alias>
-							<name>debezium/example-mysql:1.0</name>
-							<run>
-								<env>
-									<MYSQL_ROOT_PASSWORD>debezium</MYSQL_ROOT_PASSWORD>
-									<MYSQL_USER>mysqluser</MYSQL_USER>
-									<MYSQL_PASSWORD>mysqlpw</MYSQL_PASSWORD>
-								</env>
-								<ports>
-									<port>3306:3306</port>
-								</ports>
-								<wait>
-									<log>port: 3306</log>
-									<time>30000</time>
-								</wait>
-							</run>
-						</image>
-					</images>
-				</configuration>
-				<executions>
-					<execution>
-						<id>start</id>
-						<!--<phase>pre-integration-test</phase>-->
-						<phase>generate-test-resources</phase>
-						<goals>
-							<goal>build</goal>
-							<goal>start</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>stop</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>stop</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>stop-pre</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>stop</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>io.fabric8</groupId>-->
+<!--				<artifactId>docker-maven-plugin</artifactId>-->
+<!--				<version>0.33.0</version>-->
+<!--				<configuration>-->
+<!--					<images>-->
+<!--						<image>-->
+<!--							<alias>mysql</alias>-->
+<!--							<name>debezium/example-mysql:1.0</name>-->
+<!--							<run>-->
+<!--								<env>-->
+<!--									<MYSQL_ROOT_PASSWORD>debezium</MYSQL_ROOT_PASSWORD>-->
+<!--									<MYSQL_USER>mysqluser</MYSQL_USER>-->
+<!--									<MYSQL_PASSWORD>mysqlpw</MYSQL_PASSWORD>-->
+<!--								</env>-->
+<!--								<ports>-->
+<!--									<port>3306:3306</port>-->
+<!--								</ports>-->
+<!--								<wait>-->
+<!--									<log>port: 3306</log>-->
+<!--									<time>30000</time>-->
+<!--								</wait>-->
+<!--							</run>-->
+<!--						</image>-->
+<!--					</images>-->
+<!--				</configuration>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>start</id>-->
+<!--						&lt;!&ndash;<phase>pre-integration-test</phase>&ndash;&gt;-->
+<!--						<phase>generate-test-resources</phase>-->
+<!--						<goals>-->
+<!--							<goal>build</goal>-->
+<!--							<goal>start</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--					<execution>-->
+<!--						<id>stop</id>-->
+<!--						<phase>post-integration-test</phase>-->
+<!--						<goals>-->
+<!--							<goal>stop</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--					<execution>-->
+<!--						<id>stop-pre</id>-->
+<!--						<phase>clean</phase>-->
+<!--						<goals>-->
+<!--							<goal>stop</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 </project>

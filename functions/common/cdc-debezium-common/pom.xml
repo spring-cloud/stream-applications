@@ -2,17 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>cdc-debezium-common</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<name>cdc-debezium-common</name>
-	<description>Change Data Capture (CDC) Debezium Common</description>
 
 	<parent>
 		<groupId>org.springframework.cloud.fn</groupId>
-		<artifactId>spring-functions-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../../spring-functions-parent</relativePath>
+		<artifactId>java-functions-common-parent</artifactId>
+		<version>${revision}</version>
 	</parent>
+
+	<artifactId>cdc-debezium-common</artifactId>
+	<name>cdc-debezium-common</name>
+	<description>Change Data Capture (CDC) Debezium Common</description>
 
 	<properties>
 		<version.debezium>1.2.1.Final</version.debezium>
@@ -98,7 +97,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>config-common</artifactId>
-			<version>${spring-cloud-fn.version}</version>
+			<version>${revision}</version>
 		</dependency>
 
 		<dependency>

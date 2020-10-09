@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>aws-s3-common</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <name>aws-s3-common</name>
-    <description>aws-s3 consumer</description>
 
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
-        <artifactId>spring-functions-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../../spring-functions-parent</relativePath>
+        <artifactId>java-functions-common-parent</artifactId>
+        <version>${revision}</version>
     </parent>
+
+    <artifactId>aws-s3-common</artifactId>
+    <name>aws-s3-common</name>
+    <description>aws-s3 consumer</description>
 
     <properties>
         <spring-integration-aws.version>2.3.3.RELEASE</spring-integration-aws.version>

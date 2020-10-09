@@ -25,7 +25,7 @@ Add the `image-recognition` dependency to the pom (use the latest version availa
 <dependency>
     <groupId>org.springframework.cloud.fn</groupId>
     <artifactId>image-recognition-function</artifactId>
-    <version>${spring-cloud-fn.version}</version>
+    <version>${revision}</version>
 </dependency>
 ----
 

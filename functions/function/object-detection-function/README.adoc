@@ -28,7 +28,7 @@ Add the `object-detection` dependency to the pom (use the latest version availab
 <dependency>
     <groupId>org.springframework.cloud.fn</groupId>
     <artifactId>object-detection-function</artifactId>
-    <version>${spring-cloud-fn.version}</version>
+    <version>${revision}</version>
 </dependency>
 ----
 
