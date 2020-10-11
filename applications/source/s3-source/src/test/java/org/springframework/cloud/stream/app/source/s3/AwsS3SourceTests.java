@@ -63,6 +63,7 @@ import static org.mockito.Mockito.mock;
 				"cloud.aws.region.static=" + AwsS3SourceTests.AWS_REGION,
 				"s3.supplier.remoteDir=" + AwsS3SourceTests.S3_BUCKET,
 				"file.consumer.mode=ref",
+				"s3.common.endpointUrl=foo",
 				"s3.supplier.filenameRegex=.*\\\\.test$" })
 @DirtiesContext
 public class AwsS3SourceTests {
