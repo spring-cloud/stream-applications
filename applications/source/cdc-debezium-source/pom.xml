@@ -97,6 +97,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.33.0</version>
                 <configuration>
+                    <skip>${skipTests}</skip>
                     <images>
                         <!--						<image>-->
                         <!--							<alias>test-mongodb2</alias>-->
