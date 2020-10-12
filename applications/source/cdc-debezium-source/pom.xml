@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -97,6 +97,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.33.0</version>
                 <configuration>
+                    <skip>${skipTests}</skip>
                     <images>
                         <!--						<image>-->
                         <!--							<alias>test-mongodb2</alias>-->

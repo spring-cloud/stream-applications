@@ -55,6 +55,7 @@ import static org.mockito.Mockito.spy;
 				"cloud.aws.credentials.accessKey=" + AbstractAwsS3ConsumerMockTests.AWS_ACCESS_KEY,
 				"cloud.aws.credentials.secretKey=" + AbstractAwsS3ConsumerMockTests.AWS_SECRET_KEY,
 				"cloud.aws.region.static=" + AbstractAwsS3ConsumerMockTests.AWS_REGION,
+				"s3.common.endpointUrl=foo",
 				"s3.consumer.bucket=" + AbstractAwsS3ConsumerMockTests.S3_BUCKET })
 public abstract class AbstractAwsS3ConsumerMockTests {
 
