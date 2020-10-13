@@ -4,8 +4,9 @@
 
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
-        <artifactId>java-functions-common-parent</artifactId>
+        <artifactId>spring-functions-parent</artifactId>
         <version>${revision}</version>
+        <relativePath>../../spring-functions-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>aws-s3-common</artifactId>

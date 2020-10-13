@@ -2,12 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.springframework.cloud.stream.app</groupId>
-		<artifactId>stream-applications</artifactId>
-		<version>3.0.0-SNAPSHOT</version>
-	</parent>
-
 	<groupId>org.springframework.cloud.fn</groupId>
 	<artifactId>java-functions-parent</artifactId>
 	<version>${revision}</version>
@@ -17,47 +11,385 @@
 
 	<properties>
 		<revision>1.0.0-SNAPSHOT</revision>
+		<java.version>1.8</java.version>
+		<maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
+		<disable.checks>false</disable.checks>
+		<maven-checkstyle-plugin.failsOnError>true</maven-checkstyle-plugin.failsOnError>
+		<maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
+		<maven-checkstyle-plugin.includeTestSourceDirectory>true</maven-checkstyle-plugin.includeTestSourceDirectory>
+		<puppycrawl-tools-checkstyle.version>8.29</puppycrawl-tools-checkstyle.version>
+		<checkstyle.location>https://raw.githubusercontent.com/spring-cloud/stream-applications/master/etc/checkstyle</checkstyle.location>
+		<checkstyle.suppressions.file>
+			${checkstyle.location}/checkstyle-suppressions.xml
+		</checkstyle.suppressions.file>
+		<checkstyle.nohttp.file>
+			${checkstyle.location}/nohttp-checkstyle.xml
+		</checkstyle.nohttp.file>
+		<checkstyle.additional.suppressions.file>
+			${checkstyle.location}/checkstyle-suppressions.xml
+		</checkstyle.additional.suppressions.file>
+		<nohttp-checkstyle.version>0.0.2.RELEASE</nohttp-checkstyle.version>
+		<disable.nohttp.checks>true</disable.nohttp.checks>
+		<spring-javaformat-checkstyle.version>0.0.7</spring-javaformat-checkstyle.version>
+		<spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+		<spring-cloud-function.version>3.0.9.RELEASE</spring-cloud-function.version>
+		<spring-integration-dependencies.version>5.3.3.BUILD-SNAPSHOT</spring-integration-dependencies.version>
+		<test-containers.version>1.15.0-rc2</test-containers.version>
 	</properties>
 
-	<dependencies>
+	<modules>
+		<module>common/aws-s3-common</module>
+		<module>common/config-common</module>
+		<module>common/file-common</module>
+		<module>common/ftp-common</module>
+		<module>common/function-test-support</module>
+		<module>common/geode-common</module>
+		<module>common/metadata-store-common</module>
+		<module>common/mqtt-common</module>
+		<module>common/tcp-common</module>
+		<module>common/twitter-common</module>
+		<module>common/tensorflow-common</module>
+		<module>common/cdc-debezium-common</module>
+		<module>common/cdc-debezium-boot-starter</module>
 
-		<!-- Spring Boot dependencies -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-json</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-integration</artifactId>
-		</dependency>
+		<module>consumer/cassandra-consumer</module>
+		<module>consumer/elasticsearch-consumer</module>
+		<module>consumer/analytics-consumer</module>
+		<module>consumer/file-consumer</module>
+		<module>consumer/ftp-consumer</module>
+		<module>consumer/geode-consumer</module>
+		<module>consumer/jdbc-consumer</module>
+		<module>consumer/log-consumer</module>
+		<module>consumer/mongodb-consumer</module>
+		<module>consumer/mqtt-consumer</module>
+		<module>consumer/rabbit-consumer</module>
+		<module>consumer/redis-consumer</module>
+		<module>consumer/sftp-consumer</module>
+		<module>consumer/tcp-consumer</module>
+		<module>consumer/websocket-consumer</module>
+		<module>consumer/s3-consumer</module>
+		<module>consumer/twitter-consumer</module>
+		<module>consumer/wavefront-consumer</module>
+		<module>consumer/rsocket-consumer</module>
 
-		<!-- Test dependencies -->
-		<dependency>
-			<groupId>org.springframework.integration</groupId>
-			<artifactId>spring-integration-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+		<module>function/aggregator-function</module>
+		<module>function/filter-function</module>
+		<module>function/header-enricher-function</module>
+		<module>function/http-request-function</module>
+		<module>function/spel-function</module>
+		<module>function/payload-converter-function</module>
+		<module>function/splitter-function</module>
+		<module>function/tasklauncher-function</module>
+		<module>function/task-launch-request-function</module>
+		<module>function/twitter-function</module>
+		<module>function/image-recognition-function</module>
+		<module>function/object-detection-function</module>
+		<module>function/semantic-segmentation-function</module>
 
-		<dependency>
-			<groupId>org.awaitility</groupId>
-			<artifactId>awaitility</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		<module>supplier/file-supplier</module>
+		<module>supplier/ftp-supplier</module>
+		<module>supplier/geode-supplier</module>
+		<module>supplier/http-supplier</module>
+		<module>supplier/jdbc-supplier</module>
+		<module>supplier/jms-supplier</module>
+		<module>supplier/mail-supplier</module>
+		<module>supplier/mongodb-supplier</module>
+		<module>supplier/mqtt-supplier</module>
+		<module>supplier/sftp-supplier</module>
+		<module>supplier/tcp-supplier</module>
+		<module>supplier/time-supplier</module>
+		<module>supplier/rabbit-supplier</module>
+		<module>supplier/websocket-supplier</module>
+		<module>supplier/s3-supplier</module>
+		<module>supplier/twitter-supplier</module>
+		<module>supplier/cdc-debezium-supplier</module>
+		<module>supplier/syslog-supplier</module>
 
-	</dependencies>
-
-  	<modules>
-		<module>common</module>
-		<module>consumer</module>
-		<module>function</module>
-		<module>supplier</module>
+		<module>spring-functions-parent</module>
 		<module>function-dependencies</module>
 	</modules>
 
+	<build>
+		<plugins>
+<!--			<plugin>-->
+<!--				<groupId>org.codehaus.mojo</groupId>-->
+<!--				<artifactId>flatten-maven-plugin</artifactId>-->
+<!--				<version>1.2.5</version>-->
+<!--				<configuration>-->
+<!--					<updatePomFile>true</updatePomFile>-->
+<!--					<flattenMode>resolveCiFriendliesOnly</flattenMode>-->
+<!--				</configuration>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>flatten</id>-->
+<!--						<phase>process-resources</phase>-->
+<!--						<goals>-->
+<!--							<goal>flatten</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--					<execution>-->
+<!--						<id>flatten.clean</id>-->
+<!--						<phase>clean</phase>-->
+<!--						<goals>-->
+<!--							<goal>clean</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
+
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>javadoc</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<quiet>true</quiet>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.2</version>
+				<configuration>
+					<includes>
+						<include>**/*Tests.java</include>
+						<include>**/*Test.java</include>
+					</includes>
+					<excludes>
+						<exclude>**/Abstract*.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>${maven-checkstyle-plugin.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>${puppycrawl-tools-checkstyle.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>io.spring.javaformat</groupId>
+						<artifactId>spring-javaformat-checkstyle</artifactId>
+						<version>${spring-javaformat-checkstyle.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>io.spring.nohttp</groupId>
+						<artifactId>nohttp-checkstyle</artifactId>
+						<version>${nohttp-checkstyle.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>checkstyle-validation</id>
+						<phase>validate</phase>
+						<inherited>true</inherited>
+						<configuration>
+							<skip>${disable.checks}</skip>
+							<configLocation>${checkstyle.location}/checkstyle.xml</configLocation>
+							<headerLocation>${checkstyle.location}/checkstyle-header.txt</headerLocation>
+							<propertyExpansion>
+								checkstyle.build.directory=${project.build.directory}
+								checkstyle.suppressions.file=${checkstyle.suppressions.file}
+								checkstyle.additional.suppressions.file=${checkstyle.additional.suppressions.file}
+							</propertyExpansion>
+							<consoleOutput>true</consoleOutput>
+							<includeTestSourceDirectory>
+								${maven-checkstyle-plugin.includeTestSourceDirectory}
+							</includeTestSourceDirectory>
+							<failsOnError>${maven-checkstyle-plugin.failsOnError}
+							</failsOnError>
+							<failOnViolation>
+								${maven-checkstyle-plugin.failOnViolation}
+							</failOnViolation>
+						</configuration>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>no-http-checkstyle-validation</id>
+						<phase>validate</phase>
+						<inherited>true</inherited>
+						<configuration>
+							<skip>${disable.nohttp.checks}</skip>
+							<configLocation>${checkstyle.nohttp.file}</configLocation>
+							<includes>**/*</includes>
+							<excludes>**/.idea/**/*,**/.git/**/*,**/target/**/*,**/*.log</excludes>
+							<sourceDirectories>./</sourceDirectories>
+						</configuration>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+	<licenses>
+
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<comments>Copyright 2014-2020 the original author or authors.
+
+				Licensed under the Apache License, Version 2.0 (the "License");
+				you may not use this file except in compliance with the License.
+				You may obtain a copy of the License at
+
+				http://www.apache.org/licenses/LICENSE-2.0
+
+				Unless required by applicable law or agreed to in writing, software
+				distributed under the License is distributed on an "AS IS" BASIS,
+				WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+				implied.
+
+				See the License for the specific language governing permissions and
+				limitations under the License.</comments>
+		</license>
+
+	</licenses>
+
+	<scm>
+		<connection>scm:git:git://github.com/pivotal/java-functions.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/pivotal/java-functions.git</developerConnection>
+		<url>https://github.com/pivotal/java-functions</url>
+	</scm>
+
+	<distributionManagement>
+
+		<repository>
+			<id>repo.spring.io</id>
+			<name>Spring Release Repository</name>
+			<url>https://repo.spring.io/libs-release-local</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>repo.spring.io</id>
+			<name>Spring Snapshot Repository</name>
+			<url>https://repo.spring.io/libs-snapshot-local</url>
+		</snapshotRepository>
+
+	</distributionManagement>
+
+	<repositories>
+
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+		</repository>
+
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+	</repositories>
+
+	<pluginRepositories>
+
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+		</pluginRepository>
+
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+
+	</pluginRepositories>
+
+	<profiles>
+
+		<profile>
+			<id>milestone</id>
+			<distributionManagement>
+				<repository>
+					<id>repo.spring.io</id>
+					<name>Spring Milestone Repository</name>
+					<url>https://repo.spring.io/libs-milestone-local</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+
+		<profile>
+			<id>central</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<distributionManagement>
+				<repository>
+					<id>sonatype-nexus-staging</id>
+					<name>Nexus Release Repository</name>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+				<snapshotRepository>
+					<id>sonatype-nexus-snapshots</id>
+					<name>Sonatype Nexus Snapshots</name>
+					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+
+	</profiles>
 </project>

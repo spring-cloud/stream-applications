@@ -4,8 +4,9 @@
 
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
-        <artifactId>java-functions-supplier-parent</artifactId>
+        <artifactId>spring-functions-parent</artifactId>
         <version>${revision}</version>
+        <relativePath>../../spring-functions-parent</relativePath>
     </parent>
 
     <artifactId>websocket-supplier</artifactId>

@@ -5,8 +5,9 @@
 
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
-        <artifactId>java-functions-function-parent</artifactId>
+        <artifactId>spring-functions-parent</artifactId>
         <version>${revision}</version>
+        <relativePath>../../spring-functions-parent</relativePath>
     </parent>
 
     <artifactId>splitter-function</artifactId>
