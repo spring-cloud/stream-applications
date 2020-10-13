@@ -7,7 +7,7 @@ Users have to subscribe to this `Flux` and receive the data.
 
 ## Beans for injection
 
-You can import the `ZeroMqSupplierConfiguration` in the application and then inject the following bean.
+You can import the `ZeroMqConsumerConfiguration` in the application and then inject the following bean.
 
 `zeromqSupplier`
 
