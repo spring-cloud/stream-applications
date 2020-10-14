@@ -13,7 +13,6 @@
 		<module>source</module>
 		<module>sink</module>
 		<module>processor</module>
-		<module>stream-applications-build</module>
 	</modules>
 
 </project>

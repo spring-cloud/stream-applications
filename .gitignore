@@ -6,7 +6,8 @@ asciidoctor.css
 .#*
 *#
 target/
-build/
+#release-train/
+build
 bin/
 _site/
 .classpath
@@ -25,3 +26,4 @@ dump.rdb
 coverage-error.log
 .apt_generated
 aws.credentials.properties
+.flattened-pom.xml

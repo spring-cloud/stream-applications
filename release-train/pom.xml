@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.springframework.cloud.stream.app</groupId>
-    <artifactId>stream-applications</artifactId>
+    <artifactId>release-train</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <name>stream-applications</name>
-    <description>Functions and Infrastructure for stream applications</description>
+    <name>release train</name>
+    <description>Release train for stream applications</description>
     <packaging>pom</packaging>
 
     <modules>
-        <module>functions</module>
-        <module>applications</module>
-        <module>release-train</module>
-	</modules>
+        <module>stream-applications-build</module>
+    </modules>
+
 </project>
