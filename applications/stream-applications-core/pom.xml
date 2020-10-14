@@ -30,7 +30,7 @@
         <spring-cloud-dependencies.version>Hoxton.SR7</spring-cloud-dependencies.version>
         <spring-cloud-stream-dependencies.version>Horsham.BUILD-SNAPSHOT</spring-cloud-stream-dependencies.version>
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
-        <prometheus-rsocket.version>1.0.0</prometheus-rsocket.version>
+        <prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
         <disable.checks>false</disable.checks>
