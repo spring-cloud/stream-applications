@@ -2,7 +2,6 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.springframework.cloud.stream.app</groupId>
     <artifactId>stream-applications-core</artifactId>
     <version>${revision}</version>
     <name>stream-applications-core</name>
@@ -10,9 +9,9 @@
     <packaging>pom</packaging>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.4.RELEASE</version>
+        <groupId>org.springframework.cloud.stream.app</groupId>
+        <artifactId>stream-applications-build</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -20,38 +19,13 @@
         <revision>3.0.0-SNAPSHOT</revision>
         <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
         <java.version>1.8</java.version>
-        <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+		<mockserver.version>5.10</mockserver.version>
         <stream-apps-core.version>${project.version}</stream-apps-core.version>
         <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
+        <spring-cloud-stream-dependencies.version>Horsham.BUILD-SNAPSHOT</spring-cloud-stream-dependencies.version>
+        <spring-cloud-stream.version>3.0.9.BUILD-SNAPSHOT</spring-cloud-stream.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.0-M1</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.0-M1</spring-cloud-dataflow-apps-docs-plugin.version>
-        <spring-cloud-stream.version>3.0.9.BUILD-SNAPSHOT</spring-cloud-stream.version>
-        <spring-cloud-function-dependencies.version>3.0.9.RELEASE</spring-cloud-function-dependencies.version>
-		<spring-integration-dependencies.version>5.3.3.BUILD-SNAPSHOT</spring-integration-dependencies.version>
-        <spring-cloud-dependencies.version>Hoxton.SR7</spring-cloud-dependencies.version>
-        <spring-cloud-stream-dependencies.version>Horsham.BUILD-SNAPSHOT</spring-cloud-stream-dependencies.version>
-        <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
-        <prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
-        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-        <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
-        <disable.checks>false</disable.checks>
-        <maven-checkstyle-plugin.failsOnError>true</maven-checkstyle-plugin.failsOnError>
-        <maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
-        <maven-checkstyle-plugin.includeTestSourceDirectory>true</maven-checkstyle-plugin.includeTestSourceDirectory>
-        <puppycrawl-tools-checkstyle.version>8.29</puppycrawl-tools-checkstyle.version>
-        <checkstyle.location>https://raw.githubusercontent.com/spring-cloud/stream-applications/master/etc/checkstyle</checkstyle.location>
-        <checkstyle.suppressions.file>
-           ${checkstyle.location}/checkstyle-suppressions.xml
-        </checkstyle.suppressions.file>
-        <checkstyle.nohttp.file>
-           ${checkstyle.location}/nohttp-checkstyle.xml
-        </checkstyle.nohttp.file>
-        <checkstyle.additional.suppressions.file>${checkstyle.location}/checkstyle-suppressions.xml</checkstyle.additional.suppressions.file>
-        <nohttp-checkstyle.version>0.0.2.RELEASE</nohttp-checkstyle.version>
-        <disable.nohttp.checks>true</disable.nohttp.checks>
-        <spring-javaformat-checkstyle.version>0.0.7</spring-javaformat-checkstyle.version>
-        <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
-		<mockserver.version>5.10</mockserver.version>
     </properties>
 
     <modules>
@@ -64,13 +38,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.integration</groupId>
-                <artifactId>spring-integration-bom</artifactId>
-                <version>${spring-integration-dependencies.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>function-dependencies</artifactId>
@@ -117,174 +84,9 @@
         </dependency>
     </dependencies>
 
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <comments>Copyright 2014-2020 the original author or authors.
-
-                Licensed under the Apache License, Version 2.0 (the "License");
-                you may not use this file except in compliance with the License.
-                You may obtain a copy of the License at
-
-                http://www.apache.org/licenses/LICENSE-2.0
-
-                Unless required by applicable law or agreed to in writing, software
-                distributed under the License is distributed on an "AS IS" BASIS,
-                WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-                implied.
-
-                See the License for the specific language governing permissions and
-                limitations under the License.
-            </comments>
-        </license>
-    </licenses>
-    <scm>
-        <connection>scm:git:git://github.com/pivotal/java-functions.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/pivotal/java-functions.git</developerConnection>
-        <url>https://github.com/pivotal/java-functions</url>
-    </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>repo.spring.io</id>
-            <name>Spring Release Repository</name>
-            <url>https://repo.spring.io/libs-release-local</url>
-        </repository>
-        <snapshotRepository>
-            <id>repo.spring.io</id>
-            <name>Spring Snapshot Repository</name>
-            <url>https://repo.spring.io/libs-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <profiles>
-        <profile>
-            <id>spring</id>
-            <repositories>
-                <repository>
-                    <id>spring-snapshots</id>
-                    <name>Spring Snapshots</name>
-                    <url>https://repo.spring.io/snapshot</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                    <releases>
-                        <enabled>false</enabled>
-                    </releases>
-                </repository>
-                <repository>
-                    <id>spring-milestones</id>
-                    <name>Spring Milestones</name>
-                    <url>https://repo.spring.io/milestone</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>spring-releases</id>
-                    <name>Spring Releases</name>
-                    <url>https://repo.spring.io/release</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>spring-plugins</id>
-                    <name>Spring Maven Plugins Repository</name>
-                    <url>https://repo.spring.io/plugins-release</url>
-                </repository>
-            </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>spring-snapshots</id>
-                    <name>Spring Snapshots</name>
-                    <url>https://repo.spring.io/snapshot</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                    <releases>
-                        <enabled>false</enabled>
-                    </releases>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>spring-milestones</id>
-                    <name>Spring Milestones</name>
-                    <url>https://repo.spring.io/milestone</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>spring-releases</id>
-                    <name>Spring Releases</name>
-                    <url>https://repo.spring.io/release</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
-        <profile>
-            <id>milestone</id>
-            <distributionManagement>
-                <repository>
-                    <id>repo.spring.io</id>
-                    <name>Spring Milestone Repository</name>
-                    <url>https://repo.spring.io/libs-milestone-local</url>
-                </repository>
-            </distributionManagement>
-        </profile>
-        <profile>
-            <id>central</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-            <distributionManagement>
-                <repository>
-                    <id>sonatype-nexus-staging</id>
-                    <name>Nexus Release Repository</name>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>sonatype-nexus-snapshots</id>
-                    <name>Sonatype Nexus Snapshots</name>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-    </profiles>
-
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
-                    <configuration>
-                        <includes>
-                            <include>**/*Tests.java</include>
-                            <include>**/*Test.java</include>
-                        </includes>
-                        <excludes>
-                            <exclude>**/Abstract*.java</exclude>
-                        </excludes>
-                    </configuration>
-                </plugin>
                 <plugin>
                     <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-dataflow-apps-docs-plugin</artifactId>
@@ -471,209 +273,7 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.2.5</version>
-                <configuration>
-                    <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>javadoc</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <quiet>true</quiet>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven-source-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
-                <configuration>
-                    <includes>
-                        <include>**/*Tests.java</include>
-                        <include>**/*Test.java</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/Abstract*.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>${puppycrawl-tools-checkstyle.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>io.spring.javaformat</groupId>
-                        <artifactId>spring-javaformat-checkstyle</artifactId>
-                        <version>${spring-javaformat-checkstyle.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>io.spring.nohttp</groupId>
-                        <artifactId>nohttp-checkstyle</artifactId>
-                        <version>${nohttp-checkstyle.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>checkstyle-validation</id>
-                        <phase>validate</phase>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <skip>${disable.checks}</skip>
-                            <configLocation>${checkstyle.location}/checkstyle.xml</configLocation>
-                            <headerLocation>${checkstyle.location}/checkstyle-header.txt</headerLocation>
-                            <propertyExpansion>
-                                checkstyle.build.directory=${project.build.directory}
-                                checkstyle.suppressions.file=${checkstyle.suppressions.file}
-                                checkstyle.additional.suppressions.file=${checkstyle.additional.suppressions.file}
-                            </propertyExpansion>
-                            <consoleOutput>true</consoleOutput>
-                            <includeTestSourceDirectory>
-                                ${maven-checkstyle-plugin.includeTestSourceDirectory}
-                            </includeTestSourceDirectory>
-                            <failsOnError>${maven-checkstyle-plugin.failsOnError}
-                            </failsOnError>
-                            <failOnViolation>
-                                ${maven-checkstyle-plugin.failOnViolation}
-                            </failOnViolation>
-                        </configuration>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>no-http-checkstyle-validation</id>
-                        <phase>validate</phase>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <skip>${disable.nohttp.checks}</skip>
-                            <configLocation>${checkstyle.nohttp.file}</configLocation>
-                            <includes>**/*</includes>
-                            <excludes>**/.idea/**/*,**/.git/**/*,**/target/**/*,**/*.log</excludes>
-                            <sourceDirectories>./</sourceDirectories>
-                        </configuration>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/libs-snapshot-local</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>https://repo.spring.io/libs-milestone-local</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/release</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>spring-libs-release</id>
-            <name>Spring Libs Release</name>
-            <url>https://repo.spring.io/libs-release</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>spring-milestone-release</id>
-            <name>Spring Milestone Release</name>
-            <url>https://repo.spring.io/libs-milestone</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/libs-release</url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/libs-snapshot-local</url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>https://repo.spring.io/libs-milestone-local</url>
-        </pluginRepository>
-    </pluginRepositories>
 </project>
 

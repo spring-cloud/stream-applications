@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>stream-applications-build</module>
         <module>functions</module>
         <module>applications</module>
         <module>release-train</module>
