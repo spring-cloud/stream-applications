@@ -20,12 +20,23 @@ If content type does not match `text/*` or `application/json`
 The **$$http$$** $$source$$ supports the following configuration properties:
 
 //tag::configuration-properties[]
-$$http.cors.allow-credentials$$:: $$Whether the browser should include any cookies associated with the domain of the request being annotated.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$http.cors.allowed-headers$$:: $$List of request headers that can be used during the actual request.$$ *($$String[]$$, default: `$$<none>$$`)*
-$$http.cors.allowed-origins$$:: $$List of allowed origins, e.g. https://domain1.com.$$ *($$String[]$$, default: `$$<none>$$`)*
-$$http.mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$<none>$$`)*
-$$http.path-pattern$$:: $$HTTP endpoint path mapping.$$ *($$String$$, default: `$$/$$`)*
-$$server.port$$:: $$Server HTTP port.$$ *($$Integer$$, default: `$$8080$$`)*
+Properties grouped by prefix:
+
+
+=== http.cors
+
+$$allow-credentials$$:: $$Whether the browser should include any cookies associated with the domain of the request being annotated.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$allowed-headers$$:: $$List of request headers that can be used during the actual request.$$ *($$String[]$$, default: `$$<none>$$`)*
+$$allowed-origins$$:: $$List of allowed origins, e.g. https://domain1.com.$$ *($$String[]$$, default: `$$<none>$$`)*
+
+=== http
+
+$$mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$<none>$$`)*
+$$path-pattern$$:: $$HTTP endpoint path mapping.$$ *($$String$$, default: `$$/$$`)*
+
+=== server
+
+$$port$$:: $$Server HTTP port.$$ *($$Integer$$, default: `$$8080$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

@@ -5,9 +5,17 @@ The `Websocket` source that produces messages through web socket.
 == Options
 
 //tag::configuration-properties[]
-$$websocket.supplier.allowed-origins$$:: $$The allowed origins.$$ *($$String$$, default: `$$*$$`)*
-$$websocket.supplier.path$$:: $$The path on which server WebSocket handler is exposed.$$ *($$String$$, default: `$$/websocket$$`)*
-$$websocket.supplier.sock-js.enable$$:: $$Enable SockJS service on the server. Default is 'false'$$ *($$Boolean$$, default: `$$false$$`)*
+Properties grouped by prefix:
+
+
+=== websocket.supplier
+
+$$allowed-origins$$:: $$The allowed origins.$$ *($$String$$, default: `$$*$$`)*
+$$path$$:: $$The path on which server WebSocket handler is exposed.$$ *($$String$$, default: `$$/websocket$$`)*
+
+=== websocket.supplier.sock-js
+
+$$enable$$:: $$Enable SockJS service on the server. Default is 'false'$$ *($$Boolean$$, default: `$$false$$`)*
 //end::configuration-properties[]
 
 == Examples

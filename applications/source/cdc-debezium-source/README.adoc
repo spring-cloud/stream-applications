@@ -17,37 +17,72 @@ The CDC Source introduces a new default `BackingOffsetStore` configuration, base
 == Options
 
 //tag::configuration-properties[]
-$$cdc.config$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a 'cdc.config.' prefix are native Debezium properties. The prefix is removed, converting them into Debezium io.debezium.config.Configuration.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
-$$cdc.connector$$:: $$Shortcut for the cdc.config.connector.class property. Either of those can be used as long as they do not contradict with each other.$$ *($$ConnectorType$$, default: `$$<none>$$`, possible values: `mysql`,`postgres`,`mongodb`,`oracle`,`sqlserver`)*
-$$cdc.flattering.add-fields$$:: $$Comma separated list of metadata fields to add to the flattened message. The fields will be prefixed with "__" or "__[<]struct]__", depending on the specification of the struct.$$ *($$String$$, default: `$$<none>$$`)*
-$$cdc.flattering.add-headers$$:: $$Comma separated list specify a list of metadata fields to add to the header of the flattened message. The fields will be prefixed with "__" or "__[struct]__".$$ *($$String$$, default: `$$<none>$$`)*
-$$cdc.flattering.delete-handling-mode$$:: $$Options for handling deleted records: (1) none - pass the records through, (2) drop - remove the records and (3) rewrite - add a '__deleted' field to the records.$$ *($$DeleteHandlingMode$$, default: `$$<none>$$`, possible values: `drop`,`rewrite`,`none`)*
-$$cdc.flattering.drop-tombstones$$:: $$By default Debezium generates tombstone records to enable Kafka compaction on deleted records. The dropTombstones can suppress the tombstone records.$$ *($$Boolean$$, default: `$$true$$`)*
-$$cdc.flattering.enabled$$:: $$Enable flattering the source record events (https://debezium.io/docs/configuration/event-flattening).$$ *($$Boolean$$, default: `$$true$$`)*
-$$cdc.name$$:: $$Unique name for this sourceConnector instance.$$ *($$String$$, default: `$$<none>$$`)*
-$$cdc.offset.commit-timeout$$:: $$Maximum number of milliseconds to wait for records to flush and partition offset data to be committed to offset storage before cancelling the process and restoring the offset data to be committed in a future attempt.$$ *($$Duration$$, default: `$$5000ms$$`)*
-$$cdc.offset.flush-interval$$:: $$Interval at which to try committing offsets. The default is 1 minute.$$ *($$Duration$$, default: `$$60000ms$$`)*
-$$cdc.offset.policy$$:: $$Offset storage commit policy.$$ *($$OffsetPolicy$$, default: `$$<none>$$`)*
-$$cdc.offset.storage$$:: $$Kafka connector tracks the number processed records and regularly stores the count (as "offsets") in a preconfigured metadata storage. On restart the connector resumes the reading from the last recorded source offset.$$ *($$OffsetStorageType$$, default: `$$<none>$$`, possible values: `memory`,`file`,`kafka`,`metadata`)*
-$$cdc.schema$$:: $$Include the schema's as part of the outbound message.$$ *($$Boolean$$, default: `$$false$$`)*
-$$cdc.stream.header.convert-connect-headers$$:: $$When true the {@link org.apache.kafka.connect.header.Header} are converted into message headers with the {@link org.apache.kafka.connect.header.Header#key()} as name and {@link org.apache.kafka.connect.header.Header#value()}.$$ *($$Boolean$$, default: `$$true$$`)*
-$$cdc.stream.header.offset$$:: $$Serializes the source record's offset metadata into the outbound message header under cdc.offset.$$ *($$Boolean$$, default: `$$false$$`)*
-$$metadata.store.dynamo-db.create-delay$$:: $$Delay between create table retries.$$ *($$Integer$$, default: `$$1$$`)*
-$$metadata.store.dynamo-db.create-retries$$:: $$Retry number for create table request.$$ *($$Integer$$, default: `$$25$$`)*
-$$metadata.store.dynamo-db.read-capacity$$:: $$Read capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
-$$metadata.store.dynamo-db.table$$:: $$Table name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
-$$metadata.store.dynamo-db.time-to-live$$:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$metadata.store.dynamo-db.write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
-$$metadata.store.gemfire.region$$:: $$Gemfire region name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
-$$metadata.store.jdbc.region$$:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$DEFAULT$$`)*
-$$metadata.store.jdbc.table-prefix$$:: $$Prefix for the custom table name.$$ *($$String$$, default: `$$<none>$$`)*
-$$metadata.store.mongo-db.collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$metadataStore$$`)*
-$$metadata.store.redis.key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$<none>$$`)*
-$$metadata.store.type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
-$$metadata.store.zookeeper.connect-string$$:: $$Zookeeper connect string in form HOST:PORT.$$ *($$String$$, default: `$$127.0.0.1:2181$$`)*
-$$metadata.store.zookeeper.encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$, default: `$$UTF-8$$`)*
-$$metadata.store.zookeeper.retry-interval$$:: $$Retry interval for Zookeeper operations in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
-$$metadata.store.zookeeper.root$$:: $$Root node - store entries are children of this node.$$ *($$String$$, default: `$$/SpringIntegration-MetadataStore$$`)*
+Properties grouped by prefix:
+
+
+=== cdc
+
+$$config$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a 'cdc.config.' prefix are native Debezium properties. The prefix is removed, converting them into Debezium io.debezium.config.Configuration.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+$$connector$$:: $$Shortcut for the cdc.config.connector.class property. Either of those can be used as long as they do not contradict with each other.$$ *($$ConnectorType$$, default: `$$<none>$$`, possible values: `mysql`,`postgres`,`mongodb`,`oracle`,`sqlserver`)*
+$$name$$:: $$Unique name for this sourceConnector instance.$$ *($$String$$, default: `$$<none>$$`)*
+$$schema$$:: $$Include the schema's as part of the outbound message.$$ *($$Boolean$$, default: `$$false$$`)*
+
+=== cdc.flattering
+
+$$add-fields$$:: $$Comma separated list of metadata fields to add to the flattened message. The fields will be prefixed with "__" or "__[<]struct]__", depending on the specification of the struct.$$ *($$String$$, default: `$$<none>$$`)*
+$$add-headers$$:: $$Comma separated list specify a list of metadata fields to add to the header of the flattened message. The fields will be prefixed with "__" or "__[struct]__".$$ *($$String$$, default: `$$<none>$$`)*
+$$delete-handling-mode$$:: $$Options for handling deleted records: (1) none - pass the records through, (2) drop - remove the records and (3) rewrite - add a '__deleted' field to the records.$$ *($$DeleteHandlingMode$$, default: `$$<none>$$`, possible values: `drop`,`rewrite`,`none`)*
+$$drop-tombstones$$:: $$By default Debezium generates tombstone records to enable Kafka compaction on deleted records. The dropTombstones can suppress the tombstone records.$$ *($$Boolean$$, default: `$$true$$`)*
+$$enabled$$:: $$Enable flattering the source record events (https://debezium.io/docs/configuration/event-flattening).$$ *($$Boolean$$, default: `$$true$$`)*
+
+=== cdc.offset
+
+$$commit-timeout$$:: $$Maximum number of milliseconds to wait for records to flush and partition offset data to be committed to offset storage before cancelling the process and restoring the offset data to be committed in a future attempt.$$ *($$Duration$$, default: `$$5000ms$$`)*
+$$flush-interval$$:: $$Interval at which to try committing offsets. The default is 1 minute.$$ *($$Duration$$, default: `$$60000ms$$`)*
+$$policy$$:: $$Offset storage commit policy.$$ *($$OffsetPolicy$$, default: `$$<none>$$`)*
+$$storage$$:: $$Kafka connector tracks the number processed records and regularly stores the count (as "offsets") in a preconfigured metadata storage. On restart the connector resumes the reading from the last recorded source offset.$$ *($$OffsetStorageType$$, default: `$$<none>$$`, possible values: `memory`,`file`,`kafka`,`metadata`)*
+
+=== cdc.stream.header
+
+$$convert-connect-headers$$:: $$When true the {@link org.apache.kafka.connect.header.Header} are converted into message headers with the {@link org.apache.kafka.connect.header.Header#key()} as name and {@link org.apache.kafka.connect.header.Header#value()}.$$ *($$Boolean$$, default: `$$true$$`)*
+$$offset$$:: $$Serializes the source record's offset metadata into the outbound message header under cdc.offset.$$ *($$Boolean$$, default: `$$false$$`)*
+
+=== metadata.store.dynamo-db
+
+$$create-delay$$:: $$Delay between create table retries.$$ *($$Integer$$, default: `$$1$$`)*
+$$create-retries$$:: $$Retry number for create table request.$$ *($$Integer$$, default: `$$25$$`)*
+$$read-capacity$$:: $$Read capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
+$$table$$:: $$Table name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
+$$time-to-live$$:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
+
+=== metadata.store.gemfire
+
+$$region$$:: $$Gemfire region name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== metadata.store.jdbc
+
+$$region$$:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$DEFAULT$$`)*
+$$table-prefix$$:: $$Prefix for the custom table name.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== metadata.store.mongo-db
+
+$$collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$metadataStore$$`)*
+
+=== metadata.store.redis
+
+$$key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== metadata.store
+
+$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
+
+=== metadata.store.zookeeper
+
+$$connect-string$$:: $$Zookeeper connect string in form HOST:PORT.$$ *($$String$$, default: `$$127.0.0.1:2181$$`)*
+$$encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$, default: `$$UTF-8$$`)*
+$$retry-interval$$:: $$Retry interval for Zookeeper operations in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
+$$root$$:: $$Root node - store entries are children of this node.$$ *($$String$$, default: `$$/SpringIntegration-MetadataStore$$`)*
 //end::configuration-properties[]
 
 ==== Debezium property Shortcut mapping

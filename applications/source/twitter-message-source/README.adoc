@@ -13,17 +13,28 @@ Must be aligned with used APIs rate limit
 == Options
 
 //tag::configuration-properties[]
-$$spring.cloud.stream.poller.cron$$:: $$Cron expression value for the Cron Trigger.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cloud.stream.poller.fixed-delay$$:: $$Fixed delay for default poller.$$ *($$Long$$, default: `$$1000$$`)*
-$$spring.cloud.stream.poller.initial-delay$$:: $$Initial delay for periodic triggers.$$ *($$Integer$$, default: `$$0$$`)*
-$$spring.cloud.stream.poller.max-messages-per-poll$$:: $$Maximum messages per poll for the default poller.$$ *($$Long$$, default: `$$1$$`)*
-$$twitter.connection.access-token$$:: $$Your Twitter token.$$ *($$String$$, default: `$$<none>$$`)*
-$$twitter.connection.access-token-secret$$:: $$Your Twitter token secret.$$ *($$String$$, default: `$$<none>$$`)*
-$$twitter.connection.consumer-key$$:: $$Your Twitter key.$$ *($$String$$, default: `$$<none>$$`)*
-$$twitter.connection.consumer-secret$$:: $$Your Twitter secret.$$ *($$String$$, default: `$$<none>$$`)*
-$$twitter.connection.debug-enabled$$:: $$Enables Twitter4J debug mode.$$ *($$Boolean$$, default: `$$false$$`)*
-$$twitter.connection.raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by the Twitter APIs. When set to False the result will use the Twitter4J's json representations. When set to True the result will use the original Twitter APISs json representations.$$ *($$Boolean$$, default: `$$true$$`)*
-$$twitter.message.source.count$$:: $$Max number of events to be returned. 20 default. 50 max.$$ *($$Integer$$, default: `$$20$$`)*
+Properties grouped by prefix:
+
+
+=== spring.cloud.stream.poller
+
+$$cron$$:: $$Cron expression value for the Cron Trigger.$$ *($$String$$, default: `$$<none>$$`)*
+$$fixed-delay$$:: $$Fixed delay for default poller.$$ *($$Long$$, default: `$$1000$$`)*
+$$initial-delay$$:: $$Initial delay for periodic triggers.$$ *($$Integer$$, default: `$$0$$`)*
+$$max-messages-per-poll$$:: $$Maximum messages per poll for the default poller.$$ *($$Long$$, default: `$$1$$`)*
+
+=== twitter.connection
+
+$$access-token$$:: $$Your Twitter token.$$ *($$String$$, default: `$$<none>$$`)*
+$$access-token-secret$$:: $$Your Twitter token secret.$$ *($$String$$, default: `$$<none>$$`)*
+$$consumer-key$$:: $$Your Twitter key.$$ *($$String$$, default: `$$<none>$$`)*
+$$consumer-secret$$:: $$Your Twitter secret.$$ *($$String$$, default: `$$<none>$$`)*
+$$debug-enabled$$:: $$Enables Twitter4J debug mode.$$ *($$Boolean$$, default: `$$false$$`)*
+$$raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by the Twitter APIs. When set to False the result will use the Twitter4J's json representations. When set to True the result will use the original Twitter APISs json representations.$$ *($$Boolean$$, default: `$$true$$`)*
+
+=== twitter.message.source
+
+$$count$$:: $$Max number of events to be returned. 20 default. 50 max.$$ *($$Integer$$, default: `$$20$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

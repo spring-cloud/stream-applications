@@ -37,23 +37,43 @@ Minimally, it must include the task name.
 The **$$tasklauncher-dataflow$$** $$sink$$ supports the following configuration properties:
 
 //tag::configuration-properties[]
-$$spring.cloud.dataflow.client.authentication.access-token$$:: $$OAuth2 Access Token.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cloud.dataflow.client.authentication.basic.password$$:: $$The login password.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cloud.dataflow.client.authentication.basic.username$$:: $$The login username.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cloud.dataflow.client.authentication.client-id$$:: $$OAuth2 Client Id.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cloud.dataflow.client.authentication.client-secret$$:: $$OAuth2 Client Secret.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cloud.dataflow.client.authentication.oauth2.client-registration-id$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cloud.dataflow.client.authentication.oauth2.password$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cloud.dataflow.client.authentication.oauth2.username$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cloud.dataflow.client.authentication.scope$$:: $$OAuth2 Scopes.$$ *($$Set<String>$$, default: `$$<none>$$`)*
-$$spring.cloud.dataflow.client.authentication.token-uri$$:: $$OAuth2 Token Uri.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cloud.dataflow.client.enable-dsl$$:: $$Enable Data Flow DSL access.$$ *($$Boolean$$, default: `$$false$$`)*
-$$spring.cloud.dataflow.client.server-uri$$:: $$The Data Flow server URI.$$ *($$String$$, default: `$$http://localhost:9393$$`)*
-$$spring.cloud.dataflow.client.skip-ssl-validation$$:: $$Skip Ssl validation.$$ *($$Boolean$$, default: `$$false$$`)*
-$$tasklauncher.platform-name$$:: $$The Spring Cloud Data Flow platform to use for launching tasks.$$ *($$String$$, default: `$$default$$`)*
-$$trigger.initial-delay$$:: $$The initial delay in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
-$$trigger.max-period$$:: $$The maximum polling period in milliseconds. Will be set to period if period > maxPeriod.$$ *($$Integer$$, default: `$$30000$$`)*
-$$trigger.period$$:: $$The polling period in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
+Properties grouped by prefix:
+
+
+=== spring.cloud.dataflow.client.authentication
+
+$$access-token$$:: $$OAuth2 Access Token.$$ *($$String$$, default: `$$<none>$$`)*
+$$client-id$$:: $$OAuth2 Client Id.$$ *($$String$$, default: `$$<none>$$`)*
+$$client-secret$$:: $$OAuth2 Client Secret.$$ *($$String$$, default: `$$<none>$$`)*
+$$scope$$:: $$OAuth2 Scopes.$$ *($$Set<String>$$, default: `$$<none>$$`)*
+$$token-uri$$:: $$OAuth2 Token Uri.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== spring.cloud.dataflow.client.authentication.basic
+
+$$password$$:: $$The login password.$$ *($$String$$, default: `$$<none>$$`)*
+$$username$$:: $$The login username.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== spring.cloud.dataflow.client.authentication.oauth2
+
+$$client-registration-id$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+$$password$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+$$username$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+
+=== spring.cloud.dataflow.client
+
+$$enable-dsl$$:: $$Enable Data Flow DSL access.$$ *($$Boolean$$, default: `$$false$$`)*
+$$server-uri$$:: $$The Data Flow server URI.$$ *($$String$$, default: `$$http://localhost:9393$$`)*
+$$skip-ssl-validation$$:: $$Skip Ssl validation.$$ *($$Boolean$$, default: `$$false$$`)*
+
+=== tasklauncher
+
+$$platform-name$$:: $$The Spring Cloud Data Flow platform to use for launching tasks.$$ *($$String$$, default: `$$default$$`)*
+
+=== trigger
+
+$$initial-delay$$:: $$The initial delay in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
+$$max-period$$:: $$The maximum polling period in milliseconds. Will be set to period if period > maxPeriod.$$ *($$Integer$$, default: `$$30000$$`)*
+$$period$$:: $$The polling period in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
 //end::configuration-properties[]
 
 == Using the TaskLauncher

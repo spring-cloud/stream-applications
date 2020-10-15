@@ -11,15 +11,23 @@ available, the default being 'CRLF'.
 The **$$tcp$$** $$sink$$ has the following options:
 
 //tag::configuration-properties[]
-$$tcp.consumer.charset$$:: $$The charset used when converting from bytes to String.$$ *($$String$$, default: `$$UTF-8$$`)*
-$$tcp.consumer.close$$:: $$Whether to close the socket after each message.$$ *($$Boolean$$, default: `$$false$$`)*
-$$tcp.consumer.encoder$$:: $$The encoder to use when sending messages.$$ *($$Encoding$$, default: `$$<none>$$`, possible values: `CRLF`,`LF`,`NULL`,`STXETX`,`RAW`,`L1`,`L2`,`L4`)*
-$$tcp.consumer.host$$:: $$The host to which this sink will connect.$$ *($$String$$, default: `$$<none>$$`)*
-$$tcp.nio$$:: $$Whether or not to use NIO.$$ *($$Boolean$$, default: `$$false$$`)*
-$$tcp.port$$:: $$The port on which to listen; 0 for the OS to choose a port.$$ *($$Integer$$, default: `$$1234$$`)*
-$$tcp.reverse-lookup$$:: $$Perform a reverse DNS lookup on the remote IP Address; if false, just the IP address is included in the message headers.$$ *($$Boolean$$, default: `$$false$$`)*
-$$tcp.socket-timeout$$:: $$The timeout (ms) before closing the socket when no data is received.$$ *($$Integer$$, default: `$$120000$$`)*
-$$tcp.use-direct-buffers$$:: $$Whether or not to use direct buffers.$$ *($$Boolean$$, default: `$$false$$`)*
+Properties grouped by prefix:
+
+
+=== tcp.consumer
+
+$$charset$$:: $$The charset used when converting from bytes to String.$$ *($$String$$, default: `$$UTF-8$$`)*
+$$close$$:: $$Whether to close the socket after each message.$$ *($$Boolean$$, default: `$$false$$`)*
+$$encoder$$:: $$The encoder to use when sending messages.$$ *($$Encoding$$, default: `$$<none>$$`, possible values: `CRLF`,`LF`,`NULL`,`STXETX`,`RAW`,`L1`,`L2`,`L4`)*
+$$host$$:: $$The host to which this sink will connect.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== tcp
+
+$$nio$$:: $$Whether or not to use NIO.$$ *($$Boolean$$, default: `$$false$$`)*
+$$port$$:: $$The port on which to listen; 0 for the OS to choose a port.$$ *($$Integer$$, default: `$$1234$$`)*
+$$reverse-lookup$$:: $$Perform a reverse DNS lookup on the remote IP Address; if false, just the IP address is included in the message headers.$$ *($$Boolean$$, default: `$$false$$`)*
+$$socket-timeout$$:: $$The timeout (ms) before closing the socket when no data is received.$$ *($$Integer$$, default: `$$120000$$`)*
+$$use-direct-buffers$$:: $$Whether or not to use direct buffers.$$ *($$Boolean$$, default: `$$false$$`)*
 //end::configuration-properties[]
 
 == Available Encoders

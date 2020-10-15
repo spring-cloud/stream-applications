@@ -16,26 +16,40 @@ Note: Twitter's search service and, by extension, the Search API is not meant to
 == Options
 
 //tag::configuration-properties[]
-$$spring.cloud.stream.poller.cron$$:: $$Cron expression value for the Cron Trigger.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cloud.stream.poller.fixed-delay$$:: $$Fixed delay for default poller.$$ *($$Long$$, default: `$$1000$$`)*
-$$spring.cloud.stream.poller.initial-delay$$:: $$Initial delay for periodic triggers.$$ *($$Integer$$, default: `$$0$$`)*
-$$spring.cloud.stream.poller.max-messages-per-poll$$:: $$Maximum messages per poll for the default poller.$$ *($$Long$$, default: `$$1$$`)*
-$$twitter.connection.access-token$$:: $$Your Twitter token.$$ *($$String$$, default: `$$<none>$$`)*
-$$twitter.connection.access-token-secret$$:: $$Your Twitter token secret.$$ *($$String$$, default: `$$<none>$$`)*
-$$twitter.connection.consumer-key$$:: $$Your Twitter key.$$ *($$String$$, default: `$$<none>$$`)*
-$$twitter.connection.consumer-secret$$:: $$Your Twitter secret.$$ *($$String$$, default: `$$<none>$$`)*
-$$twitter.connection.debug-enabled$$:: $$Enables Twitter4J debug mode.$$ *($$Boolean$$, default: `$$false$$`)*
-$$twitter.connection.raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by the Twitter APIs. When set to False the result will use the Twitter4J's json representations. When set to True the result will use the original Twitter APISs json representations.$$ *($$Boolean$$, default: `$$true$$`)*
-$$twitter.search.count$$:: $$Number of tweets to return per page (e.g. per single request), up to a max of 100.$$ *($$Integer$$, default: `$$100$$`)*
-$$twitter.search.geocode.latitude$$:: $$User's latitude.$$ *($$Double$$, default: `$$-1$$`)*
-$$twitter.search.geocode.longitude$$:: $$User's longitude.$$ *($$Double$$, default: `$$-1$$`)*
-$$twitter.search.geocode.radius$$:: $$Radius (in kilometers) around the (latitude, longitude) point.$$ *($$Double$$, default: `$$-1$$`)*
-$$twitter.search.lang$$:: $$Restricts searched tweets to the given language, given by an http://en.wikipedia.org/wiki/ISO_639-1 .$$ *($$String$$, default: `$$<none>$$`)*
-$$twitter.search.page$$:: $$Number of pages (e.g. requests) to search backwards (from most recent to the oldest tweets) before start the search from the most recent tweets again. The total amount of tweets searched backwards is (page * count)$$ *($$Integer$$, default: `$$3$$`)*
-$$twitter.search.query$$:: $$Search tweets by search query string.$$ *($$String$$, default: `$$<none>$$`)*
-$$twitter.search.restart-from-most-recent-on-empty-response$$:: $$Restart search from the most recent tweets on empty response. Applied only after the first restart (e.g. when since_id != UNBOUNDED)$$ *($$Boolean$$, default: `$$false$$`)*
-$$twitter.search.result-type$$:: $$Specifies what type of search results you would prefer to receive.  The current default is "mixed." Valid values include:   mixed : Include both popular and real time results in the response.   recent : return only the most recent results in the response   popular : return only the most popular results in the response$$ *($$ResultType$$, default: `$$<none>$$`, possible values: `popular`,`mixed`,`recent`)*
-$$twitter.search.since$$:: $$If specified, returns tweets with since the given date. Date should be formatted as YYYY-MM-DD.$$ *($$String$$, default: `$$<none>$$`)*
+Properties grouped by prefix:
+
+
+=== spring.cloud.stream.poller
+
+$$cron$$:: $$Cron expression value for the Cron Trigger.$$ *($$String$$, default: `$$<none>$$`)*
+$$fixed-delay$$:: $$Fixed delay for default poller.$$ *($$Long$$, default: `$$1000$$`)*
+$$initial-delay$$:: $$Initial delay for periodic triggers.$$ *($$Integer$$, default: `$$0$$`)*
+$$max-messages-per-poll$$:: $$Maximum messages per poll for the default poller.$$ *($$Long$$, default: `$$1$$`)*
+
+=== twitter.connection
+
+$$access-token$$:: $$Your Twitter token.$$ *($$String$$, default: `$$<none>$$`)*
+$$access-token-secret$$:: $$Your Twitter token secret.$$ *($$String$$, default: `$$<none>$$`)*
+$$consumer-key$$:: $$Your Twitter key.$$ *($$String$$, default: `$$<none>$$`)*
+$$consumer-secret$$:: $$Your Twitter secret.$$ *($$String$$, default: `$$<none>$$`)*
+$$debug-enabled$$:: $$Enables Twitter4J debug mode.$$ *($$Boolean$$, default: `$$false$$`)*
+$$raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by the Twitter APIs. When set to False the result will use the Twitter4J's json representations. When set to True the result will use the original Twitter APISs json representations.$$ *($$Boolean$$, default: `$$true$$`)*
+
+=== twitter.search
+
+$$count$$:: $$Number of tweets to return per page (e.g. per single request), up to a max of 100.$$ *($$Integer$$, default: `$$100$$`)*
+$$lang$$:: $$Restricts searched tweets to the given language, given by an http://en.wikipedia.org/wiki/ISO_639-1 .$$ *($$String$$, default: `$$<none>$$`)*
+$$page$$:: $$Number of pages (e.g. requests) to search backwards (from most recent to the oldest tweets) before start the search from the most recent tweets again. The total amount of tweets searched backwards is (page * count)$$ *($$Integer$$, default: `$$3$$`)*
+$$query$$:: $$Search tweets by search query string.$$ *($$String$$, default: `$$<none>$$`)*
+$$restart-from-most-recent-on-empty-response$$:: $$Restart search from the most recent tweets on empty response. Applied only after the first restart (e.g. when since_id != UNBOUNDED)$$ *($$Boolean$$, default: `$$false$$`)*
+$$result-type$$:: $$Specifies what type of search results you would prefer to receive.  The current default is "mixed." Valid values include:   mixed : Include both popular and real time results in the response.   recent : return only the most recent results in the response   popular : return only the most popular results in the response$$ *($$ResultType$$, default: `$$<none>$$`, possible values: `popular`,`mixed`,`recent`)*
+$$since$$:: $$If specified, returns tweets with since the given date. Date should be formatted as YYYY-MM-DD.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== twitter.search.geocode
+
+$$latitude$$:: $$User's latitude.$$ *($$Double$$, default: `$$-1$$`)*
+$$longitude$$:: $$User's longitude.$$ *($$Double$$, default: `$$-1$$`)*
+$$radius$$:: $$Radius (in kilometers) around the (latitude, longitude) point.$$ *($$Double$$, default: `$$-1$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
