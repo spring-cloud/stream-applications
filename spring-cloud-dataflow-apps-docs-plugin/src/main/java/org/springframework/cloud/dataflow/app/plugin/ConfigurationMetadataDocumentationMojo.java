@@ -31,7 +31,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.jar.Manifest;
 
 import org.apache.maven.artifact.Artifact;
@@ -54,26 +59,33 @@ import org.springframework.util.StringUtils;
 
 /**
  * A maven plugin that will scan an asciidoc file for special comment markers and replace
- * everything in between with a listing of visible configuration properties for a
- * Spring Cloud Stream/Task app.
+ * everything in between with a listing of visible configuration properties for a Spring
+ * Cloud Stream/Task app. Applications with multiple properties prefixes are grouped by default.
+ * This can be disabled by using {@code //tag::configuration-properties[group=false]}.
  *
  * @author Eric Bottard
  * @author David Turanski
  * @see <a href=
- * "https://docs.spring.io/spring-cloud-dataflow/docs/1.1.0.M2/reference/html/spring-cloud-dataflow-register-apps.html#spring-cloud-dataflow-stream-app-whitelisting">Whitelisting
+ * "https://dataflow.spring.io/docs/feature-guides/general/application-metadata/#whitelisting-properties">Whitelisting
  * Properties</a>
  */
 @Mojo(name = "generate-documentation", requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 
-	private BootApplicationConfigurationMetadataResolver metadataResolver =
-			new BootApplicationConfigurationMetadataResolver(imageName -> null);
+	static final String CONFIGURATION_PROPERTIES_START_TAG = "//tag::configuration-properties[";
+
+	static final String CONFIGURATION_PROPERTIES_END_TAG = "//end::configuration-properties[]";
+
+	private BootApplicationConfigurationMetadataResolver metadataResolver = new BootApplicationConfigurationMetadataResolver(
+			imageName -> null);
 
 	@Parameter(defaultValue = "${project}")
 	private MavenProject mavenProject;
 
 	@Parameter(defaultValue = "false")
 	private boolean failOnMissingDescription;
+
+	private boolean grouped = true;
 
 	public void execute() throws MojoExecutionException {
 
@@ -94,15 +106,21 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 		try (PrintWriter out = new PrintWriter(tmp);
 				BufferedReader reader = new BufferedReader(new FileReader(readme))) {
 
-			String line = null;
+			String line;
 			do {
 				line = reader.readLine();
 				out.println(line);
 			}
-			while (line != null && !line.startsWith("//tag::configuration-properties[]"));
+			while (line != null && !line.startsWith(CONFIGURATION_PROPERTIES_START_TAG));
 			if (line == null) {
 				getLog().info("No documentation section marker found");
 				return;
+			}
+
+			Map<String, String> startTagAttributes = startTagAttributes(line);
+
+			if ("false".equals(startTagAttributes.get("group"))) {
+				grouped = false;
 			}
 
 			ScatteredArchive archive = new ScatteredArchive(mavenProject);
@@ -111,24 +129,29 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 				debug(classLoader);
 
 				List<ConfigurationMetadataProperty> properties = metadataResolver.listProperties(archive, false);
-				Collections.sort(properties, new Comparator<ConfigurationMetadataProperty>() {
+				Collections.sort(properties, Comparator.comparing(ConfigurationMetadataProperty::getId));
 
-					@Override
-					public int compare(ConfigurationMetadataProperty p1, ConfigurationMetadataProperty p2) {
-						return p1.getId().compareTo(p2.getId());
-					}
-				});
+				Map<String, List<ConfigurationMetadataProperty>> groupedProperties = groupProperties(properties);
 
-				for (ConfigurationMetadataProperty property : properties) {
-					getLog().debug("Documenting " + property.getId());
-					out.println(asciidocFor(property, classLoader));
+				grouped = grouped && groupedProperties.size() > 1;
+
+				if (grouped) {
+					out.println("Properties grouped by prefix:\n");
+					groupedProperties.forEach((group, props) -> {
+						getLog().debug(" Documenting group " + group);
+						out.println(asciidocForGroup(group));
+						listProperties(props, out, classLoader, prop -> prop.getName());
+					});
+
 				}
-
+				else {
+					listProperties(properties, out, classLoader, prop -> prop.getId());
+				}
 				do {
 					line = reader.readLine();
 					// drop lines
 				}
-				while (!line.startsWith("//end::configuration-properties[]"));
+				while (!line.startsWith(CONFIGURATION_PROPERTIES_END_TAG));
 
 				// Copy remaining lines, including //end::configuration-properties[]
 				while (line != null) {
@@ -149,7 +172,33 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 		catch (IOException e) {
 			throw new MojoExecutionException("Error moving tmp file to README.adoc", e);
 		}
+	}
 
+	private void listProperties(List<ConfigurationMetadataProperty> properties, PrintWriter out,
+			ClassLoader classLoader,
+			Function<ConfigurationMetadataProperty, String> propertyValue) {
+		for (ConfigurationMetadataProperty property : properties) {
+			getLog().debug("Documenting " + property.getId());
+			out.println(asciidocFor(property, classLoader, propertyValue));
+		}
+
+	}
+
+	private Map<String, List<ConfigurationMetadataProperty>> groupProperties(
+			List<ConfigurationMetadataProperty> properties) {
+		Map<String, List<ConfigurationMetadataProperty>> groupedProperties = new LinkedHashMap<>();
+		properties.forEach(property -> {
+			String group = group(property.getId());
+			if (!groupedProperties.containsKey(group)) {
+				groupedProperties.put(group, new LinkedList<>());
+			}
+			groupedProperties.get(group).add(property);
+		});
+		return groupedProperties;
+	}
+
+	private String group(String id) {
+		return id.lastIndexOf('.') > 0 ? id.substring(0, id.lastIndexOf('.')) : "";
 	}
 
 	private void debug(ClassLoader classLoader) {
@@ -159,13 +208,29 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 		}
 	}
 
-	private String asciidocFor(ConfigurationMetadataProperty property, ClassLoader classLoader) {
+	private String asciidocFor(ConfigurationMetadataProperty property, ClassLoader classLoader,
+			Function<ConfigurationMetadataProperty, String> propertyValue) {
 		return String.format("$$%s$$:: $$%s$$ *($$%s$$, default: `$$%s$$`%s)*",
-				property.getId(),
+				propertyValue.apply(property),
 				niceDescription(property),
 				niceType(property),
 				niceDefault(property),
 				maybeHints(property, classLoader));
+	}
+
+	private String asciidocForGroup(String group) {
+		return "\n=== " + group + "\n";
+	}
+
+	private Map<String, String> startTagAttributes(String startTag) {
+		String attrs = startTag.substring(startTag.indexOf('[') + 1, startTag.indexOf(']'));
+		Set<String> set = StringUtils.commaDelimitedListToSet(attrs);
+		Map<String, String> attributes = new LinkedHashMap<>();
+		set.forEach(attr -> {
+			String[] keyValue = attr.split("=");
+			attributes.put(keyValue[0].trim(), keyValue.length == 2 ? keyValue[1].trim() : "");
+		});
+		return attributes;
 	}
 
 	private String niceDescription(ConfigurationMetadataProperty property) {
@@ -305,7 +370,7 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 	private String unqualify(String type) {
 		int lastDot = type.lastIndexOf('.');
 		int lastDollar = type.lastIndexOf('$');
-		return type.substring(Math.max(lastDot, lastDollar) + 1, type.length());
+		return type.substring(Math.max(lastDot, lastDollar) + 1);
 	}
 
 	/**
@@ -328,7 +393,7 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 		}
 
 		@Override
-		public Manifest getManifest() throws IOException {
+		public Manifest getManifest() {
 			throw new UnsupportedOperationException();
 		}
 
