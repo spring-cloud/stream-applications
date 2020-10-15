@@ -20,7 +20,7 @@
         <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
         <java.version>1.8</java.version>
 		<mockserver.version>5.10</mockserver.version>
-        <stream-apps-core.version>${project.version}</stream-apps-core.version>
+        <stream-apps-core.version>${revision}</stream-apps-core.version>
         <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
         <spring-cloud-stream-dependencies.version>Horsham.BUILD-SNAPSHOT</spring-cloud-stream-dependencies.version>
         <spring-cloud-stream.version>3.0.9.BUILD-SNAPSHOT</spring-cloud-stream.version>
@@ -28,6 +28,7 @@
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.0-M1</spring-cloud-dataflow-apps-docs-plugin.version>
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
         <prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
+        <spring-cloud-dependencies.version>Hoxton.SR7</spring-cloud-dependencies.version>
     </properties>
 
     <modules>
