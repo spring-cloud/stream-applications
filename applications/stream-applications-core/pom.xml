@@ -18,7 +18,6 @@
     <properties>
         <revision>3.0.0-SNAPSHOT</revision>
         <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
-        <java.version>1.8</java.version>
 		<mockserver.version>5.10</mockserver.version>
         <stream-apps-core.version>${revision}</stream-apps-core.version>
         <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
@@ -28,7 +27,6 @@
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.0-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
         <prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
-        <spring-cloud-dependencies.version>Hoxton.SR7</spring-cloud-dependencies.version>
     </properties>
 
     <modules>
@@ -168,11 +166,6 @@
                                             <groupId>org.springframework.cloud</groupId>
                                             <artifactId>spring-cloud-function-dependencies</artifactId>
                                             <version>${spring-cloud-function.version}</version>
-                                        </dependency>
-                                        <dependency>
-                                            <groupId>org.springframework.cloud</groupId>
-                                            <artifactId>spring-cloud-dependencies</artifactId>
-                                            <version>${spring-cloud-dependencies.version}</version>
                                         </dependency>
                                     </dependencyManagement>
                                     <dependencies>

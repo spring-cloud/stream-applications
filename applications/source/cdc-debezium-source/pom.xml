@@ -15,6 +15,10 @@
         <relativePath/>
     </parent>
 
+    <properties>
+        <json-unit.version>1.25.1</json-unit.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
@@ -51,14 +55,12 @@
         <dependency>
             <groupId>net.javacrumbs.json-unit</groupId>
             <artifactId>json-unit</artifactId>
-            <version>1.25.1</version>
+            <version>${json-unit.version}</version>
             <scope>test</scope>
         </dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
-            <!-- 3.0.8.BUILD-SNAPSHOT or newer is required because of an issue with the KafkaNullConverter -->
-			<version>3.0.8.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 
