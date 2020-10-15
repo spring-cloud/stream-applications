@@ -162,14 +162,23 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 						es.getValue().replaceAll("^\"|\"$", "") : "") + "</" + es.getKey() + ">")
 				.collect(Collectors.toList()));
 
-		//Maven BOM
-		Map<String, Dependency> allDependencyManagementMap =
-				this.global.getApplication().getMaven().getDependencyManagement().stream()
-						.collect(Collectors.toMap(d -> d.getGroupId() + ":" + d.getArtifactId(), d -> d));
-		// Ensure that for dependencies with same maven coordinates that application definition overrides the global one.
-		allDependencyManagementMap.putAll(this.application.getMaven().getDependencyManagement().stream()
-				.collect(Collectors.toMap(d -> d.getGroupId() + ":" + d.getArtifactId(), d -> d)));
-		app.getMaven().setDependencyManagement(allDependencyManagementMap.values().stream()
+		//Maven BOM. For DependencyManagement it is important to retain the exact definition order!
+		// Override the global dependencies with matching app dependency definitions. Retain the definition order!
+		List<Dependency> allDeps = this.global.getApplication().getMaven().getDependencyManagement().stream()
+				.map(globalDep -> this.application.getMaven().getDependencyManagement().stream()
+						.filter(d -> isSameArtifact(globalDep, d))
+						.findFirst().orElse(globalDep))
+				.collect(Collectors.toList());
+
+		// Add remaining app dependencies that have not be used for overriding. Retain the order!
+		this.application.getMaven().getDependencyManagement()
+				.forEach(appDep -> {
+					if (allDeps.stream().noneMatch(d -> isSameArtifact(appDep, d))) {
+						allDeps.add(appDep);
+					}
+				});
+
+		app.getMaven().setDependencyManagement(allDeps.stream()
 				.filter(Objects::nonNull)
 				.peek(dependency -> {
 					dependency.setScope("import");
@@ -307,6 +316,11 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		catch (IOException e) {
 			throw new MojoFailureException("Project generation failure", e);
 		}
+	}
+
+	private boolean isSameArtifact(Dependency dep1, Dependency dep2) {
+		return dep1.getGroupId().equalsIgnoreCase(dep2.getGroupId())
+				&& dep1.getArtifactId().equalsIgnoreCase(dep2.getArtifactId());
 	}
 
 	/**
