@@ -1,4 +1,4 @@
-# ZeroMQ Supplier
+# ZeroMQ Consumer
 
 A consumer that allows you to send messages through a ZeroMQ socker.
 
