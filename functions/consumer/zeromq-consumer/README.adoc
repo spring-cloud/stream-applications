@@ -10,7 +10,7 @@ You can import the `ZeroMqConsumerConfiguration` in the application and then inj
 
 You need to inject this as `Function<Flux<Message<?>>, Mono<Void>> zeromqConsumer`.
 
-You can use `zeromqConsuming` as a qualifier when injecting.
+You can use `zeromqConsumer` as a qualifier when injecting.
 
 **NOTE:** This is a functional endpoint. One will need to subscribe to this endpoint in order to start accepting data
 on it.
