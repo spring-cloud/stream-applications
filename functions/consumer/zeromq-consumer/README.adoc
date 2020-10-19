@@ -6,11 +6,14 @@ A consumer that allows you to send messages through a ZeroMQ socker.
 
 You can import the `ZeroMqConsumerConfiguration` in the application and then inject the following bean.
 
-`Consumer<Message<?>> zeromqConsumer`
+`Function<Flux<Message<?>>, Mono<Void>> zeromqConsumer`
 
-You need to inject this as `Consumer<Message<?>> zeromqConsumer`.
+You need to inject this as `Function<Flux<Message<?>>, Mono<Void>> zeromqConsumer`.
 
 You can use `zeromqConsuming` as a qualifier when injecting.
+
+**NOTE:** This is a functional endpoint. One will need to subscribe to this endpoint in order to start accepting data
+on it.
 
 ## Configuration Options
 

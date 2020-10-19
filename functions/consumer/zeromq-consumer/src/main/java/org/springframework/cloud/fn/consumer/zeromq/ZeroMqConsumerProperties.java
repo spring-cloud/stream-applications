@@ -30,13 +30,7 @@ public class ZeroMqConsumerProperties {
     /**
      * The Topic to expose.
      */
-    private String topic;
-
-    /**
-     * A Topic SpEL expression to evaluate a topic before sending
-     * messages to subscribers
-     */
-    private Expression topicExpression;
+    private Expression topic;
 
     @NotNull(message = "'socketType' is required")
     public SocketType getSocketType() {
@@ -62,25 +56,12 @@ public class ZeroMqConsumerProperties {
         this.connectUrl = connectUrl;
     }
 
-    public String getTopic() {
+    public Expression getTopic() {
         return topic;
     }
 
-    /**
-     * @param topic the ZeroMq Topic to publish messages on
-     */
-    public void setTopic(String topic) {
+    public void setTopic(Expression topic) {
         this.topic = topic;
     }
 
-    public Expression getTopicExpression() {
-        return topicExpression;
-    }
-
-    /**
-     * @param topicExpression the Topic Expression to evaluate topics before publishing messages
-     */
-    public void setTopicExpression(Expression topicExpression) {
-        this.topicExpression = topicExpression;
-    }
 }

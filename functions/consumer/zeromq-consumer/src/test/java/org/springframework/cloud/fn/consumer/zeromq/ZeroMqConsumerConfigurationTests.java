@@ -1,24 +1,22 @@
 package org.springframework.cloud.fn.consumer.zeromq;
 
-import org.assertj.core.api.InstanceOfAssertFactories;
+import java.util.function.Function;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.zeromq.SocketType;
+import org.zeromq.ZContext;
+import org.zeromq.ZMQ;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
-import org.zeromq.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
-import java.time.Duration;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,10 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(
         properties = {
-                "logging.level.org.springframework.cloud.stream=DEBUG",
-                "logging.level.org.springframework.context=DEBUG",
                 "logging.level.org.springframework.integration=DEBUG",
-                "zeromq.consumer.topic=test-topic"
+                "zeromq.consumer.topic='test-topic'"
         }
 )
 @DirtiesContext
@@ -64,15 +60,16 @@ public class ZeroMqConsumerConfigurationTests {
     @Test
     void testMessageHandlerConfiguration() throws InterruptedException {
 
-        Message<ZMsg> testMessage = MessageBuilder.withPayload(ZMsg.newStringMsg("test")).setHeader("topic", "test-topic").build();
+        Thread.sleep(2000);
+
+        Message<?> testMessage = MessageBuilder.withPayload("test").setHeader("topic", "test-topic").build();
         subject.apply(Flux.just(testMessage))
                 .subscribe();
 
-        Thread.sleep(2000);
-
-        ZMsg actual = ZMsg.recvMsg(socket);
-        assertThat(actual).isNotNull();
-        assertThat(actual.unwrap().getString(ZMQ.CHARSET)).isEqualTo("test-topic");
+        String topic = socket.recvStr();
+        assertThat(topic).isEqualTo("test-topic");
+        assertThat(socket.recvStr()).isEmpty();
+        assertThat(socket.recvStr()).isEqualTo("test");
 
     }
 
