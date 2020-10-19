@@ -26,7 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(
         properties = {
-                "logging.level.org.springframework.integration=DEBUG",
                 "zeromq.consumer.topic='test-topic'"
         }
 )
