@@ -30,8 +30,6 @@ import org.testcontainers.lifecycle.Startable;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import static org.springframework.cloud.stream.app.test.integration.AppLog.appLog;
-
 public abstract class StreamApps implements AutoCloseable, Startable {
 
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -63,25 +61,7 @@ public abstract class StreamApps implements AutoCloseable, Startable {
 
 	public void start() {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Starting apps...");
-
-			logger.debug("Source container environment:");
-			sourceContainer().getEnv().forEach((Consumer<String>) env -> logger.debug(env));
-			sourceContainer().withLogConsumer(appLog(sourceContainer().getImage().get()));
-
-			if (!CollectionUtils.isEmpty(processorContainers)) {
-				logger.debug("\nProcessor containers environment:");
-				processorContainers().forEach(container -> {
-					logger.debug("Processor container environment:");
-					container.getEnv().forEach((Consumer<String>) env -> logger.debug(env));
-					container.withLogConsumer(appLog(container.getImage().get()));
-
-				});
-			}
-
-			logger.debug("\nSink container environment:");
-			sinkContainer().getEnv().forEach((Consumer<String>) env -> logger.debug(env));
-			sinkContainer().withLogConsumer(appLog(sinkContainer().getImage().get()));
+			logDebugInfo();
 		}
 
 		sinkContainer.start();
@@ -95,7 +75,23 @@ public abstract class StreamApps implements AutoCloseable, Startable {
 		sourceContainer.stop();
 	}
 
-	public static abstract class Builder {
+	private void logDebugInfo() {
+		logger.debug("Starting apps...");
+		logger.debug("Source container environment for {} :", sourceContainer().getImage().get());
+		sourceContainer().getEnv().forEach((Consumer<String>) env -> logger.debug(env));
+
+		if (!CollectionUtils.isEmpty(processorContainers)) {
+			logger.debug("\nProcessor containers environment:");
+			processorContainers().forEach(container -> {
+				logger.debug("Processor container environment for {}", container.getImage().get());
+				container.getEnv().forEach((Consumer<String>) env -> logger.debug(env));
+			});
+		}
+		logger.debug("\nSink container environment for {} :", sinkContainer().getImage().get());
+		sinkContainer().getEnv().forEach((Consumer<String>) env -> logger.debug(env));
+	}
+
+	public static abstract class Builder<S extends StreamApps> {
 		private final String streamName;
 
 		private GenericContainer source;
@@ -129,15 +125,17 @@ public abstract class StreamApps implements AutoCloseable, Startable {
 			return this;
 		}
 
-		public StreamApps build() {
+		public S build() {
 
 			Assert.notNull(source, "A Source container is required.");
 			Assert.notNull(sink, "A Sink container is required.");
 
-			return streamAppsInstance(setupSourceContainer(), setupProcessorContainers(), setupSinkContainer());
+			return doBuild(setupSourceContainer(), setupProcessorContainers(), setupSinkContainer());
 		}
 
-		protected abstract StreamApps streamAppsInstance(GenericContainer sourceContainer,
+		protected abstract Map<String, String> binderProperties();
+
+		protected abstract S doBuild(GenericContainer sourceContainer,
 				List<GenericContainer> processorContainers, GenericContainer sinkContainer);
 
 		private GenericContainer setupSourceContainer() {
@@ -178,7 +176,5 @@ public abstract class StreamApps implements AutoCloseable, Startable {
 			return (CollectionUtils.isEmpty(processors) || processors.size() <= 1) ? streamName
 					: "processor_" + (processors.size() - 1);
 		}
-
-		protected abstract Map<String, String> binderProperties();
 	}
 }

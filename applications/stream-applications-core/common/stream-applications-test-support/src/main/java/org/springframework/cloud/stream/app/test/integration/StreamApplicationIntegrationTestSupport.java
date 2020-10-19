@@ -20,10 +20,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.Callable;
+import java.util.function.Predicate;
 
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.messaging.Message;
+import org.springframework.stereotype.Component;
 import org.springframework.util.SocketUtils;
 
 /**
@@ -31,9 +36,19 @@ import org.springframework.util.SocketUtils;
  * @author David Turanski
  */
 @Testcontainers
-public abstract class StreamIApplicationIntegrationTestSupport {
+@Component
+public abstract class StreamApplicationIntegrationTestSupport {
 
-	protected static String localHostAddress() {
+	protected static final String DOCKER_ORG = "springcloudstream";
+
+	@Autowired
+	private AbstractTestTopicListener testListener;
+
+	protected static String prePackagedStreamAppImageName(String appName, String binderName, String version) {
+		return DOCKER_ORG + "/" + appName + "-" + binderName + ":" + version;
+	}
+
+	public static String localHostAddress() {
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		}
@@ -55,4 +70,17 @@ public abstract class StreamIApplicationIntegrationTestSupport {
 		return SocketUtils.findAvailableTcpPort(10000, 20000);
 	}
 
+	protected Callable<Boolean> verifyOutputMessages() {
+		return () -> testListener.isVerified().get();
+	}
+
+	protected <P> Callable<Boolean> verifyOutputPayload(Predicate<P> outputVerifier) {
+		testListener.addOutputPayloadVerifier(outputVerifier);
+		return () -> testListener.isVerified().get();
+	}
+
+	protected Callable<Boolean> verifyOutputMessage(Predicate<Message<?>> outputVerifier) {
+		testListener.addOutputMessageVerifier(outputVerifier);
+		return () -> testListener.isVerified().get();
+	}
 }

@@ -1,0 +1,16 @@
+# Stream Applications Test Support
+
+This module contains common components to support stream applications.
+
+
+## Stream Application Integration Testing
+
+The `integration` package contains components supporting integration testing stream apps using TestContainers.
+
+### StreamAppContainer
+
+An extension
+
+
+
+

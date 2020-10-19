@@ -16,11 +16,9 @@
 
 package org.springframework.cloud.stream.app.test.integration;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -28,65 +26,84 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.output.OutputFrame;
 
+import org.springframework.util.Assert;
+
 /**
- * Utility for matching test container log contents.
+ * Utility for matching test container log contents using Awaitility. Example:
+ * {@code await().until(logMatcher.matches();}
  * @author David Turanski
  */
 public class LogMatcher implements Consumer<OutputFrame> {
 	private static Logger logger = LoggerFactory.getLogger(LogMatcher.class);
 
-	private List<Consumer<String>> listeners = new LinkedList<>();
+	protected AtomicBoolean matched = new AtomicBoolean();
 
-	public Callable<Boolean> verifies(Consumer<LogListener> consumer) {
-		LogListener logListener = new LogListener();
-		consumer.accept(logListener);
-		logListener.runnable.ifPresent(runnable -> runnable.run());
-		listeners.add(logListener);
-		return () -> logListener.matches().get();
+	private Pattern pattern;
+
+	private LogMatcher() {
+	}
+
+	public Callable<Boolean> matches() {
+		return () -> matched.get();
+	}
+
+	private LogMatcher(Pattern pattern) {
+		this.pattern = pattern;
+	}
+
+	public static LogMatcher contains(String string) {
+		return LogMatcher.matchesRegex(".*" + string + ".*");
+	}
+
+	public static LogMatcher endsWith(String string) {
+		return LogMatcher.matchesRegex(".*" + string);
+	}
+
+	public static LogMatcher matchesRegex(String regex) {
+		return new LogMatcher(Pattern.compile(regex));
+	}
+
+	public LogMatcher times(int times) {
+		return new CountingLogMatcher(this.pattern, times);
 	}
 
 	@Override
 	public void accept(OutputFrame outputFrame) {
-		listeners.forEach(m -> m.accept(outputFrame.getUtf8String()));
+		synchronized (matched) {
+			if (!matched.get()) {
+				String str = outputFrame.getUtf8String().trim();
+				logger.trace("matching {} using pattern {}", str, pattern.pattern());
+				if (pattern.matcher(str).matches()) {
+					matched.set(true);
+					logger.debug(" MATCHED {}", str);
+				}
+			}
+		}
 	}
 
-	public class LogListener implements Consumer<String> {
-		private AtomicBoolean matched = new AtomicBoolean();
+	public final static class CountingLogMatcher extends LogMatcher {
 
-		private Optional<Runnable> runnable = Optional.empty();
+		private final AtomicInteger count = new AtomicInteger();
 
-		private Pattern pattern;
+		private CountingLogMatcher(Pattern pattern, int count) {
+			super(pattern);
+			Assert.isTrue(count >= 1, "'count' must be greater than 0");
+			this.count.set(count);
+		}
 
 		@Override
-		public void accept(String s) {
-			logger.trace(this + "matching " + s.trim() + " using pattern " + pattern.pattern());
-			if (pattern.matcher(s.trim()).matches()) {
-				logger.debug(" MATCHED " + s.trim());
-				matched.set(true);
-				listeners.remove(this);
+		public void accept(OutputFrame outputFrame) {
+			if (count.get() > 0) {
+				super.accept(outputFrame);
+				if (matched.compareAndSet(true, false)) {
+					count.decrementAndGet();
+				}
 			}
 		}
 
-		public LogListener contains(String string) {
-			return matchesRegex(".*" + string + ".*");
-		}
-
-		public LogListener endsWith(String string) {
-			return matchesRegex(".*" + string);
-		}
-
-		public LogListener matchesRegex(String regex) {
-			this.pattern = Pattern.compile(regex);
-			return this;
-		}
-
-		public LogListener when(Runnable runnable) {
-			this.runnable = Optional.of(runnable);
-			return this;
-		}
-
-		public AtomicBoolean matches() {
-			return matched;
+		@Override
+		public Callable<Boolean> matches() {
+			return () -> count.get() == 0;
 		}
 	}
 }

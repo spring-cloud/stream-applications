@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.test.integration.kafka;
+package org.springframework.cloud.stream.app.test.integration.rabbitmq;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -24,32 +23,38 @@ import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.cloud.stream.app.test.integration.StreamApps;
 
-public class KafkaStreamApps extends StreamApps {
+import static org.springframework.cloud.stream.app.test.integration.FluentMap.fluentMap;
 
-	protected KafkaStreamApps(GenericContainer sourceContainer, List<GenericContainer> processorContainers,
+public class RabbitMQStreamApps extends StreamApps {
+
+	protected RabbitMQStreamApps(GenericContainer sourceContainer, List<GenericContainer> processorContainers,
 			GenericContainer sinkContainer) {
 		super(sourceContainer, processorContainers, sinkContainer);
 	}
 
-	public static Builder<KafkaStreamApps> kafkaStreamApps(String streamName, GenericContainer messageBrokerContainer) {
-		return new KafkaBuilder(streamName, messageBrokerContainer);
+	public static Builder<RabbitMQStreamApps> rabbitMQStreamApps(String streamName,
+			GenericContainer messageBrokerContainer) {
+		return new RabbitMQBuilder(streamName, messageBrokerContainer);
 	}
 
-	public static final class KafkaBuilder extends Builder<KafkaStreamApps> {
+	public static final class RabbitMQBuilder extends Builder<RabbitMQStreamApps> {
 
-		protected KafkaBuilder(String streamName, GenericContainer messageBrokerContainer) {
+		protected RabbitMQBuilder(String streamName, GenericContainer messageBrokerContainer) {
 			super(streamName, messageBrokerContainer);
 		}
 
 		protected Map<String, String> binderProperties() {
-			return Collections.singletonMap("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS",
-					messageBrokerContainer.getNetworkAliases().get(0) + ":9092");
+
+			return fluentMap()
+					.withEntry("SPRING_RABBITMQ_HOST",
+							messageBrokerContainer.getNetworkAliases().get(0))
+					.withEntry("SPRING_RABBITMQ_PORT", "5672");
 		}
 
 		@Override
-		protected KafkaStreamApps doBuild(GenericContainer sourceContainer,
+		protected RabbitMQStreamApps doBuild(GenericContainer sourceContainer,
 				List<GenericContainer> processorContainers, GenericContainer sinkContainer) {
-			return new KafkaStreamApps(sourceContainer, processorContainers, sinkContainer);
+			return new RabbitMQStreamApps(sourceContainer, processorContainers, sinkContainer);
 		}
 	}
 }
