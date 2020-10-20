@@ -1,0 +1,30 @@
+# ZeroMQ Consumer
+
+A consumer that allows you to send messages through a ZeroMQ socker.
+
+## Beans for injection
+
+You can import the `ZeroMqConsumerConfiguration` in the application and then inject the following bean.
+
+`Function<Flux<Message<?>>, Mono<Void>> zeromqConsumer`
+
+You need to inject this as `Function<Flux<Message<?>>, Mono<Void>> zeromqConsumer`.
+
+You can use `zeromqConsumer` as a qualifier when injecting.
+
+**NOTE:** This is a functional endpoint. One will need to subscribe to this endpoint in order to start accepting data
+on it.
+
+## Configuration Options
+
+All configuration properties are prefixed with `zeromq.consumer`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/zeromq/ZeroMqConsumerProperties.java[ZeroMqConsumerProperties].
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/consumer/zeromq/[test suite] for the various ways, this consumer is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/zeromq-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a ZeroMQ Sink.
