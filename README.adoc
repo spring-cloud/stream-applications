@@ -84,7 +84,7 @@ The following are the four major components of this repository.
 |link:functions/consumer/rsocket-consumer/README.adoc[RSocket]
 |link:functions/supplier/zeromq-supplier/README.adoc[ZeroMQ]
 |
-|
+|link:functions/consumer/zeromq-consumer/README.adoc[ZeroMQ]
 |===
 
 === Reusable Spring Cloud Stream Applications
