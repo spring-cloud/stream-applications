@@ -33,5 +33,6 @@
         <module>wavefront-sink</module>
         <module>pgcopy-sink</module>
         <module>rsocket-sink</module>
+        <module>zeromq-sink</module>
     </modules>
 </project>

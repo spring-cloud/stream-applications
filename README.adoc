@@ -158,6 +158,9 @@ The following are the four major components of this repository.
 |link:applications/source/zeromq-source/README.adoc[ZeroMQ]
 |
 |link:applications/sink/rsocket-sink/README.adoc[RSocket]
+|
+|
+|link:applications/sink/zeromq-sink/README.adoc[ZeroMQ]
 |===
 
 === Build
