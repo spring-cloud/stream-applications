@@ -1,0 +1,47 @@
+//tag::ref-doc[]
+= ZeroMQ Source
+
+The "zeromq" sink enables sending messages to a ZeroMQ socket.
+
+== Input
+
+* `byte[]`
+
+== Output
+
+=== Payload
+
+N/A
+
+== Options
+
+The **$$zeromq$$** $$sink$$ has the following options:
+
+//tag::configuration-properties[]
+$$zeromq.consumer.connect-url$$:: $$Connection URL for to the ZeroMQ Socket.$$ *($$String$$, default: `$$<none>$$`)*
+$$zeromq.consumer.socket-type$$:: $$The Socket Type the connection should make.$$ *($$SocketType$$, default: `$$PUB$$`, possible values: `PAIR`,`PUSH`,`PUB`)*
+$$zeromq.consumer.topic$$:: $$The Topic SpEL Expression to publish to.$$ *($$String$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+Also see the https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[Spring Boot Documentation]
+for addition properties for the broker connections and listener properties.
+
+== Build
+
+```
+$ ./mvnw clean install -PgenerateApps
+$ cd apps
+```
+You can find the corresponding binder based projects here.
+You can then cd into one of the folders and build it:
+```
+$ ./mvnw clean package
+```
+
+== Examples
+
+```
+java -jar zeromq-sink.jar --zeromq.consumer.connectUrl=tcp://server:port --zeromq.consumer.topic=
+```
+
+//end::ref-doc[]
