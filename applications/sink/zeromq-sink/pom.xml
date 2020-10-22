@@ -57,7 +57,7 @@
                         <name>zeromq</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.zeromq.ZeroMqConsumerConfiguration.class
+                        <configClass>org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerConfiguration.class
                         </configClass>
 
                         <maven>
