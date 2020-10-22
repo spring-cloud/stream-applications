@@ -1,5 +1,5 @@
 //tag::ref-doc[]
-= ZeroMQ Source
+= ZeroMQ Sink
 
 The "zeromq" sink enables sending messages to a ZeroMQ socket.
 
