@@ -23,9 +23,6 @@ $$zeromq.consumer.socket-type$$:: $$The Socket Type the connection should make.$
 $$zeromq.consumer.topic$$:: $$The Topic SpEL Expression to publish to.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
-Also see the https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[Spring Boot Documentation]
-for addition properties for the broker connections and listener properties.
-
 == Build
 
 ```

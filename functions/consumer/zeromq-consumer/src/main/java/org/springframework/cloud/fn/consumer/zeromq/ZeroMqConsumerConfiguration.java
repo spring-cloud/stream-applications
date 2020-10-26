@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.consumer.zeromq;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.BeanFactory;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import reactor.core.publisher.Flux;
@@ -47,7 +48,8 @@ public class ZeroMqConsumerConfiguration {
     }
 
     @Bean
-    public ZeroMqMessageHandler zeromqMessageHandler(ZeroMqConsumerProperties properties, ZContext zContext,
+    public ZeroMqMessageHandler zeromqMessageHandler(BeanFactory beanFactory,
+                                                     ZeroMqConsumerProperties properties, ZContext zContext,
                                                      @Autowired(required = false) Consumer<ZMQ.Socket> socketConfigurer,
                                                      @Autowired(required = false) OutboundMessageMapper<byte[]> messageMapper) {
         ZeroMqMessageHandler zeroMqMessageHandler =

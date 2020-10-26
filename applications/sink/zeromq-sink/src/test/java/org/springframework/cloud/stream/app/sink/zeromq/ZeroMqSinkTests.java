@@ -16,31 +16,25 @@
 
 package org.springframework.cloud.stream.app.sink.zeromq;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Timeout;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMsg;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
-import org.springframework.cloud.stream.config.BindingServiceConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.integration.zeromq.ZeroMqHeaders;
-import org.springframework.integration.zeromq.outbound.ZeroMqMessageHandler;
+import org.springframework.integration.mapping.OutboundMessageMapper;
+import org.springframework.integration.support.json.EmbeddedJsonHeadersMessageMapper;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.test.annotation.DirtiesContext;
-
-import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,67 +44,58 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Daniel Frey
  * @since 3.1.0
  */
-@SpringBootTest(
-		webEnvironment = SpringBootTest.WebEnvironment.NONE,
-		properties = {
-				"spring.cloud.function.definition=zeromqConsumer",
-				"zeromq.consumer.topic='test-topic'"
-		}
-)
-@DirtiesContext
 public class ZeroMqSinkTests {
 
-	public static final int TIMEOUT = 10000;
-
 	private static final ZContext CONTEXT = new ZContext();
-	private static ZMQ.Socket socket;
-
-	@Autowired
-	ZeroMqMessageHandler zeromqMessageHandler;
-
-	@Autowired
-	InputDestination inputDestination;
-
-	@Autowired
-	ObjectMapper mapper;
-
-	@BeforeAll
-	static void setup() {
-
-		String socketAddress = "tcp://*";
-		socket = CONTEXT.createSocket(SocketType.SUB);
-		int bindPort = socket.bindToRandomPort(socketAddress);
-
-		System.setProperty("zeromq.consumer.connectUrl", "tcp://localhost:" + bindPort);
-
-	}
-
-	@AfterAll
-	static void teardown() {
-
-		socket.close();
-		CONTEXT.close();
-
-	}
 
 	@Test
-	@Timeout(TIMEOUT)
-	public void testSinkFromFunction() throws InterruptedException, IOException {
+	public void testSinkFromFunction() {
 
-		Thread.sleep(2000);
-		socket.setReceiveTimeOut(TIMEOUT);
+		ZMQ.Socket socket = CONTEXT.createSocket(SocketType.SUB);
+		socket.setReceiveTimeOut(10_000);
+		int port = socket.bindToRandomPort("tcp://*");
 		socket.subscribe("test-topic");
 
-		inputDestination.send(MessageBuilder.withPayload("test".getBytes(ZMQ.CHARSET)).setHeader(ZeroMqHeaders.TOPIC, "test-topic").build());
+		try (ConfigurableApplicationContext context =
+					 new SpringApplicationBuilder(
+					 		TestChannelBinderConfiguration.getCompleteConfiguration(ZeroMqSourceTestApplication.class)
+					 ).run(
+							 "--logging.level.org.springframework.integration=DEBUG",
+							 "--spring.cloud.function.definition=zeromqConsumer",
+							 "--zeromq.consumer.topic='test-topic'",
+							 "--zeromq.consumer.connectUrl=tcp://localhost:" + port
+					 )
+		) {
 
-		ZMsg received = ZMsg.recvMsg(socket);
-		assertThat(received.getFirst().getData()).isEqualTo("test-topic".getBytes(ZMQ.CHARSET));
-		assertThat(received.getLast().getData()).isEqualTo("test".getBytes(ZMQ.CHARSET));
+			InputDestination inputDestination = context.getBean(InputDestination.class);
+
+			Message<?> testMessage =
+					MessageBuilder.withPayload("test")
+							.setHeader("topic", "test-topic")
+//							.setHeader("contentType", "text/plain")
+							.build();
+			inputDestination.send(testMessage);
+
+			ZMsg received = ZMsg.recvMsg(socket);
+			assertThat(received).isNotNull();
+			assertThat(received.unwrap().getString(ZMQ.CHARSET)).isEqualTo("test-topic");
+			assertThat(received.getLast().getString(ZMQ.CHARSET)).isEqualTo("test");
+
+		} finally {
+			socket.close();
+		}
 
 	}
 
 	@SpringBootApplication
-	@Import({ZeroMqConsumerConfiguration.class, TestChannelBinderConfiguration.class, BindingServiceConfiguration.class})
-	public static class ZeroMqSourceTestApplication { }
+	@Import(ZeroMqConsumerConfiguration.class)
+	public static class ZeroMqSourceTestApplication {
+
+		@Bean
+		OutboundMessageMapper<byte[]> messageMapper() {
+			return new EmbeddedJsonHeadersMessageMapper();
+		}
+
+	}
 
 }
