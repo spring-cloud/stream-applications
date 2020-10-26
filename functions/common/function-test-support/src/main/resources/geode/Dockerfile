@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM apachegeode/geode:1.12.0
+FROM apachegeode/geode:1.13.0
 
 ARG CACHE_SERVER_PORT=40404
 ARG LOCATOR_PORT=10334

@@ -23,13 +23,16 @@ $$topic-expression$$:: $$A SpEL expression to use for topic.$$ *($$String$$, def
 === spring.redis
 
 $$client-name$$:: $$Client name to be set on connections with CLIENT SETNAME.$$ *($$String$$, default: `$$<none>$$`)*
+$$client-type$$:: $$Type of client to use. By default, auto-detected according to the classpath.$$ *($$ClientType$$, default: `$$<none>$$`, possible values: `LETTUCE`,`JEDIS`)*
+$$connect-timeout$$:: $$Connection timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$database$$:: $$Database index used by the connection factory.$$ *($$Integer$$, default: `$$0$$`)*
 $$host$$:: $$Redis server host.$$ *($$String$$, default: `$$localhost$$`)*
 $$password$$:: $$Login password of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
 $$port$$:: $$Redis server port.$$ *($$Integer$$, default: `$$6379$$`)*
 $$ssl$$:: $$Whether to enable SSL support.$$ *($$Boolean$$, default: `$$false$$`)*
-$$timeout$$:: $$Connection timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$timeout$$:: $$Read timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$url$$:: $$Connection URL. Overrides host, port, and password. User is ignored. Example: redis://user:password@example.com:6379$$ *($$String$$, default: `$$<none>$$`)*
+$$username$$:: $$Login username of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
 
 === spring.redis.jedis.pool
 
