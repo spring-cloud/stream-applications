@@ -55,7 +55,7 @@ public class ZeroMqConsumerConfiguration {
         ZeroMqMessageHandler zeroMqMessageHandler =
                 new ZeroMqMessageHandler(zContext, properties.getConnectUrl(), properties.getSocketType());
 
-        if (properties.getTopic() != null ) {
+        if (properties.getTopic() != null) {
             zeroMqMessageHandler.setTopicExpression(properties.getTopic());
         }
 
@@ -63,7 +63,7 @@ public class ZeroMqConsumerConfiguration {
             zeroMqMessageHandler.setSocketConfigurer(socketConfigurer);
         }
 
-        if(messageMapper != null) {
+        if (messageMapper != null) {
             zeroMqMessageHandler.setMessageMapper(messageMapper);
         }
 
