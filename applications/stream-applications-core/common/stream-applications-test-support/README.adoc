@@ -1,6 +1,6 @@
 # Stream Applications Test Support
 
-This module contains common components to support stream applications.
+This module contains common components to support testing of stream applications.
 
 
 ## Stream Application Integration Testing
