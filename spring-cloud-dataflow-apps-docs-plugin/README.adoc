@@ -14,7 +14,7 @@ To use this plugin, simply add the following markers to your project `README.ado
 
 ```
 //tag::configuration-properties[]
-//enc::configuration-properties[]
+//end::configuration-properties[]
 ```
 
 
