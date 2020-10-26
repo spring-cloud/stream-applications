@@ -56,9 +56,9 @@ public class KafkaStreamApplicationIntegrationTestSupportTests extends KafkaStre
 		kafkaTemplate.send(STREAM_APPLICATIONS_TEST_TOPIC, "hello test3");
 		kafkaTemplate.send(STREAM_APPLICATIONS_TEST_TOPIC, "hello test4");
 		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputPayload((s -> s.equals("hello test4"))));
-		await().atMost(Duration.ofSeconds(30))
 				.until(verifyOutputPayload((s -> s.equals("hello test3"))));
+		await().atMost(Duration.ofSeconds(30))
+				.until(verifyOutputPayload((s -> s.equals("hello test4"))));
 
 	}
 

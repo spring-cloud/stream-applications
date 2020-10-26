@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app.test.integration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
@@ -146,6 +147,23 @@ public abstract class AbstractTestTopicListener implements TestTopicListener {
 
 		public boolean isSatisfied() {
 			return this.satisfied.get();
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) {
+				return true;
+			}
+			if (o == null || getClass() != o.getClass()) {
+				return false;
+			}
+			Verifier verifier = (Verifier) o;
+			return predicate.equals(verifier.predicate);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(predicate);
 		}
 	}
 }
