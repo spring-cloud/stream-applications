@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.sink.zeromq;
 
 import org.junit.jupiter.api.Test;
 
+import org.springframework.util.MimeTypeUtils;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -29,10 +30,7 @@ import org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.integration.mapping.OutboundMessageMapper;
-import org.springframework.integration.support.json.EmbeddedJsonHeadersMessageMapper;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
@@ -56,6 +54,9 @@ public class ZeroMqSinkTests {
 		int port = socket.bindToRandomPort("tcp://*");
 		socket.subscribe("test-topic");
 
+		ZMQ.Poller poller = CONTEXT.createPoller(1);
+		poller.register(socket, ZMQ.Poller.POLLIN);
+
 		try (ConfigurableApplicationContext context =
 					 new SpringApplicationBuilder(
 					 		TestChannelBinderConfiguration.getCompleteConfiguration(ZeroMqSourceTestApplication.class)
@@ -72,16 +73,28 @@ public class ZeroMqSinkTests {
 			Message<?> testMessage =
 					MessageBuilder.withPayload("test")
 							.setHeader("topic", "test-topic")
-//							.setHeader("contentType", "text/plain")
+							.setHeader("contentType", MimeTypeUtils.APPLICATION_OCTET_STREAM)
 							.build();
 			inputDestination.send(testMessage);
 
-			ZMsg received = ZMsg.recvMsg(socket);
-			assertThat(received).isNotNull();
-			assertThat(received.unwrap().getString(ZMQ.CHARSET)).isEqualTo("test-topic");
-			assertThat(received.getLast().getString(ZMQ.CHARSET)).isEqualTo("test");
+			ZMsg received = null;
+			while (received == null) {
+
+				poller.poll(10000);
+				if(poller.pollin(0)) {
+
+					received = ZMsg.recvMsg(socket);
+					assertThat(received).isNotNull();
+					assertThat(received.unwrap().getString(ZMQ.CHARSET)).isEqualTo("test-topic");
+					assertThat(received.getLast().getString(ZMQ.CHARSET)).isEqualTo("test");
+
+				}
+
+			}
 
 		} finally {
+			poller.unregister(socket);
+			poller.close();
 			socket.close();
 		}
 
@@ -89,13 +102,6 @@ public class ZeroMqSinkTests {
 
 	@SpringBootApplication
 	@Import(ZeroMqConsumerConfiguration.class)
-	public static class ZeroMqSourceTestApplication {
-
-		@Bean
-		OutboundMessageMapper<byte[]> messageMapper() {
-			return new EmbeddedJsonHeadersMessageMapper();
-		}
-
-	}
+	public static class ZeroMqSourceTestApplication { }
 
 }
