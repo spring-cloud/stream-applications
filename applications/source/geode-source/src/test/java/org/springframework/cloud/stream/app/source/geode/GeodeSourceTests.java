@@ -42,6 +42,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 public class GeodeSourceTests {
 
@@ -63,6 +64,7 @@ public class GeodeSourceTests {
 						TestChannelBinderConfiguration.getCompleteConfiguration(GeodeSourceTestApplication.class));
 
 		geode = initializer.geodeContainer();
+		await().atMost(Duration.ofMinutes(2)).until(() -> geode.isRunning());
 	}
 
 	@Test

@@ -30,7 +30,7 @@ $$authentication-database$$:: $$Authentication database name.$$ *($$String$$, de
 $$auto-index-creation$$:: $$Whether to enable auto-index creation.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$database$$:: $$Database name.$$ *($$String$$, default: `$$<none>$$`)*
 $$field-naming-strategy$$:: $$Fully qualified name of the FieldNamingStrategy to use.$$ *($$Class<?>$$, default: `$$<none>$$`)*
-$$grid-fs-database$$:: $$GridFS database name.$$ *($$String$$, default: `$$<none>$$`)*
+$$grid-fs-database$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
 $$host$$:: $$Mongo server host. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
 $$password$$:: $$Login password of the mongo server. Cannot be set with URI.$$ *($$Character[]$$, default: `$$<none>$$`)*
 $$port$$:: $$Mongo server port. Cannot be set with URI.$$ *($$Integer$$, default: `$$<none>$$`)*
@@ -69,13 +69,16 @@ $$version$$:: $$Version of Mongo to use.$$ *($$String$$, default: `$$3.5.5$$`)*
 === spring.redis
 
 $$client-name$$:: $$Client name to be set on connections with CLIENT SETNAME.$$ *($$String$$, default: `$$<none>$$`)*
+$$client-type$$:: $$Type of client to use. By default, auto-detected according to the classpath.$$ *($$ClientType$$, default: `$$<none>$$`, possible values: `LETTUCE`,`JEDIS`)*
+$$connect-timeout$$:: $$Connection timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$database$$:: $$Database index used by the connection factory.$$ *($$Integer$$, default: `$$0$$`)*
 $$host$$:: $$Redis server host.$$ *($$String$$, default: `$$localhost$$`)*
 $$password$$:: $$Login password of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
 $$port$$:: $$Redis server port.$$ *($$Integer$$, default: `$$6379$$`)*
 $$ssl$$:: $$Whether to enable SSL support.$$ *($$Boolean$$, default: `$$false$$`)*
-$$timeout$$:: $$Connection timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$timeout$$:: $$Read timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$url$$:: $$Connection URL. Overrides host, port, and password. User is ignored. Example: redis://user:password@example.com:6379$$ *($$String$$, default: `$$<none>$$`)*
+$$username$$:: $$Login username of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
