@@ -19,20 +19,15 @@ package org.springframework.cloud.stream.app.sink.zeromq;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBindException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.context.properties.bind.validation.BindValidationException;
-import org.springframework.boot.context.properties.bind.validation.ValidationErrors;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerProperties;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.validation.FieldError;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Tests for ZeroMqSink with invalid config.
@@ -44,51 +39,35 @@ public class ZeroMqSinkInvalidConfigTests {
 
 	@Test
 	public void testEmptyConnectionUrl() {
-		try {
-			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-			TestPropertyValues.of("zeromq.consumer.connectUrl:").applyTo(context);
-			context.register(Config.class);
-			context.refresh();
-			fail("BeanCreationException expected");
-		}
-		catch (Exception e) {
-			assertThat(e, instanceOf(BeanCreationException.class));
-			assertThat(extractedValidationMessage(e), containsString("connectUrl is required like protocol://server:port"));
-		}
+		assertThatExceptionOfType(BeanCreationException.class)
+				.isThrownBy(() -> {
+
+					AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+					TestPropertyValues.of("zeromq.consumer.connectUrl:").applyTo(context);
+					context.register(Config.class);
+					context.refresh();
+
+				})
+				.withMessageContaining("Error creating bean with name 'zeromq.consumer-org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerProperties': Could not bind properties to 'ZeroMqConsumerProperties' : prefix=zeromq.consumer, ignoreInvalidFields=false, ignoreUnknownFields=true; nested exception is org.springframework.boot.context.properties.bind.BindException: Failed to bind properties under 'zeromq.consumer' to org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerProperties");
 	}
 
 	@Test
 	public void testInvalidTopicExpression() {
-		try {
-			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-			TestPropertyValues
-					.of(
-							"zeromq.consumer.connectUrl: tcp://localhost:5678",
-							"zeromq.consumer.topic: test-"
-					)
-					.applyTo(context);
-			context.register(Config.class);
-			context.refresh();
-			fail("BeanCreationException expected");
-		}
-		catch (Exception e) {
-			assertThat(e, instanceOf(BeanCreationException.class));
-			assertThat(extractedConversionFailedValidationMessage(e), containsString("Could not convert 'test-' into a SpEL expression"));
-		}
-	}
+		assertThatExceptionOfType(ConfigurationPropertiesBindException.class)
+			.isThrownBy(() -> {
 
-	private String extractedValidationMessage(Exception e) {
-		BindValidationException bindValidationException = (BindValidationException) e.getCause().getCause();
-		ValidationErrors validationErrors = bindValidationException.getValidationErrors();
-		FieldError fieldError = (FieldError) validationErrors.getAllErrors().get(0);
+				AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+				TestPropertyValues
+						.of(
+								"zeromq.consumer.connectUrl: tcp://localhost:5678",
+								"zeromq.consumer.topic: test-"
+						)
+						.applyTo(context);
+				context.register(Config.class);
+				context.refresh();
 
-		return fieldError.getDefaultMessage();
-	}
-
-	private String extractedConversionFailedValidationMessage(Exception e) {
-		IllegalArgumentException exception = (IllegalArgumentException) e.getCause().getCause().getCause();
-
-		return exception.getMessage();
+			})
+			.withMessageContaining("Error creating bean with name 'zeromq.consumer-org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerProperties': Could not bind properties to 'ZeroMqConsumerProperties' : prefix=zeromq.consumer, ignoreInvalidFields=false, ignoreUnknownFields=true; nested exception is org.springframework.boot.context.properties.bind.BindException: Failed to bind properties under 'zeromq.consumer.topic' to org.springframework.expression.Expression");
 	}
 
 	@Configuration
