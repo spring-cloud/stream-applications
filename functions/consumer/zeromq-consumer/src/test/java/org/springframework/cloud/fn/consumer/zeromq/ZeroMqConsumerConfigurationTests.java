@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+import org.zeromq.ZMsg;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -50,6 +51,7 @@ public class ZeroMqConsumerConfigurationTests {
 
     private static final ZContext CONTEXT = new ZContext();
     private static ZMQ.Socket socket;
+    private static ZMQ.Poller poller;
 
     @Autowired
     Function<Flux<Message<?>>, Mono<Void>> subject;
@@ -61,6 +63,9 @@ public class ZeroMqConsumerConfigurationTests {
         socket.setReceiveTimeOut(10_000);
         int bindPort = socket.bindToRandomPort("tcp://*");
         socket.subscribe("test-topic");
+
+        poller = CONTEXT.createPoller(1);
+        poller.register(socket, ZMQ.Poller.POLLIN);
 
         System.setProperty("zeromq.consumer.connectUrl", "tcp://localhost:" + bindPort);
 
@@ -81,10 +86,20 @@ public class ZeroMqConsumerConfigurationTests {
         subject.apply(Flux.just(testMessage))
                 .subscribe();
 
-        String topic = socket.recvStr();
-        assertThat(topic).isEqualTo("test-topic");
-        assertThat(socket.recvStr()).isEmpty();
-        assertThat(socket.recvStr()).isEqualTo("test");
+        ZMsg received = null;
+        while (received == null) {
+
+            poller.poll(10000);
+            if(poller.pollin(0)) {
+
+                received = ZMsg.recvMsg(socket);
+                assertThat(received).isNotNull();
+                assertThat(received.unwrap().getString(ZMQ.CHARSET)).isEqualTo("test-topic");
+                assertThat(received.getLast().getString(ZMQ.CHARSET)).isEqualTo("test");
+
+            }
+
+        }
 
     }
 
