@@ -45,6 +45,7 @@ import static org.mockito.Mockito.verify;
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest({ "log.name=foo", "log.level=warn", "log.expression=payload.toUpperCase()" })
+@Disabled("https://github.com/spring-cloud/stream-applications/issues/131")
 class LogConsumerApplicationTests {
 
 	@Autowired
