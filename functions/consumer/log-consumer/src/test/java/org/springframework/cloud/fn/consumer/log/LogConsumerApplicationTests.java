@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.consumer.log;
 import java.util.function.Consumer;
 
 import org.apache.commons.logging.Log;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
