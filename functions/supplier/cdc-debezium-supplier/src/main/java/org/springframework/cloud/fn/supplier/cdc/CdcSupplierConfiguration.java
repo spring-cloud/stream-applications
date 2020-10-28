@@ -41,6 +41,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.converter.AbstractMessageConverter;
+import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.MimeTypeUtils;
@@ -106,6 +108,22 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 	// }
 	// };
 	// }
+
+	@Bean
+	public MessageConverter kafkaNullMessageConverter() {
+		return new AbstractMessageConverter() {
+			@Override
+			protected Object convertToInternal(Object payload,
+					MessageHeaders headers, Object conversionHint) {
+				return payload;
+			}
+
+			@Override
+			protected boolean supports(Class<?> clazz) {
+				return clazz.getName().equals(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL);
+			}
+		};
+	}
 
 	@Bean
 	public EmbeddedEngineExecutorService embeddedEngineExecutorService(

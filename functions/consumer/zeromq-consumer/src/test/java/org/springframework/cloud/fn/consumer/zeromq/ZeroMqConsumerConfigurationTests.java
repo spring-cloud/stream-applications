@@ -37,58 +37,57 @@ import org.springframework.test.annotation.DirtiesContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Daniel Frey
- * since 3.1.0
+ * @author Daniel Frey since 3.1.0
  */
-@SpringBootTest(
-        properties = {
-                "zeromq.consumer.topic='test-topic'"
-        }
-)
+@SpringBootTest(properties = {
+		"zeromq.consumer.topic='test-topic'"
+})
 @DirtiesContext
 public class ZeroMqConsumerConfigurationTests {
 
-    private static final ZContext CONTEXT = new ZContext();
-    private static ZMQ.Socket socket;
+	private static final ZContext CONTEXT = new ZContext();
 
-    @Autowired
-    Function<Flux<Message<?>>, Mono<Void>> subject;
+	private static ZMQ.Socket socket;
 
-    @BeforeAll
-    static void setup() {
+	@Autowired
+	Function<Flux<Message<?>>, Mono<Void>> subject;
 
-        socket = CONTEXT.createSocket(SocketType.SUB);
-        socket.setReceiveTimeOut(10_000);
-        int bindPort = socket.bindToRandomPort("tcp://*");
-        socket.subscribe("test-topic");
+	@BeforeAll
+	static void setup() {
 
-        System.setProperty("zeromq.consumer.connectUrl", "tcp://localhost:" + bindPort);
+		socket = CONTEXT.createSocket(SocketType.SUB);
+		socket.setReceiveTimeOut(10_000);
+		int bindPort = socket.bindToRandomPort("tcp://*");
+		socket.subscribe("test-topic");
 
-    }
+		System.setProperty("zeromq.consumer.connectUrl", "tcp://localhost:" + bindPort);
 
-    @AfterAll
-    static void tearDown() {
-        socket.close();
-        CONTEXT.close();
-    }
+	}
 
-    @Test
-    void testMessageHandlerConfiguration() throws InterruptedException {
+	@AfterAll
+	static void tearDown() {
+		socket.close();
+		CONTEXT.close();
+	}
 
-        Thread.sleep(2000);
+	@Test
+	void testMessageHandlerConfiguration() throws InterruptedException {
 
-        Message<?> testMessage = MessageBuilder.withPayload("test").setHeader("topic", "test-topic").build();
-        subject.apply(Flux.just(testMessage))
-                .subscribe();
+		Thread.sleep(2000);
 
-        String topic = socket.recvStr();
-        assertThat(topic).isEqualTo("test-topic");
-        assertThat(socket.recvStr()).isEmpty();
-        assertThat(socket.recvStr()).isEqualTo("test");
+		Message<?> testMessage = MessageBuilder.withPayload("test").setHeader("topic", "test-topic").build();
+		subject.apply(Flux.just(testMessage))
+				.subscribe();
 
-    }
+		String topic = socket.recvStr();
+		assertThat(topic).isEqualTo("test-topic");
+		assertThat(socket.recvStr()).isEmpty();
+		assertThat(socket.recvStr()).isEqualTo("test");
 
-    @SpringBootApplication
-    public static class ZeroMqConsumerTestApplication { }
+	}
+
+	@SpringBootApplication
+	public static class ZeroMqConsumerTestApplication {
+	}
 
 }

@@ -2,7 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
 		<groupId>org.springframework.cloud.stream.app</groupId>
 		<artifactId>stream-applications-build</artifactId>
@@ -21,7 +21,7 @@
 		<apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
 		<mockserver.version>5.10</mockserver.version>
 		<stream-apps-core.version>${revision}</stream-apps-core.version>
-		<java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
+		<java-functions.version>1.1.0-SNAPSHOT</java-functions.version>
 		<spring-cloud-stream-dependencies.version>3.1.0-SNAPSHOT</spring-cloud-stream-dependencies.version>
 		<spring-cloud-stream.version>3.1.0-SNAPSHOT</spring-cloud-stream.version>
 		<spring-cloud-dataflow-apps-generator-plugin.version>1.0.0-SNAPSHOT
