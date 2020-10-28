@@ -27,7 +27,6 @@ import org.springframework.cloud.fn.common.cdc.CdcCommonProperties;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.kafka.support.KafkaNull;
 import org.springframework.messaging.Message;
 import org.springframework.test.jdbc.JdbcTestUtils;
@@ -42,13 +41,9 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.resou
 
 /**
  * @author Christian Tzolov
+ * @author David Turanski
  */
-public class CdcFlatteringIntegrationTest {
-
-	private final JdbcTemplate jdbcTemplate = CdcTestUtils.jdbcTemplate(
-			"com.mysql.cj.jdbc.Driver",
-			"jdbc:mysql://localhost:3306/inventory",
-			"root", "debezium");
+public class CdcFlatteringIntegrationTest extends CdcTestSupport {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(
@@ -57,18 +52,15 @@ public class CdcFlatteringIntegrationTest {
 					"spring.cloud.stream.function.definition=cdcSupplier",
 					"cdc.name=my-sql-connector",
 					"cdc.schema=false",
-
 					"cdc.stream.header.offset=false",
-
 					"cdc.connector=mysql",
 					"cdc.config.database.user=debezium",
 					"cdc.config.database.password=dbz",
 					"cdc.config.database.hostname=localhost",
-					"cdc.config.database.port=3306",
-					"cdc.config.database.server.id=85744",
+					"cdc.config.database.port=" + MAPPED_PORT,
+					// "cdc.config.database.server.id=85744",
 					"cdc.config.database.server.name=my-app-connector",
-					"cdc.config.database.history=io.debezium.relational.history.MemoryDatabaseHistory"
-			);
+					"cdc.config.database.history=io.debezium.relational.history.MemoryDatabaseHistory");
 
 	@Test
 	public void noFlatteredResponseNoKafka() {
@@ -85,7 +77,8 @@ public class CdcFlatteringIntegrationTest {
 
 	final ContextConsumer<? super ApplicationContext> noFlatteringTest = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
-		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL, context.getClassLoader());
+		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+				context.getClassLoader());
 
 		List<Message<?>> messages = receiveAll(outputDestination);
 		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
@@ -169,7 +162,8 @@ public class CdcFlatteringIntegrationTest {
 
 	final ContextConsumer<? super ApplicationContext> flatteringTest = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
-		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL, context.getClassLoader());
+		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+				context.getClassLoader());
 
 		List<Message<?>> messages = receiveAll(outputDestination);
 		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
@@ -222,7 +216,8 @@ public class CdcFlatteringIntegrationTest {
 			assertThat(toString(messages.get(2).getPayload())).isEqualTo("null");
 			assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.customers");
 			assertJsonEquals("{\"id\":" + newRecordId + "}", messages.get(1).getHeaders().get("cdc_key"));
-			if (!StringUtils.isEmpty(flatteringProps.getAddHeaders()) && flatteringProps.getAddHeaders().contains("op")) {
+			if (!StringUtils.isEmpty(flatteringProps.getAddHeaders())
+					&& flatteringProps.getAddHeaders().contains("op")) {
 				assertThat(messages.get(2).getHeaders().get("__op")).isEqualTo("d");
 			}
 		}

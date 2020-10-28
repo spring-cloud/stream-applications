@@ -19,7 +19,9 @@ package org.springframework.cloud.stream.app.source.cdc;
 import java.time.Duration;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -28,7 +30,6 @@ import org.springframework.cloud.fn.common.cdc.CdcCommonProperties;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.kafka.support.KafkaNull;
 import org.springframework.messaging.Message;
 import org.springframework.test.jdbc.JdbcTestUtils;
@@ -40,19 +41,17 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.recei
 
 /**
  * @author Christian Tzolov
+ * @author David Turanski
  */
-public class CdcDeleteHandlingIntegrationTest {
 
-	private final JdbcTemplate jdbcTemplate = CdcTestUtils.jdbcTemplate(
-			"com.mysql.cj.jdbc.Driver",
-			"jdbc:mysql://localhost:3306/inventory",
-			"root", "debezium");
+@Testcontainers
+public class CdcDeleteHandlingIntegrationTest extends CdcTestSupport {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(
 					TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
 			.withPropertyValues(
-					"spring.cloud.stream.function.definition=cdcSupplier",
+					"spring.cloud.function.definition=cdcSupplier",
 					"cdc.name=my-sql-connector",
 					"cdc.schema=false",
 					"cdc.flattering.enabled=true",
@@ -61,60 +60,45 @@ public class CdcDeleteHandlingIntegrationTest {
 					"cdc.config.database.user=debezium",
 					"cdc.config.database.password=dbz",
 					"cdc.config.database.hostname=localhost",
-					"cdc.config.database.port=3306",
-					"cdc.config.database.server.id=85744",
+					"cdc.config.database.port=" + MAPPED_PORT,
+					// "cdc.config.database.server.id=85744",
 					"cdc.config.database.server.name=my-app-connector",
 					"cdc.config.database.history=io.debezium.relational.history.MemoryDatabaseHistory");
 
-	@Test
-	public void handleRecordDeletionTest() {
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=none", "cdc.flattering.dropTombstones=true")
-				.run(consumer);
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=none", "cdc.flattering.dropTombstones=true")
-				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the classpath
-				.run(consumer);
-
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=none", "cdc.flattering.dropTombstones=false")
-				.run(consumer);
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=none", "cdc.flattering.dropTombstones=false")
-				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the classpath
-				.run(consumer);
-
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=drop", "cdc.flattering.dropTombstones=true")
-				.run(consumer);
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=drop", "cdc.flattering.dropTombstones=true")
-				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the classpath
+	@ParameterizedTest
+	@ValueSource(strings = {
+			"cdc.flattering.deleteHandlingMode=none,cdc.flattering.dropTombstones=true",
+			"cdc.flattering.deleteHandlingMode=none,cdc.flattering.dropTombstones=false",
+			"cdc.flattering.deleteHandlingMode=drop,cdc.flattering.dropTombstones=true",
+			"cdc.flattering.deleteHandlingMode=drop,cdc.flattering.dropTombstones=false",
+			"cdc.flattering.deleteHandlingMode=rewrite,cdc.flattering.dropTombstones=true",
+			"cdc.flattering.deleteHandlingMode=rewrite,cdc.flattering.dropTombstones=false"
+	})
+	public void handleRecordDeletions(String properties) {
+		contextRunner.withPropertyValues(properties.split(","))
+				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the
 				.run(consumer);
 
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=drop", "cdc.flattering.dropTombstones=false")
+		contextRunner.withPropertyValues(properties.split(","))
 				.run(consumer);
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=drop", "cdc.flattering.dropTombstones=false")
-				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the classpath
-				.run(consumer);
+	}
 
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=rewrite", "cdc.flattering.dropTombstones=true")
-				.run(consumer);
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=rewrite", "cdc.flattering.dropTombstones=true")
-				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the classpath
-				.run(consumer);
-
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=rewrite", "cdc.flattering.dropTombstones=false")
-				.run(consumer);
-		contextRunner.withPropertyValues("cdc.flattering.deleteHandlingMode=rewrite", "cdc.flattering.dropTombstones=false")
-				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the classpath
-				.run(consumer);
+	private String toString(Object object) {
+		return new String((byte[]) object);
 	}
 
 	final ContextConsumer<? super ApplicationContext> consumer = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
 
 		CdcCommonProperties props = context.getBean(CdcCommonProperties.class);
-		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL, context.getClassLoader());
+		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+				context.getClassLoader());
 
 		CdcCommonProperties.DeleteHandlingMode deleteHandlingMode = props.getFlattering().getDeleteHandlingMode();
 		boolean isDropTombstones = props.getFlattering().isDropTombstones();
 
-		jdbcTemplate.update("insert into `customers`(`first_name`,`last_name`,`email`) VALUES('Test666', 'Test666', 'Test666@spring.org')");
+		jdbcTemplate.update(
+				"insert into `customers`(`first_name`,`last_name`,`email`) VALUES('Test666', 'Test666', 'Test666@spring.org')");
 		String newRecordId = jdbcTemplate.query("select * from `customers` where `first_name` = ?",
 				(rs, rowNum) -> rs.getString("id"), "Test666").iterator().next();
 
@@ -140,23 +124,18 @@ public class CdcDeleteHandlingIntegrationTest {
 		}
 
 		if (!isDropTombstones && isKafkaPresent) {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis());
+			received = outputDestination.receive(Duration.ofSeconds(10000).toMillis());
 			assertThat(received).isNotNull();
-			//Tombstones event should have KafkaNull payload
+			// Tombstones event should have KafkaNull payload
 			assertThat(received.getPayload().getClass().getCanonicalName())
 					.isEqualTo(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL);
 
 			String key = (String) received.getHeaders().get("cdc_key");
-			//Tombstones event should carry the deleted record id in the cdc_key header
+			// Tombstones event should carry the deleted record id in the cdc_key header
 			assertThat(key).isEqualTo("{\"id\":" + newRecordId + "}");
 		}
 
 		received = outputDestination.receive(Duration.ofSeconds(10).toMillis());
 		assertThat(received).isNull();
 	};
-
-	private String toString(Object object) {
-		return new String((byte[]) object);
-	}
-
 }

@@ -16,10 +16,10 @@
 
 package org.springframework.cloud.fn.common.cdc;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -27,6 +27,7 @@ import org.apache.kafka.connect.source.SourceRecord;
 
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.metadata.SimpleMetadataStore;
 
@@ -34,7 +35,7 @@ import org.springframework.integration.metadata.SimpleMetadataStore;
  * @author Christian Tzolov
  */
 @SpringBootConfiguration
-@EnableAutoConfiguration
+@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
 public class TestCdcApplication {
 
 	@Bean
@@ -51,10 +52,12 @@ public class TestCdcApplication {
 	public static class TestSourceRecordConsumer implements Consumer<SourceRecord> {
 
 		private final Function<SourceRecord, byte[]> valueSerializer;
+
 		private final Function<SourceRecord, byte[]> keySerializer;
 
 		public Map<Object, Object> keyValue = new HashMap<>();
-		public List<SourceRecord> recordList = new ArrayList<>();
+
+		public List<SourceRecord> recordList = new CopyOnWriteArrayList<>();
 
 		public TestSourceRecordConsumer(Function<SourceRecord, byte[]> valueSerializer,
 				Function<SourceRecord, byte[]> keySerializer) {
@@ -75,5 +78,3 @@ public class TestCdcApplication {
 		}
 	}
 }
-
-

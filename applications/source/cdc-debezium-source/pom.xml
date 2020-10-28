@@ -1,304 +1,202 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>cdc-debezium-source</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
-    <name>cdc-debezium-source</name>
-    <description>CDC Debezium source apps</description>
-    <packaging>jar</packaging>
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.springframework.cloud.stream.app</groupId>
-        <artifactId>stream-applications-core</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
-        <relativePath/>
-    </parent>
+	<parent>
+		<groupId>org.springframework.cloud.stream.app</groupId>
+		<artifactId>stream-applications-core</artifactId>
+		<version>3.1.0-SNAPSHOT</version>
+		<relativePath/>
+	</parent>
 
-    <properties>
-        <json-unit.version>1.25.1</json-unit.version>
-    </properties>
+	<properties>
+		<json-unit.version>1.25.1</json-unit.version>
+	</properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>cdc-debezium-supplier</artifactId>
-            <version>${java-functions.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-log4j12</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>function-test-support</artifactId>
-            <version>${java-functions.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.javacrumbs.json-unit</groupId>
-            <artifactId>json-unit</artifactId>
-            <version>${json-unit.version}</version>
-            <scope>test</scope>
-        </dependency>
+	<artifactId>cdc-debezium-source</artifactId>
+	<name>cdc-debezium-source</name>
+	<description>CDC Debezium source apps</description>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>cdc-debezium-supplier</artifactId>
+			<version>${java-functions.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>function-test-support</artifactId>
+			<version>${java-functions.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.stream.app</groupId>
+			<artifactId>stream-applications-test-support</artifactId>
+			<version>${stream-apps-core.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.javacrumbs.json-unit</groupId>
+			<artifactId>json-unit</artifactId>
+			<version>${json-unit.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>cdc-debezium-boot-starter</artifactId>
+			<version>1.1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dataflow-apps-docs-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
-                <configuration>
-                    <application>
-                        <name>cdc-debezium</name>
-                        <type>source</type>
-                        <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.cdc.CdcSupplierConfiguration.class</configClass>
-                        <functionDefinition>cdcSupplier</functionDefinition>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dataflow-apps-docs-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
+				<configuration>
+					<application>
+						<name>cdc-debezium</name>
+						<type>source</type>
+						<version>${project.version}</version>
+						<configClass>org.springframework.cloud.fn.supplier.cdc.CdcSupplierConfiguration.class
+						</configClass>
+						<functionDefinition>cdcSupplier</functionDefinition>
 
-                        <maven>
-                            <dependencies>
-                                <dependency>
-                                    <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>cdc-debezium-supplier</artifactId>
-                                </dependency>
-                            </dependencies>
-                        </maven>
-                    </application>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.33.0</version>
-                <configuration>
-                    <skip>${skipTests}</skip>
-                    <images>
-                        <!--						<image>-->
-                        <!--							<alias>test-mongodb2</alias>-->
-                        <!--							<name>%a/example-mongodb:${project.version}</name>-->
-                        <!--							<build>-->
-                        <!--								<dockerFileDir>${project.basedir}/src/test/docker/mongodb</dockerFileDir>-->
-                        <!--								<filter>@</filter>-->
-                        <!--							</build>-->
-                        <!--							<run>-->
-                        <!--								<hostname>localhost</hostname>-->
-                        <!--								<env>-->
-                        <!--									<MONGODB_USER>debezium</MONGODB_USER>-->
-                        <!--									<MONGODB_PASSWORD>dbz</MONGODB_PASSWORD>-->
-                        <!--								</env>-->
-                        <!--								<ports>-->
-                        <!--									<port>27017:27017</port>-->
-                        <!--								</ports>-->
-                        <!--								<wait>-->
-                        <!--									<log>port: 3306</log>-->
-                        <!--									<time>300000</time>-->
-                        <!--								</wait>-->
-                        <!--							</run>-->
-                        <!--						</image>-->
-                        <!--<image>-->
-                        <!--<alias>test-mongodb</alias>-->
-                        <!--<name>debezium/example-mongodb:1.0</name>-->
-                        <!--<run>-->
-                        <!--<hostname>localhost</hostname>-->
-                        <!--<env>-->
-                        <!--<MONGODB_USER>debezium</MONGODB_USER>-->
-                        <!--<MONGODB_PASSWORD>dbz</MONGODB_PASSWORD>-->
-                        <!--</env>-->
-                        <!--<ports>-->
-                        <!--<port>27017:27017</port>-->
-                        <!--</ports>-->
-                        <!--<wait>-->
-                        <!--<log>port: 3306</log>-->
-                        <!--<time>300000</time>-->
-                        <!--</wait>-->
-                        <!--</run>-->
-                        <!--</image>-->
-                        <image>
-                            <alias>mysql</alias>
-                            <name>debezium/example-mysql:1.0</name>
-                            <run>
-                                <env>
-                                    <MYSQL_ROOT_PASSWORD>debezium</MYSQL_ROOT_PASSWORD>
-                                    <MYSQL_USER>mysqluser</MYSQL_USER>
-                                    <MYSQL_PASSWORD>mysqlpw</MYSQL_PASSWORD>
-                                </env>
-                                <ports>
-                                    <port>3306:3306</port>
-                                </ports>
-                                <wait>
-                                    <log>port: 3306</log>
-                                    <time>30000</time>
-                                </wait>
-                            </run>
-                        </image>
-                        <image>
-                            <alias>postgres</alias>
-                            <name>debezium/example-postgres:1.0</name>
-                            <run>
-                                <env>
-                                    <POSTGRES_USER>postgres</POSTGRES_USER>
-                                    <POSTGRES_PASSWORD>postgres</POSTGRES_PASSWORD>
-                                </env>
-                                <ports>
-                                    <port>5432:5432</port>
-                                </ports>
-                                <wait>
-                                    <log>PostgreSQL init process complete</log>
-                                    <time>30000</time>
-                                </wait>
-                            </run>
-                        </image>
-                        <image>
-                            <external>
-                                <type>properties</type>
-                                <prefix>docker</prefix>
-                                <mode>override</mode>
-                            </external>
-                            <name>%a/sqlserver-example:${project.version}</name>
-                            <build>
-                                <dockerFileDir>${project.basedir}/src/test/docker/sqlserver</dockerFileDir>
-                                <filter>@</filter>
-                            </build>
-                            <run>
-                                <env>
-                                    <ACCEPT_EULA>Y</ACCEPT_EULA>
-                                    <MSSQL_PID>Standard</MSSQL_PID>
-                                    <SA_PASSWORD>Password!</SA_PASSWORD>
-                                    <MSSQL_AGENT_ENABLED>true</MSSQL_AGENT_ENABLED>
-                                </env>
-                                <ports>
-                                    <port>1433:1433</port>
-                                </ports>
-                                <wait>
-                                    <log>1 rows affected</log>
-                                    <time>40000</time>
-                                </wait>
-                            </run>
-                        </image>
-                    </images>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>start</id>
-                        <!--<phase>pre-integration-test</phase>-->
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>build</goal>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>stop</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>stop-pre</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+						<maven>
+							<dependencies>
+								<dependency>
+									<groupId>org.springframework.cloud.fn</groupId>
+									<artifactId>cdc-debezium-supplier</artifactId>
+								</dependency>
+							</dependencies>
+						</maven>
+					</application>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/libs-snapshot-local</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>https://repo.spring.io/libs-milestone-local</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/release</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>spring-libs-release</id>
-            <name>Spring Libs Release</name>
-            <url>https://repo.spring.io/libs-release</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>spring-milestone-release</id>
-            <name>Spring Milestone Release</name>
-            <url>https://repo.spring.io/libs-milestone</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/libs-release</url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/libs-snapshot-local</url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>https://repo.spring.io/libs-milestone-local</url>
-        </pluginRepository>
-    </pluginRepositories>
-
-
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/libs-snapshot-local</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/libs-milestone-local</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/release</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>spring-libs-release</id>
+			<name>Spring Libs Release</name>
+			<url>https://repo.spring.io/libs-release</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>spring-milestone-release</id>
+			<name>Spring Milestone Release</name>
+			<url>https://repo.spring.io/libs-milestone</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/libs-release</url>
+		</pluginRepository>
+		<pluginRepository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/libs-snapshot-local</url>
+		</pluginRepository>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/libs-milestone-local</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>

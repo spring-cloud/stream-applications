@@ -46,8 +46,8 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.MimeTypeUtils;
 
 /**
- * CDC source that uses the Debezium Connectors to monitor and record all of the row-level changes in the databases.
- * https://debezium.io/docs/connectors
+ * CDC source that uses the Debezium Connectors to monitor and record all of the row-level
+ * changes in the databases. https://debezium.io/docs/connectors
  *
  * @author Christian Tzolov
  */
@@ -91,6 +91,22 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 
 	private EmitterProcessor<Message<?>> emitterProcessor = EmitterProcessor.create(1, false);
 
+	// @Bean
+	// public MessageConverter kafkaNullMessageConverter() {
+	// return new AbstractMessageConverter() {
+	// @Override
+	// protected Object convertToInternal(Object payload,
+	// MessageHeaders headers, Object conversionHint) {
+	// return payload;
+	// }
+	//
+	// @Override
+	// protected boolean supports(Class<?> clazz) {
+	// return clazz.getName().equals(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL);
+	// }
+	// };
+	// }
+
 	@Bean
 	public EmbeddedEngineExecutorService embeddedEngineExecutorService(
 			EmbeddedEngine.Builder embeddedEngineBuilder,
@@ -111,9 +127,11 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 
 			Object cdcJsonPayload = valueSerializer.apply(sourceRecord);
 
-			// When the tombstone event is enabled, Debezium serializes the payload to null (e.g. empty payload)
+			// When the tombstone event is enabled, Debezium serializes the payload to null (e.g.
+			// empty payload)
 			// while the metadata information is carried through the headers (cdc_key).
-			// Note: Event for none flattered responses, when the cdc.config.tombstones.on.delete=true (default),
+			// Note: Event for none flattered responses, when the cdc.config.tombstones.on.delete=true
+			// (default),
 			// tombstones are generate by Debezium and handled by the code below.
 			if (cdcJsonPayload == null) {
 				cdcJsonPayload = this.kafkaNull;
@@ -135,7 +153,9 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 					.withPayload(cdcJsonPayload)
 					.setHeader("cdc_key", new String(key))
 					.setHeader("cdc_topic", sourceRecord.topic())
-					.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON_VALUE);
+					.setHeader(MessageHeaders.CONTENT_TYPE,
+							(cdcJsonPayload.equals(this.kafkaNull)) ? MimeTypeUtils.TEXT_PLAIN_VALUE
+									: MimeTypeUtils.APPLICATION_JSON_VALUE);
 
 			if (cdcStreamingEngineProperties.getHeader().isConvertConnectHeaders()) {
 				// Convert the Connect Headers into Message Headers.
@@ -157,7 +177,6 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 					logger.warn("Failed to record cdc_offset header", e);
 				}
 			}
-
 
 			sink.next(messageBuilder.build());
 		};
