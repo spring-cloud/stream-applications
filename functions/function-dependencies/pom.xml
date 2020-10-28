@@ -109,7 +109,7 @@
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>zeromq-supplier</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
@@ -199,6 +199,11 @@
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>wavefront-consumer</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud.fn</groupId>
+                <artifactId>zeromq-consumer</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

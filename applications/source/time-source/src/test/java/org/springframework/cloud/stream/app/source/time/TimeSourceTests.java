@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app.source.time;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ import org.springframework.cloud.fn.task.launch.request.TaskLaunchRequest;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 
@@ -66,6 +68,28 @@ public class TimeSourceTests {
 	}
 
 	@Test
+	public void testSourceFromSupplierMessageFunction() {
+		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+				TestChannelBinderConfiguration
+						.getCompleteConfiguration(TimeSourceTestApplication.class))
+								.web(WebApplicationType.NONE)
+								.run("--spring.cloud.function.definition=timeSupplier|spelFunction",
+										"--spel.function.expression=payload.length()")) {
+
+			OutputDestination target = context.getBean(OutputDestination.class);
+			Message<byte[]> sourceMessage = target.receive(10000);
+			final String actual = new String(sourceMessage.getPayload());
+
+			TimeSupplierProperties timeSupplierProperties = context.getBean(TimeSupplierProperties.class);
+			SimpleDateFormat dateFormat = new SimpleDateFormat(timeSupplierProperties.getDateFormat());
+			assertThatCode(() -> {
+				Date date = dateFormat.parse(actual);
+				assertThat(date).isNotNull();
+			}).doesNotThrowAnyException();
+		}
+	}
+
+	@Test
 	public void testSourceComposedWithheaderEnricher() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
@@ -80,6 +104,7 @@ public class TimeSourceTests {
 	}
 
 	@Test
+	// @Disabled("TODO://Pending fix in spring-cloud-stream or spring-cloud-function")
 	public void testSourceComposedWithOtherStuff() throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -106,5 +131,9 @@ public class TimeSourceTests {
 	@SpringBootApplication
 	@Import(TimeSupplierConfiguration.class)
 	public static class TimeSourceTestApplication {
+		@Bean
+		Function<Message<?>, Message<?>> messageFunction() {
+			return message -> message;
+		}
 	}
 }

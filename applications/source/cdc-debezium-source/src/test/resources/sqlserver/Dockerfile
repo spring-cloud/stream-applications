@@ -8,6 +8,6 @@ WORKDIR /usr/src/data
 COPY . /usr/src/data
 
 # Grant permissions for the import-data script to be executable
-RUN chmod +x /usr/src/data/import-data.sh
+RUN chmod a+x /usr/src/data/*.sh
 
 CMD /bin/bash ./entrypoint.sh

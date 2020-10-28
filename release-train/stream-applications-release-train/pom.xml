@@ -9,12 +9,8 @@
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
         <version>3.1.0-SNAPSHOT</version>
-        <relativePath>../stream-applications-core</relativePath>
+       <relativePath>../../applications/stream-applications-core/pom.xml</relativePath>
     </parent>
-
-    <artifactId>stream-applications-build</artifactId>
-    <version>2020.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
 
     <modules>
         <module>stream-applications-docs</module>
@@ -41,6 +37,7 @@
         <sftp-source.version>${apps.version}</sftp-source.version>
         <tcp-source.version>${apps.version}</tcp-source.version>
         <time-source.version>${apps.version}</time-source.version>
+        <zeromq-source.version>${apps.version}</zeromq-source.version>
         <twitter-message-source.version>${apps.version}</twitter-message-source.version>
         <twitter-search-source.version>${apps.version}</twitter-search-source.version>
         <twitter-stream-source.version>${apps.version}</twitter-stream-source.version>

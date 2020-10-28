@@ -16,11 +16,16 @@
 
 package org.springframework.cloud.stream.app.composite.function.common;
 
+import java.util.function.Function;
+
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -66,7 +71,18 @@ public class FunctionBindingsEnvironmentPostProcessorTests {
 	}
 
 	@SpringBootApplication
+	@Import(TestChannelBinderConfiguration.class)
 	static class TestApp {
+
+		@Bean
+		public Function<String, String> firstFunction() {
+			return s -> s;
+		}
+
+		@Bean
+		public Function<String, String> secondFunction() {
+			return s -> s;
+		}
 
 	}
 }

@@ -6,7 +6,7 @@
 	<artifactId>java-functions-parent</artifactId>
 	<version>${revision}</version>
 	<name>java-functions-parent</name>
-	<description>Pivotal Java Functions Parent</description>
+	<description>Java Functions Parent</description>
 	<packaging>pom</packaging>
 
 	<parent>

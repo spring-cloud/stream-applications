@@ -41,38 +41,37 @@ import org.springframework.messaging.Message;
 @EnableConfigurationProperties(ZeroMqConsumerProperties.class)
 public class ZeroMqConsumerConfiguration {
 
-    @Bean
-    public ZContext zContext() {
-        return new ZContext();
-    }
+	@Bean
+	public ZContext zContext() {
+		return new ZContext();
+	}
 
-    @Bean
-    public ZeroMqMessageHandler zeromqMessageHandler(ZeroMqConsumerProperties properties, ZContext zContext,
-                                                     @Autowired(required = false) Consumer<ZMQ.Socket> socketConfigurer,
-                                                     @Autowired(required = false) OutboundMessageMapper<byte[]> messageMapper) {
-        ZeroMqMessageHandler zeroMqMessageHandler =
-                new ZeroMqMessageHandler(zContext, properties.getConnectUrl(), properties.getSocketType());
+	@Bean
+	public ZeroMqMessageHandler zeromqMessageHandler(ZeroMqConsumerProperties properties, ZContext zContext,
+			@Autowired(required = false) Consumer<ZMQ.Socket> socketConfigurer,
+			@Autowired(required = false) OutboundMessageMapper<byte[]> messageMapper) {
+		ZeroMqMessageHandler zeroMqMessageHandler = new ZeroMqMessageHandler(zContext, properties.getConnectUrl(),
+				properties.getSocketType());
 
-        if (properties.getTopic() != null ) {
-            zeroMqMessageHandler.setTopicExpression(properties.getTopic());
-        }
+		if (properties.getTopic() != null) {
+			zeroMqMessageHandler.setTopicExpression(properties.getTopic());
+		}
 
-        if (socketConfigurer != null) {
-            zeroMqMessageHandler.setSocketConfigurer(socketConfigurer);
-        }
+		if (socketConfigurer != null) {
+			zeroMqMessageHandler.setSocketConfigurer(socketConfigurer);
+		}
 
-        if(messageMapper != null) {
-            zeroMqMessageHandler.setMessageMapper(messageMapper);
-        }
+		if (messageMapper != null) {
+			zeroMqMessageHandler.setMessageMapper(messageMapper);
+		}
 
-        return zeroMqMessageHandler;
-    }
+		return zeroMqMessageHandler;
+	}
 
-    @Bean
-    public Function<Flux<Message<?>>, Mono<Void>> zeromqConsumer(ZeroMqMessageHandler zeromqMessageHandler) {
-        return input ->
-                input.flatMap(zeromqMessageHandler::handleMessage)
-                        .ignoreElements();
-    }
+	@Bean
+	public Function<Flux<Message<?>>, Mono<Void>> zeromqConsumer(ZeroMqMessageHandler zeromqMessageHandler) {
+		return input -> input.flatMap(zeromqMessageHandler::handleMessage)
+				.ignoreElements();
+	}
 
 }

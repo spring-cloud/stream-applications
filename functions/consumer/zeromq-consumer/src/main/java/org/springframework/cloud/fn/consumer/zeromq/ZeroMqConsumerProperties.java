@@ -16,13 +16,14 @@
 
 package org.springframework.cloud.fn.consumer.zeromq;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.zeromq.SocketType;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.expression.Expression;
 import org.springframework.validation.annotation.Validated;
-import org.zeromq.SocketType;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -33,54 +34,54 @@ import javax.validation.constraints.NotNull;
 @Validated
 public class ZeroMqConsumerProperties {
 
-    /**
-     * The Socket Type the connection should establish.
-     */
-    private SocketType socketType = SocketType.PUB;
+	/**
+	 * The Socket Type the connection should establish.
+	 */
+	private SocketType socketType = SocketType.PUB;
 
-    /**
-     * Connection URL for connecting to the ZeroMQ Socket.
-     */
-    private String connectUrl;
+	/**
+	 * Connection URL for connecting to the ZeroMQ Socket.
+	 */
+	private String connectUrl;
 
-    /**
-     * A Topic SpEL expression to evaluate a topic before sending messages to subscribers.
-     */
-    private Expression topic;
+	/**
+	 * A Topic SpEL expression to evaluate a topic before sending messages to subscribers.
+	 */
+	private Expression topic;
 
-    @NotNull(message = "'socketType' is required")
-    public SocketType getSocketType() {
-        return socketType;
-    }
+	@NotNull(message = "'socketType' is required")
+	public SocketType getSocketType() {
+		return socketType;
+	}
 
-    /**
-     * @param socketType the {@link SocketType} to establish.
-     */
-    public void setSocketType(SocketType socketType) {
-        this.socketType = socketType;
-    }
+	/**
+	 * @param socketType the {@link SocketType} to establish.
+	 */
+	public void setSocketType(SocketType socketType) {
+		this.socketType = socketType;
+	}
 
-    @NotEmpty(message = "connectUrl is required like protocol://server:port")
-    public String getConnectUrl() {
-        return connectUrl;
-    }
+	@NotEmpty(message = "connectUrl is required like protocol://server:port")
+	public String getConnectUrl() {
+		return connectUrl;
+	}
 
-    /**
-     * @param connectUrl The ZeroMQ socket to expose
-     */
-    public void setConnectUrl(String connectUrl) {
-        this.connectUrl = connectUrl;
-    }
+	/**
+	 * @param connectUrl The ZeroMQ socket to expose
+	 */
+	public void setConnectUrl(String connectUrl) {
+		this.connectUrl = connectUrl;
+	}
 
-    public Expression getTopic() {
-        return topic;
-    }
+	public Expression getTopic() {
+		return topic;
+	}
 
-    /**
-     * @param topic The 'topic' SpEL expression to set
-     */
-    public void setTopic(Expression topic) {
-        this.topic = topic;
-    }
+	/**
+	 * @param topic The 'topic' SpEL expression to set
+	 */
+	public void setTopic(Expression topic) {
+		this.topic = topic;
+	}
 
 }

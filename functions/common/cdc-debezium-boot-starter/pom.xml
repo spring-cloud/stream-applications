@@ -45,17 +45,17 @@
 			<version>${version.debezium}</version>
 		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>io.debezium</groupId>-->
-<!--			<artifactId>debezium-connector-mongodb</artifactId>-->
-<!--			<exclusions>-->
-<!--				<exclusion>-->
-<!--					<artifactId>slf4j-log4j12</artifactId>-->
-<!--					<groupId>org.slf4j</groupId>-->
-<!--				</exclusion>-->
-<!--			</exclusions>-->
-<!--			<version>${version.debezium}</version>-->
-<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>io.debezium</groupId>-->
+		<!--			<artifactId>debezium-connector-mongodb</artifactId>-->
+		<!--			<exclusions>-->
+		<!--				<exclusion>-->
+		<!--					<artifactId>slf4j-log4j12</artifactId>-->
+		<!--					<groupId>org.slf4j</groupId>-->
+		<!--				</exclusion>-->
+		<!--			</exclusions>-->
+		<!--			<version>${version.debezium}</version>-->
+		<!--		</dependency>-->
 
 		<dependency>
 			<groupId>io.debezium</groupId>
@@ -98,67 +98,27 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<scope>test</scope>
 		</dependency>
 
-	</dependencies>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-	<build>
-		<plugins>
-<!--			<plugin>-->
-<!--				<groupId>io.fabric8</groupId>-->
-<!--				<artifactId>docker-maven-plugin</artifactId>-->
-<!--				<version>0.33.0</version>-->
-<!--				<configuration>-->
-<!--					<images>-->
-<!--						<image>-->
-<!--							<alias>mysql</alias>-->
-<!--							<name>debezium/example-mysql:1.0</name>-->
-<!--							<run>-->
-<!--								<env>-->
-<!--									<MYSQL_ROOT_PASSWORD>debezium</MYSQL_ROOT_PASSWORD>-->
-<!--									<MYSQL_USER>mysqluser</MYSQL_USER>-->
-<!--									<MYSQL_PASSWORD>mysqlpw</MYSQL_PASSWORD>-->
-<!--								</env>-->
-<!--								<ports>-->
-<!--									<port>3306:3306</port>-->
-<!--								</ports>-->
-<!--								<wait>-->
-<!--									<log>port: 3306</log>-->
-<!--									<time>30000</time>-->
-<!--								</wait>-->
-<!--							</run>-->
-<!--						</image>-->
-<!--					</images>-->
-<!--				</configuration>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<id>start</id>-->
-<!--						&lt;!&ndash;<phase>pre-integration-test</phase>&ndash;&gt;-->
-<!--						<phase>generate-test-resources</phase>-->
-<!--						<goals>-->
-<!--							<goal>build</goal>-->
-<!--							<goal>start</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--					<execution>-->
-<!--						<id>stop</id>-->
-<!--						<phase>post-integration-test</phase>-->
-<!--						<goals>-->
-<!--							<goal>stop</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--					<execution>-->
-<!--						<id>stop-pre</id>-->
-<!--						<phase>clean</phase>-->
-<!--						<goals>-->
-<!--							<goal>stop</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
-		</plugins>
-	</build>
+	</dependencies>
 </project>
