@@ -30,11 +30,11 @@
     </properties>
 
     <modules>
-        <module>common/stream-applications-test-support</module>
-        <module>common/stream-applications-postprocessor-common</module>
-        <module>common/stream-applications-micrometer-common</module>
-        <module>common/stream-applications-security-common</module>
-        <module>common/stream-applications-composite-function-support</module>
+        <module>stream-applications-test-support</module>
+        <module>stream-applications-postprocessor-common</module>
+        <module>stream-applications-micrometer-common</module>
+        <module>stream-applications-security-common</module>
+        <module>stream-applications-composite-function-support</module>
     </modules>
 
     <dependencyManagement>

@@ -22,7 +22,7 @@
 		<groupId>org.springframework.cloud.stream.app</groupId>
 		<artifactId>stream-applications-core</artifactId>
 		<version>${revision}</version>
-		<relativePath>../..</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 

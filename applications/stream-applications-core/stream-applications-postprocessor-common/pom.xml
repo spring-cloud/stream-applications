@@ -5,7 +5,7 @@
         <artifactId>stream-applications-core</artifactId>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <version>${revision}</version>
-        <relativePath>../..</relativePath>
+        <relativePath>..</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
