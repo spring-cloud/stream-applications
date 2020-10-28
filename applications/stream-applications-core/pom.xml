@@ -26,7 +26,7 @@
 		<spring-cloud-stream.version>3.1.0-SNAPSHOT</spring-cloud-stream.version>
 		<spring-cloud-dataflow-apps-generator-plugin.version>1.1.0-SNAPSHOT
 		</spring-cloud-dataflow-apps-generator-plugin.version>
-		<spring-cloud-dataflow-apps-docs-plugin.version>1.0.0-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
+		<spring-cloud-dataflow-apps-docs-plugin.version>1.1.0-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
 		<java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
 		<prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
 	</properties>
@@ -157,7 +157,7 @@
 									</management.metrics.tags.application.guid>
 								</properties>
 								<metadata>
-									<mavenPluginVersion>1.0.0-M1</mavenPluginVersion>
+									<mavenPluginVersion>1.1.0-SNAPSHOT</mavenPluginVersion>
 								</metadata>
 								<maven>
 									<dependencyManagement>
