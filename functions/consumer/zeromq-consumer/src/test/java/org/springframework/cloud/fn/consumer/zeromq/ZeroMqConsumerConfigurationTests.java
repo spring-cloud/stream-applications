@@ -38,7 +38,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Daniel Frey since 3.1.0
+ * @author Daniel Frey
+ * @since 3.1.0
  */
 @SpringBootTest(properties = {
 		"zeromq.consumer.topic='test-topic'"
