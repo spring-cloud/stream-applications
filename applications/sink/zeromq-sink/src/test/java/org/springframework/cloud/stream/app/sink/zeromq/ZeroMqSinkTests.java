@@ -17,8 +17,6 @@
 package org.springframework.cloud.stream.app.sink.zeromq;
 
 import org.junit.jupiter.api.Test;
-
-import org.springframework.util.MimeTypeUtils;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -33,6 +31,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.util.MimeTypeUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,14 +57,14 @@ public class ZeroMqSinkTests {
 		poller.register(socket, ZMQ.Poller.POLLIN);
 
 		try (ConfigurableApplicationContext context =
-					 new SpringApplicationBuilder(
-					 		TestChannelBinderConfiguration.getCompleteConfiguration(ZeroMqSourceTestApplication.class)
-					 ).run(
-							 "--logging.level.org.springframework.integration=DEBUG",
-							 "--spring.cloud.function.definition=zeromqConsumer",
-							 "--zeromq.consumer.topic='test-topic'",
-							 "--zeromq.consumer.connectUrl=tcp://localhost:" + port
-					 )
+					new SpringApplicationBuilder(
+							TestChannelBinderConfiguration.getCompleteConfiguration(ZeroMqSourceTestApplication.class)
+					).run(
+							"--logging.level.org.springframework.integration=DEBUG",
+							"--spring.cloud.function.definition=zeromqConsumer",
+							"--zeromq.consumer.topic='test-topic'",
+							"--zeromq.consumer.connectUrl=tcp://localhost:" + port
+					)
 		) {
 
 			InputDestination inputDestination = context.getBean(InputDestination.class);
@@ -81,7 +80,7 @@ public class ZeroMqSinkTests {
 			while (received == null) {
 
 				poller.poll(10000);
-				if(poller.pollin(0)) {
+				if (poller.pollin(0)) {
 
 					received = ZMsg.recvMsg(socket);
 					assertThat(received).isNotNull();
@@ -92,7 +91,8 @@ public class ZeroMqSinkTests {
 
 			}
 
-		} finally {
+		}
+		finally {
 			poller.unregister(socket);
 			poller.close();
 			socket.close();

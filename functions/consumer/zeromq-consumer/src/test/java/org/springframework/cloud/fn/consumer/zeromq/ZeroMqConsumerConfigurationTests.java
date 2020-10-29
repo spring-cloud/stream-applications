@@ -46,9 +46,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext
 public class ZeroMqConsumerConfigurationTests {
 
-    private static final ZContext CONTEXT = new ZContext();
-    private static ZMQ.Socket socket;
-    private static ZMQ.Poller poller;
+	private static final ZContext CONTEXT = new ZContext();
+	private static ZMQ.Socket socket;
+	private static ZMQ.Poller poller;
 
 	@Autowired
 	Function<Flux<Message<?>>, Mono<Void>> subject;
@@ -61,10 +61,10 @@ public class ZeroMqConsumerConfigurationTests {
 		int bindPort = socket.bindToRandomPort("tcp://*");
 		socket.subscribe("test-topic");
 
-        poller = CONTEXT.createPoller(1);
-        poller.register(socket, ZMQ.Poller.POLLIN);
+		poller = CONTEXT.createPoller(1);
+		poller.register(socket, ZMQ.Poller.POLLIN);
 
-        System.setProperty("zeromq.consumer.connectUrl", "tcp://localhost:" + bindPort);
+		System.setProperty("zeromq.consumer.connectUrl", "tcp://localhost:" + bindPort);
 
 	}
 
@@ -83,20 +83,20 @@ public class ZeroMqConsumerConfigurationTests {
 		subject.apply(Flux.just(testMessage))
 				.subscribe();
 
-        ZMsg received = null;
-        while (received == null) {
+		ZMsg received = null;
+		while (received == null) {
 
-            poller.poll(10000);
-            if(poller.pollin(0)) {
+			poller.poll(10000);
+			if (poller.pollin(0)) {
 
-                received = ZMsg.recvMsg(socket);
-                assertThat(received).isNotNull();
-                assertThat(received.unwrap().getString(ZMQ.CHARSET)).isEqualTo("test-topic");
-                assertThat(received.getLast().getString(ZMQ.CHARSET)).isEqualTo("test");
+				received = ZMsg.recvMsg(socket);
+				assertThat(received).isNotNull();
+				assertThat(received.unwrap().getString(ZMQ.CHARSET)).isEqualTo("test-topic");
+				assertThat(received.getLast().getString(ZMQ.CHARSET)).isEqualTo("test");
 
-            }
+			}
 
-        }
+		}
 
 	}
 
