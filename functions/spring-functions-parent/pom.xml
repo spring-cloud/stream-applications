@@ -24,7 +24,6 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 
-<<<<<<< HEAD
 	<dependencies>
 
 		<!-- Spring Boot dependencies -->
@@ -106,10 +105,6 @@
 
 	</dependencies>
 
-
-
-
-=======
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -136,5 +131,4 @@
 		</dependencies>
 
 	</dependencyManagement>
->>>>>>> Add zeromq source application
 </project>
