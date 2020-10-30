@@ -29,75 +29,71 @@ import org.springframework.messaging.Message;
 public interface TestTopicListener {
 
 	/**
-	 * Default Output Destination.
+	 * Default Output topic.
 	 */
 	String STREAM_APPLICATIONS_TEST_TOPIC = "stream-applications-test";
 
 	/**
-	 * Register a Message payload verifier verifier on the given destination.
-	 * @param topic the destination for the output Message.
-	 * @param outputVerifier a {code Predicate} to test the payload.
-	 * @param <P> the expected payload type
+	 * Register a {@link org.springframework.cloud.stream.app.test.integration.MessageMatcher}
+	 * on the given topic.
+	 * @param topic the topic for the output Message.
+	 * @param messageMatcher a {code Predicate} to test the payload.
 	 * @return true if it is registered, false if it is already registered.
 	 */
-	<P> boolean addOutputPayloadVerifier(String topic, Predicate<P> outputVerifier);
+	boolean addMessageMatcher(String topic, MessageMatcher messageMatcher);
 
 	/**
-	 * Register a Message payload verifier on the default destination.
-	 * @param outputVerifier a {code Predicate} to test the payload.
-	 * @param <P> the expected payload type
+	 * Register a {@link org.springframework.cloud.stream.app.test.integration.MessageMatcher}
+	 * on the default topic.
+	 * @param messageMatcher a {code Predicate} to test the payload.e
 	 * @return true if it is registered, false if it is already registered.
 	 */
-	default <P> boolean addOutputPayloadVerifier(Predicate<P> outputVerifier) {
-		return addOutputPayloadVerifier(STREAM_APPLICATIONS_TEST_TOPIC, outputVerifier);
+	default boolean addMessageMatcher(MessageMatcher messageMatcher) {
+		return addMessageMatcher(STREAM_APPLICATIONS_TEST_TOPIC, messageMatcher);
 	}
 
 	/**
-	 * Register a {@link Message} verifier on the given destination.
-	 * @param topic the destination for the output Message.
-	 * @param outputVerifier a {code Predicate} to test the payload.
-	 * @return true if it is registered, false if it is already registered.
+	 * Remove all
+	 * {@link org.springframework.cloud.stream.app.test.integration.MessageMatcher}s.
 	 */
-	boolean addOutputMessageVerifier(String topic, Predicate<Message<?>> outputVerifier);
+	void clearMessageMatchers();
 
 	/**
-	 * Register a Message payload verifier on the default destination.
-	 * @param outputVerifier a {code Predicate} to test the payload.e
-	 * @return true if it is registered, false if it is already registered.
+	 * Set all {@link org.springframework.cloud.stream.app.test.integration.MessageMatcher}s
+	 * to the initial state.
 	 */
-	default boolean addOutputMessageVerifier(Predicate<Message<?>> outputVerifier) {
-		return addOutputMessageVerifier(STREAM_APPLICATIONS_TEST_TOPIC, outputVerifier);
+	void resetMessageMatchers();
+
+	/**
+	 * A method that may be polled to wait for all
+	 * {@link org.springframework.cloud.stream.app.test.integration.MessageMatcher}s on a
+	 * given topic to be satisfied.
+	 * @param topic the topic.
+	 * @return true if all message matchers are satisfied.
+	 */
+	AtomicBoolean matches(String topic, Predicate<?>... p);
+
+	/**
+	 * A method that may be polled to wait for all
+	 * {@link org.springframework.cloud.stream.app.test.integration.MessageMatcher}s on a
+	 * given topic to be satisfied.
+	 * @param topic the topic.
+	 * @return true if all message matchers are satisfied.
+	 */
+	AtomicBoolean allMatch(String topic);
+
+	/**
+	 * A method that may be polled to wait for
+	 * all{@link org.springframework.cloud.stream.app.test.integration.MessageMatcher}s on the
+	 * default topic to be satisfied.
+	 * @return true if all message matchers are satisfied.
+	 */
+	default AtomicBoolean allMatch() {
+		return allMatch(STREAM_APPLICATIONS_TEST_TOPIC);
 	}
 
 	/**
-	 * Remove all verifiers.
-	 */
-	void clearOutputVerifiers();
-
-	/**
-	 * Set all verifiers to the initial state.
-	 */
-	void resetOutputVerifiers();
-
-	/**
-	 * A method that may be polled to wait for all verifiers on a given destination to be
-	 * satisfied.
-	 * @param topic the destination.
-	 * @return true if all verifiers are satisfied.
-	 */
-	AtomicBoolean isVerified(String topic);
-
-	/**
-	 * A method that may be polled to wait for all verifiers on the default destination to be
-	 * satisfied.
-	 * @return true if all verifiers are satisfied.
-	 */
-	default AtomicBoolean isVerified() {
-		return isVerified(STREAM_APPLICATIONS_TEST_TOPIC);
-	}
-
-	/**
-	 * A message listener to a topic and tests all verifiers on an incoming Message.
+	 * A message listener to a topic and tests all message matchers on an incoming Message.
 	 * @param message the Message.
 	 */
 	void listen(Message<?> message);

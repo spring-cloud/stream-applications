@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -42,6 +41,7 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.utility.DockerImageName;
 
 import org.springframework.cloud.stream.app.test.integration.AbstractTestTopicListener;
+import org.springframework.cloud.stream.app.test.integration.MessageMatcher;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 import org.springframework.cloud.stream.app.test.integration.StreamApplicationIntegrationTestSupport;
 import org.springframework.context.annotation.Bean;
@@ -169,8 +169,8 @@ public abstract class KafkaStreamApplicationIntegrationTestSupport extends Strea
 			}
 
 			@Override
-			public boolean addOutputMessageVerifier(String topic, Predicate<Message<?>> verifier) {
-				boolean added = super.addOutputMessageVerifier(topic, verifier);
+			public boolean addMessageMatcher(String topic, MessageMatcher messageMatcher) {
+				boolean added = super.addMessageMatcher(topic, messageMatcher);
 				if (added) {
 					synchronized (lock) {
 						stop();

@@ -84,7 +84,6 @@ public class CdcSourceDatabasesIntegrationTest extends CdcTestSupport {
 						.withEnv("MSSQL_PID", "Standard")
 						.withEnv("SA_PASSWORD", "Password!")
 						.withEnv("MSSQL_AGENT_ENABLED", "true")
-						.withLogConsumer(logMatcher)
 						.withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("sqlServer")))
 						.withExposedPorts(1433);
 		sqlServer.start();

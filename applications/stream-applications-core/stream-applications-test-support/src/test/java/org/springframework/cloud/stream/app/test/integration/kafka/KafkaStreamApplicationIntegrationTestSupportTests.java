@@ -22,6 +22,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.app.test.integration.MessageMatcher;
 import org.springframework.cloud.stream.app.test.integration.TestTopicListener;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -38,17 +39,17 @@ public class KafkaStreamApplicationIntegrationTestSupportTests extends KafkaStre
 
 	@AfterEach
 	void reset() {
-		testTopicListener.clearOutputVerifiers();
+		testTopicListener.clearMessageMatchers();
 	}
 
 	@Test
 	void payloadVerifiers() {
-		testTopicListener.addOutputPayloadVerifier((s -> s.equals("hello test1")));
-		testTopicListener.addOutputPayloadVerifier((s -> s.equals("hello test2")));
+		testTopicListener.addMessageMatcher(MessageMatcher.payloadMatcher((s -> s.equals("hello test1"))));
+		testTopicListener.addMessageMatcher(MessageMatcher.payloadMatcher(s -> s.equals("hello test2")));
 		kafkaTemplate.send(STREAM_APPLICATIONS_TEST_TOPIC, "hello test1");
 		kafkaTemplate.send(STREAM_APPLICATIONS_TEST_TOPIC, "hello test2");
 		await().atMost(Duration.ofSeconds(10))
-				.until(verifyOutputMessages());
+				.until(messagesMatch());
 	}
 
 	@Test
@@ -56,10 +57,7 @@ public class KafkaStreamApplicationIntegrationTestSupportTests extends KafkaStre
 		kafkaTemplate.send(STREAM_APPLICATIONS_TEST_TOPIC, "hello test3");
 		kafkaTemplate.send(STREAM_APPLICATIONS_TEST_TOPIC, "hello test4");
 		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputPayload((s -> s.equals("hello test3"))));
-		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputPayload((s -> s.equals("hello test4"))));
-
+				.until(payloadMatches(s -> s.equals("hello test3"), s -> s.equals("hello test4")));
 	}
 
 	@Test
@@ -67,8 +65,7 @@ public class KafkaStreamApplicationIntegrationTestSupportTests extends KafkaStre
 		kafkaTemplate.send(STREAM_APPLICATIONS_TEST_TOPIC, "hello test5");
 		kafkaTemplate.send(STREAM_APPLICATIONS_TEST_TOPIC, "hello test6");
 		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputPayload((s -> s.equals("hello test6"))));
-		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputPayload((s -> s.equals("hello test5"))));
+				.until(payloadMatches(s -> s.equals("hello test6"), s -> s.equals("hello test5")));
+
 	}
 }

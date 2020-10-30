@@ -20,7 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -30,6 +34,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 import org.springframework.util.SocketUtils;
+
+import static org.springframework.cloud.stream.app.test.integration.TestTopicListener.STREAM_APPLICATIONS_TEST_TOPIC;
 
 /**
  * Support utility for stream application integration testing .
@@ -70,17 +76,57 @@ public abstract class StreamApplicationIntegrationTestSupport {
 		return SocketUtils.findAvailableTcpPort(10000, 20000);
 	}
 
-	protected Callable<Boolean> verifyOutputMessages() {
-		return () -> testListener.isVerified().get();
+	protected Callable<Boolean> messagesMatch() {
+		return () -> testListener.allMatch().get();
 	}
 
-	protected <P> Callable<Boolean> verifyOutputPayload(Predicate<P> outputVerifier) {
-		testListener.addOutputPayloadVerifier(outputVerifier);
-		return () -> testListener.isVerified().get();
+	protected <P> Callable<Boolean> payloadMatches(Predicate<P>... payloadMatchers) {
+		return payloadMatches(STREAM_APPLICATIONS_TEST_TOPIC, payloadMatchers);
 	}
 
-	protected Callable<Boolean> verifyOutputMessage(Predicate<Message<?>> outputVerifier) {
-		testListener.addOutputMessageVerifier(outputVerifier);
-		return () -> testListener.isVerified().get();
+	protected Callable<Boolean> messageMatches(Predicate<Message<?>>... messageMatchers) {
+		return messageMatches(STREAM_APPLICATIONS_TEST_TOPIC, messageMatchers);
+	}
+
+	// TODO: Implement support for multiple topics.
+	private <P> Callable<Boolean> payloadMatches(String topic, Predicate<P>... payloadMatchers) {
+		for (Predicate<P> payloadMatcher : payloadMatchers) {
+			MessageMatcher messageMatcher = MessageMatcher.payloadMatcher(payloadMatcher);
+			testListener.addMessageMatcher(messageMatcher);
+		}
+		return () -> testListener.matches(topic, payloadMatchers).get();
+	}
+
+	private <P> Callable<Boolean> payloadMatches(Map<String, Predicate<P>> payloadMatcherMap) {
+		List<Callable<Boolean>> aggregate = new LinkedList<>();
+		payloadMatcherMap.forEach((topic, payloadMatcher) -> {
+			MessageMatcher messageMatcher = MessageMatcher.payloadMatcher(payloadMatcher);
+			testListener.addMessageMatcher(topic, messageMatcher);
+			aggregate.add(() -> testListener.matches(topic, messageMatcher).get());
+		});
+
+		return () -> {
+			AtomicBoolean all = new AtomicBoolean(true);
+			aggregate.forEach(cb -> {
+				try {
+					all.compareAndSet(true, cb.call());
+				}
+				catch (Exception e) {
+					throw new IllegalStateException(e.getMessage(), e);
+				}
+			});
+			return all.get();
+		};
+	}
+
+	private <T> FluentMap<String, Predicate<T>> topicPayloadMatchers() {
+		return new FluentMap<>();
+	}
+
+	private Callable<Boolean> messageMatches(String topic, Predicate<Message<?>>... messageMatchers) {
+		for (Predicate<Message<?>> messageMatcher : messageMatchers) {
+			testListener.addMessageMatcher(topic, new MessageMatcher(messageMatcher));
+		}
+		return () -> testListener.matches(topic, messageMatchers).get();
 	}
 }
