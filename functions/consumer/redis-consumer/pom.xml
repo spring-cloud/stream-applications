@@ -15,8 +15,8 @@
     <description>Redis Consumer</description>
 
     <properties>
-        <spring-cloud-starters.version>2.2.0.RELEASE</spring-cloud-starters.version>
-        <embedded-redis.version>1.83</embedded-redis.version>
+        <spring-cloud-starters.version>3.0.0-SNAPSHOT</spring-cloud-starters.version>
+        <embedded-redis.version>1.85</embedded-redis.version>
     </properties>
 
     <dependencies>

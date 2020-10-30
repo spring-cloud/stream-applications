@@ -29,7 +29,7 @@ import org.springframework.test.annotation.DirtiesContext;
 /**
  * @author Soby Chacko
  */
-@SpringBootTest
+@SpringBootTest (properties = {"spring.cloud.bootstrap.enabled=true"})
 @DirtiesContext
 public class AbstractRedisConsumerTests {
 
