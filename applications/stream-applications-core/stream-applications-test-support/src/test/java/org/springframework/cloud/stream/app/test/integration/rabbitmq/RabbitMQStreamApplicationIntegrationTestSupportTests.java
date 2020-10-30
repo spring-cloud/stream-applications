@@ -21,8 +21,10 @@ import java.time.Duration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.app.test.integration.MessageMatcher;
 import org.springframework.cloud.stream.app.test.integration.TestTopicListener;
 
 import static org.awaitility.Awaitility.await;
@@ -37,19 +39,22 @@ public class RabbitMQStreamApplicationIntegrationTestSupportTests
 	@Autowired
 	private TestTopicListener testTopicListener;
 
+	@Autowired
+	RabbitAdmin rabbitAdmin;
+
 	@AfterEach
 	void reset() {
-		testTopicListener.clearOutputVerifiers();
+		testTopicListener.clearMessageMatchers();
 	}
 
 	@Test
 	void multipleVerifiers() {
-		testTopicListener.addOutputPayloadVerifier((s -> s.equals("hello test1")));
-		testTopicListener.addOutputPayloadVerifier((s -> s.equals("hello test2")));
+		testTopicListener.addMessageMatcher(MessageMatcher.payloadMatcher(s -> s.equals("hello test1")));
+		testTopicListener.addMessageMatcher(MessageMatcher.payloadMatcher(s -> s.equals("hello test2")));
 		rabbitTemplate.convertAndSend(STREAM_APPLICATIONS_TEST_TOPIC, "#", "hello test1");
 		rabbitTemplate.convertAndSend(STREAM_APPLICATIONS_TEST_TOPIC, "#", "hello test2");
 		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputMessages());
+				.until(messagesMatch());
 	}
 
 	@Test
@@ -57,9 +62,7 @@ public class RabbitMQStreamApplicationIntegrationTestSupportTests
 		rabbitTemplate.convertAndSend(STREAM_APPLICATIONS_TEST_TOPIC, "#", "hello test3");
 		rabbitTemplate.convertAndSend(STREAM_APPLICATIONS_TEST_TOPIC, "#", "hello test4");
 		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputPayload((s -> s.equals("hello test3"))));
-		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputPayload((s -> s.equals("hello test4"))));
+				.until(payloadMatches(s -> s.equals("hello test3"), s -> s.equals("hello test4")));
 	}
 
 	@Test
@@ -67,8 +70,6 @@ public class RabbitMQStreamApplicationIntegrationTestSupportTests
 		rabbitTemplate.convertAndSend(STREAM_APPLICATIONS_TEST_TOPIC, "#", "hello test5");
 		rabbitTemplate.convertAndSend(STREAM_APPLICATIONS_TEST_TOPIC, "#", "hello test6");
 		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputPayload((s -> s.equals("hello test6"))));
-		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputPayload((s -> s.equals("hello test5"))));
+				.until(payloadMatches(s -> s.equals("hello test6"), s -> s.equals("hello test5")));
 	}
 }

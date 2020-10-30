@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.test.integration;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,6 +26,9 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.containers.wait.strategy.WaitStrategy;
+import org.testcontainers.containers.wait.strategy.WaitStrategyTarget;
 
 import org.springframework.util.Assert;
 
@@ -33,7 +37,7 @@ import org.springframework.util.Assert;
  * {@code await().until(logMatcher.matches();}
  * @author David Turanski
  */
-public class LogMatcher implements Consumer<OutputFrame> {
+public class LogMatcher extends LogMessageWaitStrategy implements Consumer<OutputFrame> {
 	private static Logger logger = LoggerFactory.getLogger(LogMatcher.class);
 
 	protected AtomicBoolean matched = new AtomicBoolean();
@@ -48,6 +52,7 @@ public class LogMatcher implements Consumer<OutputFrame> {
 	}
 
 	private LogMatcher(Pattern pattern) {
+		super.withRegEx(pattern.pattern());
 		this.pattern = pattern;
 	}
 
@@ -64,6 +69,7 @@ public class LogMatcher implements Consumer<OutputFrame> {
 	}
 
 	public LogMatcher times(int times) {
+		super.withTimes(times);
 		return new CountingLogMatcher(this.pattern, times);
 	}
 
@@ -79,6 +85,16 @@ public class LogMatcher implements Consumer<OutputFrame> {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void waitUntilReady(WaitStrategyTarget waitStrategyTarget) {
+
+	}
+
+	@Override
+	public WaitStrategy withStartupTimeout(Duration duration) {
+		return null;
 	}
 
 	public final static class CountingLogMatcher extends LogMatcher {

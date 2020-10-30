@@ -17,10 +17,12 @@
 package org.springframework.cloud.stream.app.test.integration.rabbitmq;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -44,6 +46,7 @@ import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.amqp.support.converter.MessageConversionException;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.cloud.stream.app.test.integration.AbstractTestTopicListener;
+import org.springframework.cloud.stream.app.test.integration.MessageMatcher;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 import org.springframework.cloud.stream.app.test.integration.StreamApplicationIntegrationTestSupport;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +54,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.util.CollectionUtils;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = RabbitMQStreamApplicationIntegrationTestSupport.RabbitMQTestConfiguration.class)
@@ -128,7 +132,7 @@ public abstract class RabbitMQStreamApplicationIntegrationTestSupport extends St
 					.expireAfterWrite(CACHE_TTL_SEC, TimeUnit.SECONDS)
 					.build();
 
-			private static final String STREAM_APPLICATIONS_TEST_QUEUE = "stream-applications-test-queue";
+			static final String STREAM_APPLICATIONS_TEST_QUEUE = "stream-applications-test-queue";
 
 			private final RabbitAdmin admin;
 
@@ -147,24 +151,53 @@ public abstract class RabbitMQStreamApplicationIntegrationTestSupport extends St
 			}
 
 			@Override
-			public AtomicBoolean isVerified(String topic) {
-				AtomicBoolean all = super.isVerified(topic);
-				if (cache.getIfPresent(topic) != null) {
-					if (!all.get()) {
-						all.set(true);
-						logger.debug("Verifying cached messages for topic {}", topic);
-						cache.getIfPresent(topic).forEach(m -> verifiers.get(topic).forEach(v -> {
-							if (!v.isSatisfied()) {
-								v.setSatisfied(v.test(m));
-								all.compareAndSet(true, v.isSatisfied());
-								if (v.isSatisfied()) {
-									cache.invalidate(m);
-								}
-							}
-						}));
+			public AtomicBoolean allMatch(String topic) {
+				AtomicBoolean all = super.allMatch(topic);
+				if (!all.get()) {
+					if (messageMatchers.get(topic) == null || cache.getIfPresent(topic) == null) {
+						return all;
 					}
+					List<MessageMatcher> matchers = messageMatchers.get(topic);
+					all.set(true);
+					cache.getIfPresent(topic).forEach(message -> matchers.stream().filter(mm -> !mm.isSatisfied())
+							.forEach(mm -> all.compareAndSet(true, mm.test(message))));
 				}
 				return all;
+			}
+
+			@Override
+			public AtomicBoolean matches(String topic, Predicate<?>... predicates) {
+				AtomicBoolean matches = super.matches(topic, predicates);
+				if (matches.get() || CollectionUtils.isEmpty(cache.getIfPresent(topic))) {
+					return matches;
+				}
+
+				for (Predicate<?> predicate : predicates) {
+					MessageMatcher matcher = messageMatcher(topic, predicate)
+							.orElse(MessageMatcher.payloadMatcher(o -> false));
+					if (messageMatcher(topic, predicate).isPresent()) {
+						Set<Message<?>> messages = cache.getIfPresent(topic);
+						matches.set(true);
+						messages.forEach(message -> {
+							if (matches.compareAndSet(true, matcher.test(message))) {
+								logger.debug("Matched cached message {} for topic {}", message, topic);
+								messages.remove(message);
+								return;
+							}
+						});
+						updateCache(topic, messages);
+					}
+				}
+				return matches;
+			}
+
+			private void updateCache(String topic, Set<Message<?>> messages) {
+				if (CollectionUtils.isEmpty(messages)) {
+					cache.invalidate(topic);
+				}
+				else {
+					cache.put(topic, messages);
+				}
 			}
 
 			private void cacheMessage(String topic, Message<?> message) {
@@ -183,7 +216,7 @@ public abstract class RabbitMQStreamApplicationIntegrationTestSupport extends St
 				return message -> (String) message.getHeaders().get(AmqpHeaders.RECEIVED_EXCHANGE);
 			}
 
-			//@formatter:off
+	//@formatter:off
 			@RabbitListener(autoStartup = "true", group = STREAM_APPLICATION_TESTS_GROUP,
 							queues = {STREAM_APPLICATIONS_TEST_QUEUE})
 			//@formatter:on
@@ -191,14 +224,14 @@ public abstract class RabbitMQStreamApplicationIntegrationTestSupport extends St
 			public void listen(Message<?> message) {
 				String topic = topicForMessage().apply(message);
 				logger.debug("Received message: {} on topic {}", message, topic);
-				if (!verifiers.containsKey(topic)) {
+				if (!messageMatchers.containsKey(topic)) {
 					cacheMessage(topic, message);
 					return;
 				}
 
 				logger.debug("Verifying message: {} on topic {}", message, topic);
 				AtomicBoolean any = new AtomicBoolean(false);
-				verifiers.get(topic).forEach(v -> {
+				messageMatchers.get(topic).forEach(v -> {
 					any.compareAndSet(false, v.test(message));
 					v.setSatisfied(any.get());
 				});
@@ -209,7 +242,7 @@ public abstract class RabbitMQStreamApplicationIntegrationTestSupport extends St
 					logger.debug("Verified message: {} on topic {}", message, topic);
 				}
 
-				if (!isVerified(topic).get()) {
+				if (!allMatch(topic).get()) {
 					cacheMessage(topic, message);
 				}
 			}
