@@ -78,8 +78,8 @@ The StreamAppContainer are statically configured to output to that topic, so the
 Configure your test using one of the following methods;
 
 ```java
-protected <P> Callable<Boolean> verifyOutputPayload(Predicate<P> outputVerifier);
-Callable<Boolean> verifyOutputMessage(Predicate<Message<?>> outputVerifier);
+protected <P> Callable<Boolean> payloadMatches(Predicate<P>... payloadMatchers);
+Callable<Boolean> messageMatches(Predicate<Message<?>>... messageMatchers);
 ```
 These are `Callable<Boolean>` which happens to be the type accepted by the https://github.com/awaitility/awaitility[awaitility]
 ```java
@@ -105,7 +105,7 @@ public class KafkaTimeSourceTests extends KafkaStreamApplicationIntegrationTestS
 	@Test
 	void test() {
 		await().atMost(DEFAULT_DURATION).until(logMatcher.matches());
-		await().atMost(DEFAULT_DURATION).until(verifyOutputPayload((String s) -> pattern.matcher(s).matches()));
+		await().atMost(DEFAULT_DURATION).until(payloadMatches((String s) -> pattern.matcher(s).matches()));
 	}
 }
 ```
@@ -116,13 +116,13 @@ This test also uses a `LogMatcher`, which is not strictly necessary, but used he
 Then we wait for a message on the output topic that matches the pattern.
 
 
-NOTE: Timing concerns: The `verifyOutputPayload` is called repeatedly by awaitility. The first time, it registers the verifier with the message listener.
+NOTE: Timing concerns: The `payloadMatches` is called repeatedly by awaitility. The first time, it registers the MessageMacher with the message listener.
 Subsequently, The TopicTestListener detects that it has already been registered, so it just checks if the predicate is satisfied.
-Potential, there can be a race condition if the message is consumed before the verifier is invoked the first time.
-To address this, the `KafkaTestListener` rewinds the topic to offset 0 each time a new verifier is registered.
+Potential, there can be a race condition if the message is consumed before the MessageMacher is invoked the first time.
+To address this, the `KafkaTestListener` rewinds the topic to offset 0 each time a new MessageMacher is registered.
 RabbitMQ doesn't have this replay capability. Rabbit is no longer responsible once the consumer acknowledges the message.
 To work around this, the  `RabbitMQTestListener` maintains a cache of any unverified messages for a few minutes.
-If a verifier has not been satisfied, the test listener checks the cache to see if any of those messages match.
+If a MessageMacher has not been satisfied, the test listener checks the cache to see if any of those messages match.
 The following test case verifies the expected behavior.
 
 ```java
@@ -131,15 +131,13 @@ The following test case verifies the expected behavior.
 		rabbitTemplate.convertAndSend(STREAM_APPLICATIONS_TEST_TOPIC, "#", "hello test1");
 		rabbitTemplate.convertAndSend(STREAM_APPLICATIONS_TEST_TOPIC, "#", "hello test2");
 		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputPayload((s -> s.equals("hello test2"))));
-		await().atMost(Duration.ofSeconds(30))
-				.until(verifyOutputPayload((s -> s.equals("hello test1"))));
+				.until(payloadMatches(s -> s.equals("hello test2"), s -> s.equals("hello test1")));
 	}
 ```
-The `hello test1` verifier did not exist when `hello test1` was consumed, and is rejected by the first verifier,
-so it is cached and tested when the second verifier is created.
+The `hello test1` MessageMacher did not exist when `hello test1` was consumed, and is rejected by the first MessageMacher,
+so it is cached and tested when the second MessageMacher is created.
 
-If you need to, you can register verifiers in advance, in an  `@BeforeEach` method if you `@Autowire` the TestListener.
+If you need to, you can register MessageMachers in advance, in an  `@BeforeEach` method if you `@Autowire` the TestListener.
 But this doesn't work for statically declared containers which are more efficient and common with TestContainers.
 
 ### Testing Stream Applications
