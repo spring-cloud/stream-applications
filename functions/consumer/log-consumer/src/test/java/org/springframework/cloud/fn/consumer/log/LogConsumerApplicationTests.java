@@ -16,37 +16,32 @@
 
 package org.springframework.cloud.fn.consumer.log;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.function.Consumer;
 
-import org.apache.commons.logging.Log;
-import org.junit.jupiter.api.Disabled;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.core.log.LogAccessor;
 import org.springframework.integration.handler.LoggingHandler;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.integration.test.util.TestUtils;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.MimeType;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 /**
  * @author Artem Bilan
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest({ "log.name=foo", "log.level=warn", "log.expression=payload.toUpperCase()" })
-@Disabled("https://github.com/spring-cloud/stream-applications/issues/131")
+@ExtendWith(OutputCaptureExtension.class)
 class LogConsumerApplicationTests {
 
 	@Autowired
@@ -57,38 +52,25 @@ class LogConsumerApplicationTests {
 	private LoggingHandler loggingHandler;
 
 	@Test
-	public void testJsonContentType() {
-		Message<String> message = MessageBuilder.withPayload("{\"foo\":\"bar\"}")
+	public void testJsonContentType(CapturedOutput output) {
+		String payload = "{\"foo\":\"bar\"}";
+		Message<String> message = MessageBuilder.withPayload(payload)
 				.setHeader("contentType", new MimeType("json"))
 				.build();
-		testMessage(message, "{\"foo\":\"bar\"}");
-	}
-
-	private void testMessage(Message<?> message, String expectedPayload) {
 		assertThat(this.loggingHandler.getLevel()).isEqualTo(LoggingHandler.Level.WARN);
-		Log logger = TestUtils.getPropertyValue(this.loggingHandler, "messageLogger", Log.class);
-		assertThat(TestUtils.getPropertyValue(logger, "logger.name")).isEqualTo("foo");
-		logger = spy(logger);
-		new DirectFieldAccessor(this.loggingHandler).setPropertyValue("messageLogger", logger);
+		LogAccessor logAccessor = TestUtils.getPropertyValue(this.loggingHandler, "messageLogger", LogAccessor.class);
+		assertThat(TestUtils.getPropertyValue(logAccessor.getLog(), "name")).isEqualTo("foo");
 		this.logConsumer.accept(message);
-		ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-		verify(logger).warn(captor.capture());
-		assertThat(captor.getValue()).isEqualTo(expectedPayload.toUpperCase());
+		Awaitility.await().until(output::getOut, value -> value.contains(payload.toUpperCase()));
 		this.loggingHandler.setLogExpressionString("#this");
 		this.logConsumer.accept(message);
-		verify(logger, times(2)).warn(captor.capture());
-
-		Message<?> captorMessage = (Message<?>) captor.getAllValues().get(2);
-		assertThat(captorMessage.getPayload()).isEqualTo(expectedPayload);
-
-		MessageHeaders messageHeaders = captorMessage.getHeaders();
-		assertThat(messageHeaders).hasSize(4);
-
-		assertThat(messageHeaders)
-				.containsEntry(MessageHeaders.CONTENT_TYPE, message.getHeaders().get(MessageHeaders.CONTENT_TYPE));
+		Awaitility.await().until(output::getOut, value -> value.contains("payload=" + payload));
+		assertThat(output.getOut()).contains("json/*");
 	}
 
 	@SpringBootApplication
 	static class LogConsumerTestApplication {
+
 	}
+
 }
