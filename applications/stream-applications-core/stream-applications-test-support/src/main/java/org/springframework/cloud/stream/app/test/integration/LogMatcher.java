@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.stream.app.test.integration;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,33 +25,23 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.output.OutputFrame;
-import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
-import org.testcontainers.containers.wait.strategy.WaitStrategy;
-import org.testcontainers.containers.wait.strategy.WaitStrategyTarget;
-
-import org.springframework.util.Assert;
 
 /**
  * Utility for matching test container log contents using Awaitility. Example:
  * {@code await().until(logMatcher.matches();}
  * @author David Turanski
  */
-public class LogMatcher extends LogMessageWaitStrategy implements Consumer<OutputFrame> {
+public final class LogMatcher implements Consumer<OutputFrame> {
 	private static Logger logger = LoggerFactory.getLogger(LogMatcher.class);
 
-	protected AtomicBoolean matched = new AtomicBoolean();
+	private AtomicBoolean matched = new AtomicBoolean();
+
+	private AtomicInteger count;
 
 	private Pattern pattern;
 
-	private LogMatcher() {
-	}
-
-	public Callable<Boolean> matches() {
-		return () -> matched.get();
-	}
-
-	private LogMatcher(Pattern pattern) {
-		super.withRegEx(pattern.pattern());
+	private LogMatcher(Pattern pattern, int times) {
+		count = new AtomicInteger(times);
 		this.pattern = pattern;
 	}
 
@@ -65,61 +54,35 @@ public class LogMatcher extends LogMessageWaitStrategy implements Consumer<Outpu
 	}
 
 	public static LogMatcher matchesRegex(String regex) {
-		return new LogMatcher(Pattern.compile(regex));
+		return new LogMatcher(Pattern.compile(regex), 1);
 	}
 
 	public LogMatcher times(int times) {
-		super.withTimes(times);
-		return new CountingLogMatcher(this.pattern, times);
+		count.set(times);
+		return this;
 	}
 
 	@Override
 	public void accept(OutputFrame outputFrame) {
-		synchronized (matched) {
-			if (!matched.get()) {
-				String str = outputFrame.getUtf8String().trim();
-				logger.trace("matching {} using pattern {}", str, pattern.pattern());
-				if (pattern.matcher(str).matches()) {
-					matched.set(true);
-					logger.debug(" MATCHED {}", str);
+		if (count.get() > 0) {
+			synchronized (matched) {
+				if (!matched.get()) {
+					String str = outputFrame.getUtf8String().trim();
+					logger.trace("matching {} using pattern {}", str, pattern.pattern());
+					if (pattern.matcher(str).matches()) {
+						matched.set(true);
+						logger.debug(" MATCHED {}", str);
+					}
 				}
+			}
+			if (matched.compareAndSet(true, false)) {
+				count.decrementAndGet();
 			}
 		}
 	}
 
-	@Override
-	public void waitUntilReady(WaitStrategyTarget waitStrategyTarget) {
-
+	public Callable<Boolean> matches() {
+		return () -> count.get() == 0;
 	}
 
-	@Override
-	public WaitStrategy withStartupTimeout(Duration duration) {
-		return null;
-	}
-
-	public final static class CountingLogMatcher extends LogMatcher {
-
-		private final AtomicInteger count = new AtomicInteger();
-
-		private CountingLogMatcher(Pattern pattern, int count) {
-			super(pattern);
-			Assert.isTrue(count >= 1, "'count' must be greater than 0");
-			this.count.set(count);
-		}
-
-		@Override
-		public void accept(OutputFrame outputFrame) {
-			if (count.get() > 0) {
-				super.accept(outputFrame);
-				if (matched.compareAndSet(true, false)) {
-					count.decrementAndGet();
-				}
-			}
-		}
-
-		@Override
-		public Callable<Boolean> matches() {
-			return () -> count.get() == 0;
-		}
-	}
 }
