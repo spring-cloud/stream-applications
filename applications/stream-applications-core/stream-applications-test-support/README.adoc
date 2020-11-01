@@ -56,7 +56,7 @@ The host machine can connect to Kafka using the random mapped port:
 "localhost:" + kafka.getMappedPort(9092);
 ```
 
-These containers are intended to work with `StreamApplicationIntegrationTestSupport`, described below.
+These containers are intended to work with `OutputMatchers`, described below.
 
 ### Stream Application Integration Test Support
 
@@ -110,7 +110,7 @@ public class KafkaTimeSourceTests extends KafkaStreamApplicationIntegrationTestS
 }
 ```
 
-We inherit `KafkaStreamApplicationIntegrationTestSupport` which starts a `kafka` TestContainer in a static initializer.
+We inherit `KafkaStreamAppContainerTestConfiguration` which starts a `kafka` TestContainer in a static initializer.
 The Time Source emits the time every second. In this case, it's hard to know what the expected output payload is, but it should at least match the date pattern.
 This test also uses a `LogMatcher`, which is not strictly necessary, but used here to verify that the app logged the standard start up message - always a good sign.
 Then we wait for a message on the output topic that matches the pattern.

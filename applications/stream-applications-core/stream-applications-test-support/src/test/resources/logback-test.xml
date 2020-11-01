@@ -11,6 +11,7 @@
 
 	<logger name="org.testcontainers" level="INFO"/>
 	<logger name="com.github.dockerjava" level="WARN"/>
+	<logger name="org.junit" level="DEBUG"/>
 <!--	<logger name="org.springframework.amqp.rabbit.core" level="DEBUG"/>-->
 	<!--	<logger name="org.springframework.kafka" level="INFO"/>-->
 		<logger name="org.springframework.cloud.stream.app.test.integration" level="DEBUG"/>

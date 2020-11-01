@@ -16,10 +16,6 @@
 
 package org.springframework.cloud.stream.app.test.integration;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +23,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.messaging.Message;
-import org.springframework.stereotype.Component;
-import org.springframework.util.SocketUtils;
 
 import static org.springframework.cloud.stream.app.test.integration.TestTopicListener.STREAM_APPLICATIONS_TEST_TOPIC;
 
@@ -41,51 +31,36 @@ import static org.springframework.cloud.stream.app.test.integration.TestTopicLis
  * Support utility for stream application integration testing .
  * @author David Turanski
  */
-@Testcontainers
-@Component
-public abstract class StreamApplicationIntegrationTestSupport {
+public class OutputMatcher {
 
-	protected static final String DOCKER_ORG = "springcloudstream";
+	private final TestTopicListener testListener;
 
-	@Autowired
-	private AbstractTestTopicListener testListener;
-
-	protected static String prePackagedStreamAppImageName(String appName, String binderName, String version) {
-		return DOCKER_ORG + "/" + appName + "-" + binderName + ":" + version;
+	public OutputMatcher(TestTopicListener testListener) {
+		this.testListener = testListener;
 	}
 
-	public static String localHostAddress() {
-		try {
-			return InetAddress.getLocalHost().getHostAddress();
-		}
-		catch (UnknownHostException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		}
-	}
-
-	protected static File resourceAsFile(String path) {
-		try {
-			return new ClassPathResource(path).getFile();
-		}
-		catch (IOException e) {
-			throw new IllegalStateException("Unable to access resource " + path);
-		}
-	}
-
-	protected static final int findAvailablePort() {
-		return SocketUtils.findAvailableTcpPort(10000, 20000);
-	}
-
-	protected Callable<Boolean> messagesMatch() {
+	public Callable<Boolean> messagesMatch() {
 		return () -> testListener.allMatch().get();
 	}
 
-	protected <P> Callable<Boolean> payloadMatches(Predicate<P>... payloadMatchers) {
+	public <P> Callable<Boolean> payloadMatches(Predicate<P>... payloadMatchers) {
 		return payloadMatches(STREAM_APPLICATIONS_TEST_TOPIC, payloadMatchers);
 	}
 
-	protected Callable<Boolean> messageMatches(Predicate<Message<?>>... messageMatchers) {
+	public Callable<Boolean> messageMatches(Predicate<Message<?>>... messageMatchers) {
 		return messageMatches(STREAM_APPLICATIONS_TEST_TOPIC, messageMatchers);
+	}
+
+	public void addMessageMatcher(MessageMatcher messageMatcher) {
+		this.testListener.addMessageMatcher(STREAM_APPLICATIONS_TEST_TOPIC, messageMatcher);
+	}
+
+	public void clearMessageMatchers() {
+		testListener.clearMessageMatchers();
+	}
+
+	public void resetMessageMatchers() {
+		testListener.resetMessageMatchers();
 	}
 
 	// TODO: Implement support for multiple topics.
