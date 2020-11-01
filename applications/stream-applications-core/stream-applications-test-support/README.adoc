@@ -58,18 +58,23 @@ The host machine can connect to Kafka using the random mapped port:
 
 These containers are intended to work with `OutputMatchers`, described below.
 
-### Stream Application Integration Test Support
+### Stream Application Container Test Support
 
-link:src/main/java/org/springframework/cloud/stream/app/test/integration/StreamApplicationIntegrationTestSupport.java[StreamApplicationIntegrationTestSupport]  has
-subclasses for `Kafka` and `Rabbit`, along with convenient utilities for integration testing an application image.
-The pre-packaged apps in this repository include extensive tests at the function and base application level.
-Since we automatically configure and build images using a Maven plugin, it is essential to test the built images as well.
-Also, if we, or someone in the community, observes a particular issue integrating with external components, TestContainers is
-a convenient way to try to reproduce it.
+This `integration` package provides test annotations for Junit 5 `@KafkaStreamAppTest` and `RabbitMQStreamAppTest`.
+These meta-annotations include required Spring configuration, and `@TestContainers`.
 
 The test strategy is to run a single container, and use the message broker directly to publish messages to the input and
 verify the expected output message.  Simply use the provided `KafkaTemplate` or `RabbitTemplate` to publish input messages to
 a `source` or `processor`.
+
+To send messages to the container's input destination(s) autowire `TestTopicSender`.
+This wraps `RabbitTemplate` or `KafkaTempate`, respectively.
+You may also use the templates directly.
+
+``` java
+@ Autowired
+private TestTopicSender
+```
 
 ### Verifying output messages.
 
@@ -88,29 +93,34 @@ await().until()
 method, which is a convenient way to wait for the output message.
 When the message arrives, the link:src/main/java/org/springframework/cloud/stream/app/test/integration/TestTopicListener.java[TestTopicListener] implementation for the message broker will test all registered predicates.
 
+For convenience, you can autowire `OutputMatcher` which wraps the TestTopicListener, and exposes `Callable<Boolean>` methods.
+
 let's look at simple example test for the famous `time-source`:
 
 ```java
-@Testcontainers
-public class KafkaTimeSourceTests extends KafkaStreamApplicationIntegrationTestSupport {
+@KafkaStreamAppTest
+public class KafkaTimeSourceTests {
 
 	// "MM/dd/yy HH:mm:ss";
 	private final static Pattern pattern = Pattern.compile(".*\\d{2}/\\d{2}/\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}");
 
 	static LogMatcher logMatcher = LogMatcher.contains("Started TimeSource");
 
+    @Autowired
+    private OutputMatcher outputMatcher;
+
 	@Container
-	static StreamAppContainer timeSource = prepackagedKafkaContainerFor("time-source", VERSION)
+	static StreamAppContainer timeSource = KafkaConfig.prepackagedContainerFor("time-source", VERSION)
 			.withLogConsumer(logMatcher);
 	@Test
 	void test() {
 		await().atMost(DEFAULT_DURATION).until(logMatcher.matches());
-		await().atMost(DEFAULT_DURATION).until(payloadMatches((String s) -> pattern.matcher(s).matches()));
+		await().atMost(DEFAULT_DURATION).until(outputMatcher.payloadMatches((String s) -> pattern.matcher(s).matches()));
 	}
 }
 ```
 
-We inherit `KafkaStreamAppContainerTestConfiguration` which starts a `kafka` TestContainer in a static initializer.
+We start an ApplicationContext `KafkaStreamAppContainerTestConfiguration` which starts the `KafkaConfig.kafka` TestContainer in a static initializer.
 The Time Source emits the time every second. In this case, it's hard to know what the expected output payload is, but it should at least match the date pattern.
 This test also uses a `LogMatcher`, which is not strictly necessary, but used here to verify that the app logged the standard start up message - always a good sign.
 Then we wait for a message on the output topic that matches the pattern.
@@ -119,7 +129,7 @@ Then we wait for a message on the output topic that matches the pattern.
 NOTE: Timing concerns: The `payloadMatches` is called repeatedly by awaitility. The first time, it registers the MessageMacher with the message listener.
 Subsequently, The TopicTestListener detects that it has already been registered, so it just checks if the predicate is satisfied.
 Potential, there can be a race condition if the message is consumed before the MessageMacher is invoked the first time.
-To address this, the `KafkaTestListener` rewinds the topic to offset 0 each time a new MessageMacher is registered.
+To address this, the `KafkaTestListener` rewinds the topic to offset `0` each time a new MessageMacher is registered.
 RabbitMQ doesn't have this replay capability. Rabbit is no longer responsible once the consumer acknowledges the message.
 To work around this, the  `RabbitMQTestListener` maintains a cache of any unverified messages for a few minutes.
 If a MessageMacher has not been satisfied, the test listener checks the cache to see if any of those messages match.
@@ -127,17 +137,17 @@ The following test case verifies the expected behavior.
 
 ```java
 @Test
-	void verifierOnTheFlyOutOfOrder() {
-		rabbitTemplate.convertAndSend(STREAM_APPLICATIONS_TEST_TOPIC, "#", "hello test1");
-		rabbitTemplate.convertAndSend(STREAM_APPLICATIONS_TEST_TOPIC, "#", "hello test2");
-		await().atMost(Duration.ofSeconds(30))
-				.until(payloadMatches(s -> s.equals("hello test2"), s -> s.equals("hello test1")));
+void verifierOnTheFlyOutOfOrder() {
+    testTopicSender.send(STREAM_APPLICATIONS_TEST_TOPIC, "hello test1");
+    testTopicSender.send(STREAM_APPLICATIONS_TEST_TOPIC, "hello test2");
+    await().atMost(Duration.ofSeconds(30))
+        .until(outputMatcher.payloadMatches(s -> s.equals("hello test2"), s -> s.equals("hello test1")));
 	}
 ```
-The `hello test1` MessageMacher did not exist when `hello test1` was consumed, and is rejected by the first MessageMacher,
-so it is cached and tested when the second MessageMacher is created.
+The `hello test1` MessageMatcher did not exist when `hello test1` was consumed, and is rejected by the first MessageMatcher,
+so it is cached and tested when the second MessageMatcher is created.
 
-If you need to, you can register MessageMachers in advance, in an  `@BeforeEach` method if you `@Autowire` the TestListener.
+If you need to, you can register MessageMatchers in advance, in a `@BeforeEach` method if you `@Autowire` the OutputMatcher.
 But this doesn't work for statically declared containers which are more efficient and common with TestContainers.
 
 ### Testing Stream Applications
