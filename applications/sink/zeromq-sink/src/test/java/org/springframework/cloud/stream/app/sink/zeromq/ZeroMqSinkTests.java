@@ -57,14 +57,14 @@ public class ZeroMqSinkTests {
         poller.register(socket, ZMQ.Poller.POLLIN);
 
         try (ConfigurableApplicationContext context =
-                     new SpringApplicationBuilder(
-                             TestChannelBinderConfiguration.getCompleteConfiguration(ZeroMqSourceTestApplication.class)
-                     ).run(
-                             "--logging.level.org.springframework.integration=DEBUG",
-                             "--spring.cloud.function.definition=zeromqConsumer",
-                             "--zeromq.consumer.topic='test-topic'",
-                             "--zeromq.consumer.connectUrl=tcp://localhost:" + port
-                     )
+                    new SpringApplicationBuilder(
+                            TestChannelBinderConfiguration.getCompleteConfiguration(ZeroMqSourceTestApplication.class)
+                    ).run(
+                            "--logging.level.org.springframework.integration=DEBUG",
+                            "--spring.cloud.function.definition=zeromqConsumer",
+                            "--zeromq.consumer.topic='test-topic'",
+                            "--zeromq.consumer.connectUrl=tcp://localhost:" + port
+                    )
         ) {
 
             InputDestination inputDestination = context.getBean(InputDestination.class);
