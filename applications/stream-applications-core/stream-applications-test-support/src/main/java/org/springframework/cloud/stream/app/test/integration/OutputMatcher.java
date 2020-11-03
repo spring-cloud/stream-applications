@@ -28,7 +28,8 @@ import org.springframework.messaging.Message;
 import static org.springframework.cloud.stream.app.test.integration.TestTopicListener.STREAM_APPLICATIONS_TEST_TOPIC;
 
 /**
- * Support utility for stream application integration testing .
+ * A support class, wrapping a {@link junit.framework.TestListener} for testing
+ * {@link org.springframework.cloud.stream.app.test.integration.StreamAppContainer}s.
  * @author David Turanski
  */
 public class OutputMatcher {

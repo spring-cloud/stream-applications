@@ -60,6 +60,10 @@ import static org.awaitility.Awaitility.await;
 import static org.springframework.cloud.stream.app.test.integration.AbstractTestTopicListener.STREAM_APPLICATIONS_TEST_TOPIC;
 import static org.springframework.cloud.stream.app.test.integration.kafka.KafkaConfig.kafka;
 
+/**
+ * Spring configuration for testing {@link KafkaStreamAppContainer}s.
+ * @author David Turanski
+ */
 @Configuration
 @EnableKafka
 public class KafkaStreamAppContainerTestConfiguration {

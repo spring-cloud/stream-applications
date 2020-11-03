@@ -26,6 +26,10 @@ import org.junit.platform.commons.util.AnnotationUtils;
 
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 
+/**
+ * A junit Jupiter extension used to discover {@link StreamAppContainer}s annotated with {code @BaseContainer}.
+ * @author David Turanski
+ */
 public class BaseContainerExtension implements ExecutionCondition {
 	private static StreamAppContainer baseContainer;
 

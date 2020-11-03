@@ -28,6 +28,10 @@ import org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQSt
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+/**
+ * Initializes Spring Context and support for testing RabbitMQ Stream App TestContainers.
+ * @author David Turanski
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith({ SpringExtension.class })

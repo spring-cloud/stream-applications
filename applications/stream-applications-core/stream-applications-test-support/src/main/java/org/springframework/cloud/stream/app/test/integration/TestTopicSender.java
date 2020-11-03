@@ -18,6 +18,10 @@ package org.springframework.cloud.stream.app.test.integration;
 
 import org.springframework.messaging.Message;
 
+/**
+ * Abstracts specific messaging templates.
+ * @author David Turanski
+ */
 public interface TestTopicSender {
 	<P> void send(String topic, P payload);
 

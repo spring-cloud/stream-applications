@@ -24,6 +24,10 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.messaging.Message;
 
+/**
+ * Provided to a {@link junit.framework.TestListener} to verify output messages.
+ * @author David Turanski
+ */
 public class MessageMatcher implements Predicate<Message<?>> {
 	private final Predicate<Message<?>> predicate;
 

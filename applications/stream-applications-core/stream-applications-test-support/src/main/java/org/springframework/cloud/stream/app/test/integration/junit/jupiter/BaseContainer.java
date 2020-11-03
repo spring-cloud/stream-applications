@@ -21,6 +21,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marker for a
+ * {@link org.springframework.cloud.stream.app.test.integration.StreamAppContainer}
+ * configured for Kafka or Rabbit MQ that can be injected into tests that use
+ * {code @ExtendWith(BaseContainerExtension.class}. Both the field and containing class
+ * must be public.
+ * @author David Turanski
+ */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BaseContainer {

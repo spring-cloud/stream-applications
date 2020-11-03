@@ -23,6 +23,10 @@ import org.testcontainers.utility.DockerImageName;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainerTestUtils;
 
+/**
+ * Initializes and starts a Kafka TestContainer and provides associated utilities for configuring a {@link KafkaStreamAppContainer}.
+ * @author David Turanski
+ */
 public abstract class KafkaConfig {
 	final static String BINDER = "kafka";
 

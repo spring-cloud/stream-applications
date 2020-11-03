@@ -24,6 +24,7 @@ import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
  * An implementation of
  * {@link org.springframework.cloud.stream.app.test.integration.StreamAppContainer} for
  * kafka. This provides the required broker connection properties.
+ * @author David Turanski
  */
 public class KafkaStreamAppContainer extends StreamAppContainer {
 

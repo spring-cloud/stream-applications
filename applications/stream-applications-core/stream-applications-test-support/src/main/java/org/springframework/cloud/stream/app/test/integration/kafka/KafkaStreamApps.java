@@ -23,7 +23,11 @@ import java.util.Map;
 import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.cloud.stream.app.test.integration.StreamApps;
-
+/**
+ * Configures an end to end Stream (source, processor(s), sink) using
+ * {@link org.springframework.cloud.stream.app.test.integration.kafka.KafkaStreamAppContainer}s.
+ * @author David Turanski
+ */
 public class KafkaStreamApps extends StreamApps {
 
 	protected KafkaStreamApps(GenericContainer sourceContainer, List<GenericContainer> processorContainers,

@@ -25,6 +25,11 @@ import org.springframework.cloud.stream.app.test.integration.StreamApps;
 
 import static org.springframework.cloud.stream.app.test.integration.FluentMap.fluentMap;
 
+/**
+ * Configures an end to end Stream (source, processor(s), sink) using
+ * {@link org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQStreamAppContainer}s.
+ * @author David Turanski
+ */
 public class RabbitMQStreamApps extends StreamApps {
 
 	protected RabbitMQStreamApps(GenericContainer sourceContainer, List<GenericContainer> processorContainers,

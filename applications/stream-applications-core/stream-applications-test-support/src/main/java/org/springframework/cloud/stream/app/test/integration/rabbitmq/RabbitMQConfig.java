@@ -23,6 +23,12 @@ import org.testcontainers.utility.DockerImageName;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainerTestUtils;
 
+/**
+ * Initializes and starts a RabbitMQ TestContainer and provides associated utilities for
+ * configuring a
+ * {@link org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQStreamAppContainer}.
+ * @author David Turanski
+ */
 public abstract class RabbitMQConfig {
 	/**
 	 * The RabbitMQContainer.

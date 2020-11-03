@@ -66,6 +66,10 @@ import org.springframework.util.CollectionUtils;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQConfig.rabbitmq;
 
+/**
+ * Spring configuration for testing {@link RabbitMQStreamAppContainer}s.
+ * @author David Turanski
+ */
 @Configuration
 @EnableRabbit
 public abstract class RabbitMQStreamAppContainerTestConfiguration {
