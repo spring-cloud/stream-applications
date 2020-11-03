@@ -28,12 +28,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.projectreactor</groupId>
@@ -102,33 +96,12 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/release</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>spring-libs-release</id>
-            <name>Spring Libs Release</name>
-            <url>https://repo.spring.io/libs-release</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
             <id>spring-milestone-release</id>
             <name>Spring Milestone Release</name>
             <url>https://repo.spring.io/libs-milestone</url>
         </repository>
     </repositories>
     <pluginRepositories>
-        <pluginRepository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/libs-release</url>
-        </pluginRepository>
         <pluginRepository>
             <snapshots>
                 <enabled>true</enabled>

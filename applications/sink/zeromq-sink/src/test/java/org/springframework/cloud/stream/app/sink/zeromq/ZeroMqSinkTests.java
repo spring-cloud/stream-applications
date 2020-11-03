@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.sink.zeromq;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -44,6 +45,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ZeroMqSinkTests {
 
     private static final ZContext CONTEXT = new ZContext();
+
+    @AfterAll
+    static void teardown() {
+        CONTEXT.close();
+    }
 
     @Test
     public void testSinkFromFunction() {
