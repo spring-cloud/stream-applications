@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.test.integration.kafka;
+package org.springframework.cloud.stream.app.test.integration.junit.jupiter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-@Target(ElementType.TYPE)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Testcontainers
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = KafkaStreamAppContainerTestConfiguration.class)
-public @interface KafkaStreamAppTest {
+public @interface BaseContainer {
 }

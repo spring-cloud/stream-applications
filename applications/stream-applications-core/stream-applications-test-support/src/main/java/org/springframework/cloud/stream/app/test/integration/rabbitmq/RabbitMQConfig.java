@@ -34,7 +34,7 @@ public abstract class RabbitMQConfig {
 	final static Network network = Network.SHARED;
 
 	static {
-		rabbitmq = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3"))
+		rabbitmq = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3-management"))
 				.withNetwork(network)
 				.withExposedPorts(5672, 15672);
 		rabbitmq.start();

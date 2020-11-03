@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.test.integration.rabbitmq;
+package org.springframework.cloud.stream.app.test.integration.junit.jupiter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,13 +24,14 @@ import java.lang.annotation.Target;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQStreamAppContainerTestConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Testcontainers
-@ExtendWith(SpringExtension.class)
+@ExtendWith({ SpringExtension.class })
 @ContextConfiguration(classes = RabbitMQStreamAppContainerTestConfiguration.class)
+@Testcontainers
 public @interface RabbitMQStreamAppTest {
 }

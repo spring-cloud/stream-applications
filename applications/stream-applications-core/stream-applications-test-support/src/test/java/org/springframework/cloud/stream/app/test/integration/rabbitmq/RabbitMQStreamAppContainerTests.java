@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.test.integration.rabbitmq;
 
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainerTests;
+import org.springframework.cloud.stream.app.test.integration.junit.jupiter.RabbitMQStreamAppTest;
 
 @RabbitMQStreamAppTest
 public class RabbitMQStreamAppContainerTests extends StreamAppContainerTests {

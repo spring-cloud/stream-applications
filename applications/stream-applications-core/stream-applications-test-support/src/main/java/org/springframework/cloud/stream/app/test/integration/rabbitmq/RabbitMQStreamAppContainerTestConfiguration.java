@@ -16,9 +16,11 @@
 
 package org.springframework.cloud.stream.app.test.integration.rabbitmq;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
@@ -26,6 +28,10 @@ import java.util.function.Predicate;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.rabbitmq.http.client.Client;
+import com.rabbitmq.http.client.domain.BindingInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.MessageProperties;
@@ -41,6 +47,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.amqp.support.converter.MessageConversionException;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.cloud.stream.app.test.integration.AbstractTestTopicListener;
 import org.springframework.cloud.stream.app.test.integration.MessageMatcher;
 import org.springframework.cloud.stream.app.test.integration.OutputMatcher;
@@ -55,6 +62,9 @@ import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.util.CollectionUtils;
+
+import static org.awaitility.Awaitility.await;
+import static org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQConfig.rabbitmq;
 
 @Configuration
 @EnableRabbit
@@ -90,8 +100,8 @@ public abstract class RabbitMQStreamAppContainerTestConfiguration {
 	}
 
 	@Bean
-	public TestTopicSender testTopicSender(RabbitTemplate rabbitTemplate) {
-		return new RabbitTemplateTopicSender(rabbitTemplate);
+	public TestTopicSender testTopicSender(RabbitTemplate rabbitTemplate, Client rabbitClient) {
+		return new RabbitTemplateTopicSender(rabbitTemplate, rabbitClient);
 	}
 
 	@Bean
@@ -116,9 +126,21 @@ public abstract class RabbitMQStreamAppContainerTestConfiguration {
 	}
 
 	@Bean
+	public Client rabbitClient() {
+		Client client;
+		try {
+			client = new Client("http://guest:guest@localhost:" + rabbitmq.getMappedPort(15672) + "/api");
+		}
+		catch (Exception e) {
+			throw new BeanCreationException(e.getMessage(), e);
+		}
+		return client;
+	}
+
+	@Bean
 	public ConnectionFactory connectionFactory() {
 		return new CachingConnectionFactory(StreamAppContainerTestUtils.localHostAddress(),
-				RabbitMQConfig.rabbitmq.getMappedPort(5672));
+				rabbitmq.getMappedPort(5672));
 	}
 
 	@Bean
@@ -251,22 +273,43 @@ public abstract class RabbitMQStreamAppContainerTestConfiguration {
 
 	static class RabbitTemplateTopicSender implements TestTopicSender {
 
+		private static Logger logger = LoggerFactory.getLogger(RabbitTemplateTopicSender.class);
+
 		private final RabbitTemplate rabbitTemplate;
+
+		private final Client rabbitClient;
 
 		private String routingKey = "#";
 
-		RabbitTemplateTopicSender(RabbitTemplate rabbitTemplate) {
+		RabbitTemplateTopicSender(RabbitTemplate rabbitTemplate, Client rabbitClient) {
 			this.rabbitTemplate = rabbitTemplate;
+			this.rabbitClient = rabbitClient;
 		}
 
 		@Override
 		public <P> void send(String topic, P payload) {
+			await().atMost(Duration.ofSeconds(30)).pollDelay(Duration.ofSeconds(1)).pollInterval(Duration.ofSeconds(1))
+					.until(topicExistsAndIsBound(topic));
 			rabbitTemplate.convertAndSend(topic, routingKey, payload);
 		}
 
 		@Override
 		public void send(String topic, Message<?> message) {
+			throw new UnsupportedOperationException("send(String, Message<?>) is not implemented.");
+		}
 
+		private Callable<Boolean> topicExistsAndIsBound(String topic) {
+			return () -> {
+				List<BindingInfo> bindings = rabbitClient.getBindingsBySource("/", topic);
+				if (bindings.isEmpty()) {
+					logger.warn("Exchange {} does not exist or has no bindings", topic);
+					return false;
+				}
+				bindings.forEach(
+						b -> logger.debug("Exchange {} is bound to destination {} type {} routing key {}", topic,
+								b.getSource(), b.getDestination(), b.getRoutingKey()));
+				return true;
+			};
 		}
 
 		public void setRoutingKey(@NonNull String routingKey) {
