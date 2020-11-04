@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.stream.app.test.integration.kafka;
 
-import org.testcontainers.containers.GenericContainer;
-
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 
 /**
@@ -30,10 +28,9 @@ public class KafkaStreamAppContainer extends StreamAppContainer {
 
 	/**
 	 * @param imageName the image name.
-	 * @param kafka a running kafka TestContainer instance.
 	 */
-	public KafkaStreamAppContainer(String imageName, GenericContainer kafka) {
-		super(imageName, kafka);
+	public KafkaStreamAppContainer(String imageName) {
+		super(imageName, KafkaConfig.kafka);
 	}
 
 	@Override

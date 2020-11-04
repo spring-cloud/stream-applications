@@ -32,9 +32,9 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * The base class used for testing end-to-end Stream applications.
- * @see {@link org.springframework.cloud.stream.app.test.integration.kafka.KafkaStreamApps},
- * {@link org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQStreamApps}.
  * @author David Turanski
+ * @see org.springframework.cloud.stream.app.test.integration.kafka.KafkaStreamApps
+ * @see org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQStreamApps
  */
 public abstract class StreamApps implements AutoCloseable, Startable {
 

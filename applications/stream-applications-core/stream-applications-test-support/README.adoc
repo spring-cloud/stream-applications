@@ -110,8 +110,8 @@ public class KafkaTimeSourceTests {
     private OutputMatcher outputMatcher;
 
 	@Container
-	static StreamAppContainer timeSource = KafkaConfig.prepackagedContainerFor("time-source", VERSION)
-			.withLogConsumer(logMatcher);
+	static StreamAppContainer source = new KafkaStreamAppContainer(StreamAppContainerTestUtils
+			.imageName(StreamAppContainerTestUtils.SPRINGCLOUDSTREAM_REPOSITOTRY, "time-source-kafka", VERSION));
 	@Test
 	void test() {
 		await().atMost(DEFAULT_DURATION).until(logMatcher.matches());
@@ -122,7 +122,6 @@ public class KafkaTimeSourceTests {
 
 We start an ApplicationContext `KafkaStreamAppContainerTestConfiguration` which starts the `KafkaConfig.kafka` TestContainer in a static initializer.
 The Time Source emits the time every second. In this case, it's hard to know what the expected output payload is, but it should at least match the date pattern.
-This test also uses a `LogMatcher`, which is not strictly necessary, but used here to verify that the app logged the standard start up message - always a good sign.
 Then we wait for a message on the output topic that matches the pattern.
 
 
@@ -159,27 +158,35 @@ This realizes the concepts of `source`, `processor`, and `sink` , and similar Sp
 Here is a test for the canonical `TikTok` stream:
 
 ```java
-public class RabbitMQTikTokTests extends RabbitMQStreamApplicationIntegrationTestSupport {
+@RabbitMQStreamAppTest
+public class RabbitTikTokTests {
 
 	private static LogMatcher logMatcher = LogMatcher.matchesRegex(".*\\d{2}/\\d{2}/\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}")
 			.times(3);
 
 	@Container
-	private static final StreamApps streamApp = rabbitMQStreamApps(RabbitMQTikTokTests.class.getSimpleName(), rabbitmq)
-			.withSourceContainer(prepackagedRabbitMQContainerFor("time-source", VERSION))
-			.withSinkContainer(prepackagedRabbitMQContainerFor("log-sink", VERSION)
-					.withLogConsumer(logMatcher))
-			.build();
+	private static final StreamApps streamApp = kafkaStreamApps(KafkaTikTokTests.class.getSimpleName(),
+			KafkaConfig.kafka)
+					.withSourceContainer(
+							new RabbitMQStreamAppContainer(StreamAppContainerTestUtils.imageName(
+									"time-source-rabbit",
+									VERSION)))
+					.withSinkContainer(
+							new RabbitMQStreamAppContainer(StreamAppContainerTestUtils.imageName(
+									"log-sink-rabbit",
+									VERSION)).withLogConsumer(logMatcher)
+											.log())
+					.build();
 
 	@Test
 	void test() {
 		await().atMost(DEFAULT_DURATION).until(logMatcher.matches());
 	}
+}
 ```
 
-Here, the link:src/main/java/org/springframework/cloud/stream/app/test/integration/LogMatcher.java[LogMatcher] can be declared statically since it doesn't depend on Spring beans.
-This is an extension of TestContainer's `LogConsumer` so it is created before the container starts. Here, we
-verify the LogSink logs at least 3 messages that match the pattern.
+Here, the link:src/main/java/org/springframework/cloud/stream/app/test/integration/LogMatcher.java[LogMatcher].
+This is an extension of TestContainer's `LogConsumer`. Here, we verify the LogSink logs at least 3 messages that match the pattern.
 
 link:src/main/java/org/springframework/cloud/stream/app/test/integration/AppLog.java[AppLog] is also another useful LogConsumer
 to enable container logging.

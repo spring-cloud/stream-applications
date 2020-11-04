@@ -94,7 +94,7 @@ public abstract class StreamAppContainer extends GenericContainer<StreamAppConta
 	/**
 	 * Assign a destination name to the standard input.
 	 * @param destination the destination name.
-	 * @return
+	 * @return this.
 	 */
 	public StreamAppContainer withInputDestination(String destination) {
 		Assert.hasText(destination, "'destination' is required.");

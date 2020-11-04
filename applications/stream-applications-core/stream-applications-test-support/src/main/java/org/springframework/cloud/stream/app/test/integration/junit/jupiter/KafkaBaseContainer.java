@@ -17,50 +17,34 @@
 package org.springframework.cloud.stream.app.test.integration.junit.jupiter;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.function.Supplier;
 
+import org.springframework.core.annotation.AliasFor;
+
 import static org.springframework.cloud.stream.app.test.integration.StreamAppContainerTestUtils.SPRINGCLOUDSTREAM_REPOSITOTRY;
 
 /**
- * Marker for a
- * {@link org.springframework.cloud.stream.app.test.integration.StreamAppContainer}
- * configured for Kafka or Rabbit MQ that can be injected into tests that use
- * {code @ExtendWith(BaseContainerExtension.class}. Both the field and containing class
- * must be public.
+ * Annotation For configuring a {@link org.springframework.cloud.stream.app.test.integration.kafka.KafkaStreamAppContainer}.
  * @author David Turanski
+ * @see org.springframework.cloud.stream.app.test.integration.junit.jupiter.BaseContainer
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
-public @interface BaseContainer {
+@BaseContainer(binder = Binder.Kafka)
+public @interface KafkaBaseContainer {
 
-	/**
-	 * @return the version or image tag.
-	 */
+	@AliasFor(annotation = BaseContainer.class)
 	String version() default "";
 
-	/**
-	 * @return A {@code Class<? extends Supplier<String>>} used to set the version
-	 * dynamically.
-	 */
+	@AliasFor(annotation = BaseContainer.class)
 	Class<? extends Supplier<String>> versionSupplier() default NullVersionSupplier.class;
 
-	/**
-	 * @return the image name.
-	 */
+	@AliasFor(annotation = BaseContainer.class)
 	String name() default "";
 
-	/**
-	 * @return the type of Spring Cloud Stream binder used by the application.
-	 */
-	Binder binder();
-
-	/**
-	 * @return the Docker repository name of the image.
-	 */
+	@AliasFor(annotation = BaseContainer.class)
 	String repository() default SPRINGCLOUDSTREAM_REPOSITOTRY;
 }

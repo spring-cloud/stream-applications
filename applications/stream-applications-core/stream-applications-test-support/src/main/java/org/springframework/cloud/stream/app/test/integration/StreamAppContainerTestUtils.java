@@ -31,12 +31,16 @@ import org.springframework.util.SocketUtils;
 public abstract class StreamAppContainerTestUtils {
 
 	/**
-	 * Default docker org.
+	 * Default docker repository.
 	 */
-	public static String DOCKER_ORG = "springcloudstream";
+	public static final String SPRINGCLOUDSTREAM_REPOSITOTRY = "springcloudstream";
 
-	public static final String prePackagedStreamAppImageName(String appName, String binderName, String version) {
-		return DOCKER_ORG + "/" + appName + "-" + binderName + ":" + version;
+	public static final String imageName(String appName, String version) {
+		return imageName(SPRINGCLOUDSTREAM_REPOSITOTRY, appName, version);
+	}
+
+	public static final String imageName(String repository, String appName, String version) {
+		return repository + "/" + appName + ":" + version;
 	}
 
 	public static final String localHostAddress() {

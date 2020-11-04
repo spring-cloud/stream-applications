@@ -14,28 +14,20 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.test.integration.rabbitmq;
-
-import org.testcontainers.containers.Network;
-import org.testcontainers.containers.RabbitMQContainer;
-import org.testcontainers.utility.DockerImageName;
+package org.springframework.cloud.stream.app.test.integration.junit.jupiter;
 
 /**
- * Initializes and starts a {@link RabbitMQContainer}.
+ * Supported Spring Cloud Stream binder types.
  * @author David Turanski
  */
-public abstract class RabbitMQConfig {
+public enum Binder {
 	/**
-	 * The RabbitMQContainer.
+	 * Kafka Binder.
 	 */
-	public static RabbitMQContainer rabbitmq;
+	Kafka,
 
-	final static Network network = Network.SHARED;
-
-	static {
-		rabbitmq = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3-management"))
-				.withNetwork(network)
-				.withExposedPorts(5672, 15672);
-		rabbitmq.start();
-	}
+	/**
+	 * RabbitMQ Binder.
+	 */
+	RabbitMQ,
 }

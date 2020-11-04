@@ -14,28 +14,18 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.test.integration.rabbitmq;
+package org.springframework.cloud.stream.app.test.integration.junit.jupiter;
 
-import org.testcontainers.containers.Network;
-import org.testcontainers.containers.RabbitMQContainer;
-import org.testcontainers.utility.DockerImageName;
+import java.util.function.Supplier;
 
 /**
- * Initializes and starts a {@link RabbitMQContainer}.
+ * A placeHolder for {@link org.springframework.cloud.stream.app.test.integration.junit.jupiter.BaseContainer}
+ * indicating no "versionSupplier" has been set.
  * @author David Turanski
  */
-public abstract class RabbitMQConfig {
-	/**
-	 * The RabbitMQContainer.
-	 */
-	public static RabbitMQContainer rabbitmq;
-
-	final static Network network = Network.SHARED;
-
-	static {
-		rabbitmq = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3-management"))
-				.withNetwork(network)
-				.withExposedPorts(5672, 15672);
-		rabbitmq.start();
+class NullVersionSupplier implements Supplier<String> {
+	@Override
+	public String get() {
+		return null;
 	}
 }

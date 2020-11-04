@@ -20,23 +20,13 @@ import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.utility.DockerImageName;
 
-import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
-import org.springframework.cloud.stream.app.test.integration.StreamAppContainerTestUtils;
-
 /**
- * Initializes and starts a Kafka TestContainer and provides associated utilities for configuring a {@link KafkaStreamAppContainer}.
+ * Initializes and starts a {@link KafkaContainer}.
  * @author David Turanski
  */
 public abstract class KafkaConfig {
-	final static String BINDER = "kafka";
 
 	final static Network network = Network.SHARED;
-
-	public static StreamAppContainer prepackagedContainerFor(String appName, String version) {
-		return new KafkaStreamAppContainer(
-				StreamAppContainerTestUtils.prePackagedStreamAppImageName(appName, BINDER, version),
-				kafka);
-	}
 
 	/**
 	 * The KafkaContainer.

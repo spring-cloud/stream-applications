@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.stream.app.test.integration.rabbitmq;
 
-import org.testcontainers.containers.GenericContainer;
-
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 
 /**
@@ -30,10 +28,10 @@ public class RabbitMQStreamAppContainer extends StreamAppContainer {
 
 	/**
 	 * @param imageName the image name.
-	 * @param rabbitmq a running rabbitMQ TestContainer instance.
 	 */
-	public RabbitMQStreamAppContainer(String imageName, GenericContainer rabbitmq) {
-		super(imageName, rabbitmq);
+	public RabbitMQStreamAppContainer(String imageName) {
+
+		super(imageName, RabbitMQConfig.rabbitmq);
 	}
 
 	@Override
