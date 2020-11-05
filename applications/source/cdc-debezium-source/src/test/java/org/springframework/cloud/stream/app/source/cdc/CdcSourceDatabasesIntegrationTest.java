@@ -16,25 +16,23 @@
 
 package org.springframework.cloud.stream.app.source.cdc;
 
-import java.time.Duration;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.stream.app.test.integration.LogMatcher;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.messaging.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.receiveAll;
 
 /**
@@ -74,7 +72,6 @@ public class CdcSourceDatabasesIntegrationTest extends CdcTestSupport {
 
 	@Test
 	public void sqlServer() {
-		LogMatcher logMatcher = LogMatcher.contains("(1 rows affected)").times(26);
 		GenericContainer sqlServer = new GenericContainer(new ImageFromDockerfile()
 				.withFileFromClasspath("Dockerfile", "sqlserver/Dockerfile")
 				.withFileFromClasspath("import-data.sh", "sqlserver/import-data.sh")
@@ -86,9 +83,7 @@ public class CdcSourceDatabasesIntegrationTest extends CdcTestSupport {
 						.withEnv("MSSQL_AGENT_ENABLED", "true")
 						.withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("sqlServer")))
 						.withExposedPorts(1433);
-		sqlServer.start();
-		assertThat(sqlServer.isRunning());
-		await().atMost(Duration.ofSeconds(60)).until(logMatcher.matches());
+		sqlServer.waitingFor(Wait.forLogMessage(".*(1 rows affected).*", 26)).start();
 
 		try (ConfigurableApplicationContext context = applicationBuilder
 				.run("--cdc.connector=sqlserver",
