@@ -17,7 +17,7 @@
 
     <properties>
         <spring-cloud-starters.version>2.2.0.RELEASE</spring-cloud-starters.version>
-        <embedded-redis.version>1.48</embedded-redis.version>
+        <embedded-redis.version>1.85</embedded-redis.version>
     </properties>
 
     <dependencies>
