@@ -87,7 +87,7 @@ public class WebsocketSinkTests {
 		for (int i = 0; i < messageCount; i++) {
 			String message = "message_" + i;
 			messagesToSend.add(message);
-			inputDestination.send(MessageBuilder.withPayload(message.getBytes()).build());
+			inputDestination.send(MessageBuilder.withPayload(message).build());
 		}
 		return messagesToSend;
 	}
