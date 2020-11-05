@@ -124,7 +124,7 @@ public class CdcDeleteHandlingIntegrationTest extends CdcTestSupport {
 		}
 
 		if (!isDropTombstones && isKafkaPresent) {
-			received = outputDestination.receive(Duration.ofSeconds(10000).toMillis());
+			received = outputDestination.receive(Duration.ofSeconds(10).toMillis());
 			assertThat(received).isNotNull();
 			// Tombstones event should have KafkaNull payload
 			assertThat(received.getPayload().getClass().getCanonicalName())
@@ -135,7 +135,7 @@ public class CdcDeleteHandlingIntegrationTest extends CdcTestSupport {
 			assertThat(key).isEqualTo("{\"id\":" + newRecordId + "}");
 		}
 
-		received = outputDestination.receive(Duration.ofSeconds(10).toMillis());
+		received = outputDestination.receive(Duration.ofSeconds(1).toMillis());
 		assertThat(received).isNull();
 	};
 }
