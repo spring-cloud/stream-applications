@@ -19,23 +19,27 @@ package org.springframework.cloud.fn.supplier.mail;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.integration.dsl.StandardIntegrationFlow;
+import org.springframework.integration.test.context.SpringIntegrationTest;
 import org.springframework.integration.test.mail.TestMailServer;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
-		properties = {
-				"mail.supplier.mark-as-read=true",
-				"mail.supplier.delete=false",
-				"mail.supplier.user-flag=testSIUserFlag",
-				"mail.supplier.java-mail-properties=mail.imap.socketFactory.fallback=true\\n mail.store.protocol=imap\\n mail.debug=true"})
+@SpringIntegrationTest(noAutoStartup = "*")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {
+		"mail.supplier.mark-as-read=true",
+		"mail.supplier.delete=false",
+		"mail.supplier.user-flag=testSIUserFlag",
+		"mail.supplier.java-mail-properties=mail.imap.socketFactory.fallback=true\\n mail.store.protocol=imap\\n mail.debug=true" })
 @DirtiesContext
 public class AbstractMailSupplierTests {
 
@@ -43,6 +47,9 @@ public class AbstractMailSupplierTests {
 
 	@Autowired
 	protected Supplier<Flux<Message<?>>> mailSupplier;
+
+	@Autowired
+	private StandardIntegrationFlow integrationFlow;
 
 	protected static void startMailServer(TestMailServer.MailServer mailServer)
 			throws InterruptedException {
@@ -55,12 +62,20 @@ public class AbstractMailSupplierTests {
 		assertThat(n < 100).isTrue();
 	}
 
+	@BeforeEach
+	void start() {
+		integrationFlow.start();
+	}
+
+	@AfterEach
+	void stop() {
+		integrationFlow.stop();
+	}
+
 	@AfterAll
 	public static void cleanup() {
 		System.clearProperty("test.mail.server.port");
-		MAIL_SERVER.stop();
 	}
-
 
 	@SpringBootApplication
 	public static class MailSupplierTestApplication {
