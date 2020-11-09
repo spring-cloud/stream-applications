@@ -67,12 +67,6 @@
                             </dependencies>
                         </maven>
                     </application>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.cloud.fn</groupId>
-                            <artifactId>websocket-consumer</artifactId>
-                        </dependency>
-                    </dependencies>
                 </configuration>
             </plugin>
         </plugins>
