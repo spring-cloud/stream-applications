@@ -2,19 +2,17 @@
 
 In this repository, you will find a collection of components that can meet various data integration use cases and requirements.
 
-The repository's primary focus is to provide a set of standalone Java functions that can be useful in the end-user
-applications as-is.
+The repository's primary focus is to provide a set of standalone Java functions that can be useful in the end-user applications as-is.
 
-Besides, this repository builds on the Java functions to generate standalone Spring Cloud Stream applications that can run
-against Spring Cloud Stream's RabbitMQ or Apache Kafka binder implementations. It is also possible to extend the generator
-to bundle the Java functions with the other supported binder implementations.
+Besides, this repository builds on the Java functions to generate standalone Spring Cloud Stream applications that can run against Spring Cloud Stream's RabbitMQ or Apache Kafka binder implementations.
+It is also possible to extend the generator to bundle the Java functions with the other supported binder implementations.
 
 These applications can run standalone or as part of a data flow, such as the one orchestrated using Spring Cloud Data Flow.
 
 === Project Structure
 
-The repository includes two sections - `Functions` and `Applications`. The former hosts the various Java functions, and
-the latter is for generating the standalone Spring Cloud Stream applications.
+The repository includes two sections - `Functions` and `Applications`.
+The former hosts the various Java functions, and the latter is for generating the standalone Spring Cloud Stream applications.
 
 The following are the four major components of this repository.
 
@@ -161,6 +159,13 @@ The following are the four major components of this repository.
 
 You can build everything from the root of the repository.
 
+NOTE: The build depends on the global property `${revision}` to configure the current project version.
+This value is resolved with the `maven-flatten-plugin`.
+Because of this, you need to install some core poms in the local maven repository before running a build command.
+To perform this necessary step, run `setup-build.sh`.
+
+`./setup-build.sh`
+
 `./mvnw clean install`
 
 However, this may not be what you are interested in since you are probably interested in a single application or a few of them.
@@ -184,8 +189,7 @@ If you want to re-run the common core build, you can build it with the following
 
 === Building Stream Applications
 
-Let's assume that you want to build a `jdbc-source` application based on Kafka Binder in Spring Cloud Stream and Log Sink
-application based on Rabbit binder.
+Let's assume that you want to build a `jdbc-source` application based on Kafka Binder in Spring Cloud Stream and Log Sink application based on Rabbit binder.
 
 Here is what you need to do.
 Assuming that you already built both functions and stream-applications-core as above,
