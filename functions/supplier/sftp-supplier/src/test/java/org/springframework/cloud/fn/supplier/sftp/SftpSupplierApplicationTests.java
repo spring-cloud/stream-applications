@@ -92,7 +92,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 										.isEqualTo(MediaType.TEXT_PLAIN);
 							})
 							.expectTimeout(Duration.ofMillis(1000))
-							.verify(Duration.ofSeconds(10));
+							.verify(Duration.ofSeconds(30));
 
 				});
 	}
@@ -113,7 +113,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 								assertThat(expectedFileName.get()).contains(message.getPayload());
 							})
 							.expectTimeout(Duration.ofMillis(1000))
-							.verify(Duration.ofSeconds(10));
+							.verify(Duration.ofSeconds(30));
 
 				});
 	}
@@ -142,7 +142,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 							.expectNextMatches(
 									message -> expectedFileNames.get().contains(message.getPayload().getAbsolutePath()))
 							.thenCancel()
-							.verify(Duration.ofSeconds(10));
+							.verify(Duration.ofSeconds(30));
 
 					assertThat(metadataStore.get("sftpSource/sftpSource1.txt")).isNotNull();
 					assertThat(metadataStore.get("sftpSource/sftpSource2.txt")).isNotNull();
@@ -166,8 +166,8 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 							.expectNextMatches(message -> message.getPayload().length > 0)
 							.expectNextMatches(message -> message.getPayload().length > 0)
 							.thenCancel()
-							.verify(Duration.ofSeconds(10));
-					await().atMost(Duration.ofSeconds(10))
+							.verify(Duration.ofSeconds(30));
+					await().atMost(Duration.ofSeconds(30))
 							.until(() -> getSourceRemoteDirectory().list().length == 0);
 				});
 
@@ -210,7 +210,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 								}
 							})
 							.thenCancel()
-							.verify(Duration.ofSeconds(10));
+							.verify(Duration.ofSeconds(30));
 				});
 	}
 
@@ -257,7 +257,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 								.expectNextMatches(message -> expectedContentsOfAllFiles.get()
 										.contains(new String(message.getPayload())))
 								.thenCancel()
-								.verify(Duration.ofSeconds(10));
+								.verify(Duration.ofSeconds(30));
 					});
 		}
 		finally {
