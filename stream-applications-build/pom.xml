@@ -41,7 +41,7 @@
 		<disable.nohttp.checks>true</disable.nohttp.checks>
 		<spring-javaformat-checkstyle.version>0.0.7</spring-javaformat-checkstyle.version>
 		<spring-boot.version>2.3.6.RELEASE</spring-boot.version>
-		<spring-kafka.version>2.5.8</spring-kafka.version>
+		<spring-kafka.version>2.5.8.RELEASE</spring-kafka.version>
 		<spring-rabbit.version>2.2.12.RELEASE</spring-rabbit.version>
 		<spring-cloud-function.version>3.0.11.RELEASE</spring-cloud-function.version>
 		<spring-integration-dependencies.version>5.3.4.RELEASE</spring-integration-dependencies.version>

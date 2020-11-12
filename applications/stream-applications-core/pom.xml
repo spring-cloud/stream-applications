@@ -27,6 +27,7 @@
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.0-M2</spring-cloud-dataflow-apps-docs-plugin.version>
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
         <prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
+        <spring-kafka.version>2.5.8.RELEASE</spring-kafka.version>
     </properties>
 
     <modules>
