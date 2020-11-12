@@ -15,10 +15,10 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<spring-boot.version>2.3.4.RELEASE</spring-boot.version>
-		<spring-cloud-function.version>3.0.9.RELEASE</spring-cloud-function.version>
+		<spring-boot.version>2.3.6.RELEASE</spring-boot.version>
+		<spring-cloud-function.version>3.0.11.RELEASE</spring-cloud-function.version>
 		<spring-cloud-fn.version>${project.version}</spring-cloud-fn.version>
-		<spring-integration-dependencies.version>5.3.3.BUILD-SNAPSHOT</spring-integration-dependencies.version>
+		<spring-integration-dependencies.version>5.3.4.RELEASE</spring-integration-dependencies.version>
 	</properties>
 
 	<dependencies>
