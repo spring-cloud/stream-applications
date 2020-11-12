@@ -11,20 +11,20 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-build</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-M4</version>
         <relativePath/>
     </parent>
 
     <properties>
-        <revision>3.0.0-SNAPSHOT</revision>
+        <revision>3.0.0-M4</revision>
         <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
 		<mockserver.version>5.10</mockserver.version>
         <stream-apps-core.version>${revision}</stream-apps-core.version>
-        <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
-        <spring-cloud-stream-dependencies.version>Horsham.BUILD-SNAPSHOT</spring-cloud-stream-dependencies.version>
-        <spring-cloud-stream.version>3.0.9.BUILD-SNAPSHOT</spring-cloud-stream.version>
-        <spring-cloud-dataflow-apps-generator-plugin.version>1.0.0-SNAPSHOT</spring-cloud-dataflow-apps-generator-plugin.version>
-        <spring-cloud-dataflow-apps-docs-plugin.version>1.0.0-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
+        <java-functions.version>1.0.0-M4</java-functions.version>
+        <spring-cloud-stream-dependencies.version>Horsham.SR9</spring-cloud-stream-dependencies.version>
+        <spring-cloud-stream.version>3.0.9.SR9</spring-cloud-stream.version>
+        <spring-cloud-dataflow-apps-generator-plugin.version>1.0.0-M2</spring-cloud-dataflow-apps-generator-plugin.version>
+        <spring-cloud-dataflow-apps-docs-plugin.version>1.0.0-M2</spring-cloud-dataflow-apps-docs-plugin.version>
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
         <prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
     </properties>
@@ -141,7 +141,7 @@
                                     <management.metrics.tags.application.guid>"${spring.cloud.application.guid:unknown}"</management.metrics.tags.application.guid>
                                 </properties>
                                 <metadata>
-                                    <mavenPluginVersion>1.0.0-M1</mavenPluginVersion>
+                                    <mavenPluginVersion>1.0.0-M2</mavenPluginVersion>
                                 </metadata>
                                 <maven>
                                     <dependencyManagement>
