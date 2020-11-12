@@ -230,6 +230,11 @@ echo "Running version check"
 VERSION=$( sed '\!<parent!,\!</parent!d' `dirname $0`/pom.xml | grep '<version' | head -1 | sed -e 's/.*<version>//' -e 's!</version>.*$!!' )
 echo "The found version is [${VERSION}]"
 
+if echo $VERSION | egrep -q 'revision'; then
+    VERSION=$( sed '\!<parent!,\!</parent!d' `dirname $0`/pom.xml | grep '<revision' | head -1 | sed -e 's/.*<revision>//' -e 's!</revision>.*$!!' )
+    echo "The found version is [${VERSION}]"
+fi
+
 if echo $VERSION | egrep -q 'M|RC'; then
     echo Activating \"milestone\" profile for version=\"$VERSION\"
     echo $MAVEN_ARGS | grep -q milestone || MAVEN_ARGS="$MAVEN_ARGS -Pmilestone"
