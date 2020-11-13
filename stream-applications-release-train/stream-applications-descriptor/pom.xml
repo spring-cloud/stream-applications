@@ -89,6 +89,8 @@
                 "${cassandra-sink.version}".contains('SNAPSHOT') ? 'latest' : "${cassandra-sink.version}"
         pom.properties['analytics-sink-docker.tag']=
                 "${analytics-sink.version}".contains('SNAPSHOT') ? 'latest' : "${analytics-sink.version}"
+        pom.properties['elasticsearch-sink-docker.tag']=
+                "${elasticsearch-sink.version}".contains('SNAPSHOT') ? 'latest' : "${elasticsearch-sink.version}"
         pom.properties['wavefront-sink-docker.tag']=
                 "${wavefront-sink.version}".contains('SNAPSHOT') ? 'latest' : "${wavefront-sink.version}"
         pom.properties['file-sink-docker.tag']=

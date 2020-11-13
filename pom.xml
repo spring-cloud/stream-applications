@@ -13,6 +13,6 @@
         <module>stream-applications-build</module>
         <module>functions</module>
         <module>applications</module>
-        <module>release-train</module>
+        <module>stream-applications-release-train</module>
 	</modules>
 </project>
