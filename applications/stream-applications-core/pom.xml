@@ -11,12 +11,12 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-build</artifactId>
-        <version>1.0.0-M4</version>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <properties>
-        <revision>3.0.0-M4</revision>
+        <revision>3.0.0-SNAPSHOT</revision>
         <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
 		<mockserver.version>5.10</mockserver.version>
         <stream-apps-core.version>${revision}</stream-apps-core.version>
@@ -27,7 +27,6 @@
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.0-M2</spring-cloud-dataflow-apps-docs-plugin.version>
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
         <prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
-        <spring-kafka.version>2.5.8.RELEASE</spring-kafka.version>
     </properties>
 
     <modules>
