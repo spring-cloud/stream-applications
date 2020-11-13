@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream-test-support-internal</artifactId>
-			<version>${spring-cloud-stream.version}</version>
+			<version>3.0.9.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
