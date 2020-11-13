@@ -6,12 +6,12 @@
     <artifactId>header-enricher-processor</artifactId>
     <name>header-enricher-processor</name>
     <description>header-enricher processor apps</description>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0-M4</version>
 
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.0-M4</version>
         <relativePath/>
     </parent>
 
