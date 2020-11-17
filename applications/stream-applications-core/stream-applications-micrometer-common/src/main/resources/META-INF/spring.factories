@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.springframework.cloud.stream.app.micrometer.common.CloudFoundryMicrometerCommonTags
+org.springframework.cloud.stream.app.micrometer.common.CloudFoundryMicrometerCommonTags, \
+org.springframework.cloud.stream.app.micrometer.common.IntegrationMetricsAutoConfiguration
