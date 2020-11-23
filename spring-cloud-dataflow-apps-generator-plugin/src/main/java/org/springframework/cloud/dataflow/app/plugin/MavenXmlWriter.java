@@ -71,7 +71,7 @@ public final class MavenXmlWriter {
 	 *   <plugin>
 	 *     <groupId>com.google.cloud.tools</groupId>
 	 *     <artifactId>jib-maven-plugin</artifactId>
-	 *     <version>2.0.0</version>
+	 *     <version>2.6.0</version>
 	 *     <configuration>
 	 *       <![CDATA[
 	 *         <from><image>springcloud/baseimage:1.0.0</image></from>
