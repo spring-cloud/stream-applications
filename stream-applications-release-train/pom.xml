@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.0-RC1</version>
         <relativePath>../applications/stream-applications-core/pom.xml</relativePath>
     </parent>
 
@@ -19,8 +19,8 @@
     </modules>
 
     <properties>
-        <revision>2020.0.0-SNAPSHOT</revision>
-        <apps.version>3.0.0-SNAPSHOT</apps.version>
+        <revision>2020.0.0-RC1</revision>
+        <apps.version>3.0.0-RC1</apps.version>
         <cdc-debezium-source.version>${apps.version}</cdc-debezium-source.version>
         <file-source.version>${apps.version}</file-source.version>
         <ftp-source.version>${apps.version}</ftp-source.version>
