@@ -23,9 +23,9 @@
         <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
         <spring-cloud-stream-dependencies.version>Horsham.SR10</spring-cloud-stream-dependencies.version>
         <spring-cloud-stream.version>3.0.10.RELEASE</spring-cloud-stream.version>
-        <spring-cloud-dataflow-apps-generator-plugin.version>1.0.0-SNAPSHOT</spring-cloud-dataflow-apps-generator-plugin.version>
-        <spring-cloud-dataflow-apps-docs-plugin.version>1.0.0-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
-        <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.0-SNAPSHOT</spring-cloud-dataflow-apps-metadata-plugin.version>
+        <spring-cloud-dataflow-apps-generator-plugin.version>1.0.0-RC1</spring-cloud-dataflow-apps-generator-plugin.version>
+        <spring-cloud-dataflow-apps-docs-plugin.version>1.0.0-RC1</spring-cloud-dataflow-apps-docs-plugin.version>
+        <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.0-RC1</spring-cloud-dataflow-apps-metadata-plugin.version>
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
         <prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
     </properties>
