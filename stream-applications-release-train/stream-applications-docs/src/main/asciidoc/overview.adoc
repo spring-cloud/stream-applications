@@ -9,7 +9,7 @@ These Spring Cloud Stream Applications provide you with out-of-the-box Spring Cl
 * Adapters for various network protocols.
 * Generic processors that you can customize with https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html[Spring Expression Language (SpEL)] or by scripting.
 
-You can find a detailed listing of all the applications and their options in the <<starters,corresponding>> section of this guide.
+You can find a detailed listing of all the applications and their options in the following sections of this guide.
 
 Most of these applications are based on core elements that are exposed as a `java.util.function` component.
 You can learn more about these foundational elements and how they are all connected to the applications by reading this https://github.com/spring-cloud/stream-applications/blob/master/README.adoc[README].
@@ -21,7 +21,7 @@ These https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/ge
 For each function application, the project provides a prebuilt version for Apache Kafka and Rabbit MQ Binders.
 
 [NOTE]
-Prebuilt applications are generated according to the https://github.com/spring-cloud/spring-cloud-app-starters-maven-plugins/tree/master/spring-cloud-stream-app-maven-plugin[stream apps generator Maven plugin].
+Prebuilt applications are generated according to the https://github.com/spring-cloud/spring-cloud-dataflow-apps-plugin/tree/master/spring-cloud-dataflow-apps-generator-plugin[stream apps generator Maven plugin].
 
 [[classification]]
 == Classification
@@ -42,7 +42,7 @@ Prebuilt applications are available as Maven artifacts.
 You can download the executable jar artifacts from the Spring Maven repositories.
 The root directory of the Maven repository that hosts release versions is https://repo.spring.io/release/org/springframework/cloud/stream/app/.
 From there, you can navigate to the latest released version of a specific app.
-You need to use the link:https://repo.spring.io/release/org/springframework/cloud/stream/app[Release], link:https://repo.spring.io/milestone/org/springframework/cloud/stream/app[Milestone] and link:https://repo.spring.io/snapshot/org/springframework/cloud/stream/app[Snapshot] repository locations for Release, Milestone and Snapshot executable jar artifacts.
+You need to use the link:https://repo.spring.io/release/org/springframework/cloud/stream/app[Release], link:https://repo.spring.io/milestone/org/springframework/cloud/stream/app[Milestone] and link:https://repo.spring.io/snapshot/org/springframework/cloud/stream/app[Snapshot] repository locations for Release, Milestone and Snapshot executable jar artifacts respectively.
 
 === Docker Access
 
@@ -64,8 +64,18 @@ You can build everything from the root of the repository.
 
 `./mvnw clean install`
 
-But, this may not be what you are interested in doing since you are probably interested in a single application or a few of them.
+This is a long build and you may want to skip tests:
+
+`./mvnw clean install -DskipTests`
+
+However, this may not be what you are interested in doing since you are probably interested in a single application or a few of them.
 In order to build the functions and applications that you are interested in, you need to build them selectively as shown below.
+
+=== Building the root parent
+
+First, we need to build the parent used in various components.
+
+`./mvnw clean install -f stream-applications-build`
 
 ==== Building functions
 
@@ -84,7 +94,7 @@ For e.g if you are only interested in jdbc-supplier and log-consumer, do the fol
 
 Let's assume that you want to build JDBC Source application based on Kafka Binder in Spring Cloud Stream and Log Sink application based on Rabbit binder.
 Here is what you need to do.
-Assuming that you built both functions and stream-applications-core as above.
+Assuming you built both functions and stream-applications-core as above.
 
 ```
 ./mvnw clean package -pl :jdbc-source
@@ -101,13 +111,16 @@ Similarly for the log sink, do the following.
 cd applications/sink/log-sink/apps/log-sink-rabbit
 ./mvnw clean package
 ```
+
 == Patching Pre-built Applications
+
+=== Adding new dependencies
 
 If you are looking to patch the pre-built applications to accommodate the addition of new dependencies, you can use the following example as the reference.
 To add `mysql` driver to `jdbc-sink` application:
 
 1. Clone the GitHub repository at https://github.com/spring-cloud/stream-applications
-2.  Find the module that you want to patch and add the additional dependencies, `jdbc-sink` in this case. For example, you can add the following mysql dependency to the application generator plugin's configuration in the pom.xml:
+2. Find the module that you want to patch and add the additional dependencies, `jdbc-sink` in this case. For example, you can add the following mysql dependency to the application generator plugin's configuration in the pom.xml:
 
 ```
 <dependency>
@@ -155,8 +168,62 @@ In order to build the app with the binder flavor that you are interested in, you
 
 ```
 cd applications/sink/jdbc-sink
-cd jdbc-sink-kafka (or Rabbit if you are interested in that)
+cd apps/jdbc-sink-kafka (or Rabbit if you are interested in that)
 ./mvnw clean package
 cd target
 ```
+
 There you will find the binder based uber jar with your changes.
+
+=== Update existing dependencies or add new resources in the application
+
+Modifying the plugin as above work when there are new dependencies to add to the application.
+However, when we need to update any existing dependencies, it is easier to make the maven changes in the generated application itself.
+If we have to update the binder dependencies from a new release of Spring Cloud Stream for example, then those versions need to be updated in the generated application.
+
+Here are the steps (again, we are using `jdbc-sink-kafka` as an example).
+
+```
+./mvnw clean install -pl :jdbc-sink
+cd applications/sink/jdbc-sink/apps/jdbc-sink-kafka
+```
+
+Open the generated application's `pom.xml` and update the dependencies.
+If there is a new version of Spring Cloud Stream update available that contains the enhancements we are looking for, then it is easier to update the BOM itself.
+Find where the bom is declared in `pom.xml` and update the version.
+
+For example, if we have to update Spring Cloud Stream to `Horsham.SR10`, this version must be specified in the BOM declaration as below:
+
+```
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-dependencies</artifactId>
+            <version>Horsham.SR10</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+We can also update any individual dependencies directly, but it is preferred to use the above `dependencyManagement` approach if there is a BOM available.
+This is because, when using a BOM, maven will properly use and align any transitive dependencies.
+
+If you have to modify the application further, this method of modifying the generated application is again the recommended approach.
+
+For instance, if you want to add security certificate files such as a key store, or a trust store to the application's classpath, then generate the application first and add those resources to the classpath.
+
+Make sure you are in the generated `jdbc-sink-kafka` folder, then do the following:
+
+First, add the resources to the classpath by placing them under `src/main/resources`.
+
+Then rebuild the application.
+
+```
+./mvnw clean package
+cd target
+```
+
+Here you can find the modified application jar file.
