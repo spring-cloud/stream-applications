@@ -1,3 +1,4 @@
-# Core components shared by other projects in the app starters organization
-This module consists of core dependencies and other common artifacts.
+# Core components used in generated applications
+
+Various modules of core dependencies and other common artifacts.
 
