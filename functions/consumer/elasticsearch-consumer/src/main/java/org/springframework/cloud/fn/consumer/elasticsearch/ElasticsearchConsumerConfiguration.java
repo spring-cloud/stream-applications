@@ -64,8 +64,11 @@ public class ElasticsearchConsumerConfiguration {
 			}
 			request.id(id);
 
-			if (message.getPayload() instanceof String || message.getPayload() instanceof Map) {
-				request.source(message.getPayload(), XContentType.JSON);
+			if (message.getPayload() instanceof String) {
+				request.source((String) message.getPayload(), XContentType.JSON);
+			}
+			else if (message.getPayload() instanceof Map) {
+				request.source((Map<String, ?>) message.getPayload(), XContentType.JSON);
 			}
 			else if (message.getPayload() instanceof XContentBuilder) {
 				request.source((XContentBuilder) message.getPayload());
