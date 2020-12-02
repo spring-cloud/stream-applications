@@ -19,7 +19,6 @@ package org.springframework.cloud.fn.consumer.elasticsearch;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.awaitility.Awaitility;
@@ -28,6 +27,7 @@ import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.junit.jupiter.api.Test;
@@ -70,9 +70,9 @@ public class ElasticsearchConsumerApplicationTests {
 					RestHighLevelClient restHighLevelClient = context.getBean(RestHighLevelClient.class);
 					GetRequest getRequest = new GetRequest("foo").id("1");
 					final GetResponse response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
-					assertThat(response.isExists()).isTrue();
 
-					assertThat(response.getSource().containsKey(jsonObject)).isTrue();
+					assertThat(response.isExists()).isTrue();
+					assertThat(response.getSourceAsString()).isEqualTo(jsonObject);
 				});
 	}
 
@@ -95,7 +95,7 @@ public class ElasticsearchConsumerApplicationTests {
 					GetRequest getRequest = new GetRequest("foo").id("2");
 					final GetResponse response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
 					assertThat(response.isExists()).isTrue();
-					assertThat(response.getSource().containsKey(jsonObject)).isTrue();
+					assertThat(response.getSourceAsString()).isEqualTo(jsonObject);
 					assertThat(response.getId()).isEqualTo("2");
 				});
 	}
@@ -118,13 +118,11 @@ public class ElasticsearchConsumerApplicationTests {
 
 					RestHighLevelClient restHighLevelClient = context.getBean(RestHighLevelClient.class);
 					GetRequest getRequest = new GetRequest("foo").id("3");
+
 					final GetResponse response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
+
 					assertThat(response.isExists()).isTrue();
-					final Optional<String> data = response.getSource().keySet().stream().findFirst();
-					assertThat(data.isPresent()).isTrue();
-					assertThat(data.get().contains("age=10")).isTrue();
-					assertThat(data.get().contains("dateOfBirth=1471466076564")).isTrue();
-					assertThat(data.get().contains("fullName=John Doe")).isTrue();
+					assertThat(response.getSource()).containsAllEntriesOf(jsonMap);
 					assertThat(response.getId()).isEqualTo("3");
 				});
 	}
@@ -153,11 +151,12 @@ public class ElasticsearchConsumerApplicationTests {
 					final GetResponse response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
 					assertThat(response.isExists()).isTrue();
 
-					final Map<String, Object> source = response.getSource();
-					assertThat(source.size()).isEqualTo(3);
-					assertThat(source.containsKey("user")).isTrue();
-					assertThat(source.get("user")).isEqualTo("kimchy");
+					assertThat(response.getSourceAsString()).isEqualTo(Strings.toString(builder));
 
+//					final Map<String, Object> source = response.getSource();
+//					assertThat(source.size()).isEqualTo(3);
+//					assertThat(source.containsKey("user")).isTrue();
+//					assertThat(source.get("user")).isEqualTo("kimchy");
 				});
 	}
 
