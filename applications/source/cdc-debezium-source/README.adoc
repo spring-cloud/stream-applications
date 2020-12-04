@@ -17,8 +17,7 @@ The CDC Source introduces a new default `BackingOffsetStore` configuration, base
 == Options
 
 //tag::configuration-properties[]
-Properties grouped by prefix:
-
+Properties grouped by a prefix:
 
 === cdc
 
@@ -27,13 +26,13 @@ $$connector$$:: $$Shortcut for the cdc.config.connector.class property. Either o
 $$name$$:: $$Unique name for this sourceConnector instance.$$ *($$String$$, default: `$$<none>$$`)*
 $$schema$$:: $$Include the schema's as part of the outbound message.$$ *($$Boolean$$, default: `$$false$$`)*
 
-=== cdc.flattering
+=== cdc.flattening
 
 $$add-fields$$:: $$Comma separated list of metadata fields to add to the flattened message. The fields will be prefixed with "__" or "__[<]struct]__", depending on the specification of the struct.$$ *($$String$$, default: `$$<none>$$`)*
 $$add-headers$$:: $$Comma separated list specify a list of metadata fields to add to the header of the flattened message. The fields will be prefixed with "__" or "__[struct]__".$$ *($$String$$, default: `$$<none>$$`)*
 $$delete-handling-mode$$:: $$Options for handling deleted records: (1) none - pass the records through, (2) drop - remove the records and (3) rewrite - add a '__deleted' field to the records.$$ *($$DeleteHandlingMode$$, default: `$$<none>$$`, possible values: `drop`,`rewrite`,`none`)*
 $$drop-tombstones$$:: $$By default Debezium generates tombstone records to enable Kafka compaction on deleted records. The dropTombstones can suppress the tombstone records.$$ *($$Boolean$$, default: `$$true$$`)*
-$$enabled$$:: $$Enable flattering the source record events (https://debezium.io/docs/configuration/event-flattening).$$ *($$Boolean$$, default: `$$true$$`)*
+$$enabled$$:: $$Enable flattening the source record events (https://debezium.io/docs/configuration/event-flattening).$$ *($$Boolean$$, default: `$$true$$`)*
 
 === cdc.offset
 
@@ -117,11 +116,11 @@ The table below lists all available shortcuts along with the Debezium properties
 |cdc.config.offset.storage
 |`metadata` : MetadataStoreOffsetBackingStore, `file` : FileOffsetBackingStore, `kafka` : KafkaOffsetBackingStore, `memory` : MemoryOffsetBackingStore
 
-|cdc.flattering.drop-tombstones
+|cdc.flattening.drop-tombstones
 |cdc.config.drop.tombstones
 |
 
-|cdc.flattering.delete-handling-mode
+|cdc.flattening.delete-handling-mode
 |cdc.config.delete.handling.mode
 |`none` : none, `drop` : drop, `rewrite` : rewrite
 
@@ -133,7 +132,7 @@ The `CDC Source` uses the Debezium utilities, and currently supports CDC for fiv
 
 == Examples and Testing
 
-The [CdcSourceIntegrationTest](), [CdcDeleteHandlingIntegrationTest]() and [CdcFlatteringIntegrationTest]() integration tests use test databases fixtures, running on the local machine.
+The [CdcSourceIntegrationTest](), [CdcDeleteHandlingIntegrationTest]() and [CdcFlatteningIntegrationTest]() integration tests use test databases fixtures, running on the local machine.
 We use pre-build debezium docker database images.
 The Maven builds create the test databases fixtures with the help of the  `docker-maven-plugin`.
 
@@ -174,13 +173,13 @@ cdc.config.database.hostname=localhost # <3>
 cdc.config.database.port=3306 # <3>
 
 cdc.schema=true # <4>
-cdc.flattering.enabled=true # <5>
+cdc.flattening.enabled=true # <5>
 ----
 <1> Configures the CDC Source to use https://debezium.io/docs/connectors/mysql/[MySqlConnector]. (equivalent to setting `cdc.config.connector.class=io.debezium.connector.mysql.MySqlConnector`).
 <2> Metadata used to identify and dispatch the incoming events.
 <3> Connection to the MySQL server running on `localhost:3306` as `debezium` user.
 <4> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `SourceRecord` events.
-<5> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattering].
+<5> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattening].
 
 You can run also the `CdcSourceIntegrationTests#CdcMysqlTests` using this mysql configuration.
 
@@ -216,7 +215,7 @@ cdc.config.database.hostname=localhost # <4>
 cdc.config.database.port=5432 # <4>
 
 cdc.schema=true # <5>
-cdc.flattering.enabled=true # <6>
+cdc.flattening.enabled=true # <6>
 ----
 
 <1> Configures `CDC Source` to use https://debezium.io/docs/connectors/postgresql/[PostgresConnector]. Equivalent for setting `cdc.config.connector.class=io.debezium.connector.postgresql.PostgresConnector`.
@@ -224,7 +223,7 @@ cdc.flattering.enabled=true # <6>
 <3> Metadata used to identify and dispatch the incoming events.
 <4> Connection to the PostgreSQL server running on `localhost:5432` as `postgres` user.
 <5> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `SourceRecord` events.
-<6> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattering].
+<6> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattening].
 
 You can run also the `CdcSourceIntegrationTests#CdcPostgresTests` using this mysql configuration.
 
@@ -267,7 +266,7 @@ cdc.config.database.whitelist=inventory # <3>
 cdc.config.tasks.max=1 # <4>
 
 cdc.schema=true # <5>
-cdc.flattering.enabled=true # <6>
+cdc.flattening.enabled=true # <6>
 ----
 
 <1> Configures `CDC Source` to use https://debezium.io/docs/connectors/mongodb/[MongoDB Connector]. This maps into `cdc.config.connector.class=io.debezium.connector.mongodb.MongodbSourceConnector`.
@@ -275,7 +274,7 @@ cdc.flattering.enabled=true # <6>
 <3> Connection to the MongoDB running on `localhost:27017` as `debezium` user.
 <4> https://debezium.io/docs/connectors/mongodb/#tasks
 <5> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `SourceRecord` events.
-<6> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattering].
+<6> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattening].
 
 You can run also the `CdcSourceIntegrationTests#CdcPostgresTests` using this mysql configuration.
 
@@ -336,6 +335,6 @@ cat ./inventory.sql | docker exec -i dbz_oracle sqlplus debezium/dbz@//localhost
 == Run standalone
 
 ```
-java -jar cdc-debezium-source.jar --cdc.connector=mysql --cdc.name=my-sql-connector --cdc.config.database.server.id=85744 --cdc.config.database.server.name=my-app-connector --cdc.config.database.user=debezium --cdc.config.database.password=dbz --cdc.config.database.hostname=localhost --cdc.config.database.port=3306 --cdc.schema=true --cdc.flattering.enabled=true
+java -jar cdc-debezium-source.jar --cdc.connector=mysql --cdc.name=my-sql-connector --cdc.config.database.server.id=85744 --cdc.config.database.server.name=my-app-connector --cdc.config.database.user=debezium --cdc.config.database.password=dbz --cdc.config.database.hostname=localhost --cdc.config.database.port=3306 --cdc.schema=true --cdc.flattening.enabled=true
 ```
 

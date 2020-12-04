@@ -56,9 +56,9 @@ public class CdcCommonProperties {
 	private boolean schema = false;
 
 	/**
-	 * Event Flattering (https://debezium.io/docs/configuration/event-flattening).
+	 * Event Flattening (https://debezium.io/docs/configuration/event-flattening).
 	 */
-	private final Flattering flattering = new Flattering();
+	private final Flattening flattening = new Flattening();
 
 	/**
 	 * Spring pass-trough wrapper for debezium configuration properties.
@@ -79,8 +79,8 @@ public class CdcCommonProperties {
 		return offset;
 	}
 
-	public Flattering getFlattering() {
-		return flattering;
+	public Flattening getFlattening() {
+		return flattening;
 	}
 
 	public Map<String, String> getConfig() {
@@ -238,10 +238,10 @@ public class CdcCommonProperties {
 	 * https://debezium.io/documentation/reference/0.10/configuration/event-flattening.html .
 	 * https://debezium.io/documentation/reference/0.10/configuration/event-flattening.html#configuration_options
 	 */
-	public static class Flattering {
+	public static class Flattening {
 
 		/**
-		 * Enable flattering the source record events (https://debezium.io/docs/configuration/event-flattening).
+		 * Enable flattening the source record events (https://debezium.io/docs/configuration/event-flattening).
 		 */
 		private boolean enabled = true;
 

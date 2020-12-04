@@ -70,7 +70,7 @@ public class CdcBootStarterIntegrationTest {
 					"spring.datasource.type=com.zaxxer.hikari.HikariDataSource",
 					"cdc.name=my-sql-connector",
 					"cdc.schema=false",
-					"cdc.flattering.enabled=true",
+					"cdc.flattening.enabled=true",
 					"cdc.stream.header.offset=true",
 					"cdc.connector=mysql",
 					"cdc.config.database.user=debezium",
@@ -85,8 +85,8 @@ public class CdcBootStarterIntegrationTest {
 	public void consumerTest() {
 		contextRunner
 				.withPropertyValues(
-						"cdc.flattering.deleteHandlingMode=drop",
-						"cdc.flattering.dropTombstones=true")
+						"cdc.flattening.deleteHandlingMode=drop",
+						"cdc.flattening.dropTombstones=true")
 				.run(context -> {
 					TestCdcApplication.TestSourceRecordConsumer testConsumer = context
 							.getBean(TestCdcApplication.TestSourceRecordConsumer.class);

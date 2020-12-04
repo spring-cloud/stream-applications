@@ -15,7 +15,7 @@
 	<description>Change Data Capture (CDC) Debezium Common</description>
 
 	<properties>
-		<version.debezium>1.2.1.Final</version.debezium>
+		<version.debezium>1.3.1.Final</version.debezium>
 		<!-- Note: postgresql version MUST match the version used by the Debezium postgres connector -->
 		<postgresql.version>42.2.5</postgresql.version>
 		<spring-jdbc.version>5.2.1.RELEASE</spring-jdbc.version>

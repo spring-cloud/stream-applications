@@ -43,7 +43,7 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.resou
  * @author Christian Tzolov
  * @author David Turanski
  */
-public class CdcFlatteringIntegrationTest extends CdcTestSupport {
+public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(
@@ -63,19 +63,19 @@ public class CdcFlatteringIntegrationTest extends CdcTestSupport {
 					"cdc.config.database.history=io.debezium.relational.history.MemoryDatabaseHistory");
 
 	@Test
-	public void noFlatteredResponseNoKafka() {
-		contextRunner.withPropertyValues("cdc.flattering.enabled=false")
+	public void noFlattenedResponseNoKafka() {
+		contextRunner.withPropertyValues("cdc.flattening.enabled=false")
 				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the classpath
-				.run(noFlatteringTest);
+				.run(noFlatteningTest);
 	}
 
 	@Test
-	public void noFlatteredResponseWithKafka() {
-		contextRunner.withPropertyValues("cdc.flattering.enabled=false")
-				.run(noFlatteringTest);
+	public void noFlattenedResponseWithKafka() {
+		contextRunner.withPropertyValues("cdc.flattening.enabled=false")
+				.run(noFlatteningTest);
 	}
 
-	final ContextConsumer<? super ApplicationContext> noFlatteringTest = context -> {
+	final ContextConsumer<? super ApplicationContext> noFlatteningTest = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
 		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
@@ -127,40 +127,40 @@ public class CdcFlatteringIntegrationTest extends CdcTestSupport {
 	};
 
 	@Test
-	public void flatteredResponseNoKafka() {
+	public void flattenedResponseNoKafka() {
 		contextRunner.withPropertyValues(
-				"cdc.flattering.enabled=true",
-				"cdc.flattering.deleteHandlingMode=none",
-				"cdc.flattering.dropTombstones=false",
-				"cdc.flattering.addHeaders=op",
-				"cdc.flattering.addFields=name,db")
+				"cdc.flattening.enabled=true",
+				"cdc.flattening.deleteHandlingMode=none",
+				"cdc.flattening.dropTombstones=false",
+				"cdc.flattening.addHeaders=op",
+				"cdc.flattening.addFields=name,db")
 				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the classpath
-				.run(flatteringTest);
+				.run(flatteningTest);
 	}
 
 	@Test
-	public void flatteredResponseWithKafka() {
+	public void flattenedResponseWithKafka() {
 		contextRunner.withPropertyValues(
-				"cdc.flattering.enabled=true",
-				"cdc.flattering.deleteHandlingMode=none",
-				"cdc.flattering.dropTombstones=false",
-				"cdc.flattering.addHeaders=op",
-				"cdc.flattering.addFields=name,db")
-				.run(flatteringTest);
+				"cdc.flattening.enabled=true",
+				"cdc.flattening.deleteHandlingMode=none",
+				"cdc.flattening.dropTombstones=false",
+				"cdc.flattening.addHeaders=op",
+				"cdc.flattening.addFields=name,db")
+				.run(flatteningTest);
 	}
 
 	@Test
-	public void flatteredResponseWithKafkaDropTombstone() {
+	public void flattenedResponseWithKafkaDropTombstone() {
 		contextRunner.withPropertyValues(
-				"cdc.flattering.enabled=true",
-				"cdc.flattering.deleteHandlingMode=none",
-				"cdc.flattering.dropTombstones=true",
-				"cdc.flattering.addHeaders=op",
-				"cdc.flattering.addFields=name,db")
-				.run(flatteringTest);
+				"cdc.flattening.enabled=true",
+				"cdc.flattening.deleteHandlingMode=none",
+				"cdc.flattening.dropTombstones=true",
+				"cdc.flattening.addHeaders=op",
+				"cdc.flattening.addFields=name,db")
+				.run(flatteningTest);
 	}
 
-	final ContextConsumer<? super ApplicationContext> flatteringTest = context -> {
+	final ContextConsumer<? super ApplicationContext> flatteningTest = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
 		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
@@ -168,7 +168,7 @@ public class CdcFlatteringIntegrationTest extends CdcTestSupport {
 		List<Message<?>> messages = receiveAll(outputDestination);
 		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
-		CdcCommonProperties.Flattering flatteringProps = context.getBean(CdcCommonProperties.class).getFlattering();
+		CdcCommonProperties.Flattening flatteningProps = context.getBean(CdcCommonProperties.class).getFlattening();
 
 		assertJsonEquals(resourceToString(
 				"classpath:/json/mysql_ddl_drop_inventory_address_table.json"),
@@ -177,8 +177,8 @@ public class CdcFlatteringIntegrationTest extends CdcTestSupport {
 		assertJsonEquals("{\"databaseName\":\"inventory\"}",
 				messages.get(1).getHeaders().get("cdc_key"));
 
-		if (flatteringProps.isEnabled()) {
-			assertJsonEquals(resourceToString("classpath:/json/mysql_flattered_insert_inventory_products_106.json"),
+		if (flatteningProps.isEnabled()) {
+			assertJsonEquals(resourceToString("classpath:/json/mysql_flattened_insert_inventory_products_106.json"),
 					toString(messages.get(39).getPayload()));
 		}
 		else {
@@ -188,7 +188,7 @@ public class CdcFlatteringIntegrationTest extends CdcTestSupport {
 		assertThat(messages.get(39).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.products");
 		assertJsonEquals("{\"id\":106}", messages.get(39).getHeaders().get("cdc_key"));
 
-		if (flatteringProps.isEnabled() && flatteringProps.getAddHeaders().contains("op")) {
+		if (flatteningProps.isEnabled() && flatteningProps.getAddHeaders().contains("op")) {
 			assertThat(messages.get(39).getHeaders().get("__op")).isEqualTo("c");
 		}
 
@@ -201,28 +201,28 @@ public class CdcFlatteringIntegrationTest extends CdcTestSupport {
 
 		messages = receiveAll(outputDestination);
 
-		assertThat(messages).hasSize((!flatteringProps.isDropTombstones() && isKafkaPresent) ? 4 : 3);
+		assertThat(messages).hasSize((!flatteningProps.isDropTombstones() && isKafkaPresent) ? 4 : 3);
 
-		assertJsonEquals(resourceToString("classpath:/json/mysql_flattered_update_inventory_customers.json"),
+		assertJsonEquals(resourceToString("classpath:/json/mysql_flattened_update_inventory_customers.json"),
 				toString(messages.get(1).getPayload()));
 
 		assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.customers");
 		assertJsonEquals("{\"id\":" + newRecordId + "}", messages.get(1).getHeaders().get("cdc_key"));
-		if (!StringUtils.isEmpty(flatteringProps.getAddHeaders()) && flatteringProps.getAddHeaders().contains("op")) {
+		if (!StringUtils.isEmpty(flatteningProps.getAddHeaders()) && flatteningProps.getAddHeaders().contains("op")) {
 			assertThat(messages.get(1).getHeaders().get("__op")).isEqualTo("u");
 		}
 
-		if (flatteringProps.getDeleteHandlingMode() == CdcCommonProperties.DeleteHandlingMode.none) {
+		if (flatteningProps.getDeleteHandlingMode() == CdcCommonProperties.DeleteHandlingMode.none) {
 			assertThat(toString(messages.get(2).getPayload())).isEqualTo("null");
 			assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.customers");
 			assertJsonEquals("{\"id\":" + newRecordId + "}", messages.get(1).getHeaders().get("cdc_key"));
-			if (!StringUtils.isEmpty(flatteringProps.getAddHeaders())
-					&& flatteringProps.getAddHeaders().contains("op")) {
+			if (!StringUtils.isEmpty(flatteningProps.getAddHeaders())
+					&& flatteningProps.getAddHeaders().contains("op")) {
 				assertThat(messages.get(2).getHeaders().get("__op")).isEqualTo("d");
 			}
 		}
 
-		if (!flatteringProps.isDropTombstones() && isKafkaPresent) {
+		if (!flatteningProps.isDropTombstones() && isKafkaPresent) {
 			assertThat(messages.get(3).getPayload().getClass().getCanonicalName())
 					.isEqualTo(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 							"Tombstones event should have KafkaNull payload");

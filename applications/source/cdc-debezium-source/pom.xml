@@ -94,13 +94,6 @@
 			<artifactId>mysql</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>cdc-debezium-boot-starter</artifactId>
-			<version>1.0.0-M4</version>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -121,6 +114,10 @@
 						</configClass>
 						<functionDefinition>cdcSupplier</functionDefinition>
 
+						<properties>
+							<spring.autoconfigure.exclude>org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration</spring.autoconfigure.exclude>
+							<spring.cloud.stream.kafka.default.producer.messageKeyExpression>headers['cdc_key']</spring.cloud.stream.kafka.default.producer.messageKeyExpression>
+						</properties>
 						<maven>
 							<dependencies>
 								<dependency>

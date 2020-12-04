@@ -218,7 +218,6 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 
 	public static final class BuilderImpl implements Builder {
 		private OffsetBackingStore offsetBackingStore;
-		private SourceConnector sourceConnector;
 		private Configuration config;
 		private DebeziumEngine.ChangeConsumer<SourceRecord> handler;
 		private ClassLoader classLoader;
@@ -226,12 +225,6 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 		private DebeziumEngine.CompletionCallback completionCallback;
 		private DebeziumEngine.ConnectorCallback connectorCallback;
 		private OffsetCommitPolicy offsetCommitPolicy = null;
-
-		@Override
-		public Builder sourceConnector(SourceConnector sourceConnector) {
-			this.sourceConnector = sourceConnector;
-			return this;
-		}
 
 		@Override
 		public Builder offsetBackingStore(OffsetBackingStore offsetBackingStore) {
@@ -315,8 +308,7 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 			Objects.requireNonNull(config, "A connector configuration must be specified.");
 			Objects.requireNonNull(handler, "A connector consumer or changeHandler must be specified.");
 			return new EmbeddedEngine(config, classLoader, clock,
-					handler, completionCallback, connectorCallback, offsetCommitPolicy,
-					sourceConnector, offsetBackingStore);
+					handler, completionCallback, connectorCallback, offsetCommitPolicy, offsetBackingStore);
 		}
 
 		// backward compatibility methods
@@ -541,8 +533,6 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 		@Override
 		Builder using(OffsetCommitPolicy policy);
 
-		Builder sourceConnector(SourceConnector sourceConnector);
-
 		Builder offsetBackingStore(OffsetBackingStore offsetBackingStore);
 
 		@Override
@@ -576,7 +566,6 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 	private long recordsSinceLastCommit = 0;
 	private long timeOfLastCommitMillis = 0;
 	private OffsetCommitPolicy offsetCommitPolicy;
-	private SourceConnector connector;
 	private OffsetBackingStore offsetStore;
 
 	private SourceTask task;
@@ -584,8 +573,7 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 
 	private EmbeddedEngine(Configuration config, ClassLoader classLoader, Clock clock, DebeziumEngine.ChangeConsumer<SourceRecord> handler,
 			DebeziumEngine.CompletionCallback completionCallback, DebeziumEngine.ConnectorCallback connectorCallback,
-			OffsetCommitPolicy offsetCommitPolicy, SourceConnector sourceConnector, OffsetBackingStore offsetStore) {
-		this.connector = sourceConnector;
+			OffsetCommitPolicy offsetCommitPolicy, OffsetBackingStore offsetStore) {
 		this.offsetStore = offsetStore;
 		this.config = config;
 		this.handler = handler;

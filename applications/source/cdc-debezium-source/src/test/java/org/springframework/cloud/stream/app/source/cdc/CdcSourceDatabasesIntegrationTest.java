@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import org.springframework.boot.WebApplicationType;
@@ -41,23 +40,33 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.recei
  * @author David Turanski
  */
 @Disabled("Run as needed if there is an issue with a specific connector")
-public class CdcSourceDatabasesIntegrationTest extends CdcTestSupport {
+public class CdcSourceDatabasesIntegrationTest {
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
 			TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
-					.web(WebApplicationType.NONE)
-					.properties("spring.cloud.stream.function.definition=cdcSupplier",
-							"cdc.name=my-sql-connector",
-							"cdc.flattering.dropTombstones=false",
-							"cdc.schema=false",
-							"cdc.flattering.enabled=true",
-							"cdc.stream.header.offset=true",
-							// "cdc.config.database.server.id=85744",
-							"cdc.config.database.server.name=my-app-connector",
-							"cdc.config.database.history=io.debezium.relational.history.MemoryDatabaseHistory");
+			.web(WebApplicationType.NONE)
+			.properties("spring.cloud.stream.function.definition=cdcSupplier",
+					"cdc.name=my-sql-connector",
+					"cdc.flattening.dropTombstones=false",
+					"cdc.schema=false",
+					"cdc.flattening.enabled=true",
+					"cdc.stream.header.offset=true",
+					// "cdc.config.database.server.id=85744",
+					"cdc.config.database.server.name=my-app-connector",
+					"cdc.config.database.history=io.debezium.relational.history.MemoryDatabaseHistory");
 
 	@Test
 	public void mysql() {
+		GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.3")
+				.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
+				.withEnv("MYSQL_USER", "mysqluser")
+				.withEnv("MYSQL_PASSWORD", "mysqlpw")
+				// .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("mysql")))
+				.withExposedPorts(3306);
+		debeziumMySQL.start();
+
+		String MAPPED_PORT = String.valueOf(debeziumMySQL.getMappedPort(3306));
+
 		try (ConfigurableApplicationContext context = applicationBuilder
 				.run("--cdc.connector=mysql",
 						"--cdc.config.database.user=debezium",
@@ -79,13 +88,15 @@ public class CdcSourceDatabasesIntegrationTest extends CdcTestSupport {
 				.withFileFromClasspath("import-data.sh", "sqlserver/import-data.sh")
 				.withFileFromClasspath("inventory.sql", "sqlserver/inventory.sql")
 				.withFileFromClasspath("entrypoint.sh", "sqlserver/entrypoint.sh"))
-						.withEnv("ACCEPT_EULA", "Y")
-						.withEnv("MSSQL_PID", "Standard")
-						.withEnv("SA_PASSWORD", "Password!")
-						.withEnv("MSSQL_AGENT_ENABLED", "true")
-						.withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("sqlServer")))
-						.withExposedPorts(1433);
-		sqlServer.waitingFor(Wait.forLogMessage(".*(1 rows affected).*", 26)).start();
+				.withEnv("ACCEPT_EULA", "Y")
+				.withEnv("MSSQL_PID", "Standard")
+				.withEnv("SA_PASSWORD", "Password!")
+				.withEnv("MSSQL_AGENT_ENABLED", "true")
+				.withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("sqlServer")))
+				.withExposedPorts(1433);
+		//sqlServer.waitingFor(Wait.forLogMessage(".*(1 rows affected).*", 50)).start();
+		//sqlServer.waitingFor(Wait.forLogMessage(".*(Service Broker manager has started).*", 50)).start();
+		sqlServer.start();
 
 		try (ConfigurableApplicationContext context = applicationBuilder
 				.run("--cdc.connector=sqlserver",
@@ -106,7 +117,7 @@ public class CdcSourceDatabasesIntegrationTest extends CdcTestSupport {
 
 	@Test
 	public void postgres() {
-		GenericContainer postgres = new GenericContainer("debezium/example-postgres:1.0")
+		GenericContainer postgres = new GenericContainer("debezium/example-postgres:1.3")
 				.withEnv("POSTGRES_USER", "postgres")
 				.withEnv("POSTGRES_PASSWORD", "postgres")
 				.withExposedPorts(5432);

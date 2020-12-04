@@ -48,10 +48,10 @@ public class CdcAutoConfiguration {
 
 	@Bean
 	public EmbeddedEngineExecutorService embeddedEngine(EmbeddedEngine.Builder embeddedEngineBuilder,
-			Consumer<SourceRecord> sourceRecordConsumer, Function<SourceRecord, SourceRecord> recordFlattering) {
+			Consumer<SourceRecord> sourceRecordConsumer, Function<SourceRecord, SourceRecord> recordFlattening) {
 
 		EmbeddedEngine embeddedEngine = embeddedEngineBuilder
-				.notifying(sourceRecord -> sourceRecordConsumer.accept(recordFlattering.apply(sourceRecord)))
+				.notifying(sourceRecord -> sourceRecordConsumer.accept(recordFlattening.apply(sourceRecord)))
 				.build();
 
 		return new EmbeddedEngineExecutorService(embeddedEngine) {

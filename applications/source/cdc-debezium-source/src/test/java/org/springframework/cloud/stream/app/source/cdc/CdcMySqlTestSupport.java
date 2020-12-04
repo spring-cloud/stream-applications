@@ -24,13 +24,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /**
  * @author David Turanski
  */
-public abstract class CdcTestSupport {
+public abstract class CdcMySqlTestSupport {
 
 	static final String DATABASE_NAME = "inventory";
 
 	static String MAPPED_PORT;
 
-	static GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.0")
+	static GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.3")
 			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 			.withEnv("MYSQL_USER", "mysqluser")
 			.withEnv("MYSQL_PASSWORD", "mysqlpw")

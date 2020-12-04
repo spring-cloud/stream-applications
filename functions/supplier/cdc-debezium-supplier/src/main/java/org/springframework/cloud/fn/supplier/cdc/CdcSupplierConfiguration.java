@@ -111,13 +111,13 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 	public EmbeddedEngineExecutorService embeddedEngineExecutorService(
 			EmbeddedEngine.Builder embeddedEngineBuilder,
 			Function<SourceRecord, byte[]> valueSerializer, Function<SourceRecord, byte[]> keySerializer,
-			Function<SourceRecord, SourceRecord> recordFlattering,
+			Function<SourceRecord, SourceRecord> recordFlattening,
 			ObjectMapper mapper, CdcSupplierProperties cdcStreamingEngineProperties) {
 
 		FluxSink<Message<?>> sink = emitterProcessor.sink();
 		Consumer<SourceRecord> messageConsumer = sourceRecord -> {
 
-			// When cdc.flattering.deleteHandlingMode=none and cdc.flattering.dropTombstones=false
+			// When cdc.flattening.deleteHandlingMode=none and cdc.flattening.dropTombstones=false
 			// then on deletion event an additional sourceRecord is sent with value Null.
 			// Here we filter out such condition.
 			if (sourceRecord == null) {
@@ -130,7 +130,7 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 			// When the tombstone event is enabled, Debezium serializes the payload to null (e.g.
 			// empty payload)
 			// while the metadata information is carried through the headers (cdc_key).
-			// Note: Event for none flattered responses, when the cdc.config.tombstones.on.delete=true
+			// Note: Event for none flattened responses, when the cdc.config.tombstones.on.delete=true
 			// (default),
 			// tombstones are generate by Debezium and handled by the code below.
 			if (cdcJsonPayload == null) {
@@ -151,7 +151,8 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 
 			MessageBuilder<?> messageBuilder = MessageBuilder
 					.withPayload(cdcJsonPayload)
-					.setHeader("cdc_key", new String(key))
+//					.setHeader("cdc_key", new String(key))
+					.setHeader("cdc_key", key)
 					.setHeader("cdc_topic", sourceRecord.topic())
 					.setHeader(MessageHeaders.CONTENT_TYPE,
 							(cdcJsonPayload.equals(this.kafkaNull)) ? MimeTypeUtils.TEXT_PLAIN_VALUE
@@ -182,7 +183,7 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 		};
 
 		EmbeddedEngine engine = embeddedEngineBuilder
-				.notifying(record -> messageConsumer.accept(recordFlattering.apply(record)))
+				.notifying(record -> messageConsumer.accept(recordFlattening.apply(record)))
 				.build();
 
 		return new EmbeddedEngineExecutorService(engine);

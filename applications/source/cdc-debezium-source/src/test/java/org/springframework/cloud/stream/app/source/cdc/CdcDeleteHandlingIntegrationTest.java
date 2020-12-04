@@ -45,7 +45,7 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.recei
  */
 
 @Testcontainers
-public class CdcDeleteHandlingIntegrationTest extends CdcTestSupport {
+public class CdcDeleteHandlingIntegrationTest extends CdcMySqlTestSupport {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(
@@ -54,7 +54,7 @@ public class CdcDeleteHandlingIntegrationTest extends CdcTestSupport {
 					"spring.cloud.function.definition=cdcSupplier",
 					"cdc.name=my-sql-connector",
 					"cdc.schema=false",
-					"cdc.flattering.enabled=true",
+					"cdc.flattening.enabled=true",
 					"cdc.stream.header.offset=true",
 					"cdc.connector=mysql",
 					"cdc.config.database.user=debezium",
@@ -67,12 +67,12 @@ public class CdcDeleteHandlingIntegrationTest extends CdcTestSupport {
 
 	@ParameterizedTest
 	@ValueSource(strings = {
-			"cdc.flattering.deleteHandlingMode=none,cdc.flattering.dropTombstones=true",
-			"cdc.flattering.deleteHandlingMode=none,cdc.flattering.dropTombstones=false",
-			"cdc.flattering.deleteHandlingMode=drop,cdc.flattering.dropTombstones=true",
-			"cdc.flattering.deleteHandlingMode=drop,cdc.flattering.dropTombstones=false",
-			"cdc.flattering.deleteHandlingMode=rewrite,cdc.flattering.dropTombstones=true",
-			"cdc.flattering.deleteHandlingMode=rewrite,cdc.flattering.dropTombstones=false"
+			"cdc.flattening.deleteHandlingMode=none,cdc.flattening.dropTombstones=true",
+			"cdc.flattening.deleteHandlingMode=none,cdc.flattening.dropTombstones=false",
+			"cdc.flattening.deleteHandlingMode=drop,cdc.flattening.dropTombstones=true",
+			"cdc.flattening.deleteHandlingMode=drop,cdc.flattening.dropTombstones=false",
+			"cdc.flattening.deleteHandlingMode=rewrite,cdc.flattening.dropTombstones=true",
+			"cdc.flattening.deleteHandlingMode=rewrite,cdc.flattening.dropTombstones=false"
 	})
 	public void handleRecordDeletions(String properties) {
 		contextRunner.withPropertyValues(properties.split(","))
@@ -94,8 +94,8 @@ public class CdcDeleteHandlingIntegrationTest extends CdcTestSupport {
 		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
-		CdcCommonProperties.DeleteHandlingMode deleteHandlingMode = props.getFlattering().getDeleteHandlingMode();
-		boolean isDropTombstones = props.getFlattering().isDropTombstones();
+		CdcCommonProperties.DeleteHandlingMode deleteHandlingMode = props.getFlattening().getDeleteHandlingMode();
+		boolean isDropTombstones = props.getFlattening().isDropTombstones();
 
 		jdbcTemplate.update(
 				"insert into `customers`(`first_name`,`last_name`,`email`) VALUES('Test666', 'Test666', 'Test666@spring.org')");

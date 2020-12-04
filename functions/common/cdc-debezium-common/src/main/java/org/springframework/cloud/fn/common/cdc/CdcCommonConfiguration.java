@@ -52,9 +52,9 @@ public class CdcCommonConfiguration {
 	}
 
 	@Bean
-	public Function<SourceRecord, SourceRecord> recordFlattering(CdcCommonProperties properties,
+	public Function<SourceRecord, SourceRecord> recordFlattening(CdcCommonProperties properties,
 			ExtractNewRecordState extractNewRecordState) {
-		return sourceRecord -> properties.getFlattering().isEnabled() ?
+		return sourceRecord -> properties.getFlattening().isEnabled() ?
 				(SourceRecord) extractNewRecordState.apply(sourceRecord) : sourceRecord;
 	}
 
@@ -62,13 +62,13 @@ public class CdcCommonConfiguration {
 	public ExtractNewRecordState extractNewRecordState(CdcCommonProperties properties) {
 		ExtractNewRecordState extractNewRecordState = new ExtractNewRecordState();
 		Map<String, Object> config = extractNewRecordState.config().defaultValues();
-		config.put("drop.tombstones", properties.getFlattering().isDropTombstones());
-		config.put("delete.handling.mode", properties.getFlattering().getDeleteHandlingMode().name());
-		if (!StringUtils.isEmpty(properties.getFlattering().getAddHeaders())) {
-			config.put("add.headers", properties.getFlattering().getAddHeaders());
+		config.put("drop.tombstones", properties.getFlattening().isDropTombstones());
+		config.put("delete.handling.mode", properties.getFlattening().getDeleteHandlingMode().name());
+		if (!StringUtils.isEmpty(properties.getFlattening().getAddHeaders())) {
+			config.put("add.headers", properties.getFlattening().getAddHeaders());
 		}
-		if (!StringUtils.isEmpty(properties.getFlattering().getAddFields())) {
-			config.put("add.fields", properties.getFlattering().getAddFields());
+		if (!StringUtils.isEmpty(properties.getFlattening().getAddFields())) {
+			config.put("add.fields", properties.getFlattening().getAddFields());
 		}
 
 		extractNewRecordState.configure(config);
