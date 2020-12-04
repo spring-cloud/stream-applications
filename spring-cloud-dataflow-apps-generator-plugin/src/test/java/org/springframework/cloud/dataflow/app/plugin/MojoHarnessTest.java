@@ -18,9 +18,11 @@ package org.springframework.cloud.dataflow.app.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.apache.maven.model.Dependency;
@@ -60,6 +62,14 @@ public class MojoHarnessTest {
 		myMojo.execute();
 
 		assertThat(new File("./target/apps/http-source-kafka/src/main/resources/test.txt")).exists();
+
+		assertThat(new File("./target/apps/http-source-kafka/src/main/resources/application.properties")).exists();
+
+		Properties applicationProperties = new Properties();
+		applicationProperties.load(new FileReader("./target/apps/http-source-kafka/src/main/resources/application.properties"));
+		assertThat(applicationProperties.getProperty("spring.cloud.function.definition")).isEqualTo("httpSupplier");
+
+		assertThat(applicationProperties.getProperty("static.property")).isEqualTo("bla");
 
 		Model pomModel = getModel(new File("./target/apps"));
 

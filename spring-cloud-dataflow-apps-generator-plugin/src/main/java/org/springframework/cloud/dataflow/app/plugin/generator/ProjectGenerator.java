@@ -146,14 +146,16 @@ public final class ProjectGenerator {
 
 		File appMainResourceDir = mkdirs(pkgToDir(appDir, "src.main.resources"));
 
-		// application.properties
-		copy(materialize("template/app.properties", appTemplateProperties),
-				file(appMainResourceDir, "application.properties"));
-
 		// copy the entire project's src/main/resources directory
 		if (projectResourcesDirectory != null && projectResourcesDirectory.exists()) {
 			FileUtils.copyDirectory(projectResourcesDirectory, appMainResourceDir);
 		}
+
+		// application.properties
+		String materializedAppProperties = materialize("template/app.properties", appTemplateProperties);
+		// Note: the application properties file may already exist from the parent's project src/main/resources dir.
+		File appPropertyFile = file(appMainResourceDir, "application.properties");
+		FileUtils.writeStringToFile(appPropertyFile, materializedAppProperties, "UTF8", true);
 
 		copy(materialize("template/App.java", appTemplateProperties),
 				file(appMainSrcDir, appClassName + ".java"));
