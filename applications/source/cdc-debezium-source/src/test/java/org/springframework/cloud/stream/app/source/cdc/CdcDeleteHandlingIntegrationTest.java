@@ -130,7 +130,7 @@ public class CdcDeleteHandlingIntegrationTest extends CdcMySqlTestSupport {
 			assertThat(received.getPayload().getClass().getCanonicalName())
 					.isEqualTo(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL);
 
-			String key = (String) received.getHeaders().get("cdc_key");
+			String key = new String((byte[]) received.getHeaders().get("cdc_key"));
 			// Tombstones event should carry the deleted record id in the cdc_key header
 			assertThat(key).isEqualTo("{\"id\":" + newRecordId + "}");
 		}
