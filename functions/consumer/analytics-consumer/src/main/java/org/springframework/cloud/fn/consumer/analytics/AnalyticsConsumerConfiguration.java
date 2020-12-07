@@ -117,14 +117,15 @@ public class AnalyticsConsumerConfiguration {
 		}
 
 		if ((value instanceof Collection) || ObjectUtils.isArray(value)) {
+
 			Collection<?> valueCollection = (value instanceof Collection) ? (Collection<?>) value
 					: Arrays.asList(ObjectUtils.toObjectArray(value));
-
-			return valueCollection.stream()
+			List<String> list = valueCollection.stream()
 					.filter(Objects::nonNull)
 					.map(Object::toString)
 					.filter(StringUtils::hasText)
 					.collect(Collectors.toList());
+			return CollectionUtils.isEmpty(list) ? Collections.singletonList("n.a") : list;
 		}
 		else {
 			return Collections.singletonList(value.toString());
@@ -134,7 +135,7 @@ public class AnalyticsConsumerConfiguration {
 	private void recordMetrics(MeterRegistry[] meterRegistries, String meterName, Tags fixedTags, Map<String,
 			List<Tag>> groupedTags, double amount, AnalyticsConsumerProperties.MeterType meterType) {
 		if (!CollectionUtils.isEmpty(groupedTags)) {
-			groupedTags.values().stream().map(List::size).max(Integer::compareTo).ifPresent(
+				groupedTags.values().stream().map(List::size).max(Integer::compareTo).ifPresent(
 					max -> {
 						for (int i = 0; i < max; i++) {
 							Tags currentTags = Tags.of(fixedTags);
