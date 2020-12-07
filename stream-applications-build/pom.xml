@@ -111,7 +111,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${maven-javadoc-plugin.version}</version>
@@ -128,7 +127,6 @@
 					<quiet>true</quiet>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>${maven-source-plugin.version}</version>
@@ -142,7 +140,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -157,7 +154,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -224,13 +220,10 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
-
 	</build>
 
 	<licenses>
-
 		<license>
 			<name>Apache License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
@@ -251,39 +244,25 @@
 				limitations under the License.
 			</comments>
 		</license>
-
 	</licenses>
-
 	<scm>
 		<connection>scm:git:git://github.com/pivotal/java-functions.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/pivotal/java-functions.git</developerConnection>
 		<url>https://github.com/pivotal/java-functions</url>
 	</scm>
-
 	<distributionManagement>
-
 		<repository>
 			<id>repo.spring.io</id>
 			<name>Spring Release Repository</name>
-			<url>https://repo.spring.io/release</url>
+			<url>https://repo.spring.io/libs-release-local</url>
 		</repository>
-
 		<snapshotRepository>
 			<id>repo.spring.io</id>
 			<name>Spring Snapshot Repository</name>
-			<url>https://repo.spring.io/snapshot</url>
+			<url>https://repo.spring.io/libs-snapshot-local</url>
 		</snapshotRepository>
-
 	</distributionManagement>
-
 	<repositories>
-
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</repository>
-
 		<repository>
 			<id>spring-snapshots</id>
 			<name>Spring Snapshots</name>
@@ -292,17 +271,21 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+		</repository>
+		<repository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
-
 	<pluginRepositories>
-
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</pluginRepository>
-
 		<pluginRepository>
 			<id>spring-snapshots</id>
 			<name>Spring Snapshots</name>
@@ -311,22 +294,31 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
-
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
 	</pluginRepositories>
-
 	<profiles>
-
 		<profile>
 			<id>milestone</id>
 			<distributionManagement>
 				<repository>
 					<id>repo.spring.io</id>
 					<name>Spring Milestone Repository</name>
-					<url>https://repo.spring.io/milestone</url>
+					<url>https://repo.spring.io/libs-milestone-local</url>
 				</repository>
 			</distributionManagement>
 		</profile>
-
 		<profile>
 			<id>central</id>
 			<build>
@@ -358,6 +350,5 @@
 				</snapshotRepository>
 			</distributionManagement>
 		</profile>
-
 	</profiles>
 </project>

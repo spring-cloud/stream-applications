@@ -17,7 +17,8 @@ The CDC Source introduces a new default `BackingOffsetStore` configuration, base
 == Options
 
 //tag::configuration-properties[]
-Properties grouped by a prefix:
+Properties grouped by prefix:
+
 
 === cdc
 
