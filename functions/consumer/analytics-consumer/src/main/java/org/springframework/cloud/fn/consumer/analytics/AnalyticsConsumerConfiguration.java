@@ -111,7 +111,9 @@ public class AnalyticsConsumerConfiguration {
 	 */
 	protected List<String> toList(Object value) {
 		if (value == null) {
-			return Collections.emptyList();
+			// Ensure that the tag is present in the meter metrics, even if empty.
+			// TSDB as Prometheus do not tolerate same meters to have different tags signatures.
+			return Collections.singletonList("n.a");
 		}
 
 		if ((value instanceof Collection) || ObjectUtils.isArray(value)) {
