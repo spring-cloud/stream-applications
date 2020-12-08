@@ -54,7 +54,9 @@ import org.springframework.util.StringUtils;
 @EnableConfigurationProperties(AnalyticsConsumerProperties.class)
 public class AnalyticsConsumerConfiguration {
 
+	/** Default tag value. Used to fill the tag when the actual value is missing. */
 	public static final String UNAVAILABLE_TAG = "NA";
+
 	private final Map<Meter.Id, AtomicLong> gaugeValues = new ConcurrentHashMap<>();
 
 	@Bean(name = "analyticsConsumer")

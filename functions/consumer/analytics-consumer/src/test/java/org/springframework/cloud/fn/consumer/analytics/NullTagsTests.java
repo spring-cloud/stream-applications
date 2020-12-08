@@ -45,9 +45,11 @@ public class NullTagsTests extends AnalyticsConsumerParentTest {
 		assertThat(fixedTagsCounters.size()).isEqualTo(0);
 
 		Collection<Counter> expressionTagsCounters = meterRegistry.find("counter666").tagKeys("tag666").counters();
-		assertThat(expressionTagsCounters.size()).isEqualTo(0);
+		assertThat(expressionTagsCounters.size()).isEqualTo(1);
+		assertThat(meterRegistry.find("counter666").meter().getId().getTag("tag666")).isEqualTo(AnalyticsConsumerConfiguration.UNAVAILABLE_TAG);
 
 		Collection<Counter> testExpTagsCounters = meterRegistry.find("counter666").tagKeys("test").counters();
-		assertThat(testExpTagsCounters.size()).isEqualTo(0);
+		assertThat(testExpTagsCounters.size()).isEqualTo(1);
+		assertThat(meterRegistry.find("counter666").meter().getId().getTag("test")).isEqualTo(AnalyticsConsumerConfiguration.UNAVAILABLE_TAG);
 	}
 }
