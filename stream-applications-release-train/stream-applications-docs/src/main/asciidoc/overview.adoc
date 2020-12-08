@@ -1,7 +1,7 @@
 [[overview]]
 
 This section provides you with a detailed overview of the out-of-the-box Spring Cloud Stream Applications.
-It assumes familiarity with general Spring Cloud Stream concepts, which you can find in the Spring Cloud Stream https://cloud.spring.io/spring-cloud-static/spring-cloud-stream/{scst-core-version}/reference/html/[reference documentation].
+It assumes familiarity with general Spring Cloud Stream concepts, which you can find in the Spring Cloud Stream https://docs.spring.io/spring-cloud-stream/docs/{scst-core-version}/reference/html/[reference documentation].
 
 These Spring Cloud Stream Applications provide you with out-of-the-box Spring Cloud Stream utility applications that you can run independently or with Spring Cloud Data Flow. They include:
 
@@ -12,11 +12,11 @@ These Spring Cloud Stream Applications provide you with out-of-the-box Spring Cl
 You can find a detailed listing of all the applications and their options in the following sections of this guide.
 
 Most of these applications are based on core elements that are exposed as a `java.util.function` component.
-You can learn more about these foundational elements and how they are all connected to the applications by reading this https://github.com/spring-cloud/stream-applications/blob/master/README.adoc[README].
+You can learn more about these foundational components and how they are all connected to the applications by reading this https://github.com/spring-cloud/stream-applications/blob/master/README.adoc[README].
 
 == Pre-built Applications
 
-Out-of-the-box applications are Spring Boot applications that include a Binder implementation on top of the basic logic of the app (a function for example) -- a fully functional uber-jar.
+Out-of-the-box applications are Spring Boot applications that include a https://docs.spring.io/spring-cloud-stream/docs/{scst-core-version}/reference/html/spring-cloud-stream.html#spring-cloud-stream-overview-binders[binder implementation] on top of the basic logic of the app (a function for example) -- a fully functional uber-jar.
 These https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/getting-started.html#getting-started-first-application-executable-jar[uber-jars] include the minimal code required for standalone execution.
 For each function application, the project provides a prebuilt version for Apache Kafka and Rabbit MQ Binders.
 
@@ -42,6 +42,7 @@ Prebuilt applications are available as Maven artifacts.
 You can download the executable jar artifacts from the Spring Maven repositories.
 The root directory of the Maven repository that hosts release versions is https://repo.spring.io/release/org/springframework/cloud/stream/app/.
 From there, you can navigate to the latest released version of a specific app.
+If you want to use functions directly in a custom application, those artifacts are available under the directory structure `org/springframework/cloud/fn`.
 You need to use the link:https://repo.spring.io/release/org/springframework/cloud/stream/app[Release], link:https://repo.spring.io/milestone/org/springframework/cloud/stream/app[Milestone] and link:https://repo.spring.io/snapshot/org/springframework/cloud/stream/app[Snapshot] repository locations for Release, Milestone and Snapshot executable jar artifacts respectively.
 
 === Docker Access
@@ -79,7 +80,7 @@ First, we need to build the parent used in various components.
 
 ==== Building functions
 
-`./mvnw clean install -f functions`
+`./mvnw clean install -f functions -DskipTests`
 
 You can also build a single function or group of functions.
 For e.g if you are only interested in jdbc-supplier and log-consumer, do the following.
@@ -88,7 +89,7 @@ For e.g if you are only interested in jdbc-supplier and log-consumer, do the fol
 
 ==== Building core for Stream Applications
 
-`./mvnw clean install -f applications/stream-applications-core`
+`./mvnw clean install -f applications/stream-applications-core -DskipTests`
 
 === Building the applications
 
@@ -227,3 +228,102 @@ cd target
 ```
 
 Here you can find the modified application jar file.
+
+== Generating out of the box applications for other binders
+
+By default, we only provide out of the box applications for Apache Kafka and RabbitMQ binders.
+There are other binder implementations exist, for which we can generate these same out of the box applications.
+For example, if one wants to generate these applications for the https://github.com/spring-cloud/spring-cloud-stream-binder-aws-kinesis[Kinesis binder], or the https://github.com/SolaceProducts/spring-cloud-stream-binder-solace[Solace binder], or https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-pubsub-stream-binder[Google gcp pubsub binder] etc. it is possible to do so by following the instructions below.
+
+As a first step, clone the https://github.com/spring-cloud/stream-applications[stream applications] repository.
+
+cd applications/stream-applications-core
+
+We need to edit the pom.xml in this module.
+Find the following configuration where it defines the Kafka and RabbitMQ binders for the maven plugin.
+
+```
+<kafka>
+    <maven>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+            </dependency>
+        </dependencies>
+    </maven>
+</kafka>
+<rabbit>
+    <maven>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+            </dependency>
+        </dependencies>
+    </maven>
+</rabbit>
+```
+
+Add the binder for which you want to generate new apps for.
+For example, if we want to generate applications for the https://github.com/spring-cloud/spring-cloud-stream-binder-aws-kinesis[Kinesis binder], then modify as below.
+
+```
+<binders>
+    <kafka>
+        <maven>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+                </dependency>
+            </dependencies>
+        </maven>
+    </kafka>
+    <rabbit>
+        <maven>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+                </dependency>
+            </dependencies>
+        </maven>
+    </rabbit>
+    <kinesis>
+        <maven>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-stream-binder-kinesis</artifactId>
+                    <version>2.0.3.RELEASE</version>
+                </dependency>
+            </dependencies>
+        </maven>
+    </kinesis>
+</binders>
+```
+
+Note that, we need to use the Kinesis binder version here explicitly, while both Kafka and RabbitMQ do not need them.
+This is because, those versions come from a dependency management while the Kinesis binder is not available through such mechanisms.
+Therefore, we need to explicitly use the binder version.
+If we have a BOM available that defines the version, then that can be used instead, just ensure that is declared in the proper BOM section of the maven plugin.
+
+If the binder for which you are generating the applications relies on a different version of Spring Cloud Stream, make sure it is updated in the maven properties.
+
+Now, we can build: `./mvnw clean install -DskipTests`.
+
+If we go to the applications folder and look at the generated applications, we should see the new binder variants there.
+For instance, if we follow the configuration above for adding the Kinesis binder, then we should see the Kinesis binder based app in the generated apps.
+Let's take `time-source` as an example.
+
+```
+cd applications/source/time-souce/apps
+```
+
+Here, we should see three different binder based apps projects - `time-source-kafka`, `time-source-rabbit` and `time-source-kineses`.
+Similarly, this should happen for all the out of the box application projects.
+
+Keep in mind that, these generated applications further need to be built individually.
+For that, go to the generated applications folder and then initiate a maven build.
+
