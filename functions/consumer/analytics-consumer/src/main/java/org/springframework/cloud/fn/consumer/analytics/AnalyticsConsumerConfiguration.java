@@ -54,6 +54,7 @@ import org.springframework.util.StringUtils;
 @EnableConfigurationProperties(AnalyticsConsumerProperties.class)
 public class AnalyticsConsumerConfiguration {
 
+	public static final String UNAVAILABLE_TAG = "NA";
 	private final Map<Meter.Id, AtomicLong> gaugeValues = new ConcurrentHashMap<>();
 
 	@Bean(name = "analyticsConsumer")
@@ -62,7 +63,8 @@ public class AnalyticsConsumerConfiguration {
 
 		return message -> {
 
-			String meterName = properties.getComputedNameExpression().getValue(context, message, CharSequence.class).toString();
+			CharSequence meterNameRaw = properties.getComputedNameExpression().getValue(context, message, CharSequence.class);
+			String meterName = StringUtils.isEmpty(meterNameRaw) ? "empty" : meterNameRaw.toString();
 
 			// All fixed tags together are passed with every meter update.
 			Tags fixedTags = this.toTags(properties.getTag().getFixed());
@@ -113,7 +115,7 @@ public class AnalyticsConsumerConfiguration {
 		if (value == null) {
 			// Ensure that the tag is present in the meter metrics, even if empty.
 			// TSDB as Prometheus do not tolerate same meters to have different tags signatures.
-			return Collections.singletonList("n.a");
+			return Collections.singletonList(UNAVAILABLE_TAG);
 		}
 
 		if ((value instanceof Collection) || ObjectUtils.isArray(value)) {
@@ -125,7 +127,7 @@ public class AnalyticsConsumerConfiguration {
 					.map(Object::toString)
 					.filter(StringUtils::hasText)
 					.collect(Collectors.toList());
-			return CollectionUtils.isEmpty(list) ? Collections.singletonList("n.a") : list;
+			return CollectionUtils.isEmpty(list) ? Collections.singletonList(UNAVAILABLE_TAG) : list;
 		}
 		else {
 			return Collections.singletonList(value.toString());
@@ -135,7 +137,7 @@ public class AnalyticsConsumerConfiguration {
 	private void recordMetrics(MeterRegistry[] meterRegistries, String meterName, Tags fixedTags, Map<String,
 			List<Tag>> groupedTags, double amount, AnalyticsConsumerProperties.MeterType meterType) {
 		if (!CollectionUtils.isEmpty(groupedTags)) {
-				groupedTags.values().stream().map(List::size).max(Integer::compareTo).ifPresent(
+			groupedTags.values().stream().map(List::size).max(Integer::compareTo).ifPresent(
 					max -> {
 						for (int i = 0; i < max; i++) {
 							Tags currentTags = Tags.of(fixedTags);
