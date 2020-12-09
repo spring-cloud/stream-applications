@@ -27,11 +27,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -63,6 +65,14 @@ public class AnalyticsConsumerConfiguration {
 	public Consumer<Message<?>> analyticsConsumer(AnalyticsConsumerProperties properties, MeterRegistry[] meterRegistries,
 			@Lazy @Qualifier(SpelExpressionConverterConfiguration.INTEGRATION_EVALUATION_CONTEXT) EvaluationContext context) {
 
+		// If the CompositeMeterRegistry is present the it already contains all non-composite registries.
+		// In this case we override the input meterRegistries to use the CompositeMeterRegistry only.
+		final MeterRegistry[] finalMeterRegistries = Stream.of(meterRegistries)
+				.filter(CompositeMeterRegistry.class::isInstance)
+				.findFirst()
+				.map(meterRegistry -> new MeterRegistry[] { meterRegistry })
+				.orElse(meterRegistries);
+
 		return message -> {
 
 			CharSequence meterNameRaw = properties.getComputedNameExpression().getValue(context, message, CharSequence.class);
@@ -87,7 +97,7 @@ public class AnalyticsConsumerConfiguration {
 				allGroupedTags.putAll(groupedTags);
 			}
 
-			this.recordMetrics(meterRegistries, meterName, fixedTags, allGroupedTags, amount, properties.getMeterType());
+			this.recordMetrics(finalMeterRegistries, meterName, fixedTags, allGroupedTags, amount, properties.getMeterType());
 		};
 	}
 
@@ -136,8 +146,8 @@ public class AnalyticsConsumerConfiguration {
 		}
 	}
 
-	private void recordMetrics(MeterRegistry[] meterRegistries, String meterName, Tags fixedTags, Map<String,
-			List<Tag>> groupedTags, double amount, AnalyticsConsumerProperties.MeterType meterType) {
+	private void recordMetrics(MeterRegistry[] meterRegistries, String meterName, Tags fixedTags,
+			Map<String, List<Tag>> groupedTags, double amount, AnalyticsConsumerProperties.MeterType meterType) {
 		if (!CollectionUtils.isEmpty(groupedTags)) {
 			groupedTags.values().stream().map(List::size).max(Integer::compareTo).ifPresent(
 					max -> {
