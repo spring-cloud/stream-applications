@@ -147,13 +147,6 @@
                                 <maven>
                                     <dependencyManagement>
                                         <dependency>
-                                            <groupId>org.springframework.integration</groupId>
-                                            <artifactId>spring-integration-bom</artifactId>
-                                            <version>${spring-integration-dependencies.version}</version>
-                                            <scope>import</scope>
-                                            <type>pom</type>
-                                        </dependency>
-                                        <dependency>
                                             <groupId>org.springframework.cloud.fn</groupId>
                                             <artifactId>function-dependencies</artifactId>
                                             <version>${java-functions.version}</version>
