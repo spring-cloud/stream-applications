@@ -65,7 +65,7 @@ public class ElasticsearchSinkTests {
 					GetRequest getRequest = new GetRequest("foo").id("1");
 					final GetResponse response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
 					assertThat(response.isExists()).isTrue();
-					assertThat(response.getSource().containsKey(jsonObject)).isTrue();
+					assertThat(response.getSourceAsString()).isEqualTo(jsonObject);
 				});
 	}
 
