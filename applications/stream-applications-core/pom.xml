@@ -11,16 +11,16 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-build</artifactId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <properties>
-        <revision>3.0.0-RC2</revision>
-        <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
-		<mockserver.version>5.10</mockserver.version>
+        <revision>3.0.0-SNAPSHOT</revision>
         <stream-apps-core.version>${revision}</stream-apps-core.version>
-        <java-functions.version>1.0.0-RC2</java-functions.version>
+        <java-functions.version>1.0.0-SNAPSHOT</java-functions.version>
+        <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
+        <mockserver.version>5.10</mockserver.version>
         <spring-cloud-stream-dependencies.version>Horsham.SR10</spring-cloud-stream-dependencies.version>
         <spring-cloud-stream.version>3.0.10.RELEASE</spring-cloud-stream.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.0-RC2</spring-cloud-dataflow-apps-generator-plugin.version>
