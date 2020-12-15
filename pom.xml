@@ -44,6 +44,19 @@
 		<module>spring-cloud-dataflow-apps-metadata-plugin</module>
 		<module>spring-cloud-dataflow-apps-docs-plugin</module>
 	</modules>
+	<url>https://github.com/spring-cloud/spring-cloud-dataflow-apps-plugin</url>
+	<developers>
+		<developer>
+			<id>scdf-apps-plugin-developers</id>
+			<name>SCDF Apps Plugin Developers</name>
+			<email>chackos at vmware com</email>
+			<organization>VMware</organization>
+			<organizationUrl>https://www.spring.io</organizationUrl>
+			<roles>
+				<role>lead</role>
+			</roles>
+		</developer>
+	</developers>
 
 	<licenses>
 		<license>
