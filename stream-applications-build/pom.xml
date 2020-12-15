@@ -5,7 +5,7 @@
 
 	<groupId>org.springframework.cloud.stream.app</groupId>
 	<artifactId>stream-applications-build</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>stream-applications-build</name>
 	<description>Common Parent for Functions and Applications</description>
 	<packaging>pom</packaging>
