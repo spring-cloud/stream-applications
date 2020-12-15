@@ -48,6 +48,19 @@
 		<maven-flatten-plugin.version>1.2.5</maven-flatten-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 	</properties>
+	<url>https://spring.io/projects/spring-cloud-stream-applications</url>
+	<developers>
+		<developer>
+			<id>stream-applications-developers</id>
+			<name>Stream Applications Developers</name>
+			<email>chackos at vmware com</email>
+			<organization>VMware</organization>
+			<organizationUrl>https://www.spring.io</organizationUrl>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
 
 	<dependencyManagement>
 		<dependencies>
