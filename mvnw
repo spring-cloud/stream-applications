@@ -234,16 +234,13 @@ if echo $VERSION | egrep -q 'M|RC'; then
     echo Activating \"milestone\" profile for version=\"$VERSION\"
     echo $MAVEN_ARGS | grep -q milestone || MAVEN_ARGS="$MAVEN_ARGS -Pmilestone"
 else
-    echo Deactivating \"milestone\" profile for version=\"$VERSION\"
-    echo $MAVEN_ARGS | grep -q milestone && MAVEN_ARGS=$(echo $MAVEN_ARGS | sed -e 's/-Pmilestone//')
-fi
-
-if echo $VERSION | egrep -q 'RELEASE'; then
-    echo Activating \"central\" profile for version=\"$VERSION\"
-    echo $MAVEN_ARGS | grep -q milestone || MAVEN_ARGS="$MAVEN_ARGS -Pcentral"
-else
-    echo Deactivating \"central\" profile for version=\"$VERSION\"
-    echo $MAVEN_ARGS | grep -q central && MAVEN_ARGS=$(echo $MAVEN_ARGS | sed -e 's/-Pcentral//')
+    if echo $VERSION | egrep -q 'SNAPSHOT'; then
+        echo Deactivating \"central\" profile for version=\"$VERSION\"
+        echo $MAVEN_ARGS | grep -q central && MAVEN_ARGS=$(echo $MAVEN_ARGS | sed -e 's/-Pcentral//')
+    else
+        echo Activating \"central\" profile for version=\"$VERSION\"
+        echo $MAVEN_ARGS | grep -q milestone || MAVEN_ARGS="$MAVEN_ARGS -Pcentral"
+    fi
 fi
 
 exec "$JAVACMD" \
