@@ -235,9 +235,13 @@ if echo $VERSION | egrep -q 'M|RC'; then
     echo $MAVEN_ARGS | grep -q milestone || MAVEN_ARGS="$MAVEN_ARGS -Pmilestone"
 else
     if echo $VERSION | egrep -q 'SNAPSHOT'; then
+        echo Deactivating \"milestone\" profile for version=\"$VERSION\"
+        echo $MAVEN_ARGS | grep -q milestone && MAVEN_ARGS=$(echo $MAVEN_ARGS | sed -e 's/-Pmilestone//')
         echo Deactivating \"central\" profile for version=\"$VERSION\"
         echo $MAVEN_ARGS | grep -q central && MAVEN_ARGS=$(echo $MAVEN_ARGS | sed -e 's/-Pcentral//')
     else
+        echo Deactivating \"milestone\" profile for version=\"$VERSION\"
+        echo $MAVEN_ARGS | grep -q milestone && MAVEN_ARGS=$(echo $MAVEN_ARGS | sed -e 's/-Pmilestone//')
         echo Activating \"central\" profile for version=\"$VERSION\"
         echo $MAVEN_ARGS | grep -q milestone || MAVEN_ARGS="$MAVEN_ARGS -Pcentral"
     fi
