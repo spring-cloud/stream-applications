@@ -113,6 +113,32 @@ cd applications/sink/log-sink/apps/log-sink-rabbit
 ./mvnw clean package
 ```
 
+==== Building a Docker image
+The apps use the https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin[Jib Maven Plugin] to build and publish the Docker image.
+If you have made some changes to an app, you may want to build the image and test it locally.
+
+NOTE: If you plan to use the image with minikube, run the following command before building the image:
+
+```
+eval $(minikube docker-env)
+```
+
+To build the image in your local registry:
+
+```
+./mvn clean package jib:dockerBuild
+```
+
+
+To publish the image to a remote registry:
+
+```
+jib:build \
+    -Djib.to.image=myregistry/myimage:latest \
+    -Djib.to.auth.username=$USERNAME \
+    -Djib.to.auth.password=$PASSWORD
+```
+
 == Patching Pre-built Applications
 
 === Adding new dependencies
@@ -175,34 +201,6 @@ cd target
 ```
 
 There you will find the binder based uber jar with your changes.
-
-==== Building a Docker image
-The apps use the https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin[Jib Maven Plugin] to build and publish the Docker image.
-If you have made some changes to an app, you may want to build the image and test it locally.
-
-NOTE: If you plan to use the image with minikube, run the following command before building the image:
-
-```
-eval $(minikube docker-env)
-```
-
-To build the image in your local registry:
-
-```
-./mvn clean package jib:dockerBuild
-```
-
-
-To publish the image to a remote registry:
-
-```
-jib:build \
-    -Djib.to.image=myregistry/myimage:latest \
-    -Djib.to.auth.username=$USERNAME \
-    -Djib.to.auth.password=$PASSWORD
-```
-
-
 
 === Update existing dependencies or add new resources in the application
 
