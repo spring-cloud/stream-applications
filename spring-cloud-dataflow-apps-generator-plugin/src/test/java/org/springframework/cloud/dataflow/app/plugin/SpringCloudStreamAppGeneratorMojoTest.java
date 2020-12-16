@@ -151,7 +151,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		Model pomModel = getModel(rootPath);
 
 		List<Dependency> dependencies = pomModel.getDependencies();
-		assertThat(dependencies.size()).isEqualTo(4);
+		assertThat(dependencies.size()).isEqualTo(3);
 
 		assertThat(dependencies.stream()
 				.filter(d -> d.getArtifactId().equals("log-consumer")).count()).isEqualTo(1);
