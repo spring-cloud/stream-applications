@@ -22,7 +22,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -111,6 +113,68 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 					StepVerifier.create(sftpSupplier.get())
 							.assertNext(message -> {
 								assertThat(expectedFileName.get()).contains(message.getPayload());
+							})
+							.expectTimeout(Duration.ofMillis(1000))
+							.verify(Duration.ofSeconds(30));
+
+				});
+	}
+
+	@Test
+	void supplierForListSortedByFilenameAsc() {
+		defaultApplicationContextRunner
+				.withPropertyValues("sftp.supplier.listOnly=true", "sftp.supplier.sortBy.attribute=filename", "sftp.supplier.sortBy.dir=asc")
+				.run(context -> {
+					Supplier<Flux<Message<String>>> sftpSupplier = context.getBean("sftpSupplier",
+							Supplier.class);
+					SftpSupplierProperties properties = context.getBean(SftpSupplierProperties.class);
+					List<String> fileNames = new ArrayList<>();
+					fileNames.add(String.join(properties.getRemoteFileSeparator(), properties.getRemoteDir(),
+							"sftpSource1.txt"));
+					fileNames.add(String.join(properties.getRemoteFileSeparator(), properties.getRemoteDir(),
+							"sftpSource2.txt"));
+					final AtomicReference<List<String>> expectedFileNames = new AtomicReference<>(fileNames);
+					StepVerifier.create(sftpSupplier.get())
+							.assertNext(message -> {
+								assertThat(message.getPayload()).isEqualTo(expectedFileNames.get().get(0));
+								assertThat(message.getHeaders().get(MessageHeaders.CONTENT_TYPE))
+										.isEqualTo(MediaType.TEXT_PLAIN);
+							})
+							.assertNext(message -> {
+								assertThat(message.getPayload()).isEqualTo(expectedFileNames.get().get(1));
+								assertThat(message.getHeaders().get(MessageHeaders.CONTENT_TYPE))
+										.isEqualTo(MediaType.TEXT_PLAIN);
+							})
+							.expectTimeout(Duration.ofMillis(1000))
+							.verify(Duration.ofSeconds(30));
+
+				});
+	}
+
+	@Test
+	void supplierForListSortedByFilenameDesc() {
+		defaultApplicationContextRunner
+				.withPropertyValues("sftp.supplier.listOnly=true", "sftp.supplier.sortBy.attribute=filename", "sftp.supplier.sortBy.dir=desc")
+				.run(context -> {
+					Supplier<Flux<Message<String>>> sftpSupplier = context.getBean("sftpSupplier",
+							Supplier.class);
+					SftpSupplierProperties properties = context.getBean(SftpSupplierProperties.class);
+					List<String> fileNames = new ArrayList<>();
+					fileNames.add(String.join(properties.getRemoteFileSeparator(), properties.getRemoteDir(),
+							"sftpSource2.txt"));
+					fileNames.add(String.join(properties.getRemoteFileSeparator(), properties.getRemoteDir(),
+							"sftpSource1.txt"));
+					final AtomicReference<List<String>> expectedFileNames = new AtomicReference<>(fileNames);
+					StepVerifier.create(sftpSupplier.get())
+							.assertNext(message -> {
+								assertThat(message.getPayload()).isEqualTo(expectedFileNames.get().get(0));
+								assertThat(message.getHeaders().get(MessageHeaders.CONTENT_TYPE))
+										.isEqualTo(MediaType.TEXT_PLAIN);
+							})
+							.assertNext(message -> {
+								assertThat(message.getPayload()).isEqualTo(expectedFileNames.get().get(1));
+								assertThat(message.getHeaders().get(MessageHeaders.CONTENT_TYPE))
+										.isEqualTo(MediaType.TEXT_PLAIN);
 							})
 							.expectTimeout(Duration.ofMillis(1000))
 							.verify(Duration.ofSeconds(30));

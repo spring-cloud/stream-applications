@@ -18,7 +18,7 @@
     <properties>
         <revision>3.0.2-SNAPSHOT</revision>
         <stream-apps-core.version>${revision}</stream-apps-core.version>
-        <java-functions.version>1.0.0</java-functions.version>
+        <java-functions.version>1.0.1-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
         <mockserver.version>5.10</mockserver.version>
         <spring-cloud-stream-dependencies.version>Horsham.SR10</spring-cloud-stream-dependencies.version>

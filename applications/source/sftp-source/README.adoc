@@ -157,6 +157,11 @@ $$password$$:: $$The password to use to connect to the server.$$ *($$String$$, d
 $$port$$:: $$The port of the server.$$ *($$Integer$$, default: `$$22$$`)*
 $$private-key$$:: $$Resource location of user's private key.$$ *($$Resource$$, default: `$$<none>$$`)*
 $$username$$:: $$The username to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== sftp.supplier.sort-by
+
+$$attribute$$:: $$Attribute of the file listing entry to sort by (FILENAME, ATIME: last access time, MTIME: last modified time).$$ *($$Attribute$$, default: `$$<none>$$`)*
+$$dir$$:: $$Sorting direction (ASC or DESC).$$ *($$Dir$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 == Examples
