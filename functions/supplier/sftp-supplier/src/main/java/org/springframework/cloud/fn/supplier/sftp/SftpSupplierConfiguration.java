@@ -81,8 +81,8 @@ import org.springframework.util.StringUtils;
  */
 
 @Configuration
-@EnableConfigurationProperties({ SftpSupplierProperties.class, FileConsumerProperties.class })
-@Import({ SftpSupplierFactoryConfiguration.class })
+@EnableConfigurationProperties({SftpSupplierProperties.class, FileConsumerProperties.class})
+@Import({SftpSupplierFactoryConfiguration.class})
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class SftpSupplierConfiguration {
 
@@ -236,7 +236,7 @@ public class SftpSupplierConfiguration {
 				FileConsumerProperties fileConsumerProperties) {
 
 			return FileUtils.enhanceFlowForReadingMode(IntegrationFlows
-					.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)),
+							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)),
 					fileConsumerProperties)
 					.toReactivePublisher();
 		}
@@ -281,7 +281,7 @@ public class SftpSupplierConfiguration {
 
 		@Bean
 		public MessageSource<?> targetMessageSource(PollableChannel listingChannel,
-				SftpListingMessageProducer sftpListingMessageProducer) {
+													SftpListingMessageProducer sftpListingMessageProducer) {
 			return () -> {
 				sftpListingMessageProducer.listNames();
 				return (Message<Object>) listingChannel.receive();
@@ -295,7 +295,9 @@ public class SftpSupplierConfiguration {
 
 			return new SftpListingMessageProducer(delegatingFactoryWrapper.getFactory(),
 					remoteDirectory(sftpSupplierProperties),
-					sftpSupplierProperties.getRemoteFileSeparator());
+					sftpSupplierProperties.getRemoteFileSeparator(),
+					sftpSupplierProperties.getSortBy()
+			);
 		}
 
 		@Bean
@@ -374,23 +376,29 @@ public class SftpSupplierConfiguration {
 
 			private final String remoteFileSeparator;
 
+			private final SftpSupplierProperties.SortSpec sort;
+
 			SftpListingMessageProducer(SessionFactory<?> sessionFactory, String remoteDirectory,
-					String remoteFileSeparator) {
+									String remoteFileSeparator, SftpSupplierProperties.SortSpec sort) {
 
 				this.sessionFactory = sessionFactory;
 				this.remoteDirectory = remoteDirectory;
 				this.remoteFileSeparator = remoteFileSeparator;
+				this.sort = sort;
 			}
 
 			public void listNames() {
 				LsEntry[] entries = {};
 				try {
-					entries = Stream.of(this.sessionFactory.getSession().list(this.remoteDirectory))
-							.filter(o -> {
-								LsEntry lsEntry = (LsEntry) o;
-								return !(lsEntry.getAttrs().isDir() || lsEntry.getAttrs().isLink());
-							})
-							.collect(Collectors.toList()).toArray(entries);
+					Stream<LsEntry> stream = Stream.of(this.sessionFactory.getSession().list(this.remoteDirectory))
+							.map(x -> (LsEntry) x)
+							.filter(x -> !(x.getAttrs().isDir() || x.getAttrs().isLink()));
+
+					if (sort != null) {
+						stream = stream.sorted(sort.comparator());
+					}
+
+					entries = stream.collect(Collectors.toList()).toArray(entries);
 				}
 				catch (IOException e) {
 					throw new MessagingException(e.getMessage(), e);

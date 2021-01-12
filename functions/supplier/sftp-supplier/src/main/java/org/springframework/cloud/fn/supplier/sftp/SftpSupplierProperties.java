@@ -20,14 +20,17 @@ import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.validation.Valid;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.jcraft.jsch.ChannelSftp;
 import org.hibernate.validator.constraints.Range;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -134,6 +137,12 @@ public class SftpSupplierProperties {
 	 * A list of factory "name.directory" pairs.
 	 */
 	private String[] directories;
+
+	/**
+	 * Sorting specification for remote files listings. If null, order of entries is undefined.
+	 * Otherwise, entries are sorted by the specified field and direction, according to the type canonical ordering.
+	 */
+	private SortSpec sortBy;
 
 	@NotBlank
 	public String getRemoteDir() {
@@ -291,6 +300,15 @@ public class SftpSupplierProperties {
 		return keyDirs;
 	}
 
+	@Valid
+	public SftpSupplierProperties.SortSpec getSortBy() {
+		return sortBy;
+	}
+
+	public void setSortBy(SortSpec sortBy) {
+		this.sortBy = sortBy;
+	}
+
 	public static class Factory {
 
 		/**
@@ -403,4 +421,80 @@ public class SftpSupplierProperties {
 
 	}
 
+	public static class SortSpec {
+		/**
+		 * Field of the file listing entry to sort by.
+		 */
+		private Field field;
+
+		/**
+		 * Sorting direction.
+		 */
+		private Dir dir;
+
+		@NotNull
+		public Field getField() {
+			return field;
+		}
+
+		public void setField(Field field) {
+			this.field = field;
+		}
+
+		@NotNull
+		public Dir getDir() {
+			return dir;
+		}
+
+		public void setDir(Dir dir) {
+			this.dir = dir;
+		}
+
+		public enum Field {
+			/**
+			 * Filename field.
+			 */
+			FILENAME,
+
+			/**
+			 * Last access time field.
+			 */
+			ATIME,
+
+			/**
+			 * Last modified time field.
+			 */
+			MTIME
+		}
+
+		public enum Dir {
+			/**
+			 * Ascending sort direction.
+			 */
+			ASC,
+
+			/**
+			 * Descending sort direction.
+			 */
+			DESC
+		}
+
+		private Comparator<ChannelSftp.LsEntry> getFieldComparator() {
+			switch (field) {
+				case FILENAME:
+					return Comparator.comparing(ChannelSftp.LsEntry::getFilename);
+				case ATIME:
+					return Comparator.comparing(x -> x.getAttrs().getATime());
+				case MTIME:
+					return Comparator.comparing(x -> x.getAttrs().getMTime());
+			}
+
+			throw new UnsupportedOperationException("Unsupported sortBy field: " + field);
+		}
+
+		public Comparator<ChannelSftp.LsEntry> comparator() {
+			Comparator<ChannelSftp.LsEntry> comparator = getFieldComparator();
+			return dir == Dir.ASC ? comparator : comparator.reversed();
+		}
+	}
 }
