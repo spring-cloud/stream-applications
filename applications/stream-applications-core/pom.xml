@@ -28,6 +28,9 @@
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.2-SNAPSHOT</spring-cloud-dataflow-apps-metadata-plugin.version>
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
         <prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
+        <!-- Boot 2.4.x needs wavefront-spring-boot version 2.1.0-RC1+ -->
+        <wavefront-spring-boot.version>2.0.2</wavefront-spring-boot.version>
+        <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
     </properties>
 
     <modules>
@@ -133,6 +136,7 @@
                                     <management.metrics.export.prometheus.enabled>false</management.metrics.export.prometheus.enabled>
                                     <management.metrics.export.prometheus.rsocket.enabled>false</management.metrics.export.prometheus.rsocket.enabled>
                                     <management.metrics.export.datadog.enabled>false</management.metrics.export.datadog.enabled>
+                                    <wavefront.tracing.enabled>false</wavefront.tracing.enabled>
 
                                     <!-- Add SCDF stream metrics tags. -->
                                     <management.metrics.tags.stream.name>"${spring.cloud.dataflow.stream.name:unknown}"</management.metrics.tags.stream.name>
@@ -140,12 +144,23 @@
                                     <management.metrics.tags.application.type>"${spring.cloud.dataflow.stream.app.type:unknown}"</management.metrics.tags.application.type>
                                     <management.metrics.tags.instance.index>"${spring.cloud.stream.instanceIndex:0}"</management.metrics.tags.instance.index>
                                     <management.metrics.tags.application.guid>"${spring.cloud.application.guid:unknown}"</management.metrics.tags.application.guid>
+
+                                    <!-- Wavefront Tracing -->
+                                    <wavefront.application.name>"${spring.cloud.dataflow.stream.name:unknown}</wavefront.application.name>
+                                    <wavefront.application.service>${spring.cloud.dataflow.stream.app.label:unknown}-${spring.cloud.dataflow.stream.app.type:unknown}"</wavefront.application.service>
                                 </properties>
                                 <metadata>
                                     <mavenPluginVersion>${spring-cloud-dataflow-apps-metadata-plugin.version}</mavenPluginVersion>
                                 </metadata>
                                 <maven>
                                     <dependencyManagement>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud</groupId>
+                                            <artifactId>spring-cloud-dependencies</artifactId>
+                                            <version>${spring-cloud.version}</version>
+                                            <type>pom</type>
+                                            <scope>import</scope>
+                                        </dependency>
                                         <dependency>
                                             <groupId>org.springframework.cloud.fn</groupId>
                                             <artifactId>function-dependencies</artifactId>
@@ -160,6 +175,13 @@
                                             <groupId>org.springframework.cloud</groupId>
                                             <artifactId>spring-cloud-function-dependencies</artifactId>
                                             <version>${spring-cloud-function.version}</version>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>com.wavefront</groupId>
+                                            <artifactId>wavefront-spring-boot-bom</artifactId>
+                                            <version>${wavefront-spring-boot.version}</version>
+                                            <type>pom</type>
+                                            <scope>import</scope>
                                         </dependency>
                                     </dependencyManagement>
                                     <dependencies>
@@ -199,15 +221,6 @@
                                             <groupId>io.micrometer</groupId>
                                             <artifactId>micrometer-registry-wavefront</artifactId>
                                         </dependency>
-                                        <!-- Override the WF SDK dependency to resolve the https://github.com/wavefrontHQ/wavefront-sdk-java/pull/152
-                                             TODO: removed this dependency when Micrometer and Boot catch up with WF SDC 2.6.+ (likely Micrometer 1.5.3+).
-                                             -->
-                                        <dependency>
-                                            <groupId>com.wavefront</groupId>
-                                            <artifactId>wavefront-sdk-java</artifactId>
-                                            <version>2.6.0</version>
-                                        </dependency>
-
                                         <dependency>
                                             <groupId>io.pivotal.cfenv</groupId>
                                             <artifactId>java-cfenv-boot</artifactId>
@@ -232,6 +245,14 @@
                                         <dependency>
                                             <groupId>org.springframework.boot</groupId>
                                             <artifactId>spring-boot-starter-security</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>com.wavefront</groupId>
+                                            <artifactId>wavefront-spring-boot-starter</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud</groupId>
+                                            <artifactId>spring-cloud-starter-sleuth</artifactId>
                                         </dependency>
                                     </dependencies>
                                 </maven>
