@@ -18,15 +18,19 @@ package org.springframework.cloud.dataflow.app.plugin.generator;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
@@ -155,7 +159,17 @@ public final class ProjectGenerator {
 		String materializedAppProperties = materialize("template/app.properties", appTemplateProperties);
 		// Note: the application properties file may already exist from the parent's project src/main/resources dir.
 		File appPropertyFile = file(appMainResourceDir, "application.properties");
-		FileUtils.writeStringToFile(appPropertyFile, materializedAppProperties, "UTF8", true);
+		//FileUtils.writeStringToFile(appPropertyFile, materializedAppProperties, "UTF8", true);
+		Properties appProps = new Properties();
+		if (appPropertyFile.exists()) {
+			appProps.load(new FileInputStream(appPropertyFile));
+		}
+		Properties genAppProps = new Properties();
+		genAppProps.load(new ByteArrayInputStream(materializedAppProperties.getBytes(StandardCharsets.UTF_8)));
+
+		// Generated properties override the inherited!
+		appProps.putAll(genAppProps);
+		appProps.store(new FileWriter(appPropertyFile), "App generator properties");
 
 		copy(materialize("template/App.java", appTemplateProperties),
 				file(appMainSrcDir, appClassName + ".java"));
