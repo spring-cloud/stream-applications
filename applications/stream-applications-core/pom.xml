@@ -136,7 +136,6 @@
                                     <management.metrics.export.prometheus.enabled>false</management.metrics.export.prometheus.enabled>
                                     <management.metrics.export.prometheus.rsocket.enabled>false</management.metrics.export.prometheus.rsocket.enabled>
                                     <management.metrics.export.datadog.enabled>false</management.metrics.export.datadog.enabled>
-                                    <wavefront.tracing.enabled>false</wavefront.tracing.enabled>
 
                                     <!-- Add SCDF stream metrics tags. -->
                                     <management.metrics.tags.stream.name>"${spring.cloud.dataflow.stream.name:unknown}"</management.metrics.tags.stream.name>
