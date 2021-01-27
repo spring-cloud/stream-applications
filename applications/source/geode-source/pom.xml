@@ -35,10 +35,12 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>function-test-support</artifactId>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-geode-test</artifactId>
+            <version>${spring-data-geode-test.version}</version>
             <scope>test</scope>
         </dependency>
+
 
     </dependencies>
 

@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.source.geode;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.geode.cache.Region;
 import org.apache.geode.pdx.PdxInstance;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -35,11 +37,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.fn.common.geode.JsonPdxFunctions;
 import org.springframework.cloud.fn.supplier.geode.GeodeSupplierConfiguration;
-import org.springframework.cloud.fn.test.support.geode.GeodeContainer;
-import org.springframework.cloud.fn.test.support.geode.GeodeContainerIntializer;
+import org.springframework.cloud.stream.app.source.geodeserver.GeodeServerTestConfiguration;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.gemfire.tests.integration.ForkingClientServerIntegrationTestsSupport;
 import org.springframework.messaging.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,22 +51,24 @@ public class GeodeSourceTests {
 
 	private static ApplicationContextRunner applicationContextRunner;
 
-	private static GeodeContainer geode;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@BeforeAll
-	static void setup() {
-		GeodeContainerIntializer initializer = new GeodeContainerIntializer(
-				geodeContainer -> {
-					geodeContainer.connectAndExecGfsh("create region --name=myRegion --type=REPLICATE");
-				});
+	static void setup() throws IOException {
+		ForkingClientServerIntegrationTestsSupport.startGemFireServer(
+				GeodeServerTestConfiguration.class);
 
 		applicationContextRunner = new ApplicationContextRunner()
 				.withUserConfiguration(
 						TestChannelBinderConfiguration.getCompleteConfiguration(GeodeSourceTestApplication.class));
 
-		geode = initializer.geodeContainer();
+	}
+
+	@AfterAll
+	static void stopServer() {
+		ForkingClientServerIntegrationTestsSupport.stopGemFireServer();
+		ForkingClientServerIntegrationTestsSupport.clearCacheServerPortAndPoolPortProperties();
 	}
 
 	@Test
@@ -73,7 +77,7 @@ public class GeodeSourceTests {
 				.withPropertyValues("geode.region.regionName=myRegion",
 						"geode.supplier.event-expression=key+':'+newValue",
 						"geode.pool.connectType=server",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort(),
+						"geode.pool.hostAddresses=" + "localhost:" + System.getProperty("spring.data.gemfire.cache.server.port"),
 						"spring.cloud.function.definition=geodeSupplier")
 				.run(context -> {
 
@@ -105,7 +109,7 @@ public class GeodeSourceTests {
 						"geode.client.pdx-read-serialized=true",
 						"geode.supplier.query=Select * from /myRegion where symbol='XXX' and price > 140",
 						"geode.pool.connectType=server",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
+						"geode.pool.hostAddresses=" + "localhost:" + System.getProperty("spring.data.gemfire.cache.server.port"))
 				.run(context -> {
 					OutputDestination outputDestination = context.getBean(OutputDestination.class);
 					// Using local region here

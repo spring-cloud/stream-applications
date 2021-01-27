@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.consumer.geode;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,14 +25,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.geode.cache.Region;
 import org.apache.geode.pdx.PdxInstance;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.fn.test.support.geode.GeodeContainer;
-import org.springframework.cloud.fn.test.support.geode.GeodeContainerIntializer;
+import org.springframework.cloud.fn.consumer.geodeserver.GeodeServerTestConfiguration;
+import org.springframework.data.gemfire.tests.integration.ForkingClientServerIntegrationTestsSupport;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 
@@ -39,24 +41,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("integration")
 public class GeodeConsumerApplicationTests {
-
 	private static ApplicationContextRunner applicationContextRunner;
-
-	private static GeodeContainer geode;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@BeforeAll
-	static void setup() {
-		GeodeContainerIntializer initializer = new GeodeContainerIntializer(
-				geodeContainer -> {
-					geodeContainer.connectAndExecGfsh("create region --name=Stocks --type=REPLICATE");
-				});
+	static void setup() throws IOException {
+		ForkingClientServerIntegrationTestsSupport.startGemFireServer(
+				GeodeServerTestConfiguration.class);
 
 		applicationContextRunner = new ApplicationContextRunner()
 				.withUserConfiguration(GeodeConsumerTestApplication.class);
+	}
 
-		geode = initializer.geodeContainer();
+	@AfterAll
+	static void stopServer() {
+		ForkingClientServerIntegrationTestsSupport.stopGemFireServer();
+		ForkingClientServerIntegrationTestsSupport.clearCacheServerPortAndPoolPortProperties();
 	}
 
 	@Test
@@ -67,7 +68,7 @@ public class GeodeConsumerApplicationTests {
 						"geode.consumer.json=true",
 						"geode.consumer.key-expression=payload.getField('symbol')",
 						"geode.pool.connectType=server",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
+						"geode.pool.hostAddresses=" + "localhost:" + System.getProperty("spring.data.gemfire.cache.server.port"))
 				.run(context -> {
 					Consumer<Message<?>> geodeConsumer = context.getBean("geodeConsumer", Consumer.class);
 
@@ -88,7 +89,7 @@ public class GeodeConsumerApplicationTests {
 						"geode.region.regionName=Stocks",
 						"geode.consumer.key-expression='key'",
 						"geode.pool.connectType=server",
-						"geode.pool.hostAddresses=" + "localhost:" + geode.getCacheServerPort())
+						"geode.pool.hostAddresses=" + "localhost:" + System.getProperty("spring.data.gemfire.cache.server.port"))
 				.run(context -> {
 					Consumer<Message<?>> geodeConsumer = context.getBean("geodeConsumer", Consumer.class);
 
