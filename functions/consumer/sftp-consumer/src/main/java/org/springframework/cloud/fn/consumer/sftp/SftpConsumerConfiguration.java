@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,22 +40,23 @@ import org.springframework.messaging.Message;
 @Import(SftpConsumerSessionFactoryConfiguration.class)
 public class SftpConsumerConfiguration {
 
-	private static final ExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
-
 	@Bean
-	public IntegrationFlow ftpInboundFlow(SftpConsumerProperties properties, SessionFactory<ChannelSftp.LsEntry> ftpSessionFactory) {
+	public IntegrationFlow ftpOutboundFlow(SftpConsumerProperties properties,
+			SessionFactory<ChannelSftp.LsEntry> ftpSessionFactory) {
+
 		IntegrationFlowBuilder integrationFlowBuilder =
 				IntegrationFlows.from(MessageConsumer.class, (gateway) -> gateway.beanName("sftpConsumer"));
 
 		SftpMessageHandlerSpec handlerSpec =
 				Sftp.outboundAdapter(new SftpRemoteFileTemplate(ftpSessionFactory), properties.getMode())
 						.remoteDirectory(properties.getRemoteDir())
+						.temporaryRemoteDirectory(properties.getTemporaryRemoteDir())
 						.remoteFileSeparator(properties.getRemoteFileSeparator())
 						.autoCreateDirectory(properties.isAutoCreateDir())
+						.useTemporaryFileName(properties.isUseTemporaryFilename())
 						.temporaryFileSuffix(properties.getTmpFileSuffix());
 		if (properties.getFilenameExpression() != null) {
-			handlerSpec.fileNameExpression(EXPRESSION_PARSER.parseExpression(properties.getFilenameExpression())
-					.getExpressionString());
+			handlerSpec.fileNameExpression(properties.getFilenameExpression());
 		}
 		return integrationFlowBuilder
 				.handle(handlerSpec)
