@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 the original author or authors.
+ * Copyright 2018-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +60,7 @@ import org.springframework.integration.sftp.dsl.Sftp;
 import org.springframework.integration.sftp.dsl.SftpInboundChannelAdapterSpec;
 import org.springframework.integration.sftp.filters.SftpPersistentAcceptOnceFileListFilter;
 import org.springframework.integration.sftp.filters.SftpRegexPatternFileListFilter;
+import org.springframework.integration.sftp.filters.SftpSimplePatternFileListFilter;
 import org.springframework.integration.sftp.session.SftpRemoteFileTemplate;
 import org.springframework.integration.util.IntegrationReactiveUtils;
 import org.springframework.lang.Nullable;
@@ -83,7 +84,6 @@ import org.springframework.util.StringUtils;
 @Configuration
 @EnableConfigurationProperties({SftpSupplierProperties.class, FileConsumerProperties.class})
 @Import({SftpSupplierFactoryConfiguration.class})
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class SftpSupplierConfiguration {
 
 	private static final String METADATA_STORE_PREFIX = "sftpSource/";
@@ -135,15 +135,14 @@ public class SftpSupplierConfiguration {
 	@Bean
 	public FileListFilter<LsEntry> chainFilter(SftpSupplierProperties sftpSupplierProperties,
 			ConcurrentMetadataStore metadataStore) {
+
 		ChainFileListFilter<LsEntry> chainFilter = new ChainFileListFilter<>();
 
 		if (StringUtils.hasText(sftpSupplierProperties.getFilenamePattern())) {
-			chainFilter
-					.addFilter(new SftpRegexPatternFileListFilter(sftpSupplierProperties.getFilenamePattern()));
+			chainFilter.addFilter(new SftpSimplePatternFileListFilter(sftpSupplierProperties.getFilenamePattern()));
 		}
 		else if (sftpSupplierProperties.getFilenameRegex() != null) {
-			chainFilter
-					.addFilter(new SftpRegexPatternFileListFilter(sftpSupplierProperties.getFilenameRegex()));
+			chainFilter.addFilter(new SftpRegexPatternFileListFilter(sftpSupplierProperties.getFilenameRegex()));
 		}
 
 		chainFilter.addFilter(new SftpPersistentAcceptOnceFileListFilter(metadataStore, METADATA_STORE_PREFIX));
@@ -213,6 +212,7 @@ public class SftpSupplierConfiguration {
 		@ConditionalOnProperty(prefix = "sftp.supplier", value = "delete-remote-files")
 		public RemoteFileDeletingAdvice remoteFileDeletingAdvice(SftpRemoteFileTemplate sftpTemplate,
 				SftpSupplierProperties sftpSupplierProperties) {
+
 			return new RemoteFileDeletingAdvice(sftpTemplate, sftpSupplierProperties.getRemoteFileSeparator());
 		}
 
@@ -280,6 +280,7 @@ public class SftpSupplierConfiguration {
 		}
 
 		@Bean
+		@SuppressWarnings("unchecked")
 		public MessageSource<?> targetMessageSource(PollableChannel listingChannel,
 													SftpListingMessageProducer sftpListingMessageProducer) {
 			return () -> {
@@ -310,9 +311,7 @@ public class SftpSupplierConfiguration {
 				predicate = sftpSupplierProperties.getFilenameRegex().asPredicate();
 			}
 
-			GenericSelector<String> selector = predicate::test;
-
-			return selector;
+			return predicate::test;
 		}
 
 		@Bean
