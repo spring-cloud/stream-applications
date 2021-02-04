@@ -23,7 +23,10 @@ In the case of splitting you get a `Flux` which you have to subscribe in your ap
 
 All configuration properties are prefixed with `mongodb.supplier`.
 
-For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/mongo/MongodbSupplierProperties.java[MongoDBSupplierProperties]
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/mongo/MongodbSupplierProperties.java[MongoDBSupplierProperties].
+
+The `queryExpression` and `updateExpression` options may use Spring Data MongoDB query DSL from the `org.springframework.data.mongodb.core.query`, such as `Query` and `Update` factories respectively.
+The `updateExpression` is optional and ca use an item from query result as a root evaluation object to extract some values to update from just fetched data.
 
 ## Tests
 

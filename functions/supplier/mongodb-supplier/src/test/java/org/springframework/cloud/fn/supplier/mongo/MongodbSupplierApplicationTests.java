@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,10 @@ import static org.assertj.core.api.Assertions.entry;
 
 @SpringBootTest(properties = {
 		"spring.data.mongodb.port=0",
-		"mongodb.supplier.collection=testing"})
+		"mongodb.supplier.collection=testing",
+		"mongodb.supplier.query={ name: { $exists: true }}",
+		"mongodb.supplier.update-expression='{ $unset: { name: 0 } }'",
+})
 class MongodbSupplierApplicationTests {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
@@ -78,6 +81,8 @@ class MongodbSupplierApplicationTests {
 								entry("name", "bar")))
 				.thenCancel()
 				.verify();
+
+		assertThat(this.mongodbSupplier.get().collectList().block()).isEmpty();
 	}
 
 	private Map<String, Object> payload(Message<?> message) {

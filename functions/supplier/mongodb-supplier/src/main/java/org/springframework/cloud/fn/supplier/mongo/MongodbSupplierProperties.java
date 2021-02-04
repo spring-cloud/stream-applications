@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 the original author or authors.
+ * Copyright 2016-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,11 @@ public class MongodbSupplierProperties {
 	private Expression queryExpression;
 
 	/**
+	 * The SpEL expression in MongoDB update DSL style.
+	 */
+	private Expression updateExpression;
+
+	/**
 	 * Whether to split the query result as individual messages.
 	 */
 	private boolean split = true;
@@ -85,6 +90,14 @@ public class MongodbSupplierProperties {
 
 	public void setSplit(boolean split) {
 		this.split = split;
+	}
+
+	public Expression getUpdateExpression() {
+		return this.updateExpression;
+	}
+
+	public void setUpdateExpression(Expression updateExpression) {
+		this.updateExpression = updateExpression;
 	}
 
 }
