@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.fn.consumer.sftp;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
@@ -45,6 +43,8 @@ import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.file.support.FileExistsMode;
 import org.springframework.integration.test.util.TestUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author David Turanski
