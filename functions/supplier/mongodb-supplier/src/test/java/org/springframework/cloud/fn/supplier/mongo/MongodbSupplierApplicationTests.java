@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.entry;
 		"spring.data.mongodb.port=0",
 		"mongodb.supplier.collection=testing",
 		"mongodb.supplier.query={ name: { $exists: true }}",
-		"mongodb.supplier.update-expression='{ $unset: { name: 0 } }'",
+		"mongodb.supplier.update-expression='{ $unset: { name: 0 } }'"
 })
 class MongodbSupplierApplicationTests {
 
