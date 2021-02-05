@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ import org.springframework.messaging.Message;
  * @author David Turanski
  */
 @Configuration
-@EnableConfigurationProperties({MongodbSupplierProperties.class})
+@EnableConfigurationProperties({ MongodbSupplierProperties.class })
 @Import(SplitterFunctionConfiguration.class)
 public class MongodbSupplierConfiguration {
 
@@ -82,11 +82,10 @@ public class MongodbSupplierConfiguration {
 	/**
 	 * The inheritors can consider to override this method for their purpose or just adjust
 	 * options for the returned instance.
-	 *
 	 * @return a {@link MongoDbMessageSource} instance
 	 */
 	@Bean
-	public MongoDbMessageSource mongoSource() {
+	public MongoDbMessageSource mongoDbSource() {
 		Expression queryExpression = (this.properties.getQueryExpression() != null
 				? this.properties.getQueryExpression()
 				: new LiteralExpression(this.properties.getQuery()));
@@ -94,6 +93,12 @@ public class MongodbSupplierConfiguration {
 		mongoDbMessageSource.setCollectionNameExpression(new LiteralExpression(this.properties.getCollection()));
 		mongoDbMessageSource.setEntityClass(String.class);
 		return mongoDbMessageSource;
+	}
+
+	@Bean
+	public UpdatingMongoDbMessageSource mongoSource() {
+		return new UpdatingMongoDbMessageSource(mongoDbSource(), this.mongoTemplate,
+				this.properties.getUpdateExpression());
 	}
 
 }
