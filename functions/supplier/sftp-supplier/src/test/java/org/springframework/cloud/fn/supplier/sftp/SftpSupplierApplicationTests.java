@@ -16,10 +16,6 @@
 
 package org.springframework.cloud.fn.supplier.sftp;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.awaitility.Awaitility.await;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,6 +32,9 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.fn.test.support.sftp.SftpTestSupport;
@@ -46,8 +45,9 @@ import org.springframework.integration.metadata.MetadataStore;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.awaitility.Awaitility.await;
 
 public class SftpSupplierApplicationTests extends SftpTestSupport {
 
