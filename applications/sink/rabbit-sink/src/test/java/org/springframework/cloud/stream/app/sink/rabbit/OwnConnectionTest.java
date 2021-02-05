@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.sink.rabbit;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.amqp.core.Message;
@@ -30,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OwnConnectionTest extends RabbitSinkIntegrationTests {
 
 	@Test
+	@Disabled
 	public void test() {
 		this.rabbitAdmin.declareQueue(
 				new Queue("scsapp-testOwn", false, false, true));

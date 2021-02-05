@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.mqtt.sink;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 
@@ -56,6 +57,7 @@ public class MqttSinkTests {
 	}
 
 	@Test
+	@Disabled
 	public void testMqttSink() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
