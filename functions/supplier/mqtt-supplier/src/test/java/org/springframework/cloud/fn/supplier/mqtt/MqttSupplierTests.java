@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.supplier.mqtt;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import reactor.core.publisher.Flux;
@@ -70,6 +71,7 @@ public class MqttSupplierTests {
 	private MessageHandler mqttOutbound;
 
 	@Test
+	@Disabled
 	public void testBasicFlow() {
 
 		mqttOutbound.handleMessage(MessageBuilder.withPayload("hello").build());

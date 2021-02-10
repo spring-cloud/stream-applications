@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.consumer.mqtt;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 
@@ -61,6 +62,7 @@ public class MqttConsumerTests {
 	}
 
 	@Test
+	@Disabled
 	public void testMqttConsumer() {
 		this.mqttConsumer.accept(MessageBuilder.withPayload("hello").build());
 		Message<?> in = this.queue.receive(10000);

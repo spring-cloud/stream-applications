@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.source.mqtt;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 
@@ -56,6 +57,7 @@ public class MqttSourceTests {
 	}
 
 	@Test
+	@Disabled
 	public void testMqttSource() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
