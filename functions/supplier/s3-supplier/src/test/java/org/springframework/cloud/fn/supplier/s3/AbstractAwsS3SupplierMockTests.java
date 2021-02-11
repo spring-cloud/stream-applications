@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 the original author or authors.
+ * Copyright 2016-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,6 +117,16 @@ public abstract class AbstractAwsS3SupplierMockTests {
 	@AfterAll
 	public static void tearDown() {
 		System.clearProperty("s3.supplier.localDir");
+		S3_OBJECTS.stream()
+				.map(S3Object::getObjectContent)
+				.forEach(stream -> {
+					try {
+						stream.close();
+					}
+					catch (IOException e) {
+						// Ignore
+					}
+				});
 	}
 
 	@SpringBootApplication
@@ -141,9 +151,7 @@ public abstract class AbstractAwsS3SupplierMockTests {
 				objectSummaries.add(s3ObjectSummary);
 			}
 
-			willAnswer(invocation -> {
-				return objectListing;
-			}).given(amazonS3).listObjects(any(ListObjectsRequest.class));
+			willAnswer(invocation -> objectListing).given(amazonS3).listObjects(any(ListObjectsRequest.class));
 
 			for (final S3Object s3Object : S3_OBJECTS) {
 				willAnswer(invocation -> s3Object).given(amazonS3).getObject(S3_BUCKET, s3Object.getKey());

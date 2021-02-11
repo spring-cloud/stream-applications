@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.springframework.cloud.fn.supplier.mqtt;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import reactor.core.publisher.Flux;
@@ -45,6 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Janne Valkealahti
  * @author Gary Russell
  * @author Soby Chacko
+ * @author Artem Bilan
  *
  */
 @SpringBootTest(properties = {"mqtt.supplier.topics=test,fake", "mqtt.supplier.qos=0,0"})
@@ -52,7 +52,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MqttSupplierTests {
 
 	static {
-		GenericContainer mosquitto = new GenericContainer("eclipse-mosquitto")
+		GenericContainer mosquitto = new GenericContainer("cyrilix/rabbitmq-mqtt")
 				.withExposedPorts(1883);
 		mosquitto.start();
 		final Integer mappedPort = mosquitto.getMappedPort(1883);
@@ -71,7 +71,6 @@ public class MqttSupplierTests {
 	private MessageHandler mqttOutbound;
 
 	@Test
-	@Disabled
 	public void testBasicFlow() {
 
 		mqttOutbound.handleMessage(MessageBuilder.withPayload("hello").build());

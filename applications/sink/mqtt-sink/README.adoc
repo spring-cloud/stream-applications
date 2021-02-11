@@ -29,12 +29,12 @@ $$username$$:: $$the username to use when connecting to the broker.$$ *($$String
 
 === mqtt.consumer
 
-$$async$$:: $$whether or not to use async sends.$$ *($$Boolean$$, default: `$$false$$`)*
-$$charset$$:: $$the charset used to convert a String payload to byte[].$$ *($$String$$, default: `$$UTF-8$$`)*
-$$client-id$$:: $$identifies the client.$$ *($$String$$, default: `$$stream.client.id.sink$$`)*
-$$qos$$:: $$the quality of service to use.$$ *($$Integer$$, default: `$$1$$`)*
-$$retained$$:: $$whether to set the 'retained' flag.$$ *($$Boolean$$, default: `$$false$$`)*
-$$topic$$:: $$the topic to which the sink will publish.$$ *($$String$$, default: `$$stream.mqtt$$`)*
+$$async$$:: $$whether or not to use async sends.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$charset$$:: $$the charset used to convert a String payload to byte[].$$ *($$String$$, default: `$$<none>$$`)*
+$$client-id$$:: $$identifies the client.$$ *($$String$$, default: `$$<none>$$`)*
+$$qos$$:: $$the quality of service to use.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$retained$$:: $$whether to set the 'retained' flag.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$topic$$:: $$the topic to which the sink will publish.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

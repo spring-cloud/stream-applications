@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.springframework.cloud.fn.consumer.mqtt;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 
@@ -43,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MqttConsumerTests {
 
 	static {
-		GenericContainer mosquitto = new GenericContainer("eclipse-mosquitto")
+		GenericContainer mosquitto = new GenericContainer("cyrilix/rabbitmq-mqtt")
 				.withExposedPorts(1883);
 		mosquitto.start();
 		final Integer mappedPort = mosquitto.getMappedPort(1883);
@@ -62,7 +61,6 @@ public class MqttConsumerTests {
 	}
 
 	@Test
-	@Disabled
 	public void testMqttConsumer() {
 		this.mqttConsumer.accept(MessageBuilder.withPayload("hello").build());
 		Message<?> in = this.queue.receive(10000);
@@ -97,5 +95,7 @@ public class MqttConsumerTests {
 		public QueueChannel queue() {
 			return new QueueChannel();
 		}
+
 	}
+
 }

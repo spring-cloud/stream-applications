@@ -130,31 +130,31 @@ $$root$$:: $$Root node - store entries are children of this node.$$ *($$String$$
 
 === sftp.supplier
 
-$$auto-create-local-dir$$:: $$Set to true to create the local directory if it does not exist.$$ *($$Boolean$$, default: `$$true$$`)*
-$$delay-when-empty$$:: $$Duration of delay when no new files are detected.$$ *($$Duration$$, default: `$$1s$$`)*
-$$delete-remote-files$$:: $$Set to true to delete remote files after successful transfer.$$ *($$Boolean$$, default: `$$false$$`)*
+$$auto-create-local-dir$$:: $$Set to true to create the local directory if it does not exist.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$delay-when-empty$$:: $$Duration of delay when no new files are detected.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$delete-remote-files$$:: $$Set to true to delete remote files after successful transfer.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$directories$$:: $$A list of factory "name.directory" pairs.$$ *($$String[]$$, default: `$$<none>$$`)*
 $$factories$$:: $$A map of factory names to factories.$$ *($$Map<String, Factory>$$, default: `$$<none>$$`)*
-$$fair$$:: $$True for fair rotation of multiple servers/directories. This is false by default so if a source has more than one entry, these will be received before the other sources are visited.$$ *($$Boolean$$, default: `$$false$$`)*
+$$fair$$:: $$True for fair rotation of multiple servers/directories. This is false by default so if a source has more than one entry, these will be received before the other sources are visited.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$filename-pattern$$:: $$A filter pattern to match the names of files to transfer.$$ *($$String$$, default: `$$<none>$$`)*
 $$filename-regex$$:: $$A filter regex pattern to match the names of files to transfer.$$ *($$Pattern$$, default: `$$<none>$$`)*
-$$list-only$$:: $$Set to true to return file metadata without the entire payload.$$ *($$Boolean$$, default: `$$false$$`)*
+$$list-only$$:: $$Set to true to return file metadata without the entire payload.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$local-dir$$:: $$The local directory to use for file transfers.$$ *($$File$$, default: `$$<none>$$`)*
 $$max-fetch$$:: $$The maximum number of remote files to fetch per poll; default unlimited. Does not apply when listing files or building task launch requests.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$preserve-timestamp$$:: $$Set to true to preserve the original timestamp.$$ *($$Boolean$$, default: `$$true$$`)*
-$$remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$/$$`)*
-$$remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$/$$`)*
-$$stream$$:: $$Set to true to stream the file rather than copy to a local directory.$$ *($$Boolean$$, default: `$$false$$`)*
-$$tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
+$$preserve-timestamp$$:: $$Set to true to preserve the original timestamp.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$<none>$$`)*
+$$remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$<none>$$`)*
+$$stream$$:: $$Set to true to stream the file rather than copy to a local directory.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$<none>$$`)*
 
 === sftp.supplier.factory
 
-$$allow-unknown-keys$$:: $$True to allow an unknown or changed key.$$ *($$Boolean$$, default: `$$false$$`)*
-$$host$$:: $$The host name of the server.$$ *($$String$$, default: `$$localhost$$`)*
+$$allow-unknown-keys$$:: $$True to allow an unknown or changed key.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$host$$:: $$The host name of the server.$$ *($$String$$, default: `$$<none>$$`)*
 $$known-hosts-expression$$:: $$A SpEL expression resolving to the location of the known hosts file.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$pass-phrase$$:: $$Passphrase for user's private key.$$ *($$String$$, default: `$$<empty string>$$`)*
+$$pass-phrase$$:: $$Passphrase for user's private key.$$ *($$String$$, default: `$$<none>$$`)*
 $$password$$:: $$The password to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
-$$port$$:: $$The port of the server.$$ *($$Integer$$, default: `$$22$$`)*
+$$port$$:: $$The port of the server.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$private-key$$:: $$Resource location of user's private key.$$ *($$Resource$$, default: `$$<none>$$`)*
 $$username$$:: $$The username to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
 

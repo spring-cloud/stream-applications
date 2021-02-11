@@ -18,6 +18,7 @@ package org.springframework.cloud.fn.common.cdc;
 
 import java.time.Duration;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
@@ -28,8 +29,6 @@ import org.testcontainers.utility.DockerImageName;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
-
-import com.zaxxer.hikari.HikariDataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -48,7 +47,7 @@ public class CdcBootStarterIntegrationTest {
 
 	@Container
 	static GenericContainer debeziumMySQL =
-			new GenericContainer<>(DockerImageName.parse("debezium/example-mysql:latest"))
+			new GenericContainer<>(DockerImageName.parse("debezium/example-mysql"))
 					.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 					.withEnv("MYSQL_USER", "mysqluser")
 					.withEnv("MYSQL_PASSWORD", "mysqlpw")

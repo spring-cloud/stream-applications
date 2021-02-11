@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.springframework.cloud.stream.app.source.mqtt;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 
@@ -44,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MqttSourceTests {
 
 	static {
-		GenericContainer mosquitto = new GenericContainer("eclipse-mosquitto")
+		GenericContainer mosquitto = new GenericContainer("cyrilix/rabbitmq-mqtt")
 				.withExposedPorts(1883);
 		mosquitto.start();
 		final Integer mappedPort = mosquitto.getMappedPort(1883);
@@ -57,7 +56,6 @@ public class MqttSourceTests {
 	}
 
 	@Test
-	@Disabled
 	public void testMqttSource() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration

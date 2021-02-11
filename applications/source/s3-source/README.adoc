@@ -102,20 +102,20 @@ $$root$$:: $$Root node - store entries are children of this node.$$ *($$String$$
 === s3.common
 
 $$endpoint-url$$:: $$Optional endpoint url to connect to s3 compatible storage.$$ *($$String$$, default: `$$<none>$$`)*
-$$path-style-access$$:: $$Use path style access.$$ *($$Boolean$$, default: `$$false$$`)*
+$$path-style-access$$:: $$Use path style access.$$ *($$Boolean$$, default: `$$<none>$$`)*
 
 === s3.supplier
 
-$$auto-create-local-dir$$:: $$Create or not the local directory.$$ *($$Boolean$$, default: `$$true$$`)*
-$$delete-remote-files$$:: $$Delete or not remote files after processing.$$ *($$Boolean$$, default: `$$false$$`)*
+$$auto-create-local-dir$$:: $$Create or not the local directory.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$delete-remote-files$$:: $$Delete or not remote files after processing.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$filename-pattern$$:: $$The pattern to filter remote files.$$ *($$String$$, default: `$$<none>$$`)*
 $$filename-regex$$:: $$The regexp to filter remote files.$$ *($$Pattern$$, default: `$$<none>$$`)*
-$$list-only$$:: $$Set to true to return s3 object metadata without copying file to a local directory.$$ *($$Boolean$$, default: `$$false$$`)*
+$$list-only$$:: $$Set to true to return s3 object metadata without copying file to a local directory.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$local-dir$$:: $$The local directory to store files.$$ *($$File$$, default: `$$<none>$$`)*
-$$preserve-timestamp$$:: $$To transfer or not the timestamp of the remote file to the local one.$$ *($$Boolean$$, default: `$$true$$`)*
-$$remote-dir$$:: $$AWS S3 bucket resource.$$ *($$String$$, default: `$$bucket$$`)*
-$$remote-file-separator$$:: $$Remote File separator.$$ *($$String$$, default: `$$/$$`)*
-$$tmp-file-suffix$$:: $$Temporary file suffix.$$ *($$String$$, default: `$$.tmp$$`)*
+$$preserve-timestamp$$:: $$To transfer or not the timestamp of the remote file to the local one.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$remote-dir$$:: $$AWS S3 bucket resource.$$ *($$String$$, default: `$$<none>$$`)*
+$$remote-file-separator$$:: $$Remote File separator.$$ *($$String$$, default: `$$<none>$$`)*
+$$tmp-file-suffix$$:: $$Temporary file suffix.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 == Amazon AWS common options
