@@ -23,18 +23,20 @@ import org.springframework.expression.Expression;
 public class ElasticsearchConsumerProperties {
 
 	/**
-	 * The id of the document index.
+	 * The id of the document to index.
+	 * If set, the INDEX_ID header value overrides this property on a per message basis.
 	 */
 	Expression id;
 
 	/**
 	 * Name of the index.
+	 * If set, the INDEX_NAME header value overrides this property on a per message basis.
 	 */
 	String index;
 
 	/**
 	 * Indicates the shard to route to.
-	 * If not provided, this resolves to the ID used on the document.
+	 * If not provided, Elasticsearch will default to a hash of the document id.
 	 */
 	String routing;
 
@@ -49,6 +51,18 @@ public class ElasticsearchConsumerProperties {
 	 * By default indexing is done synchronously.
 	 */
 	boolean async;
+
+	/**
+	 * Number of items to index for each request. It defaults to 1.
+	 * For values greater than 1 bulk indexing API will be used.
+	 */
+	int batchSize = 1;
+
+	/**
+	 * Timeout in milliseconds after which message group is flushed when bulk indexing is active.
+	 * It defaults to -1, meaning no automatic flush of idle message groups occurs.
+	 */
+	long groupTimeout = -1L;
 
 	public Expression getId() {
 		return id;
@@ -88,5 +102,21 @@ public class ElasticsearchConsumerProperties {
 
 	public void setAsync(boolean async) {
 		this.async = async;
+	}
+
+	public int getBatchSize() {
+		return batchSize;
+	}
+
+	public void setBatchSize(int batchSize) {
+		this.batchSize = batchSize;
+	}
+
+	public long getGroupTimeout() {
+		return groupTimeout;
+	}
+
+	public void setGroupTimeout(long groupTimeout) {
+		this.groupTimeout = groupTimeout;
 	}
 }
