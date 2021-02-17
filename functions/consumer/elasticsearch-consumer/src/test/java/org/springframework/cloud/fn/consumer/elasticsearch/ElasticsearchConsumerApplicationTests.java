@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.consumer.elasticsearch;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import org.awaitility.Awaitility;
@@ -43,7 +44,13 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
+/**
+ * @author Soby Chacko
+ * @author Andrea Montemaggio
+ */
 @Tag("integration")
 @Testcontainers(disabledWithoutDocker = true)
 public class ElasticsearchConsumerApplicationTests {
@@ -179,6 +186,115 @@ public class ElasticsearchConsumerApplicationTests {
 							.ignoreException(ElasticsearchStatusException.class)
 							.await()
 							.until(() -> restHighLevelClient.get(getRequest, RequestOptions.DEFAULT).isExists());
+				});
+	}
+
+	@Test
+	public void testBulkIndexingWithIdFromHeader() {
+		this.contextRunner
+				.withPropertyValues("elasticsearch.consumer.index=foo_" + UUID.randomUUID(), "elasticsearch.consumer.batch-size=10",
+						"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
+				.run(context -> {
+					Consumer<Message<?>> elasticsearchConsumer = context.getBean("elasticsearchConsumer", Consumer.class);
+					ElasticsearchConsumerProperties properties = context.getBean(ElasticsearchConsumerProperties.class);
+					RestHighLevelClient restHighLevelClient = context.getBean(RestHighLevelClient.class);
+
+					for (int i = 0; i < properties.getBatchSize(); i++) {
+						final GetRequest getRequest = new GetRequest(properties.getIndex()).id(Integer.toString(i));
+						assertThatExceptionOfType(ElasticsearchStatusException.class)
+								.isThrownBy(() -> restHighLevelClient.get(getRequest, RequestOptions.DEFAULT))
+								.withFailMessage("Expected index not found exception for message %d")
+								.withMessageContaining("index_not_found_exception");
+
+						final Message<String> message = MessageBuilder
+								.withPayload("{\"seq\":" + i + ",\"age\":10,\"dateOfBirth\":1471466076564,"
+										+ "\"fullName\":\"John Doe\"}")
+								.setHeader(ElasticsearchConsumerConfiguration.INDEX_ID_HEADER, Integer.toString(i))
+								.build();
+
+						elasticsearchConsumer.accept(message);
+					}
+
+					for (int i = 0; i < properties.getBatchSize(); i++) {
+						GetRequest getRequest = new GetRequest(properties.getIndex()).id(Integer.toString(i));
+						GetResponse response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
+
+						assertThat(response.isExists())
+								.withFailMessage("Document with id=%d cannot be found.", i)
+								.isTrue();
+						assertThat(response.getSource().get("seq")).isEqualTo(i);
+					}
+				});
+	}
+
+	@Test
+	public void testBulkIndexingItemFailure() {
+		this.contextRunner
+				.withPropertyValues("elasticsearch.consumer.index=foo_" + UUID.randomUUID(), "elasticsearch.consumer.batch-size=10",
+						"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
+				.run(context -> {
+					Consumer<Message<?>> elasticsearchConsumer = context.getBean("elasticsearchConsumer", Consumer.class);
+					ElasticsearchConsumerProperties properties = context.getBean(ElasticsearchConsumerProperties.class);
+					RestHighLevelClient restHighLevelClient = context.getBean(RestHighLevelClient.class);
+
+					for (int i = 0; i < properties.getBatchSize(); i++) {
+						final GetRequest getRequest = new GetRequest(properties.getIndex()).id(Integer.toString(i));
+						assertThatExceptionOfType(ElasticsearchStatusException.class)
+								.isThrownBy(() -> restHighLevelClient.get(getRequest, RequestOptions.DEFAULT))
+								.withFailMessage("Expected index not found exception for message %d")
+								.withMessageContaining("index_not_found_exception");
+
+						MessageBuilder<String> builder = MessageBuilder
+								.withPayload("{\"seq\":" + i + ",\"age\":10,\"dateOfBirth\":1471466076564,"
+										+ "\"fullName\":\"John Doe\"}")
+								.setHeader(ElasticsearchConsumerConfiguration.INDEX_ID_HEADER, Integer.toString(i));
+
+						if (i == 0) {
+							// set an invalid index name to make the first request fail
+							builder.setHeader(ElasticsearchConsumerConfiguration.INDEX_NAME_HEADER, "_" + properties.getIndex());
+						}
+
+						final Message<String> message = builder.build();
+
+						if (i < properties.getBatchSize() - 1) {
+							elasticsearchConsumer.accept(message);
+						}
+						else {
+							// last invocation
+							assertThatIllegalStateException()
+									.isThrownBy(() -> elasticsearchConsumer.accept(message))
+									.withMessageContaining("Bulk indexing operation completed with failures");
+						}
+					}
+				});
+	}
+
+	@Test
+	public void testIndexFromMessageHeader() {
+		this.contextRunner
+				.withPropertyValues("elasticsearch.consumer.index=foo",
+						"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
+				.run(context -> {
+					Consumer<Message<?>> elasticsearchConsumer = context.getBean("elasticsearchConsumer", Consumer.class);
+					ElasticsearchConsumerProperties properties = context.getBean(ElasticsearchConsumerProperties.class);
+
+					final String dynamicIndex = properties.getIndex() + "-2";
+
+					String jsonObject = "{\"age\":10,\"dateOfBirth\":1471466076564,"
+							+ "\"fullName\":\"John Doe\"}";
+					final Message<String> message = MessageBuilder.withPayload(jsonObject)
+							.setHeader(ElasticsearchConsumerConfiguration.INDEX_ID_HEADER, "2")
+							.setHeader(ElasticsearchConsumerConfiguration.INDEX_NAME_HEADER, dynamicIndex)
+							.build();
+
+					elasticsearchConsumer.accept(message);
+
+					RestHighLevelClient restHighLevelClient = context.getBean(RestHighLevelClient.class);
+					GetRequest getRequest = new GetRequest(dynamicIndex).id("2");
+					final GetResponse response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
+					assertThat(response.isExists()).isTrue();
+					assertThat(response.getSourceAsString()).isEqualTo(jsonObject);
+					assertThat(response.getId()).isEqualTo("2");
 				});
 	}
 
