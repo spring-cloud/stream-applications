@@ -21,8 +21,8 @@
         <java-functions.version>1.0.1</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
         <mockserver.version>5.10</mockserver.version>
-        <spring-cloud-stream-dependencies.version>Horsham.SR10</spring-cloud-stream-dependencies.version>
-        <spring-cloud-stream.version>3.0.10.RELEASE</spring-cloud-stream.version>
+        <spring-cloud-stream-dependencies.version>Horsham.SR11</spring-cloud-stream-dependencies.version>
+        <spring-cloud-stream.version>3.0.11.RELEASE</spring-cloud-stream.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.2</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.2</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.2</spring-cloud-dataflow-apps-metadata-plugin.version>
@@ -30,7 +30,7 @@
         <prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
         <!-- Boot 2.4.x needs wavefront-spring-boot version 2.1.0-RC1+ -->
         <wavefront-spring-boot.version>2.0.2</wavefront-spring-boot.version>
-        <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
+        <spring-cloud.version>Hoxton.SR10</spring-cloud.version>
     </properties>
 
     <modules>
