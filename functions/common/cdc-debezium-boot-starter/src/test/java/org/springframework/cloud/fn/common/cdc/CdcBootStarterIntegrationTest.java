@@ -47,7 +47,7 @@ public class CdcBootStarterIntegrationTest {
 
 	@Container
 	static GenericContainer debeziumMySQL =
-			new GenericContainer<>(DockerImageName.parse("debezium/example-mysql"))
+			new GenericContainer<>(DockerImageName.parse("debezium/example-mysql:1.3"))
 					.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 					.withEnv("MYSQL_USER", "mysqluser")
 					.withEnv("MYSQL_PASSWORD", "mysqlpw")

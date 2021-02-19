@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,8 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.recei
 /**
  * @author Christian Tzolov
  * @author David Turanski
+ * @author Artem Bilan
  */
-@Disabled("Run as needed if there is an issue with a specific connector")
 public class CdcSourceDatabasesIntegrationTest {
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
@@ -82,6 +82,7 @@ public class CdcSourceDatabasesIntegrationTest {
 	}
 
 	@Test
+	@Disabled
 	public void sqlServer() {
 		GenericContainer sqlServer = new GenericContainer(new ImageFromDockerfile()
 				.withFileFromClasspath("Dockerfile", "sqlserver/Dockerfile")
@@ -140,9 +141,10 @@ public class CdcSourceDatabasesIntegrationTest {
 		postgres.stop();
 	}
 
-	// @Test
+	@Test
+	@Disabled
 	public void mongodb() {
-		GenericContainer mongodb = new GenericContainer("debezium/example-mongodb:1.0")
+		GenericContainer mongodb = new GenericContainer("debezium/example-mongodb:1.3")
 				.withEnv("MONGODB_USER", "debezium")
 				.withEnv("MONGODB_PASSWORD", "dbz")
 				.withExposedPorts(27017);
@@ -163,4 +165,5 @@ public class CdcSourceDatabasesIntegrationTest {
 		}
 		mongodb.stop();
 	}
+
 }
