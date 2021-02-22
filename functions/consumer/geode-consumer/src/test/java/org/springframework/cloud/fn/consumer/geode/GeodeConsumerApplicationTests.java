@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 import org.apache.geode.cache.Region;
 import org.apache.geode.pdx.PdxInstance;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -36,6 +37,7 @@ import org.springframework.messaging.support.GenericMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("integration")
 public class GeodeConsumerApplicationTests {
 
 	private static ApplicationContextRunner applicationContextRunner;

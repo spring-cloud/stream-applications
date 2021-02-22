@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app.source.cdc;
 import java.util.List;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -40,6 +41,7 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.recei
  * @author David Turanski
  * @author Artem Bilan
  */
+@Tag("integration")
 public class CdcSourceDatabasesIntegrationTest {
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(

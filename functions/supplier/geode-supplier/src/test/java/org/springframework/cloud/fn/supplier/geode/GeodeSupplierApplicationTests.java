@@ -28,6 +28,7 @@ import org.apache.geode.cache.EntryEvent;
 import org.apache.geode.cache.Region;
 import org.apache.geode.pdx.PdxInstance;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -41,6 +42,7 @@ import org.springframework.cloud.fn.test.support.geode.GeodeContainerIntializer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+@Tag("integration")
 public class GeodeSupplierApplicationTests {
 
 	private static ApplicationContextRunner applicationContextRunner;

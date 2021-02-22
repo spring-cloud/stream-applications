@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.mqtt.sink;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 
@@ -39,7 +40,7 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+@Tag("integration")
 public class MqttSinkTests {
 
 	static {

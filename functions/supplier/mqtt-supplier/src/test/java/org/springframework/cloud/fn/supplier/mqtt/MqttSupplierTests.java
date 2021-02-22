@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.supplier.mqtt;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import reactor.core.publisher.Flux;
@@ -49,6 +50,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(properties = {"mqtt.supplier.topics=test,fake", "mqtt.supplier.qos=0,0"})
 @DirtiesContext
+@Tag("integration")
 public class MqttSupplierTests {
 
 	static {

@@ -20,6 +20,7 @@ import java.time.Duration;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -38,6 +39,8 @@ import static org.awaitility.Awaitility.await;
  * @author David Turanski
  * @author Artem Bilan
  */
+
+@Tag("integration")
 @Testcontainers
 public class CdcBootStarterIntegrationTest {
 

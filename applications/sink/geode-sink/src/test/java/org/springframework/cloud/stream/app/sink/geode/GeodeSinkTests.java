@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import org.apache.geode.cache.Region;
 import org.apache.geode.pdx.PdxInstance;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,6 +38,7 @@ import org.springframework.messaging.support.GenericMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("integration")
 public class GeodeSinkTests {
 
 	private static ApplicationContextRunner applicationContextRunner;

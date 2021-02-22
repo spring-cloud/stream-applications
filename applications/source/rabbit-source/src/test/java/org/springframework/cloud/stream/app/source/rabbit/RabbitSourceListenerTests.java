@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app.source.rabbit;
 import java.util.HashMap;
 
 import org.aopalliance.aop.Advice;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.RabbitMQContainer;
 
@@ -47,6 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Gary Russell
  * @author Chris Schaefer
  */
+@Tag("integration")
 public class RabbitSourceListenerTests {
 
 	static {

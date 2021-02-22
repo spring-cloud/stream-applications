@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.consumer.mqtt;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 
@@ -39,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = "mqtt.consumer.topic=test")
 @DirtiesContext
+@Tag("integration")
 public class MqttConsumerTests {
 
 	static {

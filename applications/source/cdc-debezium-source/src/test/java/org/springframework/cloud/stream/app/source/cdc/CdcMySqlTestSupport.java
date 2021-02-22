@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.source.cdc;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +25,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /**
  * @author David Turanski
  */
+
+@Tag("integration")
 public abstract class CdcMySqlTestSupport {
 
 	static final String DATABASE_NAME = "inventory";

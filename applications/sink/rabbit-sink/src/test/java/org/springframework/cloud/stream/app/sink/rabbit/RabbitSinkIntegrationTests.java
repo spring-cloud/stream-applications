@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.sink.rabbit;
 
+import org.junit.jupiter.api.Tag;
 import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.amqp.core.Binding;
@@ -41,6 +42,7 @@ import org.springframework.test.annotation.DirtiesContext;
 		properties = {"spring.cloud.function.definition=rabbitConsumer", "spring.rabbitmq.port = ${spring.rabbitmq.test.port}"},
 		webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @DirtiesContext
+@Tag("integration")
 @Import(RabbitSinkIntegrationTests.FooConfiguration.class)
 abstract class RabbitSinkIntegrationTests {
 
