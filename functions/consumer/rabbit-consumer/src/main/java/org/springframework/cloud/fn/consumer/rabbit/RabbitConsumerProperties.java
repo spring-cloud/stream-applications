@@ -73,6 +73,18 @@ public class RabbitConsumerProperties {
 	 */
 	private boolean ownConnection;
 
+	/**
+	 * When mapping headers for the outbound message, determine whether the headers are
+	 * mapped before the message is converted, or afterwards. This only affects headers
+	 * that might be added by the message converter. When false, the converter's headers
+	 * win; when true, any headers added by the converter will be overridden (if the
+	 * source message has a header that maps to those headers). For example, when using a
+	 * SimpleMessageConverter with a 'byte[]' payload that contains json; if headersMappedLast
+	 * is false, the converter will set the content type to 'application/octet-stream'.
+	 */
+	private boolean headersMappedLast = true;
+
+
 	public String getExchange() {
 		return this.exchange;
 	}
@@ -142,4 +154,11 @@ public class RabbitConsumerProperties {
 		this.ownConnection = ownConnection;
 	}
 
+	public boolean isHeadersMappedLast() {
+		return headersMappedLast;
+	}
+
+	public void setHeadersMappedLast(boolean headersMappedLast) {
+		this.headersMappedLast = headersMappedLast;
+	}
 }

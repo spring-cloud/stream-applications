@@ -78,7 +78,8 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 				.mappedRequestHeaders(properties.getMappedRequestHeaders())
 				.defaultDeliveryMode(properties.getPersistentDeliveryMode()
 						? MessageDeliveryMode.PERSISTENT
-						: MessageDeliveryMode.NON_PERSISTENT);
+						: MessageDeliveryMode.NON_PERSISTENT)
+				.headersMappedLast(this.properties.isHeadersMappedLast());
 
 		Expression exchangeExpression = this.properties.getExchangeExpression();
 		if (exchangeExpression != null) {
