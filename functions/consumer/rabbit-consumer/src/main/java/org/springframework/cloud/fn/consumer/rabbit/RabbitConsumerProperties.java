@@ -73,6 +73,12 @@ public class RabbitConsumerProperties {
 	 */
 	private boolean ownConnection;
 
+	/**
+	 * When mapping headers for the outbound message, determine whether the headers are
+	 * mapped before the message is converted, or afterwards.
+	 */
+	private boolean headersMappedLast = true;
+
 	public String getExchange() {
 		return this.exchange;
 	}
@@ -142,4 +148,11 @@ public class RabbitConsumerProperties {
 		this.ownConnection = ownConnection;
 	}
 
+	public boolean isHeadersMappedLast() {
+		return this.headersMappedLast;
+	}
+
+	public void setHeadersMappedLast(boolean headersMappedLast) {
+		this.headersMappedLast = headersMappedLast;
+	}
 }
