@@ -15,13 +15,13 @@ Sabby Anandan; Artem Bilan; Marius Bogoevici; Eric Bottard; Mark Fisher; Ilayape
 
 :stream-apps-asciidoc: https://raw.githubusercontent.com/spring-cloud/stream-applications/master/applications/stream-applications-build/stream-applications-docs/src/main/asciidoc
 
-:scst-core-version: 3.0.10.RELEASE
+:scst-core-version: 3.0.11.RELEASE
 
 ifdef::backend-html5[]
 
 Version {project-version}
 
-(C) 2012-2020 Pivotal Software, Inc.
+(C) 2012-2021 Pivotal Software, Inc.
 
 _Copies of this document may be made for your own use and for distribution to
 others, provided that you do not charge any fee for such copies and further
