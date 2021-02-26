@@ -24,35 +24,35 @@ function iterate_through_apps_folders_and_update {
     echo "FOLDER NAME - ${folder}"
     pushd ${folder}
     ../../../mvnw -Ddisable.checks=true versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false
-    #../../../mvnw -Ddisable.checks=true versions:update-parent -DparentVersion=$PARENT_VERSION -Pspring -DgenerateBackupPoms=false
+    ../../../mvnw -Ddisable.checks=true versions:update-parent -DparentVersion=$PARENT_VERSION -Pspring -DgenerateBackupPoms=false
     # only used after a release for updating parent versions.
-     sed -i '' 's/<version>3.0.3/<version>'3.0.4-SNAPSHOT'/g' pom.xml
+    # sed -i '' 's/<version>3.0.3/<version>'3.0.4-SNAPSHOT'/g' pom.xml
     popd
   done
 
   cd ../../
 
-#  if [[ $VERSION =~ M[0-9]|RC[0-9] ]]; then
-#    lines=$(find $BASE_DIR -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v "<!--"| grep -v regex | wc -l)
-#    if [ $lines -eq 0 ]; then
-#     echo "All good"
-#    else
-#     echo "Snapshots found under $BASE_DIR. Exiting build"
-#     find $BASE_DIR -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v regex
-#     git checkout -f
-#     exit 1
-#    fi
-#  else
-#    lines=$(find $BASE_DIR -type f -name pom.xml | xargs egrep "SNAPSHOT|M[0-9]|RC[0-9]" | grep -v ".contains(" | grep -v regex | wc -l)
-#    if [ $lines -eq 0 ]; then
-#     echo "All good"
-#    else
-#     echo "Non Release versions found under $BASE_DIR. Exiting build"
-#     find $BASE_DIR -type f -name pom.xml | xargs egrep "SNAPSHOT|M[0-9]|RC[0-9]" | grep -v ".contains(" | grep -v regex
-#     git checkout -f
-#     exit 1
-#    fi
-#  fi
+  if [[ $VERSION =~ M[0-9]|RC[0-9] ]]; then
+    lines=$(find $BASE_DIR -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v "<!--"| grep -v regex | wc -l)
+    if [ $lines -eq 0 ]; then
+     echo "All good"
+    else
+     echo "Snapshots found under $BASE_DIR. Exiting build"
+     find $BASE_DIR -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v regex
+     git checkout -f
+     exit 1
+    fi
+  else
+    lines=$(find $BASE_DIR -type f -name pom.xml | xargs egrep "SNAPSHOT|M[0-9]|RC[0-9]" | grep -v ".contains(" | grep -v regex | wc -l)
+    if [ $lines -eq 0 ]; then
+     echo "All good"
+    else
+     echo "Non Release versions found under $BASE_DIR. Exiting build"
+     find $BASE_DIR -type f -name pom.xml | xargs egrep "SNAPSHOT|M[0-9]|RC[0-9]" | grep -v ".contains(" | grep -v regex
+     git checkout -f
+     exit 1
+    fi
+  fi
 
 }
 
