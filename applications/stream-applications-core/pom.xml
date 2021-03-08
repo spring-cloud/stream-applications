@@ -260,7 +260,7 @@
                                         <dependency>
                                             <groupId>io.pivotal.spring.cloud</groupId>
                                             <artifactId>spring-cloud-services-starter-config-client</artifactId>
-                                            <version>3.2.1.RELEASE</version>
+                                            <version>3.2.0.RELEASE</version>
                                         </dependency>
                                     </dependencies>
                                 </maven>
