@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.http.support.DefaultHttpHeaderMapper;
@@ -33,6 +34,7 @@ import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.integration.webflux.dsl.WebFlux;
 import org.springframework.integration.webflux.inbound.WebFluxInboundEndpoint;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 
 /**
  * Configuration for the HTTP Supplier.
@@ -55,6 +57,14 @@ public class HttpSupplierConfiguration {
 										.allowedHeaders(httpSupplierProperties.getCors().getAllowedHeaders())
 										.allowCredentials(httpSupplierProperties.getCors().getAllowCredentials()))
 						.autoStartup(false))
+				.enrichHeaders((headers) ->
+						headers.headerFunction(MessageHeaders.CONTENT_TYPE,
+								(message) ->
+										(MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(
+												message.getHeaders().get(MessageHeaders.CONTENT_TYPE).toString()))
+												? MediaType.APPLICATION_JSON
+												: null,
+								true))
 				.toReactivePublisher();
 	}
 
