@@ -77,6 +77,7 @@ public class RabbitSourceListenerTests {
 						"--spring.rabbitmq.listener.simple.acknowledgeMode=AUTO",
 						"--spring.rabbitmq.listener.simple.prefetch=10",
 						"--spring.rabbitmq.listener.simple.transactionSize=5",
+						"--spring.cloud.stream.function.bindings.rabbitSupplier-out-0=output",
 						"--spring.rabbitmq.port=" +
 								"${spring.rabbitmq.test.port}"
 				)) {
