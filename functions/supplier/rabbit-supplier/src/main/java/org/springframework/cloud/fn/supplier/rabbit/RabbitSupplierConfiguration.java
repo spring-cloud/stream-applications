@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 the original author or authors.
+ * Copyright 2016-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Envelope;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
 import org.springframework.amqp.core.AcknowledgeMode;
@@ -41,7 +42,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.amqp.dsl.Amqp;
 import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
-import org.springframework.integration.channel.FluxMessageChannel;
+import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.messaging.Message;
 import org.springframework.retry.interceptor.RetryOperationsInterceptor;
 import org.springframework.util.Assert;
@@ -127,24 +128,19 @@ public class RabbitSupplierConfiguration implements DisposableBean {
 	}
 
 	@Bean
-	public AmqpInboundChannelAdapter adapter(SimpleMessageListenerContainer container,
-											FluxMessageChannel channel) {
-		return Amqp.inboundAdapter(container)
-				.autoStartup(false)
-				.outputChannel(channel)
-				.mappedRequestHeaders(properties.getMappedRequestHeaders())
-				.get();
+	public Publisher<Message<byte[]>> rabbitPublisher(SimpleMessageListenerContainer container) {
+		return IntegrationFlows.from(
+				Amqp.inboundAdapter(container)
+						.autoStartup(false)
+						.mappedRequestHeaders(properties.getMappedRequestHeaders()))
+				.toReactivePublisher();
 	}
 
 	@Bean
-	public Supplier<Flux<Message<?>>> rabbitSupplier(AmqpInboundChannelAdapter adapter,
-													FluxMessageChannel channel) {
-		return () -> Flux.from(channel).doOnSubscribe(subscription -> adapter.start());
-	}
-
-	@Bean
-	public FluxMessageChannel output() {
-		return new FluxMessageChannel();
+	public Supplier<Flux<Message<byte[]>>> rabbitSupplier(Publisher<Message<byte[]>> rabbitPublisher, AmqpInboundChannelAdapter adapter) {
+		return () -> Flux.from(rabbitPublisher)
+				.doOnSubscribe((subscription) -> adapter.start())
+				.doOnTerminate(adapter::stop);
 	}
 
 	@Bean
