@@ -2,15 +2,14 @@
 
 This module provides a TCP supplier that can be reused and composed in other applications.
 The `Supplier` uses the `TcpReceivingChannelAdapter` from Spring Integration.
-`tcpSupplier` is implemented as a `java.util.function.Supplier`.
-This supplier gives you a reactive stream from TCP sources. The supplier has a signature of `Supplier<Flux<Message<?>>>`.
+A `tcpSupplier` bean is implemented as a `java.util.function.Supplier`.
+This supplier gives you a reactive stream from TCP sources.
+The supplier has a signature of `Supplier<Flux<Message<?>>>`.
 Users have to subscribe to this `Flux` and then receive the data.
 
 ## Beans for injection
 
-You can import the `TcpSupplierConfiguration` in the application and then inject the following bean.
-
-`tcpSupplier`
+You can import the `TcpSupplierConfiguration` in the application and then inject the following bean: `tcpSupplier`.
 
 You need to inject this as `Supplier<Flux<Message<?>>>`.
 

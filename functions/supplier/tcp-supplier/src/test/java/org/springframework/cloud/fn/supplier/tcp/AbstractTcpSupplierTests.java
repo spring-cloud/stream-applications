@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Gary Russell
  * @author Soby Chacko
+ * @author Artem Bilan
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
-		properties = { "tcp.host = localhost", "tcp.port = 0" })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = "tcp.port = 0")
 @DirtiesContext
 public class AbstractTcpSupplierTests {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,17 @@ package org.springframework.cloud.fn.supplier.tcp;
 
 import java.util.function.Supplier;
 
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.fn.common.tcp.EncoderDecoderFactoryBean;
 import org.springframework.cloud.fn.common.tcp.TcpConnectionFactoryProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.channel.FluxMessageChannel;
+import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.ip.IpHeaders;
 import org.springframework.integration.ip.config.TcpConnectionFactoryFactoryBean;
 import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
 import org.springframework.integration.ip.tcp.connection.AbstractConnectionFactory;
@@ -40,59 +41,59 @@ import org.springframework.messaging.Message;
  * @author Gary Russell
  * @author Christian Tzolov
  * @author Soby Chacko
+ * @author Artem Bilan
  */
-@Configuration
-@EnableConfigurationProperties({TcpSupplierProperties.class, TcpConnectionFactoryProperties.class})
+@Configuration(proxyBeanMethods = false)
+@EnableConfigurationProperties({ TcpSupplierProperties.class, TcpConnectionFactoryProperties.class })
 public class TcpSupplierConfiguration {
 
-	@Autowired
-	private TcpSupplierProperties properties;
-
-	@Autowired
-	private TcpConnectionFactoryProperties tcpConnectionProperties;
-
-	@Qualifier("tcpSourceConnectionFactory")
-	@Autowired
-	private AbstractConnectionFactory connectionFactory;
-
 	@Bean
-	public Supplier<Flux<Message<?>>> tcpSupplier() {
-		return () -> Flux.from(output())
-				.doOnSubscribe(subscription -> adapter().start());
+	public EncoderDecoderFactoryBean tcpSourceDecoder(TcpSupplierProperties properties) {
+		EncoderDecoderFactoryBean factoryBean = new EncoderDecoderFactoryBean(properties.getDecoder());
+		factoryBean.setMaxMessageSize(properties.getBufferSize());
+		return factoryBean;
 	}
 
 	@Bean
-	public TcpReceivingChannelAdapter adapter() {
+	public TcpConnectionFactoryFactoryBean tcpSourceConnectionFactory(
+			TcpConnectionFactoryProperties tcpConnectionProperties,
+			@Qualifier("tcpSourceDecoder") AbstractByteArraySerializer decoder) {
+
+		TcpConnectionFactoryFactoryBean factoryBean = new TcpConnectionFactoryFactoryBean();
+		factoryBean.setType("server");
+		factoryBean.setPort(tcpConnectionProperties.getPort());
+		factoryBean.setUsingNio(tcpConnectionProperties.isNio());
+		factoryBean.setUsingDirectBuffers(tcpConnectionProperties.isUseDirectBuffers());
+		factoryBean.setLookupHost(tcpConnectionProperties.isReverseLookup());
+		factoryBean.setDeserializer(decoder);
+		factoryBean.setSoTimeout(tcpConnectionProperties.getSocketTimeout());
+		return factoryBean;
+	}
+
+	@Bean
+	public TcpReceivingChannelAdapter adapter(
+			@Qualifier("tcpSourceConnectionFactory") AbstractConnectionFactory connectionFactory) {
+
 		TcpReceivingChannelAdapter adapter = new TcpReceivingChannelAdapter();
 		adapter.setConnectionFactory(connectionFactory);
-		adapter.setOutputChannel(output());
 		adapter.setAutoStartup(false);
 		return adapter;
 	}
 
 	@Bean
-	public FluxMessageChannel output() {
-		return new FluxMessageChannel();
+	public Publisher<Message<Object>> tcpSupplierFlow(TcpReceivingChannelAdapter adapter) {
+		return IntegrationFlows.from(adapter)
+				.headerFilter(IpHeaders.LOCAL_ADDRESS)
+				.toReactivePublisher();
 	}
 
 	@Bean
-	public TcpConnectionFactoryFactoryBean tcpSourceConnectionFactory(
-			@Qualifier("tcpSourceDecoder") AbstractByteArraySerializer decoder) {
-		TcpConnectionFactoryFactoryBean factoryBean = new TcpConnectionFactoryFactoryBean();
-		factoryBean.setType("server");
-		factoryBean.setPort(this.tcpConnectionProperties.getPort());
-		factoryBean.setUsingNio(this.tcpConnectionProperties.isNio());
-		factoryBean.setUsingDirectBuffers(this.tcpConnectionProperties.isUseDirectBuffers());
-		factoryBean.setLookupHost(this.tcpConnectionProperties.isReverseLookup());
-		factoryBean.setDeserializer(decoder);
-		factoryBean.setSoTimeout(this.tcpConnectionProperties.getSocketTimeout());
-		return factoryBean;
+	public Supplier<Flux<Message<Object>>> tcpSupplier(
+			Publisher<Message<Object>> tcpSupplierFlow,
+			TcpReceivingChannelAdapter tcpReceivingChannelAdapter) {
+
+		return () -> Flux.from(tcpSupplierFlow)
+				.doOnSubscribe(subscription -> tcpReceivingChannelAdapter.start());
 	}
 
-	@Bean
-	public EncoderDecoderFactoryBean tcpSourceDecoder() {
-		EncoderDecoderFactoryBean factoryBean = new EncoderDecoderFactoryBean(this.properties.getDecoder());
-		factoryBean.setMaxMessageSize(this.properties.getBufferSize());
-		return factoryBean;
-	}
 }
