@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.springframework.cloud.fn.supplier.tcp;
 
 import java.util.function.Supplier;
 
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ import org.springframework.cloud.fn.common.tcp.EncoderDecoderFactoryBean;
 import org.springframework.cloud.fn.common.tcp.TcpConnectionFactoryProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.channel.FluxMessageChannel;
+import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.ip.IpHeaders;
 import org.springframework.integration.ip.config.TcpConnectionFactoryFactoryBean;
 import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
 import org.springframework.integration.ip.tcp.connection.AbstractConnectionFactory;
@@ -56,23 +58,17 @@ public class TcpSupplierConfiguration {
 	private AbstractConnectionFactory connectionFactory;
 
 	@Bean
-	public Supplier<Flux<Message<?>>> tcpSupplier() {
-		return () -> Flux.from(output())
-				.doOnSubscribe(subscription -> adapter().start());
+	public Publisher<Message<Object>> tcpSupplierFlow()  {
+		return IntegrationFlows.from(adapter())
+				.headerFilter(IpHeaders.LOCAL_ADDRESS)
+				.toReactivePublisher();
 	}
 
-	@Bean
 	public TcpReceivingChannelAdapter adapter() {
 		TcpReceivingChannelAdapter adapter = new TcpReceivingChannelAdapter();
 		adapter.setConnectionFactory(connectionFactory);
-		adapter.setOutputChannel(output());
 		adapter.setAutoStartup(false);
 		return adapter;
-	}
-
-	@Bean
-	public FluxMessageChannel output() {
-		return new FluxMessageChannel();
 	}
 
 	@Bean
@@ -94,5 +90,11 @@ public class TcpSupplierConfiguration {
 		EncoderDecoderFactoryBean factoryBean = new EncoderDecoderFactoryBean(this.properties.getDecoder());
 		factoryBean.setMaxMessageSize(this.properties.getBufferSize());
 		return factoryBean;
+	}
+
+	@Bean
+	public Supplier<Flux<Message<Object>>> tcpSupplier(TcpReceivingChannelAdapter tcpReceivingChannelAdapter) {
+		return () -> Flux.from(tcpSupplierFlow())
+				.doOnSubscribe(subscription -> tcpReceivingChannelAdapter.start());
 	}
 }
