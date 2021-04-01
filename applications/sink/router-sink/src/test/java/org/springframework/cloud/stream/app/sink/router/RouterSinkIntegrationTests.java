@@ -42,7 +42,7 @@ public class RouterSinkIntegrationTests {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 
-			Message<?> message = MessageBuilder.withPayload("hello").setHeader("routeTo", "baz").build();
+			Message<?> message = MessageBuilder.withPayload("hello".getBytes()).setHeader("routeTo", "baz").build();
 			processorInput.send(message);
 
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
@@ -81,7 +81,7 @@ public class RouterSinkIntegrationTests {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 
-			Message<?> message = MessageBuilder.withPayload("foo")
+			Message<?> message = MessageBuilder.withPayload("foo".getBytes())
 					.setHeader("route", "foo").build();
 			processorInput.send(message);
 
@@ -103,24 +103,24 @@ public class RouterSinkIntegrationTests {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 
-			Message<?> message = MessageBuilder.withPayload("foo")
+			Message<?> message = MessageBuilder.withPayload("foo".getBytes())
 					.setHeader("route", "foo").build();
 			processorInput.send(message);
 
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 			assertThat(context.getBean("baz")).isNotNull();
 
-			Message<byte[]> sourceMessage = processorOutput.receive(10000, "baz.destination");
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "baz");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("foo");
 
-			message = MessageBuilder.withPayload("bar")
+			message = MessageBuilder.withPayload("bar".getBytes())
 					.setHeader("route", "bar").build();
 			processorInput.send(message);
 
 			processorOutput = context.getBean(OutputDestination.class);
 			assertThat(context.getBean("qux")).isNotNull();
 
-			sourceMessage = processorOutput.receive(10000, "qux.destination");
+			sourceMessage = processorOutput.receive(10000, "qux");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("bar");
 		}
 	}
@@ -137,26 +137,26 @@ public class RouterSinkIntegrationTests {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 
-			Message<?> message = MessageBuilder.withPayload("foo")
+			Message<?> message = MessageBuilder.withPayload("foo".getBytes())
 					.setHeader("route", "foo").build();
 			processorInput.send(message);
 
-			message = MessageBuilder.withPayload("bar")
+			message = MessageBuilder.withPayload("bar".getBytes())
 					.setHeader("route", "bar").build();
 			processorInput.send(message);
 
-			message = MessageBuilder.withPayload("hello")
+			message = MessageBuilder.withPayload("hello".getBytes())
 					.setHeader("route", "baz").build();
 			processorInput.send(message);
 
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = processorOutput.receive(10000, "foo.destination");
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "foo");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("foo");
 
-			sourceMessage = processorOutput.receive(10000, "bar.destination");
+			sourceMessage = processorOutput.receive(10000, "bar");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("bar");
 
-			sourceMessage = processorOutput.receive(10000, "discards.destination");
+			sourceMessage = processorOutput.receive(10000, "discards");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("hello");
 		}
 	}
@@ -173,20 +173,20 @@ public class RouterSinkIntegrationTests {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 
-			Message<?> message = MessageBuilder.withPayload("foo")
+			Message<?> message = MessageBuilder.withPayload("foo".getBytes())
 					.setHeader("route", "foo").build();
 			processorInput.send(message);
 
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = processorOutput.receive(10000, "baz.destination");
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "baz");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("foo");
 
 
-			message = MessageBuilder.withPayload("bar")
+			message = MessageBuilder.withPayload("bar".getBytes())
 					.setHeader("route", "bar").build();
 			processorInput.send(message);
 
-			sourceMessage = processorOutput.receive(10000, "qux.destination");
+			sourceMessage = processorOutput.receive(10000, "qux");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("bar");
 		}
 	}
