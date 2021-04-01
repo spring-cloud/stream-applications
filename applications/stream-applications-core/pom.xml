@@ -155,6 +155,11 @@
                                     <dependencyManagement>
                                         <dependency>
                                             <groupId>org.springframework.cloud</groupId>
+                                            <artifactId>spring-cloud-stream-dependencies</artifactId>
+                                            <version>${spring-cloud-stream-dependencies.version}</version>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud</groupId>
                                             <artifactId>spring-cloud-dependencies</artifactId>
                                             <version>${spring-cloud.version}</version>
                                             <type>pom</type>
@@ -164,11 +169,6 @@
                                             <groupId>org.springframework.cloud.fn</groupId>
                                             <artifactId>function-dependencies</artifactId>
                                             <version>${java-functions.version}</version>
-                                        </dependency>
-                                        <dependency>
-                                            <groupId>org.springframework.cloud</groupId>
-                                            <artifactId>spring-cloud-stream-dependencies</artifactId>
-                                            <version>${spring-cloud-stream-dependencies.version}</version>
                                         </dependency>
                                         <dependency>
                                             <groupId>org.springframework.cloud</groupId>
