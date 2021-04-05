@@ -24,10 +24,12 @@ import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.stream.binder.ProducerProperties;
 import org.springframework.cloud.stream.binding.BinderAwareChannelResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.integration.channel.AbstractMessageChannel;
 import org.springframework.integration.groovy.GroovyScriptExecutingMessageProcessor;
 import org.springframework.integration.router.AbstractMappingMessageRouter;
 import org.springframework.integration.router.AbstractMessageRouter;
@@ -38,6 +40,9 @@ import org.springframework.integration.scripting.DefaultScriptVariableGenerator;
 import org.springframework.integration.scripting.RefreshableResourceScriptSource;
 import org.springframework.integration.scripting.ScriptVariableGenerator;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.converter.CompositeMessageConverter;
+import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.scripting.ScriptSource;
 import org.springframework.util.CollectionUtils;
 
@@ -78,6 +83,34 @@ public class RouterSinkConfiguration {
 		}
 		router.setChannelResolver(channelResolver);
 		return router;
+	}
+
+	// Router sink receives the input as String through byteArrayTextToString|routerSinkConsumer.
+	// Spring Cloud Stream used to convert the string back to byte[], but the commit below removed that logic.
+	// https://github.com/spring-cloud/spring-cloud-stream/commit/5d9de8ad579d3464d1503d1a5d1390168bccbdb9
+	// Therefore we are adding it back in the router sink app by programmatically converting the String back to
+	// byte[] before sending it out to the bound router channel.
+	@Bean
+	public BinderAwareChannelResolver.NewDestinationBindingCallback newDestinationBindingCallback(CompositeMessageConverter messageConverter) {
+		return new BinderAwareChannelResolver.NewDestinationBindingCallback() {
+			@Override
+			public void configure(String channelName, MessageChannel channel, ProducerProperties producerProperties, Object extendedProducerProperties) {
+				((AbstractMessageChannel) channel).addInterceptor(new ChannelInterceptor() {
+					@Override
+					public Message<?> preSend(Message<?> message, MessageChannel channel) {
+						@SuppressWarnings("unchecked")
+						Message<byte[]> outboundMessage = message.getPayload() instanceof byte[]
+								? (Message<byte[]>) message : (Message<byte[]>) messageConverter
+								.toMessage(message.getPayload(), message.getHeaders());
+						if (outboundMessage == null) {
+							throw new IllegalStateException("Failed to convert message: '" + message
+									+ "' to outbound message.");
+						}
+						return outboundMessage;
+					}
+				});
+			}
+		};
 	}
 
 	@Bean(name = "variableGenerator")

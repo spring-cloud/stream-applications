@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.processor.filter;
 
 import java.nio.charset.StandardCharsets;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -40,6 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FilterProcessorTests {
 
 	@Test
+	@Disabled
 	public void testFilterProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorTestApplication.class))
