@@ -37,7 +37,7 @@
                         <type>processor</type>
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.fn.filter.FilterFunctionConfiguration.class</configClass>
-                        <functionDefinition>byteArrayTextToString|filterFunction|filterPostProcessFunction</functionDefinition>
+                        <functionDefinition>byteArrayTextToString|filterFunction</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
