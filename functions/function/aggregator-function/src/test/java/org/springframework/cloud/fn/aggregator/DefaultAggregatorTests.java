@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.aggregator;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -59,7 +60,7 @@ public class DefaultAggregatorTests extends AbstractAggregatorFunctionTests {
 								.hasSize(2)
 								.contains("1", "2"))
 				.thenCancel()
-				.verify();
+				.verify(Duration.ofSeconds(10));
 
 		assertThat(this.messageGroupStore).isNull();
 		assertThat(this.aggregatingMessageHandler.getMessageStore()).isInstanceOf(SimpleMessageStore.class);

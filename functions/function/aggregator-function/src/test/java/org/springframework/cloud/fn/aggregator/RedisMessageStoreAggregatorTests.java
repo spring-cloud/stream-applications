@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.aggregator;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.junit.jupiter.api.Disabled;
@@ -63,7 +64,7 @@ public class RedisMessageStoreAggregatorTests extends AbstractAggregatorFunction
 								.hasSize(2)
 								.contains("1", "2"))
 				.thenCancel()
-				.verify();
+				.verify(Duration.ofSeconds(10));
 
 		assertThat(this.messageGroupStore).isInstanceOf(RedisMessageStore.class);
 

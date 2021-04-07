@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.aggregator;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,7 @@ public class GroupTimeOutAndGemfireMessageStoreAggregatorTests extends AbstractA
 								.hasSize(1)
 								.contains("1"))
 				.thenCancel()
-				.verify();
+				.verify(Duration.ofSeconds(10));
 
 		assertThat(this.messageGroupStore).isInstanceOf(GemfireMessageStore.class);
 		assertThat(this.aggregatingMessageHandler.getMessageStore()).isSameAs(this.messageGroupStore);

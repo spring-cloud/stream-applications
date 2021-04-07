@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.aggregator;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -60,7 +61,7 @@ public class CustomPropsAndMongoMessageStoreAggregatorTests extends AbstractAggr
 								.hasSize(1)
 								.element(0).isEqualTo("foo"))
 				.thenCancel()
-				.verify();
+				.verify(Duration.ofSeconds(10));
 
 		assertThat(this.messageGroupStore).isInstanceOf(ConfigurableMongoDbMessageStore.class);
 		assertThat(TestUtils.getPropertyValue(this.messageGroupStore, "collectionName")).isEqualTo("aggregatorTest");
