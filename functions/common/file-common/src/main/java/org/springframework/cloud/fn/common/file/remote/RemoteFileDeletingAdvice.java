@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,14 @@ import org.springframework.integration.aop.MessageSourceMutator;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.file.remote.RemoteFileTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 
 /**
  * A {@link MessageSourceMutator} that deletes a remote file on success.
  *
  * @author David Turanski
+ * @author Artem Bilan
  *
  */
 public class RemoteFileDeletingAdvice implements MessageSourceMutator {
@@ -45,11 +47,14 @@ public class RemoteFileDeletingAdvice implements MessageSourceMutator {
 		this.remoteFileSeparator = remoteFileSeparator;
 	}
 
+	@Nullable
 	@Override
-	public Message<?> afterReceive(Message<?> result, MessageSource<?> source) {
-		String remoteDir = (String) result.getHeaders().get(FileHeaders.REMOTE_DIRECTORY);
-		String remoteFile = (String) result.getHeaders().get(FileHeaders.REMOTE_FILE);
-		this.template.remove(remoteDir + this.remoteFileSeparator + remoteFile);
+	public Message<?> afterReceive(@Nullable Message<?> result, MessageSource<?> source) {
+		if (result != null) {
+			String remoteDir = (String) result.getHeaders().get(FileHeaders.REMOTE_DIRECTORY);
+			String remoteFile = (String) result.getHeaders().get(FileHeaders.REMOTE_FILE);
+			this.template.remove(remoteDir + this.remoteFileSeparator + remoteFile);
+		}
 		return result;
 	}
 }
