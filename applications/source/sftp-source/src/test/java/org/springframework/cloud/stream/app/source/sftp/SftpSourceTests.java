@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ public class SftpSourceTests extends SftpTestSupport {
 						"sftp.supplier.factory.port =${sftp.factory.port}",
 						"sftp.supplier.factory.allowUnknownKeys=true",
 						"sftp.supplier.remoteDir=sftpSource",
+						"sftp.supplier.delete-remote-files=true",
 						"spring.cloud.function.definition=sftpSupplier")
 				.run(context -> {
 					OutputDestination output = context.getBean(OutputDestination.class);

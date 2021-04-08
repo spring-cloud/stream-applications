@@ -243,6 +243,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 						"sftp.supplier.factory.private-key = classpath:id_rsa_pp",
 						"sftp.supplier.factory.passphrase = secret",
 						"sftp.supplier.factory.password = badPassword", // ensure public key was used
+						"sftp.supplier.delete-remote-files=true",
 						"file.consumer.mode=lines",
 						"file.consumer.with-markers=true",
 						"file.consumer.markers-json=true")

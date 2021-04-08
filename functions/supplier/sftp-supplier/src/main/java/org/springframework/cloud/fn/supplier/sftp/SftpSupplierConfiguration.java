@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.MonoProcessor;
 
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
@@ -37,7 +38,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.fn.common.file.FileConsumerProperties;
 import org.springframework.cloud.fn.common.file.FileUtils;
 import org.springframework.cloud.fn.common.file.remote.RemoteFileDeletingAdvice;
-import org.springframework.context.Lifecycle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -82,8 +82,8 @@ import org.springframework.util.StringUtils;
  */
 
 @Configuration
-@EnableConfigurationProperties({SftpSupplierProperties.class, FileConsumerProperties.class})
-@Import({SftpSupplierFactoryConfiguration.class})
+@EnableConfigurationProperties({ SftpSupplierProperties.class, FileConsumerProperties.class })
+@Import({ SftpSupplierFactoryConfiguration.class })
 public class SftpSupplierConfiguration {
 
 	private static final String METADATA_STORE_PREFIX = "sftpSource/";
@@ -91,19 +91,21 @@ public class SftpSupplierConfiguration {
 	private static final String FILE_MODIFIED_TIME_HEADER = "FILE_MODIFIED_TIME";
 
 	@Bean
+	public MonoProcessor<Boolean> subscriptionBarrier() {
+		return MonoProcessor.create();
+	}
+
+	@Bean
 	public Supplier<Flux<? extends Message<?>>> sftpSupplier(MessageSource<?> sftpMessageSource,
 			@Nullable Publisher<Message<Object>> sftpReadingFlow,
+			MonoProcessor<Boolean> subscriptionBarrier,
 			SftpSupplierProperties sftpSupplierProperties) {
 
 		Flux<? extends Message<?>> flux = sftpReadingFlow == null
-				? sftpMessageFlux(sftpMessageSource, sftpSupplierProperties)
+				? sftpMessageFlux(sftpMessageSource, sftpSupplierProperties, subscriptionBarrier)
 				: Flux.from(sftpReadingFlow);
 
-		return () -> flux.doOnSubscribe(s -> {
-			if (sftpMessageSource instanceof Lifecycle) {
-				((Lifecycle) sftpMessageSource).start();
-			}
-		});
+		return () -> flux.doOnSubscribe(s -> subscriptionBarrier.onNext(true));
 	}
 
 	@Bean
@@ -153,9 +155,10 @@ public class SftpSupplierConfiguration {
 	 * Create a Flux from a MessageSource that will be used by the supplier.
 	 */
 	private Flux<? extends Message<?>> sftpMessageFlux(MessageSource<?> sftpMessageSource,
-			SftpSupplierProperties sftpSupplierProperties) {
+			SftpSupplierProperties sftpSupplierProperties, MonoProcessor<?> subscriptionBarrier) {
 
 		return IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
+				.delaySubscription(subscriptionBarrier)
 				.subscriberContext(context -> context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
 						sftpSupplierProperties.getDelayWhenEmpty()));
 
@@ -196,14 +199,16 @@ public class SftpSupplierConfiguration {
 		@Bean
 		public Publisher<Message<Object>> sftpReadingFlow(
 				MessageSource<?> sftpMessageSource,
+				MonoProcessor<?> subscriptionBarrier,
 				SftpSupplierProperties sftpSupplierProperties,
 				FileConsumerProperties fileConsumerProperties) {
 
 			return FileUtils.enhanceStreamFlowForReadingMode(IntegrationFlows
-					.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
-							.subscriberContext(
-									context -> (context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
-											sftpSupplierProperties.getDelayWhenEmpty())))),
+							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
+									.delaySubscription(subscriptionBarrier)
+									.subscriberContext(
+											context -> (context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
+													sftpSupplierProperties.getDelayWhenEmpty())))),
 					fileConsumerProperties)
 					.toReactivePublisher();
 		}
@@ -233,10 +238,16 @@ public class SftpSupplierConfiguration {
 		@ConditionalOnExpression("environment['file.consumer.mode']!='ref' && environment['sftp.supplier.list-only']!='true'")
 		public Publisher<Message<Object>> sftpReadingFlow(
 				MessageSource<?> sftpMessageSource,
+				MonoProcessor<?> subscriptionBarrier,
+				SftpSupplierProperties sftpSupplierProperties,
 				FileConsumerProperties fileConsumerProperties) {
 
 			return FileUtils.enhanceFlowForReadingMode(IntegrationFlows
-							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)),
+							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
+									.delaySubscription(subscriptionBarrier)
+									.subscriberContext(
+											context -> (context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
+													sftpSupplierProperties.getDelayWhenEmpty())))),
 					fileConsumerProperties)
 					.toReactivePublisher();
 		}
@@ -282,7 +293,7 @@ public class SftpSupplierConfiguration {
 		@Bean
 		@SuppressWarnings("unchecked")
 		public MessageSource<?> targetMessageSource(PollableChannel listingChannel,
-													SftpListingMessageProducer sftpListingMessageProducer) {
+				SftpListingMessageProducer sftpListingMessageProducer) {
 			return () -> {
 				sftpListingMessageProducer.listNames();
 				return (Message<Object>) listingChannel.receive();
@@ -378,7 +389,7 @@ public class SftpSupplierConfiguration {
 			private final SftpSupplierProperties.SortSpec sort;
 
 			SftpListingMessageProducer(SessionFactory<?> sessionFactory, String remoteDirectory,
-									String remoteFileSeparator, SftpSupplierProperties.SortSpec sort) {
+					String remoteFileSeparator, SftpSupplierProperties.SortSpec sort) {
 
 				this.sessionFactory = sessionFactory;
 				this.remoteDirectory = remoteDirectory;
@@ -387,7 +398,7 @@ public class SftpSupplierConfiguration {
 			}
 
 			public void listNames() {
-				LsEntry[] entries = {};
+				LsEntry[] entries = { };
 				try {
 					Stream<LsEntry> stream = Stream.of(this.sessionFactory.getSession().list(this.remoteDirectory))
 							.map(x -> (LsEntry) x)
