@@ -21,6 +21,7 @@
     <properties>
         <revision>2020.0.2-SNAPSHOT</revision>
         <apps.version>3.0.2-SNAPSHOT</apps.version>
+        <apps.harbor.version>3.0.1</apps.harbor.version>
         <cdc-debezium-source.version>${apps.version}</cdc-debezium-source.version>
         <file-source.version>${apps.version}</file-source.version>
         <ftp-source.version>${apps.version}</ftp-source.version>
