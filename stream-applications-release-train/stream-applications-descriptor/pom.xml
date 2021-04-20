@@ -188,12 +188,20 @@
                                     <type>stream-apps-kafka-docker</type>
                                 </artifact>
                                 <artifact>
+                                    <file>target/classes/META-INF/kafka-apps-harbor.properties</file>
+                                    <type>stream-apps-kafka-harbor</type>
+                                </artifact>
+                                <artifact>
                                     <file>target/classes/META-INF/rabbit-apps-maven.properties</file>
                                     <type>stream-apps-rabbit-maven</type>
                                 </artifact>
                                 <artifact>
                                     <file>target/classes/META-INF/rabbit-apps-docker.properties</file>
                                     <type>stream-apps-rabbit-docker</type>
+                                </artifact>
+                                <artifact>
+                                    <file>target/classes/META-INF/rabbit-apps-harbor.properties</file>
+                                    <type>stream-apps-rabbit-harbor</type>
                                 </artifact>
                                 <artifact>
                                     <file>target/classes/META-INF/kafka-apps-maven-repo-url.properties</file>
