@@ -23,11 +23,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,8 +37,11 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.cloud.fn.common.config.SpelExpressionConverterConfiguration;
 import org.springframework.cloud.fn.test.support.sftp.SftpTestSupport;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.integration.file.splitter.FileSplitter;
 import org.springframework.integration.json.JsonPathUtils;
@@ -236,6 +241,46 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 	}
 
 	@Test
+	void renameRemoteFilesStream() {
+		defaultApplicationContextRunner
+				.withPropertyValues(
+						"sftp.supplier.stream=true",
+						"sftp.supplier.delete-remote-files=false",
+						"sftp.supplier.rename-remote-files-to='/sftpTarget/' + headers.get('file_remoteFile')")
+				.run(this::doTestRenameRemoteFiles);
+	}
+
+	@Test
+	void renameRemoteFiles() {
+		defaultApplicationContextRunner
+				.withPropertyValues(
+						"sftp.supplier.stream=false",
+						"sftp.supplier.delete-remote-files=false",
+						"sftp.supplier.rename-remote-files-to='/sftpTarget/' + headers.get('file_remoteFile')")
+				.run(this::doTestRenameRemoteFiles);
+	}
+
+	private void doTestRenameRemoteFiles(AssertableApplicationContext context) {
+		Supplier<Flux<Message<byte[]>>> sftpSupplier = context.getBean("sftpSupplier",
+				Supplier.class);
+
+		final Set<String> expectedTargetFiles = Arrays.stream(getSourceRemoteDirectory().list())
+				.collect(Collectors.toSet());
+
+		StepVerifier.create(sftpSupplier.get())
+				.expectNextMatches(message -> message.getPayload().length > 0)
+				.expectNextMatches(message -> message.getPayload().length > 0)
+				.thenCancel()
+				.verify(Duration.ofSeconds(30));
+		await().atMost(Duration.ofSeconds(30))
+				.until(() ->
+						expectedTargetFiles.equals(
+								Arrays.stream(getTargetRemoteDirectory().list())
+								.collect(Collectors.toSet()))
+				);
+	}
+
+	@Test
 	public void streamSourceFilesInLineMode() {
 		defaultApplicationContextRunner
 				.withPropertyValues(
@@ -399,8 +444,8 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 	}
 
 	@SpringBootApplication
+	@Import(SpelExpressionConverterConfiguration.class)
 	static class SftpSupplierTestApplication {
 
 	}
-
 }
