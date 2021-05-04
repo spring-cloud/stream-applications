@@ -227,7 +227,7 @@ public class SftpSupplierConfiguration {
 		}
 
 		@Bean
-		@ConditionalOnExpression("environment['sftp.supplier.rename-remote-files-to'] != null && environment['sftp.supplier.delete-remote-files'] == 'false'")
+		@ConditionalOnProperty(prefix = "sftp.supplier", value = "rename-remote-files-to")
 		public RemoteFileRenamingAdvice remoteFileRenamingAdvice(SftpRemoteFileTemplate sftpTemplate,
 																SftpSupplierProperties sftpSupplierProperties) {
 			return new RemoteFileRenamingAdvice(sftpTemplate, sftpSupplierProperties.getRemoteFileSeparator(), sftpSupplierProperties.getRenameRemoteFilesTo());
@@ -296,7 +296,7 @@ public class SftpSupplierConfiguration {
 		}
 
 		@Bean
-		@ConditionalOnExpression("environment['sftp.supplier.rename-remote-files-to'] != null")
+		@ConditionalOnProperty(prefix = "sftp.supplier", value = "rename-remote-files-to")
 		public SftpOutboundGatewaySpec renameRemoteFileHandler(SftpSupplierFactoryConfiguration.DelegatingFactoryWrapper delegatingFactoryWrapper, SftpSupplierProperties sftpSupplierProperties) {
 			return Sftp.outboundGateway(delegatingFactoryWrapper.getFactory(), AbstractRemoteFileOutboundGateway.Command.MV.getCommand(), String.format("headers.get('%s') + '%s' + headers.get('%s')", FileHeaders.REMOTE_DIRECTORY, sftpSupplierProperties.getRemoteFileSeparator(), FileHeaders.REMOTE_FILE))
 					.renameExpression(sftpSupplierProperties.getRenameRemoteFilesTo());

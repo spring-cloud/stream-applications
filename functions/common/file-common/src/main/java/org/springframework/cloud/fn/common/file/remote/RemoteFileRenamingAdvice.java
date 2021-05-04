@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.fn.common.file.remote;
 
-import java.util.Objects;
-
 import org.springframework.expression.Expression;
 import org.springframework.integration.aop.MessageSourceMutator;
 import org.springframework.integration.core.MessageSource;
@@ -36,7 +34,9 @@ import org.springframework.messaging.Message;
 public class RemoteFileRenamingAdvice implements MessageSourceMutator {
 
 	private final RemoteFileTemplate<?> template;
+
 	private final String remoteFileSeparator;
+
 	private final Expression newName;
 
 	/**
@@ -59,8 +59,10 @@ public class RemoteFileRenamingAdvice implements MessageSourceMutator {
 		if (result != null) {
 			String remoteDir = (String) result.getHeaders().get(FileHeaders.REMOTE_DIRECTORY);
 			String remoteFile = (String) result.getHeaders().get(FileHeaders.REMOTE_FILE);
-			String newName = Objects.requireNonNull(this.newName.getValue(result)).toString();
-			this.template.rename(remoteDir + this.remoteFileSeparator + remoteFile, newName);
+			String newNameValue = this.newName.getValue(result, String.class);
+			if (newNameValue != null && !newNameValue.isEmpty()) {
+				this.template.rename(remoteDir + this.remoteFileSeparator + remoteFile, newNameValue);
+			}
 		}
 		return result;
 	}

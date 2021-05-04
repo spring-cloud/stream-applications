@@ -39,9 +39,7 @@ import reactor.test.StepVerifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.fn.common.config.SpelExpressionConverterConfiguration;
 import org.springframework.cloud.fn.test.support.sftp.SftpTestSupport;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.integration.file.splitter.FileSplitter;
 import org.springframework.integration.json.JsonPathUtils;
@@ -246,7 +244,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 				.withPropertyValues(
 						"sftp.supplier.stream=true",
 						"sftp.supplier.delete-remote-files=false",
-						"sftp.supplier.rename-remote-files-to='/sftpTarget/' + headers.get('file_remoteFile')")
+						"sftp.supplier.rename-remote-files-to='/sftpTarget/' + headers.file_remoteFile")
 				.run(this::doTestRenameRemoteFiles);
 	}
 
@@ -256,7 +254,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 				.withPropertyValues(
 						"sftp.supplier.stream=false",
 						"sftp.supplier.delete-remote-files=false",
-						"sftp.supplier.rename-remote-files-to='/sftpTarget/' + headers.get('file_remoteFile')")
+						"sftp.supplier.rename-remote-files-to='/sftpTarget/' + headers.file_remoteFile")
 				.run(this::doTestRenameRemoteFiles);
 	}
 
@@ -444,8 +442,8 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 	}
 
 	@SpringBootApplication
-	@Import(SpelExpressionConverterConfiguration.class)
 	static class SftpSupplierTestApplication {
 
 	}
+
 }
