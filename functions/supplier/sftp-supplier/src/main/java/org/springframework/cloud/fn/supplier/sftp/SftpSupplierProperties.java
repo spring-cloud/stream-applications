@@ -49,7 +49,6 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("sftp.supplier")
 @Validated
 public class SftpSupplierProperties {
-
 	/**
 	 * Session factory properties.
 	 */
@@ -74,6 +73,11 @@ public class SftpSupplierProperties {
 	 * Set to true to delete remote files after successful transfer.
 	 */
 	private boolean deleteRemoteFiles = false;
+
+	/**
+	 * A SpEL expression resolving to the new name remote files must be renamed to after successful transfer.
+	 */
+	private Expression renameRemoteFilesTo = null;
 
 	/**
 	 * The local directory to use for file transfers.
@@ -185,6 +189,14 @@ public class SftpSupplierProperties {
 
 	public void setDeleteRemoteFiles(boolean deleteRemoteFiles) {
 		this.deleteRemoteFiles = deleteRemoteFiles;
+	}
+
+	public Expression getRenameRemoteFilesTo() {
+		return renameRemoteFilesTo;
+	}
+
+	public void setRenameRemoteFilesTo(Expression renameRemoteFilesTo) {
+		this.renameRemoteFilesTo = renameRemoteFilesTo;
 	}
 
 	@NotNull
@@ -307,6 +319,11 @@ public class SftpSupplierProperties {
 
 	public void setSortBy(SortSpec sortBy) {
 		this.sortBy = sortBy;
+	}
+
+	@AssertTrue(message = "deleteRemoteFiles must be 'false' when renameRemoteFilesTo is set")
+	public boolean isRenameRemoteFilesValid() {
+		return renameRemoteFilesTo == null || !deleteRemoteFiles;
 	}
 
 	public static class Factory {

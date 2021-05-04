@@ -38,6 +38,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.fn.common.file.FileConsumerProperties;
 import org.springframework.cloud.fn.common.file.FileUtils;
 import org.springframework.cloud.fn.common.file.remote.RemoteFileDeletingAdvice;
+import org.springframework.cloud.fn.common.file.remote.RemoteFileRenamingAdvice;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -48,16 +49,19 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.core.GenericSelector;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.IntegrationFlowBuilder;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.file.filters.ChainFileListFilter;
 import org.springframework.integration.file.filters.FileListFilter;
+import org.springframework.integration.file.remote.gateway.AbstractRemoteFileOutboundGateway;
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.handler.MessageProcessor;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
 import org.springframework.integration.sftp.dsl.Sftp;
 import org.springframework.integration.sftp.dsl.SftpInboundChannelAdapterSpec;
+import org.springframework.integration.sftp.dsl.SftpOutboundGatewaySpec;
 import org.springframework.integration.sftp.filters.SftpPersistentAcceptOnceFileListFilter;
 import org.springframework.integration.sftp.filters.SftpRegexPatternFileListFilter;
 import org.springframework.integration.sftp.filters.SftpSimplePatternFileListFilter;
@@ -66,6 +70,7 @@ import org.springframework.integration.util.IntegrationReactiveUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.PollableChannel;
@@ -97,9 +102,9 @@ public class SftpSupplierConfiguration {
 
 	@Bean
 	public Supplier<Flux<? extends Message<?>>> sftpSupplier(MessageSource<?> sftpMessageSource,
-			@Nullable Publisher<Message<Object>> sftpReadingFlow,
-			MonoProcessor<Boolean> subscriptionBarrier,
-			SftpSupplierProperties sftpSupplierProperties) {
+															@Nullable Publisher<Message<Object>> sftpReadingFlow,
+															MonoProcessor<Boolean> subscriptionBarrier,
+															SftpSupplierProperties sftpSupplierProperties) {
 
 		Flux<? extends Message<?>> flux = sftpReadingFlow == null
 				? sftpMessageFlux(sftpMessageSource, sftpSupplierProperties, subscriptionBarrier)
@@ -221,6 +226,12 @@ public class SftpSupplierConfiguration {
 			return new RemoteFileDeletingAdvice(sftpTemplate, sftpSupplierProperties.getRemoteFileSeparator());
 		}
 
+		@Bean
+		@ConditionalOnProperty(prefix = "sftp.supplier", value = "rename-remote-files-to")
+		public RemoteFileRenamingAdvice remoteFileRenamingAdvice(SftpRemoteFileTemplate sftpTemplate,
+																SftpSupplierProperties sftpSupplierProperties) {
+			return new RemoteFileRenamingAdvice(sftpTemplate, sftpSupplierProperties.getRemoteFileSeparator(), sftpSupplierProperties.getRenameRemoteFilesTo());
+		}
 	}
 
 	@Configuration
@@ -240,16 +251,24 @@ public class SftpSupplierConfiguration {
 				MessageSource<?> sftpMessageSource,
 				MonoProcessor<?> subscriptionBarrier,
 				SftpSupplierProperties sftpSupplierProperties,
-				FileConsumerProperties fileConsumerProperties) {
+				FileConsumerProperties fileConsumerProperties,
+				@Nullable MessageHandler renameRemoteFileHandler) {
 
-			return FileUtils.enhanceFlowForReadingMode(IntegrationFlows
+			IntegrationFlowBuilder flowBuilder = FileUtils.enhanceFlowForReadingMode(IntegrationFlows
 							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
 									.delaySubscription(subscriptionBarrier)
 									.subscriberContext(
 											context -> (context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
 													sftpSupplierProperties.getDelayWhenEmpty())))),
-					fileConsumerProperties)
-					.toReactivePublisher();
+					fileConsumerProperties);
+
+			if (renameRemoteFileHandler != null) {
+				flowBuilder.publishSubscribeChannel(pubsub ->
+						pubsub.subscribe(subFlow -> subFlow.handle(renameRemoteFileHandler).nullChannel())
+				);
+			}
+
+			return flowBuilder.toReactivePublisher();
 		}
 
 		/**
@@ -276,6 +295,12 @@ public class SftpSupplierConfiguration {
 					.filter(fileListFilter);
 		}
 
+		@Bean
+		@ConditionalOnProperty(prefix = "sftp.supplier", value = "rename-remote-files-to")
+		public SftpOutboundGatewaySpec renameRemoteFileHandler(SftpSupplierFactoryConfiguration.DelegatingFactoryWrapper delegatingFactoryWrapper, SftpSupplierProperties sftpSupplierProperties) {
+			return Sftp.outboundGateway(delegatingFactoryWrapper.getFactory(), AbstractRemoteFileOutboundGateway.Command.MV.getCommand(), String.format("headers.get('%s') + '%s' + headers.get('%s')", FileHeaders.REMOTE_DIRECTORY, sftpSupplierProperties.getRemoteFileSeparator(), FileHeaders.REMOTE_FILE))
+					.renameExpression(sftpSupplierProperties.getRenameRemoteFilesTo());
+		}
 	}
 
 	/*
