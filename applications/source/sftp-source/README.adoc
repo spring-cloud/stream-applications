@@ -144,6 +144,7 @@ $$max-fetch$$:: $$The maximum number of remote files to fetch per poll; default 
 $$preserve-timestamp$$:: $$Set to true to preserve the original timestamp.$$ *($$Boolean$$, default: `$$true$$`)*
 $$remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$/$$`)*
 $$remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$/$$`)*
+$$rename-remote-files-to$$:: $$A SpEL expression resolving to the new name remote files must be renamed to after successful transfer.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$stream$$:: $$Set to true to stream the file rather than copy to a local directory.$$ *($$Boolean$$, default: `$$false$$`)*
 $$tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
 

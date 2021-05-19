@@ -53,13 +53,16 @@
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.fn.consumer.mongo.MongoDbConsumerConfiguration.class
                         </configClass>
-                        <functionDefinition>mongodbConsumer</functionDefinition>
-
+                        <functionDefinition>byteArrayTextToString|mongodbConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
                                     <artifactId>mongodb-consumer</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.fn</groupId>
+                                    <artifactId>payload-converter-function</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>
