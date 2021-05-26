@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 the original author or authors.
+ * Copyright 2018-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.springframework.cloud.fn.supplier.websocket;
 
 import java.util.function.Supplier;
 
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.ObjectProvider;
@@ -27,7 +28,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.channel.FluxMessageChannel;
+import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.websocket.IntegrationWebSocketContainer;
 import org.springframework.integration.websocket.ServerWebSocketContainer;
 import org.springframework.integration.websocket.inbound.WebSocketInboundChannelAdapter;
@@ -48,14 +49,26 @@ public class WebsocketSupplierConfiguration {
 	WebsocketSupplierProperties properties;
 
 	@Bean
-	public Supplier<Flux<Message<?>>> websocketSupplier(WebSocketInboundChannelAdapter webSocketInboundChannelAdapter) {
-		return () -> Flux.from(output())
-				.doOnSubscribe(subscription -> webSocketInboundChannelAdapter.start());
+	public Supplier<Flux<Message<?>>> websocketSupplier(Publisher<Message<?>> websocketPublisher,
+														WebSocketInboundChannelAdapter webSocketInboundChannelAdapter) {
+		return () -> Flux.from(websocketPublisher)
+				.doOnSubscribe(subscription -> webSocketInboundChannelAdapter.start())
+				.doOnTerminate(webSocketInboundChannelAdapter::stop);
 	}
 
 	@Bean
-	public FluxMessageChannel output() {
-		return new FluxMessageChannel();
+	public Publisher<Message<byte[]>> websocketPublisher(IntegrationWebSocketContainer serverWebSocketContainer) {
+		return IntegrationFlows.from(
+				webSocketInboundChannelAdapter(serverWebSocketContainer))
+				.toReactivePublisher();
+	}
+
+	private WebSocketInboundChannelAdapter webSocketInboundChannelAdapter(
+			IntegrationWebSocketContainer serverWebSocketContainer) {
+		WebSocketInboundChannelAdapter webSocketInboundChannelAdapter =
+				new WebSocketInboundChannelAdapter(serverWebSocketContainer);
+		webSocketInboundChannelAdapter.setAutoStartup(false);
+		return webSocketInboundChannelAdapter;
 	}
 
 	@Bean
@@ -74,13 +87,4 @@ public class WebsocketSupplierConfiguration {
 				.withSockJs(sockJsServiceOptions.getIfAvailable());
 	}
 
-	@Bean
-	public WebSocketInboundChannelAdapter webSocketInboundChannelAdapter(
-			IntegrationWebSocketContainer serverWebSocketContainer) {
-		WebSocketInboundChannelAdapter webSocketInboundChannelAdapter =
-				new WebSocketInboundChannelAdapter(serverWebSocketContainer);
-		webSocketInboundChannelAdapter.setOutputChannel(output());
-		webSocketInboundChannelAdapter.setAutoStartup(false);
-		return webSocketInboundChannelAdapter;
-	}
 }

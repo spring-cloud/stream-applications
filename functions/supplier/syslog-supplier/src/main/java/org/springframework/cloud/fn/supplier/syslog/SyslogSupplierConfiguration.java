@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,16 +55,16 @@ public class SyslogSupplierConfiguration {
 	private SyslogSupplierProperties properties;
 
 	@Bean
-	public FluxMessageChannel output() {
+	public FluxMessageChannel syslogInputChannel() {
 		return new FluxMessageChannel();
 	}
 
 	@Bean
-	public Supplier<Flux<Message<?>>> syslogSupplier(ObjectProvider<UdpSyslogReceivingChannelAdapter> udpApapterProvider,
+	public Supplier<Flux<Message<?>>> syslogSupplier(ObjectProvider<UdpSyslogReceivingChannelAdapter> udpAdapterProvider,
 												ObjectProvider<TcpSyslogReceivingChannelAdapter> tcpAdapterProvider) {
-		return () -> Flux.from(output())
+		return () -> Flux.from(syslogInputChannel())
 				.doOnSubscribe(subscription -> {
-					final UdpSyslogReceivingChannelAdapter udpAdapter = udpApapterProvider.getIfAvailable();
+					final UdpSyslogReceivingChannelAdapter udpAdapter = udpAdapterProvider.getIfAvailable();
 					final TcpSyslogReceivingChannelAdapter tcpAdapter = tcpAdapterProvider.getIfAvailable();
 					if (udpAdapter != null) {
 						udpAdapter.start();
@@ -127,7 +127,7 @@ public class SyslogSupplierConfiguration {
 	private void setAdapterProperties(SyslogReceivingChannelAdapterSupport adapter) {
 		adapter.setPort(this.properties.getPort());
 		adapter.setConverter(syslogConverter());
-		adapter.setOutputChannel(output());
+		adapter.setOutputChannel(syslogInputChannel());
 		adapter.setAutoStartup(false);
 	}
 
