@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class MailSupplierConfiguration {
 
 	@Bean
 	public Supplier<Flux<Message<?>>> mailSupplier(@Qualifier("mailChannelAdapter") MessageProducerSupport mailChannelAdapter) {
-		return () -> Flux.from(output())
+		return () -> Flux.from(mailInputChannel())
 				.doOnSubscribe(subscription -> mailChannelAdapter.start());
 	}
 
@@ -77,12 +77,12 @@ public class MailSupplierConfiguration {
 							.header(MailHeaders.CC, arrayToListProcessor(MailHeaders.CC))
 							.header(MailHeaders.BCC, arrayToListProcessor(MailHeaders.BCC));
 				})
-				.channel(output())
+				.channel(mailInputChannel())
 				.get();
 	}
 
 	@Bean
-	public FluxMessageChannel output() {
+	public FluxMessageChannel mailInputChannel() {
 		return new FluxMessageChannel();
 	}
 

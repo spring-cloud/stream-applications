@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 the original author or authors.
+ * Copyright 2016-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 
 import javax.jms.ConnectionFactory;
 
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.channel.FluxMessageChannel;
+import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.jms.ChannelPublishingJmsMessageListener;
 import org.springframework.integration.jms.JmsMessageDrivenEndpoint;
+import org.springframework.integration.jms.dsl.Jms;
 import org.springframework.jms.listener.AbstractMessageListenerContainer;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
@@ -49,28 +52,18 @@ public class JmsSupplierConfiguration {
 	private ConnectionFactory connectionFactory;
 
 	@Bean
-	public Supplier<Flux<Message<?>>> jmsSupplier() {
-		return () -> Flux.from(output())
-				.doOnSubscribe(subscription -> adapter().start());
+	public Supplier<Flux<Message<?>>> jmsSupplier(Publisher<Message<?>> jmsPublisher, JmsMessageDrivenEndpoint adapter) {
+		return () -> Flux.from(jmsPublisher)
+				.doOnSubscribe(subscription -> adapter.start())
+				.doOnTerminate(adapter::stop);
 	}
 
 	@Bean
-	public FluxMessageChannel output() {
-		return new FluxMessageChannel();
-	}
-
-	@Bean
-	public JmsMessageDrivenEndpoint adapter() {
-		final JmsMessageDrivenEndpoint jmsMessageDrivenEndpoint = new JmsMessageDrivenEndpoint(container(), listener());
-		jmsMessageDrivenEndpoint.setAutoStartup(false);
-		return jmsMessageDrivenEndpoint;
-	}
-
-	@Bean
-	public ChannelPublishingJmsMessageListener listener() {
-		ChannelPublishingJmsMessageListener listener = new ChannelPublishingJmsMessageListener();
-		listener.setRequestChannel(output());
-		return listener;
+	public Publisher<Message<byte[]>> jmsPublisher() {
+		return IntegrationFlows.from(
+				Jms.messageDrivenChannelAdapter(container())
+						.autoStartup(false))
+				.toReactivePublisher();
 	}
 
 	@Bean

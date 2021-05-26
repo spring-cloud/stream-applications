@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,12 +52,12 @@ public class TwitterStreamSupplierConfiguration {
 	private static final Log logger = LogFactory.getLog(TwitterStreamSupplierConfiguration.class);
 
 	@Bean
-	public FluxMessageChannel output() {
+	public FluxMessageChannel twitterStatusInputChannel() {
 		return new FluxMessageChannel();
 	}
 
 	@Bean
-	public StatusListener twitterStatusListener(FluxMessageChannel output, TwitterStream twitterStream,
+	public StatusListener twitterStatusListener(FluxMessageChannel twitterStatusInputChannel, TwitterStream twitterStream,
 			ObjectMapper objectMapper) {
 
 		StatusListener statusListener = new StatusListener() {
@@ -92,8 +92,7 @@ public class TwitterStreamSupplierConfiguration {
 					Message<byte[]> message = MessageBuilder.withPayload(json.getBytes())
 							.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON_VALUE)
 							.build();
-					output.send(message);
-					// System.out.println(json);
+					twitterStatusInputChannel.send(message);
 				}
 				catch (JsonProcessingException e) {
 					logger.error("Status to JSON conversion error!", e);
@@ -114,9 +113,9 @@ public class TwitterStreamSupplierConfiguration {
 
 	@Bean
 	public Supplier<Flux<Message<?>>> twitterStreamSupplier(TwitterStream twitterStream,
-			FluxMessageChannel output, TwitterStreamSupplierProperties streamProperties) {
+			FluxMessageChannel twitterStatusInputChannel, TwitterStreamSupplierProperties streamProperties) {
 
-		return () -> Flux.from(output)
+		return () -> Flux.from(twitterStatusInputChannel)
 				.doOnSubscribe(subscription -> {
 					try {
 						switch (streamProperties.getType()) {
