@@ -13,12 +13,12 @@
 	<parent>
 		<groupId>org.springframework.cloud.stream.app</groupId>
 		<artifactId>stream-applications-build</artifactId>
-		<version>1.0.3-SNAPSHOT</version>
+		<version>1.0.3</version>
 		<relativePath/>
 	</parent>
 
 	<properties>
-		<revision>1.0.3-SNAPSHOT</revision>
+		<revision>1.0.3</revision>
 	</properties>
 
 	<modules>
