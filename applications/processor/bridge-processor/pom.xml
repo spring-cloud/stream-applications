@@ -6,12 +6,12 @@
     <artifactId>bridge-processor</artifactId>
     <name>bridge-processor</name>
     <description>bridge processor apps</description>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
 
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
-        <version>3.0.4-SNAPSHOT</version>
+        <version>3.0.4</version>
         <relativePath/>
     </parent>
 
