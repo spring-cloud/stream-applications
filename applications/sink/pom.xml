@@ -6,7 +6,7 @@
 
     <groupId>org.springframework.cloud.stream.app</groupId>
     <artifactId>sink</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>

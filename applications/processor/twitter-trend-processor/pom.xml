@@ -6,12 +6,12 @@
     <artifactId>twitter-trend-processor</artifactId>
     <name>twitter-trend-processor</name>
     <description>twitter trend processor apps</description>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
-        <version>3.0.5</version>
+        <version>3.0.6-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
