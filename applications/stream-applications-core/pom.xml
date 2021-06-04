@@ -147,6 +147,10 @@
                                     <!-- Wavefront Tracing -->
                                     <wavefront.application.name>"${spring.cloud.dataflow.stream.name:unknown}</wavefront.application.name>
                                     <wavefront.application.service>${spring.cloud.dataflow.stream.app.label:unknown}-${spring.cloud.dataflow.stream.app.type:unknown}"</wavefront.application.service>
+
+                                    <!-- Zipkin Server Tracing -->
+                                    <spring.zipkin.enabled>false</spring.zipkin.enabled>
+
                                 </properties>
                                 <metadata>
                                     <mavenPluginVersion>${spring-cloud-dataflow-apps-metadata-plugin.version}</mavenPluginVersion>
@@ -252,6 +256,10 @@
                                         <dependency>
                                             <groupId>org.springframework.cloud</groupId>
                                             <artifactId>spring-cloud-starter-sleuth</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud</groupId>
+                                            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
                                         </dependency>
                                         <dependency>
                                             <groupId>org.springframework.cloud</groupId>
