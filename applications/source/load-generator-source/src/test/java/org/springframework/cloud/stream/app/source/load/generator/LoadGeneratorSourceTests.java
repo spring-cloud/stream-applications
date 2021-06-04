@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class LoadGeneratorSourceTests {
 				.run("--spring.cloud.function.definition=loadGeneratorSupplier")) {
 
 			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(10000);
+			Message<byte[]> sourceMessage = target.receive(10000, "loadGeneratorSupplier-out-0");
 			final byte[] actual = sourceMessage.getPayload();
 			assertThat(actual.length).isEqualTo(1000);
 		}

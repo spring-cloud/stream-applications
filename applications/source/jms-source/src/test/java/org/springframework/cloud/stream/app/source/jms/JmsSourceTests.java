@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class JmsSourceTests {
 	@Test
 	public void testJmsSource() {
 		template.convertAndSend("jmssource.test.queue", "Hello, world!");
-		Message<byte[]> sourceMessage = output.receive(10000);
+		Message<byte[]> sourceMessage = output.receive(10000, "jmsSupplier-out-0");
 		final String actual = new String(sourceMessage.getPayload());
 		assertThat(actual).isEqualTo("Hello, world!");
 	}

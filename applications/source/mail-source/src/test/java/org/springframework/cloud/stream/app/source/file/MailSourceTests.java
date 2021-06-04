@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public class MailSourceTests {
 						"--mail.supplier.java-mail-properties=mail.imap.socketFactory.fallback=true\\n mail.store.protocol=imap\\n mail.debug=true")) {
 
 			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(10000);
+			Message<byte[]> sourceMessage = target.receive(10000, "mailSupplier-out-0");
 			final String actual = new String(sourceMessage.getPayload());
 			assertThat(actual.endsWith("\r\n\r\nfoo\r\n\r\n"));
 		}

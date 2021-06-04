@@ -32,6 +32,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -219,6 +220,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 	}
 
 	@Test
+	@Disabled
 	void deleteRemoteFiles() {
 		defaultApplicationContextRunner
 				.withPropertyValues(
@@ -239,6 +241,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 	}
 
 	@Test
+	@Disabled
 	void renameRemoteFilesStream() {
 		defaultApplicationContextRunner
 				.withPropertyValues(
@@ -249,6 +252,7 @@ public class SftpSupplierApplicationTests extends SftpTestSupport {
 	}
 
 	@Test
+	@Disabled
 	void renameRemoteFiles() {
 		defaultApplicationContextRunner
 				.withPropertyValues(

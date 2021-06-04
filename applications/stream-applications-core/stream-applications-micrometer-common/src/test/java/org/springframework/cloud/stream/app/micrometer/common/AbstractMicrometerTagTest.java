@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 the original author or authors.
+ * Copyright 2018-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,8 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.simple.SimpleConfig;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.pivotal.cfenv.test.AbstractCfEnvTests;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -39,7 +38,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.StreamUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,8 +47,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Christian Tzolov
  * @author Soby Chacko
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = AbstractMicrometerTagTest.AutoConfigurationApplication.class)
+@SpringBootTest(classes = AbstractMicrometerTagTest.AutoConfigurationApplication.class,
+		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext
 public class AbstractMicrometerTagTest {
 
 	@Autowired
@@ -60,7 +60,7 @@ public class AbstractMicrometerTagTest {
 
 	protected Meter meter;
 
-	@BeforeClass
+	@BeforeAll
 	public static void mockVcapServices() throws IOException {
 		String serviceJson = StreamUtils.copyToString(new DefaultResourceLoader().getResource(
 				"classpath:/org/springframework/cloud/stream/app/micrometer/common/pcf-scs-info.json")
@@ -68,7 +68,7 @@ public class AbstractMicrometerTagTest {
 		new Vcap().mockServices(serviceJson);
 	}
 
-	@Before
+	@BeforeEach
 	public void before() {
 		assertThat(simpleMeterRegistry).isNotNull();
 		meter = simpleMeterRegistry.find("jvm.memory.committed").meter();

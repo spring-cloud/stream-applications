@@ -39,7 +39,9 @@ $$transacted$$:: $$Whether the channel is transacted.$$ *($$Boolean$$, default: 
 
 === spring.rabbitmq
 
+$$address-shuffle-mode$$:: $$Mode used to shuffle configured addresses.$$ *($$AddressShuffleMode$$, default: `$$none$$`, possible values: `NONE`,`RANDOM`,`INORDER`)*
 $$addresses$$:: $$Comma-separated list of addresses to which the client should connect. When set, the host and port are ignored.$$ *($$String$$, default: `$$<none>$$`)*
+$$channel-rpc-timeout$$:: $$Continuation timeout for RPC calls in channels. Set it to zero to wait forever.$$ *($$Duration$$, default: `$$10m$$`)*
 $$connection-timeout$$:: $$Connection timeout. Set it to zero to wait forever.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$host$$:: $$RabbitMQ host. Ignored if an address is set.$$ *($$String$$, default: `$$localhost$$`)*
 $$password$$:: $$Login to authenticate against the broker.$$ *($$String$$, default: `$$guest$$`)*

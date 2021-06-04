@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class SyslogSourceTests {
 			sendTcp(RFC3164_PACKET + "\n", connectionFactory);
 
 			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(10000);
+			Message<byte[]> sourceMessage = target.receive(10000, "syslogSupplier-out-0");
 			String actual = new String(sourceMessage.getPayload());
 			final Map map = new ObjectMapper().readValue(actual, Map.class);
 			assertThat(map.get("HOST")).isEqualTo("WEBERN");

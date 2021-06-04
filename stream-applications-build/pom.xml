@@ -5,7 +5,7 @@
 
 	<groupId>org.springframework.cloud.stream.app</groupId>
 	<artifactId>stream-applications-build</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<name>stream-applications-build</name>
 	<description>Common Parent for Functions and Applications</description>
 	<packaging>pom</packaging>
@@ -40,10 +40,10 @@
 		<nohttp-checkstyle.version>0.0.2.RELEASE</nohttp-checkstyle.version>
 		<disable.nohttp.checks>true</disable.nohttp.checks>
 		<spring-javaformat-checkstyle.version>0.0.7</spring-javaformat-checkstyle.version>
-		<spring-boot.version>2.3.11.RELEASE</spring-boot.version>
-		<spring-kafka.version>2.5.13.RELEASE</spring-kafka.version>
-		<spring-rabbit.version>2.2.15.RELEASE</spring-rabbit.version>
-		<spring-cloud-function.version>3.0.14.RELEASE</spring-cloud-function.version>
+		<spring-boot.version>2.5.0</spring-boot.version>
+		<spring-kafka.version>2.7.1</spring-kafka.version>
+		<spring-rabbit.version>2.3.7</spring-rabbit.version>
+		<spring-cloud-function.version>3.1.3</spring-cloud-function.version>
 		<spring-data-geode-test.version>0.0.21.RELEASE</spring-data-geode-test.version>
 		<test-containers.version>1.15.2</test-containers.version>
 		<maven-flatten-plugin.version>1.2.5</maven-flatten-plugin.version>

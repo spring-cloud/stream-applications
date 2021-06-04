@@ -52,7 +52,7 @@ public class SftpSourceTests extends SftpTestSupport {
 				.run(context -> {
 					OutputDestination output = context.getBean(OutputDestination.class);
 					SftpSupplierProperties config = context.getBean(SftpSupplierProperties.class);
-					Message<byte[]> message = output.receive(10000);
+					Message<byte[]> message = output.receive(10000, "sftpSupplier-out-0");
 					assertThat(new File(new String(message.getPayload()).replaceAll("\"", ""))).isEqualTo(
 							new File(config.getLocalDir(), "sftpSource1.txt"));
 					message = output.receive(10000);
@@ -79,7 +79,7 @@ public class SftpSourceTests extends SftpTestSupport {
 					OutputDestination output = context.getBean(OutputDestination.class);
 					SftpSupplierProperties config = context.getBean(SftpSupplierProperties.class);
 					ObjectMapper objectMapper = context.getBean(ObjectMapper.class);
-					Message<byte[]> message = output.receive(10000);
+					Message<byte[]> message = output.receive(10000, "sftpSuppliertaskLaunchRequestFunction-out-0");
 					Map<String, Object> taskLaunchRequest = objectMapper.readValue(message.getPayload(), HashMap.class);
 					assertThat(taskLaunchRequest.get("name")).isEqualTo("myTask");
 					assertThat((List) taskLaunchRequest.get("args"))

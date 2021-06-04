@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,9 @@ import java.util.stream.StreamSupport;
 
 import javax.sql.DataSource;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -280,28 +278,7 @@ public class JdbcConsumerConfiguration {
 					parameterSource.addValue(key, null);
 				}
 				else {
-					if (value instanceof JsonPropertyAccessor.ToStringFriendlyJsonNode) {
-						// Need to do some reflection until we have a getter for the Node
-						DirectFieldAccessor dfa = new DirectFieldAccessor(value);
-						JsonNode node = (JsonNode) dfa.getPropertyValue("node");
-						Object valueToUse;
-						if (node == null || node.isNull()) {
-							valueToUse = null;
-						}
-						else if (node.isNumber()) {
-							valueToUse = node.numberValue();
-						}
-						else if (node.isBoolean()) {
-							valueToUse = node.booleanValue();
-						}
-						else {
-							valueToUse = node.textValue();
-						}
-						parameterSource.addValue(key, valueToUse);
-					}
-					else {
-						parameterSource.addValue(key, value);
-					}
+					parameterSource.addValue(key, value);
 				}
 			}
 			return parameterSource;

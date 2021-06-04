@@ -32,7 +32,7 @@ $$authentication-database$$:: $$Authentication database name.$$ *($$String$$, de
 $$auto-index-creation$$:: $$Whether to enable auto-index creation.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$database$$:: $$Database name.$$ *($$String$$, default: `$$<none>$$`)*
 $$field-naming-strategy$$:: $$Fully qualified name of the FieldNamingStrategy to use.$$ *($$Class<?>$$, default: `$$<none>$$`)*
-$$grid-fs-database$$:: $$GridFS database name.$$ *($$String$$, default: `$$<none>$$`)*
+$$grid-fs-database$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
 $$host$$:: $$Mongo server host. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
 $$password$$:: $$Login password of the mongo server. Cannot be set with URI.$$ *($$Character[]$$, default: `$$<none>$$`)*
 $$port$$:: $$Mongo server port. Cannot be set with URI.$$ *($$Integer$$, default: `$$<none>$$`)*

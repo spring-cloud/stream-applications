@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 the original author or authors.
+ * Copyright 2018-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -66,6 +67,7 @@ public class WebsocketSupplierTests {
 	}
 
 	@Test
+	@Disabled
 	public void testBasicFlow() throws IOException {
 		final Flux<Message<?>> messageFlux = websocketSupplier.get();
 		final StepVerifier stepVerifier = StepVerifier.create(messageFlux)

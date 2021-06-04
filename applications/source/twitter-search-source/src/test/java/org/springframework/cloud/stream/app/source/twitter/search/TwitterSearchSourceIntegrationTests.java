@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,7 +119,7 @@ public class TwitterSearchSourceIntegrationTests {
 
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			// Using local region here
-			Message<byte[]> message = outputDestination.receive(Duration.ofSeconds(300).toMillis());
+			Message<byte[]> message = outputDestination.receive(Duration.ofSeconds(300).toMillis(), "twitterSearchSupplier-out-0");
 			assertThat(message).isNotNull();
 			String payload = new String(message.getPayload());
 
@@ -175,7 +175,7 @@ public class TwitterSearchSourceIntegrationTests {
 
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			// Using local region here
-			Message<byte[]> message = outputDestination.receive(Duration.ofSeconds(300).toMillis());
+			Message<byte[]> message = outputDestination.receive(Duration.ofSeconds(300).toMillis(), "twitterSearchSupplier-out-0");
 			assertThat(message).isNotNull();
 			String payload = new String(message.getPayload());
 

@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.security.common;
 
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,7 @@ public class SecurityEnabledManagementSecurityEnabledTests extends AbstractSecur
 
 	@Test
 	@SuppressWarnings("rawtypes")
+	@Disabled
 	public void testInfoEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/info", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
