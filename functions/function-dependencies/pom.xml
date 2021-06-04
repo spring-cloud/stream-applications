@@ -108,6 +108,11 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
+                <artifactId>zeromq-supplier</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>analytics-consumer</artifactId>
                 <version>${revision}</version>
             </dependency>
@@ -199,6 +204,11 @@
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>websocket-consumer</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud.fn</groupId>
+                <artifactId>zeromq-consumer</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

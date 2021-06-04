@@ -1,0 +1,44 @@
+//tag::ref-doc[]
+= ZeroMQ Sink
+
+The "zeromq" sink enables sending messages to a ZeroMQ socket.
+
+== Input
+
+* `byte[]`
+
+== Output
+
+=== Payload
+
+N/A
+
+== Options
+
+The **$$zeromq$$** $$sink$$ has the following options:
+
+//tag::configuration-properties[]
+$$zeromq.consumer.connect-url$$:: $$Connection URL for connecting to the ZeroMQ Socket.$$ *($$String$$, default: `$$<none>$$`)*
+$$zeromq.consumer.socket-type$$:: $$The Socket Type the connection should establish.$$ *($$SocketType$$, default: `$$<none>$$`, possible values: `PAIR`,`PUB`,`SUB`,`REQ`,`REP`,`DEALER`,`ROUTER`,`PULL`,`PUSH`,`XPUB`,`XSUB`,`STREAM`)*
+$$zeromq.consumer.topic$$:: $$A Topic SpEL expression to evaluate a topic before sending messages to subscribers.$$ *($$Expression$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+== Build
+
+```
+$ ./mvnw clean install -PgenerateApps
+$ cd apps
+```
+You can find the corresponding binder based projects here.
+You can then cd into one of the folders and build it:
+```
+$ ./mvnw clean package
+```
+
+== Examples
+
+```
+java -jar zeromq-sink.jar --zeromq.consumer.connectUrl=tcp://server:port --zeromq.consumer.topic=
+```
+
+//end::ref-doc[]

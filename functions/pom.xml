@@ -55,6 +55,7 @@
 		<module>consumer/twitter-consumer</module>
 		<module>consumer/wavefront-consumer</module>
 		<module>consumer/rsocket-consumer</module>
+		<module>consumer/zeromq-consumer</module>
 
 		<module>function/aggregator-function</module>
 		<module>function/filter-function</module>
@@ -88,6 +89,7 @@
 		<module>supplier/twitter-supplier</module>
 		<module>supplier/cdc-debezium-supplier</module>
 		<module>supplier/syslog-supplier</module>
+		<module>supplier/zeromq-supplier</module>
 
 		<module>spring-functions-parent</module>
 		<module>function-dependencies</module>

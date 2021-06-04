@@ -31,5 +31,6 @@
         <module>cdc-debezium-source</module>
         <module>syslog-source</module>
         <module>mail-source</module>
+        <module>zeromq-source</module>
     </modules>
 </project>

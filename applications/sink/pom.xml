@@ -34,5 +34,6 @@
         <module>pgcopy-sink</module>
         <module>rsocket-sink</module>
         <module>elasticsearch-sink</module>
+        <module>zeromq-sink</module>
     </modules>
 </project>

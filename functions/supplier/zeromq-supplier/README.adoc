@@ -1,0 +1,32 @@
+# ZeroMQ Supplier
+
+A basic ZeroMQ supplier that produced messages through TCP connection.
+The `Supplier` uses the `ZeroMqMessageProducer` from Spring Integration.
+This supplier gives you a reactive stream of messages and the supplier has a signature of `Supplier<Flux<Message<?>>>`.
+Users have to subscribe to this `Flux` and receive the data.
+
+## Beans for injection
+
+You can import the `ZeroMqSupplierConfiguration` in the application and then inject the following bean.
+
+`zeromqSupplier`
+
+You need to inject this as `Supplier<Flux<Message<?>>>`.
+
+You can use `zeromqSupplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it and then subscribe to the returned `Flux`.
+
+## Configuration Options
+
+All configuration properties are prefixed with `zeromq.supplier`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/zeromq/ZeroMqSupplierProperties.java[ZeroMqSupplierProperties].
+
+## Tests
+
+See this link:src/test/java/org/springframework/cloud/fn/supplier/zeromq/ZeroMqSupplierTests.java[test suite] for the various ways, this supplier is used.
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/zeromq-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application where it makes a ZeroMQ Source.
