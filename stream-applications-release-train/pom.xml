@@ -43,6 +43,7 @@
         <twitter-search-source.version>${apps.version}</twitter-search-source.version>
         <twitter-stream-source.version>${apps.version}</twitter-stream-source.version>
         <websocket-source.version>${apps.version}</websocket-source.version>
+        <zeromq-source.version>${apps.version}</zeromq-source.version>
         <cassandra-sink.version>${apps.version}</cassandra-sink.version>
         <analytics-sink.version>${apps.version}</analytics-sink.version>
         <elasticsearch-sink.version>${apps.version}</elasticsearch-sink.version>
@@ -67,6 +68,7 @@
         <twitter-update-sink.version>${apps.version}</twitter-update-sink.version>
         <wavefront-sink.version>${apps.version}</wavefront-sink.version>
         <websocket-sink.version>${apps.version}</websocket-sink.version>
+        <zeromq-sink.version>${apps.version}</zeromq-sink.version>
         <aggregator-processor.version>${apps.version}</aggregator-processor.version>
         <bridge-processor.version>${apps.version}</bridge-processor.version>
         <filter-processor.version>${apps.version}</filter-processor.version>

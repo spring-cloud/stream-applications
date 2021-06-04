@@ -66,5 +66,8 @@ include::{stream-apps-root}/{branch}/applications/source/twitter-stream-source/R
 [[spring-cloud-stream-modules-websocket-source]]
 include::{stream-apps-root}/{branch}/applications/source/websocket-source/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-zeromq-source]]
+include::{stream-apps-root}/{branch}/applications/source/zeromq-source/README.adoc[tags=ref-doc]
+
 :leveloffset: -2
 

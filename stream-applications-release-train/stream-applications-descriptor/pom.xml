@@ -87,6 +87,8 @@
                 "${twitter-stream-source.version}".contains('SNAPSHOT') ? 'latest' : "${twitter-stream-source.version}"
         pom.properties['websocket-source-docker.tag']=
                 "${websocket-source.version}".contains('SNAPSHOT') ? 'latest' : "${websocket-source.version}"
+        pom.properties['zeromq-source-docker.tag']=
+                "${zeromq-source.version}".contains('SNAPSHOT') ? 'latest' : "${zeromq-source.version}"
         pom.properties['cassandra-sink-docker.tag']=
                 "${cassandra-sink.version}".contains('SNAPSHOT') ? 'latest' : "${cassandra-sink.version}"
         pom.properties['analytics-sink-docker.tag']=
@@ -135,6 +137,8 @@
                 "${twitter-update-sink.version}".contains('SNAPSHOT') ? 'latest' : "${twitter-update-sink.version}"
         pom.properties['websocket-sink-docker.tag']=
                 "${websocket-sink.version}".contains('SNAPSHOT') ? 'latest' : "${websocket-sink.version}"
+        pom.properties['zeromq-sink-docker.tag']=
+                "${zeromq-sink.version}".contains('SNAPSHOT') ? 'latest' : "${zeromq-sink.version}"
         pom.properties['aggregator-processor-docker.tag']=
                 "${aggregator-processor.version}".contains('SNAPSHOT') ? 'latest' : "${aggregator-processor.version}"
         pom.properties['bridge-processor-docker.tag']=

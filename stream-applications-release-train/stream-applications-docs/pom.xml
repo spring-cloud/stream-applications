@@ -157,6 +157,11 @@
 			<artifactId>websocket-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>zeromq-supplier</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
 		<!-- consumer javadocs -->
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
@@ -251,6 +256,11 @@
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>websocket-consumer</artifactId>
+			<version>${java-functions.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>zeromq-consumer</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<!-- function javadocs -->

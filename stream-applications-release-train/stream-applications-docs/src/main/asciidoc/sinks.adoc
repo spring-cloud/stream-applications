@@ -75,4 +75,7 @@ include::{stream-apps-root}/{branch}/applications/sink/wavefront-sink/README.ado
 [[spring-cloud-stream-modules-websocket-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/websocket-sink/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-zeromq-sink]]
+include::{stream-apps-root}/{branch}/applications/sink/zeromq-sink/README.adoc[tags=ref-doc]
+
 :leveloffset: -2
