@@ -112,7 +112,7 @@ public class HttpRequestProcessorTests {
 	}
 
 	@Test
-	void requestUsingReturnType(){
+	void requestUsingReturnType() {
 		applicationContextRunner
 				.withPropertyValues(
 						"http.request.url-expression='" + url() + "'",

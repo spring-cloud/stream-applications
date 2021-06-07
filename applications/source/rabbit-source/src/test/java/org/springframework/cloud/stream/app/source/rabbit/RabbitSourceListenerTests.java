@@ -86,7 +86,7 @@ public class RabbitSourceListenerTests {
 			rabbitTemplate.convertAndSend("scsapp-testex", "", "hello");
 
 			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(600000, "rabbitSupplier-out-0");
+			Message<byte[]> sourceMessage = target.receive(600000, "output");
 
 			final String actual = new String(sourceMessage.getPayload());
 			assertThat(actual).isEqualTo("hello");

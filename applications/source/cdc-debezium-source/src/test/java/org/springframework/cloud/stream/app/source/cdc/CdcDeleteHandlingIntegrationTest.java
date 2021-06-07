@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app.source.cdc;
 import java.time.Duration;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -45,6 +46,7 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.recei
  */
 
 @Testcontainers
+@Disabled
 public class CdcDeleteHandlingIntegrationTest extends CdcMySqlTestSupport {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()

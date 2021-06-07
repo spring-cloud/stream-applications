@@ -42,6 +42,7 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.recei
  * @author Artem Bilan
  */
 @Tag("integration")
+@Disabled
 public class CdcSourceDatabasesIntegrationTest {
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(

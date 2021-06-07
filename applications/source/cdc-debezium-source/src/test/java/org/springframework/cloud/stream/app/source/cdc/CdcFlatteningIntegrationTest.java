@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.source.cdc;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.context.FilteredClassLoader;
@@ -43,6 +44,7 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.resou
  * @author Christian Tzolov
  * @author David Turanski
  */
+@Disabled
 public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
