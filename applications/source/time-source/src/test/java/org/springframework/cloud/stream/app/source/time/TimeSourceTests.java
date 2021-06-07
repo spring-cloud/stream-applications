@@ -42,6 +42,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 /**
  * @author Soby Chacko
  * @author David Turanski
+ * @author Artem Bilan
  */
 public class TimeSourceTests {
 
@@ -54,7 +55,7 @@ public class TimeSourceTests {
 								.run("--spring.cloud.function.definition=timeSupplier")) {
 
 			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(10000);
+			Message<byte[]> sourceMessage = target.receive(10000, "timeSupplier-out-0");
 			final String actual = new String(sourceMessage.getPayload());
 
 			TimeSupplierProperties timeSupplierProperties = context.getBean(TimeSupplierProperties.class);
@@ -94,7 +95,7 @@ public class TimeSourceTests {
 										"--task.launch.request.task-name-expression='task-'+headers['task-id']")) {
 
 			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(10000, "output");
+			Message<byte[]> sourceMessage = target.receive(10000, "foo");
 			TaskLaunchRequest taskLaunchRequest = objectMapper.readValue(sourceMessage.getPayload(),
 					TaskLaunchRequest.class);
 			assertThat(taskLaunchRequest.getTaskName()).isEqualTo("task-34");
