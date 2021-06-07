@@ -16,11 +16,12 @@
 
 package org.springframework.cloud.fn.supplier.websocket;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -38,8 +39,6 @@ import org.springframework.util.Base64Utils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 		properties = "websocket.supplier.path=some_websocket_path")
@@ -62,19 +61,17 @@ public class WebsocketSupplierTests {
 
 	@Test
 	public void checkCmdlineArgs() {
-		assertThat(this.properties.getPath()).isEqualTo("/some_websocket_path");
+		assertThat(this.properties.getPath()).isEqualTo("some_websocket_path");
 		assertThat(this.properties.getAllowedOrigins()).isEqualTo("*");
 	}
 
 	@Test
-	@Disabled
 	public void testBasicFlow() throws IOException {
 		final Flux<Message<?>> messageFlux = websocketSupplier.get();
 		final StepVerifier stepVerifier = StepVerifier.create(messageFlux)
-				.assertNext((message) -> {
-							assertThat(message.getPayload())
-									.isEqualTo(messageString);
-						}
+				.assertNext((message) ->
+						assertThat(message.getPayload())
+								.isEqualTo(messageString)
 				)
 				.thenCancel()
 				.verifyLater();
@@ -100,5 +97,7 @@ public class WebsocketSupplierTests {
 
 	@SpringBootApplication
 	static class WebsocketSupplierTestApplication {
+
 	}
+
 }
