@@ -20,6 +20,7 @@ import java.time.Duration;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
@@ -42,6 +43,7 @@ import static org.awaitility.Awaitility.await;
 
 @Tag("integration")
 @Testcontainers
+@Disabled
 public class CdcBootStarterIntegrationTest {
 
 	private static final String DATABASE_NAME = "inventory";
