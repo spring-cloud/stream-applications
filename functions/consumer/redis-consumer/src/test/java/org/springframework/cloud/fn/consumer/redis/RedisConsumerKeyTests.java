@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.consumer.redis;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.data.redis.support.collections.DefaultRedisList;
@@ -35,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Gary Russell
  */
 @TestPropertySource(properties = "redis.consumer.key = foo")
+@Disabled
 public class RedisConsumerKeyTests extends AbstractRedisConsumerTests {
 
 	@Test

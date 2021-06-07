@@ -15,8 +15,8 @@
     <description>Redis Consumer</description>
 
     <properties>
-        <spring-cloud-starters.version>2.2.0.RELEASE</spring-cloud-starters.version>
-        <embedded-redis.version>1.83</embedded-redis.version>
+        <spring-cloud-starters.version>3.0.3</spring-cloud-starters.version>
+        <embedded-redis.version>2.0.9</embedded-redis.version>
     </properties>
 
     <dependencies>
@@ -38,12 +38,12 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter</artifactId>
-            <version>${spring-cloud-starters.version}</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter</artifactId>-->
+<!--            <version>${spring-cloud-starters.version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
     </dependencies>
 

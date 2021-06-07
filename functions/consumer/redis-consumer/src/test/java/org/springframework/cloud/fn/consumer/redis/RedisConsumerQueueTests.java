@@ -18,6 +18,7 @@ package org.springframework.cloud.fn.consumer.redis;
 
 import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.messaging.Message;
@@ -30,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Soby Chacko
  */
 @TestPropertySource(properties = "redis.consumer.queue = test-queue")
+@Disabled
 public class RedisConsumerQueueTests extends AbstractRedisConsumerTests {
 
 	@Test
