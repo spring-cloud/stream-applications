@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 
@@ -46,7 +45,7 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		properties = "websocket.supplier.path=/some_websocket_path")
+		properties = "websocket.supplier.path=some_websocket_path")
 @DirtiesContext
 public class WebsocketSourceTests {
 
@@ -66,11 +65,10 @@ public class WebsocketSourceTests {
 	private SecurityProperties securityProperties;
 
 	@Test
-	@Disabled
 	public void testWebsocketSource() throws IOException {
 		StandardWebSocketClient webSocketClient = new StandardWebSocketClient();
 		ClientWebSocketContainer clientWebSocketContainer =
-				new ClientWebSocketContainer(webSocketClient, "ws://localhost:{port}{path}",
+				new ClientWebSocketContainer(webSocketClient, "ws://localhost:{port}/{path}",
 						this.port,
 						this.properties.getPath());
 
@@ -85,7 +83,7 @@ public class WebsocketSourceTests {
 		session.sendMessage(new TextMessage("foo"));
 		session.close();
 
-		Message<byte[]> sourceMessage = output.receive(10000);
+		Message<byte[]> sourceMessage = output.receive(10000, "websocketSupplier-out-0");
 		final String actual = new String(sourceMessage.getPayload());
 		assertThat(actual).isEqualTo("foo");
 
