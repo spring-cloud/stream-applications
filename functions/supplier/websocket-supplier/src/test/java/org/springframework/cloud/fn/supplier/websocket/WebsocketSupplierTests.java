@@ -42,7 +42,7 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		properties = "websocket.supplier.path=/some_websocket_path")
+		properties = "websocket.supplier.path=some_websocket_path")
 @DirtiesContext
 public class WebsocketSupplierTests {
 
@@ -80,7 +80,7 @@ public class WebsocketSupplierTests {
 				.verifyLater();
 		StandardWebSocketClient webSocketClient = new StandardWebSocketClient();
 		ClientWebSocketContainer clientWebSocketContainer =
-				new ClientWebSocketContainer(webSocketClient, "ws://localhost:{port}{path}",
+				new ClientWebSocketContainer(webSocketClient, "ws://localhost:{port}/{path}",
 						this.port,
 						this.properties.getPath());
 
