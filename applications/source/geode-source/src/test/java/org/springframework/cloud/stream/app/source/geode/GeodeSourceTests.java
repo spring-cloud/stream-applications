@@ -30,7 +30,6 @@ import org.apache.geode.cache.Region;
 import org.apache.geode.pdx.PdxInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +47,6 @@ import org.springframework.messaging.Message;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("integration")
-@Disabled
 public class GeodeSourceTests {
 
 	private static ApplicationContextRunner applicationContextRunner;
@@ -93,7 +91,7 @@ public class GeodeSourceTests {
 
 					List<String> values = new ArrayList();
 					for (int i = 0; i < 3; i++) {
-						Message<byte[]> message = outputDestination.receive(Duration.ofSeconds(3).toMillis());
+						Message<byte[]> message = outputDestination.receive(Duration.ofSeconds(3).toMillis(), "geodeSupplier-out-0");
 						assertThat(message).isNotNull();
 						values.add(new String(message.getPayload()));
 					}
@@ -122,7 +120,7 @@ public class GeodeSourceTests {
 					putStockEvent(region, new Stock("YYY", 110.01));
 					putStockEvent(region, new Stock("XXX", 139.80));
 
-					Message<byte[]> message = outputDestination.receive(Duration.ofSeconds(3).toMillis());
+					Message<byte[]> message = outputDestination.receive(Duration.ofSeconds(3).toMillis(), "geodeSupplier-out-0");
 					assertThat(message).isNotNull();
 					Stock result = objectMapper.readValue(message.getPayload(), Stock.class);
 					assertThat(result).isEqualTo(new Stock("XXX", 140.20));

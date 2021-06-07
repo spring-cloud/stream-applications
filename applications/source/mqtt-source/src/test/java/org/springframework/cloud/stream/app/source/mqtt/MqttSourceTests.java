@@ -69,7 +69,7 @@ public class MqttSourceTests {
 			mqttOutbound.handleMessage(MessageBuilder.withPayload("hello").build());
 
 			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(10000);
+			Message<byte[]> sourceMessage = target.receive(10000, "mqttSupplier-out-0");
 
 			final String actual = new String(sourceMessage.getPayload());
 			assertThat(actual).isEqualTo("hello");

@@ -86,7 +86,7 @@ public class RabbitSourceListenerTests {
 			rabbitTemplate.convertAndSend("scsapp-testex", "", "hello");
 
 			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(600000);
+			Message<byte[]> sourceMessage = target.receive(600000, "rabbitSupplier-out-0");
 
 			final String actual = new String(sourceMessage.getPayload());
 			assertThat(actual).isEqualTo("hello");
@@ -114,7 +114,7 @@ public class RabbitSourceListenerTests {
 			bootFactory.resetConnection();
 
 			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(600000);
+			Message<byte[]> sourceMessage = target.receive(600000, "rabbitSupplier-out-0");
 
 			final String actual = new String(sourceMessage.getPayload());
 			assertThat(actual).isEqualTo("foo");
@@ -170,7 +170,7 @@ public class RabbitSourceListenerTests {
 			});
 
 			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(600000);
+			Message<byte[]> sourceMessage = target.receive(600000, "rabbitSupplier-out-0");
 
 			final String actual = new String(sourceMessage.getPayload());
 			assertThat(actual).isEqualTo("foo");
