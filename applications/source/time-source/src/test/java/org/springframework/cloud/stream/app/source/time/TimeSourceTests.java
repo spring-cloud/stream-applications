@@ -67,7 +67,7 @@ public class TimeSourceTests {
 	}
 
 	@Test
-	public void testSourceComposedWithheaderEnricher() {
+	public void testSourceComposedWithHeaderEnricher() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(TimeSourceTestApplication.class))
@@ -81,7 +81,6 @@ public class TimeSourceTests {
 	}
 
 	@Test
-	@Disabled
 	public void testSourceComposedWithOtherStuff() throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
