@@ -28,7 +28,6 @@ import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -81,7 +80,6 @@ public class HttpRequestProcessorTests {
 	}
 
 	@Test
-	@Disabled
 	void requestUsingExpressions() {
 		applicationContextRunner
 				.withPropertyValues(
@@ -109,13 +107,12 @@ public class HttpRequestProcessorTests {
 					assertThat(responseEntityAsMap.get("statusCode")).isEqualTo("OK");
 					assertThat(responseEntityAsMap.get("body")).isEqualTo(message.getHeaders().get("body"));
 					assertThat(reply.getHeaders().get(MessageHeaders.CONTENT_TYPE))
-							.isEqualTo(MediaType.APPLICATION_JSON);
+							.isEqualTo(MediaType.APPLICATION_JSON.toString());
 				});
 	}
 
 	@Test
-	@Disabled
-	void requestUsingReturnType() throws IOException {
+	void requestUsingReturnType(){
 		applicationContextRunner
 				.withPropertyValues(
 						"http.request.url-expression='" + url() + "'",
@@ -133,12 +130,12 @@ public class HttpRequestProcessorTests {
 					Message<byte[]> reply = outputDestination.receive(10000, "httpRequestFunction-out-0");
 					assertThat(new String(reply.getPayload())).isEqualTo(message.getPayload());
 					assertThat(reply.getHeaders().get(MessageHeaders.CONTENT_TYPE))
-							.isEqualTo(MediaType.APPLICATION_OCTET_STREAM);
+							.isEqualTo(MediaType.APPLICATION_OCTET_STREAM.toString());
 				});
 	}
 
 	@Test
-	void requestUsingJsonPathMethodExpression() throws IOException {
+	void requestUsingJsonPathMethodExpression() {
 		applicationContextRunner
 				.withPropertyValues(
 						"http.request.url-expression='" + url() + "'",
