@@ -58,7 +58,6 @@ import static org.mockserver.verify.VerificationTimes.once;
 /**
  * @author Christian Tzolov
  */
-@Disabled
 public class TwitterTrendLocationProcessorIntegrationTests {
 
 	private static final String MOCK_SERVER_IP = "127.0.0.1";
