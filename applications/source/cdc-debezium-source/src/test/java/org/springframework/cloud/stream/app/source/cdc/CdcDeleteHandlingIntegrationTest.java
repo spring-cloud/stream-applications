@@ -19,7 +19,6 @@ package org.springframework.cloud.stream.app.source.cdc;
 import java.time.Duration;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -126,7 +125,7 @@ public class CdcDeleteHandlingIntegrationTest extends CdcMySqlTestSupport {
 		}
 
 		if (!isDropTombstones && isKafkaPresent) {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(),CDC_SUPPLIER_OUT_0);
+			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), CDC_SUPPLIER_OUT_0);
 			assertThat(received).isNotNull();
 			// Tombstones event should have KafkaNull payload
 			assertThat(received.getPayload().getClass().getCanonicalName())

@@ -18,7 +18,6 @@ package org.springframework.cloud.stream.app.source.cdc;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.context.FilteredClassLoader;
