@@ -58,7 +58,7 @@ public class ScriptProcessorIntegrationTests {
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
 			processorInput.send(new GenericMessage<>("hello world"));
-			Message<byte[]> sourceMessage = processorOutput.receive(10000);
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "scriptProcessorFunction-out-0");
 			assertThat(new String(sourceMessage.getPayload())).matches(s -> s.equals("4") || s.equals("4.0"));
 			ObjectMapper objectMapper = new ObjectMapper();
 			final Integer deserializedValue = objectMapper.readValue(sourceMessage.getPayload(), Integer.class);
@@ -80,7 +80,7 @@ public class ScriptProcessorIntegrationTests {
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
 			processorInput.send(new GenericMessage<>("hello world"));
-			Message<byte[]> sourceMessage = processorOutput.receive(10000);
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "scriptProcessorFunction-out-0");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("hello world WORLD");
 		}
 	}
@@ -99,8 +99,8 @@ public class ScriptProcessorIntegrationTests {
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
 			processorInput.send(new GenericMessage<>(9));
-			Message<byte[]> sourceMessage = processorOutput.receive(10000);
-			assertThat(new String(sourceMessage.getPayload())).isEqualTo("45");
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "scriptProcessorFunction-out-0");
+			assertThat(new String(sourceMessage.getPayload())).isEqualTo("45.0");
 		}
 	}
 
@@ -118,7 +118,7 @@ public class ScriptProcessorIntegrationTests {
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
 			processorInput.send(new GenericMessage<>("hello world"));
-			Message<byte[]> sourceMessage = processorOutput.receive(10000);
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "scriptProcessorFunction-out-0");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("hello world WORLD");
 		}
 	}
@@ -137,7 +137,7 @@ public class ScriptProcessorIntegrationTests {
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
 			processorInput.send(new GenericMessage<>("hello world"));
-			Message<byte[]> sourceMessage = processorOutput.receive(10000);
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "scriptProcessorFunction-out-0");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("hello WORLD");
 		}
 	}
@@ -155,7 +155,7 @@ public class ScriptProcessorIntegrationTests {
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
 			processorInput.send(new GenericMessage<>("hello world"));
-			Message<byte[]> sourceMessage = processorOutput.receive(10000);
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "scriptProcessorFunction-out-0");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("HELLO WORLD");
 		}
 	}
@@ -173,7 +173,7 @@ public class ScriptProcessorIntegrationTests {
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
 			processorInput.send(new GenericMessage<>(9));
-			Message<byte[]> sourceMessage = processorOutput.receive(10000);
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "scriptProcessorFunction-out-0");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("14");
 		}
 	}
@@ -191,7 +191,7 @@ public class ScriptProcessorIntegrationTests {
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
 			processorInput.send(new GenericMessage<>(6));
-			Message<byte[]> sourceMessage = processorOutput.receive(10000);
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "scriptProcessorFunction-out-0");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("30");
 		}
 	}
@@ -209,7 +209,7 @@ public class ScriptProcessorIntegrationTests {
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
 			processorInput.send(new GenericMessage<>("world"));
-			Message<byte[]> sourceMessage = processorOutput.receive(10000);
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "scriptProcessorFunction-out-0");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("hello world");
 		}
 	}
@@ -227,7 +227,7 @@ public class ScriptProcessorIntegrationTests {
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
 			processorInput.send(new GenericMessage<>("def age=18"));
-			Message<byte[]> sourceMessage = processorOutput.receive(10000);
+			Message<byte[]> sourceMessage = processorOutput.receive(10000, "scriptProcessorFunction-out-0");
 			assertThat(new String(sourceMessage.getPayload())).isEqualTo("var age = 18;"
 					+ System.getProperty("line.separator"));
 		}

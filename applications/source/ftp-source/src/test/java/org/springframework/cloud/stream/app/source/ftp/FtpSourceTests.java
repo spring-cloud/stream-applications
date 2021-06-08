@@ -58,7 +58,7 @@ public class FtpSourceTests extends FtpTestSupport {
 		Message<byte[]> message = output.receive(10000);
 		assertThat(new File(new String(message.getPayload()).replaceAll("\"", ""))).isEqualTo(
 				new File(this.config.getLocalDir(), "ftpSource1.txt"));
-		message = output.receive(10000);
+		message = output.receive(10000, "ftpSupplier-out-0");
 		assertThat(new File(new String(message.getPayload()).replaceAll("\"", ""))).isEqualTo(
 				new File(this.config.getLocalDir(), "ftpSource2.txt"));
 	}
