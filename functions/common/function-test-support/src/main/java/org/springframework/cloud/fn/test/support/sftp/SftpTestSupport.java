@@ -29,7 +29,7 @@ import java.util.Collections;
 import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory;
 import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
-import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory;
+import org.apache.sshd.sftp.server.SftpSubsystemFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -62,7 +62,7 @@ public class SftpTestSupport extends RemoteFileTestSupport {
 				StringUtils.hasText(password) && !"badPassword".equals(password)); // fail if pub key validation failed
 		server.setPublickeyAuthenticator((username, key, session) -> key.equals(decodePublicKey("id_rsa_pp.pub")));
 		server.setPort(0);
-		server.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(new File("hostkey.ser")));
+		server.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(new File("hostkey.ser").toPath()));
 		server.setSubsystemFactories(Collections.singletonList(new SftpSubsystemFactory()));
 		server.setFileSystemFactory(new VirtualFileSystemFactory(remoteTemporaryFolder));
 		server.start();

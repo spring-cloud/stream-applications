@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.file.remote.aop.StandardRotationPolicy;
+import org.springframework.integration.file.remote.session.CachingSessionFactory;
 import org.springframework.integration.file.remote.session.DelegatingSessionFactory;
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
@@ -87,7 +88,7 @@ public class SftpSupplierFactoryConfiguration {
 			sftpSessionFactory.setKnownHostsResource(new FileSystemResource(path));
 		}
 
-		return sftpSessionFactory;
+		return new CachingSessionFactory<>(sftpSessionFactory);
 	}
 
 	public final static class DelegatingFactoryWrapper implements DisposableBean {
