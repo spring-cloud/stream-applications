@@ -34,6 +34,11 @@ import org.springframework.util.StreamUtils;
  */
 public final class CdcTestUtils {
 
+	/**
+	 * derived from the spring.cloud.stream.function.definition value
+	 */
+	public static final String CDC_SUPPLIER_OUT_0 = "cdcSupplier-out-0";
+
 	private CdcTestUtils() {
 
 	}
@@ -53,7 +58,7 @@ public final class CdcTestUtils {
 		List<Message<?>> list = new ArrayList<>();
 		Message<?> received;
 		do {
-			received = outputDestination.receive(Duration.ofSeconds(20).toMillis());
+			received = outputDestination.receive(Duration.ofSeconds(20).toMillis(), CDC_SUPPLIER_OUT_0);
 			if (received != null) {
 				list.add(received);
 			}

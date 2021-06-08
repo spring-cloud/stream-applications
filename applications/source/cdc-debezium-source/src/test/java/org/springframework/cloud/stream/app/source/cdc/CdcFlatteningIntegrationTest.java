@@ -44,7 +44,6 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.resou
  * @author Christian Tzolov
  * @author David Turanski
  */
-@Disabled
 public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()

@@ -38,6 +38,7 @@ import org.springframework.util.ClassUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.cloud.fn.supplier.cdc.CdcSupplierConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL;
+import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.CDC_SUPPLIER_OUT_0;
 import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.receiveAll;
 
 /**
@@ -46,7 +47,6 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.recei
  */
 
 @Testcontainers
-@Disabled
 public class CdcDeleteHandlingIntegrationTest extends CdcMySqlTestSupport {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -115,18 +115,18 @@ public class CdcDeleteHandlingIntegrationTest extends CdcMySqlTestSupport {
 			// Do nothing
 		}
 		else if (deleteHandlingMode == CdcCommonProperties.DeleteHandlingMode.none) {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis());
+			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), CDC_SUPPLIER_OUT_0);
 			assertThat(received).isNotNull();
 			assertThat(received.getPayload()).isEqualTo("null".getBytes());
 		}
 		else if (deleteHandlingMode == CdcCommonProperties.DeleteHandlingMode.rewrite) {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis());
+			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), CDC_SUPPLIER_OUT_0);
 			assertThat(received).isNotNull();
 			assertThat(toString(received.getPayload()).contains("\"__deleted\":\"true\""));
 		}
 
 		if (!isDropTombstones && isKafkaPresent) {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis());
+			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(),CDC_SUPPLIER_OUT_0);
 			assertThat(received).isNotNull();
 			// Tombstones event should have KafkaNull payload
 			assertThat(received.getPayload().getClass().getCanonicalName())
@@ -137,7 +137,7 @@ public class CdcDeleteHandlingIntegrationTest extends CdcMySqlTestSupport {
 			assertThat(key).isEqualTo("{\"id\":" + newRecordId + "}");
 		}
 
-		received = outputDestination.receive(Duration.ofSeconds(1).toMillis());
+		received = outputDestination.receive(Duration.ofSeconds(1).toMillis(), CDC_SUPPLIER_OUT_0);
 		assertThat(received).isNull();
 	};
 }
