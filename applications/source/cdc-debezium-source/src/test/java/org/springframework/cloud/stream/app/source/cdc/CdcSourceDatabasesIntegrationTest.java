@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.source.cdc;
 
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.awaitility.Awaitility;
@@ -32,8 +34,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.Message;
+import org.springframework.util.CollectionUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.receiveAll;
@@ -139,19 +141,15 @@ public class CdcSourceDatabasesIntegrationTest {
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			// Using local region here
 
-			JdbcTemplate pgJdbcTemplate = CdcTestUtils.jdbcTemplate(
-					"org.postgresql.Driver",
-					"jdbc:postgresql://localhost:" + postgres.getMappedPort(5432) + "/postgres",
-					"postgres",
-					"postgres");
-
-			Awaitility.await().until(() ->
-					((pgJdbcTemplate.queryForObject("select count(*) from \"inventory\".\"customers\"", Integer.class)) == 4)
-							&& ((pgJdbcTemplate.queryForObject("select count(*) from \"inventory\".\"products\"", Integer.class)) == 9));
-
-			List<Message<?>> messages = receiveAll(outputDestination);
-			assertThat(messages).isNotNull();
-			assertThat(messages).hasSize(5786);
+			List<Message<?>> allMessages = new ArrayList<>();
+			Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
+				List<Message<?>> messageChunk = receiveAll(outputDestination);
+				if (!CollectionUtils.isEmpty(messageChunk)) {
+					System.out.println("Chunk size: " + messageChunk.size());
+					allMessages.addAll(messageChunk);
+				}
+				return allMessages.size() == 5786;
+			});
 		}
 		postgres.stop();
 	}
