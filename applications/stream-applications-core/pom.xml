@@ -29,7 +29,7 @@
         <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
         <prometheus-rsocket.version>1.2.1</prometheus-rsocket.version>
         <!-- Boot 2.4.x needs wavefront-spring-boot version 2.1.0-RC1+ -->
-        <wavefront-spring-boot.version>2.0.2</wavefront-spring-boot.version>
+        <wavefront-spring-boot.version>2.2.0</wavefront-spring-boot.version>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
     </properties>
 
