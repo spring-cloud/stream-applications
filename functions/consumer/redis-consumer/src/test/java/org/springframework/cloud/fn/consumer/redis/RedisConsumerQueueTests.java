@@ -18,7 +18,6 @@ package org.springframework.cloud.fn.consumer.redis;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.messaging.Message;
