@@ -19,7 +19,6 @@ package org.springframework.cloud.stream.app.sink.redis;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -40,12 +39,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Soby Chacko
+ * @author Artem Bilan
  */
 public class RedisSinkTests {
 
 	@Test
-	@Disabled
-	public void testRedisSink() throws Exception {
+	public void testRedisSink() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(RedisSinkTestApplication.class))

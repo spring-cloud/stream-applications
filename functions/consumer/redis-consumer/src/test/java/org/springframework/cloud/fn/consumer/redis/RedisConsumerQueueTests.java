@@ -31,7 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Soby Chacko
  */
 @TestPropertySource(properties = "redis.consumer.queue = test-queue")
-@Disabled
 public class RedisConsumerQueueTests extends AbstractRedisConsumerTests {
 
 	@Test

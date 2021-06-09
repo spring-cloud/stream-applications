@@ -30,6 +30,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 /**
  * @author Soby Chacko
+ * @author Artem Bilan
  */
 @SpringBootTest
 @DirtiesContext

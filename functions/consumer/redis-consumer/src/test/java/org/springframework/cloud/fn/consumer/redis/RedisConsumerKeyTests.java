@@ -36,7 +36,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Gary Russell
  */
 @TestPropertySource(properties = "redis.consumer.key = foo")
-@Disabled
 public class RedisConsumerKeyTests extends AbstractRedisConsumerTests {
 
 	@Test

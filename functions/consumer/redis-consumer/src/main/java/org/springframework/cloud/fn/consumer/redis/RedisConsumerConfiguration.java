@@ -40,8 +40,8 @@ import org.springframework.messaging.MessageHandler;
 public class RedisConsumerConfiguration {
 
 	@Bean
-	public Consumer<Message<?>> redisConsumer() {
-		return redisConsumerMessageHandler(null, null)::handleMessage;
+	public Consumer<Message<?>> redisConsumer(MessageHandler redisConsumerMessageHandler) {
+		return redisConsumerMessageHandler::handleMessage;
 	}
 
 	@Bean

@@ -43,7 +43,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Soby Chacko
  */
 @TestPropertySource(properties = "redis.consumer.topic = foo-topic")
-@Disabled
 public class RedisConsumerTopicTests extends AbstractRedisConsumerTests {
 
 	@Autowired
