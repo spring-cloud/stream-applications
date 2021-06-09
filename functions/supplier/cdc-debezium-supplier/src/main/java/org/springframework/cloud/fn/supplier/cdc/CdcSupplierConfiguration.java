@@ -31,7 +31,6 @@ import org.apache.kafka.connect.source.SourceRecord;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
-import reactor.core.publisher.Sinks;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -90,23 +89,7 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 				.doOnError(throwable -> logger.error(throwable.getMessage(), throwable));
 	}
 
-	private EmitterProcessor<Message<?>> emitterProcessor = EmitterProcessor.create(1, false);
-
-	// @Bean
-	// public MessageConverter kafkaNullMessageConverter() {
-	// return new AbstractMessageConverter() {
-	// @Override
-	// protected Object convertToInternal(Object payload,
-	// MessageHeaders headers, Object conversionHint) {
-	// return payload;
-	// }
-	//
-	// @Override
-	// protected boolean supports(Class<?> clazz) {
-	// return clazz.getName().equals(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL);
-	// }
-	// };
-	// }
+	private EmitterProcessor<Message<?>> emitterProcessor = EmitterProcessor.create(256, false);
 
 	@Bean
 	public EmbeddedEngineExecutorService embeddedEngineExecutorService(
@@ -128,12 +111,10 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 
 			Object cdcJsonPayload = valueSerializer.apply(sourceRecord);
 
-			// When the tombstone event is enabled, Debezium serializes the payload to null (e.g.
-			// empty payload)
+			// When the tombstone event is enabled, Debezium serializes the payload to null (e.g. empty payload)
 			// while the metadata information is carried through the headers (cdc_key).
 			// Note: Event for none flattened responses, when the cdc.config.tombstones.on.delete=true
-			// (default),
-			// tombstones are generate by Debezium and handled by the code below.
+			// (default), tombstones are generate by Debezium and handled by the code below.
 			if (cdcJsonPayload == null) {
 				cdcJsonPayload = this.kafkaNull;
 			}
