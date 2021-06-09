@@ -55,10 +55,14 @@ public final class CdcTestUtils {
 	}
 
 	public static List<Message<?>> receiveAll(OutputDestination outputDestination) {
+		return receiveAll(outputDestination, CDC_SUPPLIER_OUT_0);
+	}
+
+	public static List<Message<?>> receiveAll(OutputDestination outputDestination, String bindingName) {
 		List<Message<?>> list = new ArrayList<>();
 		Message<?> received;
 		do {
-			received = outputDestination.receive(Duration.ofSeconds(20).toMillis(), CDC_SUPPLIER_OUT_0);
+			received = outputDestination.receive(Duration.ofSeconds(30).toMillis(), bindingName);
 			if (received != null) {
 				list.add(received);
 			}

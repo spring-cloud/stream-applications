@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.source.cdc;
 
 import java.util.List;
 
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -136,6 +138,17 @@ public class CdcSourceDatabasesIntegrationTest {
 						"--cdc.config.database.port=" + postgres.getMappedPort(5432))) {
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			// Using local region here
+
+			JdbcTemplate pgJdbcTemplate = CdcTestUtils.jdbcTemplate(
+					"org.postgresql.Driver",
+					"jdbc:postgresql://localhost:" + postgres.getMappedPort(5432) + "/postgres",
+					"postgres",
+					"postgres");
+
+			Awaitility.await().until(() ->
+					((pgJdbcTemplate.queryForObject("select count(*) from \"inventory\".\"customers\"", Integer.class)) == 4)
+							&& ((pgJdbcTemplate.queryForObject("select count(*) from \"inventory\".\"products\"", Integer.class)) == 9));
+
 			List<Message<?>> messages = receiveAll(outputDestination);
 			assertThat(messages).isNotNull();
 			assertThat(messages).hasSize(5786);
