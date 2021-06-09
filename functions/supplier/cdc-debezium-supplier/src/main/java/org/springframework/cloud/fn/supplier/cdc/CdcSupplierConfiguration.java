@@ -31,6 +31,7 @@ import org.apache.kafka.connect.source.SourceRecord;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
+import reactor.core.publisher.Sinks;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -114,7 +115,7 @@ public class CdcSupplierConfiguration implements BeanClassLoaderAware {
 			Function<SourceRecord, SourceRecord> recordFlattening,
 			ObjectMapper mapper, CdcSupplierProperties cdcStreamingEngineProperties) {
 
-		FluxSink<Message<?>> sink = emitterProcessor.sink();
+		FluxSink<Message<?>> sink = emitterProcessor.sink(FluxSink.OverflowStrategy.BUFFER);
 		Consumer<SourceRecord> messageConsumer = sourceRecord -> {
 
 			// When cdc.flattening.deleteHandlingMode=none and cdc.flattening.dropTombstones=false
