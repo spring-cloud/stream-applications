@@ -151,6 +151,9 @@
                                     <!-- Zipkin Server Tracing -->
                                     <spring.zipkin.enabled>false</spring.zipkin.enabled>
 
+                                    <!-- Enforce Spring Integration tracing instrumentation even for SCF apps -->
+                                    <spring.sleuth.integration.enabled>true</spring.sleuth.integration.enabled>
+
                                 </properties>
                                 <metadata>
                                     <mavenPluginVersion>${spring-cloud-dataflow-apps-metadata-plugin.version}</mavenPluginVersion>
