@@ -84,7 +84,7 @@ public class ZeroMqSourceTests {
 	@Test
 	public void testSourceFromSupplier() throws InterruptedException {
 
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 
 		ZMsg msg = ZMsg.newStringMsg("test");
 		msg.wrap(new ZFrame("test-topic"));

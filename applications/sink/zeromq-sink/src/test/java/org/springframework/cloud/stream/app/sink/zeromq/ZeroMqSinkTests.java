@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.sink.zeromq;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -50,8 +51,8 @@ public class ZeroMqSinkTests {
 		CONTEXT.close();
 	}
 
-	//@Test
-	public void testSinkFromFunction() {
+	@Test
+	public void testSinkFromFunction() throws InterruptedException {
 
 		ZMQ.Socket socket = CONTEXT.createSocket(SocketType.SUB);
 		socket.setReceiveTimeOut(10_000);
@@ -74,6 +75,9 @@ public class ZeroMqSinkTests {
 					.setHeader("topic", "test-topic")
 					.setHeader("contentType", MimeTypeUtils.APPLICATION_OCTET_STREAM)
 					.build();
+
+			Thread.sleep(5000);
+
 			inputDestination.send(testMessage);
 
 			ZMsg received = null;

@@ -44,7 +44,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"zeromq.consumer.topic='test-topic'"
 })
 @DirtiesContext
-@Disabled
 public class ZeroMqConsumerConfigurationTests {
 
 	private static final ZContext CONTEXT = new ZContext();
@@ -75,7 +74,7 @@ public class ZeroMqConsumerConfigurationTests {
 	@Test
 	void testMessageHandlerConfiguration() throws InterruptedException {
 
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 
 		Message<?> testMessage = MessageBuilder.withPayload("test").setHeader("topic", "test-topic").build();
 		subject.apply(Flux.just(testMessage))
