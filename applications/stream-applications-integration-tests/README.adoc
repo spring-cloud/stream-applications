@@ -1,0 +1,42 @@
+= Stream Applications Integration Tests
+
+This contains integration tests for pre-packaged stream-applications for Docker using https://www.testcontainers.org/[TestContainers].
+These are end-to-end integration tests running apps and required resources, using docker-compose.
+The goal is to have an end-to-end integration test for each pre-packaged application.
+We don't aim to test all different configuration options, as this is the responsibility of the stream application and function components.
+One of the major benefits is to verify the built Docker images run correctly, especially when we introduce global changes,
+such as upgrading the base JDK image, the maven plugins, or other pervasive changes.
+
+== Test Strategy
+
+See https://github.com/spring-cloud/stream-applications/tree/master/applications/stream-applications-core/common/stream-applications-test-support[] for a full description.
+
+
+The tests use following patterns:
+
+== Source
+To test a source, we may require some application specific setup or event to trigger the source.
+For example, the jdbc source needs some data in the database to which it is listening.
+Then use an `OutputMatcher` to verify the output.
+
+== Sink
+To test a sink, we need to publish a message to its input. Simply use the provided TestTopicSender.
+Then we need to verify the result by checking the sink's external resource.
+
+== Processor
+To test a processor we publish a message and  use an `OutputMatcher`  to verify the output.
+
+== Configuration
+See link:src/test/java/org/springframework/cloud/stream/apps/integration/test/common/Configuration.java[Configuration] for configuration
+options. These tests use Spring but not boot currently.
+The most important setting is the image versions to test.
+To override it, set the System property, e.g.,
+
+./mvnw clean test -Dspring.cloud.stream.applications.version=3.0.0-M3
+
+
+
+
+
+
+
