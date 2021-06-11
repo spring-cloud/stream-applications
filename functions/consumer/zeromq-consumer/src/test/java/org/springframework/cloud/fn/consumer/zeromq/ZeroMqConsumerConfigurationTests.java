@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -43,6 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"zeromq.consumer.topic='test-topic'"
 })
 @DirtiesContext
+@Disabled
 public class ZeroMqConsumerConfigurationTests {
 
 	private static final ZContext CONTEXT = new ZContext();
