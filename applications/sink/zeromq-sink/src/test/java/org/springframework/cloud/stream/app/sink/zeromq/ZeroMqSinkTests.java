@@ -17,7 +17,6 @@
 package org.springframework.cloud.stream.app.sink.zeromq;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -51,7 +50,7 @@ public class ZeroMqSinkTests {
 		CONTEXT.close();
 	}
 
-	@Test
+	//@Test
 	public void testSinkFromFunction() {
 
 		ZMQ.Socket socket = CONTEXT.createSocket(SocketType.SUB);
