@@ -37,7 +37,6 @@ class KafkaTimeSourceTests extends TimeSourceTests {
 	static StreamAppContainer source = new KafkaStreamAppContainer(StreamAppContainerTestUtils
 			.imageName(StreamAppContainerTestUtils.SPRINGCLOUDSTREAM_REPOSITOTRY, "time-source-kafka", VERSION))
 					.withCommand("--server.port", "8080")
-					.withEnv("SPRING_CLOUD_STREAMAPP_SECURITY_ENABLED", "false")
 					.withExposedPorts(8080);
 
 	@Test

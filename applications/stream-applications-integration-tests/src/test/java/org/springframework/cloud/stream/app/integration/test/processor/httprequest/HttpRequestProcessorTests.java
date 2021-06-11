@@ -33,7 +33,10 @@ import org.springframework.cloud.stream.app.test.integration.OutputMatcher;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainerTestUtils;
 import org.springframework.cloud.stream.app.test.integration.TestTopicSender;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.messaging.MessageHeaders;
 
 import static org.awaitility.Awaitility.await;
 import static org.springframework.cloud.stream.app.integration.test.common.Configuration.DEFAULT_DURATION;
@@ -74,17 +77,17 @@ abstract class HttpRequestProcessorTests {
 		server.setDispatcher(new Dispatcher() {
 			@Override
 			public MockResponse dispatch(RecordedRequest recordedRequest) {
-				return new MockResponse()
+				return new MockResponse().setHeader(HttpHeaders.CONTENT_TYPE,
+						MediaType.APPLICATION_JSON_VALUE)
 						.setBody("{\"response\":\"" + recordedRequest.getBody().readUtf8() + "\"}")
 						.setResponseCode(HttpStatus.OK.value());
 			}
 		});
 		testTopicSender.send(processor.getInputDestination(), "ping");
 		await().atMost(DEFAULT_DURATION)
-				.until(outputMatcher.messageMatches(message -> message.getPayload().equals("{\"response\":\"ping\"}")));
-		        // See https://github.com/spring-cloud/spring-cloud-stream/issues/2190 .This condition is no longer true.
-				//		&& message.getHeaders().get(MessageHeaders.CONTENT_TYPE)
-				//				.equals(MediaType.APPLICATION_JSON_VALUE)));
+				.until(outputMatcher.messageMatches(message -> message.getPayload().equals("{\"response\":\"ping\"}")
+						&& message.getHeaders().get(MessageHeaders.CONTENT_TYPE)
+								.equals(MediaType.APPLICATION_JSON_VALUE)));
 	}
 
 	@AfterAll
