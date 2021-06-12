@@ -52,7 +52,12 @@ public class AppDefinition {
 	private String configClass;
 
 	/**
-	 * Spring Cloud Function defintion.
+	 * Application's group ID.
+	 */
+	private String groupId;
+
+	/**
+	 * Spring Cloud Function definition.
 	 */
 	private String functionDefinition;
 
@@ -146,6 +151,14 @@ public class AppDefinition {
 
 	public void setConfigClass(String configClass) {
 		this.configClass = configClass;
+	}
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
 	}
 
 	public String getFunctionDefinition() {

@@ -231,6 +231,7 @@
 						<type>source</type>
 						<version>${project.version}</version>
 						<configClass>io.pivotal.java.function.http.supplier.HttpSupplierConfiguration.class</configClass>
+						<groupId>org.springframework.cloud.stream.app.test</groupId>
 
 						<properties>
 							<spring.main.web-application-type>reactive</spring.main.web-application-type>

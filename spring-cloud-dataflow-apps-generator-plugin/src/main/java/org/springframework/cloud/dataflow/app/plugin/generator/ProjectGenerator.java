@@ -128,7 +128,8 @@ public final class ProjectGenerator {
 				capitalize(appDefinition.getType().name()),
 				capitalize(binder.getName()));
 
-		String appPackageName = String.format("org.springframework.cloud.stream.app.%s.%s.%s",
+		String appPackageName = String.format("%s.%s.%s.%s",
+				appDefinition.getGroupId(),
 				toPkg(appDefinition.getName()),
 				appDefinition.getType(),
 				binder.getName());

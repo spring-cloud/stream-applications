@@ -90,7 +90,7 @@ public class MojoHarnessTest {
 		assertThat(parent.getVersion()).isEqualTo("2.3.0.M1");
 
 		assertThat(pomModel.getArtifactId()).isEqualTo("http-source-kafka");
-		assertThat(pomModel.getGroupId()).isEqualTo("org.springframework.cloud.stream.app");
+		assertThat(pomModel.getGroupId()).isEqualTo("org.springframework.cloud.stream.app.test");
 		assertThat(pomModel.getName()).isEqualTo("http-source-kafka");
 		assertThat(pomModel.getVersion()).isEqualTo("3.0.0.BUILD-SNAPSHOT");
 		assertThat(pomModel.getDescription()).isEqualTo("Spring Cloud Stream Http Source Kafka Binder Application");

@@ -9,7 +9,7 @@
 		<version>{{app.springBootVersion}}</version>
 		<relativePath></relativePath>
 	</parent>
-	<groupId>org.springframework.cloud.stream.app</groupId>
+	<groupId>{{app.groupId}}</groupId>
 	<artifactId>{{app.name}}-{{app.type}}-{{app-binder.name}}</artifactId>
 	<version>{{app.version}}</version>
 	<name>{{app.name}}-{{app.type}}-{{app-binder.name}}</name>

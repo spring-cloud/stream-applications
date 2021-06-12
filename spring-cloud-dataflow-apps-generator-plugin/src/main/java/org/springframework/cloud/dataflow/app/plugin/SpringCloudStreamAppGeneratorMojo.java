@@ -120,6 +120,10 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 				this.global.getApplication().getConfigClass() : this.application.getConfigClass();
 		app.setConfigClass(applicationConfigClass); // TODO is applicationConfigClass a required parameter?
 
+		String applicationGroupId = StringUtils.isEmpty(this.application.getGroupId()) ?
+				this.global.getApplication().getGroupId() : this.application.getGroupId();
+		app.setGroupId(applicationGroupId); // optional parameter
+
 		String applicationFunctionDefinition = StringUtils.isEmpty(this.application.getFunctionDefinition()) ?
 				this.global.getApplication().getFunctionDefinition() : this.application.getFunctionDefinition();
 		app.setFunctionDefinition(applicationFunctionDefinition); //TODO is applicationFunctionDefinition required?
@@ -434,6 +438,11 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		private String configClass;
 
 		/**
+		 * Group Id to use with the application.
+		 */
+		private String groupId = "org.springframework.cloud.stream.app";
+
+		/**
 		 * The Spring Cloud Function definition. Could be a composition definition as well.
 		 */
 		private String functionDefinition;
@@ -510,6 +519,14 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 
 		public void setConfigClass(String configClass) {
 			this.configClass = configClass;
+		}
+
+		public String getGroupId() {
+			return groupId;
+		}
+
+		public void setGroupId(String appGroupId) {
+			this.groupId = appGroupId;
 		}
 
 		public String getFunctionDefinition() {
