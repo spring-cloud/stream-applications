@@ -74,7 +74,7 @@ public class ZeroMqConsumerConfigurationTests {
 	@Test
 	void testMessageHandlerConfiguration() throws InterruptedException {
 
-		Thread.sleep(5000);
+		Thread.sleep(10000);
 
 		Message<?> testMessage = MessageBuilder.withPayload("test").setHeader("topic", "test-topic").build();
 		subject.apply(Flux.just(testMessage))
