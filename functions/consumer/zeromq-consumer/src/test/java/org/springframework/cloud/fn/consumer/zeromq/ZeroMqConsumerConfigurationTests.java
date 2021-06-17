@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -62,7 +63,6 @@ public class ZeroMqConsumerConfigurationTests {
 		socket.subscribe("test-topic");
 
 		System.setProperty("zeromq.consumer.connectUrl", "tcp://localhost:" + bindPort);
-
 	}
 
 	@AfterAll
@@ -72,19 +72,27 @@ public class ZeroMqConsumerConfigurationTests {
 	}
 
 	@Test
-	void testMessageHandlerConfiguration() throws InterruptedException {
-
-		Thread.sleep(10000);
+	void testMessageHandlerConfiguration() {
+		ZMQ.Poller poller = CONTEXT.createPoller(1);
+		poller.register(socket, ZMQ.Poller.POLLIN);
 
 		Message<?> testMessage = MessageBuilder.withPayload("test").setHeader("topic", "test-topic").build();
 		subject.apply(Flux.just(testMessage))
 				.subscribe();
 
-		String topic = socket.recvStr();
-		assertThat(topic).isEqualTo("test-topic");
-		assertThat(socket.recvStr()).isEmpty();
-		assertThat(socket.recvStr()).isEqualTo("test");
+		while (true) {
+			poller.poll(10000);
+			if (poller.pollin(0)) {
+				String topic = socket.recvStr();
+				assertThat(topic).isEqualTo("test-topic");
+				assertThat(socket.recvStr()).isEmpty();
+				assertThat(socket.recvStr()).isEqualTo("test");
+				break;
+			}
+		}
 
+		poller.unregister(socket);
+		poller.close();
 	}
 
 	@SpringBootApplication

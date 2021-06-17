@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests for ZeroMqSink.
  *
  * @author Daniel Frey
+ * @author Artem Bilan
+ *
  * @since 3.1.0
  */
 public class ZeroMqSinkTests {
@@ -52,7 +54,7 @@ public class ZeroMqSinkTests {
 	}
 
 	@Test
-	public void testSinkFromFunction() throws InterruptedException {
+	public void testSinkFromFunction() {
 
 		ZMQ.Socket socket = CONTEXT.createSocket(SocketType.SUB);
 		socket.setReceiveTimeOut(10_000);
@@ -64,10 +66,10 @@ public class ZeroMqSinkTests {
 
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(ZeroMqSourceTestApplication.class)).run(
-						"--logging.level.org.springframework.integration=DEBUG",
-						"--spring.cloud.function.definition=zeromqConsumer",
-						"--zeromq.consumer.topic='test-topic'",
-						"--zeromq.consumer.connectUrl=tcp://localhost:" + port)) {
+				"--logging.level.org.springframework.integration=DEBUG",
+				"--spring.cloud.function.definition=zeromqConsumer",
+				"--zeromq.consumer.topic='test-topic'",
+				"--zeromq.consumer.connectUrl=tcp://localhost:" + port)) {
 
 			InputDestination inputDestination = context.getBean(InputDestination.class);
 
@@ -76,25 +78,18 @@ public class ZeroMqSinkTests {
 					.setHeader("contentType", MimeTypeUtils.APPLICATION_OCTET_STREAM)
 					.build();
 
-			Thread.sleep(5000);
-
 			inputDestination.send(testMessage);
 
-			ZMsg received = null;
-			while (received == null) {
-
+			while (true) {
 				poller.poll(10000);
 				if (poller.pollin(0)) {
-
-					received = ZMsg.recvMsg(socket);
+					ZMsg received = ZMsg.recvMsg(socket);
 					assertThat(received).isNotNull();
 					assertThat(received.unwrap().getString(ZMQ.CHARSET)).isEqualTo("test-topic");
 					assertThat(received.getLast().getString(ZMQ.CHARSET)).isEqualTo("test");
-
+					break;
 				}
-
 			}
-
 		}
 		finally {
 			poller.unregister(socket);
@@ -107,6 +102,7 @@ public class ZeroMqSinkTests {
 	@SpringBootApplication
 	@Import(ZeroMqConsumerConfiguration.class)
 	public static class ZeroMqSourceTestApplication {
+
 	}
 
 }
