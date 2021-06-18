@@ -153,6 +153,7 @@
 
                                     <!-- Enforce Spring Integration tracing instrumentation even for SCF apps -->
                                     <spring.sleuth.integration.enabled>true</spring.sleuth.integration.enabled>
+                                    <spring.sleuth.sampler.probability>1.0</spring.sleuth.sampler.probability>
 
                                 </properties>
                                 <metadata>
