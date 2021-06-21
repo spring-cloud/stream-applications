@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.sink.zeromq;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -44,6 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @since 3.1.0
  */
+@Disabled("PUB/SUB is async and we can't guess when subscriber is ready before sending a message")
 public class ZeroMqSinkTests {
 
 	private static final ZContext CONTEXT = new ZContext();
