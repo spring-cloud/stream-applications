@@ -51,7 +51,7 @@ public class SecurityEnabledManagementSecurityEnabledTests extends AbstractSecur
 	@SuppressWarnings("rawtypes")
 	public void testInfoEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/info", Map.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	// The ManagementWebSecurityAutoConfiguration exposes only Info and Health endpoint not Env!

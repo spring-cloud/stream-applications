@@ -32,11 +32,11 @@ class OnHttpCsrfOrSecurityDisabled extends AnyNestedCondition {
 		super(ConfigurationPhase.PARSE_CONFIGURATION);
 	}
 
-	@ConditionalOnProperty(name = "spring.cloud.streamapp.security.enabled", havingValue = "false")
+	@ConditionalOnProperty(name = "spring.cloud.streamapp.security.enabled", havingValue = "false", matchIfMissing = true)
 	static class SecurityDisabled {
 	}
 
-	@ConditionalOnProperty(name = "spring.cloud.streamapp.security.csrf-enabled", havingValue = "false")
+	@ConditionalOnProperty(name = "spring.cloud.streamapp.security.csrf-enabled", havingValue = "false", matchIfMissing = true)
 	static class HttpCsrfDisabled {
 	}
 

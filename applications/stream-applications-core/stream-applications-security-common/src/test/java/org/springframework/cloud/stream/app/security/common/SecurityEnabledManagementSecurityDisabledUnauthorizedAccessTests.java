@@ -29,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Christian Tzolov
  * @author Artem Bilan
+ * @Author David Turanski
  * @since 3.0
  */
 @TestPropertySource(properties = {
@@ -36,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"spring.autoconfigure.exclude=" +
 				"org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration"
 				+ ",org.springframework.cloud.stream.app.security.common.AppStarterWebSecurityAutoConfiguration",
-		"management.endpoints.web.exposure.include=health,info"})
+		"management.endpoints.web.exposure.include=health,info,bindings,env" })
 public class SecurityEnabledManagementSecurityDisabledUnauthorizedAccessTests extends AbstractSecurityCommonTests {
 
 	@Test
@@ -57,6 +58,13 @@ public class SecurityEnabledManagementSecurityDisabledUnauthorizedAccessTests ex
 		assertThat(response.hasBody()).isTrue();
 		Map info = response.getBody();
 		assertThat(info.get("error")).isEqualTo("Unauthorized");
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testBindingsEndpoint() {
+		ResponseEntity<?> response = this.restTemplate.getForEntity("/actuator/bindings", Object.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 	}
 
 	@Test

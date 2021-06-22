@@ -36,21 +36,22 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 /**
  * @author Artem Bilan
+ * @author David Turanski
  * @since 3.0
  */
 @Conditional(OnHttpCsrfOrSecurityDisabled.class)
 @Configuration
-@ConditionalOnClass({Flux.class, EnableWebFluxSecurity.class, WebFilterChainProxy.class, WebFluxConfigurer.class})
+@ConditionalOnClass({ Flux.class, EnableWebFluxSecurity.class, WebFilterChainProxy.class, WebFluxConfigurer.class })
 @ConditionalOnMissingBean(WebFilterChainProxy.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
-@AutoConfigureBefore({ReactiveManagementWebSecurityAutoConfiguration.class,
-		ReactiveSecurityAutoConfiguration.class})
+@AutoConfigureBefore({ ReactiveManagementWebSecurityAutoConfiguration.class,
+		ReactiveSecurityAutoConfiguration.class })
 @EnableConfigurationProperties(AppStarterWebSecurityAutoConfigurationProperties.class)
 public class AppStarterWebFluxSecurityAutoConfiguration {
 
 	@Bean
 	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http,
-															AppStarterWebSecurityAutoConfigurationProperties securityProperties) {
+			AppStarterWebSecurityAutoConfigurationProperties securityProperties) {
 		if (!securityProperties.isCsrfEnabled()) {
 			http.csrf().disable();
 		}
@@ -58,6 +59,13 @@ public class AppStarterWebFluxSecurityAutoConfiguration {
 			http.authorizeExchange()
 					.anyExchange()
 					.permitAll();
+		}
+		else {
+			http.authorizeExchange().pathMatchers("/actuator/health", "/actuator/info", "/actuator/bindings")
+					.permitAll().anyExchange().authenticated();
+			http.httpBasic();
+			http.formLogin();
+
 		}
 		return http.build();
 	}

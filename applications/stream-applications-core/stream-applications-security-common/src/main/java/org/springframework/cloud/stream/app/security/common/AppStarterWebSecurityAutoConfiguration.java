@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -27,13 +28,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 /**
  * @author Christian Tzolov
  * @author Artem Bilan
+ * @author David Turanski
  * @since 2.1
  */
 @Conditional(OnHttpCsrfOrSecurityDisabled.class)
@@ -41,7 +42,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @ConditionalOnClass(WebSecurityConfigurerAdapter.class)
 @ConditionalOnMissingBean(WebSecurityConfigurerAdapter.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@AutoConfigureBefore({ManagementWebSecurityAutoConfiguration.class, SecurityAutoConfiguration.class})
+@AutoConfigureBefore({ ManagementWebSecurityAutoConfiguration.class, SecurityAutoConfiguration.class })
 @EnableConfigurationProperties(AppStarterWebSecurityAutoConfigurationProperties.class)
 @EnableWebSecurity
 public class AppStarterWebSecurityAutoConfiguration {
@@ -50,24 +51,23 @@ public class AppStarterWebSecurityAutoConfiguration {
 	WebSecurityConfigurerAdapter appStarterWebSecurityConfigurerAdapter(
 			AppStarterWebSecurityAutoConfigurationProperties securityProperties) {
 
-
 		return new WebSecurityConfigurerAdapter() {
 
 			@Override
 			protected void configure(HttpSecurity http) throws Exception {
-				super.configure(http);
 				if (!securityProperties.isCsrfEnabled()) {
 					http.csrf().disable();
 				}
-			}
-
-			@Override
-			public void configure(WebSecurity builder) {
-				if (!securityProperties.isEnabled()) {
-					builder.ignoring().antMatchers("/**");
+				if (securityProperties.isEnabled()) {
+					http.authorizeRequests()
+							.requestMatchers(EndpointRequest.to("health", "info", "bindings")).permitAll()
+							.requestMatchers(EndpointRequest.toAnyEndpoint()).authenticated()
+							.and().formLogin().and().httpBasic();
+				}
+				else {
+					http.authorizeRequests().anyRequest().permitAll();
 				}
 			}
-
 		};
 	}
 

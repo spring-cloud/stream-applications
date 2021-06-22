@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -29,11 +30,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Christian Tzolov
  * @author Artem Bilan
+ * @author David Turanski
  * @since 3.0
  */
 @TestPropertySource(properties = {
 		"spring.main.web-application-type=reactive",
-		"management.endpoints.web.exposure.include=health,info,env",
+		"management.endpoints.web.exposure.include=health,info,env,bindings",
 		"info.name=MY TEST APP"})
 public class ReactiveSecurityEnabledManagementSecurityEnabledTests extends AbstractSecurityCommonTests {
 
@@ -52,10 +54,17 @@ public class ReactiveSecurityEnabledManagementSecurityEnabledTests extends Abstr
 	@SuppressWarnings("rawtypes")
 	public void testInfoEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/info", Map.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
-	// The ManagementWebSecurityAutoConfiguration exposes only Info and Health endpoint not Env!
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testBindingsEndpoint() {
+		ResponseEntity<List> response = this.restTemplate.getForEntity("/actuator/bindings", List.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
+
+	// The ManagementWebSecurityAutoConfiguration exposes only info,health, bindings endpoint not env!
 	@Test
 	@SuppressWarnings("rawtypes")
 	public void testEnvEndpoint() {

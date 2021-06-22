@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -32,21 +33,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Christian Tzolov
+ * @author Artem Bilan
+ * @author David Turanski
  * @since 3.0
  */
 @TestPropertySource(properties = {
-		"spring.main.web-application-type=reactive",
-		"org.springframework.boot.actuate.autoconfigure.security.reactive.ReactiveManagementWebSecurityAutoConfiguration"
-				+ ",org.springframework.cloud.stream.app.security.common.AppStarterWebFluxSecurityAutoConfiguration",
-		"management.endpoints.web.exposure.include=health,info,env",
+		"spring.main.web-application-type=servlet",
+		"management.endpoints.web.exposure.include=health,info,bindings,env",
 		"info.name=MY TEST APP"})
-public class ReactiveSecurityEnabledManagementSecurityDisabledAuthorizedAccessTests extends AbstractSecurityCommonTests {
+public class SecurityEnabledAuthorizedAccessTests extends AbstractSecurityCommonTests {
 
 	@Autowired
 	private SecurityProperties securityProperties;
 
 	@BeforeEach
-	public void before() {
+	public void authenticate() {
 		restTemplate.getRestTemplate().getInterceptors().add(new BasicAuthenticationInterceptor(
 				securityProperties.getUser().getName(), securityProperties.getUser().getPassword()));
 	}
@@ -56,7 +57,6 @@ public class ReactiveSecurityEnabledManagementSecurityDisabledAuthorizedAccessTe
 	public void testHealthEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/health", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
 		assertThat(response.hasBody()).isTrue();
 		Map health = response.getBody();
 		assertThat(health.get("status")).isEqualTo("UP");
@@ -70,6 +70,13 @@ public class ReactiveSecurityEnabledManagementSecurityDisabledAuthorizedAccessTe
 		assertThat(response.hasBody()).isTrue();
 		Map info = response.getBody();
 		assertThat(info.get("name")).isEqualTo("MY TEST APP");
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testBindingsEndpoint() {
+		ResponseEntity<List> response = this.restTemplate.getForEntity("/actuator/bindings", List.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@Test
