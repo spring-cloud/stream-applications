@@ -38,6 +38,8 @@ import org.springframework.util.MimeTypeUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
+import java.time.Duration;
+
 /**
  * Tests for ZeroMqSink.
  *
@@ -76,7 +78,8 @@ public class ZeroMqSinkTests {
 					.setHeader("contentType", MimeTypeUtils.APPLICATION_OCTET_STREAM)
 					.build();
 
-			await().untilAsserted(() -> {
+			await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
+					.untilAsserted(() -> {
 				inputDestination.send(testMessage);
 				ZMsg received = ZMsg.recvMsg(socket);
 				assertThat(received).isNotNull();

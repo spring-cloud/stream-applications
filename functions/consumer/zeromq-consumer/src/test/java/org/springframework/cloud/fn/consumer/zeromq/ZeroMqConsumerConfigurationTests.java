@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.consumer.zeromq;
 
+import java.time.Duration;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterAll;
@@ -76,7 +77,8 @@ public class ZeroMqConsumerConfigurationTests {
 	void testMessageHandlerConfiguration() {
 		Message<?> testMessage = MessageBuilder.withPayload("test").setHeader("topic", "test-topic").build();
 
-		await().untilAsserted(() -> {
+		await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
+				.untilAsserted(() -> {
 			subject.apply(Flux.just(testMessage)).subscribe();
 			String topic = socket.recvStr();
 			assertThat(topic).isEqualTo("test-topic");
