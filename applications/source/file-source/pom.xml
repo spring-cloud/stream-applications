@@ -85,6 +85,14 @@
             <name>Spring Milestone Release</name>
             <url>https://repo.spring.io/milestone</url>
         </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>spring-release</id>
+            <name>Spring Release</name>
+            <url>https://repo.spring.io/release</url>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -103,5 +111,14 @@
             <name>Spring Milestones</name>
             <url>https://repo.spring.io/milestone</url>
         </pluginRepository>
+        <pluginRepository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>spring-releases</id>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/release</url>
+        </pluginRepository>
+
     </pluginRepositories>
 </project>
