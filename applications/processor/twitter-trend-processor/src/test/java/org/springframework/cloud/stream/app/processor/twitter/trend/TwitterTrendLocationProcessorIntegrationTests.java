@@ -88,7 +88,9 @@ public class TwitterTrendLocationProcessorIntegrationTests {
 	@AfterEach
 	public void stopServer() {
 		mockServer.stop();
-		while (!mockServer.hasStopped(3,100L, TimeUnit.MILLISECONDS)){}
+		while (!mockServer.hasStopped(3, 100L, TimeUnit.MILLISECONDS)) {
+			// Do nothing
+		}
 	}
 
 	@Test
