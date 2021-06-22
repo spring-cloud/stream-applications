@@ -36,6 +36,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.MimeTypeUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 /**
  * Tests for ZeroMqSink.
@@ -45,7 +46,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @since 3.1.0
  */
-@Disabled("PUB/SUB is async and we can't guess when subscriber is ready before sending a message")
 public class ZeroMqSinkTests {
 
 	private static final ZContext CONTEXT = new ZContext();
@@ -57,14 +57,10 @@ public class ZeroMqSinkTests {
 
 	@Test
 	public void testSinkFromFunction() {
-
 		ZMQ.Socket socket = CONTEXT.createSocket(SocketType.SUB);
 		socket.setReceiveTimeOut(10_000);
 		int port = socket.bindToRandomPort("tcp://*");
 		socket.subscribe("test-topic");
-
-		ZMQ.Poller poller = CONTEXT.createPoller(1);
-		poller.register(socket, ZMQ.Poller.POLLIN);
 
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(ZeroMqSourceTestApplication.class)).run(
@@ -80,25 +76,18 @@ public class ZeroMqSinkTests {
 					.setHeader("contentType", MimeTypeUtils.APPLICATION_OCTET_STREAM)
 					.build();
 
-			inputDestination.send(testMessage);
-
-			while (true) {
-				poller.poll(10000);
-				if (poller.pollin(0)) {
-					ZMsg received = ZMsg.recvMsg(socket);
-					assertThat(received).isNotNull();
-					assertThat(received.unwrap().getString(ZMQ.CHARSET)).isEqualTo("test-topic");
-					assertThat(received.getLast().getString(ZMQ.CHARSET)).isEqualTo("test");
-					break;
-				}
-			}
+			await().untilAsserted(() -> {
+				inputDestination.send(testMessage);
+				ZMsg received = ZMsg.recvMsg(socket);
+				assertThat(received).isNotNull();
+				assertThat(received.unwrap().getString(ZMQ.CHARSET)).isEqualTo("test-topic");
+				assertThat(received.getLast().getString(ZMQ.CHARSET)).isEqualTo("test");
+				received.destroy();
+			});
 		}
 		finally {
-			poller.unregister(socket);
-			poller.close();
 			socket.close();
 		}
-
 	}
 
 	@SpringBootApplication

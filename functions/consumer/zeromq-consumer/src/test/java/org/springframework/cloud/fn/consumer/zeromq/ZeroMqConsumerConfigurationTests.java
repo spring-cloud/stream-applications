@@ -36,6 +36,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 /**
  * @author Daniel Frey
@@ -45,7 +46,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(properties =  "zeromq.consumer.topic='test-topic'")
 @DirtiesContext
-@Disabled("PUB/SUB is async and we can't guess when subscriber is ready before sending a message")
 public class ZeroMqConsumerConfigurationTests {
 
 	private static final ZContext CONTEXT = new ZContext();
@@ -74,26 +74,16 @@ public class ZeroMqConsumerConfigurationTests {
 
 	@Test
 	void testMessageHandlerConfiguration() {
-		ZMQ.Poller poller = CONTEXT.createPoller(1);
-		poller.register(socket, ZMQ.Poller.POLLIN);
-
 		Message<?> testMessage = MessageBuilder.withPayload("test").setHeader("topic", "test-topic").build();
-		subject.apply(Flux.just(testMessage))
-				.subscribe();
 
-		while (true) {
-			poller.poll(10000);
-			if (poller.pollin(0)) {
-				String topic = socket.recvStr();
-				assertThat(topic).isEqualTo("test-topic");
-				assertThat(socket.recvStr()).isEmpty();
-				assertThat(socket.recvStr()).isEqualTo("test");
-				break;
-			}
-		}
+		await().untilAsserted(() -> {
+			subject.apply(Flux.just(testMessage)).subscribe();
+			String topic = socket.recvStr();
+			assertThat(topic).isEqualTo("test-topic");
+			assertThat(socket.recvStr()).isEmpty();
+			assertThat(socket.recvStr()).isEqualTo("test");
+		});
 
-		poller.unregister(socket);
-		poller.close();
 	}
 
 	@SpringBootApplication
