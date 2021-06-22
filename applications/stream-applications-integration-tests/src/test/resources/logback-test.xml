@@ -13,5 +13,5 @@
 	<logger name="com.github.dockerjava" level="WARN"/>
 <!--	<logger name="org.springframework.amqp" level="DEBUG"/>-->
 <!--	<logger name="org.springframework.retry" level="TRACE"/>-->
-<!--	<logger name="org.springframework.cloud.stream.app.test.integration" level="DEBUG"/>-->
+	<logger name="http-request-processor" level="DEBUG"/>
 </configuration>
