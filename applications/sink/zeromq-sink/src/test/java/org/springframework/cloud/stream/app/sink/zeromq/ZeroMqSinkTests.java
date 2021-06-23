@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.sink.zeromq;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -37,8 +39,6 @@ import org.springframework.util.MimeTypeUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-
-import java.time.Duration;
 
 /**
  * Tests for ZeroMqSink.
