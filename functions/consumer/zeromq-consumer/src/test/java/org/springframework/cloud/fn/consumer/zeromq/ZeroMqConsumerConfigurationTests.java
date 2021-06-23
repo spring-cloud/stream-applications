@@ -21,7 +21,6 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -45,7 +44,7 @@ import static org.awaitility.Awaitility.await;
  *
  * @since 3.1
  */
-@SpringBootTest(properties =  "zeromq.consumer.topic='test-topic'")
+@SpringBootTest(properties = "zeromq.consumer.topic='test-topic'")
 @DirtiesContext
 public class ZeroMqConsumerConfigurationTests {
 
@@ -62,8 +61,6 @@ public class ZeroMqConsumerConfigurationTests {
 		socket = CONTEXT.createSocket(SocketType.SUB);
 		socket.setReceiveTimeOut(10_000);
 		int bindPort = socket.bindToRandomPort("tcp://*");
-		socket.subscribe("test-topic");
-
 		System.setProperty("zeromq.consumer.connectUrl", "tcp://localhost:" + bindPort);
 	}
 
@@ -79,17 +76,19 @@ public class ZeroMqConsumerConfigurationTests {
 
 		await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
 				.untilAsserted(() -> {
-			subject.apply(Flux.just(testMessage)).subscribe();
-			String topic = socket.recvStr();
-			assertThat(topic).isEqualTo("test-topic");
-			assertThat(socket.recvStr()).isEmpty();
-			assertThat(socket.recvStr()).isEqualTo("test");
-		});
+					socket.subscribe("test-topic");
+					subject.apply(Flux.just(testMessage)).subscribe();
+					String topic = socket.recvStr();
+					assertThat(topic).isEqualTo("test-topic");
+					assertThat(socket.recvStr()).isEmpty();
+					assertThat(socket.recvStr()).isEqualTo("test");
+				});
 
 	}
 
 	@SpringBootApplication
 	public static class ZeroMqConsumerTestApplication {
+
 	}
 
 }
