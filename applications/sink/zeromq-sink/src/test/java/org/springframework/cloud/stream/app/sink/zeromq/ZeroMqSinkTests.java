@@ -19,7 +19,6 @@ package org.springframework.cloud.stream.app.sink.zeromq;
 import java.time.Duration;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
