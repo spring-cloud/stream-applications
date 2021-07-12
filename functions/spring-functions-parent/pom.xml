@@ -16,7 +16,7 @@
 
 	<properties>
 		<spring-boot.version>2.5.0</spring-boot.version>
-		<spring-cloud-function.version>3.1.3</spring-cloud-function.version>
+		<spring-cloud-function.version>3.1.4-SNAPSHOT</spring-cloud-function.version>
 		<spring-cloud-fn.version>${project.version}</spring-cloud-fn.version>
 		<spring-integration-dependencies.version>5.5.0</spring-integration-dependencies.version>
 	</properties>
