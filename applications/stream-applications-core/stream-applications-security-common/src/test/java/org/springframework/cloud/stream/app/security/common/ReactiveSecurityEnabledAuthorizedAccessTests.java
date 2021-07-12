@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2021-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -32,23 +33,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Christian Tzolov
- * @author Artem Bilan
+ * @author David Turanski
  * @since 3.0
  */
 @TestPropertySource(properties = {
-		"spring.main.web-application-type=servlet",
-		"spring.autoconfigure.exclude=org.springframework.boot.actuate.autoconfigure.security.servlet" +
-				".ManagementWebSecurityAutoConfiguration"
-				+ ",org.springframework.cloud.stream.app.security.common.AppStarterWebSecurityAutoConfiguration",
-		"management.endpoints.web.exposure.include=health,info,env",
-		"info.name=MY TEST APP"})
-public class SecurityEnabledManagementSecurityDisabledAuthorizedAccessTests extends AbstractSecurityCommonTests {
+		"spring.main.web-application-type=reactive",
+		"management.endpoints.web.exposure.include=*",
+		"info.name=MY TEST APP" })
+public class ReactiveSecurityEnabledAuthorizedAccessTests
+		extends AbstractSecurityCommonTests {
 
 	@Autowired
 	private SecurityProperties securityProperties;
 
 	@BeforeEach
-	public void before() {
+	public void authenticate() {
 		restTemplate.getRestTemplate().getInterceptors().add(new BasicAuthenticationInterceptor(
 				securityProperties.getUser().getName(), securityProperties.getUser().getPassword()));
 	}
@@ -58,6 +57,7 @@ public class SecurityEnabledManagementSecurityDisabledAuthorizedAccessTests exte
 	public void testHealthEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/health", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
 		assertThat(response.hasBody()).isTrue();
 		Map health = response.getBody();
 		assertThat(health.get("status")).isEqualTo("UP");
@@ -75,10 +75,23 @@ public class SecurityEnabledManagementSecurityDisabledAuthorizedAccessTests exte
 
 	@Test
 	@SuppressWarnings("rawtypes")
+	public void testBindingsEndpoint() {
+		ResponseEntity<List> response = this.restTemplate.getForEntity("/actuator/bindings", List.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testBeansEndpoint() {
+		ResponseEntity<?> response = this.restTemplate.getForEntity("/actuator/beans", Object.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
 	public void testEnvEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/env", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		assertThat(response.hasBody()).isTrue();
 	}
 
 }

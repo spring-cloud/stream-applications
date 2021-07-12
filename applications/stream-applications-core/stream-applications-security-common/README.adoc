@@ -1,22 +1,27 @@
 === `App Starters Security` Common Module
 
-Spring Boot auto-configuration to manage the web security of the application starters.
+Spring Boot auto-configuration to manage the web security of the pre-packaged stream applications.
 
 When the `app-starters-security-common` dependency is on the classpath, the `spring.cloud.streamapp.security.enabled` and `spring.cloud.streamapp.security.csrf-enabled` properties control the application security behavior.
 
-By default the security is enabled allowing unauthorized access only to the `Info` and `Health` endpoints.
+By default the security is enabled allowing unauthorized access only to the `actuator/info`,`actuator/health`, and `actuator/bindings` endpoints.
 
 The `spring.cloud.streamapp.security.enabled = false` completely surpass the application security.
 
 For secured application setting `spring.cloud.streamapp.security.csrf-enabled = false` disables security for the CSRF access.
 
-With security enabled (`spring.cloud.streamapp.security.enabled = true`) and `actuator` dependency on the classpath, the `(Reactive)ManagementWebSecurityAutoConfiguration` is activated, providing unauthenticated access to the `HealthEndpoint` and `InfoEndpoint`.
+With security enabled (`spring.cloud.streamapp.security.enabled = true`) and `actuator` dependency on the classpath, the `(Reactive)ManagementWebSecurityAutoConfiguration` is activated, providing unauthenticated access to the endpoints listed above.
 
-If the user specifies their own `WebSecurityConfigurerAdapter` (for MVC application), this configuration will back-off completely and the user should specify all the bits that they want to configure as part of the custom security configuration.
+If the user specifies their own `WebSecurityConfigurerAdapter` (for MVC application), this configuration will be overridden. The user must provide the complete security configuration.
 For reactive (WebFlux) application the same effect can be achieved with a custom `WebFilterChainProxy` bean.
 
+[NOTE]
+As of Spring Boot 2.5, the `info` endpoint requires authentication by default in `spring-boot-starter-security`.
+Since, the contents of the `info` endpoint is highly customizable, the boot team has decided that an `opt-in` approach is more prudent.
+For backward compatibility, the stream apps continue to expose the `info` endpoint. The standard configuration contains no sensitive information.
+
 === Configuration
-To include app starters security management for a stream app, just include a dependency on this module.
+To include security management for a stream app, just include a dependency on this module.
 
 [source,xml]
 ----
@@ -27,7 +32,7 @@ To include app starters security management for a stream app, just include a dep
 ----
 
 
-All Spring Cloud Stream app starters that inherit form the `core` pom have the `app-starters-security-common` dependency included by default.
+All Spring Cloud Stream applications that inherit form the `core` pom include the `stream-applications-security-common` dependency.
 
 * `spring.cloud.streamapp.security.enabled` (default: `true`). If set to `false` it surpasses the boot security.
 * `spring.cloud.streamapp.security.csrf-enabled` (default: `true`). If set to `false`, for secured applications it enables CQRS.

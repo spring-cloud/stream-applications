@@ -16,8 +16,10 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpStatus;
@@ -28,12 +30,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  * @author Artem Bilan
+ * @author David Turanski
  * @since 3.0
  */
 @TestPropertySource(properties = {
 		"spring.main.web-application-type=reactive",
 		"spring.cloud.streamapp.security.enabled=false",
-		"management.endpoints.web.exposure.include=health,info,env",
+		"management.endpoints.web.exposure.include=health,info,bindings,env",
 		"info.name=MY TEST APP"})
 public class ReactiveSecurityDisabledManagementSecurityEnabledTests extends AbstractSecurityCommonTests {
 
@@ -56,6 +59,13 @@ public class ReactiveSecurityDisabledManagementSecurityEnabledTests extends Abst
 		assertThat(response.hasBody()).isTrue();
 		Map info = response.getBody();
 		assertThat(info.get("name")).isEqualTo("MY TEST APP");
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testBindingsEndpoint() {
+		ResponseEntity<List> response = this.restTemplate.getForEntity("/actuator/bindings", List.class);
+		Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@Test
