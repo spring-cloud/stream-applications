@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.integration.test.source.time;
 
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 
@@ -40,6 +42,7 @@ class KafkaTimeSourceTests extends TimeSourceTests {
 					.withExposedPorts(8080);
 
 	@Test
+	@Disabled
 	void testActuator() {
 		WebClient webClient = WebClient.create();
 		ClientResponse response = webClient.get()
