@@ -188,7 +188,7 @@ To build the functions and applications that you are interested in, you need to 
 You can also build a single function or group of functions.
 For example, if you are only interested in `jdbc-supplier` and `log-consumer`, do the following.
 
-`./mvnw clean install -pl :jdbc-suppler,:log-consumer`
+`./mvnw clean install -pl :jdbc-supplier,:log-consumer`
 
 ==== Building Stream Applications Core
 
