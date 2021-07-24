@@ -42,6 +42,7 @@ import static org.awaitility.Awaitility.await;
  */
 @SpringBootTest(properties = {
 		"spring.data.mongodb.port=0",
+		"spring.mongodb.embedded.version=4.0.12",
 		"mongodb.consumer.collection=testing" })
 class MongoDbConsumerApplicationTests {
 

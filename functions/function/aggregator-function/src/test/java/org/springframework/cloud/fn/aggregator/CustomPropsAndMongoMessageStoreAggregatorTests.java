@@ -36,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Artem Bilan
  */
 @TestPropertySource(properties = {
+		"spring.mongodb.embedded.version=4.0.12",
 		"aggregator.correlation=T(Thread).currentThread().id",
 		"aggregator.release=!messages.?[payload == 'bar'].empty",
 		"aggregator.aggregation=#this.?[payload == 'foo'].![payload]",

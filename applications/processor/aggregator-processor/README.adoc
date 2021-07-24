@@ -30,7 +30,6 @@ $$authentication-database$$:: $$Authentication database name.$$ *($$String$$, de
 $$auto-index-creation$$:: $$Whether to enable auto-index creation.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$database$$:: $$Database name.$$ *($$String$$, default: `$$<none>$$`)*
 $$field-naming-strategy$$:: $$Fully qualified name of the FieldNamingStrategy to use.$$ *($$Class<?>$$, default: `$$<none>$$`)*
-$$grid-fs-database$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
 $$host$$:: $$Mongo server host. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
 $$password$$:: $$Login password of the mongo server. Cannot be set with URI.$$ *($$Character[]$$, default: `$$<none>$$`)*
 $$port$$:: $$Mongo server port. Cannot be set with URI.$$ *($$Integer$$, default: `$$<none>$$`)*
@@ -46,7 +45,7 @@ $$data$$:: $$Data (DML) script resource references.$$ *($$List<String>$$, defaul
 $$data-password$$:: $$Password of the database to execute DML scripts (if different).$$ *($$String$$, default: `$$<none>$$`)*
 $$data-username$$:: $$Username of the database to execute DML scripts (if different).$$ *($$String$$, default: `$$<none>$$`)*
 $$driver-class-name$$:: $$Fully qualified name of the JDBC driver. Auto-detected based on the URL by default.$$ *($$String$$, default: `$$<none>$$`)*
-$$embedded-database-connection$$:: $$Connection details for an embedded database. Defaults to the most suitable embedded database that is available on the classpath.$$ *($$EmbeddedDatabaseConnection$$, default: `$$<none>$$`, possible values: `NONE`,`H2`,`DERBY`,`HSQL`,`HSQLDB`)*
+$$embedded-database-connection$$:: $$Connection details for an embedded database. Defaults to the most suitable embedded database that is available on the classpath.$$ *($$EmbeddedDatabaseConnection$$, default: `$$<none>$$`, possible values: `NONE`,`H2`,`DERBY`,`HSQLDB`)*
 $$generate-unique-name$$:: $$Whether to generate a random datasource name.$$ *($$Boolean$$, default: `$$true$$`)*
 $$initialization-mode$$:: $$Mode to apply when determining if DataSource initialization should be performed using the available DDL and DML scripts.$$ *($$DataSourceInitializationMode$$, default: `$$embedded$$`, possible values: `ALWAYS`,`EMBEDDED`,`NEVER`)*
 $$jndi-name$$:: $$JNDI location of the datasource. Class, url, username and password are ignored when set.$$ *($$String$$, default: `$$<none>$$`)*
@@ -65,7 +64,7 @@ $$username$$:: $$Login username of the database.$$ *($$String$$, default: `$$<no
 === spring.mongodb.embedded
 
 $$features$$:: $$Comma-separated list of features to enable. Uses the defaults of the configured version by default.$$ *($$Set<Feature>$$, default: `$$[sync_delay]$$`)*
-$$version$$:: $$Version of Mongo to use.$$ *($$String$$, default: `$$3.5.5$$`)*
+$$version$$:: $$Version of Mongo to use.$$ *($$String$$, default: `$$<none>$$`)*
 
 === spring.redis
 

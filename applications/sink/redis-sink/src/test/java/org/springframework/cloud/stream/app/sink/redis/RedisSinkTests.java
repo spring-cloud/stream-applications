@@ -50,6 +50,7 @@ public class RedisSinkTests {
 						.getCompleteConfiguration(RedisSinkTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=redisConsumer",
+						"--spring.cloud.compatibility-verifier.enabled=false",
 						"--redis.consumer.key=foo")) {
 
 			//Setup

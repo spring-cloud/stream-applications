@@ -40,6 +40,7 @@ import static org.assertj.core.api.Assertions.entry;
 
 @SpringBootTest(properties = {
 		"spring.data.mongodb.port=0",
+		"spring.mongodb.embedded.version=4.0.12",
 		"mongodb.supplier.collection=testing",
 		"mongodb.supplier.query={ name: { $exists: true }}",
 		"mongodb.supplier.update-expression='{ $unset: { name: 0 } }'"
