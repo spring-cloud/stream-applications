@@ -125,8 +125,6 @@
                 "${s3-sink.version}".contains('SNAPSHOT') ? 'latest' : "${s3-sink.version}"
         pom.properties['sftp-sink-docker.tag']=
                 "${sftp-sink.version}".contains('SNAPSHOT') ? 'latest' : "${sftp-sink.version}"
-        pom.properties['tasklauncher-sink-docker.tag']=
-                "${tasklauncher-sink.version}".contains('SNAPSHOT') ? 'latest' : "${tasklauncher-sink.version}"
         pom.properties['tcp-sink-docker.tag']=
                 "${tcp-sink.version}".contains('SNAPSHOT') ? 'latest' : "${tcp-sink.version}"
         pom.properties['throughput-sink-docker.tag']=

@@ -64,7 +64,6 @@
 		<module>function/spel-function</module>
 		<module>function/payload-converter-function</module>
 		<module>function/splitter-function</module>
-		<module>function/tasklauncher-function</module>
 		<module>function/task-launch-request-function</module>
 		<module>function/twitter-function</module>
 		<module>function/image-recognition-function</module>
