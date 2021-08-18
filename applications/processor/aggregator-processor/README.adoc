@@ -50,7 +50,7 @@ $$embedded-database-connection$$:: $$Connection details for an embedded database
 $$generate-unique-name$$:: $$Whether to generate a random datasource name.$$ *($$Boolean$$, default: `$$true$$`)*
 $$initialization-mode$$:: $$Mode to apply when determining if DataSource initialization should be performed using the available DDL and DML scripts.$$ *($$DataSourceInitializationMode$$, default: `$$embedded$$`, possible values: `ALWAYS`,`EMBEDDED`,`NEVER`)*
 $$jndi-name$$:: $$JNDI location of the datasource. Class, url, username and password are ignored when set.$$ *($$String$$, default: `$$<none>$$`)*
-$$name$$:: $$Name of the datasource. Default to "testdb" when using an embedded database.$$ *($$String$$, default: `$$<none>$$`)*
+$$name$$:: $$Datasource name to use if "generate-unique-name" is false. Defaults to "testdb" when using an embedded database, otherwise null.$$ *($$String$$, default: `$$<none>$$`)*
 $$password$$:: $$Login password of the database.$$ *($$String$$, default: `$$<none>$$`)*
 $$platform$$:: $$Platform to use in the DDL or DML scripts (such as schema-${platform}.sql or data-${platform}.sql).$$ *($$String$$, default: `$$all$$`)*
 $$schema$$:: $$Schema (DDL) script resource references.$$ *($$List<String>$$, default: `$$<none>$$`)*
