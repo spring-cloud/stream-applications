@@ -18,17 +18,30 @@ package org.springframework.cloud.stream.app.integration.test.source.time;
 
 import java.util.regex.Pattern;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.app.test.integration.OutputMatcher;
+import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
+import org.springframework.cloud.stream.app.test.integration.junit.jupiter.BaseContainerExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.cloud.stream.app.integration.test.common.Configuration.DEFAULT_DURATION;
+
 @Tag("integration")
+@ExtendWith(BaseContainerExtension.class)
 abstract class TimeSourceTests {
+
+	static StreamAppContainer source;
 
 	// "MM/dd/yy HH:mm:ss";
 	private final static Pattern pattern = Pattern.compile(".*\\d{2}/\\d{2}/\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}");
@@ -42,8 +55,50 @@ abstract class TimeSourceTests {
 				.until(outputMatcher.payloadMatches((String s) -> pattern.matcher(s).matches()));
 	}
 
+	@BeforeAll
+	static void configureSource() {
+		source = BaseContainerExtension.containerInstance()
+				.withExposedPorts(8080)
+				.waitingFor(Wait.forLogMessage(".*Started TimeSource.*", 1));
+		source.start();
+	}
+
+	@Test
+	void testActuator() {
+		WebClient webClient = WebClient.create();
+		webClient.get()
+				.uri("http://localhost:" + source.getMappedPort(8080) + "/actuator/health")
+				.exchangeToMono(response -> {
+					assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+					return response.toBodilessEntity();
+				}).block();
+		webClient.get()
+				.uri("http://localhost:" + source.getMappedPort(8080) + "/actuator/info")
+				.exchangeToMono(response -> {
+					assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+					return response.toBodilessEntity();
+				}).block();
+		webClient.get()
+				.uri("http://localhost:" + source.getMappedPort(8080) + "/actuator/bindings")
+				.exchangeToMono(response -> {
+					assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+					return response.toBodilessEntity();
+				}).block();
+		webClient.get()
+				.uri("http://localhost:" + source.getMappedPort(8080) + "/actuator/env")
+				.exchangeToMono(response -> {
+					assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+					return response.toBodilessEntity();
+				}).block();
+	}
+
 	@AfterEach
 	void cleanUp() {
 		outputMatcher.clearMessageMatchers();
+	}
+
+	@AfterAll
+	static void stop() {
+		source.stop();
 	}
 }
