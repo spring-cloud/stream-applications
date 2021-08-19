@@ -13,6 +13,7 @@
 
 	<properties>
 		<json-unit.version>1.25.1</json-unit.version>
+		<mysql-connector-java.version>8.0.13</mysql-connector-java.version>
 	</properties>
 
 	<artifactId>cdc-debezium-source</artifactId>
@@ -30,7 +31,16 @@
 					<artifactId>slf4j-log4j12</artifactId>
 					<groupId>org.slf4j</groupId>
 				</exclusion>
+				<exclusion>
+					<groupId>mysql</groupId>
+					<artifactId>mysql-connector-java</artifactId>
+				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector-java.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
