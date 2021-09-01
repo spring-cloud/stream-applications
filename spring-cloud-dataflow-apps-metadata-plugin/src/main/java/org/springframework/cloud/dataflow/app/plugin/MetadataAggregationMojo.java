@@ -170,19 +170,21 @@ public class MetadataAggregationMojo extends AbstractMojo {
 			storeFilteredMetadata();
 		}
 		//Add port mapping configuration based on the application configuration.
-		storeInboutOutboundPortMappingConfigurations(result.visible);
+		storeInboundOutboundPortMappingConfigurations(result.getPortMappingProperties());
 	}
 
 	/**
 	 * Store pre-filtered and json-escaped metadata into a property file.
 	 */
 	private void storeFilteredMetadata() throws MojoExecutionException {
-		File targetFolder = new File(mavenProject.getBuild().getOutputDirectory(), "META-INF");
-		if (!targetFolder.exists()) {
-			targetFolder.mkdir();
+		File projectMetaInfFolder = new File(mavenProject.getBuild().getOutputDirectory(), "META-INF");
+		if (!projectMetaInfFolder.exists()) {
+			if (!projectMetaInfFolder.mkdir()) {
+				throw new MojoExecutionException("Error creating META-INF folder for port mapping file!");
+			}
 		}
 		try (FileWriter fileWriter = new FileWriter(
-				new File(targetFolder, "spring-configuration-metadata-encoded.properties"))) {
+				new File(projectMetaInfFolder, "spring-configuration-metadata-encoded.properties"))) {
 			ConfigurationMetadata metadata = gatherConfigurationMetadata(metadataFilter);
 			String escapedJson = StringEscapeUtils.escapeJson(toJson(metadata));
 			fileWriter.write("org.springframework.cloud.dataflow.spring.configuration.metadata.json=" + escapedJson);
@@ -192,25 +194,16 @@ public class MetadataAggregationMojo extends AbstractMojo {
 		}
 	}
 
-	private void storeInboutOutboundPortMappingConfigurations(Properties properties) throws MojoExecutionException {
-		File targetFolder = new File(mavenProject.getBuild().getOutputDirectory(), "META-INF");
-		if (!targetFolder.exists()) {
-			targetFolder.mkdir();
+	private void storeInboundOutboundPortMappingConfigurations(Properties properties) throws MojoExecutionException {
+		File projectMetaInfFolder = new File(mavenProject.getBuild().getOutputDirectory(), "META-INF");
+		if (!projectMetaInfFolder.exists()) {
+			if (!projectMetaInfFolder.mkdir()) {
+				throw new MojoExecutionException("Error creating META-INF folder for port mapping file!");
+			}
 		}
 		try (FileWriter fileWriter = new FileWriter(
-				new File(targetFolder, SPRING_CLOUD_DATAFLOW_PORT_MAPPING_PROPERTIES))) {
-			for (String propertyKey : properties.stringPropertyNames()) {
-				if (propertyKey.equals(CONFIGURATION_PROPERTIES_OUTBOUND_PORTS)) {
-					fileWriter.write(CONFIGURATION_PROPERTIES_OUTBOUND_PORTS + "=" + properties
-							.getProperty(CONFIGURATION_PROPERTIES_OUTBOUND_PORTS));
-					fileWriter.write(System.lineSeparator());
-				}
-				else if (propertyKey.equals(CONFIGURATION_PROPERTIES_INBOUND_PORTS)) {
-					fileWriter.write(CONFIGURATION_PROPERTIES_INBOUND_PORTS + "=" + properties
-							.getProperty(CONFIGURATION_PROPERTIES_INBOUND_PORTS));
-					fileWriter.write(System.lineSeparator());
-				}
-			}
+				new File(projectMetaInfFolder, SPRING_CLOUD_DATAFLOW_PORT_MAPPING_PROPERTIES))) {
+			properties.store(fileWriter, "Spring Cloud DataFlow Port Mapping");
 		}
 		catch (IOException e) {
 			throw new MojoExecutionException("Error creating file ", e);
@@ -497,6 +490,10 @@ public class MetadataAggregationMojo extends AbstractMojo {
 			jos.putNextEntry(entry);
 			result.visible.store(jos, "DEPRECATED: Describes visible properties for this app");
 
+			entry = new ZipEntry("META-INF/" + SPRING_CLOUD_DATAFLOW_PORT_MAPPING_PROPERTIES);
+			jos.putNextEntry(entry);
+			result.getPortMappingProperties().store(jos, "Describes visible port mapping properties for this app");
+
 			getLog().info(String.format("Attaching %s to current project", output.getCanonicalPath()));
 			projectHelper.attachArtifact(mavenProject, output, classifier);
 		}
@@ -605,6 +602,14 @@ public class MetadataAggregationMojo extends AbstractMojo {
 		private final ConfigurationMetadata metadata;
 
 		private final Properties visible;
+
+		private Properties getPortMappingProperties() {
+			Properties portMappingProperties = new Properties();
+			visible.entrySet().stream()
+					.filter(e -> e.getKey().equals(CONFIGURATION_PROPERTIES_OUTBOUND_PORTS) || e.getKey().equals(CONFIGURATION_PROPERTIES_INBOUND_PORTS))
+					.forEach(e -> portMappingProperties.put(e.getKey(), e.getValue()));
+			return portMappingProperties;
+		}
 
 		private Result(ConfigurationMetadata metadata, Properties visible) {
 			this.metadata = metadata;
