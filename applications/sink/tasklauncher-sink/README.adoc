@@ -4,13 +4,6 @@
 This module has been relocated to the https://github.com/spring-cloud/spring-cloud-dataflow/tree/main/spring-cloud-dataflow-tasklauncher/spring-cloud-dataflow-tasklauncher-sink[spring-cloud-data-flow repository].
 As of SCDF 2.9.x, this app is included in the SCDF build to ensure version compatibility with the SCDF server going forward.
 
-To manually register the `dataflow-tasklauncher` for either the `rabbit` or `kafka` binder, use one of the following URL patterns:
-
-<<<<<<< Updated upstream
+To manually register the `dataflow-tasklauncher` for either the `rabbit` or `kafka` binder, use one of the following URLs:
 * maven://org.springframework.cloud:spring-cloud-dataflow-tasklauncher-sink-<binder>:<SCDF-version>
 * docker:springcloud/spring-cloud-dataflow-tasklauncher-sink-<binder>:<SCDF-version>
-=======
- maven://org.springframework.cloud:spring-cloud-dataflow-tasklauncher-sink-<binder>:<SCDF-version>
-
- docker:springcloud/spring-cloud-dataflow-tasklauncher-sink-<binder>:<SCDF-version>
->>>>>>> Stashed changes
