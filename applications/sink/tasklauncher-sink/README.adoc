@@ -6,5 +6,11 @@ As of SCDF 2.9.x, this app is included in the SCDF build to ensure version compa
 
 To manually register the `dataflow-tasklauncher` for either the `rabbit` or `kafka` binder, use one of the following URL patterns:
 
+<<<<<<< Updated upstream
 * maven://org.springframework.cloud:spring-cloud-dataflow-tasklauncher-sink-<binder>:<SCDF-version>
 * docker:springcloud/spring-cloud-dataflow-tasklauncher-sink-<binder>:<SCDF-version>
+=======
+ maven://org.springframework.cloud:spring-cloud-dataflow-tasklauncher-sink-<binder>:<SCDF-version>
+
+ docker:springcloud/spring-cloud-dataflow-tasklauncher-sink-<binder>:<SCDF-version>
+>>>>>>> Stashed changes
