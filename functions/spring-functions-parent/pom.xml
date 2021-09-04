@@ -15,7 +15,6 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<spring-boot.version>2.6.0-M1</spring-boot.version>
 		<spring-cloud-function.version>3.1.4-SNAPSHOT</spring-cloud-function.version>
 		<spring-cloud-fn.version>${project.version}</spring-cloud-fn.version>
 	</properties>

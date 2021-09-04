@@ -40,7 +40,7 @@
 		<nohttp-checkstyle.version>0.0.2.RELEASE</nohttp-checkstyle.version>
 		<disable.nohttp.checks>true</disable.nohttp.checks>
 		<spring-javaformat-checkstyle.version>0.0.7</spring-javaformat-checkstyle.version>
-		<spring-boot.version>2.5.4-SNAPSHOT</spring-boot.version>
+		<spring-boot.version>2.6.0-M1</spring-boot.version>
 		<spring-kafka.version>2.7.1</spring-kafka.version>
 		<spring-rabbit.version>2.3.7</spring-rabbit.version>
 		<spring-cloud-function.version>3.1.4-SNAPSHOT</spring-cloud-function.version>
