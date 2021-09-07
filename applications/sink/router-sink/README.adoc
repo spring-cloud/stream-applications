@@ -35,7 +35,7 @@ The expression evaluates against the message and returns either a channel name, 
 
 For more information, please see the "Routers and the Spring Expression Language (SpEL)" subsection in the Spring
 Integration Reference manual
-https://docs.spring.io/spring-integration/reference/html/messaging-routing-chapter.html#router-namespace[Configuring (Generic) Router section].
+https://docs.spring.io/spring-integration/reference/html/router.html#router-namespace[Configuring a Generic Router] section.
 
 NOTE: Starting with Spring Cloud Stream 2.0 onwards the message wire format for `json`, `text` and `xml` content types is `byte[]` not `String`!
 This is an altering change from SCSt 1.x that treats those types as Strings!
