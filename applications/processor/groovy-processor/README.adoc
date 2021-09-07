@@ -8,6 +8,9 @@ A Processor that applies a Groovy script against messages.
 The **$$groovy-processor$$** $$processor$$ has the following options:
 
 //tag::configuration-properties[]
+$$groovy-processor.script$$:: $$Reference to a script used to process messages.$$ *($$Resource$$, default: `$$<none>$$`)*
+$$groovy-processor.variables$$:: $$Variable bindings as a new line delimited string of name-value pairs, e.g. 'foo=bar\n baz=car'.$$ *($$Properties$$, default: `$$<none>$$`)*
+$$groovy-processor.variables-location$$:: $$The location of a properties file containing custom script variable bindings.$$ *($$Resource$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
