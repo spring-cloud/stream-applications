@@ -106,6 +106,8 @@ public class MetadataAggregationMojo extends AbstractMojo {
 
 	static final String SPRING_CLOUD_DATAFLOW_PORT_MAPPING_PROPERTIES = "dataflow-configuration-port-mapping.properties";
 
+	static final String SPRING_CLOUD_DATAFLOW_OPTION_GROUPS_PROPERTIES = "dataflow-configuration-option-groups.properties";
+
 	@Parameter(defaultValue = "${project}")
 	private MavenProject mavenProject;
 
@@ -492,6 +494,10 @@ public class MetadataAggregationMojo extends AbstractMojo {
 
 			entry = new ZipEntry("META-INF/" + SPRING_CLOUD_DATAFLOW_PORT_MAPPING_PROPERTIES);
 			jos.putNextEntry(entry);
+
+			entry = new ZipEntry("META-INF/" + SPRING_CLOUD_DATAFLOW_OPTION_GROUPS_PROPERTIES);
+			jos.putNextEntry(entry);
+
 			result.getPortMappingProperties().store(jos, "Describes visible port mapping properties for this app");
 
 			getLog().info(String.format("Attaching %s to current project", output.getCanonicalPath()));
