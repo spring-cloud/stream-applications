@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.springframework.cloud</groupId>
 	<artifactId>spring-cloud-dataflow-apps-plugin-parent</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<name>spring-cloud-dataflow-apps-plugin-parent</name>
 	<description>Spring Cloud Dataflow Apps Plugin Parent</description>
 	<packaging>pom</packaging>
