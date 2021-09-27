@@ -51,7 +51,7 @@ public abstract class CdcMySqlTestSupport {
 		MAPPED_PORT = String.valueOf(debeziumMySQL.getMappedPort(3306));
 		jdbcTemplate = CdcTestUtils.jdbcTemplate(
 				"com.mysql.cj.jdbc.Driver",
-				"jdbc:mysql://localhost:" + MAPPED_PORT + "/" + DATABASE_NAME,
+				"jdbc:mysql://localhost:" + MAPPED_PORT + "/" + DATABASE_NAME + "?enabledTLSProtocols=TLSv1.2",
 				"root",
 				"debezium");
 	}
