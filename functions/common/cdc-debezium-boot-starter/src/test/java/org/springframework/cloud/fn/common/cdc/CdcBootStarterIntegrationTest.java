@@ -20,7 +20,6 @@ import java.time.Duration;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
@@ -43,7 +42,6 @@ import static org.awaitility.Awaitility.await;
 
 @Tag("integration")
 @Testcontainers
-@Disabled
 public class CdcBootStarterIntegrationTest {
 
 	private static final String DATABASE_NAME = "inventory";
@@ -66,7 +64,7 @@ public class CdcBootStarterIntegrationTest {
 		MAPPED_PORT = String.valueOf(debeziumMySQL.getMappedPort(3306));
 		jdbcTemplate = jdbcTemplate(
 				"com.mysql.cj.jdbc.Driver",
-				"jdbc:mysql://localhost:" + MAPPED_PORT + "/" + DATABASE_NAME,
+				"jdbc:mysql://localhost:" + MAPPED_PORT + "/" + DATABASE_NAME + "?enabledTLSProtocols=TLSv1.2",
 				"root",
 				"debezium");
 	}
