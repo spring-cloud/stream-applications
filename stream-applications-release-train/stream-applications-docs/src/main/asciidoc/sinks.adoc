@@ -52,9 +52,6 @@ include::{stream-apps-root}/{branch}/applications/sink/rsocket-sink/README.adoc[
 include::{stream-apps-root}/{branch}/applications/sink/s3-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-sftp-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/tasklauncher-sink/README.adoc[tags=ref-doc]
-
-[[spring-cloud-stream-modules-tasklauncher-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/sftp-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-tcp-sink]]
