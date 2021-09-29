@@ -341,13 +341,6 @@
 			<version>${script-processor.version}</version>
 		</dependency>
 
-		<!-- special cases -->
-		<dependency>
-			<groupId>org.springframework.cloud.stream.app</groupId>
-			<artifactId>tasklauncher-sink</artifactId>
-			<version>${tasklauncher-sink.version}</version>
-		</dependency>
-
 	</dependencies>
 	<profiles>
 		<profile>

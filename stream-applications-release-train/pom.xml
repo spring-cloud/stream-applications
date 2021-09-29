@@ -61,7 +61,6 @@
         <pgcopy-sink.version>${apps.version}</pgcopy-sink.version>
         <s3-sink.version>${apps.version}</s3-sink.version>
         <sftp-sink.version>${apps.version}</sftp-sink.version>
-        <tasklauncher-sink.version>${apps.version}</tasklauncher-sink.version>
         <tcp-sink.version>${apps.version}</tcp-sink.version>
         <throughput-sink.version>${apps.version}</throughput-sink.version>
         <twitter-message-sink.version>${apps.version}</twitter-message-sink.version>
