@@ -26,7 +26,7 @@ function iterate_through_apps_folders_and_update {
     ../../../mvnw -Ddisable.checks=true versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false
     #../../../mvnw -Ddisable.checks=true versions:update-parent -DparentVersion=$PARENT_VERSION -Pspring -DgenerateBackupPoms=false
     # only used after a release for updating parent versions.
-     sed -i '' 's/<version>3.1.0-SNAPSHOT/<version>'3.1.0-RC1'/g' pom.xml
+     sed -i '' 's/<version>3.1.0-RC1/<version>'3.1.0-SNAPSHOT'/g' pom.xml
     popd
   done
 
