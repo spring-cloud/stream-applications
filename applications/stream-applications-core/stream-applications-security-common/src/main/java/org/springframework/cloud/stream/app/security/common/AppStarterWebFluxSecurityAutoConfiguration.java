@@ -61,7 +61,7 @@ public class AppStarterWebFluxSecurityAutoConfiguration {
 					.permitAll();
 		}
 		else {
-			http.authorizeExchange().pathMatchers("/actuator/health", "/actuator/info", "/actuator/bindings")
+			http.authorizeExchange().pathMatchers("/actuator", "/actuator/health", "/actuator/info", "/actuator/bindings")
 					.permitAll().anyExchange().authenticated();
 			http.httpBasic();
 			http.formLogin();

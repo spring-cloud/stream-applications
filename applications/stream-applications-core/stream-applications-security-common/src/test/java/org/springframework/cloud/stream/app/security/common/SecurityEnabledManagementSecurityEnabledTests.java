@@ -33,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @TestPropertySource(properties = {
 		"spring.main.web-application-type=servlet",
+		"management.endpoints.web.discovery.enabled=true",
 		"management.endpoints.web.exposure.include=health,info,env",
 		"info.name=MY TEST APP"})
 public class SecurityEnabledManagementSecurityEnabledTests extends AbstractSecurityCommonTests {
@@ -51,6 +52,13 @@ public class SecurityEnabledManagementSecurityEnabledTests extends AbstractSecur
 	@SuppressWarnings("rawtypes")
 	public void testInfoEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/info", Map.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testDiscoveryEndpoint() {
+		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
