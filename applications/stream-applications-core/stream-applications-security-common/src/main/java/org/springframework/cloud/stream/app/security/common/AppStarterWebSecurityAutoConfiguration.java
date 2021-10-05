@@ -60,6 +60,7 @@ public class AppStarterWebSecurityAutoConfiguration {
 				}
 				if (securityProperties.isEnabled()) {
 					http.authorizeRequests()
+							.requestMatchers(EndpointRequest.toLinks()).permitAll()
 							.requestMatchers(EndpointRequest.to("health", "info", "bindings")).permitAll()
 							.requestMatchers(EndpointRequest.toAnyEndpoint()).authenticated()
 							.and().formLogin().and().httpBasic();
