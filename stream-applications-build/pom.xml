@@ -43,7 +43,7 @@
 		<spring-boot.version>2.5.5</spring-boot.version>
 		<spring-kafka.version>2.7.1</spring-kafka.version>
 		<spring-rabbit.version>2.3.7</spring-rabbit.version>
-		<spring-cloud-function.version>3.1.4</spring-cloud-function.version>
+		<spring-cloud-function.version>3.1.5-SNAPSHOT</spring-cloud-function.version>
 		<spring-data-geode-test.version>0.0.21.RELEASE</spring-data-geode-test.version>
 		<test-containers.version>1.15.2</test-containers.version>
 		<maven-flatten-plugin.version>1.2.5</maven-flatten-plugin.version>

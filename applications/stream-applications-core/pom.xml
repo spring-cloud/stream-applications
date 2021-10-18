@@ -21,8 +21,8 @@
         <java-functions.version>1.1.1-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
         <mockserver.version>5.10</mockserver.version>
-        <spring-cloud-stream-dependencies.version>3.1.4</spring-cloud-stream-dependencies.version>
-        <spring-cloud-stream.version>3.1.4</spring-cloud-stream.version>
+        <spring-cloud-stream-dependencies.version>3.1.5-SNAPSHOT</spring-cloud-stream-dependencies.version>
+        <spring-cloud-stream.version>3.1.5-SNAPSHOT</spring-cloud-stream.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.5</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.5</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.5</spring-cloud-dataflow-apps-metadata-plugin.version>
@@ -49,6 +49,11 @@
                 <version>${java-functions.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-function-dependencies</artifactId>
+                <version>${spring-cloud-function.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -161,6 +166,12 @@
                                 </metadata>
                                 <maven>
                                     <dependencyManagement>
+                                        <!-- Temporarily override SC-Fn dependency by giving it the highest precedence since 2020.0.5 release of spring-cloud will not take place until December -->
+                                        <dependency>
+                                            <groupId>org.springframework.cloud</groupId>
+                                            <artifactId>spring-cloud-function-dependencies</artifactId>
+                                            <version>${spring-cloud-function.version}</version>
+                                        </dependency>
                                         <dependency>
                                             <groupId>org.springframework.cloud</groupId>
                                             <artifactId>spring-cloud-stream-dependencies</artifactId>
@@ -178,11 +189,7 @@
                                             <artifactId>function-dependencies</artifactId>
                                             <version>${java-functions.version}</version>
                                         </dependency>
-                                        <dependency>
-                                            <groupId>org.springframework.cloud</groupId>
-                                            <artifactId>spring-cloud-function-dependencies</artifactId>
-                                            <version>${spring-cloud-function.version}</version>
-                                        </dependency>
+
                                         <dependency>
                                             <groupId>com.wavefront</groupId>
                                             <artifactId>wavefront-spring-boot-bom</artifactId>
