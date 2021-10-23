@@ -21,8 +21,8 @@
         <java-functions.version>1.1.1-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
         <mockserver.version>5.10</mockserver.version>
-        <spring-cloud-stream-dependencies.version>3.1.5-SNAPSHOT</spring-cloud-stream-dependencies.version>
-        <spring-cloud-stream.version>3.1.5-SNAPSHOT</spring-cloud-stream.version>
+        <spring-cloud-stream-dependencies.version>3.1.5</spring-cloud-stream-dependencies.version>
+        <spring-cloud-stream.version>3.1.5</spring-cloud-stream.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.5</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.5</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.5</spring-cloud-dataflow-apps-metadata-plugin.version>
