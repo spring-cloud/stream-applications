@@ -11,14 +11,14 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-build</artifactId>
-        <version>1.1.1</version>
+        <version>1.1.2-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <properties>
-        <revision>3.1.1</revision>
+        <revision>3.1.2-SNAPSHOT</revision>
         <stream-apps-core.version>${revision}</stream-apps-core.version>
-        <java-functions.version>1.1.1</java-functions.version>
+        <java-functions.version>1.1.2-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
         <mockserver.version>5.10</mockserver.version>
         <spring-cloud-stream-dependencies.version>3.1.5</spring-cloud-stream-dependencies.version>
