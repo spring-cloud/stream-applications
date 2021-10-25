@@ -11,11 +11,11 @@ Sabby Anandan; Artem Bilan; Marius Bogoevici; Eric Bottard; Mark Fisher; Ilayape
 
 :stream-apps-root:  https://raw.githubusercontent.com/spring-cloud/stream-applications
 
-:branch: master
+:branch: main
 
-:stream-apps-asciidoc: https://raw.githubusercontent.com/spring-cloud/stream-applications/master/applications/stream-applications-build/stream-applications-docs/src/main/asciidoc
+:stream-apps-asciidoc: https://raw.githubusercontent.com/spring-cloud/stream-applications/main/stream-applications-release-train/stream-applications-docs/src/main/asciidoc
 
-:scst-core-version: 3.1.4.RELEASE
+:scst-core-version: 3.1.5.RELEASE
 
 ifdef::backend-html5[]
 
