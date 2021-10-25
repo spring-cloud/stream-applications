@@ -24,9 +24,9 @@ function iterate_through_apps_folders_and_update {
     echo "FOLDER NAME - ${folder}"
     pushd ${folder}
     ../../../mvnw -Ddisable.checks=true versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false
-    ../../../mvnw -Ddisable.checks=true versions:update-parent -DparentVersion=$PARENT_VERSION -Pspring -DgenerateBackupPoms=false
+    #../../../mvnw -Ddisable.checks=true versions:update-parent -DparentVersion=$PARENT_VERSION -Pspring -DgenerateBackupPoms=false
     # only used after a release for updating parent versions.
-     sed -i '' 's/<version>3.1.0-SNAPSHOT/<version>'3.1.0'/g' pom.xml
+     sed -i '' 's/<version>3.1.1-SNAPSHOT/<version>'3.1.1'/g' pom.xml
     popd
   done
 
