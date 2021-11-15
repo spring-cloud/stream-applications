@@ -16,6 +16,9 @@
 
 package org.springframework.cloud.fn.common.mqtt;
 
+import java.util.Map;
+import java.util.Properties;
+
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
@@ -31,7 +34,7 @@ import org.springframework.util.ObjectUtils;
  * Generic mqtt configuration.
  *
  * @author Janne Valkealahti
- *
+ * @author Artem Bilan
  */
 @Configuration
 public class MqttConfiguration {
@@ -50,6 +53,14 @@ public class MqttConfiguration {
 		mqttConnectOptions.setConnectionTimeout(mqttProperties.getConnectionTimeout());
 		mqttConnectOptions.setKeepAliveInterval(mqttProperties.getKeepAliveInterval());
 
+		Map<String, String> sslProperties = mqttProperties.getSslProperties();
+
+		if (!sslProperties.isEmpty()) {
+			Properties sslProps = new Properties();
+			sslProps.putAll(sslProperties);
+			mqttConnectOptions.setSSLProperties(sslProps);
+		}
+
 		DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
 		factory.setConnectionOptions(mqttConnectOptions);
 
@@ -61,4 +72,5 @@ public class MqttConfiguration {
 		}
 		return factory;
 	}
+
 }

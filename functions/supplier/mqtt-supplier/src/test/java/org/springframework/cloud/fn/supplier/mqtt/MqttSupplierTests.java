@@ -16,14 +16,17 @@
 
 package org.springframework.cloud.fn.supplier.mqtt;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Properties;
 import java.util.function.Supplier;
 
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.internal.security.SSLSocketFactoryFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -37,7 +40,8 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 /**
  * Tests for Mqtt Supplier.
@@ -48,14 +52,21 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Artem Bilan
  *
  */
-@SpringBootTest(properties = {"mqtt.supplier.topics=test,fake", "mqtt.supplier.qos=0,0"})
+@SpringBootTest(properties =
+		{ "mqtt.supplier.topics=test,fake",
+				"mqtt.supplier.qos=0,0",
+				"mqtt.ssl-properties.com.ibm.ssl.protocol=TLS",
+				"mqtt.ssl-properties.com.ibm.ssl.keyStoreType=TEST"})
 @DirtiesContext
 @Tag("integration")
 public class MqttSupplierTests {
 
 	static {
-		GenericContainer mosquitto = new GenericContainer("cyrilix/rabbitmq-mqtt")
-				.withExposedPorts(1883);
+		GenericContainer<?> mosquitto =
+				new GenericContainer<>("eclipse-mosquitto:2.0.13")
+						.withCommand("mosquitto -c /mosquitto-no-auth.conf")
+						.withReuse(true)
+						.withExposedPorts(1883);
 		mosquitto.start();
 		final Integer mappedPort = mosquitto.getMappedPort(1883);
 		System.setProperty("mqtt.url", "tcp://localhost:" + mappedPort);
@@ -70,12 +81,16 @@ public class MqttSupplierTests {
 	private Supplier<Flux<Message<?>>> mqttSupplier;
 
 	@Autowired
-	private MessageHandler mqttOutbound;
+	private MqttPahoMessageHandler mqttOutbound;
 
 	@Test
 	public void testBasicFlow() {
-
-		mqttOutbound.handleMessage(MessageBuilder.withPayload("hello").build());
+		MqttConnectOptions connectionInfo = this.mqttOutbound.getConnectionInfo();
+		Properties sslProperties = connectionInfo.getSSLProperties();
+		assertThat(sslProperties)
+				.containsEntry(SSLSocketFactoryFactory.SSLPROTOCOL, SSLSocketFactoryFactory.DEFAULT_PROTOCOL)
+				.containsEntry(SSLSocketFactoryFactory.KEYSTORETYPE, "TEST");
+		this.mqttOutbound.handleMessage(MessageBuilder.withPayload("hello").build());
 
 		final Flux<Message<?>> messageFlux = mqttSupplier.get();
 
@@ -108,5 +123,7 @@ public class MqttSupplierTests {
 		public DefaultPahoMessageConverter producerConverter() {
 			return new DefaultPahoMessageConverter(1, true, "UTF-8");
 		}
+
 	}
+
 }

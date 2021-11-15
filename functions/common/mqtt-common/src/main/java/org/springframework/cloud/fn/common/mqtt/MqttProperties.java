@@ -16,6 +16,9 @@
 
 package org.springframework.cloud.fn.common.mqtt;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.validation.constraints.Size;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -25,7 +28,7 @@ import org.springframework.validation.annotation.Validated;
  * Generic mqtt connection properties.
  *
  * @author Janne Valkealahti
- *
+ * @author Artem Bilan
  */
 @Validated
 @ConfigurationProperties("mqtt")
@@ -70,6 +73,11 @@ public class MqttProperties {
 	 * Persistence directory.
 	 */
 	private String persistenceDirectory = "/tmp/paho";
+
+	/**
+	 * MQTT Client SSL properties.
+	 */
+	private final Map<String, String> sslProperties = new HashMap<>();
 
 	@Size(min = 1)
 	public String[] getUrl() {
@@ -135,4 +143,9 @@ public class MqttProperties {
 	public void setPersistenceDirectory(String persistenceDirectory) {
 		this.persistenceDirectory = persistenceDirectory;
 	}
+
+	public Map<String, String> getSslProperties() {
+		return this.sslProperties;
+	}
+
 }
