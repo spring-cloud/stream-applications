@@ -16,6 +16,12 @@ All configuration properties are prefixed with `mqtt.consumer`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/mqtt/MqttConsumerProperties.java[MqttConsumerProperties].
 
+## SSL Configuration
+
+The MQTT Paho client can accept an SSL configuration via `MqttConnectOptions.setSSLProperties()`.
+These properties are exposed on the `MqttProperties.sslProperties` map.
+The keys for these SSL properties should be taken from the `org.eclipse.paho.client.mqttv3.internal.security.SSLSocketFactoryFactory` constants, which all start with the `com.ibm.ssl.` prefix.
+
 ## Tests
 
 See this link:src/test/java/org/springframework/cloud/fn/consumer/mqtt/MqttConsumerTests.java[test suite] for the various ways, this consumer is used.

@@ -16,8 +16,11 @@
 
 package org.springframework.cloud.fn.consumer.mqtt;
 
+import java.util.Properties;
 import java.util.function.Consumer;
 
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.internal.security.SSLSocketFactoryFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -32,24 +35,34 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.integration.test.util.TestUtils;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(properties = "mqtt.consumer.topic=test")
+@SpringBootTest(properties = {
+		"mqtt.consumer.topic=test",
+		"mqtt.ssl-properties.com.ibm.ssl.protocol=TLS",
+		"mqtt.ssl-properties.com.ibm.ssl.keyStoreType=TEST" })
 @DirtiesContext
 @Tag("integration")
 public class MqttConsumerTests {
 
 	static {
-		GenericContainer mosquitto = new GenericContainer("cyrilix/rabbitmq-mqtt")
-				.withExposedPorts(1883);
+		GenericContainer<?> mosquitto =
+				new GenericContainer<>("eclipse-mosquitto:2.0.13")
+						.withCommand("mosquitto -c /mosquitto-no-auth.conf")
+						.withReuse(true)
+						.withExposedPorts(1883);
 		mosquitto.start();
 		final Integer mappedPort = mosquitto.getMappedPort(1883);
 		System.setProperty("mqtt.url", "tcp://localhost:" + mappedPort);
 	}
+
+	@Autowired
+	private MqttPahoMessageDrivenChannelAdapter mqttPahoMessageDrivenChannelAdapter;
 
 	@Autowired
 	private Consumer<Message<?>> mqttConsumer;
@@ -64,6 +77,12 @@ public class MqttConsumerTests {
 
 	@Test
 	public void testMqttConsumer() {
+		MqttConnectOptions connectionInfo = this.mqttPahoMessageDrivenChannelAdapter.getConnectionInfo();
+		Properties sslProperties = connectionInfo.getSSLProperties();
+		assertThat(sslProperties)
+				.containsEntry(SSLSocketFactoryFactory.SSLPROTOCOL, SSLSocketFactoryFactory.DEFAULT_PROTOCOL)
+				.containsEntry(SSLSocketFactoryFactory.KEYSTORETYPE, "TEST");
+
 		this.mqttConsumer.accept(MessageBuilder.withPayload("hello").build());
 		Message<?> in = this.queue.receive(10000);
 		assertThat(in).isNotNull();

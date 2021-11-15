@@ -11,7 +11,7 @@
 
     <artifactId>mqtt-common</artifactId>
     <name>mqtt-common</name>
-    <description>file consumer</description>
+    <description>MQTT Common</description>
 
     <dependencies>
 
