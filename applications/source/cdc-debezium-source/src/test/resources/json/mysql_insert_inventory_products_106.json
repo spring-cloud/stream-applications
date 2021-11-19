@@ -22,7 +22,7 @@
     "thread": null,
     "query": null
   },
-  "op": "c",
+  "op": "r",
   "ts_ms": "${json-unit.ignore}",
   "transaction": null
 }

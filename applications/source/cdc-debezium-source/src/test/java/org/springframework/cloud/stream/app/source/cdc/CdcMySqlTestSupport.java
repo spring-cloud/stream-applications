@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public abstract class CdcMySqlTestSupport {
 
 	static String MAPPED_PORT;
 
-	static GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.3")
+	static GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.7.1.Final")
 			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 			.withEnv("MYSQL_USER", "mysqluser")
 			.withEnv("MYSQL_PASSWORD", "mysqlpw")

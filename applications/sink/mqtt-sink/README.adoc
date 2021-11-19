@@ -24,6 +24,7 @@ $$keep-alive-interval$$:: $$the ping interval in seconds.$$ *($$Integer$$, defau
 $$password$$:: $$the password to use when connecting to the broker.$$ *($$String$$, default: `$$guest$$`)*
 $$persistence$$:: $$'memory' or 'file'.$$ *($$String$$, default: `$$memory$$`)*
 $$persistence-directory$$:: $$Persistence directory.$$ *($$String$$, default: `$$/tmp/paho$$`)*
+$$ssl-properties$$:: $$MQTT Client SSL properties.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
 $$url$$:: $$location of the mqtt broker(s) (comma-delimited list).$$ *($$String[]$$, default: `$$[tcp://localhost:1883]$$`)*
 $$username$$:: $$the username to use when connecting to the broker.$$ *($$String$$, default: `$$guest$$`)*
 

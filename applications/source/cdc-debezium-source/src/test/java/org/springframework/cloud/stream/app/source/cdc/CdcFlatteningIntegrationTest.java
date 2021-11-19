@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.source.cdc;
 
 import java.util.List;
 
+import net.javacrumbs.jsonunit.core.Configuration;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.context.FilteredClassLoader;
@@ -42,6 +43,7 @@ import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.resou
 /**
  * @author Christian Tzolov
  * @author David Turanski
+ * @author Artem Bilan
  */
 public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
@@ -85,12 +87,14 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 		assertJsonEquals(resourceToString(
 				"classpath:/json/mysql_ddl_drop_inventory_address_table.json"),
-				toString(messages.get(1).getPayload()));
+				toString(messages.get(1).getPayload()),
+				Configuration.empty().whenIgnoringPaths("schemaName", "tableChanges", "source.sequence", "source.ts_ms"));
 		assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector");
 		assertJsonEquals("{\"databaseName\":\"inventory\"}", toString(messages.get(1).getHeaders().get("cdc_key")));
 
 		assertJsonEquals(resourceToString("classpath:/json/mysql_insert_inventory_products_106.json"),
-				toString(messages.get(39).getPayload()));
+				toString(messages.get(39).getPayload()),
+				Configuration.empty().whenIgnoringPaths("source.sequence", "source.ts_ms"));
 		assertThat(messages.get(39).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.products");
 		assertJsonEquals("{\"id\":106}", toString(messages.get(39).getHeaders().get("cdc_key")));
 
@@ -172,7 +176,8 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 		assertJsonEquals(resourceToString(
 				"classpath:/json/mysql_ddl_drop_inventory_address_table.json"),
-				toString(messages.get(1).getPayload()));
+				toString(messages.get(1).getPayload()),
+				Configuration.empty().whenIgnoringPaths("schemaName", "tableChanges", "source.sequence", "source.ts_ms"));
 		assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector");
 		assertJsonEquals("{\"databaseName\":\"inventory\"}",
 				toString(messages.get(1).getHeaders().get("cdc_key")));
@@ -189,7 +194,7 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 		assertJsonEquals("{\"id\":106}", toString(messages.get(39).getHeaders().get("cdc_key")));
 
 		if (flatteningProps.isEnabled() && flatteningProps.getAddHeaders().contains("op")) {
-			assertThat(messages.get(39).getHeaders().get("__op")).isEqualTo("c");
+			assertThat(messages.get(39).getHeaders().get("__op")).isEqualTo("r");
 		}
 
 		jdbcTemplate.update(

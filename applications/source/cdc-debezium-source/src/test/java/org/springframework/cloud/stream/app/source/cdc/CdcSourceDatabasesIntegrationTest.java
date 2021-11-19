@@ -52,7 +52,7 @@ public class CdcSourceDatabasesIntegrationTest {
 			TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
 			.web(WebApplicationType.NONE)
 			.properties("spring.cloud.stream.function.definition=cdcSupplier",
-					"cdc.name=my-sql-connector",
+					"cdc.name=my-connector",
 					"cdc.flattening.dropTombstones=false",
 					"cdc.schema=false",
 					"cdc.flattening.enabled=true",
@@ -63,7 +63,7 @@ public class CdcSourceDatabasesIntegrationTest {
 
 	@Test
 	public void mysql() {
-		GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.3")
+		GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.7.1.Final")
 				.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 				.withEnv("MYSQL_USER", "mysqluser")
 				.withEnv("MYSQL_PASSWORD", "mysqlpw")
@@ -124,7 +124,7 @@ public class CdcSourceDatabasesIntegrationTest {
 
 	@Test
 	public void postgres() {
-		GenericContainer postgres = new GenericContainer("debezium/example-postgres:1.3")
+		GenericContainer postgres = new GenericContainer("debezium/example-postgres:1.7.1.Final")
 				.withEnv("POSTGRES_USER", "postgres")
 				.withEnv("POSTGRES_PASSWORD", "postgres")
 				.withExposedPorts(5432);
@@ -157,7 +157,7 @@ public class CdcSourceDatabasesIntegrationTest {
 	@Test
 	@Disabled
 	public void mongodb() {
-		GenericContainer mongodb = new GenericContainer("debezium/example-mongodb:1.3")
+		GenericContainer mongodb = new GenericContainer("debezium/example-mongodb:1.7.1.Final")
 				.withEnv("MONGODB_USER", "debezium")
 				.withEnv("MONGODB_PASSWORD", "dbz")
 				.withExposedPorts(27017);
@@ -169,7 +169,7 @@ public class CdcSourceDatabasesIntegrationTest {
 						"--cdc.config.mongodb.name=dbserver1",
 						"--cdc.config.mongodb.user=debezium",
 						"--cdc.config.mongodb.password=dbz",
-						"--cdc.config.database.whitelist=inventory")) {
+						"--cdc.config.collection.include.list=inventory[.]*")) {
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			// Using local region here
 			List<Message<?>> messages = receiveAll(outputDestination);

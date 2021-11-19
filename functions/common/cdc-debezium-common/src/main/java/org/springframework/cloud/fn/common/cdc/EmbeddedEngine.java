@@ -8,6 +8,7 @@ package org.springframework.cloud.fn.common.cdc;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -458,6 +459,31 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 	 */
 	@Deprecated
 	public static interface ChangeConsumer extends DebeziumEngine.ChangeConsumer<SourceRecord> {
+	}
+
+	protected class SourceRecordOffsets implements DebeziumEngine.Offsets {
+
+		private final HashMap<String, Object> offsets = new HashMap<>();
+
+		/**
+		 * Performs {@link HashMap#put(Object, Object)} on the offsets map.
+		 *
+		 * @param key key with which to put the value
+		 * @param value value to be put with the key
+		 */
+		@Override
+		public void set(String key, Object value) {
+			offsets.put(key, value);
+		}
+
+		/**
+		 * Retrieves the offsets map.
+		 *
+		 * @return HashMap of the offsets
+		 */
+		protected HashMap<String, Object> getOffsets() {
+			return offsets;
+		}
 	}
 
 	private static ChangeConsumer buildDefaultChangeConsumer(Consumer<SourceRecord> consumer) {
@@ -912,8 +938,22 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 			}
 
 			@Override
-			public synchronized void markBatchFinished() {
+			public synchronized void markBatchFinished() throws InterruptedException {
 				maybeFlush(offsetWriter, offsetCommitPolicy, commitTimeout, task);
+			}
+
+			@Override
+			public synchronized void markProcessed(SourceRecord record, DebeziumEngine.Offsets sourceOffsets) throws InterruptedException {
+				SourceRecordOffsets offsets = (SourceRecordOffsets) sourceOffsets;
+				SourceRecord recordWithUpdatedOffsets = new SourceRecord(record.sourcePartition(), offsets.getOffsets(), record.topic(),
+						record.kafkaPartition(), record.keySchema(), record.key(), record.valueSchema(), record.value(),
+						record.timestamp(), record.headers());
+				markProcessed(recordWithUpdatedOffsets);
+			}
+
+			@Override
+			public DebeziumEngine.Offsets buildOffsets() {
+				return new SourceRecordOffsets();
 			}
 		};
 	}
