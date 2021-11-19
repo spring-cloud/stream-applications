@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.fn.supplier.mqtt;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Properties;
 import java.util.function.Supplier;
 
@@ -27,6 +25,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -40,8 +40,7 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
 
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for Mqtt Supplier.
