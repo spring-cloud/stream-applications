@@ -110,12 +110,12 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 		assertThat(messages).hasSize(isKafkaPresent ? 4 : 3);
 
 		assertJsonEquals(resourceToString("classpath:/json/mysql_update_inventory_customers.json"),
-				toString(messages.get(1).getPayload()));
+				toString(messages.get(1).getPayload()), Configuration.empty().whenIgnoringPaths("source.sequence"));
 		assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.customers");
 		assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
 
 		assertJsonEquals(resourceToString("classpath:/json/mysql_delete_inventory_customers.json"),
-				toString(messages.get(2).getPayload()));
+				toString(messages.get(2).getPayload()), Configuration.empty().whenIgnoringPaths("source.sequence"));
 		assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.customers");
 
 		assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
