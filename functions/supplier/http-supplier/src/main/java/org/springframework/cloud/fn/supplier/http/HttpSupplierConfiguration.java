@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2020 the original author or authors.
+ * Copyright 2011-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.http.support.DefaultHttpHeaderMapper;
@@ -46,12 +47,15 @@ import org.springframework.messaging.MessageHeaders;
 public class HttpSupplierConfiguration {
 
 	@Bean
-	public Publisher<Message<byte[]>> httpSupplierFlow(HttpSupplierProperties httpSupplierProperties) {
+	public Publisher<Message<byte[]>> httpSupplierFlow(HttpSupplierProperties httpSupplierProperties,
+			ServerCodecConfigurer serverCodecConfigurer) {
+
 		return IntegrationFlows.from(
 				WebFlux.inboundChannelAdapter(httpSupplierProperties.getPathPattern())
 						.requestPayloadType(byte[].class)
 						.statusCodeExpression(new ValueExpression<>(HttpStatus.ACCEPTED))
 						.mappedRequestHeaders(httpSupplierProperties.getMappedRequestHeaders())
+						.codecConfigurer(serverCodecConfigurer)
 						.crossOrigin(crossOrigin ->
 								crossOrigin.origin(httpSupplierProperties.getCors().getAllowedOrigins())
 										.allowedHeaders(httpSupplierProperties.getCors().getAllowedHeaders())

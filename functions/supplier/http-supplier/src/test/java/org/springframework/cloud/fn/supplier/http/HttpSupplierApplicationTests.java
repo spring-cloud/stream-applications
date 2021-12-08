@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.http.codec.json.AbstractJackson2Decoder;
 import org.springframework.integration.http.HttpHeaders;
+import org.springframework.integration.test.util.TestUtils;
+import org.springframework.integration.webflux.inbound.WebFluxInboundEndpoint;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -52,18 +56,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 				"server.ssl.key-store=classpath:test.jks",
 				"server.ssl.key-password=password",
 				"server.ssl.trust-store=classpath:test.jks",
-				"server.ssl.client-auth=want"
+				"server.ssl.client-auth=want",
+				"spring.codec.max-in-memory-size=10MB"
 		})
 public class HttpSupplierApplicationTests {
 
 	@Autowired
 	private Supplier<Flux<Message<byte[]>>> httpSupplier;
 
+	@Autowired
+	private WebFluxInboundEndpoint webFluxInboundEndpoint;
+
 	@LocalServerPort
 	private int port;
 
 	@Test
 	public void testHttpSupplier() {
+		ServerCodecConfigurer codecConfigurer =
+				TestUtils.getPropertyValue(this.webFluxInboundEndpoint, "codecConfigurer", ServerCodecConfigurer.class);
+
+		final ServerCodecConfigurer.ServerDefaultCodecs serverDefaultCodecs = codecConfigurer.defaultCodecs();
+		assertThat(TestUtils.getPropertyValue(serverDefaultCodecs, "maxInMemorySize", Integer.class))
+				.isEqualTo(1024 * 1024 * 10);
+
+		AbstractJackson2Decoder jackson2JsonDecoder =
+				TestUtils.getPropertyValue(serverDefaultCodecs, "jackson2JsonDecoder", AbstractJackson2Decoder.class);
+
+		assertThat(jackson2JsonDecoder).isNotNull()
+				.extracting("maxInMemorySize")
+				.isEqualTo(1024 * 1024 * 10);
+
 		Flux<Message<byte[]>> messageFlux = this.httpSupplier.get();
 
 		StepVerifier stepVerifier =
