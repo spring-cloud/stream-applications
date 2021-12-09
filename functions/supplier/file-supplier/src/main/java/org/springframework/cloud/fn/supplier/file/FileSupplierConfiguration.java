@@ -85,7 +85,8 @@ public class FileSupplierConfiguration {
 						monoSink.success(this.fileMessageSource.receive())))
 				.subscribeOn(Schedulers.boundedElastic())
 				.repeatWhenEmpty(it -> it.delayElements(this.fileSupplierProperties.getDelayWhenEmpty()))
-				.repeat();
+				.repeat()
+				.doOnSubscribe(s -> this.fileMessageSource.start());
 	}
 
 	@Bean
