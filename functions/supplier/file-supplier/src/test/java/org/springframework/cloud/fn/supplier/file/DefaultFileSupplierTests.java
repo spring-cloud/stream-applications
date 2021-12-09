@@ -24,7 +24,10 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.file.FileHeaders;
+import org.springframework.integration.file.FileReadingMessageSource;
 import org.springframework.messaging.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +38,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Soby Chacko
  */
 public class DefaultFileSupplierTests extends AbstractFileSupplierTests {
+
+	@Autowired
+	@Qualifier("fileMessageSource")
+	private FileReadingMessageSource fileMessageSource;
 
 	@Test
 	public void testBasicFlow() throws IOException {
@@ -74,5 +81,8 @@ public class DefaultFileSupplierTests extends AbstractFileSupplierTests {
 						.verifyLater();
 		Files.write(tempFile, "testing".getBytes());
 		stepVerifier.verify();
+
+		assertThat(this.fileMessageSource.isRunning()).isTrue();
 	}
+
 }
