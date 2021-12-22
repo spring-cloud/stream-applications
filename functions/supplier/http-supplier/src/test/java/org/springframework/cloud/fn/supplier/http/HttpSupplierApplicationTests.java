@@ -20,9 +20,13 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.function.Supplier;
 
+import javax.net.ssl.SSLException;
+
+import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClient;
@@ -41,6 +45,7 @@ import org.springframework.integration.test.util.TestUtils;
 import org.springframework.integration.webflux.inbound.WebFluxInboundEndpoint;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,6 +64,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 				"server.ssl.client-auth=want",
 				"spring.codec.max-in-memory-size=10MB"
 		})
+@DirtiesContext
 public class HttpSupplierApplicationTests {
 
 	@Autowired
@@ -71,7 +77,7 @@ public class HttpSupplierApplicationTests {
 	private int port;
 
 	@Test
-	public void testHttpSupplier() {
+	public void testHttpSupplier() throws SSLException {
 		ServerCodecConfigurer codecConfigurer =
 				TestUtils.getPropertyValue(this.webFluxInboundEndpoint, "codecConfigurer", ServerCodecConfigurer.class);
 
@@ -109,15 +115,26 @@ public class HttpSupplierApplicationTests {
 								assertThat(message)
 										.extracting(Message::getPayload)
 										.isEqualTo("{\"name\":\"test3\"}".getBytes()))
+						.assertNext((message) ->
+								assertThat(message)
+										.satisfies((msg) -> assertThat(msg)
+												.extracting(Message::getPayload)
+												.asInstanceOf(InstanceOfAssertFactories.MAP)
+												.isEmpty())
+										.satisfies((msg) -> assertThat(msg.getHeaders())
+												.doesNotContainKey(MessageHeaders.CONTENT_TYPE)))
 						.thenCancel()
 						.verifyLater();
 
+		SslContext sslContext =
+				SslContextBuilder.forClient()
+						.sslProvider(SslProvider.JDK)
+						.trustManager(InsecureTrustManagerFactory.INSTANCE)
+						.build();
+
 		HttpClient httpClient =
 				HttpClient.create()
-						.secure(sslSpec ->
-								sslSpec.sslContext(SslContextBuilder.forClient()
-										.sslProvider(SslProvider.JDK)
-										.trustManager(InsecureTrustManagerFactory.INSTANCE)));
+						.secure(sslSpec -> sslSpec.sslContext(sslContext));
 
 		WebClient webClient =
 				WebClient.builder()
@@ -125,10 +142,31 @@ public class HttpSupplierApplicationTests {
 						.baseUrl("https://localhost:" + port)
 						.build();
 
-		WebClient.RequestBodySpec requestBodySpec = webClient.post().uri("/");
-		requestBodySpec.bodyValue("test1").exchange().block(Duration.ofSeconds(10));
-		requestBodySpec.bodyValue(new TestPojo("test2")).exchange().block(Duration.ofSeconds(10));
-		requestBodySpec.bodyValue(new TestPojo("test3")).exchange().block(Duration.ofSeconds(10));
+		webClient.post()
+				.uri("/")
+				.bodyValue("test1")
+				.retrieve()
+				.toBodilessEntity()
+				.block(Duration.ofSeconds(10));
+
+		webClient.post()
+				.uri("/")
+				.bodyValue(new TestPojo("test2"))
+				.retrieve()
+				.toBodilessEntity()
+				.block(Duration.ofSeconds(10));
+
+		webClient.post()
+				.uri("/")
+				.bodyValue(new TestPojo("test3"))
+				.retrieve()
+				.toBodilessEntity()
+				.block(Duration.ofSeconds(10));
+
+		webClient.post().uri("/")
+				.retrieve()
+				.toBodilessEntity()
+				.block(Duration.ofSeconds(10));
 
 		stepVerifier.verify();
 	}
@@ -156,6 +194,7 @@ public class HttpSupplierApplicationTests {
 
 	@SpringBootApplication
 	static class HttpSupplierTestApplication {
+
 	}
 
 }

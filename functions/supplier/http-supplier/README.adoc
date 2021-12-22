@@ -24,6 +24,8 @@ All configuration properties are prefixed with `http`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/http/HttpSupplierProperties.java[HttpSupplierProperties].
 
+The `HeaderMapper<HttpHeaders>` bean can be provided in the target configuration to override a default one in the `HttpSupplierConfiguration`.
+
 ## Tests
 
 See this link:src/test/java/org/springframework/cloud/fn/supplier/http/HttpSupplierApplicationTests.java[test suite] for the various ways, this supplier is used.
