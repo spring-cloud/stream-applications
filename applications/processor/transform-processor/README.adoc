@@ -5,7 +5,7 @@ Transformer processor allows you to convert the message payload structure based 
 
 Here is an example of how you can run this application.
 
-`java -jar filter-processor-kafka-<version>.jar --spel.function.expression=toUpperCase()`
+`java -jar transform-processor-kafka-<version>.jar --spel.function.expression=payload.toUpperCase()`
 
 Change kafka to rabbit if you want to run it against RabbitMQ.
 
