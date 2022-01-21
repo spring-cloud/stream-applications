@@ -105,10 +105,12 @@ class StreamApplicationsPhasedBuildMaker implements StreamApplicaitonsUtilsTrait
                             currentJobParameters()
                         }
                     }
-                    phase('stream-applications-integration-tests') {
-                        String prefixedProjectName = prefixJob("stream-applications-integration-tests")
-                        phaseJob("${prefixedProjectName}-${branchToBuild}-ci".toString()) {
-                            currentJobParameters()
+                    if (!branchToBuild.equals("2020.0.x")) {
+                        phase('stream-applications-integration-tests') {
+                            String prefixedProjectName = prefixJob("stream-applications-integration-tests")
+                            phaseJob("${prefixedProjectName}-${branchToBuild}-ci".toString()) {
+                                currentJobParameters()
+                            }
                         }
                     }
                 }
