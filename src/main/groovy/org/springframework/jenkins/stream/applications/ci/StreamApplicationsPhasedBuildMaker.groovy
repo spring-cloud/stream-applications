@@ -154,8 +154,10 @@ class StreamApplicationsPhasedBuildMaker implements StreamApplicaitonsUtilsTrait
         new StreamApplicationsBuildMaker(dsl, "spring-cloud", "stream-applications", "stream-applications-release-train", branchToBuild)
                 .deploy(false, false, false, false, true, false, isRelease, releaseType)
 
-        new StreamApplicationsBuildMaker(dsl, "spring-cloud", "stream-applications", "stream-applications-integration-tests", branchToBuild)
-                .deploy(false, false, false, false, false, false, isRelease, releaseType,
-                        "", false, true)
+        if (!branchToBuild.equals("2020.0.x")) {
+            new StreamApplicationsBuildMaker(dsl, "spring-cloud", "stream-applications", "stream-applications-integration-tests", branchToBuild)
+                    .deploy(false, false, false, false, false, false, isRelease, releaseType,
+                            "", false, true)
+        }
     }
 }
