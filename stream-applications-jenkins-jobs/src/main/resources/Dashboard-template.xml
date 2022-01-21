@@ -1,0 +1,51 @@
+<hudson.plugins.view.dashboard.Dashboard>
+	<owner class="hudson" reference="../../.."/>
+	<filterExecutors>false</filterExecutors>
+	<filterQueue>false</filterQueue>
+	<properties/>
+	<jobNames>
+		<comparator class="hudson.util.CaseInsensitiveComparator"/>
+	</jobNames>
+	<jobFilters/>
+	<columns/>
+	<includeRegex>.*</includeRegex>
+	<recurse>false</recurse>
+	<statusFilter>true</statusFilter>
+	<useCssStyle>false</useCssStyle>
+	<includeStdJobList>false</includeStdJobList>
+	<leftPortletWidth>50%</leftPortletWidth>
+	<rightPortletWidth>50%</rightPortletWidth>
+	<leftPortlets>
+		<hudson.plugins.view.dashboard.stats.StatJobs>
+			<id>dashboard_portlet_18419</id>
+			<name>Job statistics</name>
+		</hudson.plugins.view.dashboard.stats.StatJobs>
+		<hudson.plugins.view.dashboard.stats.StatBuilds>
+			<id>dashboard_portlet_28926</id>
+			<name>Build statistics</name>
+		</hudson.plugins.view.dashboard.stats.StatBuilds>
+	</leftPortlets>
+	<rightPortlets>
+		<hudson.plugins.view.dashboard.builds.LatestBuilds>
+			<id>dashboard_portlet_5559</id>
+			<name>Latest builds</name>
+			<numBuilds>10</numBuilds>
+		</hudson.plugins.view.dashboard.builds.LatestBuilds>
+		<hudson.plugins.view.dashboard.test.TestTrendChart>
+			<id>dashboard_portlet_15448</id>
+			<name>Test Trend Chart</name>
+			<graphWidth>300</graphWidth>
+			<graphHeight>200</graphHeight>
+			<dateRange>0</dateRange>
+			<dateShift>0</dateShift>
+			<displayStatus>ALL</displayStatus>
+		</hudson.plugins.view.dashboard.test.TestTrendChart>
+	</rightPortlets>
+	<topPortlets/>
+	<bottomPortlets>
+		<hudson.plugins.view.dashboard.stats.StatSlaves>
+			<id>dashboard_portlet_5657</id>
+			<name>Slaves statistics</name>
+		</hudson.plugins.view.dashboard.stats.StatSlaves>
+	</bottomPortlets>
+</hudson.plugins.view.dashboard.Dashboard>

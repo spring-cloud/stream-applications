@@ -1,0 +1,26 @@
+apply plugin: 'groovy'
+
+repositories {
+	// for jenkins-common
+	maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
+	maven { url "https://repo.spring.io/release" }
+	// for jenkins-job-dsl plugin
+	maven { url 'https://repo.jenkins-ci.org/releases/' }
+}
+
+configurations {
+	libs
+	compile.extendsFrom libs
+}
+
+dependencies {
+	libs "org.springframework.internal:jenkins-common:${jenkinsCommonVersion}"
+}
+
+task libs(type: Copy) {
+	into 'build/lib'
+	from configurations.libs
+}
+
+build.dependsOn libs

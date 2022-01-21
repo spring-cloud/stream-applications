@@ -1,0 +1,126 @@
+apply plugin: 'groovy'
+apply plugin: 'docker-compose'
+apply from: 'libs.gradle'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "com.avast.gradle:docker-compose-gradle-plugin:0.3.22"
+    }
+}
+
+sourceSets {
+    jobs {
+        groovy {
+            srcDirs 'jobs'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.4.16'
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude module: 'groovy-all'
+    }
+    testCompile 'xmlunit:xmlunit:1.6'
+}
+
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+task workspace(type: Copy) {
+    from fileTree(dir: 'jobs')
+    from 'src/main/groovy'
+    into 'build/workspace'
+}
+
+wrapper {
+    gradleVersion '3.5'
+}
+
+// SCST
+task clearCodeForScst(type: Delete) {
+    group = "Spring Cloud Stream Tasks"
+    description = "Removes unnecessary Groovy code"
+    delete fileTree('src/main/groovy/org/springframework') {
+        include '**/*'
+        exclude '**/org/springframework/jenkins/common/**/*'
+        exclude '**/org/springframework/jenkins/scstappstarters/**/*'
+    }
+}
+
+task clearJobsForScst(type: Delete) {
+    group = "Spring Cloud Stream Tasks"
+    description = "Removes jobs that are not related to Spring Cloud Stream Tasks"
+    delete fileTree('jobs') {
+        include '**/*'
+        exclude 'scstappstarters/**/*'
+    }
+}
+
+task clearSeedsForScst(type: Delete) {
+    group = "Spring Cloud Stream Tasks"
+    description = "Removes seeds that are not related to Spring Cloud Stream Tasks"
+    delete fileTree('seed') {
+        include '**/*'
+        exclude '**/scst_app_starters_seed.groovy'
+        exclude '**/init/*.groovy'
+    }
+}
+
+// replaces the github build script url to the provided one
+String repoUrlProp = "repoUrl"
+Closure replaceUrl = { String path ->
+    File seed = file(path)
+    String text = seed.text
+    String repoUrl = project.property(repoUrlProp)
+    String replacedText = text.replace("github('spring-io/build-scripts')", "url('${repoUrl}')")
+    seed.text = replacedText
+}
+
+task changeUrlForSeedForScst(dependsOn: [clearSeedsForScst]) {
+    group = "Spring Cloud Stream Tasks"
+    description = "Updates the URL to point to the provided repository. The repo can be passed via the [${repoUrlProp}] property"
+    doLast {
+        if (project.hasProperty(repoUrlProp)) {
+            replaceUrl('seed/init/meta_seed.groovy')
+            replaceUrl('seed/projects/scst_app_starters_seed.groovy')
+        }
+    }
+}
+
+task setupForScst(dependsOn: [clearCodeForScst, clearJobsForScst, changeUrlForSeedForScst]) {
+    group = "Spring Cloud Stream Tasks"
+    description = "Combines all tasks related to setting up code for Spring Cloud Stream Tasks"
+}
+
+task composeUpForScst(dependsOn: [composeUp]) {
+    group = "Spring Cloud Stream Tasks"
+    description = "Wrapps the `docker-compose up` task"
+    mustRunAfter setupForScst
+}
+
+task initializeAndStartScst(dependsOn: [setupForScst, composeUpForScst]) {
+    group = "Spring Cloud Stream Tasks"
+    description = "Removes unnecessary code for Spring Cloud Stream Tasks and starts Jenkins"
+}
+
+// Jenkins
+task startJenkins(dependsOn: [composeUpForScst]) {
+    group = "Jenkins"
+    description = "Starts Jenkins via Docker Compose"
+}
+
+task stopJenkins(dependsOn: [composeDown]) {
+    group = "Jenkins"
+    description = "Stops Jenkins via Docker Compose"
+}

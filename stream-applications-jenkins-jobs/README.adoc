@@ -1,0 +1,147 @@
+= Jenkins DSL
+
+The repository contains job definitions using https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin[Jenkins Job Dsl plugin].
+
+== How to build it
+
+`./gradlew clean build`
+
+WARNING: The ran test only checks if your scripts compile.
+
+== How to use it in Jenkins?
+
+Check out the https://github.com/jenkinsci/job-dsl-plugin/wiki/Tutorial---Using-the-Jenkins-Job-DSL[tutorial].
+Provide the link to this repository in your Jenkins installation.
+
+The seed job for Spring Cloud should scan the `jobs/springcloud/*.groovy` files.
+
+Remember to add `src/main/groovy` and `src/main/resources` for processing
+
+WARNING: Remember that views can be overridden that's why the suggestion is to contain in one script all the logic needed to build a view
+ for a single project (check out that `spring_cloud_views.groovy` is building all the `spring-cloud` views).
+
+== I want to add a new job
+
+If your job is a standard Spring Cloud job that:
+
+ - can be built via `./mvnw clean install` and deployed with `./mvnw clean deploy`
+ - has docs under `docs` and those docs can be built via `./mvnw clean install -Pdocs`
+ - is using `spring-cloud-build` thanks to which boot version is parametrized
+ - the job resides under the `spring-cloud` organization
+
+you can just go to `org.springframework.jenkins.cloud.common.AllCloudJobs` and add the name
+of the repo to `ALL_JOBS` list. That way the default CI jobs and views will be created for
+the master branch.
+
+If your job needs to be building other branches except for master just add your proper
+entries to the `JOBS_WITH_BRANCHES` map in `org.springframework.jenkins.cloud.common.AllCloudJobs`.
+
+If you have some custom builds just add the entry to `ALL_JOBS` and `CUSTOM_BUILD_JOBS`.
+ Next you should just create your own implementation (check `org.springframework.jenkins.cloud.ci.ConsulSpringCloudDeployBuildMaker`
+ for an example). Remember also to call it from the seed job (e.g. `springcloud/spring_cloud.groovy:29` for Consul).
+
+The views are automatically generated for you. They base on the name convention so check out
+`springcloud/spring_cloud_views.groovy` - it's pretty straightforward.
+
+== I want to add a new compatibility job for a latest branch
+
+There's nothing that you have to do. If you've added the newest branch under `JOBS_WITH_BRANCHES`
+the project automatically takes the latest branch version and reuses it as point of entry for
+`JOBS_WITH_BRANCHES_FOR_COMPATIBILITY_BUILD`.
+
+= Working with Spring Cloud Stream App Starter
+
+If you're creating your own App Starter you can profit from this project to easily generate jobs for your
+apps.
+
+The Gradle build comes with some useful tasks (run `./gradlew tasks` to see the whole list). Let's focus on
+the following ones
+
+```
+Jenkins tasks
+-------------
+startJenkins - Starts Jenkins via Docker Compose
+stopJenkins - Stops Jenkins via Docker Compose
+
+Spring Cloud Stream Tasks tasks
+-------------
+initializeAndStartScst - Removes unnecessary code for SCST and starts Jenkins
+```
+
+Assuming that you've just created a repo in your organization to host your custom App Staters.
+Let's assume that the repo is present at `http://www.foo.com/myrepo` then
+it's enough for you to do the following steps.
+
+[source]
+----
+$ git clone https://github.com/spring-io/build-scripts
+$ cd build-scripts
+$ git remote remove origin
+$ git remote add origin http://www.foo.com/myrepo
+$ git remote add upstream https://github.com/spring-io/build-scripts
+$ ./gradlew initializeAndStartScst -PrepoUrl=http://www.foo.com/myrepo
+$ # alter the code in whatever way you need
+$ git add .
+$ git commit -m "Initialized App Starters for new repo"
+$ git push origin master
+----
+
+Let's see what exactly happened.
+
+. We're cloning the repo
+. We're entering its folder
+. `origin` points to `spring-io` repo whereas we'd like it to point to the repo in your org so we need
+to remove the current `origin`
+. Now we point the `origin` to the repo in your org
+. We're adding `upstream` to point to `spring-io` repo. In case you'd like to pull some changes
+. By running this Gradle task we're removing all the unnecessary Spring related code and we leave only
+the Starter App related one. For that job we're replacing the current URL with the one that you provide
+via the property. Also what happens is that a Docker image is built and Jenkins itself is started.
+After a while you can go to `localhost:8080` or if you have a Docker Machine to e.g. `192.168.99.100:8080`
+to see the Jenkins UI with a `meta_seed` job.
+. Next it's your time to play around with the provided code. Alter it to suit your needs.
+. Since code has changed it's time to add the files to staging
+. Commit the changes
+. Push the changed code to your repo
+. Now if you go to Jenkins you can run the `meta_seed` job to generate seeds. A seed is a jobs that generates
+other jobs. After running the `meta_seed` job you should see a `SCST app starter seed` job generated.
+That's the job that is responsible for creating concrete App Starter builds. If you run it some views
+and jobs should be created
+
+
+= Running Jenkins
+
+Just run 
+
+[source]
+----
+docker-compose up -d
+----
+
+or
+
+[source]
+----
+./gradlew startJenkins
+----
+
+and your jenkins with plugins present in `plugins.txt` will be ready at port 8080. 
+
+In order to download the latest plugins:
+
+[source]
+----
+1) Open in your browser
+http://$JENKINS_HOST/pluginManager/api/xml?depth=1&xpath=/*/*/shortName|/*/*/version&wrapper=plugins" 
+2) Store the XML to a file
+3) Pipe the contents of the file to this command:
+perl -pe 's/.*?<shortName>([\w-]+).*?<version>([^<]+)()(<\/\w+>)+/\1 \2\n/g'|sed 's/ /:/'
+4) Store it as plugins.txt
+----
+
+Wait patiently for Jenkins to start - the job will be added automatically for you.
+
+IMPORTANT: We're using the JMH Jenkins plugin which is not available anywhere in the marketplace.
+We're trying to automate its installation but if it fails you can download the HPI from
+https://bintray.com/marcingrzejszczak/jenkins/download_file?file_path=jmh-jenkins%2F0.0.1%2Fjmhbenchmark.hpi[here]
+and upload it yourself. The tag is in the forked repo over https://github.com/marcingrzejszczak/jmh-jenkins/releases/tag/0.0.1[here]
