@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.consumer.tcp;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.integration.ip.tcp.connection.TcpNetClientConnectionFactory;
@@ -28,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Gary Russell
  */
 @TestPropertySource(properties = { "tcp.consumer.host = foo" })
+@Disabled
 public class NotNioTests extends AbstractTcpConsumerTests {
 
 	@Test

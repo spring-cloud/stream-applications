@@ -15,26 +15,13 @@ This is provided mainly for direct invocation of the consumer.
 The **$$Elasticsearch$$** $$sink$$ has the following options:
 
 //tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== elasticsearch.consumer
-
-$$async$$:: $$Indicates whether the indexing operation is async or not. By default indexing is done synchronously.$$ *($$Boolean$$, default: `$$false$$`)*
-$$batch-size$$:: $$Number of items to index for each request. It defaults to 1. For values greater than 1 bulk indexing API will be used.$$ *($$Integer$$, default: `$$1$$`)*
-$$group-timeout$$:: $$Timeout in milliseconds after which message group is flushed when bulk indexing is active. It defaults to -1, meaning no automatic flush of idle message groups occurs.$$ *($$Long$$, default: `$$-1$$`)*
-$$id$$:: $$The id of the document to index. If set, the INDEX_ID header value overrides this property on a per message basis.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$index$$:: $$Name of the index. If set, the INDEX_NAME header value overrides this property on a per message basis.$$ *($$String$$, default: `$$<none>$$`)*
-$$routing$$:: $$Indicates the shard to route to. If not provided, Elasticsearch will default to a hash of the document id.$$ *($$String$$, default: `$$<none>$$`)*
-$$timeout-seconds$$:: $$Timeout for the shard to be available. If not set, it defaults to 1 minute set by the Elasticsearch client.$$ *($$Long$$, default: `$$0$$`)*
-
-=== spring.elasticsearch.rest
-
-$$connection-timeout$$:: $$Connection timeout.$$ *($$Duration$$, default: `$$1s$$`)*
-$$password$$:: $$Credentials password.$$ *($$String$$, default: `$$<none>$$`)*
-$$read-timeout$$:: $$Read timeout.$$ *($$Duration$$, default: `$$30s$$`)*
-$$uris$$:: $$Comma-separated list of the Elasticsearch instances to use.$$ *($$List<String>$$, default: `$$[http://localhost:9200]$$`)*
-$$username$$:: $$Credentials username.$$ *($$String$$, default: `$$<none>$$`)*
+$$elasticsearch.consumer.async$$:: $$Indicates whether the indexing operation is async or not. By default indexing is done synchronously.$$ *($$Boolean$$, default: `$$false$$`)*
+$$elasticsearch.consumer.batch-size$$:: $$Number of items to index for each request. It defaults to 1. For values greater than 1 bulk indexing API will be used.$$ *($$Integer$$, default: `$$1$$`)*
+$$elasticsearch.consumer.group-timeout$$:: $$Timeout in milliseconds after which message group is flushed when bulk indexing is active. It defaults to -1, meaning no automatic flush of idle message groups occurs.$$ *($$Long$$, default: `$$-1$$`)*
+$$elasticsearch.consumer.id$$:: $$The id of the document to index. If set, the INDEX_ID header value overrides this property on a per message basis.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$elasticsearch.consumer.index$$:: $$Name of the index. If set, the INDEX_NAME header value overrides this property on a per message basis.$$ *($$String$$, default: `$$<none>$$`)*
+$$elasticsearch.consumer.routing$$:: $$Indicates the shard to route to. If not provided, Elasticsearch will default to a hash of the document id.$$ *($$String$$, default: `$$<none>$$`)*
+$$elasticsearch.consumer.timeout-seconds$$:: $$Timeout for the shard to be available. If not set, it defaults to 1 minute set by the Elasticsearch client.$$ *($$Long$$, default: `$$0$$`)*
 //end::configuration-properties[]
 
 == Examples of running this sink

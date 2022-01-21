@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -48,6 +49,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 				"websocket.consumer.threads=2"
 		})
 @DirtiesContext
+@Disabled
 public class WebsocketSinkTests {
 
 	public static final int TIMEOUT = 10000;

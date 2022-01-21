@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"spring.main.web-application-type=servlet",
 		"management.endpoints.web.exposure.include=health,info,bindings,env",
 		"info.name=MY TEST APP"})
+@Disabled
 public class SecurityEnabledAuthorizedAccessTests extends AbstractSecurityCommonTests {
 
 	@Autowired

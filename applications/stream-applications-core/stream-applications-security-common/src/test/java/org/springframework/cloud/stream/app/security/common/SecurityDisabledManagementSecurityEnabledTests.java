@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app.security.common;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"spring.cloud.streamapp.security.enabled=false",
 		"management.endpoints.web.exposure.include=health,info,bindings,env",
 		"info.name=MY TEST APP"})
+@Disabled
 public class SecurityDisabledManagementSecurityEnabledTests extends AbstractSecurityCommonTests {
 
 	@Test

@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app.processor.script;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -43,6 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Chris Schaefer
  * @author Soby Chacko
  */
+@Disabled
 public class ScriptProcessorIntegrationTests {
 
 	@Test

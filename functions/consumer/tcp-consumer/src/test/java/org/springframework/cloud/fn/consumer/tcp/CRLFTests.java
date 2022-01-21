@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.consumer.tcp;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.integration.ip.tcp.serializer.ByteArrayCrLfSerializer;
@@ -24,6 +25,7 @@ import org.springframework.integration.ip.tcp.serializer.ByteArrayCrLfSerializer
 /**
  * @author Gary Russell
  */
+@Disabled
 public class CRLFTests extends AbstractTcpConsumerTests {
 
 	@Test

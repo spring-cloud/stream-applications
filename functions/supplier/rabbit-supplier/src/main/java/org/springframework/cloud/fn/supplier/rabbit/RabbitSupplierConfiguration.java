@@ -101,9 +101,9 @@ public class RabbitSupplierConfiguration implements DisposableBean {
 	private CachingConnectionFactory ownConnectionFactory;
 
 	@Bean
-	public SimpleMessageListenerContainer container() {
+	public SimpleMessageListenerContainer container(CachingConnectionFactory cf) {
 		ConnectionFactory connectionFactory = this.properties.isOwnConnection()
-				? buildLocalConnectionFactory()
+				? buildLocalConnectionFactory(cf)
 				: this.rabbitConnectionFactory;
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
 		container.setAutoStartup(false);
@@ -176,11 +176,9 @@ public class RabbitSupplierConfiguration implements DisposableBean {
 		}
 	}
 
-	private ConnectionFactory buildLocalConnectionFactory() {
+	private ConnectionFactory buildLocalConnectionFactory(CachingConnectionFactory cf) {
 		try {
-			this.ownConnectionFactory = new AutoConfig.Creator().rabbitConnectionFactory(
-					this.rabbitProperties, this.resourceLoader, this.credentialsProvider, this.credentialsRefreshService,
-					this.connectionNameStrategy, this.connectionFactoryCustomizers);
+			this.ownConnectionFactory = new AutoConfig.Creator().rabbitConnectionFactory(cf);
 
 		}
 		catch (Exception exception) {
@@ -195,15 +193,9 @@ class AutoConfig extends RabbitAutoConfiguration {
 
 	static class Creator extends RabbitConnectionFactoryCreator {
 
-		@Override
-		public CachingConnectionFactory rabbitConnectionFactory(RabbitProperties config, ResourceLoader resourceLoader,
-																ObjectProvider<CredentialsProvider> credentialsProvider,
-																ObjectProvider<CredentialsRefreshService> credentialsRefreshService,
-																ObjectProvider<ConnectionNameStrategy> connectionNameStrategy,
-																ObjectProvider<ConnectionFactoryCustomizer> connectionFactoryCustomizers)
+		public CachingConnectionFactory rabbitConnectionFactory(CachingConnectionFactory cf)
 				throws Exception {
-			CachingConnectionFactory cf = super.rabbitConnectionFactory(config, resourceLoader, credentialsProvider, credentialsRefreshService,
-					connectionNameStrategy, connectionFactoryCustomizers);
+
 			cf.setConnectionNameStrategy(new ConnectionNameStrategy() {
 
 				@Override

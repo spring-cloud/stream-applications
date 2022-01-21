@@ -36,6 +36,7 @@ $$username$$:: $$Login username of the redis server.$$ *($$String$$, default: `$
 
 === spring.redis.jedis.pool
 
+$$enabled$$:: $$Whether to enable the pool. Enabled automatically if "commons-pool2" is available. With Jedis, pooling is implicitly enabled in sentinel mode and this setting only applies to single node setup.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$max-active$$:: $$Maximum number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.$$ *($$Integer$$, default: `$$8$$`)*
 $$max-idle$$:: $$Maximum number of "idle" connections in the pool. Use a negative value to indicate an unlimited number of idle connections.$$ *($$Integer$$, default: `$$8$$`)*
 $$max-wait$$:: $$Maximum amount of time a connection allocation should block before throwing an exception when the pool is exhausted. Use a negative value to block indefinitely.$$ *($$Duration$$, default: `$$-1ms$$`)*
@@ -44,6 +45,7 @@ $$time-between-eviction-runs$$:: $$Time between runs of the idle object evictor 
 
 === spring.redis.lettuce.pool
 
+$$enabled$$:: $$Whether to enable the pool. Enabled automatically if "commons-pool2" is available. With Jedis, pooling is implicitly enabled in sentinel mode and this setting only applies to single node setup.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$max-active$$:: $$Maximum number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.$$ *($$Integer$$, default: `$$8$$`)*
 $$max-idle$$:: $$Maximum number of "idle" connections in the pool. Use a negative value to indicate an unlimited number of idle connections.$$ *($$Integer$$, default: `$$8$$`)*
 $$max-wait$$:: $$Maximum amount of time a connection allocation should block before throwing an exception when the pool is exhausted. Use a negative value to block indefinitely.$$ *($$Duration$$, default: `$$-1ms$$`)*

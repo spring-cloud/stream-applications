@@ -16,14 +16,6 @@ Must be aligned with used APIs rate limit
 Properties grouped by prefix:
 
 
-=== spring.cloud.stream.poller
-
-$$cron$$:: $$Cron expression value for the Cron Trigger.$$ *($$String$$, default: `$$<none>$$`)*
-$$fixed-delay$$:: $$Fixed delay for default poller.$$ *($$Long$$, default: `$$1000$$`)*
-$$initial-delay$$:: $$Initial delay for periodic triggers.$$ *($$Integer$$, default: `$$0$$`)*
-$$max-messages-per-poll$$:: $$Maximum messages per poll for the default poller.$$ *($$Long$$, default: `$$1$$`)*
-$$time-unit$$:: $$The TimeUnit to apply to delay values.$$ *($$TimeUnit$$, default: `$$<none>$$`, possible values: `NANOSECONDS`,`MICROSECONDS`,`MILLISECONDS`,`SECONDS`,`MINUTES`,`HOURS`,`DAYS`)*
-
 === twitter.connection
 
 $$access-token$$:: $$Your Twitter token.$$ *($$String$$, default: `$$<none>$$`)*

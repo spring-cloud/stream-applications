@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.consumer.tcp;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.integration.ip.tcp.serializer.ByteArrayLengthHeaderSerializer;
@@ -25,6 +26,7 @@ import org.springframework.test.context.TestPropertySource;
  * @author Gary Russell
  */
 @TestPropertySource(properties = { "tcp.consumer.encoder = L1" })
+@Disabled
 public class L1Tests extends AbstractTcpConsumerTests {
 
 	@Test

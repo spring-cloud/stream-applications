@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.security.common;
 
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 				"org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration"
 				+ ",org.springframework.cloud.stream.app.security.common.AppStarterWebSecurityAutoConfiguration",
 		"management.endpoints.web.exposure.include=health,info,bindings,env" })
+@Disabled
 public class SecurityEnabledManagementSecurityDisabledUnauthorizedAccessTests extends AbstractSecurityCommonTests {
 
 	@Test

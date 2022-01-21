@@ -26,6 +26,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -44,6 +45,7 @@ import static org.assertj.core.api.Assertions.entry;
 		"mongodb.supplier.query={ name: { $exists: true }}",
 		"mongodb.supplier.update-expression='{ $unset: { name: 0 } }'"
 })
+@Disabled
 class MongodbSupplierApplicationTests {
 
 	private ObjectMapper objectMapper = new ObjectMapper();

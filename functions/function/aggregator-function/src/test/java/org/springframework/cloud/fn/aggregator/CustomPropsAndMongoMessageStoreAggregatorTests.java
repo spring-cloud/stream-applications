@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.aggregator;
 import java.time.Duration;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -42,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"aggregator.messageStoreType=mongodb",
 		"aggregator.message-store-entity=aggregatorTest" })
 @AutoConfigureDataMongo
+@Disabled
 public class CustomPropsAndMongoMessageStoreAggregatorTests extends AbstractAggregatorFunctionTests {
 
 	@Test
