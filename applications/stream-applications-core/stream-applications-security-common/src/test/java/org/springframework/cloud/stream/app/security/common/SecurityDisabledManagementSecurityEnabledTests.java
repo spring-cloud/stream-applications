@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpStatus;
@@ -38,8 +38,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"spring.main.web-application-type=servlet",
 		"spring.cloud.streamapp.security.enabled=false",
 		"management.endpoints.web.exposure.include=health,info,bindings,env",
+		"management.info.env.enabled=true",
 		"info.name=MY TEST APP"})
-@Disabled
 public class SecurityDisabledManagementSecurityEnabledTests extends AbstractSecurityCommonTests {
 
 	@Test
@@ -71,10 +71,17 @@ public class SecurityDisabledManagementSecurityEnabledTests extends AbstractSecu
 
 	@Test
 	@SuppressWarnings("rawtypes")
+	public void testPostBindingsEndpoint() {
+		ResponseEntity<Object> response = this.restTemplate.postForEntity("/actuator/bindings/upper-in-0",
+				Collections.singletonMap("state", "STOPPED"), Object.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
 	public void testEnvEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/env", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(response.hasBody()).isTrue();
 	}
-
 }

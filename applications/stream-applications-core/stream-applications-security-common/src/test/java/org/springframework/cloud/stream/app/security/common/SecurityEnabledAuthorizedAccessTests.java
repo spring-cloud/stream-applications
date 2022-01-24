@@ -16,15 +16,16 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
@@ -41,12 +42,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {
 		"spring.main.web-application-type=servlet",
 		"management.endpoints.web.exposure.include=health,info,bindings,env",
-		"info.name=MY TEST APP"})
-@Disabled
+		"management.info.env.enabled=true",
+		"spring.cloud.streamapp.security.admin-user=admin",
+		"spring.cloud.streamapp.security.admin-password=binding",
+		"info.name=MY TEST APP" })
 public class SecurityEnabledAuthorizedAccessTests extends AbstractSecurityCommonTests {
 
 	@Autowired
 	private SecurityProperties securityProperties;
+
+	@Autowired
+	ApplicationContext applicationContext;
 
 	@BeforeEach
 	public void authenticate() {
@@ -67,6 +73,7 @@ public class SecurityEnabledAuthorizedAccessTests extends AbstractSecurityCommon
 	@Test
 	@SuppressWarnings("rawtypes")
 	public void testInfoEndpoint() {
+		restTemplate.getRestTemplate().getInterceptors().clear();
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/info", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(response.hasBody()).isTrue();
@@ -77,8 +84,29 @@ public class SecurityEnabledAuthorizedAccessTests extends AbstractSecurityCommon
 	@Test
 	@SuppressWarnings("rawtypes")
 	public void testBindingsEndpoint() {
-		ResponseEntity<List> response = this.restTemplate.getForEntity("/actuator/bindings", List.class);
+		ResponseEntity<?> response = this.restTemplate.getForEntity("/actuator/bindings", Object.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testPostBindingsEndpoint() {
+		restTemplate.getRestTemplate().getInterceptors().clear();
+		restTemplate.getRestTemplate().getInterceptors().add(new BasicAuthenticationInterceptor(
+				"admin", "binding"));
+		ResponseEntity<Void> response = this.restTemplate.postForEntity("/actuator/bindings/upper-in-0",
+				Collections.singletonMap("state", "STOPPED"), Void.class);
+		assertThat(response.getStatusCode()).isIn(HttpStatus.NO_CONTENT, HttpStatus.OK);
+		String result = this.restTemplate.getForEntity("/actuator/bindings", String.class).getBody();
+		assertThat(result.contains("\"state\":\"stopped\"")).isTrue();
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testPostBindingsEndpointWithoutAdminRoleShouldFail() {
+		ResponseEntity<Void> response = this.restTemplate.postForEntity("/actuator/bindings/upper-in-0",
+				Collections.singletonMap("state", "STOPPED"), Void.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 	}
 
 	@Test
@@ -87,6 +115,11 @@ public class SecurityEnabledAuthorizedAccessTests extends AbstractSecurityCommon
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/env", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(response.hasBody()).isTrue();
+	}
+
+	@AfterEach
+	void clearAuthorization() {
+		restTemplate.getRestTemplate().getInterceptors().clear();
 	}
 
 }

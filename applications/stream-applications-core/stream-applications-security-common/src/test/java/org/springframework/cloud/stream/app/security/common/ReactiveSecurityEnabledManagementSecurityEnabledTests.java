@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,16 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,8 +40,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"spring.main.web-application-type=reactive",
 		"management.endpoints.web.discovery.enabled=true",
 		"management.endpoints.web.exposure.include=health,info,env,bindings",
+		"management.info.env.enabled=true",
+		"spring.cloud.streamapp.security.admin-user=admin",
+		"spring.cloud.streamapp.security.admin-password=binding",
 		"info.name=MY TEST APP"})
-@Disabled
 public class ReactiveSecurityEnabledManagementSecurityEnabledTests extends AbstractSecurityCommonTests {
 
 	@Test
@@ -80,6 +84,32 @@ public class ReactiveSecurityEnabledManagementSecurityEnabledTests extends Abstr
 	public void testEnvEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/env", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testPostBindingsEndpoint() {
+		restTemplate.getRestTemplate().getInterceptors().clear();
+		restTemplate.getRestTemplate().getInterceptors().add(new BasicAuthenticationInterceptor(
+				"admin", "binding"));
+		ResponseEntity<Void> response = this.restTemplate.postForEntity("/actuator/bindings/upper-in-0",
+				Collections.singletonMap("state", "STOPPED"), Void.class);
+		assertThat(response.getStatusCode()).isIn(HttpStatus.NO_CONTENT, HttpStatus.OK);
+		String result = this.restTemplate.getForEntity("/actuator/bindings", String.class).getBody();
+		assertThat(result.contains("\"state\":\"stopped\"")).isTrue();
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testPostBindingsEndpointWithoutAdminRoleShouldFail() {
+		ResponseEntity<Void> response = this.restTemplate.postForEntity("/actuator/bindings/upper-in-0",
+				Collections.singletonMap("state", "STOPPED"), Void.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+	}
+
+	@AfterEach
+	void clearAuthorization() {
+		restTemplate.getRestTemplate().getInterceptors().clear();
 	}
 
 }

@@ -16,11 +16,11 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpStatus;
@@ -38,8 +38,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 		"spring.main.web-application-type=reactive",
 		"spring.cloud.streamapp.security.enabled=false",
 		"management.endpoints.web.exposure.include=health,info,bindings,env",
+		"management.info.env.enabled=true",
 		"info.name=MY TEST APP"})
-@Disabled
 public class ReactiveSecurityDisabledManagementSecurityEnabledTests extends AbstractSecurityCommonTests {
 
 	@Test
@@ -68,6 +68,14 @@ public class ReactiveSecurityDisabledManagementSecurityEnabledTests extends Abst
 	public void testBindingsEndpoint() {
 		ResponseEntity<List> response = this.restTemplate.getForEntity("/actuator/bindings", List.class);
 		Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testPostBindingsEndpoint() {
+		ResponseEntity<Object> response = this.restTemplate.postForEntity("/actuator/bindings/upper-in-0",
+				Collections.singletonMap("state", "STOPPED"), Object.class);
+		Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 	}
 
 	@Test
