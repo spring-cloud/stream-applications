@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.bson.Document;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -43,8 +42,8 @@ import static org.awaitility.Awaitility.await;
  */
 @SpringBootTest(properties = {
 		"spring.data.mongodb.port=0",
-		"mongodb.consumer.collection=testing" })
-@Disabled
+		"mongodb.consumer.collection=testing",
+		"spring.mongodb.embedded.version=latest" })
 class MongoDbConsumerApplicationTests {
 
 	@Autowired
@@ -57,7 +56,6 @@ class MongoDbConsumerApplicationTests {
 	private ReactiveMongoTemplate mongoTemplate;
 
 	@Test
-	@Disabled
 	void testMongodbConsumer() {
 		Map<String, String> data1 = new HashMap<>();
 		data1.put("foo", "bar");
