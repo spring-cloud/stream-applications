@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,32 @@ package org.springframework.cloud.stream.app.security.common;
 
 import reactor.core.publisher.Flux;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.security.reactive.ReactiveManagementWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.WebFilterChainProxy;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 /**
@@ -49,11 +61,51 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 @EnableConfigurationProperties(AppStarterWebSecurityAutoConfigurationProperties.class)
 public class AppStarterWebFluxSecurityAutoConfiguration {
 
+	@Autowired
+	private WebEndpointProperties webEndpointProperties;
+
+	@Bean
+	@ConditionalOnMissingBean(UserDetailsService.class)
+	public MapReactiveUserDetailsService userDetailsService(SecurityProperties securityProperties,
+			AppStarterWebSecurityAutoConfigurationProperties streamAppsecurityProperties) {
+		UserDetails primaryUser = User.builder()
+				.username(securityProperties.getUser().getName())
+				.password(securityProperties.getUser().getPassword())
+				.passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
+				.roles(securityProperties.getUser().getRoles()
+						.toArray(new String[securityProperties.getUser().getRoles().size()]))
+				.build();
+
+		if (StringUtils.hasText(streamAppsecurityProperties.getAdminPassword()) &&
+				StringUtils.hasText(streamAppsecurityProperties.getAdminUser())) {
+			UserDetails user = User.builder()
+					.username(streamAppsecurityProperties.getAdminUser())
+					.password(streamAppsecurityProperties.getAdminPassword())
+					.roles("ADMIN")
+					.passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
+					.build();
+			return new MapReactiveUserDetailsService(primaryUser, user);
+		}
+		return new MapReactiveUserDetailsService(primaryUser);
+	}
+
 	@Bean
 	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http,
 			AppStarterWebSecurityAutoConfigurationProperties securityProperties) {
+		String postToActuatorPath = webEndpointProperties.getBasePath() + "/**";
 		if (!securityProperties.isCsrfEnabled()) {
 			http.csrf().disable();
+		}
+		else {
+			/*
+			 * See https://stackoverflow.com/questions/51079564/spring-security-antmatchers-not-being-
+			 * applied-on-post-requests-and-only-works-wi/51088555
+			 */
+			http.csrf().requireCsrfProtectionMatcher(exchange -> new AntPathMatcher()
+					.match(postToActuatorPath,
+							exchange.getRequest().getPath().value())
+									? ServerWebExchangeMatcher.MatchResult.notMatch()
+									: ServerWebExchangeMatcher.MatchResult.match());
 		}
 		if (!securityProperties.isEnabled()) {
 			http.authorizeExchange()
@@ -61,7 +113,9 @@ public class AppStarterWebFluxSecurityAutoConfiguration {
 					.permitAll();
 		}
 		else {
-			http.authorizeExchange().pathMatchers("/actuator", "/actuator/health", "/actuator/info", "/actuator/bindings")
+			http.authorizeExchange()
+					.pathMatchers(HttpMethod.POST, postToActuatorPath).hasRole("ADMIN")
+					.pathMatchers("/actuator", "/actuator/health", "/actuator/info", "/actuator/bindings")
 					.permitAll().anyExchange().authenticated();
 			http.httpBasic();
 			http.formLogin();

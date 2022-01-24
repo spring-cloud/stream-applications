@@ -16,11 +16,12 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,13 +42,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {
 		"spring.main.web-application-type=reactive",
 		"management.endpoints.web.exposure.include=*",
+		"management.info.env.enabled=true",
+		"spring.cloud.streamapp.security.admin-user=admin",
+		"spring.cloud.streamapp.security.admin-password=binding",
 		"info.name=MY TEST APP" })
-@Disabled
 public class ReactiveSecurityEnabledAuthorizedAccessTests
 		extends AbstractSecurityCommonTests {
 
 	@Autowired
 	private SecurityProperties securityProperties;
+
+	@Autowired
+	MapReactiveUserDetailsService userDetailsService;
 
 	@BeforeEach
 	public void authenticate() {
@@ -96,4 +103,19 @@ public class ReactiveSecurityEnabledAuthorizedAccessTests
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testPostBindingsEndpoint() {
+		restTemplate.getRestTemplate().getInterceptors().clear();
+		restTemplate.getRestTemplate().getInterceptors().add(new BasicAuthenticationInterceptor(
+				"admin", "binding"));
+		ResponseEntity<Void> response = this.restTemplate.postForEntity("/actuator/bindings/upper-in-0",
+				Collections.singletonMap("state", "STOPPED"), Void.class);
+		assertThat(response.getStatusCode()).isIn(HttpStatus.NO_CONTENT, HttpStatus.OK);
+	}
+
+	@AfterEach
+	void clearAuthorization() {
+		restTemplate.getRestTemplate().getInterceptors().clear();
+	}
 }

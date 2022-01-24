@@ -1,12 +1,15 @@
 === `App Starters Security` Common Module
 
-Spring Boot auto-configuration to manage the web security of the pre-packaged stream applications.
+Provides Spring Boot auto-configuration to manage the web security of the pre-packaged stream applications.
 
 When the `app-starters-security-common` dependency is on the classpath, the `spring.cloud.streamapp.security.enabled` and `spring.cloud.streamapp.security.csrf-enabled` properties control the application security behavior.
 
 By default the security is enabled allowing unauthorized access only to the `actuator/info`,`actuator/health`, and `actuator/bindings` endpoints.
 
-The `spring.cloud.streamapp.security.enabled = false` completely surpass the application security.
+The `spring.cloud.streamapp.security.enabled = false` completely surpasses the application security.
+
+This configuration enables authorized access to POST to `actuator` enpoints, such as `/actuator/bindings`, used to https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#binding_visualization_control[stop/start or pause/resume an input binding]
+Set `spring.cloud.streamapp.security.admin-user` and `spring.cloud.streamapp.security.admin-password` to create an authorized user.
 
 For secured application setting `spring.cloud.streamapp.security.csrf-enabled = false` disables security for the CSRF access.
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 the original author or authors.
+ * Copyright 2018-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,21 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import java.util.function.Consumer;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 
 /**
  * @author Christian Tzolov
  * @author Artem Bilan
+ * @author David Turanski
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
@@ -33,8 +39,16 @@ public abstract class AbstractSecurityCommonTests {
 	@Autowired
 	protected TestRestTemplate restTemplate;
 
+
+
 	@SpringBootApplication
+	@Import(TestChannelBinderConfiguration.class)
 	public static class AutoConfigurationApplication {
+		//Required for post to binding tests.
+		@Bean
+		Consumer<String> upper() {
+			return s -> s.toUpperCase();
+		}
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 the original author or authors.
+ * Copyright 2018-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,10 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import java.util.Collections;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -27,9 +31,17 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.StringUtils;
 
 /**
  * @author Christian Tzolov
@@ -47,19 +59,61 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class AppStarterWebSecurityAutoConfiguration {
 
+	@Autowired
+	private WebEndpointProperties webEndpointProperties;
+
+	/*
+	 * Spring security will discover this provider. It grants the ADMIN ROLE to the admin
+	 * user, if configured, otherwise it passes through the current authentication.
+	 */
+	@Bean
+	AuthenticationProvider adminAuthenticationProvider(
+			AppStarterWebSecurityAutoConfigurationProperties securityProperties) {
+		return new AuthenticationProvider() {
+			@Override
+			public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+				if (securityProperties.isEnabled() &&
+						StringUtils.hasText(securityProperties.getAdminUser()) &&
+						securityProperties.getAdminUser().equals(authentication.getName()) &&
+						StringUtils.hasText(securityProperties.getAdminPassword()) &&
+						securityProperties.getAdminPassword().equals(authentication.getCredentials().toString())) {
+
+					return new UsernamePasswordAuthenticationToken(securityProperties.getAdminUser(),
+							securityProperties.getAdminPassword(), Collections.singletonList(
+									new SimpleGrantedAuthority("ROLE_ADMIN")));
+				}
+				return authentication;
+			}
+
+			@Override
+			public boolean supports(Class<?> aClass) {
+				return UsernamePasswordAuthenticationToken.class.isAssignableFrom(aClass);
+			}
+		};
+	}
+
 	@Bean
 	WebSecurityConfigurerAdapter appStarterWebSecurityConfigurerAdapter(
 			AppStarterWebSecurityAutoConfigurationProperties securityProperties) {
 
 		return new WebSecurityConfigurerAdapter() {
-
 			@Override
 			protected void configure(HttpSecurity http) throws Exception {
+				AntPathRequestMatcher postToActuator = new AntPathRequestMatcher(
+						webEndpointProperties.getBasePath() + "/**", HttpMethod.POST.name());
 				if (!securityProperties.isCsrfEnabled()) {
 					http.csrf().disable();
 				}
+				else {
+					/*
+					 * See https://stackoverflow.com/questions/51079564/spring-security-antmatchers-not-being-
+					 * applied-on-post-requests-and-only-works-wi/51088555
+					 */
+					http.csrf().ignoringRequestMatchers(postToActuator);
+				}
 				if (securityProperties.isEnabled()) {
 					http.authorizeRequests()
+							.requestMatchers(postToActuator).hasRole("ADMIN")
 							.requestMatchers(EndpointRequest.toLinks()).permitAll()
 							.requestMatchers(EndpointRequest.to("health", "info", "bindings")).permitAll()
 							.requestMatchers(EndpointRequest.toAnyEndpoint()).authenticated()
@@ -67,9 +121,9 @@ public class AppStarterWebSecurityAutoConfiguration {
 				}
 				else {
 					http.authorizeRequests().anyRequest().permitAll();
+
 				}
 			}
 		};
 	}
-
 }

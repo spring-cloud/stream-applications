@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -23,16 +25,28 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author Christian Tzolov
  * @author Artem Bilan
+ * @author David Turanski
  * @since 2.1
  */
 @ConfigurationProperties("spring.cloud.streamapp.security")
 public class AppStarterWebSecurityAutoConfigurationProperties {
 
-
 	/**
 	 * The security enabling flag.
 	 */
 	private boolean enabled = true;
+
+	/**
+	 * The name of a user who will be registered with an "ADMIN" role, required to access
+	 * privileged resources.
+	 */
+	private String adminUser;
+
+	/**
+	 * The password of a user who will be registered with an "ADMIN" role, required to access
+	 * privileged resources.
+	 */
+	private String adminPassword;
 
 	/**
 	 * The security CSRF enabling flag. Makes sense only if security 'enabled` is `true'.
@@ -53,5 +67,21 @@ public class AppStarterWebSecurityAutoConfigurationProperties {
 
 	public void setCsrfEnabled(boolean csrfEnabled) {
 		this.csrfEnabled = csrfEnabled;
+	}
+
+	String getAdminUser() {
+		return adminUser;
+	}
+
+	void setAdminUser(@NotNull String adminUser) {
+		this.adminUser = adminUser;
+	}
+
+	String getAdminPassword() {
+		return adminPassword;
+	}
+
+	void setAdminPassword(@NotNull String adminPassword) {
+		this.adminPassword = adminPassword;
 	}
 }

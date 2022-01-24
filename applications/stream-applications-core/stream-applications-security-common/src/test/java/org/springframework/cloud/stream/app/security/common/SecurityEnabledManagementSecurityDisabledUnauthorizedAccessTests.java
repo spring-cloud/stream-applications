@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.springframework.cloud.stream.app.security.common;
 
 import java.util.Map;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpStatus;
@@ -39,7 +38,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 				"org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration"
 				+ ",org.springframework.cloud.stream.app.security.common.AppStarterWebSecurityAutoConfiguration",
 		"management.endpoints.web.exposure.include=health,info,bindings,env" })
-@Disabled
 public class SecurityEnabledManagementSecurityDisabledUnauthorizedAccessTests extends AbstractSecurityCommonTests {
 
 	@Test
@@ -47,9 +45,7 @@ public class SecurityEnabledManagementSecurityDisabledUnauthorizedAccessTests ex
 	public void testHealthEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/health", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-		assertThat(response.hasBody()).isTrue();
-		Map health = response.getBody();
-		assertThat(health.get("error")).isEqualTo("Unauthorized");
+		//Response no longer contains an error message.
 	}
 
 	@Test
@@ -57,9 +53,6 @@ public class SecurityEnabledManagementSecurityDisabledUnauthorizedAccessTests ex
 	public void testInfoEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/info", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-		assertThat(response.hasBody()).isTrue();
-		Map info = response.getBody();
-		assertThat(info.get("error")).isEqualTo("Unauthorized");
 	}
 
 	@Test
@@ -74,7 +67,6 @@ public class SecurityEnabledManagementSecurityDisabledUnauthorizedAccessTests ex
 	public void testEnvEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/env", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-		assertThat(response.hasBody()).isTrue();
 	}
 
 }
