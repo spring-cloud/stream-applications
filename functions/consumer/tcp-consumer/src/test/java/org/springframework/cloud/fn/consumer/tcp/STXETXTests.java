@@ -17,6 +17,7 @@
 package org.springframework.cloud.fn.consumer.tcp;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.integration.ip.tcp.serializer.ByteArrayStxEtxSerializer;
 import org.springframework.test.context.TestPropertySource;
 

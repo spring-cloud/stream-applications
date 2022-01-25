@@ -62,24 +62,6 @@ public class WebsocketConsumerConfiguration {
 		websocketConsumerServer.run();
 	}
 
-	@Configuration
-	static class WebsocketConsumerServerConfiguration {
-		@Bean
-		public InMemoryTraceRepository websocketTraceRepository() {
-			return new InMemoryTraceRepository();
-		}
-
-		@Bean
-		public WebsocketConsumerServer server(WebsocketConsumerProperties properties, WebsocketConsumerServerInitializer initializer) {
-			return new WebsocketConsumerServer(properties, initializer);
-		}
-
-		@Bean
-		public WebsocketConsumerServerInitializer initializer(InMemoryTraceRepository websocketTraceRepository) {
-			return new WebsocketConsumerServerInitializer(websocketTraceRepository);
-		}
-	}
-
 	@Bean
 	@ConditionalOnProperty(value = "endpoints.websocketsinktrace.enabled", havingValue = "true")
 	public WebsocketConsumerTraceEndpoint websocketTraceEndpoint(InMemoryTraceRepository websocketTraceRepository) {
@@ -118,4 +100,23 @@ public class WebsocketConsumerConfiguration {
 		trace.put("payload", message.getPayload().toString());
 		websocketTraceRepository.add(trace);
 	}
+
+	@Configuration
+	static class WebsocketConsumerServerConfiguration {
+		@Bean
+		public InMemoryTraceRepository websocketTraceRepository() {
+			return new InMemoryTraceRepository();
+		}
+
+		@Bean
+		public WebsocketConsumerServer server(WebsocketConsumerProperties properties, WebsocketConsumerServerInitializer initializer) {
+			return new WebsocketConsumerServer(properties, initializer);
+		}
+
+		@Bean
+		public WebsocketConsumerServerInitializer initializer(InMemoryTraceRepository websocketTraceRepository) {
+			return new WebsocketConsumerServerInitializer(websocketTraceRepository);
+		}
+	}
+
 }

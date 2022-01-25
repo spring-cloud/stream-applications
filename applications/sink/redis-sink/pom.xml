@@ -16,7 +16,7 @@
     </parent>
 
     <properties>
-        <embedded-redis.version>2.0.9</embedded-redis.version>
+        <embedded-redis.version>2.0.11</embedded-redis.version>
     </properties>
 
     <dependencies>
