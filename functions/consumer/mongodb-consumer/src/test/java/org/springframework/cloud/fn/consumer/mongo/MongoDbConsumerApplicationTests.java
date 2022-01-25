@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.bson.Document;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -42,9 +41,8 @@ import static org.awaitility.Awaitility.await;
  * @author David Turanski
  */
 @SpringBootTest(properties = {
-		"spring.data.mongodb.port=0",
-		"mongodb.consumer.collection=testing" })
-@Disabled
+		"mongodb.consumer.collection=testing",
+		"spring.mongodb.embedded.version=3.5.5" })
 class MongoDbConsumerApplicationTests {
 
 	@Autowired
@@ -57,7 +55,6 @@ class MongoDbConsumerApplicationTests {
 	private ReactiveMongoTemplate mongoTemplate;
 
 	@Test
-	@Disabled
 	void testMongodbConsumer() {
 		Map<String, String> data1 = new HashMap<>();
 		data1.put("foo", "bar");
