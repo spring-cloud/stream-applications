@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.fn.consumer.tcp;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.integration.ip.tcp.connection.TcpNioClientConnectionFactory;
@@ -28,9 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Gary Russell
  */
-@TestPropertySource(properties = { "tcp.consumer.host = foo", "tcp.nio = true", "tcp.reverseLookup = true",
-		"tcp.useDirectBuffers = true", "tcp.socketTimeout = 123", "tcp.consumer.close = true", "tcp.consumer.charset = bar" })
-@Disabled
+@TestPropertySource(properties = {"tcp.consumer.host = foo", "tcp.nio = true", "tcp.reverseLookup = true",
+		"tcp.useDirectBuffers = true", "tcp.socketTimeout = 123", "tcp.consumer.close = true", "tcp.consumer.charset = bar"})
 public class PropertiesPopulatedTests extends AbstractTcpConsumerTests {
 
 	@Test

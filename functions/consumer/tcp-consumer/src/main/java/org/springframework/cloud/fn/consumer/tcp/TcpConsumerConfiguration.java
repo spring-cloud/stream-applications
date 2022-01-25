@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.springframework.cloud.fn.consumer.tcp;
 
 import java.util.function.Consumer;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.fn.common.tcp.EncoderDecoderFactoryBean;
@@ -38,28 +37,28 @@ import org.springframework.messaging.Message;
  *
  * @author Gary Russell
  * @author Christian Tzolov
+ * @author Chris Bono
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({TcpConsumerProperties.class, TcpConnectionFactoryProperties.class})
 public class TcpConsumerConfiguration {
 
-	@Autowired
 	private TcpConsumerProperties properties;
-
-	@Autowired
 	private TcpConnectionFactoryProperties tcpConnectionProperties;
 
-	@Qualifier("tcpSinkConnectionFactory")
-	@Autowired
-	private AbstractConnectionFactory connectionFactory;
-
-	@Bean
-	public Consumer<Message<?>> tcpConsumer() {
-		return handler()::handleMessage;
+	public TcpConsumerConfiguration(TcpConsumerProperties properties,
+									TcpConnectionFactoryProperties tcpConnectionProperties) {
+		this.properties = properties;
+		this.tcpConnectionProperties = tcpConnectionProperties;
 	}
 
 	@Bean
-	public TcpSendingMessageHandlerSmartLifeCycle handler() {
+	public Consumer<Message<?>> tcpConsumer(TcpSendingMessageHandlerSmartLifeCycle handler) {
+		return handler::handleMessage;
+	}
+
+	@Bean
+	public TcpSendingMessageHandlerSmartLifeCycle handler(@Qualifier("tcpSinkConnectionFactory") AbstractConnectionFactory connectionFactory) {
 		TcpSendingMessageHandlerSmartLifeCycle tcpMessageHandler = new TcpSendingMessageHandlerSmartLifeCycle();
 		tcpMessageHandler.setConnectionFactory(connectionFactory);
 		return tcpMessageHandler;

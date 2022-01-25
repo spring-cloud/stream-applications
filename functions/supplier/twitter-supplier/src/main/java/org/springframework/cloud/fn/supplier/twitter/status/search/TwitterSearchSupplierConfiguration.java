@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,8 +42,8 @@ import org.springframework.util.StringUtils;
  * Search pagination with max_id and since_id: https://developer.twitter.com/en/docs/tweets/timelines/guides/working-with-timelines.html .
  *
  * @author Christian Tzolov
+ * @author Chris Bono
  */
-
 @EnableConfigurationProperties({ TwitterSearchSupplierProperties.class })
 @Import(TwitterConnectionConfiguration.class)
 public class TwitterSearchSupplierConfiguration {
@@ -57,9 +57,6 @@ public class TwitterSearchSupplierConfiguration {
 	private Twitter twitter;
 
 	@Autowired
-	private SearchPagination searchPage;
-
-	@Autowired
 	private Function<Object, Message<byte[]>> json;
 
 	@Bean
@@ -71,18 +68,18 @@ public class TwitterSearchSupplierConfiguration {
 
 
 	@Bean
-	public Supplier<Message<byte[]>> twitterSearchSupplier() {
+	public Supplier<Message<byte[]>> twitterSearchSupplier(SearchPagination searchPage) {
 		return () -> {
 			try {
-				Query query = toQuery(this.searchProperties, this.searchPage);
+				Query query = toQuery(this.searchProperties, searchPage);
 
 				QueryResult result = this.twitter.search(query);
 
 				List<Status> tweets = result.getTweets();
 
-				logger.info(String.format("%s, size: %s", this.searchPage.status(), tweets.size()));
+				logger.info(String.format("%s, size: %s", searchPage.status(), tweets.size()));
 
-				this.searchPage.update(tweets);
+				searchPage.update(tweets);
 
 				return this.json.apply(tweets);
 			}

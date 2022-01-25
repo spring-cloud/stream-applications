@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.fn.consumer.tcp;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.integration.ip.tcp.serializer.ByteArrayRawSerializer;
@@ -25,8 +24,7 @@ import org.springframework.test.context.TestPropertySource;
 /**
  * @author Gary Russell
  */
-@TestPropertySource(properties = { "tcp.consumer.encoder = RAW", "tcp.consumer.close = true" })
-@Disabled
+@TestPropertySource(properties = {"tcp.consumer.encoder = RAW", "tcp.consumer.close = true"})
 public class RAWTests extends AbstractTcpConsumerTests {
 
 	@Test
