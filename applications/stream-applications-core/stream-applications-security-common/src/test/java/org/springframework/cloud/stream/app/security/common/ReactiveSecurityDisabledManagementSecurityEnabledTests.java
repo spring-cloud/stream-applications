@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.security.common;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +68,14 @@ public class ReactiveSecurityDisabledManagementSecurityEnabledTests extends Abst
 	public void testBindingsEndpoint() {
 		ResponseEntity<List> response = this.restTemplate.getForEntity("/actuator/bindings", List.class);
 		Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void testPostBindingsEndpoint() {
+		ResponseEntity<Object> response = this.restTemplate.postForEntity("/actuator/bindings/upper-in-0",
+				Collections.singletonMap("state", "STOPPED"), Object.class);
+		Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 	}
 
 	@Test

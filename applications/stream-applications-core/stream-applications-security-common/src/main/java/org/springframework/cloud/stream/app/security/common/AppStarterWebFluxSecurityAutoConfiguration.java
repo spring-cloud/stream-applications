@@ -19,8 +19,9 @@ package org.springframework.cloud.stream.app.security.common;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.security.reactive.ReactiveManagementWebSecurityAutoConfiguration;
+import org.springframework.boot.actuate.endpoint.EndpointId;
+import org.springframework.boot.actuate.endpoint.web.PathMappedEndpoints;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -62,7 +63,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 public class AppStarterWebFluxSecurityAutoConfiguration {
 
 	@Autowired
-	private WebEndpointProperties webEndpointProperties;
+	private PathMappedEndpoints pathMappedEndpoints;
 
 	@Bean
 	@ConditionalOnMissingBean(UserDetailsService.class)
@@ -92,7 +93,8 @@ public class AppStarterWebFluxSecurityAutoConfiguration {
 	@Bean
 	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http,
 			AppStarterWebSecurityAutoConfigurationProperties securityProperties) {
-		String postToActuatorPath = webEndpointProperties.getBasePath() + "/**";
+
+		String managementPath = pathMappedEndpoints.getBasePath() + "/**";
 		if (!securityProperties.isCsrfEnabled()) {
 			http.csrf().disable();
 		}
@@ -102,7 +104,7 @@ public class AppStarterWebFluxSecurityAutoConfiguration {
 			 * applied-on-post-requests-and-only-works-wi/51088555
 			 */
 			http.csrf().requireCsrfProtectionMatcher(exchange -> new AntPathMatcher()
-					.match(postToActuatorPath,
+					.match(managementPath,
 							exchange.getRequest().getPath().value())
 									? ServerWebExchangeMatcher.MatchResult.notMatch()
 									: ServerWebExchangeMatcher.MatchResult.match());
@@ -114,8 +116,12 @@ public class AppStarterWebFluxSecurityAutoConfiguration {
 		}
 		else {
 			http.authorizeExchange()
-					.pathMatchers(HttpMethod.POST, postToActuatorPath).hasRole("ADMIN")
-					.pathMatchers("/actuator", "/actuator/health", "/actuator/info", "/actuator/bindings")
+					.pathMatchers(HttpMethod.POST, managementPath).hasRole("ADMIN")
+					.pathMatchers(
+							pathMappedEndpoints.getBasePath(),
+							pathMappedEndpoints.getPath(EndpointId.of("health")),
+							pathMappedEndpoints.getPath(EndpointId.of("info")),
+							pathMappedEndpoints.getPath(EndpointId.of("bindings")))
 					.permitAll().anyExchange().authenticated();
 			http.httpBasic();
 			http.formLogin();
@@ -123,5 +129,4 @@ public class AppStarterWebFluxSecurityAutoConfiguration {
 		}
 		return http.build();
 	}
-
 }

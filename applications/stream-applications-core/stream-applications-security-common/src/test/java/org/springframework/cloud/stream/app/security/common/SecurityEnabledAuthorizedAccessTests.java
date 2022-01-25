@@ -73,6 +73,7 @@ public class SecurityEnabledAuthorizedAccessTests extends AbstractSecurityCommon
 	@Test
 	@SuppressWarnings("rawtypes")
 	public void testInfoEndpoint() {
+		restTemplate.getRestTemplate().getInterceptors().clear();
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/info", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(response.hasBody()).isTrue();
