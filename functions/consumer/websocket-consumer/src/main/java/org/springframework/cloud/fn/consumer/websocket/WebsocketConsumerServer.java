@@ -58,7 +58,7 @@ public class WebsocketConsumerServer {
 
 	private int port;
 
-	WebsocketConsumerServer(WebsocketConsumerProperties properties, WebsocketConsumerServerInitializer initializer) {
+	public WebsocketConsumerServer(WebsocketConsumerProperties properties, WebsocketConsumerServerInitializer initializer) {
 		this.properties = properties;
 		this.initializer = initializer;
 	}
