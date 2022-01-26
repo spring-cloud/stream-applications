@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -51,7 +50,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 				"websocket.consumer.threads=2"
 		})
 @DirtiesContext
-@Disabled
 public class WebsocketConsumerTests {
 
 	public static final int TIMEOUT = 10000;

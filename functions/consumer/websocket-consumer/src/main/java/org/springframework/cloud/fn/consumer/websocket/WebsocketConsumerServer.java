@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,6 @@ import io.netty.handler.logging.LoggingHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
  * Bootstraps a Netty server using the {@link WebsocketConsumerServerInitializer}. Also adds
  * a {@link LoggingHandler} and uses the <code>logLevel</code>
@@ -42,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author Oliver Moser
  * @author Gary Russell
+ * @author Chris Bono
  */
 public class WebsocketConsumerServer {
 
@@ -49,17 +48,20 @@ public class WebsocketConsumerServer {
 
 	static final List<Channel> channels = Collections.synchronizedList(new ArrayList<Channel>());
 
-	@Autowired
-	WebsocketConsumerProperties properties;
+	private WebsocketConsumerProperties properties;
 
-	@Autowired
-	WebsocketConsumerServerInitializer initializer;
+	private WebsocketConsumerServerInitializer initializer;
 
 	private EventLoopGroup bossGroup;
 
 	private EventLoopGroup workerGroup;
 
 	private int port;
+
+	public WebsocketConsumerServer(WebsocketConsumerProperties properties, WebsocketConsumerServerInitializer initializer) {
+		this.properties = properties;
+		this.initializer = initializer;
+	}
 
 	public int getPort() {
 		return this.port;

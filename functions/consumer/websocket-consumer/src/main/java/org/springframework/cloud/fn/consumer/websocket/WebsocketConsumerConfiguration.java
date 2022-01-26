@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -42,42 +43,33 @@ import org.springframework.messaging.simp.SimpMessageType;
  * @author Oliver Moser
  * @author Gary Russell
  * @author Artem Bilan
+ * @author Chris Bono
  */
 @Configuration
 @EnableConfigurationProperties(WebsocketConsumerProperties.class)
 public class WebsocketConsumerConfiguration {
 
-
 	private static final Log logger = LogFactory.getLog(WebsocketConsumerConfiguration.class);
-
-	private final InMemoryTraceRepository websocketTraceRepository = new InMemoryTraceRepository();
 
 	@Value("${endpoints.websocketconsumertrace.enabled:false}")
 	private boolean traceEndpointEnabled;
 
+	@Autowired
+	private WebsocketConsumerServer websocketConsumerServer;
+
 	@PostConstruct
 	public void init() throws InterruptedException {
-		server().run();
-	}
-
-	@Bean
-	public WebsocketConsumerServer server() {
-		return new WebsocketConsumerServer();
-	}
-
-	@Bean
-	public WebsocketConsumerServerInitializer initializer() {
-		return new WebsocketConsumerServerInitializer(this.websocketTraceRepository);
+		websocketConsumerServer.run();
 	}
 
 	@Bean
 	@ConditionalOnProperty(value = "endpoints.websocketsinktrace.enabled", havingValue = "true")
-	public WebsocketConsumerTraceEndpoint websocketTraceEndpoint() {
-		return new WebsocketConsumerTraceEndpoint(this.websocketTraceRepository);
+	public WebsocketConsumerTraceEndpoint websocketTraceEndpoint(InMemoryTraceRepository websocketTraceRepository) {
+		return new WebsocketConsumerTraceEndpoint(websocketTraceRepository);
 	}
 
 	@Bean
-	public Consumer<Message<?>> websocketConsumer() {
+	public Consumer<Message<?>> websocketConsumer(InMemoryTraceRepository websocketTraceRepository) {
 		return message -> {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Handling message: " + message);
@@ -95,17 +87,36 @@ public class WebsocketConsumerConfiguration {
 			}
 
 			if (this.traceEndpointEnabled) {
-				addMessageToTraceRepository(message);
+				addMessageToTraceRepository(websocketTraceRepository, message);
 			}
 		};
 	}
 
-	private void addMessageToTraceRepository(Message<?> message) {
+	private void addMessageToTraceRepository(InMemoryTraceRepository websocketTraceRepository, Message<?> message) {
 		Map<String, Object> trace = new LinkedHashMap<>();
 		trace.put("type", "text");
 		trace.put("direction", "out");
 		trace.put("id", message.getHeaders().getId());
 		trace.put("payload", message.getPayload().toString());
-		this.websocketTraceRepository.add(trace);
+		websocketTraceRepository.add(trace);
 	}
+
+	@Configuration
+	static class WebsocketConsumerServerConfiguration {
+		@Bean
+		public InMemoryTraceRepository websocketTraceRepository() {
+			return new InMemoryTraceRepository();
+		}
+
+		@Bean
+		public WebsocketConsumerServer server(WebsocketConsumerProperties properties, WebsocketConsumerServerInitializer initializer) {
+			return new WebsocketConsumerServer(properties, initializer);
+		}
+
+		@Bean
+		public WebsocketConsumerServerInitializer initializer(InMemoryTraceRepository websocketTraceRepository) {
+			return new WebsocketConsumerServerInitializer(websocketTraceRepository);
+		}
+	}
+
 }

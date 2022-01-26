@@ -31,7 +31,8 @@
         <!-- Boot 2.4.x needs wavefront-spring-boot version 2.1.0-RC1+ -->
         <wavefront-spring-boot.version>2.2.0</wavefront-spring-boot.version>
         <spring-cloud.version>2021.0.0</spring-cloud.version>
-    </properties>
+		<spring-cloud-starters.version>3.1.0</spring-cloud-starters.version>
+	</properties>
 
     <modules>
         <module>stream-applications-test-support</module>
