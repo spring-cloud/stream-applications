@@ -18,7 +18,7 @@
 	<properties>
 		<checkstyle.skip>true</checkstyle.skip>
 		<tensorflow.version>1.15.0</tensorflow.version>
-		<spring-core.version>5.2.7.RELEASE</spring-core.version>
+		<spring-core.version>5.3.14</spring-core.version>
 		<jackson.version>2.11.0</jackson.version>
 		<apache.commons.compress>1.21</apache.commons.compress>
 		<commons-io.version>2.7</commons-io.version>
