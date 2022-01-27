@@ -107,11 +107,12 @@ public class RabbitSourceListenerTests {
 								"${spring.rabbitmq.test.port}"
 				)) {
 
-			final RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
+			// Reset the boot connection factory -should not matter to container as it SHOULD be using its own connection factory
 			final CachingConnectionFactory bootFactory = context.getBean(CachingConnectionFactory.class);
-			rabbitTemplate.convertAndSend("scsapp-testOwnSource", "foo");
-
 			bootFactory.resetConnection();
+
+			// Send a message on a separate connection - the container should still receive it.
+			sendMessageOnSeparateConnection("scsapp-testOwnSource", "foo", bootFactory);
 
 			OutputDestination target = context.getBean(OutputDestination.class);
 			Message<byte[]> sourceMessage = target.receive(600000, "rabbitSupplier-out-0");
@@ -119,6 +120,32 @@ public class RabbitSourceListenerTests {
 			final String actual = new String(sourceMessage.getPayload());
 			assertThat(actual).isEqualTo("foo");
 			assertThat(bootFactory.getCacheProperties().getProperty("localPort")).isEqualTo("0");
+		}
+	}
+
+	/**
+	 * Sends a message on a separate connection.
+	 *
+	 * @param routingKey message routing key
+	 * @param payload message content
+	 * @param bootFactory the auto-configured connection factory used to get connection coordinates from
+	 */
+	private void sendMessageOnSeparateConnection(String routingKey, Object payload, CachingConnectionFactory bootFactory) {
+		CachingConnectionFactory copiedConnectionFactory = null;
+		try {
+			copiedConnectionFactory = new CachingConnectionFactory(bootFactory.getHost(), bootFactory.getPort());
+			copiedConnectionFactory.setUsername(bootFactory.getUsername());
+			copiedConnectionFactory.setPassword(bootFactory.getRabbitConnectionFactory().getPassword());
+			if (bootFactory.getVirtualHost() != null) {
+				copiedConnectionFactory.setVirtualHost(bootFactory.getVirtualHost());
+			}
+			RabbitTemplate rabbitTemplate = new RabbitTemplate(copiedConnectionFactory);
+			rabbitTemplate.convertAndSend(routingKey, payload);
+		}
+		finally {
+			if (copiedConnectionFactory != null) {
+				copiedConnectionFactory.resetConnection();
+			}
 		}
 	}
 

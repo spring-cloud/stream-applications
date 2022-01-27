@@ -24,7 +24,7 @@ import com.rabbitmq.client.impl.CredentialsRefreshService;
 import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionNameStrategy;
+import org.springframework.amqp.rabbit.connection.RabbitConnectionFactoryBean;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -33,8 +33,9 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.amqp.CachingConnectionFactoryConfigurer;
 import org.springframework.boot.autoconfigure.amqp.ConnectionFactoryCustomizer;
-import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
+import org.springframework.boot.autoconfigure.amqp.RabbitConnectionFactoryBeanConfigurer;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -47,15 +48,20 @@ import org.springframework.integration.amqp.dsl.AmqpOutboundChannelAdapterSpec;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 
+/**
+ * A configuration for RabbitMQ Consumer function. Uses a
+ * {@link AmqpOutboundChannelAdapterSpec} to save payload contents to RabbitMQ.
+ *
+ * @author Soby Chako
+ * @author Nicolas Labrot
+ * @author Chris Bono
+ */
 @EnableConfigurationProperties(RabbitConsumerProperties.class)
 @Configuration
 public class RabbitConsumerConfiguration implements DisposableBean {
 
 	@Autowired
 	private RabbitProperties bootProperties;
-
-	@Autowired
-	private ObjectProvider<ConnectionNameStrategy> connectionNameStrategy;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -86,12 +92,12 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 	}
 
 	@Bean
-	public MessageHandler amqpChannelAdapter(ConnectionFactory rabbitConnectionFactory, CachingConnectionFactory cachingConnectionFactory)
+	public MessageHandler amqpChannelAdapter(ConnectionFactory rabbitConnectionFactory)
 			throws Exception {
 
 		AmqpOutboundChannelAdapterSpec handler = Amqp
 				.outboundAdapter(rabbitTemplate(this.properties.isOwnConnection()
-						? buildLocalConnectionFactory(cachingConnectionFactory) : rabbitConnectionFactory))
+						? buildLocalConnectionFactory() : rabbitConnectionFactory))
 				.mappedRequestHeaders(properties.getMappedRequestHeaders())
 				.defaultDeliveryMode(properties.getPersistentDeliveryMode()
 						? MessageDeliveryMode.PERSISTENT
@@ -116,11 +122,6 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 		return handler.get();
 	}
 
-	private ConnectionFactory buildLocalConnectionFactory(CachingConnectionFactory cachingConnectionFactory) throws Exception {
-		this.ownConnectionFactory = new AutoConfig.Creator().rabbitConnectionFactory(cachingConnectionFactory);
-		return this.ownConnectionFactory;
-	}
-
 	@Bean
 	public RabbitTemplate rabbitTemplate(ConnectionFactory rabbitConnectionFactory) {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(rabbitConnectionFactory);
@@ -129,6 +130,7 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 		}
 		return rabbitTemplate;
 	}
+
 
 	@Bean
 	@ConditionalOnProperty(name = "rabbit.converterBeanName",
@@ -144,25 +146,39 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 		}
 	}
 
-	private static class AutoConfig extends RabbitAutoConfiguration {
+	private ConnectionFactory buildLocalConnectionFactory() throws Exception {
+		this.ownConnectionFactory = rabbitConnectionFactory(this.bootProperties, this.resourceLoader,
+				this.credentialsProvider, this.credentialsRefreshService, this.connectionFactoryCustomizers);
+		return this.ownConnectionFactory;
+	}
 
-		static class Creator extends RabbitConnectionFactoryCreator {
+	private CachingConnectionFactory rabbitConnectionFactory(RabbitProperties properties, ResourceLoader resourceLoader,
+			ObjectProvider<CredentialsProvider> credentialsProvider,
+			ObjectProvider<CredentialsRefreshService> credentialsRefreshService,
+			ObjectProvider<ConnectionFactoryCustomizer> connectionFactoryCustomizers) throws Exception {
 
-//			@Override
-			public CachingConnectionFactory rabbitConnectionFactory(CachingConnectionFactory cachingConnectionFactory)
-					throws Exception {
-//				CachingConnectionFactory cf = super.rabbitConnectionFactory(config, resourceLoader, credentialsProvider,
-//						credentialsRefreshService, connectionNameStrategy, connectionFactoryCustomizers);
-				cachingConnectionFactory.setConnectionNameStrategy(
-						connectionFactory -> "rabbit.sink.own.connection");
-				cachingConnectionFactory.afterPropertiesSet();
-				return cachingConnectionFactory;
-			}
+		/* NOTE: This is based on RabbitAutoConfiguration.RabbitConnectionFactoryCreator
+		 * 		https://github.com/spring-projects/spring-boot/blob/c820ad01a108d419d8548265b8a34ed7c5591f7c/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/amqp/RabbitAutoConfiguration.java#L95
+		 * [UPGRADE_CONSIDERATION] this should stay somewhat in sync w/ the functionality provided by its original source.
+		 */
+		RabbitConnectionFactoryBean connectionFactoryBean = new RabbitConnectionFactoryBean();
+		RabbitConnectionFactoryBeanConfigurer connectionFactoryBeanConfigurer = new RabbitConnectionFactoryBeanConfigurer(resourceLoader, properties);
+		connectionFactoryBeanConfigurer.setCredentialsProvider(credentialsProvider.getIfUnique());
+		connectionFactoryBeanConfigurer.setCredentialsRefreshService(credentialsRefreshService.getIfUnique());
+		connectionFactoryBeanConfigurer.configure(connectionFactoryBean);
+		connectionFactoryBean.afterPropertiesSet();
 
-		}
+		com.rabbitmq.client.ConnectionFactory connectionFactory = connectionFactoryBean.getObject();
+		connectionFactoryCustomizers.orderedStream()
+				.forEach((customizer) -> customizer.customize(connectionFactory));
+
+		CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(connectionFactory);
+		CachingConnectionFactoryConfigurer cachingConnectionFactoryConfigurer = new CachingConnectionFactoryConfigurer(properties);
+		cachingConnectionFactoryConfigurer.setConnectionNameStrategy(cf -> "rabbit.sink.own.connection");
+		cachingConnectionFactoryConfigurer.configure(cachingConnectionFactory);
+		cachingConnectionFactory.afterPropertiesSet();
+
+		return cachingConnectionFactory;
 	}
 
 }
-
-
-
