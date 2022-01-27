@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,14 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -44,6 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Christian Tzolov
+ * @author Soby Chacko
  */
 public class SpringCloudStreamAppGeneratorMojoTest {
 
@@ -144,6 +147,30 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 
 		//assertGeneratedPomXml(new File("./target/apps"));
 		assertGeneratedPomXml(new File(projectHome.getRoot().getAbsolutePath()));
+	}
+
+	@Test
+	public void testCustomBootMavenPluginConfiguration() throws Exception {
+		application.setBootPluginConfiguration("<![CDATA[\n" +
+				"                            <requiresUnpack>\n" +
+				"                                <dependency>\n" +
+				"                                    <groupId>org.python</groupId>\n" +
+				"                                    <artifactId>jython-standalone</artifactId>\n" +
+				"                                </dependency>\n" +
+				"                            </requiresUnpack>\n" +
+				"                            ]]>");
+
+		springCloudStreamAppMojo.execute();
+
+		Model pomModel = getModel(new File(projectHome.getRoot().getAbsolutePath()));
+		List<Plugin> plugins = pomModel.getBuild().getPlugins();
+		final Optional<Plugin> bootPlugin = plugins.stream().filter(p -> p.getArtifactId().equals("spring-boot-maven-plugin")).findFirst();
+		assertThat(bootPlugin.isPresent()).isTrue();
+		final Plugin plugin = bootPlugin.get();
+		final Xpp3Dom configuration = (Xpp3Dom) plugin.getConfiguration();
+		assertThat(configuration.getValue().contains("<requiresUnpack>")).isTrue();
+		assertThat(configuration.getValue().contains("jython-standalone")).isTrue();
+		assertThat(configuration.getValue().contains("</requiresUnpack>")).isTrue();
 	}
 
 	private void assertGeneratedPomXml(File rootPath) {

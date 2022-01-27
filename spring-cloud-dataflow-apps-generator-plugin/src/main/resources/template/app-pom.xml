@@ -134,6 +134,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				{{#app.bootPluginConfiguration}}
+				<configuration>
+					{{this}}
+				</configuration>
+				{{/app.bootPluginConfiguration}}
 			</plugin>
 
 			<plugin>

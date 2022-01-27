@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.List;
  * Application configurations used to parameterize the project templates.
  *
  * @author Christian Tzolov
+ * @author Soby Chacko
  */
 public class AppDefinition {
 
@@ -80,6 +81,16 @@ public class AppDefinition {
 	 * Application metadata related configurations to be applied for this App definition.
 	 */
 	private final Metadata metadata = new Metadata();
+
+	private String bootPluginConfiguration;
+
+	public String getBootPluginConfiguration() {
+		return bootPluginConfiguration;
+	}
+
+	public void setBootPluginConfiguration(String bootPluginConfiguration) {
+		this.bootPluginConfiguration = bootPluginConfiguration;
+	}
 
 	public String getName() {
 		return name;

@@ -253,3 +253,50 @@ binders and to your binders section configuration like this:
 ...
 </binders>
 ----
+
+== Custom Spring Boot Maven Plugin Configuration
+
+Spring Boot Maven plugin offers a number of customization options by specifying a configuration section in the plugin definition.
+For example, using the custom configuration, you can instruct the plugin to unpack a particular dependency.
+You would do that using Spring Boot Maven plugin as below.
+```
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+        <requiresUnpack>
+                    <dependency>
+                        <groupId>org.python</groupId>
+                        <artifactId>jython-standalone</artifactId>
+                    </dependency>
+                </requiresUnpack>
+    </configuration>
+</plugin>
+```
+
+When using the app generator plugin, you can ask the plugin to include this information when it generates the necessary XML snippets for adding the Spring Boot Maven plugin.
+Below is an example of doing so.
+```
+<plugin>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
+    <configuration>
+        <application>
+            ...
+            <bootPluginConfiguration>
+                <![CDATA[
+                <requiresUnpack>
+                    <dependency>
+                        <groupId>org.python</groupId>
+                        <artifactId>jython-standalone</artifactId>
+                    </dependency>
+                </requiresUnpack>
+                ]]>
+            </bootPluginConfiguration>
+            ...
+        </application>
+    </configuration>
+```
+
+Pay attention to how the Spring Boot plugin configuration is wrapped inside a `CDATA` element.
+This is necessary for the app generator to properly parse this information.

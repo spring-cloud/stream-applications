@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ import org.springframework.util.StringUtils;
 /**
  * @author Christian Tzolov
  * @author David Turanski
+ * @author Soby Chacko
  */
 @Mojo(name = "generate-app")
 public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
@@ -305,6 +306,8 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 				})
 				.collect(Collectors.toList());
 
+		app.setBootPluginConfiguration(this.application.getBootPluginConfiguration());
+
 		// ----------------------------------------------------------------------------------------------------------
 		//                                 Project Generator
 		// ----------------------------------------------------------------------------------------------------------
@@ -460,6 +463,16 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		private final ContainerImage containerImage = new ContainerImage();
 
 		private final Maven maven = new Maven();
+
+		private String bootPluginConfiguration;
+
+		public String getBootPluginConfiguration() {
+			return bootPluginConfiguration;
+		}
+
+		public void setBootPluginConfiguration(String bootPluginConfiguration) {
+			this.bootPluginConfiguration = bootPluginConfiguration;
+		}
 
 		public Map<String, String> getProperties() {
 			return properties;
