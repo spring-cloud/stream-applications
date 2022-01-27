@@ -121,6 +121,18 @@
                                 </dependency>
                             </dependencies>
                         </maven>
+
+                        <bootPluginConfiguration>
+                            <![CDATA[
+                                        <requiresUnpack>
+                                            <dependency>
+                                                <groupId>org.python</groupId>
+                                                <artifactId>jython-standalone</artifactId>
+                                            </dependency>
+                                        </requiresUnpack>
+                                        ]]>
+                        </bootPluginConfiguration>
+
                     </application>
                 </configuration>
             </plugin>
