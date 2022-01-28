@@ -1,4 +1,4 @@
-FROM apachegeode/geode:1.13.2
+FROM apachegeode/geode:1.14.3
 
 ARG CACHE_SERVER_PORT=40404
 ARG LOCATOR_PORT=10334
