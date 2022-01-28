@@ -18,8 +18,6 @@
 	<properties>
 		<checkstyle.skip>true</checkstyle.skip>
 		<tensorflow.version>1.15.0</tensorflow.version>
-		<spring-core.version>5.3.14</spring-core.version>
-		<jackson.version>2.11.0</jackson.version>
 		<apache.commons.compress>1.21</apache.commons.compress>
 		<commons-io.version>2.7</commons-io.version>
 		<commons-lang3.version>3.10</commons-lang3.version>
@@ -28,12 +26,6 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring-core.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.tensorflow</groupId>
 			<artifactId>tensorflow</artifactId>
@@ -60,22 +52,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>${commons-lang3.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
