@@ -194,7 +194,7 @@ class StreamApplicationsBuildMaker implements JdkConfig, TestPublisher,
                 if (integTestsBuild) {
                     maven {
                         mavenInstallation(maven35())
-                        goals('clean test -pl :stream-applications-integration-tests -Pintegration -Dspring.cloud.stream.applications.version=latest')
+                        goals('-U clean test -pl :stream-applications-integration-tests -Pintegration -Dspring.cloud.stream.applications.version=latest')
                     }
                 }
             }
