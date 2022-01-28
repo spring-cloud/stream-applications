@@ -25,6 +25,10 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * @author Soby Chacko
+ * @author Chris Bono
+ */
 @TestPropertySource(properties = {"rabbit.routingKey=scsapp-testOwn",
 		"rabbit.own-connection=true"})
 public class OwnConnectionTest extends RabbitSinkIntegrationTests {
@@ -33,12 +37,18 @@ public class OwnConnectionTest extends RabbitSinkIntegrationTests {
 	public void test() {
 		this.rabbitAdmin.declareQueue(
 				new Queue("scsapp-testOwn", false, false, true));
-		this.bootFactory.resetConnection();
-		this.channels.send(MessageBuilder.withPayload("foo".getBytes())
-				.build());
+
+		// Destroy the boot connection factory - should not matter to outbound adapter as it SHOULD be using its own connection factory
+		this.bootFactory.destroy();
+		assertThat(this.bootFactory.getCacheProperties().getProperty("localPort")).isEqualTo("0");
+
+		// Send to the channel - should still be consumed by outbound adapter as its using its own connection factory
+		this.channels.send(MessageBuilder.withPayload("foo".getBytes()).build());
+
+		// RabbitTemplate also using its own connection factory - should still be able to get the message
+		assertThat(this.rabbitTemplate.getConnectionFactory()).isNotSameAs(bootFactory);
 		this.rabbitTemplate.setReceiveTimeout(10000);
 		Message received = this.rabbitTemplate.receive("scsapp-testOwn");
 		assertThat(new String(received.getBody())).isEqualTo("foo");
-		assertThat(this.bootFactory.getCacheProperties().getProperty("localPort")).isEqualTo("0");
 	}
 }
