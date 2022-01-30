@@ -71,11 +71,13 @@ The **$$ftp$$** $$source$$ has the following options:
 Properties grouped by prefix:
 
 
-=== file.consumer
+=== ftp.consumer
 
-$$markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$true$$`)*
-$$mode$$:: $$The FileReadingMode to use for file reading sources. Values are 'ref' - The File object, 'lines' - a message per line, or 'contents' - the contents as bytes.$$ *($$FileReadingMode$$, default: `$$<none>$$`, possible values: `ref`,`lines`,`contents`)*
-$$with-markers$$:: $$Set to true to emit start of file/end of file marker messages before/after the data. Only valid with FileReadingMode 'lines'.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$temporaryRemoteDir$$:: $$A temporary directory where the file will be written if '#isUseTemporaryFilename()' is true.$$
+$$remoteDir$$:: $$The remote FTP directory.$$ *(default: `$$/$$`)*
+$$mode$$:: $$ Action to take if the remote file already exists$$ *($$FileExistsMode$$, default: `$$REPLACE$$`)*
+$$tmpFileSuffix$$:: $$ The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
+$$remoteFileSeparator$$:: $$ The remote file separator.$$ *($$String$$, default: `$$/$$`)*
 
 === ftp.factory
 
