@@ -161,6 +161,9 @@
                                     <spring.sleuth.integration.enabled>true</spring.sleuth.integration.enabled>
                                     <spring.sleuth.sampler.probability>1.0</spring.sleuth.sampler.probability>
 
+									<!-- Temporarily disable Spring Cloud Sleuth function instrumentation -->
+									<spring.sleuth.function.enabled>false</spring.sleuth.function.enabled>
+
                                 </properties>
                                 <metadata>
                                     <mavenPluginVersion>${spring-cloud-dataflow-apps-metadata-plugin.version}</mavenPluginVersion>
