@@ -150,10 +150,7 @@
 						<image>{{app.containerImage.baseImage}}</image>
 					</from>
 					<to>
-						<image>{{app.containerImage.orgName}}/${project.artifactId}</image>
-						<tags>
-							<tag>{{app.containerImage.tag}}</tag>
-						</tags>
+						<image>{{app.containerImage.orgName}}/${project.artifactId}:${{app.containerImage.tag}}</image>
 					</to>
 					<container>
 						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
