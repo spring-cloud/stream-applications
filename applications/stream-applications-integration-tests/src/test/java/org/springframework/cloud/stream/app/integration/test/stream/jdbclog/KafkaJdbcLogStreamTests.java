@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.integration.test.stream.jdbclog;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.BindMode;
@@ -53,28 +54,38 @@ public class KafkaJdbcLogStreamTests {
 			.withClasspathResourceMapping("init.sql", "/init.sql", BindMode.READ_ONLY)
 			.withCommand("--init-file", "/init.sql");
 
-	@Container
-	private static final StreamApps streamApp = kafkaStreamApps(KafkaJdbcLogStreamTests.class.getSimpleName(),
-			KafkaConfig.kafka)
-					.withSourceContainer(
-							new KafkaStreamAppContainer(StreamAppContainerTestUtils.imageName(
-									"jdbc-source-kafka",
-									VERSION))
-											.withEnv("JDBC_SUPPLIER_QUERY", "SELECT * FROM People WHERE deleted='N'")
-											.withEnv("JDBC_SUPPLIER_UPDATE",
-													"UPDATE People SET deleted='Y' WHERE id=:id")
-											.withEnv("SPRING_DATASOURCE_PASSWORD", "secret")
-											.withEnv("SPRING_DATASOURCE_USERNAME", "test")
-											.withEnv("SPRING_DATASOURCE_DRIVER_CLASS_NAME", "org.mariadb.jdbc.Driver")
-											.withEnv("SPRING_DATASOURCE_URL",
-													"jdbc:mariadb://mysql-for-stream:3306/test"))
-					.withSinkContainer(
-							new KafkaStreamAppContainer(StreamAppContainerTestUtils.imageName(
-									"log-sink-kafka", VERSION)).withLogConsumer(logMatcher))
-					.build();
+	/**
+	 * Nested test whose purpose is to delay the starting of the stream app containers until the MySQL container
+	 * in the outer test has started.
+	 * <p>Nested tests can not be static and therefore the inner stream app container is not static. This is not an issue
+	 * because there is only a single test.
+	 */
+	@Nested
+	class StartAfterMySql {
 
-	@Test
-	void test() {
-		await().atMost(DEFAULT_DURATION).until(logMatcher.matches());
+		@Container
+		private final StreamApps streamApp = kafkaStreamApps(KafkaJdbcLogStreamTests.class.getSimpleName(),
+				KafkaConfig.kafka)
+				.withSourceContainer(
+						new KafkaStreamAppContainer(StreamAppContainerTestUtils.imageName(
+								"jdbc-source-kafka",
+								VERSION))
+								.withEnv("JDBC_SUPPLIER_QUERY", "SELECT * FROM People WHERE deleted='N'")
+								.withEnv("JDBC_SUPPLIER_UPDATE",
+										"UPDATE People SET deleted='Y' WHERE id=:id")
+								.withEnv("SPRING_DATASOURCE_PASSWORD", "secret")
+								.withEnv("SPRING_DATASOURCE_USERNAME", "test")
+								.withEnv("SPRING_DATASOURCE_DRIVER_CLASS_NAME", "org.mariadb.jdbc.Driver")
+								.withEnv("SPRING_DATASOURCE_URL",
+										"jdbc:mariadb://mysql-for-stream:3306/test"))
+				.withSinkContainer(
+						new KafkaStreamAppContainer(StreamAppContainerTestUtils.imageName(
+								"log-sink-kafka", VERSION)).withLogConsumer(logMatcher))
+				.build();
+
+		@Test
+		void test() {
+			await().atMost(DEFAULT_DURATION).until(logMatcher.matches());
+		}
 	}
 }
