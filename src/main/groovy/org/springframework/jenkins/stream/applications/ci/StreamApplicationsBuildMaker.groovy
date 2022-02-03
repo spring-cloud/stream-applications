@@ -181,11 +181,11 @@ class StreamApplicationsBuildMaker implements JdkConfig, TestPublisher,
                     cd applications/${cdToApps}
                     cd apps
                     set +x
-                    ./mvnw -U clean package jib:build -DskipTests -Djib.httpTimeout=1800000 -Djib.to.auth.username="\$${dockerHubUserNameEnvVar()}" -Djib.to.auth.password="\$${dockerHubPasswordEnvVar()}"
+                    ./mvnw -U clean package jib:build -DskipTests -Djib.to.tags=${branchToBuild} -Djib.httpTimeout=1800000 -Djib.to.auth.username="\$${dockerHubUserNameEnvVar()}" -Djib.to.auth.password="\$${dockerHubPasswordEnvVar()}"
 					if [[ "\$?" -ne 0 ]] ; then
                             set -e
                             echo "Apps Docker Build failed: Rerunning again"
-                            ./mvnw -U clean package jib:build -DskipTests -Djib.httpTimeout=1800000 -Djib.to.auth.username="\$${dockerHubUserNameEnvVar()}" -Djib.to.auth.password="\$${dockerHubPasswordEnvVar()}"
+                            ./mvnw -U clean package jib:build -DskipTests -Djib.to.tags=${branchToBuild} -Djib.httpTimeout=1800000 -Djib.to.auth.username="\$${dockerHubUserNameEnvVar()}" -Djib.to.auth.password="\$${dockerHubPasswordEnvVar()}"
                         fi
 					set -x
 					${cleanGitCredentials()}
@@ -194,7 +194,7 @@ class StreamApplicationsBuildMaker implements JdkConfig, TestPublisher,
                 if (integTestsBuild) {
                     maven {
                         mavenInstallation(maven35())
-                        goals('-U clean test -pl :stream-applications-integration-tests -Pintegration -Dspring.cloud.stream.applications.version=latest')
+                        goals("-U clean test -pl :stream-applications-integration-tests -Pintegration -Dspring.cloud.stream.applications.version=${branchToBuild}")
                     }
                 }
             }
