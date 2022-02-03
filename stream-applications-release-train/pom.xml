@@ -22,65 +22,7 @@
         <revision>2021.1.0-SNAPSHOT</revision>
         <apps.version>3.2.0-SNAPSHOT</apps.version>
         <apps.harbor.version>3.1.1</apps.harbor.version>
-        <cdc-debezium-source.version>${apps.version}</cdc-debezium-source.version>
-        <file-source.version>${apps.version}</file-source.version>
-        <ftp-source.version>${apps.version}</ftp-source.version>
-        <geode-source.version>${apps.version}</geode-source.version>
-        <http-source.version>${apps.version}</http-source.version>
-        <jdbc-source.version>${apps.version}</jdbc-source.version>
-        <jms-source.version>${apps.version}</jms-source.version>
-        <load-generator-source.version>${apps.version}</load-generator-source.version>
-        <mail-source.version>${apps.version}</mail-source.version>
-        <mongodb-source.version>${apps.version}</mongodb-source.version>
-        <mqtt-source.version>${apps.version}</mqtt-source.version>
-        <rabbit-source.version>${apps.version}</rabbit-source.version>
-        <s3-source.version>${apps.version}</s3-source.version>
-        <syslog-source.version>${apps.version}</syslog-source.version>
-        <sftp-source.version>${apps.version}</sftp-source.version>
-        <tcp-source.version>${apps.version}</tcp-source.version>
-        <time-source.version>${apps.version}</time-source.version>
-        <twitter-message-source.version>${apps.version}</twitter-message-source.version>
-        <twitter-search-source.version>${apps.version}</twitter-search-source.version>
-        <twitter-stream-source.version>${apps.version}</twitter-stream-source.version>
-        <websocket-source.version>${apps.version}</websocket-source.version>
-        <zeromq-source.version>${apps.version}</zeromq-source.version>
-        <cassandra-sink.version>${apps.version}</cassandra-sink.version>
-        <analytics-sink.version>${apps.version}</analytics-sink.version>
-        <elasticsearch-sink.version>${apps.version}</elasticsearch-sink.version>
-        <file-sink.version>${apps.version}</file-sink.version>
-        <ftp-sink.version>${apps.version}</ftp-sink.version>
-        <geode-sink.version>${apps.version}</geode-sink.version>
-        <jdbc-sink.version>${apps.version}</jdbc-sink.version>
-        <log-sink.version>${apps.version}</log-sink.version>
-        <mongodb-sink.version>${apps.version}</mongodb-sink.version>
-        <mqtt-sink.version>${apps.version}</mqtt-sink.version>
-        <rabbit-sink.version>${apps.version}</rabbit-sink.version>
-        <redis-sink.version>${apps.version}</redis-sink.version>
-        <router-sink.version>${apps.version}</router-sink.version>
-        <rsocket-sink.version>${apps.version}</rsocket-sink.version>
-        <pgcopy-sink.version>${apps.version}</pgcopy-sink.version>
-        <s3-sink.version>${apps.version}</s3-sink.version>
-        <sftp-sink.version>${apps.version}</sftp-sink.version>
-        <tcp-sink.version>${apps.version}</tcp-sink.version>
-        <throughput-sink.version>${apps.version}</throughput-sink.version>
-        <twitter-message-sink.version>${apps.version}</twitter-message-sink.version>
-        <twitter-update-sink.version>${apps.version}</twitter-update-sink.version>
-        <wavefront-sink.version>${apps.version}</wavefront-sink.version>
-        <websocket-sink.version>${apps.version}</websocket-sink.version>
-        <zeromq-sink.version>${apps.version}</zeromq-sink.version>
-        <aggregator-processor.version>${apps.version}</aggregator-processor.version>
-        <bridge-processor.version>${apps.version}</bridge-processor.version>
-        <filter-processor.version>${apps.version}</filter-processor.version>
-        <groovy-processor.version>${apps.version}</groovy-processor.version>
-        <header-enricher-processor.version>${apps.version}</header-enricher-processor.version>
-        <http-request-processor.version>${apps.version}</http-request-processor.version>
-        <image-recognition-processor.version>${apps.version}</image-recognition-processor.version>
-        <semantic-segmentation-processor.version>${apps.version}</semantic-segmentation-processor.version>
-        <object-detection-processor.version>${apps.version}</object-detection-processor.version>
-        <script-processor.version>${apps.version}</script-processor.version>
-        <splitter-processor.version>${apps.version}</splitter-processor.version>
-        <transform-processor.version>${apps.version}</transform-processor.version>
-        <twitter-trend-processor.version>${apps.version}</twitter-trend-processor.version>
+		<apps.docker.tag>${apps.version}</apps.docker.tag>
     </properties>
 
     <build>

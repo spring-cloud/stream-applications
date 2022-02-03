@@ -313,32 +313,32 @@
 		<dependency>
 			<groupId>org.springframework.cloud.stream.app</groupId>
 			<artifactId>load-generator-source</artifactId>
-			<version>${load-generator-source.version}</version>
+			<version>${apps.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.stream.app</groupId>
 			<artifactId>router-sink</artifactId>
-			<version>${router-sink.version}</version>
+			<version>${apps.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.stream.app</groupId>
 			<artifactId>pgcopy-sink</artifactId>
-			<version>${pgcopy-sink.version}</version>
+			<version>${apps.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.stream.app</groupId>
 			<artifactId>throughput-sink</artifactId>
-			<version>${throughput-sink.version}</version>
+			<version>${apps.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.stream.app</groupId>
 			<artifactId>groovy-processor</artifactId>
-			<version>${groovy-processor.version}</version>
+			<version>${apps.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.stream.app</groupId>
 			<artifactId>script-processor</artifactId>
-			<version>${script-processor.version}</version>
+			<version>${apps.version}</version>
 		</dependency>
 
 	</dependencies>
