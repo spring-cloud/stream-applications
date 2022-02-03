@@ -142,10 +142,7 @@
 														<image>springcloud/baseimage:1.0.0</image>
 													</from>
 													<to>
-														<image>springcloudstream:${project.artifactId}</image>
-														<tags>
-															<tag>latest</tag>
-														</tags>
+														<image>springcloudstream:${project.artifactId}:3.0.0.BUILD-SNAPSHOT</image>
 													</to>
 													<container>
 														<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
