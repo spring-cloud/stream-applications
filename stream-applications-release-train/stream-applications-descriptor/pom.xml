@@ -42,10 +42,11 @@
                         </goals>
                         <configuration>
                             <source><![CDATA[
-        pom.properties['repo-spring-io'] =
-                "${apps.version}".contains('SNAPSHOT') ? 'repo.spring.io/snapshot' :
-                        "${apps.version}".contains('-') ? 'repo.spring.io/milestone' : 'repo.maven.apache.org/maven2'
-                                ]]></source>
+                                pom.properties['repo-spring-io'] =
+                                        "${apps.version}".contains('SNAPSHOT') ? 'repo.spring.io/snapshot' :
+                                                "${apps.version}".contains('-') ? 'repo.spring.io/milestone' : 'repo.maven.apache.org/maven2'
+                                ]]>
+                            </source>
                         </configuration>
                     </execution>
                 </executions>
