@@ -110,7 +110,7 @@ public class SftpSupplierConfiguration {
 				? sftpMessageFlux(sftpMessageSource, sftpSupplierProperties, subscriptionBarrier)
 				: Flux.from(sftpReadingFlow);
 
-		return () -> flux.doOnSubscribe(s -> subscriptionBarrier.onNext(true));
+		return () -> flux.doOnRequest(l -> subscriptionBarrier.onNext(true));
 	}
 
 	@Bean
@@ -230,7 +230,9 @@ public class SftpSupplierConfiguration {
 		@ConditionalOnProperty(prefix = "sftp.supplier", value = "rename-remote-files-to")
 		public RemoteFileRenamingAdvice remoteFileRenamingAdvice(SftpRemoteFileTemplate sftpTemplate,
 																SftpSupplierProperties sftpSupplierProperties) {
-			return new RemoteFileRenamingAdvice(sftpTemplate, sftpSupplierProperties.getRemoteFileSeparator(), sftpSupplierProperties.getRenameRemoteFilesTo());
+
+			return new RemoteFileRenamingAdvice(sftpTemplate, sftpSupplierProperties.getRemoteFileSeparator(),
+					sftpSupplierProperties.getRenameRemoteFilesTo());
 		}
 	}
 
@@ -297,8 +299,16 @@ public class SftpSupplierConfiguration {
 
 		@Bean
 		@ConditionalOnProperty(prefix = "sftp.supplier", value = "rename-remote-files-to")
-		public SftpOutboundGatewaySpec renameRemoteFileHandler(SftpSupplierFactoryConfiguration.DelegatingFactoryWrapper delegatingFactoryWrapper, SftpSupplierProperties sftpSupplierProperties) {
-			return Sftp.outboundGateway(delegatingFactoryWrapper.getFactory(), AbstractRemoteFileOutboundGateway.Command.MV.getCommand(), String.format("headers.get('%s') + '%s' + headers.get('%s')", FileHeaders.REMOTE_DIRECTORY, sftpSupplierProperties.getRemoteFileSeparator(), FileHeaders.REMOTE_FILE))
+		public SftpOutboundGatewaySpec renameRemoteFileHandler(
+				SftpSupplierFactoryConfiguration.DelegatingFactoryWrapper delegatingFactoryWrapper,
+				SftpSupplierProperties sftpSupplierProperties) {
+
+			return Sftp.outboundGateway(delegatingFactoryWrapper.getFactory(),
+							AbstractRemoteFileOutboundGateway.Command.MV.getCommand(),
+							String.format("headers.get('%s') + '%s' + headers.get('%s')",
+									FileHeaders.REMOTE_DIRECTORY,
+									sftpSupplierProperties.getRemoteFileSeparator(),
+									FileHeaders.REMOTE_FILE))
 					.renameExpression(sftpSupplierProperties.getRenameRemoteFilesTo());
 		}
 	}
@@ -407,13 +417,13 @@ public class SftpSupplierConfiguration {
 
 			private final String remoteDirectory;
 
-			private final SessionFactory<?> sessionFactory;
+			private final SessionFactory<LsEntry> sessionFactory;
 
 			private final String remoteFileSeparator;
 
 			private final SftpSupplierProperties.SortSpec sort;
 
-			SftpListingMessageProducer(SessionFactory<?> sessionFactory, String remoteDirectory,
+			SftpListingMessageProducer(SessionFactory<LsEntry> sessionFactory, String remoteDirectory,
 					String remoteFileSeparator, SftpSupplierProperties.SortSpec sort) {
 
 				this.sessionFactory = sessionFactory;
@@ -423,22 +433,19 @@ public class SftpSupplierConfiguration {
 			}
 
 			public void listNames() {
-				LsEntry[] entries = { };
+				Stream<LsEntry> stream;
 				try {
-					Stream<LsEntry> stream = Stream.of(this.sessionFactory.getSession().list(this.remoteDirectory))
-							.map(x -> (LsEntry) x)
+					stream = Stream.of(this.sessionFactory.getSession().list(this.remoteDirectory))
 							.filter(x -> !(x.getAttrs().isDir() || x.getAttrs().isLink()));
 
 					if (sort != null) {
 						stream = stream.sorted(sort.comparator());
 					}
-
-					entries = stream.collect(Collectors.toList()).toArray(entries);
 				}
 				catch (IOException e) {
 					throw new MessagingException(e.getMessage(), e);
 				}
-				sendMessage(MessageBuilder.withPayload(entries)
+				sendMessage(MessageBuilder.withPayload(stream)
 						.setHeader(FileHeaders.REMOTE_DIRECTORY, this.remoteDirectory + this.remoteFileSeparator)
 						.build());
 			}
