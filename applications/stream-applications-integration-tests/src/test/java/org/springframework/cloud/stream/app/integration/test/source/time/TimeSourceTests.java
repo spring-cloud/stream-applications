@@ -30,12 +30,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.app.test.integration.OutputMatcher;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 import org.springframework.cloud.stream.app.test.integration.junit.jupiter.BaseContainerExtension;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.springframework.cloud.stream.app.integration.test.common.Configuration.DEFAULT_DURATION;
+import static org.springframework.cloud.stream.app.test.integration.AppLog.appLog;
 
 @Tag("integration")
 @ExtendWith(BaseContainerExtension.class)
@@ -59,6 +61,9 @@ abstract class TimeSourceTests {
 	static void configureSource() {
 		source = BaseContainerExtension.containerInstance()
 				.withExposedPorts(8080)
+				.withEnv("SPRING_CLOUD_STREAMAPP_SECURITY_ADMIN-PASSWORD", "password")
+				.withEnv("SPRING_CLOUD_STREAMAPP_SECURITY_ADMIN-USER", "user")
+				.withLogConsumer(appLog("time-source"))
 				.waitingFor(Wait.forLogMessage(".*Started TimeSource.*", 1));
 		source.start();
 	}
@@ -68,6 +73,7 @@ abstract class TimeSourceTests {
 		WebClient webClient = WebClient.create();
 		webClient.get()
 				.uri("http://localhost:" + source.getMappedPort(8080) + "/actuator/health")
+				.headers(h -> h.setBasicAuth("user", "password"))
 				.exchangeToMono(response -> {
 					assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
 					return response.toBodilessEntity();
