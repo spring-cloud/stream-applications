@@ -4,7 +4,7 @@
 
     <groupId>org.springframework.cloud.stream.app</groupId>
     <artifactId>stream-applications</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.2.0</version>
     <name>stream-applications</name>
     <description>Functions and Infrastructure for stream applications</description>
     <packaging>pom</packaging>
