@@ -169,6 +169,6 @@ $$dir$$:: $$Sorting direction (ASC or DESC).$$ *($$Dir$$, default: `$$<none>$$`)
 
 ```
 java -jar sftp_source.jar --sftp.supplier.remote-dir=foo --file.mode=lines --sftp.supplier.factory.host=sftpserver \
-         --sftp.supplier.factory.username=user --ftp.supplier.factory.password=pw --sftp.supplier.local-dir=/foo
+         --sftp.supplier.factory.username=user --sftp.supplier.factory.password=pw --sftp.supplier.local-dir=/foo
 ```
 //end::ref-doc[]
