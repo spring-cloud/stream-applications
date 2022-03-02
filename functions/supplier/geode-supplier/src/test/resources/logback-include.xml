@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="delegate" class="org.springframework.geode.logging.slf4j.logback.DelegatingAppender"/>
+
+	<logger name="com.gemstone.gemfire" level="${spring.boot.data.gemfire.log.level:-WARN}"/>
+	<logger name="org.apache.geode" level="${spring.boot.data.gemfire.log.level:-WARN}"/>
+	<logger name="org.jgroups" level="${spring.boot.data.gemfire.jgroups.log.level:-ERROR}"/>
+
+</included>

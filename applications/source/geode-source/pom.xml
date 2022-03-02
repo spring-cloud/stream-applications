@@ -14,9 +14,7 @@
         <version>3.2.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
-
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>geode-supplier</artifactId>
@@ -35,9 +33,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-geode-test</artifactId>
-            <version>${spring-data-geode-test.version}</version>
+            <groupId>org.springframework.geode</groupId>
+            <artifactId>spring-geode-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.geode</groupId>
+            <artifactId>spring-geode-starter-logging</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

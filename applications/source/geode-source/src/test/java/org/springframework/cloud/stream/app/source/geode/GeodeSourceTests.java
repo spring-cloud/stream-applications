@@ -57,7 +57,7 @@ public class GeodeSourceTests {
 	@BeforeAll
 	static void setup() throws IOException {
 		ForkingClientServerIntegrationTestsSupport.startGemFireServer(
-				GeodeServerTestConfiguration.class);
+				GeodeServerTestConfiguration.class, "-Dspring.data.gemfire.logging.level=warn");
 
 		applicationContextRunner = new ApplicationContextRunner()
 				.withUserConfiguration(
