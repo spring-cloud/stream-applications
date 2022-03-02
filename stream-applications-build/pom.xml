@@ -45,7 +45,7 @@
 		<spring-rabbit.version>2.4.2</spring-rabbit.version>
 		<spring-cloud-function.version>3.2.2</spring-cloud-function.version>
 		<spring-cloud-starters.version>3.1.1</spring-cloud-starters.version>
-		<spring-data-geode-test.version>0.0.28</spring-data-geode-test.version>
+		<spring-geode.version>1.6.4</spring-geode.version>
 		<test-containers.version>1.16.3</test-containers.version>
 		<maven-flatten-plugin.version>1.2.5</maven-flatten-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
@@ -66,27 +66,34 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-function-dependencies</artifactId>
-				<version>${spring-cloud-function.version}</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>${spring-boot.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.testcontainers</groupId>
-				<artifactId>testcontainers-bom</artifactId>
-				<version>${test-containers.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-function-dependencies</artifactId>
+			<version>${spring-cloud-function.version}</version>
+			<scope>import</scope>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-dependencies</artifactId>
+			<version>${spring-boot.version}</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers-bom</artifactId>
+			<version>${test-containers.version}</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.geode</groupId>
+			<artifactId>spring-geode-bom</artifactId>
+			<version>${spring-geode.version}</version>
+			<scope>import</scope>
+			<type>pom</type>
+		</dependency>
 		</dependencies>
 	</dependencyManagement>
 
