@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,10 @@ import java.util.function.Function;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.geode.boot.autoconfigure.SslAutoConfiguration;
 import org.springframework.integration.aggregator.AggregatingMessageHandler;
 import org.springframework.integration.store.MessageGroupStore;
 import org.springframework.messaging.Message;
@@ -43,6 +45,9 @@ public abstract class AbstractAggregatorFunctionTests {
 
 	@Autowired
 	protected AggregatingMessageHandler aggregatingMessageHandler;
+
+	@Value("${" + SslAutoConfiguration.SECURITY_SSL_ENVIRONMENT_POST_PROCESSOR_ENABLED_PROPERTY + ":true}")
+	protected Boolean geodeSslEnable;
 
 	@SpringBootApplication
 	static class AggregatorFunctionTestApplication {

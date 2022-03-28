@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AggregatorProcessorTests {
 
 	@Test
-	public void testFilterProcessor() {
+	public void testWithJdbcMessageStore() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(AggregatorProcessorTestApplication.class))
 				.web(WebApplicationType.NONE)
