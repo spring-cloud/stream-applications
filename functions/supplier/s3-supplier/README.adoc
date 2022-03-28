@@ -23,7 +23,7 @@ Once injected, you can use the `get` method of the `Supplier` to invoke it and t
 All configuration properties are prefixed with `s3.supplier`.
 There are also properties that need to be used with the prefix `s3.common` and `file.consumer`.
 
-For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/s3/AwsS3SupplierProperties.java[AwsS3upplierProperties],
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/s3/AwsS3SupplierProperties.java[AwsS3SupplierProperties],
 link:../../common/file-common/src/main/java/org/springframework/cloud/fn/common/file/FileConsumerProperties.java[FileConsumerProperties], and
 link:../../common/aws-s3-common/src/main/java/org/springframework/cloud/fn/common/aws/s3/AmazonS3Properties.java[AmazonS3Properties].
 

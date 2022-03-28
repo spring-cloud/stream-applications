@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.supplier.file;
 
+import java.io.File;
 import java.util.function.Supplier;
 
 import org.reactivestreams.Publisher;
@@ -38,6 +39,12 @@ import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.file.FileReadingMessageSource;
 import org.springframework.integration.file.dsl.FileInboundChannelAdapterSpec;
 import org.springframework.integration.file.dsl.Files;
+import org.springframework.integration.file.filters.ChainFileListFilter;
+import org.springframework.integration.file.filters.FileListFilter;
+import org.springframework.integration.file.filters.FileSystemPersistentAcceptOnceFileListFilter;
+import org.springframework.integration.file.filters.RegexPatternFileListFilter;
+import org.springframework.integration.file.filters.SimplePatternFileListFilter;
+import org.springframework.integration.metadata.ConcurrentMetadataStore;
 import org.springframework.messaging.Message;
 import org.springframework.util.StringUtils;
 
@@ -48,6 +55,8 @@ import org.springframework.util.StringUtils;
 @Configuration
 @EnableConfigurationProperties({FileSupplierProperties.class, FileConsumerProperties.class})
 public class FileSupplierConfiguration {
+
+	private static final String METADATA_STORE_PREFIX = "local-file-system-metadata-";
 
 	private final FileSupplierProperties fileSupplierProperties;
 
@@ -60,22 +69,32 @@ public class FileSupplierConfiguration {
 
 	public FileSupplierConfiguration(FileSupplierProperties fileSupplierProperties,
 									FileConsumerProperties fileConsumerProperties) {
+
 		this.fileSupplierProperties = fileSupplierProperties;
 		this.fileConsumerProperties = fileConsumerProperties;
 	}
 
 	@Bean
-	public FileInboundChannelAdapterSpec fileMessageSource() {
-		final FileInboundChannelAdapterSpec fileInboundChannelAdapterSpec =
-				Files.inboundAdapter(this.fileSupplierProperties.getDirectory());
+	public ChainFileListFilter<File> filter(ConcurrentMetadataStore metadataStore) {
+		ChainFileListFilter<File> chainFilter = new ChainFileListFilter<>();
 		if (StringUtils.hasText(this.fileSupplierProperties.getFilenamePattern())) {
-			fileInboundChannelAdapterSpec.patternFilter(this.fileSupplierProperties.getFilenamePattern());
+			chainFilter.addFilter(new SimplePatternFileListFilter(this.fileSupplierProperties.getFilenamePattern()));
 		}
 		else if (this.fileSupplierProperties.getFilenameRegex() != null) {
-			fileInboundChannelAdapterSpec.regexFilter(this.fileSupplierProperties.getFilenameRegex().pattern());
+			chainFilter.addFilter(new RegexPatternFileListFilter(this.fileSupplierProperties.getFilenameRegex()));
 		}
-		fileInboundChannelAdapterSpec.preventDuplicates(this.fileSupplierProperties.isPreventDuplicates());
-		return fileInboundChannelAdapterSpec;
+
+		if (this.fileSupplierProperties.isPreventDuplicates()) {
+			chainFilter.addFilter(new FileSystemPersistentAcceptOnceFileListFilter(metadataStore, METADATA_STORE_PREFIX));
+		}
+
+		return chainFilter;
+	}
+
+	@Bean
+	public FileInboundChannelAdapterSpec fileMessageSource(FileListFilter<File> fileListFilter) {
+		return Files.inboundAdapter(this.fileSupplierProperties.getDirectory())
+				.filter(fileListFilter);
 	}
 
 	@Bean
@@ -86,7 +105,7 @@ public class FileSupplierConfiguration {
 				.subscribeOn(Schedulers.boundedElastic())
 				.repeatWhenEmpty(it -> it.delayElements(this.fileSupplierProperties.getDelayWhenEmpty()))
 				.repeat()
-				.doOnSubscribe(s -> this.fileMessageSource.start());
+				.doOnRequest(r -> this.fileMessageSource.start());
 	}
 
 	@Bean
@@ -106,4 +125,5 @@ public class FileSupplierConfiguration {
 			return () -> Flux.from(fileReadingFlow());
 		}
 	}
+
 }
