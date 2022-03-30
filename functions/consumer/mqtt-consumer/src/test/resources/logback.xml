@@ -11,3 +11,4 @@
 	</root>
 	<logger name="org.testcontainers" level="INFO" />
 </configuration>
+
