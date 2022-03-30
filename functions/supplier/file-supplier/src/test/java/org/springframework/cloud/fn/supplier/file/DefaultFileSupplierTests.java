@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,22 @@ package org.springframework.cloud.fn.supplier.file;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.file.FileReadingMessageSource;
+import org.springframework.integration.jdbc.metadata.JdbcMetadataStore;
+import org.springframework.integration.metadata.ConcurrentMetadataStore;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.Message;
+import org.springframework.test.context.TestPropertySource;
+
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,15 +43,21 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Artem Bilan
  * @author Soby Chacko
  */
+@TestPropertySource(properties = "metadata.store.type = jdbc")
 public class DefaultFileSupplierTests extends AbstractFileSupplierTests {
 
 	@Autowired
 	@Qualifier("fileMessageSource")
 	private FileReadingMessageSource fileMessageSource;
 
+	@Autowired
+	private ConcurrentMetadataStore metadataStore;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
 	@Test
 	public void testBasicFlow() throws IOException {
-
 		Path firstFile = tempDir.resolve("first.file");
 		Files.write(firstFile, "first.file".getBytes());
 
@@ -83,6 +95,16 @@ public class DefaultFileSupplierTests extends AbstractFileSupplierTests {
 		stepVerifier.verify();
 
 		assertThat(this.fileMessageSource.isRunning()).isTrue();
+
+		assertThat(this.metadataStore).isInstanceOf(JdbcMetadataStore.class);
+
+		List<String> metadataStoreContent =
+				jdbcTemplate.queryForList("SELECT metadata_key FROM int_metadata_store", String.class);
+
+		assertThat(metadataStoreContent).hasSize(2);
+		assertThat(metadataStoreContent.get(0)).startsWith("local-file-system-metadata-");
+		assertThat(metadataStoreContent.get(0)).endsWith("first.file");
+		assertThat(metadataStoreContent.get(1)).endsWith("test.file");
 	}
 
 }
