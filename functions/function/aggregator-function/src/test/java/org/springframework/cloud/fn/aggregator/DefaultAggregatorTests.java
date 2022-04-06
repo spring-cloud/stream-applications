@@ -65,6 +65,7 @@ public class DefaultAggregatorTests extends AbstractAggregatorFunctionTests {
 		assertThat(this.messageGroupStore).isNull();
 		assertThat(this.aggregatingMessageHandler.getMessageStore()).isInstanceOf(SimpleMessageStore.class);
 
+		// Also verify geode ssl flag not enabled for default message store (non-geode)
 		assertThat(this.geodeSslEnable).isFalse();
 	}
 

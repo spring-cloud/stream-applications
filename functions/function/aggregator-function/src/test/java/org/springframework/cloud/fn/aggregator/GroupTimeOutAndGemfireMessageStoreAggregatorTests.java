@@ -62,6 +62,7 @@ public class GroupTimeOutAndGemfireMessageStoreAggregatorTests extends AbstractA
 		assertThat(this.messageGroupStore).isInstanceOf(GemfireMessageStore.class);
 		assertThat(this.aggregatingMessageHandler.getMessageStore()).isSameAs(this.messageGroupStore);
 
+		// Also verify geode ssl flag enabled for geode message stores
 		assertThat(this.geodeSslEnable).isTrue();
 	}
 

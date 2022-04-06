@@ -68,6 +68,7 @@ public class JdbcMessageStoreAggregatorTests extends AbstractAggregatorFunctionT
 
 		assertThat(this.aggregatingMessageHandler.getMessageStore()).isSameAs(this.messageGroupStore);
 
+		// Also verify geode ssl flag not enabled for non-geode message stores
 		assertThat(this.geodeSslEnable).isFalse();
 	}
 
