@@ -172,25 +172,54 @@ class StreamApplicationsBuildMaker implements JdkConfig, TestPublisher,
                         """)
                     }
                 }
-                if (dockerHubPush) {
-                    shell("""
-                    #!/bin/bash -x
+				if (dockerHubPush) {
+					shell("""
+					#!/bin/bash -x
+					
 					export MAVEN_PATH=${mavenBin()}
 					${setupGitCredentials()}
+				
+					clean_tmp_files() {
+					  echo "Cleaning tmp files"
+					  ${cleanGitCredentials()}
+					}
+				
+					trap "clean_tmp_files" EXIT
+				
+					run_jib_build() {
+					  echo "Running JIB build"
+					  mvn_out=\$(./mvnw -U clean package jib:build -DskipTests -Djib.to.tags=${branchToBuild} -Djib.httpTimeout=1800000 -Djib.to.auth.username="\$${dockerHubUserNameEnvVar()}" -Djib.to.auth.password="\$${dockerHubPasswordEnvVar()}")
+					  echo \$mvn_out
+					  fail_count=\$(echo \$mvn_out | grep -c "BUILD FAILURE")
+					  return \$fail_count
+					}
+				
 					echo "Pushing to Docker Hub"
-                    cd applications/${cdToApps}
-                    cd apps
-                    set +x
-                    ./mvnw -U clean package jib:build -DskipTests -Djib.to.tags=${branchToBuild} -Djib.httpTimeout=1800000 -Djib.to.auth.username="\$${dockerHubUserNameEnvVar()}" -Djib.to.auth.password="\$${dockerHubPasswordEnvVar()}"
-					if [[ "\$?" -ne 0 ]] ; then
-                            set -e
-                            echo "Apps Docker Build failed: Rerunning again"
-                            ./mvnw -U clean package jib:build -DskipTests -Djib.to.tags=${branchToBuild} -Djib.httpTimeout=1800000 -Djib.to.auth.username="\$${dockerHubUserNameEnvVar()}" -Djib.to.auth.password="\$${dockerHubPasswordEnvVar()}"
-                        fi
-					set -x
-					${cleanGitCredentials()}
+					cd applications/${cdToApps}
+					cd apps
+					set +x
+				
+					# handle the exiting ourselves
+					set +e
+				
+					run_jib_build || ( \
+					  echo "Apps Docker build failed - trying again in 5 seconds..."
+					  sleep 5
+					  run_jib_build || ( \
+						echo "Apps Docker Build failed on retry"
+						exit 1
+					  )
+					)
+				
+					exit_code=\$?
+					if [ \$exit_code -eq 0 ]
+					then
+					  echo "Apps Docker build success"
+					fi
+				
+					exit \$exit_code
 					""")
-                }
+				}
                 if (integTestsBuild) {
                     maven {
                         mavenInstallation(maven35())
