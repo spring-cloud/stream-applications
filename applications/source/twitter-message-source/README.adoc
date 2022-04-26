@@ -16,6 +16,15 @@ Must be aligned with used APIs rate limit
 Properties grouped by prefix:
 
 
+=== spring.integration.poller
+
+$$cron$$:: $$Cron expression for polling. Mutually exclusive with 'fixedDelay' and 'fixedRate'.$$ *($$String$$, default: `$$<none>$$`)*
+$$fixed-delay$$:: $$Polling delay period. Mutually exclusive with 'cron' and 'fixedRate'.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$fixed-rate$$:: $$Polling rate period. Mutually exclusive with 'fixedDelay' and 'cron'.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$initial-delay$$:: $$Polling initial delay. Applied for 'fixedDelay' and 'fixedRate'; ignored for 'cron'.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$max-messages-per-poll$$:: $$Maximum number of messages to poll per polling cycle.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$receive-timeout$$:: $$How long to wait for messages on poll.$$ *($$Duration$$, default: `$$1s$$`)*
+
 === twitter.connection
 
 $$access-token$$:: $$Your Twitter token.$$ *($$String$$, default: `$$<none>$$`)*
