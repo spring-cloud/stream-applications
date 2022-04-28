@@ -203,8 +203,8 @@ class StreamApplicationsBuildMaker implements JdkConfig, TestPublisher,
 					set +e
 				
 					run_jib_build || ( \
-					  echo "Apps Docker build failed - trying again in 5 seconds..."
-					  sleep 5
+					  echo "Apps Docker build failed - trying again in 2 minutes..."
+					  sleep 120
 					  run_jib_build || ( \
 						echo "Apps Docker Build failed on retry"
 						exit 1
