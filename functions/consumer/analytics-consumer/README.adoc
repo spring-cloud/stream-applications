@@ -46,7 +46,7 @@ The https://docs.spring.io/spring-integration/reference/html/message.html#messag
 
 The `SpEL` expressions use the `headers` and `payload` keywords to access message’s headers and payload values. For example a counter metrics can have a value amount computed from the size of the input message payload add a `my_tag` tag, extracted from the `kind` header value:
 
-[source]
+[source,properties]
 ----
 analytics.amount-expression=payload.lenght()
 analytics.tag.expression.my_tag=headers['kind']
@@ -74,13 +74,13 @@ To enable support for another monitoring system you have to add the spring-boot-
 
 Follow the https://docs.spring.io/spring-boot/docs/2.3.1.RELEASE/reference/html/production-ready-features.html#production-ready-metrics-export[configuration instructions] for the selected monitoring system. All monitoring configuration properties start with a prefix: `management.metrics.export`.
 
-## Configuration Options
+== Configuration Options
 
 All `analytics-consumer` configuration properties use the `analytics` prefix. For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/analytics/AnalyticsConsumerProperties.java[AnalyticsConsumerProperties].
 
 All monitoring configuration properties start with a prefix `management.metrics.export`. For configuring a particular monitoring system follow the provided https://docs.spring.io/spring-boot/docs/2.3.1.RELEASE/reference/html/production-ready-features.html#production-ready-metrics-export[configuration instructions].
 
-#### Sample Configuration
+==== Sample Configuration
 
 Following examples show how to configure `counter` and `gauge` metrics over a series of stock-exchange messages like this:
 
@@ -166,11 +166,11 @@ To enable one or more https://micrometer.io/docs[supported monitoring systems] y
 |===
 
 
-## Tests
+== Tests
 
 See this link:src/test/java/org/springframework/cloud/fn/consumer/analytics[test suite] for the various ways, this consumer is used.
 
-## Other usage
+== Other usage
 
 * See the https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/analytics-sink/README.adoc[Analytics Sink README] where this consumer is used to create a Spring Cloud Stream application where it makes a Counter sink.
 

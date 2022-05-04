@@ -203,21 +203,23 @@ Let's assume that you want to build a `jdbc-source` application based on Kafka B
 Here is what you need to do.
 Assuming that you already built both functions and stream-applications-core as above,
 
-```
+[source,shell]
+----
 ./mvnw clean package -pl :jdbc-source
 cd applications/source/jdbc-source/apps/jdbc-source-kafka
 ./mvnw clean package
-```
+----
 
 This will generate the Kafka binder based uber jar in the target folder.
 
 Similarly, for the `log-sink`, do the following.
 
-```
+[source,shell]
+----
 ./mvnw clean package -pl :log-sink
 cd applications/sink/log-sink/apps/log-sink-rabbit
 ./mvnw clean package
-```
+----
 
 === Additional Resources
 

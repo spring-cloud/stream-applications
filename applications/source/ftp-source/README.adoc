@@ -139,8 +139,9 @@ $$root$$:: $$Root node - store entries are children of this node.$$ *($$String$$
 
 == Examples
 
-```
+[source,shell]
+----
 java -jar ftp_source.jar --ftp.supplier.remote-dir=foo --file.consumer.mode=lines --ftp.factory.host=ftpserver \
          --ftp.factory.username=user --ftp.factory.password=pw --ftp.local-dir=/foo
-```
+----
 //end::ref-doc[]

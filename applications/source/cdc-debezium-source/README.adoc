@@ -27,7 +27,7 @@ $$connector$$:: $$Shortcut for the cdc.config.connector.class property. Either o
 $$name$$:: $$Unique name for this sourceConnector instance.$$ *($$String$$, default: `$$<none>$$`)*
 $$schema$$:: $$Include the schema's as part of the outbound message.$$ *($$Boolean$$, default: `$$false$$`)*
 
-=== cdc.flattening
+==== cdc.flattening
 
 $$add-fields$$:: $$Comma separated list of metadata fields to add to the flattened message. The fields will be prefixed with "__" or "__[<]struct]__", depending on the specification of the struct.$$ *($$String$$, default: `$$<none>$$`)*
 $$add-headers$$:: $$Comma separated list specify a list of metadata fields to add to the header of the flattened message. The fields will be prefixed with "__" or "__[struct]__".$$ *($$String$$, default: `$$<none>$$`)*
@@ -35,19 +35,23 @@ $$delete-handling-mode$$:: $$Options for handling deleted records: (1) none - pa
 $$drop-tombstones$$:: $$By default Debezium generates tombstone records to enable Kafka compaction on deleted records. The dropTombstones can suppress the tombstone records.$$ *($$Boolean$$, default: `$$true$$`)*
 $$enabled$$:: $$Enable flattening the source record events (https://debezium.io/docs/configuration/event-flattening).$$ *($$Boolean$$, default: `$$true$$`)*
 
-=== cdc.offset
+==== cdc.offset
 
 $$commit-timeout$$:: $$Maximum number of milliseconds to wait for records to flush and partition offset data to be committed to offset storage before cancelling the process and restoring the offset data to be committed in a future attempt.$$ *($$Duration$$, default: `$$5000ms$$`)*
 $$flush-interval$$:: $$Interval at which to try committing offsets. The default is 1 minute.$$ *($$Duration$$, default: `$$60000ms$$`)*
 $$policy$$:: $$Offset storage commit policy.$$ *($$OffsetPolicy$$, default: `$$<none>$$`)*
 $$storage$$:: $$Kafka connector tracks the number processed records and regularly stores the count (as "offsets") in a preconfigured metadata storage. On restart the connector resumes the reading from the last recorded source offset.$$ *($$OffsetStorageType$$, default: `$$<none>$$`, possible values: `memory`,`file`,`kafka`,`metadata`)*
 
-=== cdc.stream.header
+==== cdc.stream.header
 
 $$convert-connect-headers$$:: $$When true the {@link org.apache.kafka.connect.header.Header} are converted into message headers with the {@link org.apache.kafka.connect.header.Header#key()} as name and {@link org.apache.kafka.connect.header.Header#value()}.$$ *($$Boolean$$, default: `$$true$$`)*
 $$offset$$:: $$Serializes the source record's offset metadata into the outbound message header under cdc.offset.$$ *($$Boolean$$, default: `$$false$$`)*
 
-=== metadata.store.dynamo-db
+=== metadata.store
+
+$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
+
+==== metadata.store.dynamo-db
 
 $$create-delay$$:: $$Delay between create table retries.$$ *($$Integer$$, default: `$$1$$`)*
 $$create-retries$$:: $$Retry number for create table request.$$ *($$Integer$$, default: `$$25$$`)*
@@ -56,28 +60,24 @@ $$table$$:: $$Table name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 $$time-to-live$$:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
 
-=== metadata.store.gemfire
+==== metadata.store.gemfire
 
 $$region$$:: $$Gemfire region name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 
-=== metadata.store.jdbc
+==== metadata.store.jdbc
 
 $$region$$:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$DEFAULT$$`)*
 $$table-prefix$$:: $$Prefix for the custom table name.$$ *($$String$$, default: `$$<none>$$`)*
 
-=== metadata.store.mongo-db
+==== metadata.store.mongo-db
 
 $$collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$metadataStore$$`)*
 
-=== metadata.store.redis
+==== metadata.store.redis
 
 $$key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 
-=== metadata.store
-
-$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
-
-=== metadata.store.zookeeper
+==== metadata.store.zookeeper
 
 $$connect-string$$:: $$Zookeeper connect string in form HOST:PORT.$$ *($$String$$, default: `$$127.0.0.1:2181$$`)*
 $$encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$, default: `$$UTF-8$$`)*
@@ -158,9 +158,9 @@ mysql> GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIE
 ----
 ====
 
-Use following properties to connect the CDC Source to the MySQL DB:
+Use following properties to connect the CDC Source to MySQL DB:
 
-[source]
+[source,properties]
 ----
 cdc.connector=mysql # <1>
 
@@ -176,6 +176,7 @@ cdc.config.database.port=3306 # <3>
 cdc.schema=true # <4>
 cdc.flattening.enabled=true # <5>
 ----
+
 <1> Configures the CDC Source to use https://debezium.io/docs/connectors/mysql/[MySqlConnector]. (equivalent to setting `cdc.config.connector.class=io.debezium.connector.mysql.MySqlConnector`).
 <2> Metadata used to identify and dispatch the incoming events.
 <3> Connection to the MySQL server running on `localhost:3306` as `debezium` user.
@@ -198,9 +199,9 @@ You can connect to this server like this:
 psql -U postgres -h localhost -p 5432
 ----
 
-Use following properties to connect the CDC Source to the PostgreSQL:
+Use following properties to connect the CDC Source to PostgreSQL:
 
-[source]
+[source,properties]
 ----
 cdc.connector=postgres # <1>
 cdc.offset.storage=memory #<2>
@@ -251,9 +252,9 @@ In the `mongodb` terminal output, search for a log entry like `host: "3f95a8a651
 Add `127.0.0.1    3f95a8a6516e` entry to your `/etc/hosts`
 
 
-Use following properties to connect the CDC Source to the MongoDB:
+Use following properties to connect the CDC Source to MongoDB:
 
-[source]
+[source,properties]
 ----
 cdc.connector=mongodb # <1>
 cdc.offset.storage=memory #<2>
@@ -294,9 +295,9 @@ wget https://raw.githubusercontent.com/debezium/debezium-examples/master/tutoria
 cat ./inventory.sql | docker exec -i sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
 ----
 
-Use following properties to connect the CDC Source to the SQLServer:
+Use following properties to connect the CDC Source to SQLServer:
 
-[source]
+[source,properties]
 ----
 cdc.connector=sqlserver # <1>
 cdc.offset.storage=memory #<2>
@@ -335,7 +336,8 @@ cat ./inventory.sql | docker exec -i dbz_oracle sqlplus debezium/dbz@//localhost
 
 == Run standalone
 
-```
+[source,shell]
+----
 java -jar cdc-debezium-source.jar --cdc.connector=mysql --cdc.name=my-sql-connector --cdc.config.database.server.id=85744 --cdc.config.database.server.name=my-app-connector --cdc.config.database.user=debezium --cdc.config.database.password=dbz --cdc.config.database.hostname=localhost --cdc.config.database.port=3306 --cdc.schema=true --cdc.flattening.enabled=true
-```
+----
 
