@@ -97,21 +97,23 @@ Let's assume that you want to build JDBC Source application based on Kafka Binde
 Here is what you need to do.
 Assuming you built both functions and stream-applications-core as above.
 
-```
+[source,shell]
+----
 ./mvnw clean package -pl :jdbc-source
 cd applications/source/jdbc-source/apps/jdbc-source-kafka
 ./mvnw clean package
-```
+----
 
 This will generate the Kafka binder based uber jar in the target folder.
 
 Similarly for the log sink, do the following.
 
-```
+[source,shell]
+----
 ./mvnw clean package -pl :log-sink
 cd applications/sink/log-sink/apps/log-sink-rabbit
 ./mvnw clean package
-```
+----
 
 ==== Building a Docker image
 The apps use the https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin[Jib Maven Plugin] to build and publish the Docker image.
@@ -119,25 +121,28 @@ If you have made some changes to an app, you may want to build the image and tes
 
 NOTE: If you plan to use the image with minikube, run the following command before building the image:
 
-```
+[source,shell]
+----
 eval $(minikube docker-env)
-```
+----
 
 To build the image in your local registry:
 
-```
+[source,shell]
+----
 ./mvn clean package jib:dockerBuild
-```
+----
 
 
 To publish the image to a remote registry:
 
-```
-jib:build \
+[source,shell]
+----
+./mvnw jib:build \
     -Djib.to.image=myregistry/myimage:latest \
     -Djib.to.auth.username=$USERNAME \
     -Djib.to.auth.password=$PASSWORD
-```
+----
 
 == Patching Pre-built Applications
 
@@ -149,15 +154,18 @@ To add `mysql` driver to `jdbc-sink` application:
 1. Clone the GitHub repository at https://github.com/spring-cloud/stream-applications
 2. Find the module that you want to patch and add the additional dependencies, `jdbc-sink` in this case. For example, you can add the following mysql dependency to the application generator plugin's configuration in the pom.xml:
 
-```
+[source,xml]
+----
 <dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>
     <version>5.1.37</version>
   </dependency>
-```
+----
 This is how the complete plugin configuration should look like.
-```
+
+[source,xml]
+----
  <plugin>
     <groupId>org.springframework.cloud.stream.app.plugin</groupId>
     <artifactId>spring-cloud-stream-app-maven-plugin</artifactId>
@@ -182,23 +190,25 @@ This is how the complete plugin configuration should look like.
         </dependencies>
     </configuration>
 </plugin>
-```
+----
 
 Once the above changes are done, you can generate the binder based apps as below from the root of the repository.
 
-```
+[source,shell]
+----
 ./mvnw clean install -pl :jdbc-sink
-```
+----
 
 This generates the binder based applications in the `apps` folder under `jdbc-sink` folder.
 In order to build the app with the binder flavor that you are interested in, you need to do the following step.
 
-```
+[source,shell]
+----
 cd applications/sink/jdbc-sink
-cd apps/jdbc-sink-kafka (or Rabbit if you are interested in that)
+cd apps/jdbc-sink-kafka # (or Rabbit if you are interested in that)
 ./mvnw clean package
 cd target
-```
+----
 
 There you will find the binder based uber jar with your changes.
 
@@ -210,10 +220,11 @@ If we have to update the binder dependencies from a new release of Spring Cloud 
 
 Here are the steps (again, we are using `jdbc-sink-kafka` as an example).
 
-```
+[source,shell]
+----
 ./mvnw clean install -pl :jdbc-sink
 cd applications/sink/jdbc-sink/apps/jdbc-sink-kafka
-```
+----
 
 Open the generated application's `pom.xml` and update the dependencies.
 If there is a new version of Spring Cloud Stream update available that contains the enhancements we are looking for, then it is easier to update the BOM itself.
@@ -221,7 +232,8 @@ Find where the bom is declared in `pom.xml` and update the version.
 
 For example, if we have to update Spring Cloud Stream to `Horsham.SR10`, this version must be specified in the BOM declaration as below:
 
-```
+[source,xml]
+----
 <dependencyManagement>
     <dependencies>
         <dependency>
@@ -233,7 +245,7 @@ For example, if we have to update Spring Cloud Stream to `Horsham.SR10`, this ve
         </dependency>
     </dependencies>
 </dependencyManagement>
-```
+----
 
 We can also update any individual dependencies directly, but it is preferred to use the above `dependencyManagement` approach if there is a BOM available.
 This is because, when using a BOM, maven will properly use and align any transitive dependencies.
@@ -248,10 +260,11 @@ First, add the resources to the classpath by placing them under `src/main/resour
 
 Then rebuild the application.
 
-```
+[source,shell]
+----
 ./mvnw clean package
 cd target
-```
+----
 
 Here you can find the modified application jar file.
 
@@ -268,7 +281,8 @@ cd applications/stream-applications-core
 We need to edit the pom.xml in this module.
 Find the following configuration where it defines the Kafka and RabbitMQ binders for the maven plugin.
 
-```
+[source,xml]
+----
 <kafka>
     <maven>
         <dependencies>
@@ -289,12 +303,13 @@ Find the following configuration where it defines the Kafka and RabbitMQ binders
         </dependencies>
     </maven>
 </rabbit>
-```
+----
 
 Add the binder for which you want to generate new apps for.
 For example, if we want to generate applications for the https://github.com/spring-cloud/spring-cloud-stream-binder-aws-kinesis[Kinesis binder], then modify as below.
 
-```
+[source,xml]
+----
 <binders>
     <kafka>
         <maven>
@@ -328,7 +343,7 @@ For example, if we want to generate applications for the https://github.com/spri
         </maven>
     </kinesis>
 </binders>
-```
+----
 
 Note that, we need to use the Kinesis binder version here explicitly, while both Kafka and RabbitMQ do not need them.
 This is because, those versions come from a dependency management while the Kinesis binder is not available through such mechanisms.
@@ -343,9 +358,10 @@ If we go to the applications folder and look at the generated applications, we s
 For instance, if we follow the configuration above for adding the Kinesis binder, then we should see the Kinesis binder based app in the generated apps.
 Let's take `time-source` as an example.
 
-```
+[source,shell]
+----
 cd applications/source/time-souce/apps
-```
+----
 
 Here, we should see three different binder based apps projects - `time-source-kafka`, `time-source-rabbit` and `time-source-kineses`.
 Similarly, this should happen for all the out of the box application projects.
