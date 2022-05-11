@@ -11,7 +11,7 @@ It supports all Debezium configuration properties. Just add the `cdc.config.` pr
 We provide convenient shortcuts for the most frequently used Debezium properties. For example instead of the long `cdc.config.connector.class=io.debezium.connector.mysql.MySqlConnector` Debezium property you can use our `cdc.connector=mysql` shortcut. The table below lists all available shortcuts along with the Debezium properties they represent.
 The Debezium properties (e.g. `cdc.config.XXX`) always have precedence over the shortcuts!
 
-The CDC Source introduces a new default `BackingOffsetStore` configuration, based on the link:../../../functions/common/metadata-store-common/README.adoc[MetadataStore] service. Later provides various microservices friendly ways for storing the offset metadata.
+The CDC Source introduces a new default `BackingOffsetStore` configuration, based on the https://github.com/spring-cloud/stream-applications/blob/main/functions/common/metadata-store-common/README.adoc[MetadataStore] service. Later provides various microservices friendly ways for storing the offset metadata.
 
 
 == Options
