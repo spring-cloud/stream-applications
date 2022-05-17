@@ -221,6 +221,13 @@ cd applications/sink/log-sink/apps/log-sink-rabbit
 ./mvnw clean package
 ----
 
+Rebuild all container images.
+
+[source,shell]
+----
+./local/build-images.sh
+----
+
 === Additional Resources
 
 Here is a list of resources where you can find out more about using and developing functions and stream applications:
