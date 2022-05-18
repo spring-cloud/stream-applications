@@ -47,14 +47,14 @@ https://docs.spring.io/spring-integration/reference/html/xml.html#xpath-spel-fun
 
 For example for `text` content type one should use:
 
-[source]
+[source,java]
 ----
- new String(payload).contains('a')
+ new String(payload).contains('a');
 ----
 
 and for `json` content type SpEL expressions like this:
 
-[source]
+[source,text]
 ----
  #jsonPath(payload, '$.person.name')
 ----
@@ -66,7 +66,7 @@ Instead of SpEL expressions, Groovy scripts can also be used. Let's create a Gro
 
 [source,groovy]
 ----
-println("Groovy processing payload '" + payload + "'");
+println("Groovy processing payload '" + payload + "'")
 if (payload.contains('a')) {
     return "foo"
 }

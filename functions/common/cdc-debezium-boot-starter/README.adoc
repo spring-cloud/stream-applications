@@ -79,7 +79,7 @@ mysql> GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIE
 
 Configure `cdc-debezium-boot-starter` for consuming cdc events from the MySQL:
 
-[source]
+[source,properties]
 ----
 cdc.name=my-sql-connector # <1>
 

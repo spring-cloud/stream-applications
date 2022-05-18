@@ -158,9 +158,9 @@ mysql> GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIE
 ----
 ====
 
-Use following properties to connect the CDC Source to the MySQL DB:
+Use following properties to connect the CDC Source to MySQL DB:
 
-[source]
+[source,properties]
 ----
 cdc.connector=mysql # <1>
 
@@ -176,6 +176,7 @@ cdc.config.database.port=3306 # <3>
 cdc.schema=true # <4>
 cdc.flattening.enabled=true # <5>
 ----
+
 <1> Configures the CDC Source to use https://debezium.io/docs/connectors/mysql/[MySqlConnector]. (equivalent to setting `cdc.config.connector.class=io.debezium.connector.mysql.MySqlConnector`).
 <2> Metadata used to identify and dispatch the incoming events.
 <3> Connection to the MySQL server running on `localhost:3306` as `debezium` user.
@@ -198,9 +199,9 @@ You can connect to this server like this:
 psql -U postgres -h localhost -p 5432
 ----
 
-Use following properties to connect the CDC Source to the PostgreSQL:
+Use following properties to connect the CDC Source to PostgreSQL:
 
-[source]
+[source,properties]
 ----
 cdc.connector=postgres # <1>
 cdc.offset.storage=memory #<2>
@@ -251,9 +252,9 @@ In the `mongodb` terminal output, search for a log entry like `host: "3f95a8a651
 Add `127.0.0.1    3f95a8a6516e` entry to your `/etc/hosts`
 
 
-Use following properties to connect the CDC Source to the MongoDB:
+Use following properties to connect the CDC Source to MongoDB:
 
-[source]
+[source,properties]
 ----
 cdc.connector=mongodb # <1>
 cdc.offset.storage=memory #<2>
@@ -294,9 +295,9 @@ wget https://raw.githubusercontent.com/debezium/debezium-examples/master/tutoria
 cat ./inventory.sql | docker exec -i sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
 ----
 
-Use following properties to connect the CDC Source to the SQLServer:
+Use following properties to connect the CDC Source to SQLServer:
 
-[source]
+[source,properties]
 ----
 cdc.connector=sqlserver # <1>
 cdc.offset.storage=memory #<2>
@@ -335,7 +336,8 @@ cat ./inventory.sql | docker exec -i dbz_oracle sqlplus debezium/dbz@//localhost
 
 == Run standalone
 
-```
+[source,shell]
+----
 java -jar cdc-debezium-source.jar --cdc.connector=mysql --cdc.name=my-sql-connector --cdc.config.database.server.id=85744 --cdc.config.database.server.name=my-app-connector --cdc.config.database.user=debezium --cdc.config.database.password=dbz --cdc.config.database.hostname=localhost --cdc.config.database.port=3306 --cdc.schema=true --cdc.flattening.enabled=true
-```
+----
 

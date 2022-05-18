@@ -22,18 +22,20 @@ standalone processor.
 For example, the `time` source when it is running, as shown below, will perform a series of internal transformations to
 finally publish a task launch request every second to the rabbit exchange with the name `time-test`.
 
-```
+[source,shell]
+----
 java -jar target/time-source-rabbit-3.0.0-SNAPSHOT.jar \
      --spring.cloud.stream.bindings.output.destination=time-test \
      --spring.cloud.stream.function.definition="timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction" \
      --spel.function.expression="payload.length()" \
      --header.enricher.headers=task-id=payload*2 \
      --task.launch.request.task-name-expression="'task-'+headers['task-id']"
-```
+----
 
 Now, the transformed message would look like:
 
-```
+[source,text]
+----
 headers:
 task-id:   34
 content_type:  application/json
@@ -41,7 +43,7 @@ Payload
 49 bytes
 Encoding: string
 {"args":[],"deploymentProps":{},"name":"task-34"}
-```
+----
 
 Let us unpack what is happening behind the scenes. We will start with the following function definition.
 
