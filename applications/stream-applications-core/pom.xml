@@ -18,20 +18,19 @@
     <properties>
         <revision>3.2.1-SNAPSHOT</revision>
         <stream-apps-core.version>${revision}</stream-apps-core.version>
-        <java-functions.version>1.2.0</java-functions.version>
+        <java-functions.version>1.2.1-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.1</apps.base-image>
-        <mockserver.version>5.10</mockserver.version>
-        <spring-cloud-stream-dependencies.version>3.2.2</spring-cloud-stream-dependencies.version>
-        <spring-cloud-stream.version>3.2.2</spring-cloud-stream.version>
+        <mockserver.version>5.13.2</mockserver.version>
+        <spring-cloud-stream-dependencies.version>3.2.3</spring-cloud-stream-dependencies.version>
+        <spring-cloud-stream.version>3.2.3</spring-cloud-stream.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.7-SNAPSHOT</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.7-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.7-SNAPSHOT</spring-cloud-dataflow-apps-metadata-plugin.version>
-        <java-cfenv-boot.version>2.1.2.RELEASE</java-cfenv-boot.version>
-        <prometheus-rsocket.version>1.3.0</prometheus-rsocket.version>
-        <!-- Boot 2.4.x needs wavefront-spring-boot version 2.1.0-RC1+ -->
-        <wavefront-spring-boot.version>2.2.0</wavefront-spring-boot.version>
-        <spring-cloud.version>2021.0.1</spring-cloud.version>
-		<spring-cloud-starters.version>3.1.1</spring-cloud-starters.version>
+        <java-cfenv-boot.version>2.4.0</java-cfenv-boot.version>
+        <prometheus-rsocket.version>1.4.0</prometheus-rsocket.version>
+        <wavefront-spring-boot.version>2.2.2</wavefront-spring-boot.version>
+        <spring-cloud.version>2021.0.2</spring-cloud.version>
+        <spring-cloud-starters.version>3.1.2</spring-cloud-starters.version>
 	</properties>
 
     <modules>

@@ -8,7 +8,6 @@
         <groupId>org.springframework.cloud.fn</groupId>
         <artifactId>java-functions-parent</artifactId>
         <version>${revision}</version>
-        <relativePath>..</relativePath>
     </parent>
 
     <artifactId>function-dependencies</artifactId>
