@@ -19,13 +19,6 @@
     </properties>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>config-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>

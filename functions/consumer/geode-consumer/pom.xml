@@ -27,11 +27,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>config-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.geode</groupId>
             <artifactId>spring-geode-starter-test</artifactId>
             <scope>test</scope>

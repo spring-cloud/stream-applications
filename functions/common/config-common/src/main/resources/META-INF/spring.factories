@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.springframework.cloud.fn.common.config.SpelExpressionConverterConfiguration
+  org.springframework.cloud.fn.common.config.SpelExpressionConverterConfiguration,\
+  org.springframework.cloud.fn.common.config.ComponentCustomizationConfiguration

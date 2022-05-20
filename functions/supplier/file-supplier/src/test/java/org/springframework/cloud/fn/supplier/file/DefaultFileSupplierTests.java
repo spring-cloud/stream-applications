@@ -16,14 +16,14 @@
 
 package org.springframework.cloud.fn.supplier.file;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,11 +31,13 @@ import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.file.FileReadingMessageSource;
 import org.springframework.integration.jdbc.metadata.JdbcMetadataStore;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
+import org.springframework.integration.test.util.TestUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 /**
  * @author Gary Russell
@@ -104,6 +106,10 @@ public class DefaultFileSupplierTests extends AbstractFileSupplierTests {
 		assertThat(metadataStoreContent.get(0)).startsWith("local-file-system-metadata-");
 		assertThat(metadataStoreContent.get(0)).endsWith("first.file");
 		assertThat(metadataStoreContent.get(1)).endsWith("test.file");
+
+		assertThat(TestUtils.getPropertyValue(this.fileMessageSource, "watchEvents",
+				FileReadingMessageSource.WatchEventType[].class))
+				.isEqualTo(new FileReadingMessageSource.WatchEventType[]{ FileReadingMessageSource.WatchEventType.DELETE });
 	}
 
 }

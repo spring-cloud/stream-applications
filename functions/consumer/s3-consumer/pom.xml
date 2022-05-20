@@ -28,12 +28,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>config-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <scope>test</scope>

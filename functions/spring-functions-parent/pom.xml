@@ -20,7 +20,11 @@
 	</properties>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>config-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<!-- Spring Boot dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
