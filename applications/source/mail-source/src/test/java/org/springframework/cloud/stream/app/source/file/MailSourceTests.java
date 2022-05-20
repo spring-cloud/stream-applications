@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,24 +20,37 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.boot.WebApplicationType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.fn.supplier.mail.MailSupplierConfiguration;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.integration.test.mail.TestMailServer;
 import org.springframework.messaging.Message;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 /**
+ * Lightweight integration test to verify using {@link MailSupplierConfiguration} in a {@code @SpringBootApplication}.
+ *
  * @author Soby Chacko
+ * @author Chris Bono
  */
-public class MailSourceTests {
+@SpringBootTest(
+		webEnvironment = SpringBootTest.WebEnvironment.NONE,
+		properties = {
+				"spring.cloud.function.definition=mailSupplier",
+				"mail.supplier.url=imap://user:pw@localhost:${test.mail.server.port}/INBOX",
+				"mail.supplier.mark-as-read=true",
+				"mail.supplier.delete=false",
+				"mail.supplier.user-flag=testSIUserFlag",
+				"mail.supplier.java-mail-properties=mail.imap.socketFactory.fallback=true\\n mail.store.protocol=imap\\n mail.debug=true"
+		})
+@DirtiesContext
+class MailSourceTests {
 
 	private static TestMailServer.MailServer MAIL_SERVER;
 
@@ -64,27 +77,14 @@ public class MailSourceTests {
 	}
 
 	@Test
-	public void testMailSource() throws Exception {
-		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration
-						.getCompleteConfiguration(MailSourceTestApplication.class))
-				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=mailSupplier",
-						"--mail.supplier.url=imap://user:pw@localhost:${test.mail.server.port}/INBOX",
-						"--mail.supplier.mark-as-read=true",
-						"--mail.supplier.delete=false",
-						"--mail.supplier.user-flag=testSIUserFlag",
-						"--mail.supplier.java-mail-properties=mail.imap.socketFactory.fallback=true\\n mail.store.protocol=imap\\n mail.debug=true")) {
-
-			OutputDestination target = context.getBean(OutputDestination.class);
-			Message<byte[]> sourceMessage = target.receive(10000, "mailSupplier-out-0");
-			final String actual = new String(sourceMessage.getPayload());
-			assertThat(actual.endsWith("\r\n\r\nfoo\r\n\r\n"));
-		}
+	void mailMessagesAreSuppliedToOutputDestination(@Autowired OutputDestination target) {
+		Message<byte[]> sourceMessage = target.receive(10000, "mailSupplier-out-0");
+		final String actual = new String(sourceMessage.getPayload());
+		assertThat(actual.endsWith("\r\n\r\nfoo\r\n\r\n")).isTrue();
 	}
 
 	@SpringBootApplication
-	@Import(MailSupplierConfiguration.class)
+	@Import({TestChannelBinderConfiguration.class, MailSupplierConfiguration.class})
 	public static class MailSourceTestApplication {
 	}
 }

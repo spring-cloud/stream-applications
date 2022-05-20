@@ -40,12 +40,12 @@
 		<nohttp-checkstyle.version>0.0.2.RELEASE</nohttp-checkstyle.version>
 		<disable.nohttp.checks>true</disable.nohttp.checks>
 		<spring-javaformat-checkstyle.version>0.0.7</spring-javaformat-checkstyle.version>
-		<spring-boot.version>2.6.3</spring-boot.version>
-		<spring-kafka.version>2.8.2</spring-kafka.version>
-		<spring-rabbit.version>2.4.2</spring-rabbit.version>
-		<spring-cloud-function.version>3.2.2</spring-cloud-function.version>
-		<spring-cloud-starters.version>3.1.1</spring-cloud-starters.version>
-		<spring-geode.version>1.6.4</spring-geode.version>
+		<spring-boot.version>2.6.7</spring-boot.version>
+		<spring-kafka.version>2.8.6</spring-kafka.version>
+		<spring-rabbit.version>2.4.5</spring-rabbit.version>
+		<spring-cloud-function.version>3.2.3</spring-cloud-function.version>
+		<spring-cloud-starters.version>3.1.2</spring-cloud-starters.version>
+		<spring-geode.version>1.6.7</spring-geode.version>
 		<test-containers.version>1.16.3</test-containers.version>
 		<maven-flatten-plugin.version>1.2.5</maven-flatten-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>

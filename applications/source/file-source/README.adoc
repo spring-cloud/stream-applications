@@ -36,6 +36,43 @@ $$directory$$:: $$The directory to poll for new files.$$ *($$File$$, default: `$
 $$filename-pattern$$:: $$A simple ant pattern to match files.$$ *($$String$$, default: `$$<none>$$`)*
 $$filename-regex$$:: $$A regex pattern to match files.$$ *($$Pattern$$, default: `$$<none>$$`)*
 $$prevent-duplicates$$:: $$Set to true to include an AcceptOnceFileListFilter which prevents duplicates.$$ *($$Boolean$$, default: `$$true$$`)*
+
+=== metadata.store.dynamo-db
+
+$$create-delay$$:: $$Delay between create table retries.$$ *($$Integer$$, default: `$$1$$`)*
+$$create-retries$$:: $$Retry number for create table request.$$ *($$Integer$$, default: `$$25$$`)*
+$$read-capacity$$:: $$Read capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
+$$table$$:: $$Table name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
+$$time-to-live$$:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
+
+=== metadata.store.gemfire
+
+$$region$$:: $$Gemfire region name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== metadata.store.jdbc
+
+$$region$$:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$DEFAULT$$`)*
+$$table-prefix$$:: $$Prefix for the custom table name.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== metadata.store.mongo-db
+
+$$collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$metadataStore$$`)*
+
+=== metadata.store.redis
+
+$$key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== metadata.store
+
+$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
+
+=== metadata.store.zookeeper
+
+$$connect-string$$:: $$Zookeeper connect string in form HOST:PORT.$$ *($$String$$, default: `$$127.0.0.1:2181$$`)*
+$$encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$, default: `$$UTF-8$$`)*
+$$retry-interval$$:: $$Retry interval for Zookeeper operations in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
+$$root$$:: $$Root node - store entries are children of this node.$$ *($$String$$, default: `$$/SpringIntegration-MetadataStore$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

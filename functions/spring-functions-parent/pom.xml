@@ -8,14 +8,13 @@
 		<groupId>org.springframework.cloud.fn</groupId>
 		<artifactId>java-functions-parent</artifactId>
 		<version>${revision}</version>
-		<relativePath>..</relativePath>
 	</parent>
 
 	<artifactId>spring-functions-parent</artifactId>
 	<packaging>pom</packaging>
 
 	<properties>
-		<spring-cloud-function.version>3.2.2</spring-cloud-function.version>
+		<spring-cloud-function.version>3.2.3</spring-cloud-function.version>
 		<spring-cloud-fn.version>${project.version}</spring-cloud-fn.version>
 	</properties>
 
