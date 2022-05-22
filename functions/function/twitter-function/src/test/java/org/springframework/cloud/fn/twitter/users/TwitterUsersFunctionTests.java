@@ -32,8 +32,7 @@ import org.mockserver.model.HttpRequest;
 import twitter4j.conf.ConfigurationBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.fn.common.twitter.TwitterConnectionProperties;
 import org.springframework.cloud.fn.common.twitter.util.TwitterTestUtils;
@@ -165,7 +164,7 @@ public abstract class TwitterUsersFunctionTests {
 
 	@TestPropertySource(properties = {
 			"twitter.users.type=lookup",
-			"twitter.users.lookup.screenName=#jsonPath(payload,'$..[*].code')"
+			"twitter.users.lookup.screenName=#jsonPath(payload,'$[*].code')"
 	})
 	public static class TwitterLookupScreenNamePayloadTests extends TwitterUsersFunctionTests {
 
@@ -184,8 +183,7 @@ public abstract class TwitterUsersFunctionTests {
 		}
 	}
 
-	@SpringBootConfiguration
-	@EnableAutoConfiguration
+	@SpringBootApplication
 	@Import(TwitterUsersFunctionConfiguration.class)
 	static class TwitterUsersFunctionTestApplication {
 		@Bean

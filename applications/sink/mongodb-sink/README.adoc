@@ -36,7 +36,7 @@ $$host$$:: $$Mongo server host. Cannot be set with URI.$$ *($$String$$, default:
 $$password$$:: $$Login password of the mongo server. Cannot be set with URI.$$ *($$Character[]$$, default: `$$<none>$$`)*
 $$port$$:: $$Mongo server port. Cannot be set with URI.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$replica-set-name$$:: $$Required replica set name for the cluster. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
-$$uri$$:: $$Mongo database URI. Cannot be set with host, port, credentials and replica set name.$$ *($$String$$, default: `$$mongodb://localhost/test$$`)*
+$$uri$$:: $$Mongo database URI. Overrides host, port, username, password, and database.$$ *($$String$$, default: `$$mongodb://localhost/test$$`)*
 $$username$$:: $$Login user of the mongo server. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
 $$uuid-representation$$:: $$Representation to use when converting a UUID to a BSON binary value.$$ *($$UuidRepresentation$$, default: `$$java-legacy$$`, possible values: `UNSPECIFIED`,`STANDARD`,`C_SHARP_LEGACY`,`JAVA_LEGACY`,`PYTHON_LEGACY`)*
 //end::configuration-properties[]

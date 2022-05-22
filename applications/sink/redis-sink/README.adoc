@@ -57,6 +57,7 @@ $$time-between-eviction-runs$$:: $$Time between runs of the idle object evictor 
 $$master$$:: $$Name of the Redis server.$$ *($$String$$, default: `$$<none>$$`)*
 $$nodes$$:: $$Comma-separated list of "host:port" pairs.$$ *($$List<String>$$, default: `$$<none>$$`)*
 $$password$$:: $$Password for authenticating with sentinel(s).$$ *($$String$$, default: `$$<none>$$`)*
+$$username$$:: $$Login username for authenticating with sentinel(s).$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
