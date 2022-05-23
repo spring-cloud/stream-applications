@@ -20,19 +20,19 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 
 /**
- * An auto-configuration to expose customizer strategy bean to accept user-provided component customizers.
+ * An auto-configuration to expose customizer strategy beans to accept user-provided component customizers.
  *
  * @author Artem Bilan
  *
  * @since 1.2.1
  *
- * @see IntegrationComponentCustomizerBeanPostProcessor
+ * @see ComponentCustomizerBeanPostProcessor
  */
-public class ComponentCustomizationConfiguration {
+public class ComponentCustomizationAutoConfiguration {
 
 	@Bean
 	static BeanPostProcessor componentCustomizerBeanPostProcessor() {
-		return new IntegrationComponentCustomizerBeanPostProcessor();
+		return new ComponentCustomizerBeanPostProcessor();
 	}
 
 }

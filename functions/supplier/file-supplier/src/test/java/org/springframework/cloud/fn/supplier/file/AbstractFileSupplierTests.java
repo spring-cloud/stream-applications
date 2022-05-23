@@ -28,7 +28,7 @@ import reactor.core.publisher.Flux;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.fn.common.config.IntegrationComponentCustomizer;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.file.FileReadingMessageSource;
 import org.springframework.integration.file.dsl.FileInboundChannelAdapterSpec;
@@ -64,13 +64,15 @@ public class AbstractFileSupplierTests {
 	static class FileSupplierTestApplication {
 
 		@Bean
-		static IntegrationComponentCustomizer<FileInboundChannelAdapterSpec> fileInboundChannelAdapterSpecCustomizer() {
-			return adapterSpec -> adapterSpec.watchEvents(FileReadingMessageSource.WatchEventType.DELETE);
+		static ComponentCustomizer<FileInboundChannelAdapterSpec> fileInboundChannelAdapterSpecCustomizer() {
+			return (adapterSpec, beanName) -> adapterSpec.watchEvents(FileReadingMessageSource.WatchEventType.DELETE);
 		}
 
 		@Bean
-		static IntegrationComponentCustomizer<Date> fakeCustomizer() {
-			return d -> {};
+		static ComponentCustomizer<Date> fakeCustomizer() {
+			return (date, beanName) -> {
+				throw new RuntimeException("Must not happen");
+			};
 		}
 
 	}

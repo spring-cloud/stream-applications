@@ -17,14 +17,13 @@
 package org.springframework.cloud.fn.common.config;
 
 /**
- * The customizer contract to apply to a core component of each
- * function, consumer and supplier configurations.
- * It may work for any bean in the application context, but has to be used with a caution
- * to avoid unexpected side effect.
- * The bean for {@link IntegrationComponentCustomizer} has to be declared as a {@code static} bean
+ * The customizer contract to apply to beans in the application context which are marked
+ * with the {@link CustomizationAware} annotation and their type is matching to generic
+ * type of the instance of this interface.
+ * <p>
+ * The bean for {@link ComponentCustomizer} has to be declared as a {@code static} bean
  * method to avoid early bean initialization syndrome when not all bean post processors
  * are configured into the application context yet.
- *
  *
  * @param <T> the target component (bean) type in the application context to customize.
  *
@@ -33,8 +32,8 @@ package org.springframework.cloud.fn.common.config;
  * @since 1.2.1
  */
 @FunctionalInterface
-public interface IntegrationComponentCustomizer<T> {
+public interface ComponentCustomizer<T> {
 
-	void customizeBean(T t);
+	void customize(T component, String beanName);
 
 }
