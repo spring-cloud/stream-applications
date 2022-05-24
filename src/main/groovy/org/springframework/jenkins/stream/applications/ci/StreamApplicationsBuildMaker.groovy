@@ -66,6 +66,11 @@ class StreamApplicationsBuildMaker implements JdkConfig, TestPublisher,
                         usernamePassword('DOCKER_HUB_USERNAME', 'DOCKER_HUB_PASSWORD', "hub.docker.com-springbuildmaster")
                     }
                 }
+		timeout {
+		        noActivity(600)
+			failBuild()
+			writeDescription('Build failed due to timeout after {0} minutes of inactivity')
+		}
             }
 
             steps {
