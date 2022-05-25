@@ -20,7 +20,6 @@
         <stream-apps-core.version>${revision}</stream-apps-core.version>
         <java-functions.version>1.2.1-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.1</apps.base-image>
-        <mockserver.version>5.13.2</mockserver.version>
         <spring-cloud-stream-dependencies.version>3.2.3</spring-cloud-stream-dependencies.version>
         <spring-cloud-stream.version>3.2.3</spring-cloud-stream.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.7-SNAPSHOT</spring-cloud-dataflow-apps-generator-plugin.version>
