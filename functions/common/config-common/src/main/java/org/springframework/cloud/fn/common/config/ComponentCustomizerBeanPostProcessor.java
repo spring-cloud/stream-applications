@@ -19,6 +19,10 @@ package org.springframework.cloud.fn.common.config;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -26,6 +30,7 @@ import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.ResolvableType;
+import org.springframework.core.log.LogMessage;
 import org.springframework.core.type.MethodMetadata;
 
 /**
@@ -38,6 +43,8 @@ import org.springframework.core.type.MethodMetadata;
  * @since 1.2.1
  */
 class ComponentCustomizerBeanPostProcessor implements MergedBeanDefinitionPostProcessor, BeanFactoryAware {
+
+	private static final Log logger = LogFactory.getLog(ComponentCustomizerBeanPostProcessor.class);
 
 	private final Set<String> customizationAwareBeanNames = new HashSet<>();
 
@@ -65,11 +72,19 @@ class ComponentCustomizerBeanPostProcessor implements MergedBeanDefinitionPostPr
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (this.customizationAwareBeanNames.remove(beanName)) {
 			ResolvableType integrationComponentCustomizerType =
-					ResolvableType.forClassWithGenerics(ComponentCustomizer.class, bean.getClass());
+					ResolvableType.forClassWithGenerics(ComponentCustomizer.class,
+							AopProxyUtils.ultimateTargetClass(bean));
 
-			this.beanFactory.<ComponentCustomizer<Object>>getBeanProvider(
-							integrationComponentCustomizerType)
-					.ifAvailable((beanCustomizer) -> beanCustomizer.customize(bean, beanName));
+			ComponentCustomizer<Object> componentCustomizer =
+					this.beanFactory.<ComponentCustomizer<Object>>getBeanProvider(integrationComponentCustomizerType)
+					.getIfAvailable();
+
+			if (componentCustomizer != null) {
+				if (logger.isDebugEnabled()) {
+					logger.debug(LogMessage.format("Use '%s' for '%s' customization...", componentCustomizer, beanName));
+				}
+				componentCustomizer.customize(bean, beanName);
+			}
 		}
 
 		return bean;

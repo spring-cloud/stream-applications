@@ -23,7 +23,8 @@ package org.springframework.cloud.fn.common.config;
  * <p>
  * The bean for {@link ComponentCustomizer} has to be declared as a {@code static} bean
  * method to avoid early bean initialization syndrome when not all bean post processors
- * are configured into the application context yet.
+ * are configured into the application context yet. Its dependencies have to be {@code static}
+ * as well, or all of related beans can be declared in the dedicated {@code @Configuration} class.
  *
  * @param <T> the target component (bean) type in the application context to customize.
  *

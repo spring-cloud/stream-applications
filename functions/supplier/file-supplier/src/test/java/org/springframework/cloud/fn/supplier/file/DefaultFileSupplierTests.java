@@ -16,14 +16,14 @@
 
 package org.springframework.cloud.fn.supplier.file;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,8 +36,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;
 
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Gary Russell
@@ -107,6 +106,10 @@ public class DefaultFileSupplierTests extends AbstractFileSupplierTests {
 		assertThat(metadataStoreContent.get(0)).endsWith("first.file");
 		assertThat(metadataStoreContent.get(1)).endsWith("test.file");
 
+		/* See AbstractFileSupplierTests.FileSupplierTestApplication.fileInboundChannelAdapterSpecCustomizer() -
+		 through the ComponentCustomizer and @CustomizationAware on the FileSupplierConfiguration.fileMessageSource()
+		 the provided customization is populated down to the bean under testing.
+		*/
 		assertThat(TestUtils.getPropertyValue(this.fileMessageSource, "watchEvents",
 				FileReadingMessageSource.WatchEventType[].class))
 				.isEqualTo(new FileReadingMessageSource.WatchEventType[]{ FileReadingMessageSource.WatchEventType.DELETE });
