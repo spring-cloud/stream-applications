@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.common.config;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * An auto-configuration to expose customizer strategy beans to accept user-provided component customizers.
@@ -29,6 +30,8 @@ import org.springframework.context.annotation.Bean;
  *
  * @see ComponentCustomizerBeanPostProcessor
  */
+// @checkstyle:off HideUtilityClassConstructor
+@Configuration(proxyBeanMethods = false)
 public class ComponentCustomizationAutoConfiguration {
 
 	@Bean
@@ -36,5 +39,5 @@ public class ComponentCustomizationAutoConfiguration {
 	static BeanPostProcessor componentCustomizerBeanPostProcessor() {
 		return new ComponentCustomizerBeanPostProcessor();
 	}
-
 }
+// @checkstyle:on
