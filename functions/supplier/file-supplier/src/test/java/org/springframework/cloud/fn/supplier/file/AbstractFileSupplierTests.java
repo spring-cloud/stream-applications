@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.cloud.fn.supplier.file;
 
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.AfterAll;
@@ -27,6 +28,10 @@ import reactor.core.publisher.Flux;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.integration.file.FileReadingMessageSource;
+import org.springframework.integration.file.dsl.FileInboundChannelAdapterSpec;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -57,5 +62,19 @@ public class AbstractFileSupplierTests {
 
 	@SpringBootApplication
 	static class FileSupplierTestApplication {
+
+		@Bean
+		static ComponentCustomizer<FileInboundChannelAdapterSpec> fileInboundChannelAdapterSpecCustomizer() {
+			return (adapterSpec, beanName) -> adapterSpec.watchEvents(FileReadingMessageSource.WatchEventType.DELETE);
+		}
+
+		@Bean
+		static ComponentCustomizer<Date> fakeCustomizer() {
+			return (date, beanName) -> {
+				throw new RuntimeException("Must not happen");
+			};
+		}
+
 	}
+
 }
