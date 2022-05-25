@@ -16,23 +16,18 @@
 
 package org.springframework.cloud.fn.common.config;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The annotation to mark a {@code @Bean} method for end user-provided customization
- * via {@link ComponentCustomizer} with this bean type.
+ * The annotation to mark a {@code @Bean} method which provides a
+ * {@link ComponentCustomizer} information for generated documentation.
  *
  * @author Artem Bilan
  *
  * @since 1.2.1
  */
-@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface CustomizationAware {
+@Target(ElementType.METHOD)
+public @interface CustomizationDoc {
 
 }

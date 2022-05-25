@@ -28,7 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.fn.common.config.CustomizationAware;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
+import org.springframework.cloud.fn.common.config.CustomizationDoc;
 import org.springframework.cloud.fn.common.file.FileConsumerProperties;
 import org.springframework.cloud.fn.common.file.FileReadingMode;
 import org.springframework.cloud.fn.common.file.FileUtils;
@@ -46,6 +47,7 @@ import org.springframework.integration.file.filters.FileSystemPersistentAcceptOn
 import org.springframework.integration.file.filters.RegexPatternFileListFilter;
 import org.springframework.integration.file.filters.SimplePatternFileListFilter;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.util.StringUtils;
 
@@ -93,10 +95,17 @@ public class FileSupplierConfiguration {
 	}
 
 	@Bean
-	@CustomizationAware
-	public FileInboundChannelAdapterSpec fileMessageSource(FileListFilter<File> fileListFilter) {
-		return Files.inboundAdapter(this.fileSupplierProperties.getDirectory())
+	@CustomizationDoc
+	public FileInboundChannelAdapterSpec fileMessageSource(FileListFilter<File> fileListFilter,
+			@Nullable ComponentCustomizer<FileInboundChannelAdapterSpec> fileInboundChannelAdapterSpecCustomizer) {
+
+		FileInboundChannelAdapterSpec adapterSpec =
+				Files.inboundAdapter(this.fileSupplierProperties.getDirectory())
 				.filter(fileListFilter);
+		if (fileInboundChannelAdapterSpecCustomizer != null) {
+			fileInboundChannelAdapterSpecCustomizer.customize(adapterSpec, "fileMessageSource");
+		}
+		return adapterSpec;
 	}
 
 	@Bean
