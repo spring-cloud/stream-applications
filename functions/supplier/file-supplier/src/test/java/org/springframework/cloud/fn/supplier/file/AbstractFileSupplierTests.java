@@ -64,12 +64,12 @@ public class AbstractFileSupplierTests {
 	static class FileSupplierTestApplication {
 
 		@Bean
-		static ComponentCustomizer<FileInboundChannelAdapterSpec> fileInboundChannelAdapterSpecCustomizer() {
+		ComponentCustomizer<FileInboundChannelAdapterSpec> fileInboundChannelAdapterSpecCustomizer() {
 			return (adapterSpec, beanName) -> adapterSpec.watchEvents(FileReadingMessageSource.WatchEventType.DELETE);
 		}
 
 		@Bean
-		static ComponentCustomizer<Date> fakeCustomizer() {
+		ComponentCustomizer<Date> fakeCustomizer() {
 			return (date, beanName) -> {
 				throw new RuntimeException("Must not happen");
 			};
