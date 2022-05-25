@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.fn.common.config.ComponentCustomizer;
-import org.springframework.cloud.fn.common.config.CustomizationDoc;
 import org.springframework.cloud.fn.common.file.FileConsumerProperties;
 import org.springframework.cloud.fn.common.file.FileReadingMode;
 import org.springframework.cloud.fn.common.file.FileUtils;
@@ -95,7 +94,6 @@ public class FileSupplierConfiguration {
 	}
 
 	@Bean
-	@CustomizationDoc
 	public FileInboundChannelAdapterSpec fileMessageSource(FileListFilter<File> fileListFilter,
 			@Nullable ComponentCustomizer<FileInboundChannelAdapterSpec> fileInboundChannelAdapterSpecCustomizer) {
 
