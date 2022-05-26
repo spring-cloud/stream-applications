@@ -19,17 +19,14 @@
 	</properties>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>tensorflow-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<repositories>
-
 		<repository>
 			<id>tensorflow-snapshots</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
@@ -37,7 +34,6 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-
 	</repositories>
 
 </project>

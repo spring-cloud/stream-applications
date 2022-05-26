@@ -14,12 +14,10 @@
     <description>MQTT Common</description>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-mqtt</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>

@@ -15,12 +15,10 @@
     <description>Spring Native Function for Splitter</description>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-file</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>

@@ -30,7 +30,6 @@
             <artifactId>de.flapdoodle.embed.mongo</artifactId>
             <scope>test</scope>
         </dependency>
-
         <!--Redis-->
         <dependency>
             <groupId>org.springframework.integration</groupId>
@@ -41,7 +40,6 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
             <scope>runtime</scope>
         </dependency>
-
         <!--Gemfire-->
         <dependency>
             <groupId>org.springframework.integration</groupId>
@@ -50,9 +48,7 @@
         <dependency>
             <groupId>org.springframework.geode</groupId>
             <artifactId>spring-geode-starter</artifactId>
-            <version>1.6.3</version>
         </dependency>
-
         <!--JDBC-->
         <dependency>
             <groupId>org.springframework.integration</groupId>

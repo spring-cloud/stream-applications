@@ -14,18 +14,15 @@
     <description>file consumer</description>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-sftp</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>function-test-support</artifactId>
             <version>${revision}</version>
         </dependency>
-
     </dependencies>
 
 </project>

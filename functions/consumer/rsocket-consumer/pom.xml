@@ -15,12 +15,10 @@
 	<name>rsocket-consumer</name>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-rsocket</artifactId>
 		</dependency>
-
 	</dependencies>
 
 </project>

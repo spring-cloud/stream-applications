@@ -15,13 +15,11 @@
 	<description>twitter functions</description>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>twitter-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.mock-server</groupId>
 			<artifactId>mockserver-netty</artifactId>
@@ -34,7 +32,6 @@
 			<version>${mockserver.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 </project>

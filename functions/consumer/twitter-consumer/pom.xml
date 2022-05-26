@@ -14,7 +14,6 @@
     <description>twitter consumer</description>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>twitter-common</artifactId>
@@ -25,7 +24,6 @@
             <artifactId>payload-converter-function</artifactId>
             <version>${project.version}</version>
         </dependency>
-
     </dependencies>
 
 </project>

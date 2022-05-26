@@ -15,13 +15,11 @@
 	<description>Spring Native Function for Tensorflow Integration</description>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>tensorflow-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
