@@ -7,21 +7,23 @@ These Spring Cloud Stream Applications provide you with out-of-the-box Spring Cl
 
 * Connectors (sources, processors, and sinks) for a variety of middleware technologies, including message brokers, storage (relational, non-relational, filesystem).
 * Adapters for various network protocols.
-* Generic processors that you can customize with https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html[Spring Expression Language (SpEL)] or by scripting.
+* Generic processors that you can customize with https://docs.spring.io/spring-framework/docs/{spring-core-version}/reference/html/core.html#expressions[Spring Expression Language (SpEL)] or by scripting.
+
+
 
 You can find a detailed listing of all the applications and their options in the following sections of this guide.
 
 Most of these applications are based on core elements that are exposed as a `java.util.function` component.
-You can learn more about these foundational components and how they are all connected to the applications by reading this https://github.com/spring-cloud/stream-applications/blob/master/README.adoc[README].
+You can learn more about these foundational components and how they are all connected to the applications by reading this https://github.com/spring-cloud/stream-applications/blob/main/README.adoc[README].
 
 == Pre-built Applications
 
 Out-of-the-box applications are Spring Boot applications that include a https://docs.spring.io/spring-cloud-stream/docs/{scst-core-version}/reference/html/spring-cloud-stream.html#spring-cloud-stream-overview-binders[binder implementation] on top of the basic logic of the app (a function for example) -- a fully functional uber-jar.
-These https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/getting-started.html#getting-started-first-application-executable-jar[uber-jars] include the minimal code required for standalone execution.
+These https://docs.spring.io/spring-boot/docs/current/reference/html/getting-started.html#getting-started-first-application-executable-jar[uber-jars] include the minimal code required for standalone execution.
 For each function application, the project provides a prebuilt version for Apache Kafka and Rabbit MQ Binders.
 
 [NOTE]
-Prebuilt applications are generated according to the https://github.com/spring-cloud/spring-cloud-dataflow-apps-plugin/tree/master/spring-cloud-dataflow-apps-generator-plugin[stream apps generator Maven plugin].
+Prebuilt applications are generated according to the https://github.com/spring-cloud/spring-cloud-dataflow-apps-plugin/tree/main/spring-cloud-dataflow-apps-generator-plugin[stream apps generator Maven plugin].
 
 [[classification]]
 == Classification
@@ -37,7 +39,7 @@ The prebuilt applications follow a naming convention: `<functionality>-<type>-<b
 === Maven Access
 
 The core functionality of the applications is available as functions.
-See the https://github.com/spring-cloud/stream-applications/tree/master/functions[Java Functions] section in the `stream-applications` repository for more details.
+See the https://github.com/spring-cloud/stream-applications/tree/main/functions[Java Functions] section in the `stream-applications` repository for more details.
 Prebuilt applications are available as Maven artifacts.
 You can download the executable jar artifacts from the Spring Maven repositories.
 The root directory of the Maven repository that hosts release versions is https://repo.spring.io/release/org/springframework/cloud/stream/app/.
@@ -130,9 +132,8 @@ To build the image in your local registry:
 
 [source,shell]
 ----
-./mvn clean package jib:dockerBuild
+./mvnw clean package jib:dockerBuild
 ----
-
 
 To publish the image to a remote registry:
 
@@ -230,7 +231,7 @@ Open the generated application's `pom.xml` and update the dependencies.
 If there is a new version of Spring Cloud Stream update available that contains the enhancements we are looking for, then it is easier to update the BOM itself.
 Find where the bom is declared in `pom.xml` and update the version.
 
-For example, if we have to update Spring Cloud Stream to `Horsham.SR10`, this version must be specified in the BOM declaration as below:
+For example, if we have to update Spring Cloud Stream to `3.2.4-SNAPSHOT`, this version must be specified in the BOM declaration as below:
 
 [source,xml]
 ----
@@ -239,7 +240,7 @@ For example, if we have to update Spring Cloud Stream to `Horsham.SR10`, this ve
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream-dependencies</artifactId>
-            <version>Horsham.SR10</version>
+            <version>3.2.4-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -272,11 +273,14 @@ Here you can find the modified application jar file.
 
 By default, we only provide out of the box applications for Apache Kafka and RabbitMQ binders.
 There are other binder implementations exist, for which we can generate these same out of the box applications.
-For example, if one wants to generate these applications for the https://github.com/spring-cloud/spring-cloud-stream-binder-aws-kinesis[Kinesis binder], or the https://github.com/SolaceProducts/spring-cloud-stream-binder-solace[Solace binder], or https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-pubsub-stream-binder[Google gcp pubsub binder] etc. it is possible to do so by following the instructions below.
+For example, if one wants to generate these applications for the https://github.com/spring-cloud/spring-cloud-stream-binder-aws-kinesis[Kinesis binder], or the https://github.com/SolaceProducts/solace-spring-cloud/tree/master/solace-spring-cloud-starters/solace-spring-cloud-stream-starter[Solace binder] etc. it is possible to do so by following the instructions below.
 
 As a first step, clone the https://github.com/spring-cloud/stream-applications[stream applications] repository.
 
+[source,shell]
+----
 cd applications/stream-applications-core
+----
 
 We need to edit the pom.xml in this module.
 Find the following configuration where it defines the Kafka and RabbitMQ binders for the maven plugin.
@@ -368,4 +372,3 @@ Similarly, this should happen for all the out of the box application projects.
 
 Keep in mind that, these generated applications further need to be built individually.
 For that, go to the generated applications folder and then initiate a maven build.
-
