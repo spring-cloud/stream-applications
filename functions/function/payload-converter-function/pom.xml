@@ -15,13 +15,4 @@
 	<name>payload-converter-function</name>
 	<description>Utility message conversion functions</description>
 
-	<dependencies>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-messaging</artifactId>
-		</dependency>
-
-	</dependencies>
-
 </project>

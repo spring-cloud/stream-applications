@@ -14,27 +14,16 @@
     <name>http-request-function</name>
     <description>Spring Native Function for Submitting an HTTP request</description>
 
-    <properties>
-        <mockwebserver.version>4.6.0</mockwebserver.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-messaging</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>mockwebserver</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 </project>

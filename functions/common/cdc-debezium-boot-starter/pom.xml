@@ -32,7 +32,6 @@
 			</exclusions>
 		</dependency>
 
-		<!-- -->
 		<dependency>
 			<groupId>io.debezium</groupId>
 			<artifactId>debezium-connector-mysql</artifactId>
@@ -44,19 +43,17 @@
 			</exclusions>
 			<version>${version.debezium}</version>
 		</dependency>
-
-				<dependency>
-					<groupId>io.debezium</groupId>
-					<artifactId>debezium-connector-mongodb</artifactId>
-					<exclusions>
-						<exclusion>
-							<artifactId>slf4j-log4j12</artifactId>
-							<groupId>org.slf4j</groupId>
-						</exclusion>
-					</exclusions>
-					<version>${version.debezium}</version>
-				</dependency>
-
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-mongodb</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+			<version>${version.debezium}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.debezium</groupId>
 			<artifactId>debezium-connector-postgres</artifactId>

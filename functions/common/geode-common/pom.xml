@@ -14,22 +14,19 @@
     <description>Geode Common Components</description>
 
     <properties>
-<!--        <geode-starter.version>1.2.7.RELEASE</geode-starter.version>-->
         <org-json.version>20200518</org-json.version>
     </properties>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>${org-json.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-geode</artifactId>
         </dependency>
-
+	    <dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>${org-json.version}</version>
+	    </dependency>
     </dependencies>
 
 </project>

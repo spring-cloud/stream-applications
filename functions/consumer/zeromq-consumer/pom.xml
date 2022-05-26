@@ -14,12 +14,10 @@
     <description>ZeroMQ consumer</description>
 
     <dependencies>
-        <!-- Spring Integration dependencies -->
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-zeromq</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>

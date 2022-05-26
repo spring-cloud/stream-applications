@@ -14,20 +14,11 @@
     <description>mqtt supplier</description>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>mqtt-common</artifactId>
             <version>${revision}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers</artifactId>
-            <version>${test-containers.version}</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
 </project>

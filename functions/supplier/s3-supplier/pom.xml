@@ -14,7 +14,6 @@
     <description>s3 supplier</description>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>aws-s3-common</artifactId>
@@ -30,7 +29,6 @@
             <artifactId>metadata-store-common</artifactId>
             <version>${revision}</version>
         </dependency>
-
     </dependencies>
 
 </project>

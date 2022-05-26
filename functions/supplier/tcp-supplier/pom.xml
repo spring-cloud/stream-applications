@@ -14,13 +14,11 @@
     <description>tcp supplier</description>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>tcp-common</artifactId>
             <version>${revision}</version>
         </dependency>
-
     </dependencies>
 
 </project>

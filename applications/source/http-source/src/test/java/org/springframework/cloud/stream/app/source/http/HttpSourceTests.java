@@ -47,7 +47,7 @@ public class HttpSourceTests {
 	@Test
 	public void testSourceFromSupplier() {
 		testRestTemplate.postForObject("/", "test1", Object.class);
-		Message<byte[]> sourceMessage = outputDestination.receive(10000);
+		Message<byte[]> sourceMessage = outputDestination.receive(10000, "httpSupplier-out-0");
 		final String actual = new String(sourceMessage.getPayload());
 		assertThat(actual).isEqualTo("test1");
 	}

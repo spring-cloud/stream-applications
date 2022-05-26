@@ -14,46 +14,10 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>stream-applications-micrometer-common</artifactId>
 
-<!--    <build>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <argLine>-->
-<!--                        -javaagent:"${settings.localRepository}"/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar-->
-<!--                    </argLine>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-
-<!--    </build>-->
-
     <dependencies>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-influx</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.pivotal.cfenv</groupId>
-            <artifactId>java-cfenv-test-support</artifactId>
-            <scope>test</scope>
-            <version>2.2.2.RELEASE</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jmockit</groupId>
-                    <artifactId>jmockit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.jmockit</groupId>
-            <artifactId>jmockit</artifactId>
-            <version>${jmockit.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -61,14 +25,32 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <optional>true</optional>
             <scope>test</scope>
         </dependency>
+	    <dependency>
+		    <groupId>io.micrometer</groupId>
+		    <artifactId>micrometer-registry-influx</artifactId>
+		    <scope>test</scope>
+	    </dependency>
+	    <dependency>
+		    <groupId>io.pivotal.cfenv</groupId>
+		    <artifactId>java-cfenv-test-support</artifactId>
+		    <scope>test</scope>
+		    <version>${java-cfenv-boot.version}</version>
+		    <exclusions>
+			    <exclusion>
+				    <groupId>org.jmockit</groupId>
+				    <artifactId>jmockit</artifactId>
+			    </exclusion>
+		    </exclusions>
+	    </dependency>
+	    <dependency>
+		    <groupId>org.jmockit</groupId>
+		    <artifactId>jmockit</artifactId>
+		    <version>${jmockit.version}</version>
+		    <scope>test</scope>
+	    </dependency>
     </dependencies>
 </project>

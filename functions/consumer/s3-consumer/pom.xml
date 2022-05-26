@@ -14,25 +14,21 @@
     <description>s3 consumer</description>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>aws-s3-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>file-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 </project>

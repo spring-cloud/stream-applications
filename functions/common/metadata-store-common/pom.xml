@@ -74,17 +74,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--TODO-->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-geode</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>geode-spring-boot-starter</artifactId>
-            <optional>true</optional>
-        </dependency>-->
 
         <!--JDBC-->
         <dependency>
