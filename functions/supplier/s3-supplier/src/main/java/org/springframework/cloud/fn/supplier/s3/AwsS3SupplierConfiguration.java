@@ -29,10 +29,11 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.MonoProcessor;
+import reactor.core.publisher.Sinks;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.cloud.fn.common.file.FileConsumerProperties;
 import org.springframework.cloud.fn.common.file.FileUtils;
 import org.springframework.context.annotation.Bean;
@@ -49,6 +50,7 @@ import org.springframework.integration.endpoint.ReactiveMessageSourceProducer;
 import org.springframework.integration.file.filters.ChainFileListFilter;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
 import org.springframework.integration.util.IntegrationReactiveUtils;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.util.StringUtils;
@@ -57,7 +59,7 @@ import org.springframework.util.StringUtils;
  * @author Artem Bilan
  * @author David Turanski
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ AwsS3SupplierProperties.class, FileConsumerProperties.class })
 public abstract class AwsS3SupplierConfiguration {
 
@@ -73,10 +75,13 @@ public abstract class AwsS3SupplierConfiguration {
 
 	protected final ConcurrentMetadataStore metadataStore;
 
+	protected final Sinks.One<Subscription> downstreamSubscription = Sinks.one();
+
 	public AwsS3SupplierConfiguration(AwsS3SupplierProperties awsS3SupplierProperties,
 			FileConsumerProperties fileConsumerProperties,
 			AmazonS3 amazonS3,
 			S3SessionFactory s3SessionFactory, ConcurrentMetadataStore metadataStore) {
+
 		this.awsS3SupplierProperties = awsS3SupplierProperties;
 		this.fileConsumerProperties = fileConsumerProperties;
 		this.amazonS3 = amazonS3;
@@ -88,11 +93,9 @@ public abstract class AwsS3SupplierConfiguration {
 	@ConditionalOnProperty(prefix = "s3.supplier", name = "list-only", havingValue = "false", matchIfMissing = true)
 	static class SynchronizingConfiguration extends AwsS3SupplierConfiguration {
 
-		private final MonoProcessor<Subscription> downstreamSubscription = MonoProcessor.create();
-
 		@Bean
 		public Supplier<Flux<Message<?>>> s3Supplier(Publisher<Message<?>> s3SupplierFlow) {
-			return () -> Flux.from(s3SupplierFlow).doOnSubscribe(this.downstreamSubscription::onNext);
+			return () -> Flux.from(s3SupplierFlow).doOnSubscribe(this.downstreamSubscription::tryEmitValue);
 		}
 
 		@Bean
@@ -116,6 +119,7 @@ public abstract class AwsS3SupplierConfiguration {
 				AmazonS3 amazonS3,
 				S3SessionFactory s3SessionFactory,
 				ConcurrentMetadataStore concurrentMetadataStore) {
+
 			super(awsS3SupplierProperties, fileConsumerProperties, amazonS3, s3SessionFactory,
 					concurrentMetadataStore);
 		}
@@ -125,7 +129,7 @@ public abstract class AwsS3SupplierConfiguration {
 			return FileUtils.enhanceFlowForReadingMode(
 					IntegrationFlows.from(
 							IntegrationReactiveUtils.messageSourceToFlux(s3MessageSource)
-									.delaySubscription(this.downstreamSubscription)),
+									.delaySubscription(this.downstreamSubscription.asMono())),
 					fileConsumerProperties)
 					.toReactivePublisher();
 		}
@@ -146,11 +150,17 @@ public abstract class AwsS3SupplierConfiguration {
 		}
 
 		@Bean
-		public MessageSource<File> s3MessageSource(S3InboundFileSynchronizer s3InboundFileSynchronizer) {
+		public MessageSource<File> s3MessageSource(S3InboundFileSynchronizer s3InboundFileSynchronizer,
+				@Nullable ComponentCustomizer<S3InboundFileSynchronizingMessageSource> s3MessageSourceCustomizer) {
+
 			S3InboundFileSynchronizingMessageSource s3MessageSource = new S3InboundFileSynchronizingMessageSource(
 					s3InboundFileSynchronizer);
 			s3MessageSource.setLocalDirectory(this.awsS3SupplierProperties.getLocalDir());
 			s3MessageSource.setAutoCreateLocalDirectory(this.awsS3SupplierProperties.isAutoCreateLocalDir());
+
+			if (s3MessageSourceCustomizer != null) {
+				s3MessageSourceCustomizer.customize(s3MessageSource, "s3MessageSource");
+			}
 			return s3MessageSource;
 		}
 
@@ -163,16 +173,15 @@ public abstract class AwsS3SupplierConfiguration {
 		ListOnlyConfiguration(AwsS3SupplierProperties awsS3SupplierProperties,
 				FileConsumerProperties fileConsumerProperties,
 				AmazonS3 amazonS3, S3SessionFactory s3SessionFactory, ConcurrentMetadataStore metadataStore) {
+
 			super(awsS3SupplierProperties, fileConsumerProperties, amazonS3, s3SessionFactory,
 					metadataStore);
 		}
 
-		private final MonoProcessor<Subscription> downstreamSubscription = MonoProcessor.create();
-
 		@Bean
 		public Supplier<Flux<Message<Object>>> s3Supplier(Publisher<Message<Object>> s3SupplierFlow) {
 			return () -> Flux.from(s3SupplierFlow)
-					.doOnSubscribe(downstreamSubscription::onNext);
+					.doOnSubscribe(downstreamSubscription::tryEmitValue);
 		}
 
 		@Bean
@@ -208,6 +217,7 @@ public abstract class AwsS3SupplierConfiguration {
 		@Bean
 		ReactiveMessageSourceProducer s3ListingMessageProducer(AmazonS3 amazonS3,
 				AwsS3SupplierProperties awsS3SupplierProperties, Predicate<S3ObjectSummary> filter) {
+
 			ListObjectsRequest listObjectsRequest = new ListObjectsRequest();
 			listObjectsRequest.setBucketName(awsS3SupplierProperties.getRemoteDir());
 			return new ReactiveMessageSourceProducer(
@@ -219,9 +229,11 @@ public abstract class AwsS3SupplierConfiguration {
 					}) {
 				@Override
 				protected void subscribeToPublisher(Publisher<? extends Message<?>> publisher) {
-					super.subscribeToPublisher(Flux.from(publisher).delaySubscription(downstreamSubscription));
+					super.subscribeToPublisher(Flux.from(publisher).delaySubscription(downstreamSubscription.asMono()));
 				}
 			};
 		}
+
 	}
+
 }

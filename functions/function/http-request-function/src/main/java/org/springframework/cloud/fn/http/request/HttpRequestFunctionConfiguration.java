@@ -24,11 +24,13 @@ import reactor.core.publisher.Flux;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
@@ -41,17 +43,23 @@ import org.springframework.web.util.UriBuilderFactory;
  * @author David Turanski
  *
  **/
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(HttpRequestFunctionProperties.class)
 public class HttpRequestFunctionConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(WebClient.class)
-	public WebClient webClient(HttpRequestFunctionProperties properties) {
-		return WebClient.builder()
-				.codecs(clientCodecConfigurer ->
-						clientCodecConfigurer.defaultCodecs().maxInMemorySize(properties.getMaximumBufferSize()))
-				.build();
+	public WebClient webClient(HttpRequestFunctionProperties properties,
+			@Nullable ComponentCustomizer<WebClient.Builder> webClientComponentCustomizer) {
+		WebClient.Builder builder =
+				WebClient.builder()
+						.codecs(clientCodecConfigurer ->
+								clientCodecConfigurer.defaultCodecs()
+										.maxInMemorySize(properties.getMaximumBufferSize()));
+		if (webClientComponentCustomizer != null) {
+			webClientComponentCustomizer.customize(builder, "webClient");
+		}
+		return builder.build();
 	}
 
 	@Bean
@@ -64,6 +72,7 @@ public class HttpRequestFunctionConfiguration {
 	 * returns a {@code Flux<ResponseEntity<?>>}.
 	 */
 	public static class HttpRequestFunction implements Function<Flux<Message<?>>, Flux<?>> {
+
 		private final WebClient webClient;
 
 		private final UriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
@@ -116,4 +125,5 @@ public class HttpRequestFunctionConfiguration {
 		}
 
 	}
+
 }

@@ -35,16 +35,15 @@ import org.springframework.messaging.Message;
  *
  * @author Artem Bilan
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(LogConsumerProperties.class)
 public class LogConsumerConfiguration {
 
 	@Bean
 	IntegrationFlow logConsumerFlow(LogConsumerProperties logSinkProperties) {
 		return IntegrationFlows.from(MessageConsumer.class, (gateway) -> gateway.beanName("logConsumer"))
-				.handle((payload, headers) -> payload)
 				.log(logSinkProperties.getLevel(), logSinkProperties.getName(), logSinkProperties.getExpression())
-				.get();
+				.nullChannel();
 	}
 
 	private interface MessageConsumer extends Consumer<Message<?>> {

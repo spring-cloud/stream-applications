@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -42,6 +43,7 @@ import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.FluxMessageChannel;
 import org.springframework.integration.config.AggregatorFactoryBean;
 import org.springframework.integration.store.MessageGroupStore;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 
@@ -83,7 +85,8 @@ public class AggregatorFunctionConfiguration {
 			ObjectProvider<ReleaseStrategy> releaseStrategy,
 			ObjectProvider<MessageGroupProcessor> messageGroupProcessor,
 			ObjectProvider<MessageGroupStore> messageStore,
-			@Qualifier("outputChannel") MessageChannel outputChannel) {
+			@Qualifier("outputChannel") MessageChannel outputChannel,
+			@Nullable ComponentCustomizer<AggregatorFactoryBean> aggregatorCustomizer) {
 
 		AggregatorFactoryBean aggregator = new AggregatorFactoryBean();
 		aggregator.setExpireGroupsUponCompletion(true);
@@ -103,6 +106,10 @@ public class AggregatorFunctionConfiguration {
 
 		aggregator.setMessageStore(messageStore.getIfAvailable());
 		aggregator.setOutputChannel(outputChannel);
+
+		if (aggregatorCustomizer != null) {
+			aggregatorCustomizer.customize(aggregator, "aggregator");
+		}
 
 		return aggregator;
 	}

@@ -26,6 +26,7 @@ import reactor.core.publisher.Flux;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.cloud.fn.splitter.SplitterFunctionConfiguration;
 import org.springframework.cloud.function.context.PollableBean;
 import org.springframework.context.annotation.Bean;
@@ -33,13 +34,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.jdbc.JdbcPollingChannelAdapter;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 
 /**
  * @author Soby Chacko
  * @author Artem Bilan
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(JdbcSupplierProperties.class)
 @Import(SplitterFunctionConfiguration.class)
 public class JdbcSupplierConfiguration {
@@ -54,20 +56,26 @@ public class JdbcSupplierConfiguration {
 	}
 
 	@Bean
-	public MessageSource<Object> jdbcMessageSource() {
+	public MessageSource<Object> jdbcMessageSource(
+			@Nullable ComponentCustomizer<JdbcPollingChannelAdapter> jdbcPollingChannelAdapterCustomizer) {
+
 		JdbcPollingChannelAdapter jdbcPollingChannelAdapter =
 				new JdbcPollingChannelAdapter(this.dataSource, this.properties.getQuery());
 		jdbcPollingChannelAdapter.setMaxRows(this.properties.getMaxRows());
 		jdbcPollingChannelAdapter.setUpdateSql(this.properties.getUpdate());
+		if (jdbcPollingChannelAdapterCustomizer != null) {
+			jdbcPollingChannelAdapterCustomizer.customize(jdbcPollingChannelAdapter, "jdbcMessageSource");
+		}
 		return jdbcPollingChannelAdapter;
 	}
 
 	@Bean(name = "jdbcSupplier")
-	@PollableBean(splittable = true)
+	@PollableBean
 	@ConditionalOnProperty(prefix = "jdbc.supplier", name = "split", matchIfMissing = true)
-	public Supplier<Flux<Message<?>>> splittedSupplier(Function<Message<?>, List<Message<?>>> splitterFunction) {
+	public Supplier<Flux<Message<?>>> splittedSupplier(MessageSource<Object> jdbcMessageSource,
+			Function<Message<?>, List<Message<?>>> splitterFunction) {
 		return () -> {
-			Message<?> received = jdbcMessageSource().receive();
+			Message<?> received = jdbcMessageSource.receive();
 			if (received != null) {
 				return Flux.fromIterable(splitterFunction.apply(received)); // multiple Message<Map<String, Object>>
 			}
@@ -79,8 +87,8 @@ public class JdbcSupplierConfiguration {
 
 	@Bean
 	@ConditionalOnProperty(prefix = "jdbc.supplier", name = "split", havingValue = "false")
-	public Supplier<Message<?>> jdbcSupplier() {
-		return () -> jdbcMessageSource().receive();
+	public Supplier<Message<?>> jdbcSupplier(MessageSource<Object> jdbcMessageSource) {
+		return jdbcMessageSource::receive;
 	}
 
 }

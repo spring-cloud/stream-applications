@@ -23,11 +23,13 @@ import java.util.function.Function;
 import org.apache.geode.cache.Region;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.cloud.fn.common.geode.GeodeClientRegionConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.integration.gemfire.outbound.CacheWritingMessageHandler;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 
 /**
@@ -35,7 +37,7 @@ import org.springframework.messaging.Message;
  * Message, using a SpEL expression for a key, and the payload for the value.
  * @author David Turanski
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(GeodeConsumerProperties.class)
 @Import(GeodeClientRegionConfiguration.class)
 public class GeodeConsumerConfiguration {
@@ -52,10 +54,14 @@ public class GeodeConsumerConfiguration {
 	}
 
 	@Bean
-	CacheWritingMessageHandler cacheWriter(Region<?, ?> region, GeodeConsumerProperties properties) {
+	CacheWritingMessageHandler cacheWriter(Region<?, ?> region, GeodeConsumerProperties properties,
+			@Nullable ComponentCustomizer<CacheWritingMessageHandler> cacheWritingMessageHandlerCustomizer) {
+
 		CacheWritingMessageHandler messageHandler = new CacheWritingMessageHandler(region);
-		messageHandler.setCacheEntries(
-				Collections.singletonMap(properties.getKeyExpression(), "payload"));
+		messageHandler.setCacheEntries(Collections.singletonMap(properties.getKeyExpression(), "payload"));
+		if (cacheWritingMessageHandlerCustomizer != null) {
+			cacheWritingMessageHandlerCustomizer.customize(messageHandler, "cacheWriter");
+		}
 		return messageHandler;
 	}
 }

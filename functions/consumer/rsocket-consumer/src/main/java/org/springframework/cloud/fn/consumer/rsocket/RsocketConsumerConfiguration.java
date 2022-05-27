@@ -34,17 +34,15 @@ public class RsocketConsumerConfiguration {
 	@Bean
 	public Function<Flux<Message<?>>, Mono<Void>> rsocketConsumer(RSocketRequester.Builder builder,
 																RsocketConsumerProperties rsocketConsumerProperties) {
-		final Mono<RSocketRequester> rSocketRequester =
-				rsocketConsumerProperties.getUri() != null ? builder.connectWebSocket(rsocketConsumerProperties.getUri()).cache() :
-						builder.connectTcp(rsocketConsumerProperties.getHost(),
-								rsocketConsumerProperties.getPort()).cache();
+		final RSocketRequester rSocketRequester =
+				rsocketConsumerProperties.getUri() != null ? builder.websocket(rsocketConsumerProperties.getUri()) :
+						builder.tcp(rsocketConsumerProperties.getHost(), rsocketConsumerProperties.getPort());
 
 		return input ->
 				input.flatMap(message ->
-						rSocketRequester
-								.flatMap(requester -> requester.route(rsocketConsumerProperties.getRoute())
+						rSocketRequester.route(rsocketConsumerProperties.getRoute())
 										.data(message.getPayload())
-										.send()))
+										.send())
 						.ignoreElements();
 	}
 

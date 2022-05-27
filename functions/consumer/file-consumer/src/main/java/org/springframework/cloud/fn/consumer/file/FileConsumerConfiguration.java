@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.consumer.file;
 import java.util.function.Consumer;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.expression.ExpressionParser;
@@ -26,6 +27,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.integration.file.DefaultFileNameGenerator;
 import org.springframework.integration.file.FileNameGenerator;
 import org.springframework.integration.file.FileWritingMessageHandler;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 
 /**
@@ -33,7 +35,7 @@ import org.springframework.messaging.Message;
  * @author Artem Bilan
  * @author Soby Chacko
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(FileConsumerProperties.class)
 public class FileConsumerConfiguration {
 
@@ -46,21 +48,29 @@ public class FileConsumerConfiguration {
 	}
 
 	@Bean
-	public Consumer<Message<?>> fileConsumer() {
-		return fileWritingMessageHandler()::handleMessage;
+	public Consumer<Message<?>> fileConsumer(FileWritingMessageHandler fileWritingMessageHandler) {
+		return fileWritingMessageHandler::handleMessage;
 	}
 
 	@Bean
-	public FileWritingMessageHandler fileWritingMessageHandler() {
-		FileWritingMessageHandler handler = (properties.getDirectoryExpression() != null)
-				? new FileWritingMessageHandler(EXPRESSION_PARSER.parseExpression(properties.getDirectoryExpression()))
-				: new FileWritingMessageHandler(properties.getDirectory());
+	public FileWritingMessageHandler fileWritingMessageHandler(FileNameGenerator fileNameGenerator,
+			@Nullable ComponentCustomizer<FileWritingMessageHandler> fileWritingMessageHandlerCustomizer) {
+
+		FileWritingMessageHandler handler =
+				this.properties.getDirectoryExpression() != null
+				? new FileWritingMessageHandler(
+						EXPRESSION_PARSER.parseExpression(this.properties.getDirectoryExpression()))
+				: new FileWritingMessageHandler(this.properties.getDirectory());
 		handler.setAutoCreateDirectory(true);
 		handler.setAppendNewLine(!properties.isBinary());
 		handler.setCharset(properties.getCharset());
 		handler.setExpectReply(false);
 		handler.setFileExistsMode(properties.getMode());
-		handler.setFileNameGenerator(fileNameGenerator());
+		handler.setFileNameGenerator(fileNameGenerator);
+
+		if (fileWritingMessageHandlerCustomizer != null) {
+			fileWritingMessageHandlerCustomizer.customize(handler, "fileWritingMessageHandler");
+		}
 		return handler;
 	}
 
@@ -70,4 +80,5 @@ public class FileConsumerConfiguration {
 		fileNameGenerator.setExpression(properties.getNameExpression());
 		return fileNameGenerator;
 	}
+
 }

@@ -26,17 +26,20 @@ import reactor.core.publisher.Flux;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jms.JmsProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.jms.JmsMessageDrivenEndpoint;
 import org.springframework.integration.jms.dsl.Jms;
+import org.springframework.integration.jms.dsl.JmsMessageDrivenChannelAdapterSpec;
 import org.springframework.jms.listener.AbstractMessageListenerContainer;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(JmsSupplierProperties.class)
 public class JmsSupplierConfiguration {
 
@@ -57,10 +60,20 @@ public class JmsSupplierConfiguration {
 	}
 
 	@Bean
-	public Publisher<Message<byte[]>> jmsPublisher() {
-		return IntegrationFlows.from(
-				Jms.messageDrivenChannelAdapter(container())
-						.autoStartup(false))
+	public Publisher<Message<byte[]>> jmsPublisher(
+			AbstractMessageListenerContainer container,
+			@Nullable ComponentCustomizer<JmsMessageDrivenChannelAdapterSpec<?>>
+					jmsMessageDrivenChannelAdapterSpecCustomizer) {
+
+		JmsMessageDrivenChannelAdapterSpec<?> messageProducerSpec = Jms.messageDrivenChannelAdapter(container)
+				.autoStartup(false)
+				.id("jmsMessageProducer");
+
+		if (jmsMessageDrivenChannelAdapterSpecCustomizer != null) {
+			jmsMessageDrivenChannelAdapterSpecCustomizer.customize(messageProducerSpec, "jmsMessageProducer");
+		}
+
+		return IntegrationFlows.from(messageProducerSpec)
 				.toReactivePublisher();
 	}
 
@@ -111,4 +124,5 @@ public class JmsSupplierConfiguration {
 		}
 		return container;
 	}
+
 }

@@ -39,12 +39,14 @@ import org.springframework.boot.autoconfigure.amqp.RabbitConnectionFactoryBeanCo
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.expression.Expression;
 import org.springframework.integration.amqp.dsl.Amqp;
 import org.springframework.integration.amqp.dsl.AmqpOutboundChannelAdapterSpec;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 
@@ -92,7 +94,8 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 	}
 
 	@Bean
-	public MessageHandler amqpChannelAdapter(ConnectionFactory rabbitConnectionFactory)
+	public AmqpOutboundChannelAdapterSpec amqpChannelAdapter(ConnectionFactory rabbitConnectionFactory,
+			@Nullable ComponentCustomizer<AmqpOutboundChannelAdapterSpec> amqpOutboundChannelAdapterSpecCustomizer)
 			throws Exception {
 
 		AmqpOutboundChannelAdapterSpec handler = Amqp
@@ -119,7 +122,12 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 		else {
 			handler.routingKey(this.properties.getRoutingKey());
 		}
-		return handler.get();
+
+		if (amqpOutboundChannelAdapterSpecCustomizer != null) {
+			amqpOutboundChannelAdapterSpecCustomizer.customize(handler, "amqpChannelAdapter");
+		}
+
+		return handler;
 	}
 
 	@Bean
@@ -162,7 +170,8 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 		 * [UPGRADE_CONSIDERATION] this should stay somewhat in sync w/ the functionality provided by its original source.
 		 */
 		RabbitConnectionFactoryBean connectionFactoryBean = new RabbitConnectionFactoryBean();
-		RabbitConnectionFactoryBeanConfigurer connectionFactoryBeanConfigurer = new RabbitConnectionFactoryBeanConfigurer(resourceLoader, properties);
+		RabbitConnectionFactoryBeanConfigurer connectionFactoryBeanConfigurer =
+				new RabbitConnectionFactoryBeanConfigurer(resourceLoader, properties);
 		connectionFactoryBeanConfigurer.setCredentialsProvider(credentialsProvider.getIfUnique());
 		connectionFactoryBeanConfigurer.setCredentialsRefreshService(credentialsRefreshService.getIfUnique());
 		connectionFactoryBeanConfigurer.configure(connectionFactoryBean);
@@ -173,7 +182,8 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 				.forEach((customizer) -> customizer.customize(connectionFactory));
 
 		CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(connectionFactory);
-		CachingConnectionFactoryConfigurer cachingConnectionFactoryConfigurer = new CachingConnectionFactoryConfigurer(properties);
+		CachingConnectionFactoryConfigurer cachingConnectionFactoryConfigurer =
+				new CachingConnectionFactoryConfigurer(properties);
 		cachingConnectionFactoryConfigurer.setConnectionNameStrategy(cf -> "rabbit.sink.own.connection");
 		cachingConnectionFactoryConfigurer.configure(cachingConnectionFactory);
 		cachingConnectionFactory.afterPropertiesSet();
