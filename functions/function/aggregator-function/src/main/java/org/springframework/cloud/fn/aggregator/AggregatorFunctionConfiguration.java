@@ -113,7 +113,7 @@ public class AggregatorFunctionConfiguration {
 		aggregator.setOutputChannel(outputChannel);
 
 		if (aggregatorCustomizer != null) {
-			aggregatorCustomizer.customize(aggregator, "aggregator");
+			aggregatorCustomizer.customize(aggregator);
 		}
 
 		return aggregator;

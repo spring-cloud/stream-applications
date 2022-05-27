@@ -69,7 +69,7 @@ public class FileConsumerConfiguration {
 		handler.setFileNameGenerator(fileNameGenerator);
 
 		if (fileWritingMessageHandlerCustomizer != null) {
-			fileWritingMessageHandlerCustomizer.customize(handler, "fileWritingMessageHandler");
+			fileWritingMessageHandlerCustomizer.customize(handler);
 		}
 		return handler;
 	}

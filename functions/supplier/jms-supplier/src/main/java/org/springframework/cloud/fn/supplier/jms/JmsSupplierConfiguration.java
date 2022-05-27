@@ -62,11 +62,10 @@ public class JmsSupplierConfiguration {
 			@Nullable ComponentCustomizer<JmsMessageDrivenChannelAdapterSpec<?>>
 					jmsMessageDrivenChannelAdapterSpecCustomizer) {
 
-		JmsMessageDrivenChannelAdapterSpec<?> messageProducerSpec = Jms.messageDrivenChannelAdapter(container)
-				.id("jmsMessageProducer");
+		JmsMessageDrivenChannelAdapterSpec<?> messageProducerSpec = Jms.messageDrivenChannelAdapter(container);
 
 		if (jmsMessageDrivenChannelAdapterSpecCustomizer != null) {
-			jmsMessageDrivenChannelAdapterSpecCustomizer.customize(messageProducerSpec, "jmsMessageProducer");
+			jmsMessageDrivenChannelAdapterSpecCustomizer.customize(messageProducerSpec);
 		}
 
 		return IntegrationFlows.from(messageProducerSpec)

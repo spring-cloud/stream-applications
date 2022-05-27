@@ -68,7 +68,7 @@ public class MqttConsumerConfiguration {
 		messageHandler.setDefaultTopic(properties.getTopic());
 		messageHandler.setConverter(pahoMessageConverter());
 		if (mqttMessageHandlerCustomizer != null) {
-			mqttMessageHandlerCustomizer.customize(messageHandler, "mqttOutbound");
+			mqttMessageHandlerCustomizer.customize(messageHandler);
 		}
 		return messageHandler;
 	}

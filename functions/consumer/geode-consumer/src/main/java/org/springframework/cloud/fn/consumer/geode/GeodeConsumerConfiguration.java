@@ -60,7 +60,7 @@ public class GeodeConsumerConfiguration {
 		CacheWritingMessageHandler messageHandler = new CacheWritingMessageHandler(region);
 		messageHandler.setCacheEntries(Collections.singletonMap(properties.getKeyExpression(), "payload"));
 		if (cacheWritingMessageHandlerCustomizer != null) {
-			cacheWritingMessageHandlerCustomizer.customize(messageHandler, "cacheWriter");
+			cacheWritingMessageHandlerCustomizer.customize(messageHandler);
 		}
 		return messageHandler;
 	}

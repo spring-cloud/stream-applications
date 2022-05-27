@@ -124,7 +124,7 @@ public class RabbitConsumerConfiguration implements DisposableBean {
 		}
 
 		if (amqpOutboundChannelAdapterSpecCustomizer != null) {
-			amqpOutboundChannelAdapterSpecCustomizer.customize(handler, "amqpChannelAdapter");
+			amqpOutboundChannelAdapterSpecCustomizer.customize(handler);
 		}
 
 		return handler;

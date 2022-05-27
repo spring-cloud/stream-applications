@@ -49,7 +49,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.integration.amqp.dsl.Amqp;
 import org.springframework.integration.amqp.dsl.AmqpInboundChannelAdapterSMLCSpec;
-import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
@@ -154,11 +153,10 @@ public class RabbitSupplierConfiguration implements DisposableBean {
 
 		AmqpInboundChannelAdapterSMLCSpec messageProducerSpec =
 				Amqp.inboundAdapter(container)
-						.mappedRequestHeaders(properties.getMappedRequestHeaders())
-						.id("amqpMessageProducer");
+						.mappedRequestHeaders(properties.getMappedRequestHeaders());
 
 		if (amqpMessageProducerCustomizer != null) {
-			amqpMessageProducerCustomizer.customize(messageProducerSpec, "amqpMessageProducer");
+			amqpMessageProducerCustomizer.customize(messageProducerSpec);
 		}
 
 		return IntegrationFlows.from(messageProducerSpec)

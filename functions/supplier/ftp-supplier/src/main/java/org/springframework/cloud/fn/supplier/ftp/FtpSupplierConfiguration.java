@@ -118,7 +118,7 @@ public class FtpSupplierConfiguration {
 
 		messageSourceBuilder.filter(chainFileListFilter);
 		if (ftpInboundChannelAdapterSpecCustomizer != null) {
-			ftpInboundChannelAdapterSpecCustomizer.customize(messageSourceBuilder, "ftpMessageSource");
+			ftpInboundChannelAdapterSpecCustomizer.customize(messageSourceBuilder);
 		}
 		return messageSourceBuilder;
 	}

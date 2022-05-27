@@ -78,7 +78,7 @@ public class MongoDbConsumerConfiguration {
 		}
 		mongoDbMessageHandler.setCollectionNameExpression(collectionExpression);
 		if (mongoDbMessageHandlerCustomizer != null) {
-			mongoDbMessageHandlerCustomizer.customize(mongoDbMessageHandler, "mongoConsumerMessageHandler");
+			mongoDbMessageHandlerCustomizer.customize(mongoDbMessageHandler);
 		}
 		return mongoDbMessageHandler;
 	}

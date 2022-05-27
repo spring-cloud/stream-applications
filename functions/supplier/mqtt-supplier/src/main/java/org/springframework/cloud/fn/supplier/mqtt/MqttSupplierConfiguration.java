@@ -74,7 +74,7 @@ public class MqttSupplierConfiguration {
 		adapter.setAutoStartup(false);
 
 		if (mqttMessageProducerCustomizer != null) {
-			mqttMessageProducerCustomizer.customize(adapter, "mqttInbound");
+			mqttMessageProducerCustomizer.customize(adapter);
 		}
 
 		return adapter;

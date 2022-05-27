@@ -61,11 +61,11 @@ public class SftpConsumerConfiguration {
 		}
 
 		if (sftpMessageHandlerSpecCustomizer != null) {
-			sftpMessageHandlerSpecCustomizer.customize(handlerSpec, "sftpMessageHandler");
+			sftpMessageHandlerSpecCustomizer.customize(handlerSpec);
 		}
 
 		return integrationFlowBuilder
-				.handle(handlerSpec, e -> e.id("sftpMessageHandler"))
+				.handle(handlerSpec)
 				.get();
 	}
 

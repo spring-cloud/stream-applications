@@ -96,7 +96,7 @@ public class MongodbSupplierConfiguration {
 		mongoDbMessageSource.setUpdateExpression(this.properties.getUpdateExpression());
 
 		if (mongoDbMessageSourceCustomizer != null) {
-			mongoDbMessageSourceCustomizer.customize(mongoDbMessageSource, "mongoDbSource");
+			mongoDbMessageSourceCustomizer.customize(mongoDbMessageSource);
 		}
 
 		return mongoDbMessageSource;

@@ -103,11 +103,10 @@ public class MailSupplierConfiguration {
 				.userFlag(this.properties.getUserFlag())
 				.javaMailProperties(getJavaMailProperties(urlName))
 				.selectorExpression(this.properties.getExpression())
-				.shouldMarkMessagesAsRead(this.properties.isMarkAsRead())
-				.id("imapMessageProducer");
+				.shouldMarkMessagesAsRead(this.properties.isMarkAsRead());
 
 		if (imapIdleChannelAdapterSpecCustomizer != null) {
-			imapIdleChannelAdapterSpecCustomizer.customize(imapIdleChannelAdapterSpec, "imapMessageProducer");
+			imapIdleChannelAdapterSpecCustomizer.customize(imapIdleChannelAdapterSpec);
 		}
 		return imapIdleChannelAdapterSpec;
 	}
@@ -139,7 +138,7 @@ public class MailSupplierConfiguration {
 				.shouldDeleteMessages(this.properties.isDelete());
 
 		if (mailInboundChannelAdapterSpecCustomizer != null) {
-			mailInboundChannelAdapterSpecCustomizer.customize(adapterSpec, "mailMessageSource");
+			mailInboundChannelAdapterSpecCustomizer.customize(adapterSpec);
 		}
 
 		return adapterSpec;

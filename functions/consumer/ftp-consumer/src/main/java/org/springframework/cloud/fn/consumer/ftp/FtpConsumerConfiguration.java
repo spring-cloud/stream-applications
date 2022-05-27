@@ -68,11 +68,11 @@ public class FtpConsumerConfiguration {
 		}
 
 		if (ftpMessageHandlerSpecCustomizer != null) {
-			ftpMessageHandlerSpecCustomizer.customize(handlerSpec, "ftpMessageHandler");
+			ftpMessageHandlerSpecCustomizer.customize(handlerSpec);
 		}
 
 		return integrationFlowBuilder
-				.handle(handlerSpec, e -> e.id("ftpMessageHandler"))
+				.handle(handlerSpec)
 				.get();
 	}
 

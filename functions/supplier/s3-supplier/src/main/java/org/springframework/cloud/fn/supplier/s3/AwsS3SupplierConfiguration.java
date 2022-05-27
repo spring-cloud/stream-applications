@@ -153,7 +153,7 @@ public abstract class AwsS3SupplierConfiguration {
 			s3MessageSource.setAutoCreateLocalDirectory(this.awsS3SupplierProperties.isAutoCreateLocalDir());
 
 			if (s3MessageSourceCustomizer != null) {
-				s3MessageSourceCustomizer.customize(s3MessageSource, "s3MessageSource");
+				s3MessageSourceCustomizer.customize(s3MessageSource);
 			}
 			return s3MessageSource;
 		}

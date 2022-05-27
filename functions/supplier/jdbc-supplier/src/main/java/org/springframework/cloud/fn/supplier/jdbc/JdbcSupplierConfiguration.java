@@ -64,7 +64,7 @@ public class JdbcSupplierConfiguration {
 		jdbcPollingChannelAdapter.setMaxRows(this.properties.getMaxRows());
 		jdbcPollingChannelAdapter.setUpdateSql(this.properties.getUpdate());
 		if (jdbcPollingChannelAdapterCustomizer != null) {
-			jdbcPollingChannelAdapterCustomizer.customize(jdbcPollingChannelAdapter, "jdbcMessageSource");
+			jdbcPollingChannelAdapterCustomizer.customize(jdbcPollingChannelAdapter);
 		}
 		return jdbcPollingChannelAdapter;
 	}
