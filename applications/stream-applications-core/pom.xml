@@ -20,17 +20,13 @@
         <stream-apps-core.version>${revision}</stream-apps-core.version>
         <java-functions.version>1.2.1-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.1</apps.base-image>
-        <spring-cloud-stream-dependencies.version>3.2.3</spring-cloud-stream-dependencies.version>
-        <spring-cloud-stream.version>3.2.3</spring-cloud-stream.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.7-SNAPSHOT</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.7-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.7-SNAPSHOT</spring-cloud-dataflow-apps-metadata-plugin.version>
         <java-cfenv-boot.version>2.4.0</java-cfenv-boot.version>
         <prometheus-rsocket.version>1.4.0</prometheus-rsocket.version>
         <wavefront-spring-boot.version>2.2.2</wavefront-spring-boot.version>
-        <spring-cloud.version>2021.0.2</spring-cloud.version>
-        <spring-cloud-starters.version>3.1.2</spring-cloud-starters.version>
-	</properties>
+    </properties>
 
     <modules>
         <module>stream-applications-test-support</module>
@@ -363,4 +359,3 @@
     </pluginRepositories>
 
 </project>
-

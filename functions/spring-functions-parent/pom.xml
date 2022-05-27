@@ -13,10 +13,6 @@
 	<artifactId>spring-functions-parent</artifactId>
 	<packaging>pom</packaging>
 
-	<properties>
-		<spring-cloud-function.version>3.2.3</spring-cloud-function.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
