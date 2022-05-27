@@ -1,8 +1,8 @@
 <productname>Spring Cloud Data Flow</productname>
 <releaseinfo>{project-version}</releaseinfo>
 <copyright>
-	<year>2013-2021</year>
-	<holder>Pivotal Software, Inc.</holder>
+	<year>2013-2022</year>
+	<holder>VMware, Inc.</holder>
 </copyright>
 <legalnotice>
 	<para>
