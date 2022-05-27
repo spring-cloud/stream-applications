@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 the original author or authors.
+ * Copyright 2018-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@ import java.util.function.Function;
 
 import reactor.core.publisher.Flux;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.fn.common.config.ComponentCustomizer;
+import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
@@ -50,15 +50,14 @@ public class HttpRequestFunctionConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(WebClient.class)
 	public WebClient webClient(HttpRequestFunctionProperties properties,
-			@Nullable ComponentCustomizer<WebClient.Builder> webClientComponentCustomizer) {
+			ObjectProvider<WebClientCustomizer> customizerProvider) {
+
 		WebClient.Builder builder =
 				WebClient.builder()
-						.codecs(clientCodecConfigurer ->
+						.codecs((clientCodecConfigurer) ->
 								clientCodecConfigurer.defaultCodecs()
 										.maxInMemorySize(properties.getMaximumBufferSize()));
-		if (webClientComponentCustomizer != null) {
-			webClientComponentCustomizer.customize(builder, "webClient");
-		}
+		customizerProvider.orderedStream().forEach((customizer) -> customizer.customize(builder));
 		return builder.build();
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +23,17 @@ import java.util.function.Supplier;
 
 import javax.mail.URLName;
 
+import org.reactivestreams.Publisher;
+
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.channel.FluxMessageChannel;
 import org.springframework.integration.core.MessageSource;
-import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.MessageProducerSpec;
 import org.springframework.integration.dsl.MessageSourceSpec;
@@ -65,33 +64,21 @@ public class MailSupplierConfiguration {
 	private MailSupplierProperties properties;
 
 	@Bean
-	public Supplier<Flux<Message<?>>> mailSupplier(
-			@Qualifier("mailChannelAdapter") MessageProducerSupport mailChannelAdapter,
-			FluxMessageChannel mailInputChannel) {
-
-		return () -> Flux.from(mailInputChannel)
-				.doOnSubscribe(subscription -> mailChannelAdapter.start());
-	}
-
-	@Bean
-	public IntegrationFlow mailInboundFlow(MessageProducerSupport messageProducer,
-			FluxMessageChannel mailInputChannel) {
+	public Publisher<Message<Object>> mailInboundFlow(MessageProducerSupport messageProducer) {
 
 		return IntegrationFlows.from(messageProducer)
 				.transform(Mail.toStringTransformer(this.properties.getCharset()))
-				.enrichHeaders(h -> {
-					h.defaultOverwrite(true)
-							.header(MailHeaders.TO, arrayToListProcessor(MailHeaders.TO))
-							.header(MailHeaders.CC, arrayToListProcessor(MailHeaders.CC))
-							.header(MailHeaders.BCC, arrayToListProcessor(MailHeaders.BCC));
-				})
-				.channel(mailInputChannel)
-				.get();
+				.enrichHeaders(h -> h
+						.defaultOverwrite(true)
+						.header(MailHeaders.TO, arrayToListProcessor(MailHeaders.TO))
+						.header(MailHeaders.CC, arrayToListProcessor(MailHeaders.CC))
+						.header(MailHeaders.BCC, arrayToListProcessor(MailHeaders.BCC)))
+				.toReactivePublisher(true);
 	}
 
 	@Bean
-	public FluxMessageChannel mailInputChannel() {
-		return new FluxMessageChannel();
+	public Supplier<Flux<Message<?>>> mailSupplier(Publisher<Message<Object>> messagePublisher) {
+		return () -> Flux.from(messagePublisher);
 	}
 
 	private HeaderValueMessageProcessor<?> arrayToListProcessor(final String header) {
@@ -112,7 +99,6 @@ public class MailSupplierConfiguration {
 
 		URLName urlName = this.properties.getUrl();
 		ImapIdleChannelAdapterSpec imapIdleChannelAdapterSpec = Mail.imapIdleAdapter(urlName.toString())
-				.autoStartup(false)
 				.shouldDeleteMessages(this.properties.isDelete())
 				.userFlag(this.properties.getUserFlag())
 				.javaMailProperties(getJavaMailProperties(urlName))
@@ -162,10 +148,7 @@ public class MailSupplierConfiguration {
 	@Bean("mailChannelAdapter")
 	@ConditionalOnProperty(value = "mail.supplier.idle-imap", matchIfMissing = true, havingValue = "false")
 	MessageProducerSupport mailMessageProducer(MessageSource<?> mailMessageSource) {
-		final ReactiveMessageSourceProducer reactiveMessageSourceProducer =
-				new ReactiveMessageSourceProducer(mailMessageSource);
-		reactiveMessageSourceProducer.setAutoStartup(false);
-		return reactiveMessageSourceProducer;
+		return new ReactiveMessageSourceProducer(mailMessageSource);
 	}
 
 	/**
@@ -221,4 +204,5 @@ public class MailSupplierConfiguration {
 		javaMailProperties.putAll(this.properties.getJavaMailProperties());
 		return javaMailProperties;
 	}
+
 }

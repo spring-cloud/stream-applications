@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.cloud.fn.supplier.ftp;
 
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 import org.apache.commons.net.ftp.FTPFile;
 import org.reactivestreams.Publisher;
@@ -69,7 +70,7 @@ public class FtpSupplierConfiguration {
 
 	private final FileConsumerProperties fileConsumerProperties;
 
-	private ConcurrentMetadataStore metadataStore;
+	private final ConcurrentMetadataStore metadataStore;
 
 	SessionFactory<FTPFile> ftpSessionFactory;
 
@@ -104,11 +105,13 @@ public class FtpSupplierConfiguration {
 
 		ChainFileListFilter<FTPFile> chainFileListFilter = new ChainFileListFilter<>();
 
-		if (StringUtils.hasText(this.ftpSupplierProperties.getFilenamePattern())) {
-			chainFileListFilter.addFilter(new FtpSimplePatternFileListFilter(this.ftpSupplierProperties.getFilenamePattern()));
+		String filenamePattern = this.ftpSupplierProperties.getFilenamePattern();
+		Pattern filenameRegex = this.ftpSupplierProperties.getFilenameRegex();
+		if (StringUtils.hasText(filenamePattern)) {
+			chainFileListFilter.addFilter(new FtpSimplePatternFileListFilter(filenamePattern));
 		}
-		else if (this.ftpSupplierProperties.getFilenameRegex() != null) {
-			chainFileListFilter.addFilter(new FtpRegexPatternFileListFilter(this.ftpSupplierProperties.getFilenameRegex()));
+		else if (filenameRegex != null) {
+			chainFileListFilter.addFilter(new FtpRegexPatternFileListFilter(filenameRegex));
 		}
 
 		chainFileListFilter.addFilter(new FtpPersistentAcceptOnceFileListFilter(this.metadataStore, "ftpSource/"));

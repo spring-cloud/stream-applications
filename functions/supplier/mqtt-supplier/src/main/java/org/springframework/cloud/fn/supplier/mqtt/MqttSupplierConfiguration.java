@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 the original author or authors.
+ * Copyright 2017-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,12 +58,8 @@ public class MqttSupplierConfiguration {
 	private BeanFactory beanFactory;
 
 	@Bean
-	public Supplier<Flux<Message<?>>> mqttSupplier(Publisher<Message<?>> mqttPublisher,
-			MqttPahoMessageDrivenChannelAdapter mqttInbound) {
-
-		return () -> Flux.from(mqttPublisher)
-				.doOnSubscribe(subscription -> mqttInbound.start())
-				.doOnTerminate(mqttInbound::stop);
+	public Supplier<Flux<Message<?>>> mqttSupplier(Publisher<Message<?>> mqttPublisher) {
+		return () -> Flux.from(mqttPublisher);
 	}
 
 	@Bean
@@ -87,7 +83,7 @@ public class MqttSupplierConfiguration {
 	@Bean
 	public Publisher<Message<byte[]>> mqttPublisher(MqttPahoMessageDrivenChannelAdapter mqttInbound) {
 		return IntegrationFlows.from(mqttInbound)
-				.toReactivePublisher();
+				.toReactivePublisher(true);
 	}
 
 	private DefaultPahoMessageConverter pahoMessageConverter(BeanFactory beanFactory) {

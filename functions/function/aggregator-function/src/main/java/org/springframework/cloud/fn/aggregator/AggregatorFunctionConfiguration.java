@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -81,10 +80,10 @@ public class AggregatorFunctionConfiguration {
 	@Bean
 	@ServiceActivator(inputChannel = "inputChannel")
 	public AggregatorFactoryBean aggregator(
-			ObjectProvider<CorrelationStrategy> correlationStrategy,
-			ObjectProvider<ReleaseStrategy> releaseStrategy,
-			ObjectProvider<MessageGroupProcessor> messageGroupProcessor,
-			ObjectProvider<MessageGroupStore> messageStore,
+			@Nullable CorrelationStrategy correlationStrategy,
+			@Nullable ReleaseStrategy releaseStrategy,
+			@Nullable MessageGroupProcessor messageGroupProcessor,
+			@Nullable MessageGroupStore messageStore,
 			@Qualifier("outputChannel") MessageChannel outputChannel,
 			@Nullable ComponentCustomizer<AggregatorFactoryBean> aggregatorCustomizer) {
 
@@ -93,10 +92,14 @@ public class AggregatorFunctionConfiguration {
 		aggregator.setSendPartialResultOnExpiry(true);
 		aggregator.setGroupTimeoutExpression(this.properties.getGroupTimeout());
 
-		aggregator.setCorrelationStrategy(correlationStrategy.getIfAvailable());
-		aggregator.setReleaseStrategy(releaseStrategy.getIfAvailable());
+		if (correlationStrategy != null) {
+			aggregator.setCorrelationStrategy(correlationStrategy);
+		}
+		if (releaseStrategy != null) {
+			aggregator.setReleaseStrategy(releaseStrategy);
+		}
 
-		MessageGroupProcessor groupProcessor = messageGroupProcessor.getIfAvailable();
+		MessageGroupProcessor groupProcessor = messageGroupProcessor;
 
 		if (groupProcessor == null) {
 			groupProcessor = new DefaultAggregatingMessageGroupProcessor();
@@ -104,7 +107,9 @@ public class AggregatorFunctionConfiguration {
 		}
 		aggregator.setProcessorBean(groupProcessor);
 
-		aggregator.setMessageStore(messageStore.getIfAvailable());
+		if (messageStore != null) {
+			aggregator.setMessageStore(messageStore);
+		}
 		aggregator.setOutputChannel(outputChannel);
 
 		if (aggregatorCustomizer != null) {

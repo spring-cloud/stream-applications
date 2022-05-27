@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 the original author or authors.
+ * Copyright 2016-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,7 @@ import org.springframework.util.Assert;
  * @author Chris Schaefer
  * @author Roger Perez
  * @author Chris Bono
+ * @author Artem Bilan
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(RabbitSupplierProperties.class)
@@ -73,12 +74,13 @@ public class RabbitSupplierConfiguration implements DisposableBean {
 
 				@Override
 				public MessageProperties toMessageProperties(AMQP.BasicProperties source,
-						Envelope envelope,
-						String charset) {
+						Envelope envelope, String charset) {
+
 					MessageProperties properties = super.toMessageProperties(source, envelope, charset);
 					properties.setDeliveryMode(null);
 					return properties;
 				}
+
 			};
 
 	@Autowired
@@ -152,23 +154,20 @@ public class RabbitSupplierConfiguration implements DisposableBean {
 
 		AmqpInboundChannelAdapterSMLCSpec messageProducerSpec =
 				Amqp.inboundAdapter(container)
-						.autoStartup(false)
 						.mappedRequestHeaders(properties.getMappedRequestHeaders())
 						.id("amqpMessageProducer");
 
-		amqpMessageProducerCustomizer.customize(messageProducerSpec, "amqpMessageProducer");
+		if (amqpMessageProducerCustomizer != null) {
+			amqpMessageProducerCustomizer.customize(messageProducerSpec, "amqpMessageProducer");
+		}
 
 		return IntegrationFlows.from(messageProducerSpec)
-				.toReactivePublisher();
+				.toReactivePublisher(true);
 	}
 
 	@Bean
-	public Supplier<Flux<Message<byte[]>>> rabbitSupplier(Publisher<Message<byte[]>> rabbitPublisher,
-			AmqpInboundChannelAdapter adapter) {
-
-		return () -> Flux.from(rabbitPublisher)
-				.doOnSubscribe((subscription) -> adapter.start())
-				.doOnTerminate(adapter::stop);
+	public Supplier<Flux<Message<byte[]>>> rabbitSupplier(Publisher<Message<byte[]>> rabbitPublisher) {
+		return () -> Flux.from(rabbitPublisher);
 	}
 
 	@Bean

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,13 +34,16 @@ public class RsocketConsumerConfiguration {
 	@Bean
 	public Function<Flux<Message<?>>, Mono<Void>> rsocketConsumer(RSocketRequester.Builder builder,
 																RsocketConsumerProperties rsocketConsumerProperties) {
-		final RSocketRequester rSocketRequester =
-				rsocketConsumerProperties.getUri() != null ? builder.websocket(rsocketConsumerProperties.getUri()) :
-						builder.tcp(rsocketConsumerProperties.getHost(), rsocketConsumerProperties.getPort());
+		RSocketRequester rSocketRequester =
+				rsocketConsumerProperties.getUri() != null
+						? builder.websocket(rsocketConsumerProperties.getUri())
+						: builder.tcp(rsocketConsumerProperties.getHost(), rsocketConsumerProperties.getPort());
+
+		String route = rsocketConsumerProperties.getRoute();
 
 		return input ->
 				input.flatMap(message ->
-						rSocketRequester.route(rsocketConsumerProperties.getRoute())
+						rSocketRequester.route(route)
 										.data(message.getPayload())
 										.send())
 						.ignoreElements();

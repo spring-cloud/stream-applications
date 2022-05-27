@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 the original author or authors.
+ * Copyright 2016-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlows;
-import org.springframework.integration.jms.JmsMessageDrivenEndpoint;
 import org.springframework.integration.jms.dsl.Jms;
 import org.springframework.integration.jms.dsl.JmsMessageDrivenChannelAdapterSpec;
 import org.springframework.jms.listener.AbstractMessageListenerContainer;
@@ -53,10 +52,8 @@ public class JmsSupplierConfiguration {
 	private ConnectionFactory connectionFactory;
 
 	@Bean
-	public Supplier<Flux<Message<?>>> jmsSupplier(Publisher<Message<?>> jmsPublisher, JmsMessageDrivenEndpoint adapter) {
-		return () -> Flux.from(jmsPublisher)
-				.doOnSubscribe(subscription -> adapter.start())
-				.doOnTerminate(adapter::stop);
+	public Supplier<Flux<Message<?>>> jmsSupplier(Publisher<Message<?>> jmsPublisher) {
+		return () -> Flux.from(jmsPublisher);
 	}
 
 	@Bean
@@ -66,7 +63,6 @@ public class JmsSupplierConfiguration {
 					jmsMessageDrivenChannelAdapterSpecCustomizer) {
 
 		JmsMessageDrivenChannelAdapterSpec<?> messageProducerSpec = Jms.messageDrivenChannelAdapter(container)
-				.autoStartup(false)
 				.id("jmsMessageProducer");
 
 		if (jmsMessageDrivenChannelAdapterSpecCustomizer != null) {
@@ -74,7 +70,7 @@ public class JmsSupplierConfiguration {
 		}
 
 		return IntegrationFlows.from(messageProducerSpec)
-				.toReactivePublisher();
+				.toReactivePublisher(true);
 	}
 
 	@Bean

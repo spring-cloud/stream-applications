@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 the original author or authors.
+ * Copyright 2016-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscription;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Sinks;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -75,8 +73,6 @@ public abstract class AwsS3SupplierConfiguration {
 
 	protected final ConcurrentMetadataStore metadataStore;
 
-	protected final Sinks.One<Subscription> downstreamSubscription = Sinks.one();
-
 	public AwsS3SupplierConfiguration(AwsS3SupplierProperties awsS3SupplierProperties,
 			FileConsumerProperties fileConsumerProperties,
 			AmazonS3 amazonS3,
@@ -95,7 +91,7 @@ public abstract class AwsS3SupplierConfiguration {
 
 		@Bean
 		public Supplier<Flux<Message<?>>> s3Supplier(Publisher<Message<?>> s3SupplierFlow) {
-			return () -> Flux.from(s3SupplierFlow).doOnSubscribe(this.downstreamSubscription::tryEmitValue);
+			return () -> Flux.from(s3SupplierFlow);
 		}
 
 		@Bean
@@ -127,11 +123,9 @@ public abstract class AwsS3SupplierConfiguration {
 		@Bean
 		public Publisher<Message<Object>> s3SupplierFlow(MessageSource<?> s3MessageSource) {
 			return FileUtils.enhanceFlowForReadingMode(
-					IntegrationFlows.from(
-							IntegrationReactiveUtils.messageSourceToFlux(s3MessageSource)
-									.delaySubscription(this.downstreamSubscription.asMono())),
-					fileConsumerProperties)
-					.toReactivePublisher();
+							IntegrationFlows.from(IntegrationReactiveUtils.messageSourceToFlux(s3MessageSource)),
+							fileConsumerProperties)
+					.toReactivePublisher(true);
 		}
 
 		@Bean
@@ -180,13 +174,12 @@ public abstract class AwsS3SupplierConfiguration {
 
 		@Bean
 		public Supplier<Flux<Message<Object>>> s3Supplier(Publisher<Message<Object>> s3SupplierFlow) {
-			return () -> Flux.from(s3SupplierFlow)
-					.doOnSubscribe(downstreamSubscription::tryEmitValue);
+			return () -> Flux.from(s3SupplierFlow);
 		}
 
 		@Bean
 		public Publisher<Message<Object>> s3SupplierFlow(ReactiveMessageSourceProducer s3ListingProducer) {
-			return IntegrationFlows.from(s3ListingProducer).split().toReactivePublisher();
+			return IntegrationFlows.from(s3ListingProducer).split().toReactivePublisher(true);
 		}
 
 		@Bean
@@ -226,12 +219,7 @@ public abstract class AwsS3SupplierConfiguration {
 								.getObjectSummaries().stream()
 								.filter(filter).collect(Collectors.toList());
 						return summaryList.isEmpty() ? null : new GenericMessage<>(summaryList);
-					}) {
-				@Override
-				protected void subscribeToPublisher(Publisher<? extends Message<?>> publisher) {
-					super.subscribeToPublisher(Flux.from(publisher).delaySubscription(downstreamSubscription.asMono()));
-				}
-			};
+					});
 		}
 
 	}
