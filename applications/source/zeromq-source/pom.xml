@@ -13,6 +13,7 @@
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>source-parent</artifactId>
         <version>3.2.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <dependencies>
