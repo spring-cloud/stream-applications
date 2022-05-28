@@ -10,7 +10,7 @@
 
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
-        <artifactId>stream-applications-source</artifactId>
+        <artifactId>source-parent</artifactId>
         <version>3.2.1-SNAPSHOT</version>
     </parent>
 
