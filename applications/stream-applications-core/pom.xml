@@ -311,4 +311,6 @@
         </pluginManagement>
     </build>
 
+    <!-- BONO: Removed the <repositories/pluginRepositories> -->
+
 </project>

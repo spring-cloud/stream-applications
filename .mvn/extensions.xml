@@ -5,4 +5,7 @@
         <artifactId>project-settings-extension</artifactId>
         <version>0.2.3</version>
     </extension>
+
+    <!-- BONO: Added this to "add" the project settings.xml to the existing settings.xml \ -->
+
 </extensions>

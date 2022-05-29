@@ -94,4 +94,5 @@
 		<module>function-dependencies</module>
 	</modules>
 
+	<!-- BONO: Removed the <repositories/pluginRepositories> -->
 </project>

@@ -279,6 +279,9 @@
 			<url>https://repo.spring.io/libs-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
+
+	<!-- BONO: Removed the <repositories/pluginRepositories> -->
+
 	<profiles>
 		<profile>
 			<id>default</id>
