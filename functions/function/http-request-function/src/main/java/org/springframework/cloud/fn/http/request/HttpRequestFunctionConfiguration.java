@@ -46,17 +46,8 @@ import org.springframework.web.util.UriBuilderFactory;
 public class HttpRequestFunctionConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean(WebClient.class)
-	public WebClient webClient(HttpRequestFunctionProperties properties) {
-		return WebClient.builder()
-				.codecs(clientCodecConfigurer ->
-						clientCodecConfigurer.defaultCodecs().maxInMemorySize(properties.getMaximumBufferSize()))
-				.build();
-	}
-
-	@Bean
-	public HttpRequestFunction httpRequestFunction(WebClient webClient, HttpRequestFunctionProperties properties) {
-		return new HttpRequestFunction(webClient, properties);
+	public HttpRequestFunction httpRequestFunction(WebClient.Builder webClientBuilder, HttpRequestFunctionProperties properties) {
+		return new HttpRequestFunction(webClientBuilder, properties);
 	}
 
 	/**
@@ -70,8 +61,8 @@ public class HttpRequestFunctionConfiguration {
 
 		private final HttpRequestFunctionProperties properties;
 
-		public HttpRequestFunction(WebClient webClient, HttpRequestFunctionProperties properties) {
-			this.webClient = webClient;
+		public HttpRequestFunction(WebClient.Builder webClientBuilder, HttpRequestFunctionProperties properties) {
+			this.webClient = webClientBuilder.build();
 			this.properties = properties;
 		}
 

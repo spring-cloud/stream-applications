@@ -53,13 +53,6 @@ public class HttpRequestFunctionProperties {
 	private long timeout = 30_000;
 
 	/**
-	 * Maximum buffer size in bytes allocated for input stream buffers. Defaults to 256k.
-	 * Increase, as necessary, for posting or getting large binary content.
-	 */
-
-	private int maximumBufferSize = 256 * 1024;
-
-	/**
 	 * A SpEL expression against incoming message to determine the URL to use.
 	 */
 	private Expression urlExpression;
@@ -117,15 +110,6 @@ public class HttpRequestFunctionProperties {
 
 	public void setTimeout(long timeout) {
 		this.timeout = timeout;
-	}
-
-	@Positive
-	public int getMaximumBufferSize() {
-		return maximumBufferSize;
-	}
-
-	public void setMaximumBufferSize(int maximumBufferSize) {
-		this.maximumBufferSize = maximumBufferSize;
 	}
 
 	public Expression getBodyExpression() {
