@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 the original author or authors.
+ * Copyright 2018-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.function.Function;
 
 import reactor.core.publisher.Flux;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,11 +33,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;
 
+
+
 /**
  * Configuration for a {@link Function} that makes HTTP requests to a resource and for
  * each request, returns a {@link ResponseEntity}.
  *
  * @author David Turanski
+ * @author Sunny Hemdev
  *
  **/
 @Configuration
@@ -47,7 +49,7 @@ public class HttpRequestFunctionConfiguration {
 
 	@Bean
 	public HttpRequestFunction httpRequestFunction(WebClient.Builder webClientBuilder, HttpRequestFunctionProperties properties) {
-		return new HttpRequestFunction(webClientBuilder, properties);
+		return new HttpRequestFunction(webClientBuilder.build(), properties);
 	}
 
 	/**
@@ -61,8 +63,8 @@ public class HttpRequestFunctionConfiguration {
 
 		private final HttpRequestFunctionProperties properties;
 
-		public HttpRequestFunction(WebClient.Builder webClientBuilder, HttpRequestFunctionProperties properties) {
-			this.webClient = webClientBuilder.build();
+		public HttpRequestFunction(WebClient webClient, HttpRequestFunctionProperties properties) {
+			this.webClient = webClient;
 			this.properties = properties;
 		}
 
