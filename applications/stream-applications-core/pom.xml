@@ -11,14 +11,14 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-build</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <properties>
-        <revision>3.2.1</revision>
+        <revision>3.2.2-SNAPSHOT</revision>
         <stream-apps-core.version>${revision}</stream-apps-core.version>
-        <java-functions.version>1.2.1</java-functions.version>
+        <java-functions.version>1.2.2-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.1</apps.base-image>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.7</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.7</spring-cloud-dataflow-apps-docs-plugin.version>
