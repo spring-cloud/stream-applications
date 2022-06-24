@@ -34,6 +34,6 @@ $$elasticsearch.consumer.timeout-seconds$$:: $$Timeout for the shard to be avail
 `docker run -d --name es762 -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.6.2`
 6. Start the middleware (Kafka or RabbitMQ) if it is not already running.
 7. `java -jar target/elasticsearch-sink-<kafka|rabbit>-3.0.0-SNAPSHOT.jar --spring.cloud.stream.bindings.input.destination=els-in --elasticsearch.consumer.index=testing`
-8. Send some JSON data into the middleware destination. For e.g: `"foo":"bar"}`
+8. Send some JSON data into the middleware destination. For e.g: `{"foo":"bar"}`
 9. Verify that the data is indexed: `curl localhost:9200/testing/_search`
 //end::ref-doc[]
