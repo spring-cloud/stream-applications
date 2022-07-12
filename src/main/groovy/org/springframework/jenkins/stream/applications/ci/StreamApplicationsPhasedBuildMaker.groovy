@@ -17,11 +17,18 @@ class StreamApplicationsPhasedBuildMaker implements StreamApplicaitonsUtilsTrait
 
     void build(boolean isRelease, String releaseType, String branchToBuild = "main") {
         buildAllRelatedJobs(isRelease, releaseType, branchToBuild)
+
+        String cronExpression = "0 0 * * *"
+        if (branchToBuild == "2021.1.x") {
+            cronExpression = "0 2 * * *"
+        } else if (branchToBuild == "2021.0.x") {
+            cronExpression = "0 4 */2 * *"
+        }
         dsl.multiJob("stream-application-builds" + "-" + branchToBuild) {
             steps {
                 if (!isRelease) {
                     triggers {
-                        cron "H */12 * * *"
+                        cron cronExpression
                     }
                     phase('stream-applications-build', 'COMPLETED') {
                         scm {
