@@ -10,5 +10,8 @@ String releaseType = "" // possible values are - "", milestone or ga
 // Main CI
 new StreamApplicationsPhasedBuildMaker(dsl).build(false, "")
 
+// 2021.1.x CI
+new StreamApplicationsPhasedBuildMaker(dsl).build(false, "", "2021.1.x")
+
 // 2021.0.x CI
 new StreamApplicationsPhasedBuildMaker(dsl).build(false, "", "2021.0.x")
