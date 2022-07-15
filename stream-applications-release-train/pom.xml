@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
-        <version>3.2.2-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../applications/stream-applications-core/pom.xml</relativePath>
     </parent>
 
@@ -19,8 +19,8 @@
     </modules>
 
     <properties>
-        <revision>2021.1.3-SNAPSHOT</revision>
-        <apps.version>3.2.2-SNAPSHOT</apps.version>
+        <revision>2022.0.0-SNAPSHOT</revision>
+        <apps.version>4.0.0-SNAPSHOT</apps.version>
         <apps.harbor.version>3.2.0</apps.harbor.version>
         <apps.docker.tag>${apps.version}</apps.docker.tag>
     </properties>
