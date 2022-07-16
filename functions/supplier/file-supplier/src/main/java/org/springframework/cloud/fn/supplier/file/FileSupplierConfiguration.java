@@ -101,7 +101,7 @@ public class FileSupplierConfiguration {
 				Files.inboundAdapter(this.fileSupplierProperties.getDirectory())
 				.filter(fileListFilter);
 		if (fileInboundChannelAdapterSpecCustomizer != null) {
-			fileInboundChannelAdapterSpecCustomizer.customize(adapterSpec, "fileMessageSource");
+			fileInboundChannelAdapterSpecCustomizer.customize(adapterSpec);
 		}
 		return adapterSpec;
 	}

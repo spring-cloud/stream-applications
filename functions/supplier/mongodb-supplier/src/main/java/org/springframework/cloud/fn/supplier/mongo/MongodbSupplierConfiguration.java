@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import reactor.core.publisher.Flux;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.cloud.fn.splitter.SplitterFunctionConfiguration;
 import org.springframework.cloud.function.context.PollableBean;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
 import org.springframework.integration.mongodb.inbound.MongoDbMessageSource;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 
 /**
@@ -44,7 +46,7 @@ import org.springframework.messaging.Message;
  * @author Artem Bilan
  * @author David Turanski
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ MongodbSupplierProperties.class })
 @Import(SplitterFunctionConfiguration.class)
 public class MongodbSupplierConfiguration {
@@ -59,11 +61,13 @@ public class MongodbSupplierConfiguration {
 	}
 
 	@Bean(name = "mongodbSupplier")
-	@PollableBean(splittable = true)
+	@PollableBean
 	@ConditionalOnProperty(prefix = "mongodb", name = "split", matchIfMissing = true)
-	public Supplier<Flux<Message<?>>> splittedSupplier(Function<Message<?>, List<Message<?>>> splitterFunction) {
+	public Supplier<Flux<Message<?>>> splittedSupplier(MongoDbMessageSource mongoDbSource,
+			Function<Message<?>, List<Message<?>>> splitterFunction) {
+
 		return () -> {
-			Message<?> received = mongoSource().receive();
+			Message<?> received = mongoDbSource.receive();
 			if (received != null) {
 				return Flux.fromIterable(splitterFunction.apply(received)); // multiple Message<Map<String, Object>>
 			}
@@ -75,30 +79,27 @@ public class MongodbSupplierConfiguration {
 
 	@Bean
 	@ConditionalOnProperty(prefix = "mongodb", name = "split", havingValue = "false")
-	public Supplier<Message<?>> mongodbSupplier() {
-		return () -> mongoSource().receive();
+	public Supplier<Message<?>> mongodbSupplier(MongoDbMessageSource mongoDbSource) {
+		return mongoDbSource::receive;
 	}
 
-	/**
-	 * The inheritors can consider to override this method for their purpose or just adjust
-	 * options for the returned instance.
-	 * @return a {@link MongoDbMessageSource} instance
-	 */
 	@Bean
-	public MongoDbMessageSource mongoDbSource() {
+	public MongoDbMessageSource mongoDbSource(
+			@Nullable ComponentCustomizer<MongoDbMessageSource> mongoDbMessageSourceCustomizer) {
+
 		Expression queryExpression = (this.properties.getQueryExpression() != null
 				? this.properties.getQueryExpression()
 				: new LiteralExpression(this.properties.getQuery()));
 		MongoDbMessageSource mongoDbMessageSource = new MongoDbMessageSource(this.mongoTemplate, queryExpression);
 		mongoDbMessageSource.setCollectionNameExpression(new LiteralExpression(this.properties.getCollection()));
 		mongoDbMessageSource.setEntityClass(String.class);
-		return mongoDbMessageSource;
-	}
+		mongoDbMessageSource.setUpdateExpression(this.properties.getUpdateExpression());
 
-	@Bean
-	public UpdatingMongoDbMessageSource mongoSource() {
-		return new UpdatingMongoDbMessageSource(mongoDbSource(), this.mongoTemplate,
-				this.properties.getUpdateExpression());
+		if (mongoDbMessageSourceCustomizer != null) {
+			mongoDbMessageSourceCustomizer.customize(mongoDbMessageSource);
+		}
+
+		return mongoDbMessageSource;
 	}
 
 }
