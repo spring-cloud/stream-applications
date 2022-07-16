@@ -29,6 +29,6 @@ package org.springframework.cloud.fn.common.config;
 @FunctionalInterface
 public interface ComponentCustomizer<T> {
 
-	void customize(T component, String beanName);
+	void customize(T component);
 
 }

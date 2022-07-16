@@ -65,12 +65,12 @@ public class AbstractFileSupplierTests {
 
 		@Bean
 		ComponentCustomizer<FileInboundChannelAdapterSpec> fileInboundChannelAdapterSpecCustomizer() {
-			return (adapterSpec, beanName) -> adapterSpec.watchEvents(FileReadingMessageSource.WatchEventType.DELETE);
+			return (adapterSpec) -> adapterSpec.watchEvents(FileReadingMessageSource.WatchEventType.DELETE);
 		}
 
 		@Bean
 		ComponentCustomizer<Date> fakeCustomizer() {
-			return (date, beanName) -> {
+			return (date) -> {
 				throw new RuntimeException("Must not happen");
 			};
 		}

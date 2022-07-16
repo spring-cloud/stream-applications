@@ -23,6 +23,7 @@ import java.util.function.Function;
 import reactor.core.publisher.Flux;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -33,8 +34,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;
 
-
-
 /**
  * Configuration for a {@link Function} that makes HTTP requests to a resource and for
  * each request, returns a {@link ResponseEntity}.
@@ -43,7 +42,7 @@ import org.springframework.web.util.UriBuilderFactory;
  * @author Sunny Hemdev
  *
  **/
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(HttpRequestFunctionProperties.class)
 public class HttpRequestFunctionConfiguration {
 
@@ -57,6 +56,7 @@ public class HttpRequestFunctionConfiguration {
 	 * returns a {@code Flux<ResponseEntity<?>>}.
 	 */
 	public static class HttpRequestFunction implements Function<Flux<Message<?>>, Flux<?>> {
+
 		private final WebClient webClient;
 
 		private final UriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
@@ -109,4 +109,5 @@ public class HttpRequestFunctionConfiguration {
 		}
 
 	}
+
 }

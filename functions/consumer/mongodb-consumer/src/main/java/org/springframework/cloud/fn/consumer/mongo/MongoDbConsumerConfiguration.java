@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,14 @@ import java.util.function.Function;
 import reactor.core.publisher.Mono;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
 import org.springframework.integration.mongodb.outbound.ReactiveMongoDbStoringMessageHandler;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.ReactiveMessageHandler;
 
@@ -39,7 +41,7 @@ import org.springframework.messaging.ReactiveMessageHandler;
  * @author David Turanski
  *
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ MongoDbConsumerProperties.class })
 public class MongoDbConsumerConfiguration {
 
@@ -58,12 +60,16 @@ public class MongoDbConsumerConfiguration {
 	}
 
 	@Bean
-	public Function<Message<?>, Mono<Void>> mongodbConsumerFunction(ReactiveMessageHandler mongoConsumerMessageHandler) {
+	public Function<Message<?>, Mono<Void>> mongodbConsumerFunction(
+			ReactiveMessageHandler mongoConsumerMessageHandler) {
+
 		return mongoConsumerMessageHandler::handleMessage;
 	}
 
 	@Bean
-	public ReactiveMessageHandler mongoConsumerMessageHandler() {
+	public ReactiveMessageHandler mongoConsumerMessageHandler(
+			@Nullable ComponentCustomizer<ReactiveMongoDbStoringMessageHandler> mongoDbMessageHandlerCustomizer) {
+
 		ReactiveMongoDbStoringMessageHandler mongoDbMessageHandler = new ReactiveMongoDbStoringMessageHandler(
 				this.mongoTemplate);
 		Expression collectionExpression = this.properties.getCollectionExpression();
@@ -71,6 +77,10 @@ public class MongoDbConsumerConfiguration {
 			collectionExpression = new LiteralExpression(this.properties.getCollection());
 		}
 		mongoDbMessageHandler.setCollectionNameExpression(collectionExpression);
+		if (mongoDbMessageHandlerCustomizer != null) {
+			mongoDbMessageHandlerCustomizer.customize(mongoDbMessageHandler);
+		}
 		return mongoDbMessageHandler;
 	}
+
 }

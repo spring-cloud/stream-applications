@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.cloud.fn.common.mqtt.MqttConfiguration;
 import org.springframework.cloud.fn.common.mqtt.MqttProperties;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 
@@ -38,7 +40,7 @@ import org.springframework.messaging.MessageHandler;
  * @author Janne Valkealahti
  *
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ MqttProperties.class, MqttConsumerProperties.class })
 @Import(MqttConfiguration.class)
 public class MqttConsumerConfiguration {
@@ -53,16 +55,21 @@ public class MqttConsumerConfiguration {
 	private BeanFactory beanFactory;
 
 	@Bean
-	public Consumer<Message<?>> mqttConsumer() {
-		return mqttOutbound()::handleMessage;
+	public Consumer<Message<?>> mqttConsumer(MessageHandler mqttOutbound) {
+		return mqttOutbound::handleMessage;
 	}
 
 	@Bean
-	public MessageHandler mqttOutbound() {
+	public MessageHandler mqttOutbound(
+			@Nullable ComponentCustomizer<MqttPahoMessageHandler> mqttMessageHandlerCustomizer) {
+
 		MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler(properties.getClientId(), mqttClientFactory);
 		messageHandler.setAsync(properties.isAsync());
 		messageHandler.setDefaultTopic(properties.getTopic());
 		messageHandler.setConverter(pahoMessageConverter());
+		if (mqttMessageHandlerCustomizer != null) {
+			mqttMessageHandlerCustomizer.customize(messageHandler);
+		}
 		return messageHandler;
 	}
 
@@ -72,4 +79,5 @@ public class MqttConsumerConfiguration {
 		converter.setBeanFactory(beanFactory);
 		return converter;
 	}
+
 }
