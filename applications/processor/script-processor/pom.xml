@@ -6,12 +6,12 @@
     <artifactId>script-processor</artifactId>
     <name>script-processor</name>
     <description>script processor apps</description>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>${revision}</version>
 
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
-        <version>3.2.1-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 

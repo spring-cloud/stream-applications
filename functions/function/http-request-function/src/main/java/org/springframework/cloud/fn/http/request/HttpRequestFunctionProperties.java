@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.springframework.cloud.fn.http.request;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.expression.Expression;
@@ -35,6 +34,7 @@ import org.springframework.validation.annotation.Validated;
  * @author Christian Tzolov
  * @author Artem Bilan
  * @author David Turanski
+ * @author Sunny Hemdev
  */
 @Validated
 @ConfigurationProperties("http.request")
@@ -51,13 +51,6 @@ public class HttpRequestFunctionProperties {
 	 * Request timeout in milliseconds.
 	 */
 	private long timeout = 30_000;
-
-	/**
-	 * Maximum buffer size in bytes allocated for input stream buffers. Defaults to 256k.
-	 * Increase, as necessary, for posting or getting large binary content.
-	 */
-
-	private int maximumBufferSize = 256 * 1024;
 
 	/**
 	 * A SpEL expression against incoming message to determine the URL to use.
@@ -117,15 +110,6 @@ public class HttpRequestFunctionProperties {
 
 	public void setTimeout(long timeout) {
 		this.timeout = timeout;
-	}
-
-	@Positive
-	public int getMaximumBufferSize() {
-		return maximumBufferSize;
-	}
-
-	public void setMaximumBufferSize(int maximumBufferSize) {
-		this.maximumBufferSize = maximumBufferSize;
 	}
 
 	public Expression getBodyExpression() {

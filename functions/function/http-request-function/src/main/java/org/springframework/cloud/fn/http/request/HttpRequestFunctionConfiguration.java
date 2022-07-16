@@ -22,8 +22,6 @@ import java.util.function.Function;
 
 import reactor.core.publisher.Flux;
 
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +39,7 @@ import org.springframework.web.util.UriBuilderFactory;
  * each request, returns a {@link ResponseEntity}.
  *
  * @author David Turanski
+ * @author Sunny Hemdev
  *
  **/
 @Configuration(proxyBeanMethods = false)
@@ -48,22 +47,8 @@ import org.springframework.web.util.UriBuilderFactory;
 public class HttpRequestFunctionConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean(WebClient.class)
-	public WebClient webClient(HttpRequestFunctionProperties properties,
-			ObjectProvider<WebClientCustomizer> customizerProvider) {
-
-		WebClient.Builder builder =
-				WebClient.builder()
-						.codecs((clientCodecConfigurer) ->
-								clientCodecConfigurer.defaultCodecs()
-										.maxInMemorySize(properties.getMaximumBufferSize()));
-		customizerProvider.orderedStream().forEach((customizer) -> customizer.customize(builder));
-		return builder.build();
-	}
-
-	@Bean
-	public HttpRequestFunction httpRequestFunction(WebClient webClient, HttpRequestFunctionProperties properties) {
-		return new HttpRequestFunction(webClient, properties);
+	public HttpRequestFunction httpRequestFunction(WebClient.Builder webClientBuilder, HttpRequestFunctionProperties properties) {
+		return new HttpRequestFunction(webClientBuilder.build(), properties);
 	}
 
 	/**
