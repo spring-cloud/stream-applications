@@ -32,6 +32,7 @@ Uses `BackingOffsetStore` configuration, based on the https://github.com/spring-
 Later provides various microservices friendly ways for storing the offset metadata.
 
 For more information on the various options available, please see:
+
  * link:../../common/cdc-debezium-common/src/main/java/org/springframework/cloud/fn/common/cdc/CdcCommonProperties.java[CdcCommonProperties].
  * link:src/main/java/org/springframework/cloud/fn/supplier/cdc/CdcSupplierProperties.java[CdcSupplierProperties].
 
