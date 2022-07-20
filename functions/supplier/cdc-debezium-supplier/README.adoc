@@ -28,7 +28,7 @@ Once injected, you can use the `get` method of the `Supplier` to invoke it and t
 All configuration properties are prefixed with `cdc`.
 Use the `cdc.config.` prefix to inject native, Debezium properties. Convenient shortcuts for the most frequently used
 Debezium properties are available.
-Uses `BackingOffsetStore` configuration, based on the link:https://github.com/spring-cloud/stream-applications/tree/master/functions/common/metadata-store-common[MetadataStore] service.
+Uses `BackingOffsetStore` configuration, based on the https://github.com/spring-cloud/stream-applications/tree/master/functions/common/metadata-store-common[MetadataStore] service.
 Later provides various microservices friendly ways for storing the offset metadata.
 
 For more information on the various options available, please see:
