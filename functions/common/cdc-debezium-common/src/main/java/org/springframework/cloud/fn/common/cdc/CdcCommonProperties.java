@@ -214,6 +214,8 @@ public class CdcCommonProperties {
 		mongodb("io.debezium.connector.mongodb.MongoDbConnector"),
 		/** Oracle connector type. */
 		oracle("io.debezium.connector.oracle.OracleConnector"),
+		/** DB2 connector type. */
+		db2("io.debezium.connector.db2.Db2Connector"),
 		/** SqlServer connector type. */
 		sqlserver("io.debezium.connector.sqlserver.SqlServerConnector");
 
