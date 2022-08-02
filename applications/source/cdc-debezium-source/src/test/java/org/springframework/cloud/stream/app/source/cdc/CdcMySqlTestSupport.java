@@ -33,7 +33,7 @@ public abstract class CdcMySqlTestSupport {
 
 	static String MAPPED_PORT;
 
-	static GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.7.1.Final")
+	static GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.9.5.Final")
 			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 			.withEnv("MYSQL_USER", "mysqluser")
 			.withEnv("MYSQL_PASSWORD", "mysqlpw")

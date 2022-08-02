@@ -38,7 +38,6 @@ import org.springframework.messaging.Message;
 import org.springframework.util.CollectionUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.receiveAll;
 
 /**
  * @author Christian Tzolov
@@ -63,7 +62,7 @@ public class CdcSourceDatabasesIntegrationTest {
 
 	@Test
 	public void mysql() {
-		GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.7.1.Final")
+		GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.9.5.Final")
 				.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 				.withEnv("MYSQL_USER", "mysqluser")
 				.withEnv("MYSQL_PASSWORD", "mysqlpw")
@@ -81,7 +80,7 @@ public class CdcSourceDatabasesIntegrationTest {
 						"--cdc.config.database.port=" + MAPPED_PORT)) {
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			// Using local region here
-			List<Message<?>> messages = receiveAll(outputDestination);
+			List<Message<?>> messages = CdcTestUtils.receiveAll(outputDestination);
 			assertThat(messages).isNotNull();
 			assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 		}
@@ -116,7 +115,7 @@ public class CdcSourceDatabasesIntegrationTest {
 						"--cdc.config.database.port=" + sqlServer.getMappedPort(1433))) {
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			// Using local region here
-			List<Message<?>> messages = receiveAll(outputDestination);
+			List<Message<?>> messages = CdcTestUtils.receiveAll(outputDestination);
 			assertThat(messages).isNotNull();
 			assertThat(messages).hasSize(30);
 		}
@@ -124,7 +123,7 @@ public class CdcSourceDatabasesIntegrationTest {
 
 	@Test
 	public void postgres() {
-		GenericContainer postgres = new GenericContainer("debezium/example-postgres:1.7.1.Final")
+		GenericContainer postgres = new GenericContainer("debezium/example-postgres:1.9.5.Final")
 				.withEnv("POSTGRES_USER", "postgres")
 				.withEnv("POSTGRES_PASSWORD", "postgres")
 				.withExposedPorts(5432);
@@ -137,18 +136,19 @@ public class CdcSourceDatabasesIntegrationTest {
 						"--cdc.config.slot.name=debezium",
 						"--cdc.config.database.dbname=postgres",
 						"--cdc.config.database.hostname=localhost",
+						// "--cdc.config.table.include.list=inventory.*",
 						"--cdc.config.database.port=" + postgres.getMappedPort(5432))) {
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			// Using local region here
 
 			List<Message<?>> allMessages = new ArrayList<>();
 			Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
-				List<Message<?>> messageChunk = receiveAll(outputDestination);
+				List<Message<?>> messageChunk = CdcTestUtils.receiveAll(outputDestination);
 				if (!CollectionUtils.isEmpty(messageChunk)) {
 					System.out.println("Chunk size: " + messageChunk.size());
 					allMessages.addAll(messageChunk);
 				}
-				return allMessages.size() == 5786;
+				return allMessages.size() == 29; // Inventory DB entries
 			});
 		}
 		postgres.stop();
@@ -157,7 +157,7 @@ public class CdcSourceDatabasesIntegrationTest {
 	@Test
 	@Disabled
 	public void mongodb() {
-		GenericContainer mongodb = new GenericContainer("debezium/example-mongodb:1.7.1.Final")
+		GenericContainer mongodb = new GenericContainer("debezium/example-mongodb:1.9.5.Final")
 				.withEnv("MONGODB_USER", "debezium")
 				.withEnv("MONGODB_PASSWORD", "dbz")
 				.withExposedPorts(27017);
@@ -172,7 +172,7 @@ public class CdcSourceDatabasesIntegrationTest {
 						"--cdc.config.collection.include.list=inventory[.]*")) {
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			// Using local region here
-			List<Message<?>> messages = receiveAll(outputDestination);
+			List<Message<?>> messages = CdcTestUtils.receiveAll(outputDestination);
 			assertThat(messages).isNotNull();
 			assertThat(messages).hasSize(666);
 		}

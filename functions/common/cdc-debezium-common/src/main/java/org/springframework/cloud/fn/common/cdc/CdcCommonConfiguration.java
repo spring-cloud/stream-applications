@@ -64,10 +64,10 @@ public class CdcCommonConfiguration {
 		Map<String, Object> config = extractNewRecordState.config().defaultValues();
 		config.put("drop.tombstones", properties.getFlattening().isDropTombstones());
 		config.put("delete.handling.mode", properties.getFlattening().getDeleteHandlingMode().name());
-		if (!StringUtils.isEmpty(properties.getFlattening().getAddHeaders())) {
+		if (!StringUtils.hasText(properties.getFlattening().getAddHeaders())) {
 			config.put("add.headers", properties.getFlattening().getAddHeaders());
 		}
-		if (!StringUtils.isEmpty(properties.getFlattening().getAddFields())) {
+		if (!StringUtils.hasText(properties.getFlattening().getAddFields())) {
 			config.put("add.fields", properties.getFlattening().getAddFields());
 		}
 
