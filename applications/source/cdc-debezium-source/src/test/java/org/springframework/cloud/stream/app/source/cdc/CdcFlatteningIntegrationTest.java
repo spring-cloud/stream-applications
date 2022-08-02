@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.source.cdc;
 
 import java.util.List;
 
+import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +26,7 @@ import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
 import org.springframework.cloud.fn.common.cdc.CdcCommonProperties;
+import org.springframework.cloud.fn.supplier.cdc.CdcSupplierConfiguration;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -34,11 +36,8 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.cloud.fn.supplier.cdc.CdcSupplierConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL;
-import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.receiveAll;
-import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.resourceToString;
+
 
 /**
  * @author Christian Tzolov
@@ -79,24 +78,24 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 	final ContextConsumer<? super ApplicationContext> noFlatteningTest = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
-		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+		boolean isKafkaPresent = ClassUtils.isPresent(CdcSupplierConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
-		List<Message<?>> messages = receiveAll(outputDestination);
+		List<Message<?>> messages = CdcTestUtils.receiveAll(outputDestination);
 		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
-		assertJsonEquals(resourceToString(
+		JsonAssert.assertJsonEquals(CdcTestUtils.resourceToString(
 				"classpath:/json/mysql_ddl_drop_inventory_address_table.json"),
 				toString(messages.get(1).getPayload()),
 				Configuration.empty().whenIgnoringPaths("schemaName", "tableChanges", "source.sequence", "source.ts_ms"));
 		assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector");
-		assertJsonEquals("{\"databaseName\":\"inventory\"}", toString(messages.get(1).getHeaders().get("cdc_key")));
+		JsonAssert.assertJsonEquals("{\"databaseName\":\"inventory\"}", toString(messages.get(1).getHeaders().get("cdc_key")));
 
-		assertJsonEquals(resourceToString("classpath:/json/mysql_insert_inventory_products_106.json"),
+		JsonAssert.assertJsonEquals(CdcTestUtils.resourceToString("classpath:/json/mysql_insert_inventory_products_106.json"),
 				toString(messages.get(39).getPayload()),
 				Configuration.empty().whenIgnoringPaths("source.sequence", "source.ts_ms"));
 		assertThat(messages.get(39).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.products");
-		assertJsonEquals("{\"id\":106}", toString(messages.get(39).getHeaders().get("cdc_key")));
+		JsonAssert.assertJsonEquals("{\"id\":106}", toString(messages.get(39).getHeaders().get("cdc_key")));
 
 		jdbcTemplate.update(
 				"insert into `customers`(`first_name`,`last_name`,`email`) VALUES('Test666', 'Test666', 'Test666@spring.org')");
@@ -105,28 +104,28 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 		jdbcTemplate.update("UPDATE `customers` SET `last_name`='Test999' WHERE first_name = 'Test666'");
 		JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 
-		messages = receiveAll(outputDestination);
+		messages = CdcTestUtils.receiveAll(outputDestination);
 
 		assertThat(messages).hasSize(isKafkaPresent ? 4 : 3);
 
-		assertJsonEquals(resourceToString("classpath:/json/mysql_update_inventory_customers.json"),
+		JsonAssert.assertJsonEquals(CdcTestUtils.resourceToString("classpath:/json/mysql_update_inventory_customers.json"),
 				toString(messages.get(1).getPayload()), Configuration.empty().whenIgnoringPaths("source.sequence"));
 		assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.customers");
-		assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
+		JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
 
-		assertJsonEquals(resourceToString("classpath:/json/mysql_delete_inventory_customers.json"),
+		JsonAssert.assertJsonEquals(CdcTestUtils.resourceToString("classpath:/json/mysql_delete_inventory_customers.json"),
 				toString(messages.get(2).getPayload()), Configuration.empty().whenIgnoringPaths("source.sequence"));
 		assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.customers");
 
-		assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
+		JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
 
 		if (isKafkaPresent) {
 			assertThat(messages.get(3).getPayload().getClass().getCanonicalName())
-					.isEqualTo(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+					.isEqualTo(CdcSupplierConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 							"Tombstones event should have KafkaNull payload");
 			assertThat(messages.get(3).getHeaders().get("cdc_topic"))
 					.isEqualTo("my-app-connector.inventory.customers");
-			assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(3).getHeaders().get("cdc_key")));
+			JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(3).getHeaders().get("cdc_key")));
 		}
 	};
 
@@ -166,32 +165,32 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 	final ContextConsumer<? super ApplicationContext> flatteningTest = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
-		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+		boolean isKafkaPresent = ClassUtils.isPresent(CdcSupplierConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
-		List<Message<?>> messages = receiveAll(outputDestination);
+		List<Message<?>> messages = CdcTestUtils.receiveAll(outputDestination);
 		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
 		CdcCommonProperties.Flattening flatteningProps = context.getBean(CdcCommonProperties.class).getFlattening();
 
-		assertJsonEquals(resourceToString(
+		JsonAssert.assertJsonEquals(CdcTestUtils.resourceToString(
 				"classpath:/json/mysql_ddl_drop_inventory_address_table.json"),
 				toString(messages.get(1).getPayload()),
 				Configuration.empty().whenIgnoringPaths("schemaName", "tableChanges", "source.sequence", "source.ts_ms"));
 		assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector");
-		assertJsonEquals("{\"databaseName\":\"inventory\"}",
+		JsonAssert.assertJsonEquals("{\"databaseName\":\"inventory\"}",
 				toString(messages.get(1).getHeaders().get("cdc_key")));
 
 		if (flatteningProps.isEnabled()) {
-			assertJsonEquals(resourceToString("classpath:/json/mysql_flattened_insert_inventory_products_106.json"),
+			JsonAssert.assertJsonEquals(CdcTestUtils.resourceToString("classpath:/json/mysql_flattened_insert_inventory_products_106.json"),
 					toString(messages.get(39).getPayload()));
 		}
 		else {
-			assertJsonEquals(resourceToString("classpath:/json/mysql_insert_inventory_products_106.json"),
+			JsonAssert.assertJsonEquals(CdcTestUtils.resourceToString("classpath:/json/mysql_insert_inventory_products_106.json"),
 					toString(messages.get(39).getPayload()));
 		}
 		assertThat(messages.get(39).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.products");
-		assertJsonEquals("{\"id\":106}", toString(messages.get(39).getHeaders().get("cdc_key")));
+		JsonAssert.assertJsonEquals("{\"id\":106}", toString(messages.get(39).getHeaders().get("cdc_key")));
 
 		if (flatteningProps.isEnabled() && flatteningProps.getAddHeaders().contains("op")) {
 			assertThat(messages.get(39).getHeaders().get("__op")).isEqualTo("r");
@@ -204,24 +203,24 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 		jdbcTemplate.update("UPDATE `customers` SET `last_name`='Test999' WHERE first_name = 'Test666'");
 		JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 
-		messages = receiveAll(outputDestination);
+		messages = CdcTestUtils.receiveAll(outputDestination);
 
 		assertThat(messages).hasSize((!flatteningProps.isDropTombstones() && isKafkaPresent) ? 4 : 3);
 
-		assertJsonEquals(resourceToString("classpath:/json/mysql_flattened_update_inventory_customers.json"),
+		JsonAssert.assertJsonEquals(CdcTestUtils.resourceToString("classpath:/json/mysql_flattened_update_inventory_customers.json"),
 				toString(messages.get(1).getPayload()));
 
 		assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.customers");
-		assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
-		if (!StringUtils.isEmpty(flatteningProps.getAddHeaders()) && flatteningProps.getAddHeaders().contains("op")) {
+		JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
+		if (!StringUtils.hasText(flatteningProps.getAddHeaders()) && flatteningProps.getAddHeaders().contains("op")) {
 			assertThat(messages.get(1).getHeaders().get("__op")).isEqualTo("u");
 		}
 
 		if (flatteningProps.getDeleteHandlingMode() == CdcCommonProperties.DeleteHandlingMode.none) {
 			assertThat(toString(messages.get(2).getPayload())).isEqualTo("null");
 			assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.customers");
-			assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
-			if (!StringUtils.isEmpty(flatteningProps.getAddHeaders())
+			JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
+			if (!StringUtils.hasText(flatteningProps.getAddHeaders())
 					&& flatteningProps.getAddHeaders().contains("op")) {
 				assertThat(messages.get(2).getHeaders().get("__op")).isEqualTo("d");
 			}
@@ -229,11 +228,11 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 		if (!flatteningProps.isDropTombstones() && isKafkaPresent) {
 			assertThat(messages.get(3).getPayload().getClass().getCanonicalName())
-					.isEqualTo(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+					.isEqualTo(CdcSupplierConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 							"Tombstones event should have KafkaNull payload");
 			assertThat(messages.get(3).getHeaders().get("cdc_topic"))
 					.isEqualTo("my-app-connector.inventory.customers");
-			assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(3).getHeaders().get("cdc_key")));
+			JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(3).getHeaders().get("cdc_key")));
 		}
 	};
 
