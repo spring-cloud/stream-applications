@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.common.cdc;
 import java.time.Duration;
 
 import com.zaxxer.hikari.HikariDataSource;
+import io.debezium.engine.DebeziumEngine;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
@@ -59,6 +61,9 @@ public class CdcBootStarterIntegrationTest {
 
 	private static JdbcTemplate jdbcTemplate;
 
+
+	KafkaChangeConsumerNoCDI kafkaChangeConsumerNoCDI;
+
 	@BeforeAll
 	static void setup() {
 		MAPPED_PORT = String.valueOf(debeziumMySQL.getMappedPort(3306));
@@ -86,22 +91,26 @@ public class CdcBootStarterIntegrationTest {
 					"cdc.config.database.server.name=my-app-connector",
 					"cdc.config.database.history=io.debezium.relational.history.MemoryDatabaseHistory");
 
+	private org.springframework.kafka.support.serializer.JsonSerializer foo;
 	@Test
 	public void consumerTest() {
+
 		contextRunner
 				.withPropertyValues(
 						"cdc.flattening.deleteHandlingMode=drop",
 						"cdc.flattening.dropTombstones=true")
 				.run(context -> {
-					TestCdcApplication.TestSourceRecordConsumer testConsumer = context
-							.getBean(TestCdcApplication.TestSourceRecordConsumer.class);
+//					TestCdcApplication.TestSourceRecordConsumer testConsumer = context
+//							.getBean(TestCdcApplication.TestSourceRecordConsumer.class);
+
+					kafkaChangeConsumerNoCDI = context.getBean(KafkaChangeConsumerNoCDI.class);
 					jdbcTemplate.update(
 							"insert into `customers`(`first_name`,`last_name`,`email`) " +
 									"VALUES('Test666', 'Test666', 'Test666@spring.org')");
 					JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 
 					await().atMost(Duration.ofSeconds(30))
-							.untilAsserted(() -> assertThat(testConsumer.recordList).hasSizeGreaterThanOrEqualTo(52));
+							.untilAsserted(() -> assertThat(kafkaChangeConsumerNoCDI.getCount()).isEqualTo(52));
 				});
 	}
 
