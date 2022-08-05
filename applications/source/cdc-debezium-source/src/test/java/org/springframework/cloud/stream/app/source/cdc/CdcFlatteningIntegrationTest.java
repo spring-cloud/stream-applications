@@ -212,7 +212,7 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 		assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.customers");
 		JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
-		if (!StringUtils.hasText(flatteningProps.getAddHeaders()) && flatteningProps.getAddHeaders().contains("op")) {
+		if (StringUtils.hasText(flatteningProps.getAddHeaders()) && flatteningProps.getAddHeaders().contains("op")) {
 			assertThat(messages.get(1).getHeaders().get("__op")).isEqualTo("u");
 		}
 
@@ -220,7 +220,7 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 			assertThat(toString(messages.get(2).getPayload())).isEqualTo("null");
 			assertThat(messages.get(1).getHeaders().get("cdc_topic")).isEqualTo("my-app-connector.inventory.customers");
 			JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}", toString(messages.get(1).getHeaders().get("cdc_key")));
-			if (!StringUtils.hasText(flatteningProps.getAddHeaders())
+			if (StringUtils.hasText(flatteningProps.getAddHeaders())
 					&& flatteningProps.getAddHeaders().contains("op")) {
 				assertThat(messages.get(2).getHeaders().get("__op")).isEqualTo("d");
 			}

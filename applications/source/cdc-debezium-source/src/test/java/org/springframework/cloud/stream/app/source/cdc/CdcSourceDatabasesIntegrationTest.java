@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,6 +152,56 @@ public class CdcSourceDatabasesIntegrationTest {
 			});
 		}
 		postgres.stop();
+	}
+
+	// From within the src/test/docker/db2 folder run:
+	// docker build -t db2-cdc2 .
+	//
+	// docker run -itd --name mydb2 --privileged=true -p 50000:50000 -e LICENSE=accept -e DB2INST1_PASSWORD=password -e
+	// DBNAME=testdb db2-cdc2
+	//
+	// docker logs -f mydb2
+	// docker stop mydb2
+	// docker exec -it mydb2 /bin/bash
+	@Test
+	@Disabled
+	public void db2() {
+
+		// TODO
+		// GenericContainer db2Container = new GenericContainer(
+		// new ImageFromDockerfile()
+		// .withFileFromPath(".", file.toPath()))
+		// .withPrivilegedMode(true)
+		// .withExposedPorts(50000)
+		// .withEnv("LICENSE", "accept")
+		// .withEnv("DBNAME", "testdb")
+		// .withEnv("DB2INST1_PASSWORD", "password");
+		// db2Container.start();
+
+		try (ConfigurableApplicationContext context = applicationBuilder
+				.run("--cdc.connector=db2",
+						"--cdc.config.database.user=db2inst1",
+						"--cdc.config.database.password=password",
+						"--cdc.config.slot.name=debezium",
+						"--cdc.config.database.dbname=TESTDB",
+						"--cdc.config.database.hostname=localhost",
+						// "--cdc.config.table.include.list=inventory.*",
+						"--cdc.config.database.port=" + "50000")) {
+			OutputDestination outputDestination = context.getBean(OutputDestination.class);
+			// Using local region here
+
+			List<Message<?>> allMessages = new ArrayList<>();
+			Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
+				List<Message<?>> messageChunk = CdcTestUtils.receiveAll(outputDestination);
+				if (!CollectionUtils.isEmpty(messageChunk)) {
+					System.out.println("Chunk size: " + messageChunk.size());
+					allMessages.addAll(messageChunk);
+				}
+				return allMessages.size() == 30; // Inventory DB entries
+			});
+		}
+
+		// db2Container.stop();
 	}
 
 	@Test
