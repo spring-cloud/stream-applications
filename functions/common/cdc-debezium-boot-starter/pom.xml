@@ -32,6 +32,19 @@
 			</exclusions>
 		</dependency>
 
+
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-server-kafka</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+			<version>${version.debezium}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>io.debezium</groupId>
 			<artifactId>debezium-connector-mysql</artifactId>
@@ -98,6 +111,10 @@
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
 		</dependency>
 
 	</dependencies>

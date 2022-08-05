@@ -21,7 +21,12 @@ import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.inject.Instance;
 
+import io.debezium.engine.ChangeEvent;
+import io.debezium.engine.DebeziumEngine;
+import io.debezium.server.StreamNameMapper;
+import io.debezium.server.kafka.KafkaChangeConsumer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.kafka.connect.source.SourceRecord;
@@ -30,6 +35,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * @author Christian Tzolov
@@ -41,17 +47,22 @@ public class CdcAutoConfiguration {
 	private static final Log logger = LogFactory.getLog(CdcAutoConfiguration.class);
 
 	@Bean
-	@ConditionalOnMissingBean
-	public Consumer<SourceRecord> defaultSourceRecordConsumer() {
-		return sourceRecord -> logger.info("[CDC Event]: " + ((sourceRecord == null) ? "null" : sourceRecord.toString()));
+	public DebeziumEngine.ChangeConsumer defaultChangeConsumer() {
+		return new KafkaChangeConsumerNoCDI();
 	}
+//	@Bean
+//	@ConditionalOnMissingBean
+//	public Consumer<SourceRecord> defaultSo/urceRecordConsumer() {
+//		return sourceRecord -> logger.info("[CDC Event]: " + ((sourceRecord == null) ? "null" : sourceRecord.toString()));
+//	}
 
 	@Bean
 	public EmbeddedEngineExecutorService embeddedEngine(EmbeddedEngine.Builder embeddedEngineBuilder,
-			Consumer<SourceRecord> sourceRecordConsumer, Function<SourceRecord, SourceRecord> recordFlattening) {
+			DebeziumEngine.ChangeConsumer changeConsumer, Function<SourceRecord, SourceRecord> recordFlattening) {
+
 
 		EmbeddedEngine embeddedEngine = embeddedEngineBuilder
-				.notifying(sourceRecord -> sourceRecordConsumer.accept(recordFlattening.apply(sourceRecord)))
+				.notifying(changeConsumer)
 				.build();
 
 		return new EmbeddedEngineExecutorService(embeddedEngine) {
