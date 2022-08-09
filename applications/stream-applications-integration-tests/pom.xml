@@ -17,7 +17,7 @@
 	<properties>
 		<mariadb-client.version>2.6.2</mariadb-client.version>
 		<wiremock.version>2.27.1</wiremock.version>
-		<aws.version>1.11.415</aws.version>
+		<aws.version>1.12.261</aws.version>
 		<mysql-connector-java.version>8.0.28</mysql-connector-java.version>
 	</properties>
 
