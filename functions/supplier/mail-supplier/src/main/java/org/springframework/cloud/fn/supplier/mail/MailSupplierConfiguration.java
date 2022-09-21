@@ -24,7 +24,6 @@ import java.util.function.Supplier;
 import javax.mail.URLName;
 
 import org.reactivestreams.Publisher;
-
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
