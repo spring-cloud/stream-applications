@@ -82,6 +82,11 @@ public class DefaultJdbcSupplierTests {
 		stepVerifier.verify();
 	}
 
+	/*
+	The test to verify that DB is not initialized with Spring Integration DDL
+	(spring.integration.jdbc.initialize-schema=NEVER) what happens by default via IntegrationAutoConfiguration.IntegrationJdbcConfiguration.
+	This is not a functionality of this JDBC Supplier.
+	 */
 	@Test
 	void verifyNoIntMessageGroupTable() {
 		assertThatExceptionOfType(BadSqlGrammarException.class)
