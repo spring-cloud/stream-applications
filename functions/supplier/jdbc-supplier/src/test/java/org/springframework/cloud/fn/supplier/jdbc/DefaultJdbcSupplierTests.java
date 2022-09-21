@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,13 @@ import reactor.test.StepVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
 		properties = "jdbc.supplier.query=select id, name from test order by id")
@@ -38,6 +41,9 @@ public class DefaultJdbcSupplierTests {
 
 	@Autowired
 	Supplier<Flux<Message<?>>> jdbcSupplier;
+
+	@Autowired
+	JdbcTemplate jdbcTemplate;
 
 	@Test
 	void testExtraction() {
@@ -74,6 +80,18 @@ public class DefaultJdbcSupplierTests {
 						.thenCancel()
 						.verifyLater();
 		stepVerifier.verify();
+	}
+
+	/*
+	The test to verify that DB is not initialized with Spring Integration DDL
+	(spring.integration.jdbc.initialize-schema=NEVER) what happens by default via IntegrationAutoConfiguration.IntegrationJdbcConfiguration.
+	This is not a functionality of this JDBC Supplier.
+	 */
+	@Test
+	void verifyNoIntMessageGroupTable() {
+		assertThatExceptionOfType(BadSqlGrammarException.class)
+				.isThrownBy(() -> this.jdbcTemplate.queryForList("SELECT * FROM INT_MESSAGE_GROUP"))
+				.withMessageContaining("Table \"INT_MESSAGE_GROUP\" not found;");
 	}
 
 	@SpringBootApplication
