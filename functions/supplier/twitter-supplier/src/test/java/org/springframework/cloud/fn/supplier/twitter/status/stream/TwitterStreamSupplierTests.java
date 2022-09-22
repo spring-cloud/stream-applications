@@ -46,7 +46,6 @@ import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.SocketUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.matchers.Times.exactly;
@@ -71,7 +70,7 @@ public abstract class TwitterStreamSupplierTests {
 
 	private static final String MOCK_SERVER_IP = "127.0.0.1";
 
-	private static final Integer MOCK_SERVER_PORT = SocketUtils.findAvailableTcpPort();
+	private static final Integer MOCK_SERVER_PORT = TestSocketUtils.findAvailableTcpPort();
 
 	private static ClientAndServer mockServer;
 

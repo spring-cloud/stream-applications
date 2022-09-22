@@ -25,12 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import javax.validation.Valid;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import com.jcraft.jsch.ChannelSftp;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Range;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

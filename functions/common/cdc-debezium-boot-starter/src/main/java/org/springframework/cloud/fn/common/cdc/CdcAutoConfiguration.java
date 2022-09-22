@@ -19,9 +19,8 @@ package org.springframework.cloud.fn.common.cdc;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.kafka.connect.source.SourceRecord;

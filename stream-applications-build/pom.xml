@@ -11,16 +11,16 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<java.version>1.8</java.version>
-		<maven-javadoc-plugin.version>3.3.0</maven-javadoc-plugin.version>
+		<java.version>17</java.version>
+		<maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-		<maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
+		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 		<disable.checks>false</disable.checks>
 		<maven-checkstyle-plugin.failsOnError>true</maven-checkstyle-plugin.failsOnError>
 		<maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
@@ -37,23 +37,30 @@
 		<checkstyle.additional.suppressions.file>
 			${checkstyle.location}/checkstyle-suppressions.xml
 		</checkstyle.additional.suppressions.file>
-		<nohttp-checkstyle.version>0.0.2.RELEASE</nohttp-checkstyle.version>
+		<nohttp-checkstyle.version>0.0.10</nohttp-checkstyle.version>
 		<disable.nohttp.checks>true</disable.nohttp.checks>
-		<spring-javaformat-checkstyle.version>0.0.7</spring-javaformat-checkstyle.version>
-		<spring-boot.version>2.6.8</spring-boot.version>
-		<spring-kafka.version>2.8.6</spring-kafka.version>
-		<spring-rabbit.version>2.4.5</spring-rabbit.version>
+		<spring-javaformat-checkstyle.version>0.0.29</spring-javaformat-checkstyle.version>
+		<spring-boot.version>3.0.0-SNAPSHOT</spring-boot.version>
+		<spring-kafka.version>3.0.0-SNAPSHOT</spring-kafka.version>
+		<spring-rabbit.version>3.0.0-SNAPSHOT</spring-rabbit.version>
 		<spring-geode.version>1.6.7</spring-geode.version>
-		<spring-cloud.version>2021.0.3</spring-cloud.version>
-		<spring-cloud-starters.version>3.1.3</spring-cloud-starters.version>
-		<spring-cloud-function.version>3.2.5</spring-cloud-function.version>
-		<spring-cloud-stream-dependencies.version>3.2.4</spring-cloud-stream-dependencies.version>
-		<spring-cloud-stream.version>3.2.4</spring-cloud-stream.version>
+		<spring-cloud.version>2022.0.0-SNAPSHOT</spring-cloud.version>
+		<spring-cloud-starters.version>4.0.0-SNAPSHOT</spring-cloud-starters.version>
+		<spring-cloud-function.version>4.0.0-SNAPSHOT</spring-cloud-function.version>
+		<spring-cloud-stream-dependencies.version>4.0.0-SNAPSHOT</spring-cloud-stream-dependencies.version>
+		<spring-cloud-stream.version>4.0.0-SNAPSHOT</spring-cloud-stream.version>
 		<test-containers.version>1.16.3</test-containers.version>
 		<maven-flatten-plugin.version>1.2.5</maven-flatten-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 		<mockserver.version>5.13.2</mockserver.version>
+
+		<groovy.version>3.0.10</groovy.version>
+		<jakarta-jms.version>3.1.0</jakarta-jms.version>
+		<activemq-broker.version>5.16.5</activemq-broker.version>
+		<embedded-mongo.version>3.4.8</embedded-mongo.version>
+
 	</properties>
+
 	<url>https://spring.io/projects/spring-cloud-stream-applications</url>
 	<developers>
 		<developer>
@@ -97,6 +104,30 @@
 				<version>${spring-geode.version}</version>
 				<scope>import</scope>
 				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.groovy</groupId>
+				<artifactId>groovy-bom</artifactId>
+				<version>${groovy.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>jakarta.jms</groupId>
+				<artifactId>jakarta.jms-api</artifactId>
+				<version>${jakarta-jms.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-broker</artifactId>
+				<version>${activemq-broker.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>de.flapdoodle.embed</groupId>
+				<artifactId>de.flapdoodle.embed.mongo</artifactId>
+				<version>${embedded-mongo.version}</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

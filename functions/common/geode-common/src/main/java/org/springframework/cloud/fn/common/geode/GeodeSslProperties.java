@@ -16,8 +16,8 @@
 
 package org.springframework.cloud.fn.common.geode;
 
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;

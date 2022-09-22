@@ -28,7 +28,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.dsl.StandardIntegrationFlow;
 import org.springframework.integration.test.context.SpringIntegrationTest;
-import org.springframework.integration.test.mail.TestMailServer;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
 

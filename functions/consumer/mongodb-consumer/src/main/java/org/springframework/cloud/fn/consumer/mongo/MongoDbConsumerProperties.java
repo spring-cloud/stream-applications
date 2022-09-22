@@ -16,7 +16,7 @@
 
 package org.springframework.cloud.fn.consumer.mongo;
 
-import javax.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.AssertTrue;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.expression.Expression;

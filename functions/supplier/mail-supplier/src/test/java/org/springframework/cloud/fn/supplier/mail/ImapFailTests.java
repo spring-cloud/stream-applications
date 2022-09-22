@@ -23,7 +23,6 @@ import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.mail.transformer.MailToStringTransformer;
-import org.springframework.integration.test.mail.TestMailServer;
 import org.springframework.integration.test.util.TestUtils;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;

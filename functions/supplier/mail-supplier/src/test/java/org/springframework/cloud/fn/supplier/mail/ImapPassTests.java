@@ -24,7 +24,6 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import org.springframework.integration.mail.MailHeaders;
-import org.springframework.integration.test.mail.TestMailServer;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.context.TestPropertySource;

@@ -29,7 +29,6 @@ import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
@@ -64,8 +63,7 @@ class MessageStoreConfiguration {
 			name = "message-store-type",
 			havingValue = AggregatorFunctionProperties.MessageStoreType.MONGODB)
 	@Import({ MongoAutoConfiguration.class,
-			MongoDataAutoConfiguration.class,
-			EmbeddedMongoAutoConfiguration.class })
+			MongoDataAutoConfiguration.class })
 	static class Mongo {
 
 		@Bean

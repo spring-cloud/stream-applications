@@ -22,8 +22,6 @@ import java.util.Properties;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.cloud.stream.messaging.Sink;
-import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 
@@ -60,9 +58,8 @@ public class ContentTypeEnvironmentPostProcessor implements EnvironmentPostProce
 
 	private Map<String, String> createChannelMap() {
 		Map<String, String> channelMap = new HashMap<>();
-		channelMap.put(Sink.INPUT, "application/octet-stream");
-		channelMap.put(Source.OUTPUT, "application/octet-stream");
-
+		channelMap.put("input", "application/octet-stream");
+		channelMap.put("output", "application/octet-stream");
 		return channelMap;
 	}
 

@@ -19,7 +19,7 @@ package org.springframework.cloud.fn.common.mqtt;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;

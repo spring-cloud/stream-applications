@@ -22,8 +22,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.validation.ValidationException;
-
+import jakarta.validation.ValidationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

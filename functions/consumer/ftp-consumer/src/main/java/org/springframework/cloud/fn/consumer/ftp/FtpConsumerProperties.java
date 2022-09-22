@@ -16,8 +16,8 @@
 
 package org.springframework.cloud.fn.consumer.ftp;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.integration.file.support.FileExistsMode;

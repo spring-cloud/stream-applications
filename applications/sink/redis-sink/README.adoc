@@ -20,7 +20,7 @@ $$queue-expression$$:: $$A SpEL expression to use for queue.$$ *($$String$$, def
 $$topic$$:: $$A literal topic name to use when publishing to a topic.$$ *($$String$$, default: `$$<none>$$`)*
 $$topic-expression$$:: $$A SpEL expression to use for topic.$$ *($$String$$, default: `$$<none>$$`)*
 
-=== spring.redis
+=== spring.data.redis
 
 $$client-name$$:: $$Client name to be set on connections with CLIENT SETNAME.$$ *($$String$$, default: `$$<none>$$`)*
 $$client-type$$:: $$Type of client to use. By default, auto-detected according to the classpath.$$ *($$ClientType$$, default: `$$<none>$$`, possible values: `LETTUCE`,`JEDIS`)*
@@ -34,7 +34,7 @@ $$timeout$$:: $$Read timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$url$$:: $$Connection URL. Overrides host, port, and password. User is ignored. Example: redis://user:password@example.com:6379$$ *($$String$$, default: `$$<none>$$`)*
 $$username$$:: $$Login username of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
 
-=== spring.redis.jedis.pool
+=== spring.data.redis.jedis.pool
 
 $$enabled$$:: $$Whether to enable the pool. Enabled automatically if "commons-pool2" is available. With Jedis, pooling is implicitly enabled in sentinel mode and this setting only applies to single node setup.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$max-active$$:: $$Maximum number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.$$ *($$Integer$$, default: `$$8$$`)*
@@ -43,7 +43,7 @@ $$max-wait$$:: $$Maximum amount of time a connection allocation should block bef
 $$min-idle$$:: $$Target for the minimum number of idle connections to maintain in the pool. This setting only has an effect if both it and time between eviction runs are positive.$$ *($$Integer$$, default: `$$0$$`)*
 $$time-between-eviction-runs$$:: $$Time between runs of the idle object evictor thread. When positive, the idle object evictor thread starts, otherwise no idle object eviction is performed.$$ *($$Duration$$, default: `$$<none>$$`)*
 
-=== spring.redis.lettuce.pool
+=== spring.data.redis.lettuce.pool
 
 $$enabled$$:: $$Whether to enable the pool. Enabled automatically if "commons-pool2" is available. With Jedis, pooling is implicitly enabled in sentinel mode and this setting only applies to single node setup.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$max-active$$:: $$Maximum number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.$$ *($$Integer$$, default: `$$8$$`)*
@@ -52,11 +52,12 @@ $$max-wait$$:: $$Maximum amount of time a connection allocation should block bef
 $$min-idle$$:: $$Target for the minimum number of idle connections to maintain in the pool. This setting only has an effect if both it and time between eviction runs are positive.$$ *($$Integer$$, default: `$$0$$`)*
 $$time-between-eviction-runs$$:: $$Time between runs of the idle object evictor thread. When positive, the idle object evictor thread starts, otherwise no idle object eviction is performed.$$ *($$Duration$$, default: `$$<none>$$`)*
 
-=== spring.redis.sentinel
+=== spring.data.redis.sentinel
 
 $$master$$:: $$Name of the Redis server.$$ *($$String$$, default: `$$<none>$$`)*
 $$nodes$$:: $$Comma-separated list of "host:port" pairs.$$ *($$List<String>$$, default: `$$<none>$$`)*
 $$password$$:: $$Password for authenticating with sentinel(s).$$ *($$String$$, default: `$$<none>$$`)*
+$$username$$:: $$Login username for authenticating with sentinel(s).$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

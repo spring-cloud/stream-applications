@@ -18,8 +18,7 @@ package org.springframework.cloud.fn.supplier.jms;
 
 import java.util.function.Supplier;
 
-import javax.jms.ConnectionFactory;
-
+import jakarta.jms.ConnectionFactory;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 

@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import javax.mail.URLName;
-
+import jakarta.mail.URLName;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 

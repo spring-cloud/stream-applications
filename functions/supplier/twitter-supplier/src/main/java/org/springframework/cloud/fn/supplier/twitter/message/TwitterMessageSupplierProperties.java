@@ -16,7 +16,7 @@
 
 package org.springframework.cloud.fn.supplier.twitter.message;
 
-import javax.validation.constraints.Max;
+import jakarta.validation.constraints.Max;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;

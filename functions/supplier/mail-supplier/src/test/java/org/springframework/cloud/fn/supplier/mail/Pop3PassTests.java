@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import org.springframework.integration.test.mail.TestMailServer;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;
 

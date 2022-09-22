@@ -18,7 +18,7 @@ package org.springframework.cloud.fn.consumer.analytics;
 
 import java.util.Map;
 
-import javax.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.AssertTrue;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;

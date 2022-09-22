@@ -18,8 +18,7 @@ package org.springframework.cloud.fn.supplier.jms;
 
 import java.util.function.Supplier;
 
-import javax.jms.Session;
-
+import jakarta.jms.Session;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;

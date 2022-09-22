@@ -21,9 +21,9 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 
+import jakarta.annotation.PreDestroy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.postgresql.copy.CopyIn;
@@ -34,9 +34,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.binding.InputBindingLifecycle;
-import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -75,7 +73,7 @@ import org.springframework.util.StringUtils;
  */
 @Configuration
 @EnableScheduling
-@EnableBinding(Sink.class)
+//@EnableBinding(Sink.class)
 @EnableConfigurationProperties(PgcopySinkProperties.class)
 public class PgcopySinkConfiguration {
 
@@ -91,7 +89,7 @@ public class PgcopySinkConfiguration {
 
 	@Bean
 	@Primary
-	@ServiceActivator(inputChannel = Sink.INPUT)
+	@ServiceActivator(inputChannel = "input")
 	FactoryBean<MessageHandler> aggregatorFactoryBean(MessageChannel toSink, MessageGroupStore messageGroupStore) {
 		AggregatorFactoryBean aggregatorFactoryBean = new AggregatorFactoryBean();
 		aggregatorFactoryBean.setCorrelationStrategy(

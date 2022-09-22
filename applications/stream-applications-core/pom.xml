@@ -24,8 +24,8 @@
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.7</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.7</spring-cloud-dataflow-apps-metadata-plugin.version>
         <java-cfenv-boot.version>2.4.0</java-cfenv-boot.version>
-        <prometheus-rsocket.version>1.4.0</prometheus-rsocket.version>
-        <wavefront-spring-boot.version>2.2.2</wavefront-spring-boot.version>
+        <prometheus-rsocket.version>1.5.0</prometheus-rsocket.version>
+        <wavefront-spring-boot.version>2.3.0</wavefront-spring-boot.version>
     </properties>
 
     <modules>

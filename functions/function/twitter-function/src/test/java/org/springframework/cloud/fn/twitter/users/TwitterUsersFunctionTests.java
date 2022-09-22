@@ -37,6 +37,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.fn.common.twitter.TwitterConnectionProperties;
 import org.springframework.cloud.fn.common.twitter.util.TwitterTestUtils;
+import org.springframework.cloud.fn.twitter.TestSocketUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
@@ -44,7 +45,6 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.util.SocketUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.matchers.Times.exactly;
@@ -68,7 +68,7 @@ public abstract class TwitterUsersFunctionTests {
 
 	private static final String MOCK_SERVER_IP = "127.0.0.1";
 
-	private static final Integer MOCK_SERVER_PORT = SocketUtils.findAvailableTcpPort();
+	private static final Integer MOCK_SERVER_PORT = TestSocketUtils.findAvailableTcpPort();
 
 	private static ClientAndServer mockServer;
 

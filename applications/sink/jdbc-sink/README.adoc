@@ -54,11 +54,8 @@ $$table-name$$:: $$The name of the table to write into.$$ *($$String$$, default:
 
 === spring.datasource
 
-$$data$$:: $$Data (DML) script resource references.$$ *($$List<String>$$, default: `$$<none>$$`)*
 $$driver-class-name$$:: $$Fully qualified name of the JDBC driver. Auto-detected based on the URL by default.$$ *($$String$$, default: `$$<none>$$`)*
-$$initialization-mode$$:: $$Mode to apply when determining if DataSource initialization should be performed using the available DDL and DML scripts.$$ *($$DataSourceInitializationMode$$, default: `$$embedded$$`, possible values: `ALWAYS`,`EMBEDDED`,`NEVER`)*
 $$password$$:: $$Login password of the database.$$ *($$String$$, default: `$$<none>$$`)*
-$$schema$$:: $$Schema (DDL) script resource references.$$ *($$List<String>$$, default: `$$<none>$$`)*
 $$url$$:: $$JDBC URL of the database.$$ *($$String$$, default: `$$<none>$$`)*
 $$username$$:: $$Login username of the database.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]

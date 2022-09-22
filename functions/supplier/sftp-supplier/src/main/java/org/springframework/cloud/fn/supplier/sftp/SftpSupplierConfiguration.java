@@ -27,6 +27,7 @@ import com.jcraft.jsch.ChannelSftp.LsEntry;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.MonoProcessor;
+import reactor.util.context.Context;
 
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
@@ -163,7 +164,7 @@ public class SftpSupplierConfiguration {
 
 		return IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
 				.delaySubscription(subscriptionBarrier)
-				.subscriberContext(context -> context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
+				.contextWrite(Context.of(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
 						sftpSupplierProperties.getDelayWhenEmpty()));
 
 	}
@@ -210,9 +211,8 @@ public class SftpSupplierConfiguration {
 			return FileUtils.enhanceStreamFlowForReadingMode(IntegrationFlows
 							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
 									.delaySubscription(subscriptionBarrier)
-									.subscriberContext(
-											context -> (context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
-													sftpSupplierProperties.getDelayWhenEmpty())))),
+									.contextWrite(Context.of(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
+											sftpSupplierProperties.getDelayWhenEmpty()))),
 					fileConsumerProperties)
 					.toReactivePublisher();
 		}
@@ -258,9 +258,8 @@ public class SftpSupplierConfiguration {
 			IntegrationFlowBuilder flowBuilder = FileUtils.enhanceFlowForReadingMode(IntegrationFlows
 							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
 									.delaySubscription(subscriptionBarrier)
-									.subscriberContext(
-											context -> (context.put(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
-													sftpSupplierProperties.getDelayWhenEmpty())))),
+									.contextWrite(Context.of(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
+													sftpSupplierProperties.getDelayWhenEmpty()))),
 					fileConsumerProperties);
 
 			if (renameRemoteFileHandler != null) {

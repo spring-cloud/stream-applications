@@ -19,8 +19,8 @@ package org.springframework.cloud.stream.app.sink.router;
 import java.util.Properties;
 import java.util.function.Function;
 
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;

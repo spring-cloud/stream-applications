@@ -9,6 +9,10 @@
         <relativePath>../../spring-functions-parent</relativePath>
     </parent>
 
+    <properties>
+        <elasticsearch.version>7.15.2</elasticsearch.version>
+    </properties>
+
     <artifactId>elasticsearch-consumer</artifactId>
     <name>elasticsearch-consumer</name>
     <description>elasticsearch consumer</description>
@@ -17,6 +21,12 @@
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>7.15.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

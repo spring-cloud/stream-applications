@@ -26,7 +26,6 @@ import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoCo
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
@@ -53,7 +52,6 @@ public class ExcludeStoresAutoConfigurationEnvironmentPostProcessor implements E
 						MongoAutoConfiguration.class.getName() + ", " +
 						MongoDataAutoConfiguration.class.getName() + ", " +
 						MongoRepositoriesAutoConfiguration.class.getName() + ", " +
-						EmbeddedMongoAutoConfiguration.class.getName() + ", " +
 						ClientCacheAutoConfiguration.class.getName() + ", " +
 						RedisAutoConfiguration.class.getName() + ", " +
 						RedisRepositoriesAutoConfiguration.class.getName());

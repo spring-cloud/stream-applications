@@ -26,8 +26,6 @@ import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
-import org.springframework.util.SocketUtils;
-
 /**
  * Creates and starts a {@link GeodeContainer} using available random ports for locator
  * and server. Runs a {@code Consumer<GeodeContainer>} post processor if provided.
