@@ -10,7 +10,7 @@ Downloads all applications needed by `create-containers.sh` from Maven repositor
 *If the timestamp of snapshots matches the download will be skipped.*
 
 Usage: `download-apps.sh [version] [broker]`
-* `version` is the skipper version like `3.2.1` or default is `3.2.2-SNAPSHOT`
+* `version` is the stream applications version like `3.2.1` or default is `3.2.2-SNAPSHOT`
 * `broker` is one of rabbitmq, rabbit or kafka
 
 ## `create-containers.sh`
