@@ -25,6 +25,8 @@ case $2 in
   ;;
 esac
 
+FILTER=$3
+
 function download_deps() {
   DEP=$1
   TARGET=$2
@@ -125,14 +127,47 @@ SOURCES=$(find * -maxdepth 0 -type d)
 popd >/dev/null
 
 for app in ${PROCESSORS[@]}; do
-  APP_PATH="applications/processor/$app/apps/$app-$BROKER/target"
-  download_deps "org.springframework.cloud.stream.app:$app-$BROKER:$VER" "$ROOT_DIR/$APP_PATH"
+  APP_NAME="$app-$BROKER"
+  DOWNLOAD=true
+  if [ "$FILTER" != "" ]; then
+    if [[ "$APP_NAME" == *"$FILTER"* ]]; then
+      DOWNLOAD=true
+    else
+      DOWNLOAD=false
+    fi
+  fi
+  if [ "$DOWNLOAD" == "true" ]; then
+    APP_PATH="applications/processor/$app/apps/$app-$BROKER/target"
+    download_deps "org.springframework.cloud.stream.app:$app-$BROKER:$VER" "$ROOT_DIR/$APP_PATH"
+  fi
 done
 for app in ${SINKS[@]}; do
-  APP_PATH="applications/sink/$app/apps/$app-$BROKER/target"
-  download_deps "org.springframework.cloud.stream.app:$app-$BROKER:$VER" "$ROOT_DIR/$APP_PATH"
+  APP_NAME="$app-$BROKER"
+  DOWNLOAD=true
+  if [ "$FILTER" != "" ]; then
+    if [[ "$APP_NAME" == *"$FILTER"* ]]; then
+      DOWNLOAD=true
+    else
+      DOWNLOAD=false
+    fi
+  fi
+  if [ "$DOWNLOAD" == "true" ]; then
+    APP_PATH="applications/sink/$app/apps/$app-$BROKER/target"
+    download_deps "org.springframework.cloud.stream.app:$app-$BROKER:$VER" "$ROOT_DIR/$APP_PATH"
+  fi
 done
 for app in ${SOURCES[@]}; do
-  APP_PATH="applications/source/$app/apps/$app-$BROKER/target"
-  download_deps "org.springframework.cloud.stream.app:$app-$BROKER:$VER" "$ROOT_DIR/$APP_PATH"
+  APP_NAME="$app-$BROKER"
+  DOWNLOAD=true
+  if [ "$FILTER" != "" ]; then
+    if [[ "$APP_NAME" == *"$FILTER"* ]]; then
+      DOWNLOAD=true
+    else
+      DOWNLOAD=false
+    fi
+  fi
+  if [ "$DOWNLOAD" == "true" ]; then
+    APP_PATH="applications/source/$app/apps/$app-$BROKER/target"
+    download_deps "org.springframework.cloud.stream.app:$app-$BROKER:$VER" "$ROOT_DIR/$APP_PATH"
+  fi
 done

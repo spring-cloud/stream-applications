@@ -5,9 +5,9 @@ ROOT_DIR=$(realpath $SCDIR/..)
 
 # set to specific version
 if [ "$1" != "" ]; then
-    TAG=$1
+  TAG=$1
 else
-    TAG=2.10.0-SNAPSHOT
+  TAG=2.10.0-SNAPSHOT
 fi
 case $2 in
 "rabbitmq" | "rabbit")
@@ -26,22 +26,24 @@ case $2 in
 esac
 
 if [ "$3" != "" ]; then
-    v=$3
+  v=$3
 else
-    v=11
+  v=11
 fi
+
+FILTER=$4
 
 # export ARCH=arm64v8 for ARM64 image
 if [ "$ARCH" == "" ]; then
-    if [ "$HOSTTYPE" == "x86_64" ]; then
-        ARCH=amd64
-    else
-        ARCH=arm64v8
-    fi
+  if [ "$HOSTTYPE" == "x86_64" ]; then
+    ARCH=amd64
+  else
+    ARCH=arm64v8
+  fi
 fi
 CRED=
 if [ "$DOCKER_USERNAME" != "" ]; then
-    CRED="--from-username=$DOCKER_USERNAME --from-password=$DOCKER_PASSWORD"
+  CRED="--from-username=$DOCKER_USERNAME --from-password=$DOCKER_PASSWORD"
 fi
 # set with extra option for buildpacks. BP_OPTIONS=
 pushd $ROOT_DIR/applications/processor >/dev/null
@@ -55,38 +57,71 @@ SOURCES=$(find * -maxdepth 0 -type d)
 popd >/dev/null
 
 for app in ${PROCESSORS[@]}; do
-    APP_NAME="$app-$BROKER"
+  APP_NAME="$app-$BROKER"
+  DOWNLOAD=true
+  if [ "$FILTER" != "" ]; then
+    if [[ "$APP_NAME" == *"$FILTER"* ]]; then
+      DOWNLOAD=true
+    else
+      DOWNLOAD=false
+    fi
+  fi
+  if [ "$DOWNLOAD" == "true" ]; then
     APP_PATH="$ROOT_DIR/applications/processor/$app/apps/$app-$BROKER/target"
     TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
-    if [ ! -f "$TARGET_FILE"  ]; then
-        echo "Cannot find $TARGET_FILE download using download-apps.sh or build using ./mvnw install"
-        exit 1
-    fi
-    jib jar --from=$ARCH/eclipse-temurin:$v-jdk-jammy $CRED \
+    if [ -f "$TARGET_FILE" ]; then
+      jib jar --from=$ARCH/eclipse-temurin:$v-jdk-jammy $CRED \
         "--target=docker://springcloudstream/$APP_NAME:$TAG" \
         "$TARGET_FILE"
+      echo "Created springcloudstream/$APP_NAME:$TAG"
+    else
+      echo "Cannot find $TARGET_FILE won't attempt to create container"
+    fi
+  fi
 done
 for app in ${SINKS[@]}; do
-    APP_NAME="$app-$BROKER"
-        APP_PATH="$ROOT_DIR/applications/sink/$app/apps/$app-$BROKER/target"
-        TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
-        if [ ! -f "$TARGET_FILE"  ]; then
-            echo "Cannot find $TARGET_FILE download using download-apps.sh or build using ./mvnw install"
-            exit 1
-        fi
-        jib jar --from=$ARCH/eclipse-temurin:$v-jdk-jammy $CRED \
-            "--target=docker://springcloudstream/$APP_NAME:$TAG" \
-            "$TARGET_FILE"
+  APP_NAME="$app-$BROKER"
+  DOWNLOAD=true
+  if [ "$FILTER" != "" ]; then
+    if [[ "$APP_NAME" == *"$FILTER"* ]]; then
+      DOWNLOAD=true
+    else
+      DOWNLOAD=false
+    fi
+  fi
+  if [ "$DOWNLOAD" == "true" ]; then
+    APP_PATH="$ROOT_DIR/applications/sink/$app/apps/$app-$BROKER/target"
+    TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
+    if [ -f "$TARGET_FILE" ]; then
+      jib jar --from=$ARCH/eclipse-temurin:$v-jdk-jammy $CRED \
+        "--target=docker://springcloudstream/$APP_NAME:$TAG" \
+        "$TARGET_FILE"
+      echo "Created springcloudstream/$APP_NAME:$TAG"
+    else
+      echo "Cannot find $TARGET_FILE won't attempt to create container"
+    fi
+  fi
 done
 for app in ${SOURCES[@]}; do
-    APP_NAME="$app-$BROKER"
-        APP_PATH="$ROOT_DIR/applications/source/$app/apps/$app-$BROKER/target"
-        TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
-        if [ ! -f "$TARGET_FILE"  ]; then
-            echo "Cannot find $TARGET_FILE download using download-apps.sh or build using ./mvnw install"
-            exit 1
-        fi
-        jib jar --from=$ARCH/eclipse-temurin:$v-jdk-jammy $CRED \
-            "--target=docker://springcloudstream/$APP_NAME:$TAG" \
-            "$TARGET_FILE"
+  APP_NAME="$app-$BROKER"
+  DOWNLOAD=true
+  if [ "$FILTER" != "" ]; then
+    if [[ "$APP_NAME" == *"$FILTER"* ]]; then
+      DOWNLOAD=true
+    else
+      DOWNLOAD=false
+    fi
+  fi
+  if [ "$DOWNLOAD" == "true" ]; then
+    APP_PATH="$ROOT_DIR/applications/source/$app/apps/$app-$BROKER/target"
+    TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
+    if [ -f "$TARGET_FILE" ]; then
+      jib jar --from=$ARCH/eclipse-temurin:$v-jdk-jammy $CRED \
+        "--target=docker://springcloudstream/$APP_NAME:$TAG" \
+        "$TARGET_FILE"
+      echo "Created springcloudstream/$APP_NAME:$TAG"
+    else
+      echo "Cannot find $TARGET_FILE won't attempt to create container"
+    fi
+  fi
 done
