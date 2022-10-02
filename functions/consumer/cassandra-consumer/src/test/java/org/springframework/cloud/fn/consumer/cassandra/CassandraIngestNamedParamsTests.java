@@ -19,9 +19,8 @@ package org.springframework.cloud.fn.consumer.cassandra;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -37,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Artem Bilan
  */
-@DisabledOnOs(OS.WINDOWS)
+@Disabled
 @TestPropertySource(properties = {
 		"cassandra.cluster.init-script=init-db.cql",
 		"cassandra.ingest-query=" +
