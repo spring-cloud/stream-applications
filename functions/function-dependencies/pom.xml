@@ -5,11 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.cloud.fn</groupId>
-        <artifactId>java-functions-parent</artifactId>
-        <version>${revision}</version>
+        <groupId>org.springframework.cloud.stream.app</groupId>
+        <artifactId>stream-applications-build</artifactId>
+        <version>4.0.0-SNAPSHOT</version>
+        <relativePath>../../stream-applications-build/pom.xml</relativePath>
     </parent>
 
+    <groupId>org.springframework.cloud.fn</groupId>
     <artifactId>function-dependencies</artifactId>
     <packaging>pom</packaging>
 
@@ -18,262 +20,262 @@
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>mail-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>syslog-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>cdc-debezium-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>file-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>ftp-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>geode-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>http-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>jdbc-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>jms-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>mongodb-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>mqtt-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>rabbit-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>s3-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>sftp-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>tcp-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>time-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>twitter-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>websocket-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>zeromq-supplier</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>analytics-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>elasticsearch-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>rsocket-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>cassandra-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>file-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>ftp-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>geode-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>jdbc-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>log-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>mongodb-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>mqtt-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>rabbit-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>redis-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>s3-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>sftp-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>tcp-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>twitter-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>wavefront-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>websocket-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>zeromq-consumer</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>aggregator-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>filter-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>header-enricher-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>http-request-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>image-recognition-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>object-detection-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>payload-converter-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>semantic-segmentation-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>spel-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>splitter-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>task-launch-request-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>twitter-function</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>function-test-support</artifactId>
-                <version>${revision}</version>
+               <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

@@ -3,12 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.cloud.fn</groupId>
-        <artifactId>java-functions-parent</artifactId>
-        <version>${revision}</version>
-        <relativePath>../../pom.xml</relativePath>
+        <groupId>org.springframework.cloud.stream.app</groupId>
+        <artifactId>stream-applications-build</artifactId>
+        <version>4.0.0-SNAPSHOT</version>
+        <relativePath>../../../stream-applications-build/pom.xml</relativePath>
     </parent>
 
+    <groupId>org.springframework.cloud.fn</groupId>
     <artifactId>config-common</artifactId>
     <name>config-common</name>
     <description>Function Common Configuration Components</description>

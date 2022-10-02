@@ -12,7 +12,7 @@
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
         <version>4.0.0-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../../stream-applications-core/pom.xml</relativePath>
     </parent>
 
     <dependencies>

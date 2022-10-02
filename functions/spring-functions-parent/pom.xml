@@ -5,11 +5,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.springframework.cloud.fn</groupId>
-		<artifactId>java-functions-parent</artifactId>
-		<version>${revision}</version>
+    <groupId>org.springframework.cloud.stream.app</groupId>
+    <artifactId>stream-applications-build</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
+    <relativePath>../../stream-applications-build/pom.xml</relativePath>
 	</parent>
 
+    <groupId>org.springframework.cloud.fn</groupId>
 	<artifactId>spring-functions-parent</artifactId>
 	<packaging>pom</packaging>
 
@@ -17,7 +19,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>config-common</artifactId>
-			<version>${revision}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- Spring Boot dependencies -->
 		<dependency>

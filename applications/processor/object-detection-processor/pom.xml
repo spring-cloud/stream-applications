@@ -3,7 +3,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>object-detection-processor</artifactId>
-    <version>${revision}</version>
     <name>object-detection-processor</name>
     <description>Object Detection (tensorflow) processor apps</description>
     <packaging>jar</packaging>
@@ -12,7 +11,7 @@
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
         <version>4.0.0-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../../stream-applications-core/pom.xml</relativePath>
     </parent>
 
     <dependencies>
