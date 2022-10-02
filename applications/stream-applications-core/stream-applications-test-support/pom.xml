@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<artifactId>stream-applications-core</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
 		<groupId>org.springframework.cloud.stream.app</groupId>
-		<version>${revision}</version>
+        <artifactId>stream-applications-core</artifactId>
+        <version>4.0.0-SNAPSHOT</version>
 	</parent>
-	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>stream-applications-test-support</artifactId>
+    <name>stream-applications-test-support</name>
 
 	<properties>
 		<rabbitmq-httpclient.version>3.12.1</rabbitmq-httpclient.version>

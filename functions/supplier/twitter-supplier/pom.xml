@@ -5,8 +5,8 @@
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
         <artifactId>spring-functions-parent</artifactId>
-        <version>${revision}</version>
-        <relativePath>../../spring-functions-parent</relativePath>
+        <version>4.0.0-SNAPSHOT</version>
+        <relativePath>../../spring-functions-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>twitter-supplier</artifactId>
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>twitter-common</artifactId>
-            <version>${revision}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>

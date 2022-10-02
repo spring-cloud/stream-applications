@@ -5,25 +5,15 @@
 
 	<groupId>org.springframework.cloud.fn</groupId>
 	<artifactId>java-functions-parent</artifactId>
-	<version>${revision}</version>
+    <version>4.0.0-SNAPSHOT</version>
 	<name>java-functions-parent</name>
-	<description>Pivotal Java Functions Parent</description>
+	<description>Java Functions Parent</description>
 	<packaging>pom</packaging>
 
-	<parent>
-		<groupId>org.springframework.cloud.stream.app</groupId>
-		<artifactId>stream-applications-build</artifactId>
-		<version>4.0.0-SNAPSHOT</version>
-		<relativePath/>
-	</parent>
-
-	<properties>
-		<revision>4.0.0-SNAPSHOT</revision>
-	</properties>
-
 	<modules>
-		<module>common/aws-s3-common</module>
-		<module>common/config-common</module>
+        <module>common/config-common</module>
+
+        <module>common/aws-s3-common</module>
 		<module>common/file-common</module>
 		<module>common/ftp-common</module>
 		<module>common/function-test-support</module>
@@ -91,6 +81,7 @@
 		<module>supplier/zeromq-supplier</module>
 
 		<module>spring-functions-parent</module>
+
 		<module>function-dependencies</module>
 	</modules>
 
