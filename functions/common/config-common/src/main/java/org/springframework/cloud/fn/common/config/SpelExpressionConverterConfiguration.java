@@ -20,11 +20,11 @@ import java.beans.Introspector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.expression.EvaluationContext;
@@ -36,7 +36,7 @@ import org.springframework.integration.config.IntegrationConverter;
 import org.springframework.integration.expression.SpelPropertyAccessorRegistrar;
 import org.springframework.integration.json.JsonPropertyAccessor;
 
-@Configuration
+@AutoConfiguration
 @AutoConfigureAfter(name = "org.springframework.cloud.stream.config.SpelExpressionConverterConfiguration")
 @ConditionalOnMissingClass("org.springframework.cloud.stream.config.SpelExpressionConverterConfiguration")
 public class SpelExpressionConverterConfiguration {
