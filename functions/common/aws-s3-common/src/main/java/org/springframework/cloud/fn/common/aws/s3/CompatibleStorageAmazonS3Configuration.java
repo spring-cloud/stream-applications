@@ -24,6 +24,7 @@ import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,7 +32,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.aws.core.env.ResourceIdResolver;
 import org.springframework.cloud.aws.core.region.RegionProvider;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.aws.support.S3SessionFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
@@ -40,10 +40,9 @@ import org.springframework.util.StringUtils;
  * @author Timo Salm
  * @author David Turanski
  */
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties(AmazonS3Properties.class)
 @AutoConfigureBefore(AmazonS3Configuration.class)
-
 public class CompatibleStorageAmazonS3Configuration {
 
 	@Bean

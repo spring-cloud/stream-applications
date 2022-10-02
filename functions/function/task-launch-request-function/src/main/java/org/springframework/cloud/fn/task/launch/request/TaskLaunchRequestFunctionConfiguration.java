@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -46,7 +46,7 @@ import org.springframework.util.StringUtils;
  *
  * @author David Turanski
  **/
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties(TaskLaunchRequestFunctionProperties.class)
 public class TaskLaunchRequestFunctionConfiguration {
 

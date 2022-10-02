@@ -28,12 +28,12 @@ import org.apache.geode.cache.GemFireCache;
 import org.apache.geode.cache.Region;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.gemfire.client.ClientRegionFactoryBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -55,7 +55,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @author David Turanski
  * @since 2.0.2
  */
-@Configuration
+@AutoConfiguration
 @ConditionalOnClass(ConcurrentMetadataStore.class)
 @EnableConfigurationProperties(MetadataStoreProperties.class)
 public class MetadataStoreAutoConfiguration {

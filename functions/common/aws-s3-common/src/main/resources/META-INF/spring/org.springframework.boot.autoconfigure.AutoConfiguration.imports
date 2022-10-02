@@ -1,0 +1,2 @@
+org.springframework.cloud.fn.common.aws.s3.CompatibleStorageAmazonS3Configuration
+org.springframework.cloud.fn.common.aws.s3.AmazonS3Configuration
