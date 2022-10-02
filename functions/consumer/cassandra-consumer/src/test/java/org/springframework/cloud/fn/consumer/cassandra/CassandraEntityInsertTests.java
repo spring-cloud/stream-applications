@@ -21,8 +21,6 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -35,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Artem Bilan
  */
-@DisabledOnOs(OS.WINDOWS)
+@Disabled
 @TestPropertySource(properties = {
 		"spring.data.cassandra.schema-action=RECREATE",
 		"cassandra.cluster.entity-base-packages=org.springframework.cloud.fn.consumer.cassandra.domain" })
