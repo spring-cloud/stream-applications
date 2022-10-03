@@ -20,6 +20,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
@@ -38,8 +40,6 @@ import org.springframework.messaging.Message;
 import org.springframework.util.CollectionUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -50,6 +50,12 @@ import org.apache.commons.logging.LogFactory;
 @Tag("integration")
 public class CdcSourceDatabasesIntegrationTest {
 
+
+	private static final String DEBEZIUM_EXAMPLE_MONGODB_1_9_6_FINAL = "debezium/example-mongodb:1.9.6.Final";
+
+	private static final String DEBEZIUM_EXAMPLE_POSTGRES_1_9_6_FINAL = "debezium/example-postgres:1.9.6.Final";
+
+	private static final String DEBEZIUM_EXAMPLE_MYSQL_1_9_6_FINAL = "debezium/example-mysql:1.9.6.Final";
 
 	private static final Log logger = LogFactory.getLog(CdcSourceDatabasesIntegrationTest.class);
 
@@ -67,7 +73,7 @@ public class CdcSourceDatabasesIntegrationTest {
 
 	@Test
 	public void mysql() {
-		GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.9.6.Final")
+		GenericContainer debeziumMySQL = new GenericContainer<>(DEBEZIUM_EXAMPLE_MYSQL_1_9_6_FINAL)
 				.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 				.withEnv("MYSQL_USER", "mysqluser")
 				.withEnv("MYSQL_PASSWORD", "mysqlpw")
@@ -130,7 +136,7 @@ public class CdcSourceDatabasesIntegrationTest {
 
 	@Test
 	public void postgres() {
-		GenericContainer postgres = new GenericContainer("debezium/example-postgres:1.9.6.Final")
+		GenericContainer postgres = new GenericContainer(DEBEZIUM_EXAMPLE_POSTGRES_1_9_6_FINAL)
 				.withEnv("POSTGRES_USER", "postgres")
 				.withEnv("POSTGRES_PASSWORD", "postgres")
 				.withExposedPorts(5432);
@@ -152,10 +158,6 @@ public class CdcSourceDatabasesIntegrationTest {
 			Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
 				List<Message<?>> messageChunk = CdcTestUtils.receiveAll(outputDestination);
 				if (!CollectionUtils.isEmpty(messageChunk)) {
-					//messageChunk.stream().forEach(m -> System.out.println(new String((m.getHeaders()))));
-					messageChunk.stream().forEach(m -> System.out.println(new String((byte[])m.getPayload())));
-					
-					// System.out.println("Chunk size: " + messageChunk.size());
 					logger.info("Chunk size: " + messageChunk.size());
 					allMessages.addAll(messageChunk);
 				}
@@ -197,8 +199,8 @@ public class CdcSourceDatabasesIntegrationTest {
 			List<Message<?>> allMessages = new ArrayList<>();
 			Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
 				List<Message<?>> messageChunk = CdcTestUtils.receiveAll(outputDestination);
-				if (!CollectionUtils.isEmpty(messageChunk)) {
-					System.out.println("Chunk size: " + messageChunk.size());
+				if (!CollectionUtils.isEmpty(messageChunk)) {					
+					logger.info("Chunk size: " + messageChunk.size());
 					allMessages.addAll(messageChunk);
 				}
 				return allMessages.size() == 30; // Inventory DB entries
@@ -211,7 +213,7 @@ public class CdcSourceDatabasesIntegrationTest {
 	@Test
 	@Disabled
 	public void mongodb() {
-		GenericContainer mongodb = new GenericContainer("debezium/example-mongodb:1.9.6.Final")
+		GenericContainer mongodb = new GenericContainer(DEBEZIUM_EXAMPLE_MONGODB_1_9_6_FINAL)
 				.withEnv("MONGODB_USER", "debezium")
 				.withEnv("MONGODB_PASSWORD", "dbz")
 				.withExposedPorts(27017);
