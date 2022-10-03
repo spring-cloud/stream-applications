@@ -11,77 +11,11 @@
 	<packaging>pom</packaging>
 
 	<modules>
-        <module>common/config-common</module>
-
-        <module>common/aws-s3-common</module>
-		<module>common/file-common</module>
-		<module>common/ftp-common</module>
-		<module>common/function-test-support</module>
-		<module>common/geode-common</module>
-		<module>common/metadata-store-common</module>
-		<module>common/mqtt-common</module>
-		<module>common/tcp-common</module>
-		<module>common/twitter-common</module>
-		<module>common/tensorflow-common</module>
-		<module>common/cdc-debezium-common</module>
-		<module>common/cdc-debezium-boot-starter</module>
-
-		<module>consumer/cassandra-consumer</module>
-		<module>consumer/elasticsearch-consumer</module>
-		<module>consumer/analytics-consumer</module>
-		<module>consumer/file-consumer</module>
-		<module>consumer/ftp-consumer</module>
-		<module>consumer/geode-consumer</module>
-		<module>consumer/jdbc-consumer</module>
-		<module>consumer/log-consumer</module>
-		<module>consumer/mongodb-consumer</module>
-		<module>consumer/mqtt-consumer</module>
-		<module>consumer/rabbit-consumer</module>
-		<module>consumer/redis-consumer</module>
-		<module>consumer/sftp-consumer</module>
-		<module>consumer/tcp-consumer</module>
-		<module>consumer/websocket-consumer</module>
-		<module>consumer/s3-consumer</module>
-		<module>consumer/twitter-consumer</module>
-		<module>consumer/wavefront-consumer</module>
-		<module>consumer/rsocket-consumer</module>
-		<module>consumer/zeromq-consumer</module>
-
-		<module>function/aggregator-function</module>
-		<module>function/filter-function</module>
-		<module>function/header-enricher-function</module>
-		<module>function/http-request-function</module>
-		<module>function/spel-function</module>
-		<module>function/payload-converter-function</module>
-		<module>function/splitter-function</module>
-		<module>function/task-launch-request-function</module>
-		<module>function/twitter-function</module>
-		<module>function/image-recognition-function</module>
-		<module>function/object-detection-function</module>
-		<module>function/semantic-segmentation-function</module>
-
-		<module>supplier/file-supplier</module>
-		<module>supplier/ftp-supplier</module>
-		<module>supplier/geode-supplier</module>
-		<module>supplier/http-supplier</module>
-		<module>supplier/jdbc-supplier</module>
-		<module>supplier/jms-supplier</module>
-		<module>supplier/mail-supplier</module>
-		<module>supplier/mongodb-supplier</module>
-		<module>supplier/mqtt-supplier</module>
-		<module>supplier/sftp-supplier</module>
-		<module>supplier/tcp-supplier</module>
-		<module>supplier/time-supplier</module>
-		<module>supplier/rabbit-supplier</module>
-		<module>supplier/websocket-supplier</module>
-		<module>supplier/s3-supplier</module>
-		<module>supplier/twitter-supplier</module>
-		<module>supplier/cdc-debezium-supplier</module>
-		<module>supplier/syslog-supplier</module>
-		<module>supplier/zeromq-supplier</module>
-
+        <module>common</module>
 		<module>spring-functions-parent</module>
-
+		<module>consumer</module>
+		<module>function</module>
+		<module>supplier</module>
 		<module>function-dependencies</module>
 	</modules>
 
