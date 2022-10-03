@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,10 +64,10 @@ public class CdcCommonConfiguration {
 		Map<String, Object> config = extractNewRecordState.config().defaultValues();
 		config.put("drop.tombstones", properties.getFlattening().isDropTombstones());
 		config.put("delete.handling.mode", properties.getFlattening().getDeleteHandlingMode().name());
-		if (!StringUtils.isEmpty(properties.getFlattening().getAddHeaders())) {
+		if (StringUtils.hasText(properties.getFlattening().getAddHeaders())) {
 			config.put("add.headers", properties.getFlattening().getAddHeaders());
 		}
-		if (!StringUtils.isEmpty(properties.getFlattening().getAddFields())) {
+		if (StringUtils.hasText(properties.getFlattening().getAddFields())) {
 			config.put("add.fields", properties.getFlattening().getAddFields());
 		}
 
