@@ -1,0 +1,327 @@
+name: 'Stream Applications - Common'
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        required: false
+        default: 'main'
+        description: 'Version Tag'
+      branch:
+        type: string
+        required: false
+        default: 'main'
+        description: 'Version Tag'
+    secrets:
+      DOCKER_HUB_USERNAME:
+      DOCKER_HUB_PASSWORD:
+      TMC_API_TOKEN:
+      GCP_CRED_JSON:
+      CI_DEPLOY_USERNAME:
+      CI_DEPLOY_PASSWORD:
+
+jobs:
+  parameters:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Configure: checkout'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+          path: 'stream-applications'
+      - name: 'Configure: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: create streams applications matrix'
+        shell: bash
+        run: |
+          ROOT_DIR=$PWD
+          pushd stream-applications > /dev/null
+            $ROOT_DIR/create-matrixes.sh
+            COUNT=$(jq '.count' matrix.json)
+            MAX_PARALLEL=$((5 * COUNT / 4))
+            if ((MAX_PARALLEL == COUNT)); then
+              MAX_PARALLEL=$((COUNT + 1))
+            fi
+            echo "::set-output name=max_parallel=$MAX_PARALLEL"
+            echo "::set-output name=matrix=$(cat matrix.json)
+            echo "::set-output name=processors=$(jq '.processors' matrix.json)
+            echo "::set-output name=sinks=$(jq '.sinks' matrix.json)
+            echo "::set-output name=sources=$(jq '.sources' matrix.json)
+          popd
+  scale-runners:
+    runs-on: ubuntu-latest
+    needs:
+      - parameters
+    concurrency:
+      group: stream-apps-gh-runners
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: Ensure scripts are executable
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Configure provider for stream-apps-gh-runners'
+        shell: bash
+        timeout-minutes: 15
+        run: |
+          RUNNER_TYPE=$(./scripts/determine-provider.sh stream-apps-gh-runners)          
+          echo "RUNNER_TYPE=$RUNNER_TYPE"
+          echo "RUNNER_TYPE=$RUNNER_TYPE" >> $GITHUB_ENV
+      - name: 'Install: gcloud cli'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        uses: ./.github/actions/install-gcloud
+      - name: 'Action: gcloud auth'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        id: auth_gcloud
+        uses: 'google-github-actions/auth@v0'
+        with:
+          create_credentials_file: true
+          credentials_json: ${{ secrets.GCP_CRED_JSON }}
+      - name: 'Configure: Install TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/install-tmc
+      - name: 'Action: Login to TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/auth-tmc
+        timeout-minutes: 15
+        with:
+          tmc_api_token: '${{ secrets.TMC_API_TOKEN }}'
+          fail_on_error: false
+      - name: 'Install: Groovy'
+        uses: ./.github/actions/install-groovy
+        with:
+          version: 4.0.4
+      - name: 'Action: wait for cluster - stream-apps-gh-runners'
+        shell: bash
+        timeout-minutes: 5
+        env:
+          VERBOSE: ${{ inputs.verbose && '--verbose' || '' }}
+        run: ./scripts/wait-for-cluster-${RUNNER_TYPE}.sh stream-apps-gh-runners
+      - name: 'Configure: Cluster Region'
+        if: ${{ env.PROVIDER == 'gke' }}
+        shell: bash
+        run: |
+          set +e
+          REGION=$(gcloud container clusters list | grep -F "stream-apps-gh-runners" | awk '{print $2}')
+          if [ "$REGION" == "" ]; then
+            echo "CREATE_CLUSTER=true" >> $GITHUB_ENV
+          else
+            REG_MT=$(./scripts/determine-default.sh stream-apps-gh-runners "machine_type")
+            export REGION
+            CUR_MT=$(./scripts/determine-machine-type.sh)
+            if [ "$REQ_MT" != "$CUR_MT" ]; then
+              echo "::notice ::Current machinetype is $CUR_MT and required is $REQ_MT"
+              echo "CREATE_CLUSTER=true" >> $GITHUB_ENV
+            fi
+          fi 
+          echo "REGION=${{ inputs.region }}" >> $GITHUB_ENV
+      - name: 'Action: Re/Create SCDF PRO Runners'
+        if: ${{ env.CREATE_CLUSTER == 'true' }}
+        shell: bash
+        env:
+          VERBOSE: ${{ inputs.verbose && '--verbose' || '' }}
+        run: |
+          set +e
+          ./scripts/delete-runners-${RUNNER_TYPE}.sh
+          set -e
+          ./scripts/create-runners-cluster-${RUNNER_TYPE}.sh
+      - name: 'Action: scale cluster - stream-apps-gh-runners for ${{ needs.parameters.outputs.max_parallel }} runners'
+        shell: bash
+        timeout-minutes: 30
+        env:
+          CLUSTER_NAME: 'stream-apps-gh-runners'
+          VERBOSE: ${{ inputs.verbose && '--verbose' || '' }}
+        run: |
+          echo "::notice ::Scaling stream-apps-gh-runners to ${{ needs.parameters.outputs.max_parallel }} pods"
+          ./scripts/scale-cluster-pods.sh stream-apps-gh-runners ${{ needs.parameters.outputs.max_parallel }}
+      - name: 'Check: Wait for cluster nodes: stream-apps-gh-runners'
+        shell: bash
+        timeout-minutes: 25
+        env:
+          VERBOSE: ${{ inputs.verbose && '--verbose' || '' }}
+        run: |
+          echo "::notice ::Waiting for cluster stream-apps-gh-runners and it's nodes"
+          ./scripts/wait-for-cluster-${RUNNER_TYPE}.sh stream-apps-gh-runners --nodes
+      - name: 'Action: Increase runners with ${{ needs.parameters.outputs.max_parallel }}'
+        timeout-minutes: 10
+        uses: ./.github/actions/increase-runners
+        with:
+          inc: ${{ needs.parameters.outputs.max_parallel }}
+    outputs:
+      runner-type: '${{ env.RUNNER_TYPE }}'
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+      - name: 'Configure: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Action: build initial dependencies'
+        shell: bash
+        env:
+          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
+          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+        run: |
+          echo "::notice ::building - stream-applications-build"
+          ./mvnw deploy -f stream-applications-build -U
+          echo "::notice ::building - functions"
+          ./mvnw deploy -f functions -N -U
+          echo "::notice ::building - function-dependencies"
+          ./mvnw deploy -f functions/function-dependencies -N -U
+          echo "::notice ::building - stream-applications-core"
+          ./mvnw deploy -f applications/stream-applications-core -N -U
+          echo "::notice ::core build completed"
+  processors:
+    needs:
+      - core
+      - parameters
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.parameters.outputs.processors) }}
+    runs-on: stream-ci
+    steps:
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+          path: 'stream-applications'
+      - name: Ensure scripts are executable
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Build: ${{ matrix.app }}'
+        shell: bash
+        env:
+          VERSION: ${{ inputs.version }}
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
+          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+        run: ./build-apps.sh "stream-applications/applications/processor/${{ matrix.app }}"
+  sinks:
+    needs:
+      - core
+      - parameters
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.parameters.outputs.sinks) }}
+    runs-on: stream-ci
+    steps:
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+          path: 'stream-applications'
+      - name: Ensure scripts are executable
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Build: ${{ matrix.app }}'
+        shell: bash
+        env:
+          VERSION: ${{ inputs.version }}
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
+          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+        run: ./build-apps.sh "stream-applications/applications/sink/${{ matrix.app }}"
+  sources:
+    needs:
+      - core
+      - parameters
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.build.outputs.sources) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+          path: 'stream-applications'
+      - name: Ensure scripts are executable
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Build: ${{ matrix.app }}'
+        shell: bash
+        env:
+          VERSION: ${{ inputs.version }}
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
+          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+        run: ./build-apps.sh "stream-applications/applications/source/${{ matrix.app }}"
+  scale-down-runners:
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    needs:
+      - parameters
+      - scale-runners
+      - core
+      - processors
+      - sinks
+      - sources
+    concurrency:
+      group: stream-apps-gh-runners
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: Checkout'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Action: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Runners Cluster provider'
+        shell: bash
+        run: |
+          RUNNER_TYPE=$(./scripts/determine-provider.sh stream-apps-gh-runners)
+          if [ "$RUNNER_TYPE" != "gke" ]; then
+            RUNNER_TYPE=tmc
+          fi
+          echo "RUNNER_TYPE=$RUNNER_TYPE" >> $GITHUB_ENV
+      - name: 'Install: gcloud cli'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        uses: ./.github/actions/install-gcloud
+      - name: 'Action: gcloud auth'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        id: auth_gcloud
+        uses: 'google-github-actions/auth@v0'
+        with:
+          create_credentials_file: true
+          credentials_json: ${{ secrets.GCP_CRED_JSON }}
+      - name: 'Configure: Install TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/install-tmc
+      - name: 'Action: Login to TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/auth-tmc
+        with:
+          tmc_api_token: '${{ secrets.TMC_API_TOKEN }}'
+      - name: 'Action: Decrease runners with ${{ needs.parameters.outputs.max_parallel }}'
+        timeout-minutes: 10
+        uses: ./.github/actions/decrease-runners
+        with:
+          dec: ${{ needs.parameters.outputs.max_parallel }}

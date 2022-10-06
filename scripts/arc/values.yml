@@ -1,0 +1,17 @@
+syncPeriod: 2m
+authSecret:
+  create: false
+  name: controller-manager-secret
+priorityClassName:
+imagePullSecrets:
+  - name: scdf-metadata-default
+githubWebhookServer:
+  priorityClassName: high-priority
+  secret:
+    name: controller-manager-secret
+  enabled: true
+image:
+  tag: v0.26.0
+#runner:
+#  statusUpdateHook:
+#    enabled: true

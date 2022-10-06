@@ -1,0 +1,20 @@
+{
+  "default": {
+    "provider": "gke",
+    "region": "us-central1",
+    "k8s_version": "1.23",
+    "pods_per_job": 1,
+    "ram_per_pod": 4,
+    "cpu_per_pod": 1,
+    "scale_down": 0,
+    "disk_size": "200"
+  },
+  "streams_apps_gh_runners": {
+    "pods_per_job": 1,
+    "ram_per_pod": 4,
+    "cpu_per_pod": 1,
+    "machine_type": "n2-standard-8",
+    "runner_scaling": "manual",
+    "scale_down": 1
+  }
+}
