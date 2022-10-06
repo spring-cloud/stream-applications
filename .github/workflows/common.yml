@@ -190,7 +190,7 @@ jobs:
     strategy:
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.processors) }}
-    runs-on: stream-ci
+    runs-on: ubuntu-latest
     steps:
       - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
@@ -220,7 +220,7 @@ jobs:
     strategy:
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.sinks) }}
-    runs-on: stream-ci
+    runs-on: ubuntu-latest
     steps:
       - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
