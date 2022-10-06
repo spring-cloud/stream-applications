@@ -32,15 +32,20 @@ else
 fi
 
 FILTER=$4
-
-# export ARCH=arm64v8 for ARM64 image
+PROCESSOR=$(uname -p)
 if [ "$ARCH" == "" ]; then
-  if [ "$HOSTTYPE" == "x86_64" ]; then
-    ARCH=amd64
-  else
-    ARCH=arm64v8
-  fi
+    case $PROCESSOR in
+    "x86_64")
+        ARCH=amd64
+        ;;
+    *)
+        if [[ "$PROCESSOR" == *"arm64"* ]]; then
+            ARCH=arm64v8
+        fi
+        ;;
+    esac
 fi
+IMAGE="$ARCH/eclipse-temurin:$v-jdk-jammy"
 CRED=
 if [ "$DOCKER_USERNAME" != "" ]; then
   CRED="--from-username=$DOCKER_USERNAME --from-password=$DOCKER_PASSWORD"
@@ -70,7 +75,7 @@ for app in ${PROCESSORS[@]}; do
     APP_PATH="$ROOT_DIR/applications/processor/$app/apps/$app-$BROKER/target"
     TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
     if [ -f "$TARGET_FILE" ]; then
-      jib jar --from=$ARCH/eclipse-temurin:$v-jdk-jammy $CRED \
+      jib jar --from=$IMAGE $CRED \
         "--target=docker://springcloudstream/$APP_NAME:$TAG" \
         "$TARGET_FILE"
       echo "Created springcloudstream/$APP_NAME:$TAG"
@@ -93,7 +98,7 @@ for app in ${SINKS[@]}; do
     APP_PATH="$ROOT_DIR/applications/sink/$app/apps/$app-$BROKER/target"
     TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
     if [ -f "$TARGET_FILE" ]; then
-      jib jar --from=$ARCH/eclipse-temurin:$v-jdk-jammy $CRED \
+      jib jar --from=$IMAGE $CRED \
         "--target=docker://springcloudstream/$APP_NAME:$TAG" \
         "$TARGET_FILE"
       echo "Created springcloudstream/$APP_NAME:$TAG"
@@ -116,7 +121,7 @@ for app in ${SOURCES[@]}; do
     APP_PATH="$ROOT_DIR/applications/source/$app/apps/$app-$BROKER/target"
     TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
     if [ -f "$TARGET_FILE" ]; then
-      jib jar --from=$ARCH/eclipse-temurin:$v-jdk-jammy $CRED \
+      jib jar --from=$IMAGE $CRED \
         "--target=docker://springcloudstream/$APP_NAME:$TAG" \
         "$TARGET_FILE"
       echo "Created springcloudstream/$APP_NAME:$TAG"
