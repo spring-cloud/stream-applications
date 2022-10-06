@@ -44,9 +44,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = "redis.consumer.topic = foo-topic")
 public class RedisConsumerTopicTests extends AbstractRedisConsumerTests {
 
-	@Autowired
-	RedisConnectionFactory connectionFactory;
-
 	@Test
 	public void testWithTopic() throws Exception {
 
@@ -60,13 +57,12 @@ public class RedisConsumerTopicTests extends AbstractRedisConsumerTests {
 		listener.afterPropertiesSet();
 
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-		container.setConnectionFactory(connectionFactory);
+		container.setConnectionFactory(redisTemplate.getConnectionFactory());
 		container.afterPropertiesSet();
 		container.addMessageListener(listener, Collections.<Topic>singletonList(new ChannelTopic(topic)));
 		container.start();
 
-		Awaitility.await().until(() -> TestUtils.getPropertyValue(container, "subscriptionTask.connection",
-				RedisConnection.class) != null);
+		Awaitility.await().until(container::isListening);
 
 		Message<String> message = MessageBuilder.withPayload("hello").build();
 		for (int i = 0; i < numToTest; i++) {

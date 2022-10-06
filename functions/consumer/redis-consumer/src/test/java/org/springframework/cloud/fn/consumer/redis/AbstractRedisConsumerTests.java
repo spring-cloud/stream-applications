@@ -27,6 +27,8 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 /**
  * @author Soby Chacko
@@ -35,7 +37,12 @@ import org.springframework.test.annotation.DirtiesContext;
 @SpringBootTest
 @DirtiesContext
 @Tag("integration")
-public class AbstractRedisConsumerTests {
+public class AbstractRedisConsumerTests implements RedisTestContainerSupport {
+
+	@DynamicPropertySource
+	static void redisProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.data.redis.url", RedisTestContainerSupport::getUri);
+	}
 
 	@Autowired
 	Consumer<Message<?>> redisConsumer;

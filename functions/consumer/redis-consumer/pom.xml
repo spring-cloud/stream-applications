@@ -14,10 +14,6 @@
     <name>redis-consumer</name>
     <description>Redis Consumer</description>
 
-    <properties>
-        <embedded-redis.version>2.0.11</embedded-redis.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -28,15 +24,21 @@
             <artifactId>spring-integration-redis</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.playtika.testcontainers</groupId>
-            <artifactId>embedded-redis</artifactId>
-            <version>${embedded-redis.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
             <version>${spring-cloud-starters.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud.fn</groupId>
+            <artifactId>redis-common</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
+            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>

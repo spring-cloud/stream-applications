@@ -19,6 +19,7 @@
 		<module>geode-common</module>
 		<module>metadata-store-common</module>
 		<module>mqtt-common</module>
+		<module>redis-common</module>
 		<module>tcp-common</module>
 		<module>twitter-common</module>
 		<module>tensorflow-common</module>
