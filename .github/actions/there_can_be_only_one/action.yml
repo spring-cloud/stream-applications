@@ -1,0 +1,14 @@
+name: 'There can be only one'
+description: 'Checks that this is only current workflow running'
+inputs:
+  github_token:
+    description: 'GITHUB_TOKEN'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: 'Check active'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+      run: ./scripts/there_can_be_only_one.sh "${{ github.workflow }}"

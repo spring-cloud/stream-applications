@@ -1,0 +1,138 @@
+name: 'Recreate Runners'
+
+on:
+  workflow_call:
+    inputs:
+      github_personal_access_token:
+        type: string
+        required: false
+      verbose:
+        type: string
+        required: false
+        default: 'false'
+        description: 'Increase verbosity of scripts'
+    secrets:
+      TMC_API_TOKEN:
+        required: true
+      GCP_CRED_JSON:
+        required: true
+      DOCKER_HUB_USERNAME:
+        required: true
+      DOCKER_HUB_PASSWORD:
+        required: true
+      GH_ARC_APP_ID:
+        required: false
+      GH_ARC_INSTALLATION_ID:
+        required: false
+      GH_ARC_PRIVATE_KEY:
+        required: false
+      GH_ARC_PAT:
+        required: false
+  workflow_dispatch:
+    inputs:
+      github_personal_access_token:
+        description: 'Github PAT for scdf bot account. If not provided will use GH_ARC_APP_ID'
+        required: false
+      verbose:
+        required: false
+        description: 'Increase verbosity of scripts'
+        default: 'false'
+jobs:
+  recreate-runners:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: stream-apps-gh-runners
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: checkout scdf-pro'
+        uses: actions/checkout@v3
+      - name: 'Configure: ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Check: active workflows'
+        uses: ./.github/actions/there_can_be_only_one
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: runner type and cluster name'
+        shell: bash
+        run: |
+          echo "RUNNER_TYPE=$(./scripts/determine-provider.sh stream-apps-gh-runners)" >> $GITHUB_ENV
+          echo "CLUSTER_NAME=stream-apps-gh-runners" >> $GITHUB_ENV
+      - name: 'Configure: install TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/install-tmc
+      - name: 'Configure: login to TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/auth-tmc
+        with:
+          tmc_api_token: ${{ secrets.TMC_API_TOKEN }}
+      - name: 'Configure: install kubectl'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: azure/setup-kubectl@v1
+      - name: 'Configure: install carvel'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        uses: vmware-tanzu/carvel-setup-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: install helm'
+        uses: azure/setup-helm@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: install gcloud cli'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        uses: ./.github/actions/auth-gcloud
+      - name: 'Action: gcloud auth'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        id: auth_gcloud
+        uses: 'google-github-actions/auth@v0'
+        with:
+          create_credentials_file: true
+          credentials_json: ${{ secrets.GCP_CRED_JSON }}
+      - name: 'Configure: gcp credentials filename'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        shell: bash
+        run: echo "GCP_CRED_JSON_FILE=${{ steps.auth_gcloud.outputs.credentials_file_path }}" >> $GITHUB_ENV
+      - name: 'Configure: install Terraform'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        uses: hashicorp/setup-terraform@v2
+      - name: 'Action: delete GH Runners Cluster'
+        shell: bash
+        timeout-minutes: 10
+        env:
+          VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
+        run: |
+          set +e
+          source ./scripts/use-${RUNNER_TYPE}.sh $CLUSTER_NAME
+          RC=$?
+          if (( $RC == 0 )); then
+            set +e
+            ./scripts/delete-runners-${RUNNER_TYPE}.sh
+          fi
+      - name: 'Action: create GH Runners Cluster'
+        shell: bash
+        timeout-minutes: 30
+        env:
+          VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
+        run: ./scripts/create-runners-cluster-${RUNNER_TYPE}.sh
+      - name: 'Wait: for cluster'
+        shell: bash
+        timeout-minutes: 25
+        env:
+          VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
+        run: ./scripts/wait-for-cluster-${RUNNER_TYPE}.sh stream-apps-gh-runners
+      - name: 'Configure: kubectl for stream-apps-gh-runners'
+        shell: bash
+        env:
+          VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
+        run: source ./scripts/kubeconfig-${RUNNER_TYPE}.sh stream-apps-gh-runners
+      - name: 'Configure: deploy actions-runner-controller into stream-apps-gh-runners'
+        shell: bash
+        env:
+          VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          GH_ARC_APP_ID: ${{ secrets.GH_ARC_APP_ID }}
+          GH_ARC_INSTALLATION_ID: ${{ secrets.GH_ARC_INSTALLATION_ID }}
+          GH_ARC_PRIVATE_KEY: ${{ secrets.GH_ARC_PRIVATE_KEY }}
+          GH_ARC_PAT: ${{ inputs.github_personal_access_token }}
+        run: ./scripts/deploy-gh-runners-${RUNNER_TYPE}.sh

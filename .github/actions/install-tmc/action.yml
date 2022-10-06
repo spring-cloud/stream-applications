@@ -1,0 +1,16 @@
+name: 'Install TMC CLI'
+description: 'Install TMC CLI'
+runs:
+  using: "composite"
+  steps:
+    - name: 'Download and install TMC'
+      shell: bash
+      run: |
+        if [ ! -f /usr/local/bin/tmc ]; then
+          curl -sLO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/latest/linux/x64/tmc
+          chmod +x tmc
+          sudo mv tmc /usr/local/bin/
+          echo "::notice ::TMC CLI installed"
+        else
+          echo "::notice ::TMC CLI already installed"
+        fi
