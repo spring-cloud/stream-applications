@@ -54,7 +54,7 @@ function download_deps() {
     META_DATA="$URL/${GROUP_ID//\./\/}/$ARTIFACT_ID/$VERSION/maven-metadata.xml"
     echo "Reading $META_DATA"
     rm -f ./maven-metadata.xml
-    wget -q -O maven-metadata.xml "$META_DATA"
+    wget --show-progress -O maven-metadata.xml "$META_DATA"
     RC=$?
     if ((RC > 0)); then
       echo "Error downloading $META_DATA. Exit code $RC"
@@ -102,7 +102,7 @@ function download_deps() {
   echo "Downloading to $(realpath --relative-to $PWD $TARGET_FILE) from $SOURCE"
   TARGET_DIR=$(dirname "$TARGET_FILE")
   mkdir -p "$TARGET_DIR"
-  wget --show-progress -q -O "$TARGET_FILE" "$SOURCE"
+  wget --show-progress -O "$TARGET_FILE" "$SOURCE"
   RC=$?
   if ((RC > 0)); then
     echo "Error downloading $SOURCE. Exit code $RC"
