@@ -16,7 +16,6 @@
 		<module>file-common</module>
 		<module>ftp-common</module>
 		<module>function-test-support</module>
-		<module>geode-common</module>
 		<module>metadata-store-common</module>
 		<module>mqtt-common</module>
 		<module>redis-common</module>

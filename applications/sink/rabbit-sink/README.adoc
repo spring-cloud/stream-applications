@@ -16,12 +16,12 @@ Properties grouped by prefix:
 === rabbit
 
 $$converter-bean-name$$:: $$The bean name for a custom message converter; if omitted, a SimpleMessageConverter is used. If 'jsonConverter', a Jackson2JsonMessageConverter bean will be created for you.$$ *($$String$$, default: `$$<none>$$`)*
-$$exchange$$:: $$Exchange name - overridden by exchangeNameExpression, if supplied.$$ *($$String$$, default: `$$<empty string>$$`)*
+$$exchange$$:: $$Exchange name - overridden by exchangeNameExpression, if supplied.$$ *($$String$$, default: `$$<none>$$`)*
 $$exchange-expression$$:: $$A SpEL expression that evaluates to an exchange name.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$headers-mapped-last$$:: $$When mapping headers for the outbound message, determine whether the headers are mapped before the message is converted, or afterwards.$$ *($$Boolean$$, default: `$$true$$`)*
-$$mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$[*]$$`)*
-$$own-connection$$:: $$When true, use a separate connection based on the boot properties.$$ *($$Boolean$$, default: `$$false$$`)*
-$$persistent-delivery-mode$$:: $$Default delivery mode when 'amqp_deliveryMode' header is not present, true for PERSISTENT.$$ *($$Boolean$$, default: `$$false$$`)*
+$$headers-mapped-last$$:: $$When mapping headers for the outbound message, determine whether the headers are mapped before the message is converted, or afterwards.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$<none>$$`)*
+$$own-connection$$:: $$When true, use a separate connection based on the boot properties.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$persistent-delivery-mode$$:: $$Default delivery mode when 'amqp_deliveryMode' header is not present, true for PERSISTENT.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$routing-key$$:: $$Routing key - overridden by routingKeyExpression, if supplied.$$ *($$String$$, default: `$$<none>$$`)*
 $$routing-key-expression$$:: $$A SpEL expression that evaluates to a routing key.$$ *($$Expression$$, default: `$$<none>$$`)*
 

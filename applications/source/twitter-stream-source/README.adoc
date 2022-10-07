@@ -25,12 +25,12 @@ $$access-token$$:: $$Your Twitter token.$$ *($$String$$, default: `$$<none>$$`)*
 $$access-token-secret$$:: $$Your Twitter token secret.$$ *($$String$$, default: `$$<none>$$`)*
 $$consumer-key$$:: $$Your Twitter key.$$ *($$String$$, default: `$$<none>$$`)*
 $$consumer-secret$$:: $$Your Twitter secret.$$ *($$String$$, default: `$$<none>$$`)*
-$$debug-enabled$$:: $$Enables Twitter4J debug mode.$$ *($$Boolean$$, default: `$$false$$`)*
-$$raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by the Twitter APIs. When set to False the result will use the Twitter4J's json representations. When set to True the result will use the original Twitter APISs json representations.$$ *($$Boolean$$, default: `$$true$$`)*
+$$debug-enabled$$:: $$Enables Twitter4J debug mode.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by the Twitter APIs. When set to False the result will use the Twitter4J's json representations. When set to True the result will use the original Twitter APISs json representations.$$ *($$Boolean$$, default: `$$<none>$$`)*
 
 === twitter.stream.filter
 
-$$count$$:: $$Indicates the number of previous statuses to stream before transitioning to the live stream.$$ *($$Integer$$, default: `$$0$$`)*
+$$count$$:: $$Indicates the number of previous statuses to stream before transitioning to the live stream.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$filter-level$$:: $$The filter level limits what tweets appear in the stream to those with a minimum filterLevel attribute value. One of either none, low, or medium.$$ *($$FilterLevel$$, default: `$$<none>$$`)*
 $$follow$$:: $$Specifies the users, by ID, to receive public tweets from.$$ *($$List<Long>$$, default: `$$<none>$$`)*
 $$language$$:: $$Specifies the tweets language of the stream.$$ *($$List<String>$$, default: `$$<none>$$`)*

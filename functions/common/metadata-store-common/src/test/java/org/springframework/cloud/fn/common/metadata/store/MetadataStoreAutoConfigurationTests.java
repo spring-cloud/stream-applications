@@ -40,7 +40,6 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.aws.metadata.DynamoDbMetadataStore;
-import org.springframework.integration.gemfire.metadata.GemfireMetadataStore;
 import org.springframework.integration.hazelcast.metadata.HazelcastMetadataStore;
 import org.springframework.integration.jdbc.metadata.JdbcMetadataStore;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
@@ -57,6 +56,7 @@ import static org.mockito.Mockito.mock;
 
 /**
  * @author Artem Bilan
+ * @author Corneil du Plessis
  * @since 2.0.2
  */
 @RunWith(Parameterized.class)
@@ -67,7 +67,6 @@ public class MetadataStoreAutoConfigurationTests {
 			Arrays.asList(
 					RedisMetadataStore.class,
 					MongoDbMetadataStore.class,
-					GemfireMetadataStore.class,
 					JdbcMetadataStore.class,
 					ZookeeperMetadataStore.class,
 					HazelcastMetadataStore.class,

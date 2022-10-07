@@ -73,7 +73,7 @@ Properties grouped by prefix:
 
 === file.consumer
 
-$$markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$true$$`)*
+$$markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$mode$$:: $$The FileReadingMode to use for file reading sources. Values are 'ref' - The File object, 'lines' - a message per line, or 'contents' - the contents as bytes.$$ *($$FileReadingMode$$, default: `$$<none>$$`, possible values: `ref`,`lines`,`contents`)*
 $$with-markers$$:: $$Set to true to emit start of file/end of file marker messages before/after the data. Only valid with FileReadingMode 'lines'.$$ *($$Boolean$$, default: `$$<none>$$`)*
 
@@ -81,45 +81,41 @@ $$with-markers$$:: $$Set to true to emit start of file/end of file marker messag
 
 $$cache-sessions$$:: $$Cache sessions.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$client-mode$$:: $$The client mode to use for the FTP session.$$ *($$ClientMode$$, default: `$$<none>$$`, possible values: `ACTIVE`,`PASSIVE`)*
-$$host$$:: $$The host name of the server.$$ *($$String$$, default: `$$localhost$$`)*
+$$host$$:: $$The host name of the server.$$ *($$String$$, default: `$$<none>$$`)*
 $$password$$:: $$The password to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
-$$port$$:: $$The port of the server.$$ *($$Integer$$, default: `$$21$$`)*
+$$port$$:: $$The port of the server.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$username$$:: $$The username to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
 
 === ftp.supplier
 
-$$auto-create-local-dir$$:: $$Set to true to create the local directory if it does not exist.$$ *($$Boolean$$, default: `$$true$$`)*
-$$delay-when-empty$$:: $$Duration of delay when no new files are detected.$$ *($$Duration$$, default: `$$1s$$`)*
-$$delete-remote-files$$:: $$Set to true to delete remote files after successful transfer.$$ *($$Boolean$$, default: `$$false$$`)*
+$$auto-create-local-dir$$:: $$Set to true to create the local directory if it does not exist.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$delay-when-empty$$:: $$Duration of delay when no new files are detected.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$delete-remote-files$$:: $$Set to true to delete remote files after successful transfer.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$filename-pattern$$:: $$A filter pattern to match the names of files to transfer.$$ *($$String$$, default: `$$<none>$$`)*
 $$filename-regex$$:: $$A filter regex pattern to match the names of files to transfer.$$ *($$Pattern$$, default: `$$<none>$$`)*
 $$local-dir$$:: $$The local directory to use for file transfers.$$ *($$File$$, default: `$$<none>$$`)*
-$$preserve-timestamp$$:: $$Set to true to preserve the original timestamp.$$ *($$Boolean$$, default: `$$true$$`)*
-$$remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$/$$`)*
-$$remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$/$$`)*
-$$tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
+$$preserve-timestamp$$:: $$Set to true to preserve the original timestamp.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$<none>$$`)*
+$$remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$<none>$$`)*
+$$tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$<none>$$`)*
 
 === metadata.store.dynamo-db
 
-$$create-delay$$:: $$Delay between create table retries.$$ *($$Integer$$, default: `$$1$$`)*
-$$create-retries$$:: $$Retry number for create table request.$$ *($$Integer$$, default: `$$25$$`)*
-$$read-capacity$$:: $$Read capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
+$$create-delay$$:: $$Delay between create table retries.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$create-retries$$:: $$Retry number for create table request.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$read-capacity$$:: $$Read capacity on the table.$$ *($$Long$$, default: `$$<none>$$`)*
 $$table$$:: $$Table name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 $$time-to-live$$:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
-
-=== metadata.store.gemfire
-
-$$region$$:: $$Gemfire region name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
+$$write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$<none>$$`)*
 
 === metadata.store.jdbc
 
-$$region$$:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$DEFAULT$$`)*
+$$region$$:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$<none>$$`)*
 $$table-prefix$$:: $$Prefix for the custom table name.$$ *($$String$$, default: `$$<none>$$`)*
 
 === metadata.store.mongo-db
 
-$$collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$metadataStore$$`)*
+$$collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 
 === metadata.store.redis
 
@@ -127,14 +123,14 @@ $$key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 
 === metadata.store
 
-$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
+$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
 
 === metadata.store.zookeeper
 
-$$connect-string$$:: $$Zookeeper connect string in form HOST:PORT.$$ *($$String$$, default: `$$127.0.0.1:2181$$`)*
-$$encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$, default: `$$UTF-8$$`)*
-$$retry-interval$$:: $$Retry interval for Zookeeper operations in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
-$$root$$:: $$Root node - store entries are children of this node.$$ *($$String$$, default: `$$/SpringIntegration-MetadataStore$$`)*
+$$connect-string$$:: $$Zookeeper connect string in form HOST:PORT.$$ *($$String$$, default: `$$<none>$$`)*
+$$encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$, default: `$$<none>$$`)*
+$$retry-interval$$:: $$Retry interval for Zookeeper operations in milliseconds.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$root$$:: $$Root node - store entries are children of this node.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 == Examples

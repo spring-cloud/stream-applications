@@ -36,7 +36,7 @@ $$lon$$:: $$If provided with a lat parameter the available trend locations will 
 
 === twitter.trend
 
-$$location-id$$:: $$The Yahoo! Where On Earth ID of the location to return trending information for. Global information is available by using 1 as the WOEID.$$ *($$Expression$$, default: `$$payload$$`)*
+$$location-id$$:: $$The Yahoo! Where On Earth ID of the location to return trending information for. Global information is available by using 1 as the WOEID.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$trend-query-type$$:: $$<documentation missing>$$ *($$TrendQueryType$$, default: `$$<none>$$`, possible values: `trend`,`trendLocation`)*
 //end::configuration-properties[]
 

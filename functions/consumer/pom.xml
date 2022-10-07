@@ -17,7 +17,6 @@
 		<module>analytics-consumer</module>
 		<module>file-consumer</module>
 		<module>ftp-consumer</module>
-		<module>geode-consumer</module>
 		<module>jdbc-consumer</module>
 		<module>log-consumer</module>
 		<module>mongodb-consumer</module>

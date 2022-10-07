@@ -18,11 +18,7 @@ package org.springframework.cloud.fn.aggregator;
 
 import java.util.Arrays;
 
-import org.apache.geode.cache.GemFireCache;
-import org.apache.geode.cache.Region;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
@@ -32,13 +28,9 @@ import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.gemfire.client.ClientRegionFactoryBean;
-import org.springframework.data.gemfire.config.annotation.EnablePdx;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.geode.boot.autoconfigure.ClientCacheAutoConfiguration;
-import org.springframework.integration.gemfire.store.GemfireMessageStore;
 import org.springframework.integration.jdbc.store.JdbcMessageStore;
 import org.springframework.integration.mongodb.store.ConfigurableMongoDbMessageStore;
 import org.springframework.integration.mongodb.support.BinaryToMessageConverter;
@@ -55,6 +47,7 @@ import org.springframework.util.StringUtils;
  * via matched configuration properties.
  *
  * @author Artem Bilan
+ * @author Corneil du Plessis
  */
 class MessageStoreConfiguration {
 
@@ -95,30 +88,6 @@ class MessageStoreConfiguration {
 		@Bean
 		public MessageGroupStore messageStore(RedisTemplate<?, ?> redisTemplate) {
 			return new RedisMessageStore(redisTemplate.getConnectionFactory());
-		}
-
-	}
-
-	@ConditionalOnClass(GemfireMessageStore.class)
-	@ConditionalOnProperty(prefix = AggregatorFunctionProperties.PREFIX,
-			name = "message-store-type",
-			havingValue = AggregatorFunctionProperties.MessageStoreType.GEMFIRE)
-	@Import(ClientCacheAutoConfiguration.class)
-	@EnablePdx
-	static class Gemfire {
-
-		@Bean
-		@ConditionalOnMissingBean
-		public ClientRegionFactoryBean<?, ?> gemfireRegion(GemFireCache cache, AggregatorFunctionProperties properties) {
-			ClientRegionFactoryBean<?, ?> clientRegionFactoryBean = new ClientRegionFactoryBean<>();
-			clientRegionFactoryBean.setCache(cache);
-			clientRegionFactoryBean.setName(properties.getMessageStoreEntity());
-			return clientRegionFactoryBean;
-		}
-
-		@Bean
-		public MessageGroupStore messageStore(Region<Object, Object> region) {
-			return new GemfireMessageStore(region);
 		}
 
 	}

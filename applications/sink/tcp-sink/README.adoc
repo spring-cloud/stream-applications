@@ -16,18 +16,18 @@ Properties grouped by prefix:
 
 === tcp.consumer
 
-$$charset$$:: $$The charset used when converting from bytes to String.$$ *($$String$$, default: `$$UTF-8$$`)*
-$$close$$:: $$Whether to close the socket after each message.$$ *($$Boolean$$, default: `$$false$$`)*
+$$charset$$:: $$The charset used when converting from bytes to String.$$ *($$String$$, default: `$$<none>$$`)*
+$$close$$:: $$Whether to close the socket after each message.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$encoder$$:: $$The encoder to use when sending messages.$$ *($$Encoding$$, default: `$$<none>$$`, possible values: `CRLF`,`LF`,`NULL`,`STXETX`,`RAW`,`L1`,`L2`,`L4`)*
 $$host$$:: $$The host to which this sink will connect.$$ *($$String$$, default: `$$<none>$$`)*
 
 === tcp
 
-$$nio$$:: $$Whether or not to use NIO.$$ *($$Boolean$$, default: `$$false$$`)*
-$$port$$:: $$The port on which to listen; 0 for the OS to choose a port.$$ *($$Integer$$, default: `$$1234$$`)*
-$$reverse-lookup$$:: $$Perform a reverse DNS lookup on the remote IP Address; if false, just the IP address is included in the message headers.$$ *($$Boolean$$, default: `$$false$$`)*
-$$socket-timeout$$:: $$The timeout (ms) before closing the socket when no data is received.$$ *($$Integer$$, default: `$$120000$$`)*
-$$use-direct-buffers$$:: $$Whether or not to use direct buffers.$$ *($$Boolean$$, default: `$$false$$`)*
+$$nio$$:: $$Whether or not to use NIO.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$port$$:: $$The port on which to listen; 0 for the OS to choose a port.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$reverse-lookup$$:: $$Perform a reverse DNS lookup on the remote IP Address; if false, just the IP address is included in the message headers.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$socket-timeout$$:: $$The timeout (ms) before closing the socket when no data is received.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$use-direct-buffers$$:: $$Whether or not to use direct buffers.$$ *($$Boolean$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 == Available Encoders

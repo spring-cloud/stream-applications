@@ -32,7 +32,7 @@ $$allowed-origins$$:: $$List of allowed origins, e.g. https://domain1.com.$$ *($
 === http
 
 $$mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$<none>$$`)*
-$$path-pattern$$:: $$HTTP endpoint path mapping.$$ *($$String$$, default: `$$/$$`)*
+$$path-pattern$$:: $$HTTP endpoint path mapping.$$ *($$String$$, default: `$$<none>$$`)*
 
 === server
 

@@ -18,7 +18,7 @@ package org.springframework.cloud.fn.consumer.sftp;
 
 import java.nio.charset.StandardCharsets;
 
-import com.jcraft.jsch.ChannelSftp;
+import org.apache.sshd.sftp.client.SftpClient;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -33,13 +33,14 @@ import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
  * Session factory configuration.
  *
  * @author Gary Russell
+ * @author Corneil du Plessis
  *
  */
 public class SftpConsumerSessionFactoryConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public SessionFactory<ChannelSftp.LsEntry> sftpSessionFactory(SftpConsumerProperties properties, BeanFactory beanFactory) {
+	public SessionFactory<SftpClient.DirEntry> sftpSessionFactory(SftpConsumerProperties properties, BeanFactory beanFactory) {
 		DefaultSftpSessionFactory sftpSessionFactory = new DefaultSftpSessionFactory();
 		SftpConsumerProperties.Factory factory = properties.getFactory();
 		sftpSessionFactory.setHost(factory.getHost());
@@ -57,7 +58,7 @@ public class SftpConsumerSessionFactoryConfiguration {
 			sftpSessionFactory.setKnownHostsResource(knownHostsResource);
 		}
 		if (factory.getCacheSessions() != null) {
-			CachingSessionFactory<ChannelSftp.LsEntry> csf = new CachingSessionFactory<>(sftpSessionFactory);
+			CachingSessionFactory<SftpClient.DirEntry> csf = new CachingSessionFactory<>(sftpSessionFactory);
 			return csf;
 		}
 		else {

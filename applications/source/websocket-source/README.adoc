@@ -10,12 +10,12 @@ Properties grouped by prefix:
 
 === websocket.supplier
 
-$$allowed-origins$$:: $$The allowed origins.$$ *($$String$$, default: `$$*$$`)*
-$$path$$:: $$The path on which server WebSocket handler is exposed.$$ *($$String$$, default: `$$/websocket$$`)*
+$$allowed-origins$$:: $$The allowed origins.$$ *($$String$$, default: `$$<none>$$`)*
+$$path$$:: $$The path on which server WebSocket handler is exposed.$$ *($$String$$, default: `$$<none>$$`)*
 
 === websocket.supplier.sock-js
 
-$$enable$$:: $$Enable SockJS service on the server. Default is 'false'$$ *($$Boolean$$, default: `$$false$$`)*
+$$enable$$:: $$Enable SockJS service on the server. Default is 'false'$$ *($$Boolean$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 == Examples

@@ -49,6 +49,7 @@ import org.springframework.messaging.MessageChannel;
 
 /**
  * @author Artem Bilan
+ * @author Corneil du Plessis
  */
 @AutoConfiguration
 @EnableConfigurationProperties(AggregatorFunctionProperties.class)
@@ -61,11 +62,12 @@ public class AggregatorFunctionConfiguration {
 	private BeanFactory beanFactory;
 
 	@Bean
-	public Function<Flux<Message<?>>, Flux<Message<?>>> aggregatorFunction(FluxMessageChannel inputChannel,
-			FluxMessageChannel outputChannel) {
-
+	public Function<Flux<Message<?>>, Flux<Message<?>>> aggregatorFunction(
+		FluxMessageChannel inputChannel,
+		FluxMessageChannel outputChannel
+	) {
 		return input -> Flux.from(outputChannel)
-				.doOnRequest((request) -> inputChannel.subscribeTo(input));
+			.doOnRequest((request) -> inputChannel.subscribeTo(input));
 	}
 
 	@Bean
@@ -81,12 +83,12 @@ public class AggregatorFunctionConfiguration {
 	@Bean
 	@ServiceActivator(inputChannel = "inputChannel")
 	public AggregatorFactoryBean aggregator(
-			@Nullable CorrelationStrategy correlationStrategy,
-			@Nullable ReleaseStrategy releaseStrategy,
-			@Nullable MessageGroupProcessor messageGroupProcessor,
-			@Nullable MessageGroupStore messageStore,
-			@Qualifier("outputChannel") MessageChannel outputChannel,
-			@Nullable ComponentCustomizer<AggregatorFactoryBean> aggregatorCustomizer) {
+		@Nullable CorrelationStrategy correlationStrategy,
+		@Nullable ReleaseStrategy releaseStrategy,
+		@Nullable MessageGroupProcessor messageGroupProcessor,
+		@Nullable MessageGroupStore messageStore,
+		@Qualifier("outputChannel") MessageChannel outputChannel,
+		@Nullable ComponentCustomizer<AggregatorFactoryBean> aggregatorCustomizer) {
 
 		AggregatorFactoryBean aggregator = new AggregatorFactoryBean();
 		aggregator.setExpireGroupsUponCompletion(true);
@@ -144,8 +146,11 @@ public class AggregatorFunctionConfiguration {
 
 	@Configuration
 	@ConditionalOnMissingBean(MessageGroupStore.class)
-	@Import({ MessageStoreConfiguration.Mongo.class, MessageStoreConfiguration.Redis.class,
-			MessageStoreConfiguration.Gemfire.class, MessageStoreConfiguration.Jdbc.class })
+	@Import({
+		MessageStoreConfiguration.Mongo.class,
+		MessageStoreConfiguration.Redis.class,
+		MessageStoreConfiguration.Jdbc.class
+	})
 	protected static class MessageStoreAutoConfiguration {
 
 	}
