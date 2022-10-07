@@ -21,7 +21,7 @@ Properties grouped by prefix:
 === s3.common
 
 $$endpoint-url$$:: $$Optional endpoint url to connect to s3 compatible storage.$$ *($$String$$, default: `$$<none>$$`)*
-$$path-style-access$$:: $$Use path style access.$$ *($$Boolean$$, default: `$$false$$`)*
+$$path-style-access$$:: $$Use path style access.$$ *($$Boolean$$, default: `$$<none>$$`)*
 
 === s3.consumer
 

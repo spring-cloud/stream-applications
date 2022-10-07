@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import com.jcraft.jsch.ChannelSftp;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.apache.sshd.sftp.client.SftpClient;
 import org.hibernate.validator.constraints.Range;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -44,6 +44,7 @@ import org.springframework.validation.annotation.Validated;
  * @author Artem Bilan
  * @author Chris Schaefer
  * @author David Turanski
+ * @author Corneil du Plessis
  */
 @ConfigurationProperties("sftp.supplier")
 @Validated
@@ -495,21 +496,21 @@ public class SftpSupplierProperties {
 			DESC
 		}
 
-		private Comparator<ChannelSftp.LsEntry> getAttributeComparator() {
+		private Comparator<SftpClient.DirEntry> getAttributeComparator() {
 			switch (attribute) {
 				case FILENAME:
-					return Comparator.comparing(ChannelSftp.LsEntry::getFilename);
+					return Comparator.comparing(SftpClient.DirEntry::getFilename);
 				case ATIME:
-					return Comparator.comparing(x -> x.getAttrs().getATime());
+					return Comparator.comparing(x -> x.getAttributes().getAccessTime());
 				case MTIME:
-					return Comparator.comparing(x -> x.getAttrs().getMTime());
+					return Comparator.comparing(x -> x.getAttributes().getModifyTime());
 			}
 
 			throw new UnsupportedOperationException("Unsupported sortBy attribute: " + attribute);
 		}
 
-		public Comparator<ChannelSftp.LsEntry> comparator() {
-			Comparator<ChannelSftp.LsEntry> comparator = getAttributeComparator();
+		public Comparator<SftpClient.DirEntry> comparator() {
+			Comparator<SftpClient.DirEntry> comparator = getAttributeComparator();
 			return dir == Dir.ASC ? comparator : comparator.reversed();
 		}
 	}

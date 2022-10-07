@@ -12,7 +12,7 @@ The **$$header-enricher$$** $$processor$$ has the following options:
 
 //tag::configuration-properties[]
 $$header.enricher.headers$$:: $$\n separated properties representing headers in which values are SpEL expressions, e.g foo='bar' \n baz=payload.baz.$$ *($$Properties$$, default: `$$<none>$$`)*
-$$header.enricher.overwrite$$:: $$set to true to overwrite any existing message headers.$$ *($$Boolean$$, default: `$$false$$`)*
+$$header.enricher.overwrite$$:: $$set to true to overwrite any existing message headers.$$ *($$Boolean$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

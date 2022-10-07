@@ -8,10 +8,10 @@ The following options are supported:
 
 //tag::configuration-properties[]
 $$websocket.consumer.log-level$$:: $$the logLevel for netty channels. Default is <tt>WARN</tt>$$ *($$String$$, default: `$$<none>$$`)*
-$$websocket.consumer.path$$:: $$the path on which a WebsocketSink consumer needs to connect. Default is <tt>/websocket</tt>$$ *($$String$$, default: `$$/websocket$$`)*
-$$websocket.consumer.port$$:: $$the port on which the Netty server listens. Default is <tt>9292</tt>$$ *($$Integer$$, default: `$$9292$$`)*
-$$websocket.consumer.ssl$$:: $$whether or not to create a {@link io.netty.handler.ssl.SslContext}.$$ *($$Boolean$$, default: `$$false$$`)*
-$$websocket.consumer.threads$$:: $$the number of threads for the Netty {@link io.netty.channel.EventLoopGroup}. Default is <tt>1</tt>$$ *($$Integer$$, default: `$$1$$`)*
+$$websocket.consumer.path$$:: $$the path on which a WebsocketSink consumer needs to connect. Default is <tt>/websocket</tt>$$ *($$String$$, default: `$$<none>$$`)*
+$$websocket.consumer.port$$:: $$the port on which the Netty server listens. Default is <tt>9292</tt>$$ *($$Integer$$, default: `$$<none>$$`)*
+$$websocket.consumer.ssl$$:: $$whether or not to create a {@link io.netty.handler.ssl.SslContext}.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$websocket.consumer.threads$$:: $$the number of threads for the Netty {@link io.netty.channel.EventLoopGroup}. Default is <tt>1</tt>$$ *($$Integer$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 == Examples

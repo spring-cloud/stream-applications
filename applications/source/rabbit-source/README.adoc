@@ -26,16 +26,16 @@ Properties grouped by prefix:
 
 === rabbit.supplier
 
-$$enable-retry$$:: $$true to enable retry.$$ *($$Boolean$$, default: `$$false$$`)*
-$$initial-retry-interval$$:: $$Initial retry interval when retry is enabled.$$ *($$Integer$$, default: `$$1000$$`)*
-$$mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$[STANDARD_REQUEST_HEADERS]$$`)*
-$$max-attempts$$:: $$The maximum delivery attempts when retry is enabled.$$ *($$Integer$$, default: `$$3$$`)*
-$$max-retry-interval$$:: $$Max retry interval when retry is enabled.$$ *($$Integer$$, default: `$$30000$$`)*
-$$own-connection$$:: $$When true, use a separate connection based on the boot properties.$$ *($$Boolean$$, default: `$$false$$`)*
+$$enable-retry$$:: $$true to enable retry.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$initial-retry-interval$$:: $$Initial retry interval when retry is enabled.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$<none>$$`)*
+$$max-attempts$$:: $$The maximum delivery attempts when retry is enabled.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$max-retry-interval$$:: $$Max retry interval when retry is enabled.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$own-connection$$:: $$When true, use a separate connection based on the boot properties.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$queues$$:: $$The queues to which the source will listen for messages.$$ *($$String[]$$, default: `$$<none>$$`)*
-$$requeue$$:: $$Whether rejected messages should be requeued.$$ *($$Boolean$$, default: `$$true$$`)*
-$$retry-multiplier$$:: $$Retry backoff multiplier when retry is enabled.$$ *($$Double$$, default: `$$2$$`)*
-$$transacted$$:: $$Whether the channel is transacted.$$ *($$Boolean$$, default: `$$false$$`)*
+$$requeue$$:: $$Whether rejected messages should be requeued.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$retry-multiplier$$:: $$Retry backoff multiplier when retry is enabled.$$ *($$Double$$, default: `$$<none>$$`)*
+$$transacted$$:: $$Whether the channel is transacted.$$ *($$Boolean$$, default: `$$<none>$$`)*
 
 === spring.rabbitmq
 

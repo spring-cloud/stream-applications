@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import com.jcraft.jsch.ChannelSftp.LsEntry;
+import org.apache.sshd.sftp.client.SftpClient;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.MonoProcessor;
@@ -84,6 +84,7 @@ import org.springframework.util.StringUtils;
  * @author Chris Schaefer
  * @author Christian Tzolov
  * @author David Turanski
+ * @author Corneil du Plessis
  */
 
 @Configuration
@@ -140,10 +141,12 @@ public class SftpSupplierConfiguration {
 	 * Configure the standard filters for SFTP inbound adapters.
 	 */
 	@Bean
-	public FileListFilter<LsEntry> chainFilter(SftpSupplierProperties sftpSupplierProperties,
-			ConcurrentMetadataStore metadataStore) {
+	public FileListFilter<SftpClient.DirEntry> chainFilter(
+		SftpSupplierProperties sftpSupplierProperties,
+		ConcurrentMetadataStore metadataStore
+	) {
 
-		ChainFileListFilter<LsEntry> chainFilter = new ChainFileListFilter<>();
+		ChainFileListFilter<SftpClient.DirEntry> chainFilter = new ChainFileListFilter<>();
 
 		if (StringUtils.hasText(sftpSupplierProperties.getFilenamePattern())) {
 			chainFilter.addFilter(new SftpSimplePatternFileListFilter(sftpSupplierProperties.getFilenamePattern()));
@@ -192,7 +195,7 @@ public class SftpSupplierConfiguration {
 		@Bean
 		public MessageSource<?> targetMessageSource(SftpRemoteFileTemplate sftpTemplate,
 				SftpSupplierProperties sftpSupplierProperties,
-				FileListFilter<LsEntry> fileListFilter) {
+				FileListFilter<SftpClient.DirEntry> fileListFilter) {
 
 			return Sftp.inboundStreamingAdapter(sftpTemplate)
 					.remoteDirectory(remoteDirectory(sftpSupplierProperties))
@@ -279,7 +282,7 @@ public class SftpSupplierConfiguration {
 		@Bean
 		public SftpInboundChannelAdapterSpec targetMessageSource(SftpSupplierProperties sftpSupplierProperties,
 				SftpSupplierFactoryConfiguration.DelegatingFactoryWrapper delegatingFactoryWrapper,
-				FileListFilter<LsEntry> fileListFilter) {
+				FileListFilter<SftpClient.DirEntry> fileListFilter) {
 
 			return Sftp
 					.inboundAdapter(delegatingFactoryWrapper.getFactory())
@@ -377,13 +380,13 @@ public class SftpSupplierConfiguration {
 		public MessageProcessor<Message<?>> lsEntryToStringTransformer() {
 			return (Message<?> message) -> {
 
-				LsEntry lsEntry = (LsEntry) message.getPayload();
+				SftpClient.DirEntry dirEntry = (SftpClient.DirEntry) message.getPayload();
 
-				String fileName = message.getHeaders().get(FileHeaders.REMOTE_DIRECTORY) + lsEntry.getFilename();
+				String fileName = message.getHeaders().get(FileHeaders.REMOTE_DIRECTORY) + dirEntry.getFilename();
 
 				return MessageBuilder.withPayload(fileName)
 						.copyHeaders(message.getHeaders())
-						.setHeader(FILE_MODIFIED_TIME_HEADER, String.valueOf(lsEntry.getAttrs().getMTime()))
+						.setHeader(FILE_MODIFIED_TIME_HEADER, String.valueOf(dirEntry.getAttributes().getModifyTime()))
 						.setHeader(MessageHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN)
 						.build();
 			};
@@ -415,13 +418,13 @@ public class SftpSupplierConfiguration {
 
 			private final String remoteDirectory;
 
-			private final SessionFactory<LsEntry> sessionFactory;
+			private final SessionFactory<SftpClient.DirEntry> sessionFactory;
 
 			private final String remoteFileSeparator;
 
 			private final SftpSupplierProperties.SortSpec sort;
 
-			SftpListingMessageProducer(SessionFactory<LsEntry> sessionFactory, String remoteDirectory,
+			SftpListingMessageProducer(SessionFactory<SftpClient.DirEntry> sessionFactory, String remoteDirectory,
 					String remoteFileSeparator, SftpSupplierProperties.SortSpec sort) {
 
 				this.sessionFactory = sessionFactory;
@@ -431,10 +434,10 @@ public class SftpSupplierConfiguration {
 			}
 
 			public void listNames() {
-				Stream<LsEntry> stream;
+				Stream<SftpClient.DirEntry> stream;
 				try {
 					stream = Stream.of(this.sessionFactory.getSession().list(this.remoteDirectory))
-							.filter(x -> !(x.getAttrs().isDir() || x.getAttrs().isLink()));
+							.filter(x -> !(x.getAttributes().isDirectory() || x.getAttributes().isSymbolicLink()));
 
 					if (sort != null) {
 						stream = stream.sorted(sort.comparator());

@@ -23,15 +23,11 @@ import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.integration.test.util.TestUtils;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.TestPropertySource;
@@ -40,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Soby Chacko
+ * @author Corneil du Plessis
  */
 @TestPropertySource(properties = "redis.consumer.topic = foo-topic")
 public class RedisConsumerTopicTests extends AbstractRedisConsumerTests {

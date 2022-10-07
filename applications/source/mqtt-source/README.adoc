@@ -18,23 +18,23 @@ Properties grouped by prefix:
 
 === mqtt
 
-$$clean-session$$:: $$whether the client and server should remember state across restarts and reconnects.$$ *($$Boolean$$, default: `$$true$$`)*
-$$connection-timeout$$:: $$the connection timeout in seconds.$$ *($$Integer$$, default: `$$30$$`)*
-$$keep-alive-interval$$:: $$the ping interval in seconds.$$ *($$Integer$$, default: `$$60$$`)*
-$$password$$:: $$the password to use when connecting to the broker.$$ *($$String$$, default: `$$guest$$`)*
-$$persistence$$:: $$'memory' or 'file'.$$ *($$String$$, default: `$$memory$$`)*
-$$persistence-directory$$:: $$Persistence directory.$$ *($$String$$, default: `$$/tmp/paho$$`)*
+$$clean-session$$:: $$whether the client and server should remember state across restarts and reconnects.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$connection-timeout$$:: $$the connection timeout in seconds.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$keep-alive-interval$$:: $$the ping interval in seconds.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$password$$:: $$the password to use when connecting to the broker.$$ *($$String$$, default: `$$<none>$$`)*
+$$persistence$$:: $$'memory' or 'file'.$$ *($$String$$, default: `$$<none>$$`)*
+$$persistence-directory$$:: $$Persistence directory.$$ *($$String$$, default: `$$<none>$$`)*
 $$ssl-properties$$:: $$MQTT Client SSL properties.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
-$$url$$:: $$location of the mqtt broker(s) (comma-delimited list).$$ *($$String[]$$, default: `$$[tcp://localhost:1883]$$`)*
-$$username$$:: $$the username to use when connecting to the broker.$$ *($$String$$, default: `$$guest$$`)*
+$$url$$:: $$location of the mqtt broker(s) (comma-delimited list).$$ *($$String[]$$, default: `$$<none>$$`)*
+$$username$$:: $$the username to use when connecting to the broker.$$ *($$String$$, default: `$$<none>$$`)*
 
 === mqtt.supplier
 
-$$binary$$:: $$true to leave the payload as bytes.$$ *($$Boolean$$, default: `$$false$$`)*
-$$charset$$:: $$the charset used to convert bytes to String (when binary is false).$$ *($$String$$, default: `$$UTF-8$$`)*
-$$client-id$$:: $$identifies the client.$$ *($$String$$, default: `$$stream.client.id.source$$`)*
-$$qos$$:: $$the qos; a single value for all topics or a comma-delimited list to match the topics.$$ *($$Integer[]$$, default: `$$[0]$$`)*
-$$topics$$:: $$the topic(s) (comma-delimited) to which the source will subscribe.$$ *($$String[]$$, default: `$$[stream.mqtt]$$`)*
+$$binary$$:: $$true to leave the payload as bytes.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$charset$$:: $$the charset used to convert bytes to String (when binary is false).$$ *($$String$$, default: `$$<none>$$`)*
+$$client-id$$:: $$identifies the client.$$ *($$String$$, default: `$$<none>$$`)*
+$$qos$$:: $$the qos; a single value for all topics or a comma-delimited list to match the topics.$$ *($$Integer[]$$, default: `$$<none>$$`)*
+$$topics$$:: $$the topic(s) (comma-delimited) to which the source will subscribe.$$ *($$String[]$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

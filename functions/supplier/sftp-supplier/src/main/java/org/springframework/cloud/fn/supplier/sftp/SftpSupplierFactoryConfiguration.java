@@ -19,7 +19,7 @@ package org.springframework.cloud.fn.supplier.sftp;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.jcraft.jsch.ChannelSftp.LsEntry;
+import org.apache.sshd.sftp.client.SftpClient;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -40,19 +40,20 @@ import org.springframework.lang.Nullable;
  * @author Gary Russell
  * @author Artem Bilan
  * @author David Turanski
+ * @author Corneil du Plessis
  *
  */
 public class SftpSupplierFactoryConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public SessionFactory<LsEntry> sftpSessionFactory(SftpSupplierProperties properties, BeanFactory beanFactory) {
+	public SessionFactory<SftpClient.DirEntry> sftpSessionFactory(SftpSupplierProperties properties, BeanFactory beanFactory) {
 		return buildFactory(beanFactory, properties.getFactory());
 	}
 
 	@Bean
 	public DelegatingFactoryWrapper delegatingFactoryWrapper(SftpSupplierProperties properties,
-			SessionFactory<LsEntry> defaultFactory, BeanFactory beanFactory) {
+			SessionFactory<SftpClient.DirEntry> defaultFactory, BeanFactory beanFactory) {
 		return new DelegatingFactoryWrapper(properties, defaultFactory, beanFactory);
 	}
 
@@ -73,7 +74,7 @@ public class SftpSupplierFactoryConfiguration {
 				: null;
 	}
 
-	static SessionFactory<LsEntry> buildFactory(BeanFactory beanFactory, SftpSupplierProperties.Factory factory) {
+	static SessionFactory<SftpClient.DirEntry> buildFactory(BeanFactory beanFactory, SftpSupplierProperties.Factory factory) {
 		DefaultSftpSessionFactory sftpSessionFactory = new DefaultSftpSessionFactory(true);
 		sftpSessionFactory.setHost(factory.getHost());
 		sftpSessionFactory.setPort(factory.getPort());
@@ -93,11 +94,11 @@ public class SftpSupplierFactoryConfiguration {
 
 	public final static class DelegatingFactoryWrapper implements DisposableBean {
 
-		private final DelegatingSessionFactory<LsEntry> delegatingSessionFactory;
+		private final DelegatingSessionFactory<SftpClient.DirEntry> delegatingSessionFactory;
 
-		private final Map<Object, SessionFactory<LsEntry>> factories = new HashMap<>();
+		private final Map<Object, SessionFactory<SftpClient.DirEntry>> factories = new HashMap<>();
 
-		DelegatingFactoryWrapper(SftpSupplierProperties properties, SessionFactory<LsEntry> defaultFactory,
+		DelegatingFactoryWrapper(SftpSupplierProperties properties, SessionFactory<SftpClient.DirEntry> defaultFactory,
 				BeanFactory beanFactory) {
 			properties.getFactories().forEach((key, factory) -> {
 				this.factories.put(key, SftpSupplierFactoryConfiguration.buildFactory(beanFactory, factory));
@@ -105,7 +106,7 @@ public class SftpSupplierFactoryConfiguration {
 			this.delegatingSessionFactory = new DelegatingSessionFactory<>(this.factories, defaultFactory);
 		}
 
-		public DelegatingSessionFactory<LsEntry> getFactory() {
+		public DelegatingSessionFactory<SftpClient.DirEntry> getFactory() {
 			return this.delegatingSessionFactory;
 		}
 

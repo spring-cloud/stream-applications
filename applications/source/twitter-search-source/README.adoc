@@ -34,24 +34,24 @@ $$access-token$$:: $$Your Twitter token.$$ *($$String$$, default: `$$<none>$$`)*
 $$access-token-secret$$:: $$Your Twitter token secret.$$ *($$String$$, default: `$$<none>$$`)*
 $$consumer-key$$:: $$Your Twitter key.$$ *($$String$$, default: `$$<none>$$`)*
 $$consumer-secret$$:: $$Your Twitter secret.$$ *($$String$$, default: `$$<none>$$`)*
-$$debug-enabled$$:: $$Enables Twitter4J debug mode.$$ *($$Boolean$$, default: `$$false$$`)*
-$$raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by the Twitter APIs. When set to False the result will use the Twitter4J's json representations. When set to True the result will use the original Twitter APISs json representations.$$ *($$Boolean$$, default: `$$true$$`)*
+$$debug-enabled$$:: $$Enables Twitter4J debug mode.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by the Twitter APIs. When set to False the result will use the Twitter4J's json representations. When set to True the result will use the original Twitter APISs json representations.$$ *($$Boolean$$, default: `$$<none>$$`)*
 
 === twitter.search
 
-$$count$$:: $$Number of tweets to return per page (e.g. per single request), up to a max of 100.$$ *($$Integer$$, default: `$$100$$`)*
+$$count$$:: $$Number of tweets to return per page (e.g. per single request), up to a max of 100.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$lang$$:: $$Restricts searched tweets to the given language, given by an http://en.wikipedia.org/wiki/ISO_639-1 .$$ *($$String$$, default: `$$<none>$$`)*
-$$page$$:: $$Number of pages (e.g. requests) to search backwards (from most recent to the oldest tweets) before start the search from the most recent tweets again. The total amount of tweets searched backwards is (page * count)$$ *($$Integer$$, default: `$$3$$`)*
+$$page$$:: $$Number of pages (e.g. requests) to search backwards (from most recent to the oldest tweets) before start the search from the most recent tweets again. The total amount of tweets searched backwards is (page * count)$$ *($$Integer$$, default: `$$<none>$$`)*
 $$query$$:: $$Search tweets by search query string.$$ *($$String$$, default: `$$<none>$$`)*
-$$restart-from-most-recent-on-empty-response$$:: $$Restart search from the most recent tweets on empty response. Applied only after the first restart (e.g. when since_id != UNBOUNDED)$$ *($$Boolean$$, default: `$$false$$`)*
+$$restart-from-most-recent-on-empty-response$$:: $$Restart search from the most recent tweets on empty response. Applied only after the first restart (e.g. when since_id != UNBOUNDED)$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$result-type$$:: $$Specifies what type of search results you would prefer to receive.  The current default is "mixed." Valid values include:   mixed : Include both popular and real time results in the response.   recent : return only the most recent results in the response   popular : return only the most popular results in the response$$ *($$ResultType$$, default: `$$<none>$$`, possible values: `popular`,`mixed`,`recent`)*
 $$since$$:: $$If specified, returns tweets with since the given date. Date should be formatted as YYYY-MM-DD.$$ *($$String$$, default: `$$<none>$$`)*
 
 === twitter.search.geocode
 
-$$latitude$$:: $$User's latitude.$$ *($$Double$$, default: `$$-1$$`)*
-$$longitude$$:: $$User's longitude.$$ *($$Double$$, default: `$$-1$$`)*
-$$radius$$:: $$Radius (in kilometers) around the (latitude, longitude) point.$$ *($$Double$$, default: `$$-1$$`)*
+$$latitude$$:: $$User's latitude.$$ *($$Double$$, default: `$$<none>$$`)*
+$$longitude$$:: $$User's longitude.$$ *($$Double$$, default: `$$<none>$$`)*
+$$radius$$:: $$Radius (in kilometers) around the (latitude, longitude) point.$$ *($$Double$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

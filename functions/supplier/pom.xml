@@ -13,7 +13,6 @@
 	<modules>
 		<module>file-supplier</module>
 		<module>ftp-supplier</module>
-		<module>geode-supplier</module>
 		<module>http-supplier</module>
 		<module>jdbc-supplier</module>
 		<module>jms-supplier</module>
