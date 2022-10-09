@@ -16,14 +16,12 @@
 
 package org.springframework.cloud.fn.consumer.sftp;
 
-import java.nio.charset.StandardCharsets;
-
 import org.apache.sshd.sftp.client.SftpClient;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.file.remote.session.CachingSessionFactory;
 import org.springframework.integration.file.remote.session.SessionFactory;
@@ -34,7 +32,7 @@ import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
  *
  * @author Gary Russell
  * @author Corneil du Plessis
- *
+ * @author Chris Bono
  */
 public class SftpConsumerSessionFactoryConfiguration {
 
@@ -51,11 +49,8 @@ public class SftpConsumerSessionFactoryConfiguration {
 		sftpSessionFactory.setPrivateKeyPassphrase(factory.getPassPhrase());
 		sftpSessionFactory.setAllowUnknownKeys(factory.isAllowUnknownKeys());
 		if (factory.getKnownHostsExpression() != null) {
-			// TODO probably a better way
-			String knownHosts = factory.getKnownHostsExpression()
-					.getValue(IntegrationContextUtils.getEvaluationContext(beanFactory), String.class);
-			ByteArrayResource knownHostsResource = new ByteArrayResource(knownHosts.getBytes(StandardCharsets.UTF_8));
-			sftpSessionFactory.setKnownHostsResource(knownHostsResource);
+			sftpSessionFactory.setKnownHostsResource(new FileSystemResource(factory.getKnownHostsExpression()
+					.getValue(IntegrationContextUtils.getEvaluationContext(beanFactory), String.class)));
 		}
 		if (factory.getCacheSessions() != null) {
 			CachingSessionFactory<SftpClient.DirEntry> csf = new CachingSessionFactory<>(sftpSessionFactory);
