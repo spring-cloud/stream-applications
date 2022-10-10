@@ -28,6 +28,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.SetObjectAclRequest;
 import com.amazonaws.services.s3.transfer.internal.S3ProgressPublisher;
 import com.amazonaws.util.Md5Utils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -40,6 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
+@Disabled
 @TestPropertySource(properties = "s3.consumer.acl=PublicReadWrite")
 public class AmazonS3UploadFileTests extends AbstractAwsS3ConsumerMockTests {
 

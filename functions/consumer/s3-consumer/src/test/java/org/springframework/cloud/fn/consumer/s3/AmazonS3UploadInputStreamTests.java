@@ -23,6 +23,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.Md5Utils;
 import com.amazonaws.util.StringInputStream;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -36,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
+@Disabled
 @TestPropertySource(properties = "s3.consumer.key-expression=headers.key")
 public class AmazonS3UploadInputStreamTests extends AbstractAwsS3ConsumerMockTests {
 
