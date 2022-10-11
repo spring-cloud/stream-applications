@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,14 @@ package org.springframework.cloud.fn.consumer.sftp;
 
 import org.apache.sshd.sftp.client.SftpClient;
 
-import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.integration.context.IntegrationContextUtils;
+import org.springframework.core.io.Resource;
 import org.springframework.integration.file.remote.session.CachingSessionFactory;
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
+import org.springframework.lang.Nullable;
 
 /**
  * Session factory configuration.
@@ -33,12 +33,16 @@ import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
  * @author Gary Russell
  * @author Corneil du Plessis
  * @author Chris Bono
+ * @author Artem Bilan
  */
 public class SftpConsumerSessionFactoryConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public SessionFactory<SftpClient.DirEntry> sftpSessionFactory(SftpConsumerProperties properties, BeanFactory beanFactory) {
+	public SessionFactory<SftpClient.DirEntry> sftpSessionFactory(
+			SftpConsumerProperties properties,
+			@Value("#{${sftp.consumer.factory.known-hosts-expression:null}}") @Nullable Resource knownHosts) {
+
 		DefaultSftpSessionFactory sftpSessionFactory = new DefaultSftpSessionFactory();
 		SftpConsumerProperties.Factory factory = properties.getFactory();
 		sftpSessionFactory.setHost(factory.getHost());
@@ -48,13 +52,9 @@ public class SftpConsumerSessionFactoryConfiguration {
 		sftpSessionFactory.setPrivateKey(factory.getPrivateKey());
 		sftpSessionFactory.setPrivateKeyPassphrase(factory.getPassPhrase());
 		sftpSessionFactory.setAllowUnknownKeys(factory.isAllowUnknownKeys());
-		if (factory.getKnownHostsExpression() != null) {
-			sftpSessionFactory.setKnownHostsResource(new FileSystemResource(factory.getKnownHostsExpression()
-					.getValue(IntegrationContextUtils.getEvaluationContext(beanFactory), String.class)));
-		}
+		sftpSessionFactory.setKnownHostsResource(knownHosts);
 		if (factory.getCacheSessions() != null) {
-			CachingSessionFactory<SftpClient.DirEntry> csf = new CachingSessionFactory<>(sftpSessionFactory);
-			return csf;
+			return new CachingSessionFactory<>(sftpSessionFactory);
 		}
 		else {
 			return sftpSessionFactory;

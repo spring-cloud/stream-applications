@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 the original author or authors.
+ * Copyright 2018-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.file.remote.aop.StandardRotationPolicy;
 import org.springframework.integration.file.remote.session.CachingSessionFactory;
@@ -75,7 +76,7 @@ public class SftpSupplierFactoryConfiguration {
 	}
 
 	static SessionFactory<SftpClient.DirEntry> buildFactory(BeanFactory beanFactory, SftpSupplierProperties.Factory factory) {
-		DefaultSftpSessionFactory sftpSessionFactory = new DefaultSftpSessionFactory(true);
+		DefaultSftpSessionFactory sftpSessionFactory = new DefaultSftpSessionFactory();
 		sftpSessionFactory.setHost(factory.getHost());
 		sftpSessionFactory.setPort(factory.getPort());
 		sftpSessionFactory.setUser(factory.getUsername());
@@ -84,9 +85,10 @@ public class SftpSupplierFactoryConfiguration {
 		sftpSessionFactory.setPrivateKeyPassphrase(factory.getPassPhrase());
 		sftpSessionFactory.setAllowUnknownKeys(factory.isAllowUnknownKeys());
 		if (factory.getKnownHostsExpression() != null) {
-			String path = factory.getKnownHostsExpression()
+			String knownHostsLocation = factory.getKnownHostsExpression()
 					.getValue(IntegrationContextUtils.getEvaluationContext(beanFactory), String.class);
-			sftpSessionFactory.setKnownHostsResource(new FileSystemResource(path));
+			Resource knownHostsResource = new DefaultResourceLoader().getResource(knownHostsLocation);
+			sftpSessionFactory.setKnownHostsResource(knownHostsResource);
 		}
 
 		return new CachingSessionFactory<>(sftpSessionFactory);
