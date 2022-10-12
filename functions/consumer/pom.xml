@@ -30,6 +30,7 @@
 		<module>twitter-consumer</module>
 		<module>wavefront-consumer</module>
 		<module>rsocket-consumer</module>
+		<module>xmpp-consumer</module>
 		<module>zeromq-consumer</module>
 	</modules>
 	<build>

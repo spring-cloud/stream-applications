@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jive> 
+  <adminConsole> 
+    <port>9090</port>  
+    <securePort>9091</securePort> 
+  </adminConsole>  
+  <connectionProvider> 
+    <className>org.jivesoftware.database.DefaultConnectionProvider</className> 
+  </connectionProvider>  
+  <setup>true</setup> 
+  <locale>en</locale> 
+  <fqdn>localhost</fqdn>
+</jive>

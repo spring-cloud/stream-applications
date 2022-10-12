@@ -44,11 +44,6 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
-                <artifactId>geode-supplier</artifactId>
-               <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>http-supplier</artifactId>
                <version>${project.version}</version>
             </dependency>
@@ -144,11 +139,6 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
-                <artifactId>geode-consumer</artifactId>
-               <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>jdbc-consumer</artifactId>
                <version>${project.version}</version>
             </dependency>
@@ -196,6 +186,11 @@
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>twitter-consumer</artifactId>
                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud.fn</groupId>
+                <artifactId>xmpp-consumer</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
