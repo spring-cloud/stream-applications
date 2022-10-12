@@ -24,6 +24,7 @@
 		<module>tensorflow-common</module>
 		<module>cdc-debezium-common</module>
 		<module>cdc-debezium-boot-starter</module>
+		<module>xmpp-common</module>
 	</modules>
 
 </project>

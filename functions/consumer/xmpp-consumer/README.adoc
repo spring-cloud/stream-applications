@@ -1,0 +1,14 @@
+# XMPP Consumer
+
+
+## Beans for injection
+
+
+## Configuration Options
+
+
+## Tests
+
+
+## Other usage
+
