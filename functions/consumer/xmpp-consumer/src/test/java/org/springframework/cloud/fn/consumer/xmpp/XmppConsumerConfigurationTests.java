@@ -27,6 +27,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.fn.common.xmpp.XmppConnectionFactoryConfiguration;
@@ -102,8 +104,9 @@ public class XmppConsumerConfigurationTests {
 
     }
 
-    @SpringBootApplication
-    @Import(XmppConnectionFactoryConfiguration.class)
+    @SpringBootConfiguration
+    @EnableAutoConfiguration
+//    @Import(XmppConnectionFactoryConfiguration.class)
     static class XmppConsumerTestApplication { }
 
 }
