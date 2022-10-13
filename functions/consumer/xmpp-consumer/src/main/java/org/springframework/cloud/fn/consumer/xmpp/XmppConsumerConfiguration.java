@@ -16,7 +16,7 @@
 
 package org.springframework.cloud.fn.consumer.xmpp;
 
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.XMPPConnection;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
