@@ -22,7 +22,6 @@ public class XmppConnectionFactoryConfiguration {
         xmppConnectionFactoryBean.setHost(properties.getHost());
         xmppConnectionFactoryBean.setPort(properties.getPort());
         xmppConnectionFactoryBean.setSubscriptionMode(properties.getSubscriptionMode());
-        xmppConnectionFactoryBean.setAutoStartup(properties.isAutoStartup());
 
         return xmppConnectionFactoryBean;
     }

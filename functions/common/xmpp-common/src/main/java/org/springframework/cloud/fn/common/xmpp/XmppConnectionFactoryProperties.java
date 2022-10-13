@@ -64,8 +64,6 @@ public class XmppConnectionFactoryProperties {
 
 	private Roster.SubscriptionMode subscriptionMode = Roster.getDefaultSubscriptionMode();
 
-	private boolean autoStartup = true;
-
 	/**
 	 * @param resource the XMPP to bind to.
 	 */
@@ -145,17 +143,6 @@ public class XmppConnectionFactoryProperties {
 
 	public Roster.SubscriptionMode getSubscriptionMode() {
 		return subscriptionMode;
-	}
-
-	/**
-	 * @param autoStartup to enable/disable auto-startup of the connection factory.
-	 */
-	public void setAutoStartup(boolean autoStartup) {
-		this.autoStartup = autoStartup;
-	}
-
-	public boolean isAutoStartup() {
-		return autoStartup;
 	}
 
 }
