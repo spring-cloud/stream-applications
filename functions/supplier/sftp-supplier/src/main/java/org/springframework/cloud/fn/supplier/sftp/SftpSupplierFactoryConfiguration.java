@@ -21,11 +21,10 @@ import java.util.Map;
 
 import org.apache.sshd.sftp.client.SftpClient;
 
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.file.remote.aop.StandardRotationPolicy;
@@ -48,14 +47,17 @@ public class SftpSupplierFactoryConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public SessionFactory<SftpClient.DirEntry> sftpSessionFactory(SftpSupplierProperties properties, BeanFactory beanFactory) {
-		return buildFactory(beanFactory, properties.getFactory());
+	public SessionFactory<SftpClient.DirEntry> sftpSessionFactory(SftpSupplierProperties properties,
+			ApplicationContext applicationContext) {
+
+		return buildFactory(applicationContext, properties.getFactory());
 	}
 
 	@Bean
 	public DelegatingFactoryWrapper delegatingFactoryWrapper(SftpSupplierProperties properties,
-			SessionFactory<SftpClient.DirEntry> defaultFactory, BeanFactory beanFactory) {
-		return new DelegatingFactoryWrapper(properties, defaultFactory, beanFactory);
+			SessionFactory<SftpClient.DirEntry> defaultFactory, ApplicationContext applicationContext) {
+
+		return new DelegatingFactoryWrapper(properties, defaultFactory, applicationContext);
 	}
 
 	@Bean
@@ -75,7 +77,9 @@ public class SftpSupplierFactoryConfiguration {
 				: null;
 	}
 
-	static SessionFactory<SftpClient.DirEntry> buildFactory(BeanFactory beanFactory, SftpSupplierProperties.Factory factory) {
+	static SessionFactory<SftpClient.DirEntry> buildFactory(ApplicationContext applicationContext,
+			SftpSupplierProperties.Factory factory) {
+
 		DefaultSftpSessionFactory sftpSessionFactory = new DefaultSftpSessionFactory();
 		sftpSessionFactory.setHost(factory.getHost());
 		sftpSessionFactory.setPort(factory.getPort());
@@ -86,8 +90,8 @@ public class SftpSupplierFactoryConfiguration {
 		sftpSessionFactory.setAllowUnknownKeys(factory.isAllowUnknownKeys());
 		if (factory.getKnownHostsExpression() != null) {
 			String knownHostsLocation = factory.getKnownHostsExpression()
-					.getValue(IntegrationContextUtils.getEvaluationContext(beanFactory), String.class);
-			Resource knownHostsResource = new DefaultResourceLoader().getResource(knownHostsLocation);
+					.getValue(IntegrationContextUtils.getEvaluationContext(applicationContext), String.class);
+			Resource knownHostsResource = applicationContext.getResource(knownHostsLocation);
 			sftpSessionFactory.setKnownHostsResource(knownHostsResource);
 		}
 
@@ -101,10 +105,10 @@ public class SftpSupplierFactoryConfiguration {
 		private final Map<Object, SessionFactory<SftpClient.DirEntry>> factories = new HashMap<>();
 
 		DelegatingFactoryWrapper(SftpSupplierProperties properties, SessionFactory<SftpClient.DirEntry> defaultFactory,
-				BeanFactory beanFactory) {
-			properties.getFactories().forEach((key, factory) -> {
-				this.factories.put(key, SftpSupplierFactoryConfiguration.buildFactory(beanFactory, factory));
-			});
+				ApplicationContext applicationContext) {
+
+			properties.getFactories().forEach((key, factory) ->
+					this.factories.put(key, SftpSupplierFactoryConfiguration.buildFactory(applicationContext, factory)));
 			this.delegatingSessionFactory = new DelegatingSessionFactory<>(this.factories, defaultFactory);
 		}
 

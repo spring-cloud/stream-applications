@@ -18,14 +18,14 @@ package org.springframework.cloud.fn.consumer.sftp;
 
 import org.apache.sshd.sftp.client.SftpClient;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
+import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.file.remote.session.CachingSessionFactory;
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
-import org.springframework.lang.Nullable;
 
 /**
  * Session factory configuration.
@@ -41,7 +41,7 @@ public class SftpConsumerSessionFactoryConfiguration {
 	@ConditionalOnMissingBean
 	public SessionFactory<SftpClient.DirEntry> sftpSessionFactory(
 			SftpConsumerProperties properties,
-			@Value("#{${sftp.consumer.factory.known-hosts-expression:null}}") @Nullable Resource knownHosts) {
+			ApplicationContext applicationContext) {
 
 		DefaultSftpSessionFactory sftpSessionFactory = new DefaultSftpSessionFactory();
 		SftpConsumerProperties.Factory factory = properties.getFactory();
@@ -52,7 +52,12 @@ public class SftpConsumerSessionFactoryConfiguration {
 		sftpSessionFactory.setPrivateKey(factory.getPrivateKey());
 		sftpSessionFactory.setPrivateKeyPassphrase(factory.getPassPhrase());
 		sftpSessionFactory.setAllowUnknownKeys(factory.isAllowUnknownKeys());
-		sftpSessionFactory.setKnownHostsResource(knownHosts);
+		if (factory.getKnownHostsExpression() != null) {
+			String knownHostsLocation = factory.getKnownHostsExpression()
+					.getValue(IntegrationContextUtils.getEvaluationContext(applicationContext), String.class);
+			Resource knownHostsResource = applicationContext.getResource(knownHostsLocation);
+			sftpSessionFactory.setKnownHostsResource(knownHostsResource);
+		}
 		if (factory.getCacheSessions() != null) {
 			return new CachingSessionFactory<>(sftpSessionFactory);
 		}
