@@ -23,15 +23,12 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.junit.jupiter.api.Test;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.fn.common.xmpp.XmppConnectionFactoryConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -65,7 +62,7 @@ public class XmppConsumerConfigurationTests {
     private static final String TO = "dmfrey";
 
     @Autowired
-    Consumer<Message<?>> subject;
+    Consumer<Message<?>> xmppConsumer;
 
     @Autowired
     XMPPConnection xmppConnection;
@@ -78,35 +75,36 @@ public class XmppConsumerConfigurationTests {
 
         await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
                 .untilAsserted(() -> {
-                    subject.accept(testMessage);
+                    xmppConsumer.accept(testMessage);
 
                 });
     }
 
     private void assertStanza( final Stanza stanza ) {
 
-        log.debug( "Stanza Message Received: {}", stanza.toXML() );
+        log.debug("Stanza Message Received: {}", stanza.toXML());
         assertTo(stanza);
         assertFrom(stanza);
 
     }
+
     private void assertTo( final Stanza stanza ) {
 
-        assertThat( stanza.getTo().asBareJid().asUnescapedString() ).isEqualTo(TO);
-        log.debug( "Sending Message To: {}", stanza.getTo().asUnescapedString() );
+        assertThat(stanza.getTo().asBareJid().asUnescapedString()).isEqualTo(TO);
+        log.debug("Sending Message To: {}", stanza.getTo().asUnescapedString());
 
     }
 
     private void assertFrom( final Stanza stanza ) {
 
-        assertThat( stanza.getFrom().asBareJid().asUnescapedString() ).isEqualTo(FROM);
-        log.debug( "Message Sent From: {}", stanza.getFrom().asUnescapedString() );
+        assertThat(stanza.getFrom().asBareJid().asUnescapedString()).isEqualTo(FROM);
+        log.debug("Message Sent From: {}", stanza.getFrom().asUnescapedString());
 
     }
 
     @SpringBootConfiguration
     @EnableAutoConfiguration
-//    @Import(XmppConnectionFactoryConfiguration.class)
+    @Import(XmppConsumerConfiguration.class)
     static class XmppConsumerTestApplication { }
 
 }

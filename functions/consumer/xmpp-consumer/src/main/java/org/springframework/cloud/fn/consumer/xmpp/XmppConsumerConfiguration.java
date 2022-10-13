@@ -18,8 +18,10 @@ package org.springframework.cloud.fn.consumer.xmpp;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.xmpp.XmppConnectionFactoryConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.integration.xmpp.XmppHeaders;
 import org.springframework.integration.xmpp.outbound.ChatMessageSendingMessageHandler;
 import org.springframework.messaging.Message;
@@ -34,6 +36,7 @@ import java.util.function.Consumer;
  */
 @Configuration
 @EnableConfigurationProperties(XmppConsumerProperties.class)
+@Import(XmppConnectionFactoryConfiguration.class)
 public class XmppConsumerConfiguration {
 
 	@Bean
