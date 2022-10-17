@@ -13,7 +13,7 @@ The **$$log$$** $$sink$$ has the following options:
 
 
 //tag::configuration-properties[]
-$$log.expression$$:: $$A SpEL expression (against the incoming message) to evaluate as the logged message.$$ *($$String$$, default: `$$<none>$$`)*
+$$log.expression$$:: $$A SpEL expression (against the incoming message) to evaluate as the logged message.$$ *($$String$$, default: `$$payload$$`)*
 $$log.level$$:: $$The level at which to log messages.$$ *($$Level$$, default: `$$<none>$$`, possible values: `FATAL`,`ERROR`,`WARN`,`INFO`,`DEBUG`,`TRACE`)*
 $$log.name$$:: $$The name of the logger to use.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]

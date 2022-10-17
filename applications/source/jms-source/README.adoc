@@ -16,7 +16,7 @@ Properties grouped by prefix:
 $$client-id$$:: $$Client id for durable subscriptions.$$ *($$String$$, default: `$$<none>$$`)*
 $$destination$$:: $$The destination from which to receive messages (queue or topic).$$ *($$String$$, default: `$$<none>$$`)*
 $$message-selector$$:: $$A selector for messages.$$ *($$String$$, default: `$$<none>$$`)*
-$$session-transacted$$:: $$True to enable transactions and select a DefaultMessageListenerContainer, false to select a SimpleMessageListenerContainer.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$session-transacted$$:: $$True to enable transactions and select a DefaultMessageListenerContainer, false to select a SimpleMessageListenerContainer.$$ *($$Boolean$$, default: `$$true$$`)*
 $$subscription-durable$$:: $$True for a durable subscription.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$subscription-name$$:: $$The name of a durable or shared subscription.$$ *($$String$$, default: `$$<none>$$`)*
 $$subscription-shared$$:: $$True for a shared subscription.$$ *($$Boolean$$, default: `$$<none>$$`)*

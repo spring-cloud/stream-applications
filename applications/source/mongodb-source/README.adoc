@@ -19,9 +19,9 @@ Properties grouped by prefix:
 === mongodb.supplier
 
 $$collection$$:: $$The MongoDB collection to query.$$ *($$String$$, default: `$$<none>$$`)*
-$$query$$:: $$The MongoDB query.$$ *($$String$$, default: `$$<none>$$`)*
+$$query$$:: $$The MongoDB query.$$ *($$String$$, default: `$${ }$$`)*
 $$query-expression$$:: $$The SpEL expression in MongoDB query DSL style.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$split$$:: $$Whether to split the query result as individual messages.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$split$$:: $$Whether to split the query result as individual messages.$$ *($$Boolean$$, default: `$$true$$`)*
 $$update-expression$$:: $$The SpEL expression in MongoDB update DSL style.$$ *($$Expression$$, default: `$$<none>$$`)*
 
 === spring.data.mongodb

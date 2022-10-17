@@ -26,7 +26,7 @@ $$display-coordinates$$:: $$(SpEL expression) Whether or not to put a pin on the
 $$in-reply-to-status-id$$:: $$(SpEL expression) The ID of an existing text that the update is in reply to. Note: This parameter will be ignored unless the author of the Tweet this parameter references is mentioned within the text text. Therefore, you must include @username, where username is the author of the referenced Tweet, within the update. When inReplyToStatusId is set the auto_populate_reply_metadata is automatically set as well. Later ensures that leading @mentions will be looked up from the original Tweet, and added to the new Tweet from there. This wil append @mentions into the metadata of an extended Tweet as a reply chain grows, until the limit on @mentions is reached. In cases where the original Tweet has been deleted, the reply will fail.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$media-ids$$:: $$(SpEL expression) A comma-delimited list of media_ids to associate with the Tweet. You may include up to 4 photos or 1 animated GIF or 1 video in a Tweet. See Uploading Media for further details on uploading media.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$place-id$$:: $$(SpEL expression) A place in the world.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$text$$:: $$(SpEL expression) The text of the text update. URL encode as necessary. t.co link wrapping will affect character counts. Defaults to message's payload$$ *($$Expression$$, default: `$$<none>$$`)*
+$$text$$:: $$(SpEL expression) The text of the text update. URL encode as necessary. t.co link wrapping will affect character counts. Defaults to message's payload$$ *($$Expression$$, default: `$$payload$$`)*
 
 === twitter.update.location
 
