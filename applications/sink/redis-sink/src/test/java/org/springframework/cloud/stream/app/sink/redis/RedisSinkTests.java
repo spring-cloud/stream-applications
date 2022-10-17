@@ -25,6 +25,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.consumer.redis.RedisConsumerConfiguration;
+import org.springframework.cloud.fn.consumer.redis.RedisTestContainerSupport;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -40,8 +41,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Soby Chacko
  * @author Artem Bilan
+ * @author Chris Bono
  */
-public class RedisSinkTests {
+public class RedisSinkTests implements RedisTestContainerSupport {
 
 	@Test
 	public void testRedisSink() {
@@ -50,6 +52,7 @@ public class RedisSinkTests {
 						.getCompleteConfiguration(RedisSinkTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=redisConsumer",
+						"--spring.data.redis.url=" + RedisTestContainerSupport.getUri(),
 						"--redis.consumer.key=foo")) {
 
 			//Setup
