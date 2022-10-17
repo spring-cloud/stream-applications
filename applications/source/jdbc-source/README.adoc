@@ -18,9 +18,9 @@ Properties grouped by prefix:
 
 === jdbc.supplier
 
-$$max-rows$$:: $$Max numbers of rows to process for query.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$max-rows$$:: $$Max numbers of rows to process for query.$$ *($$Integer$$, default: `$$0$$`)*
 $$query$$:: $$The query to use to select data.$$ *($$String$$, default: `$$<none>$$`)*
-$$split$$:: $$Whether to split the SQL result as individual messages.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$split$$:: $$Whether to split the SQL result as individual messages.$$ *($$Boolean$$, default: `$$true$$`)*
 $$update$$:: $$An SQL update statement to execute for marking polled messages as 'seen'.$$ *($$String$$, default: `$$<none>$$`)*
 
 === spring.datasource
