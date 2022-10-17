@@ -18,7 +18,6 @@ package org.springframework.cloud.stream.app.source.jdbc;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.type.CollectionLikeType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -32,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Soby Chacko
  * @author Artem Bilan
+ * @author Chris Bono
  */
 @TestPropertySource(properties = {
 		"jdbc.supplier.query=select id, name, tag from test where tag is NULL order by id",
@@ -40,16 +40,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SelectAllNoSplitTests extends JdbcSourceIntegrationTests {
 
 	@Test
-	public void testExtraction() throws Exception {
-		Message<?> received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
-		assertThat(received).isNotNull();
-		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
-
+	public void testExtraction() {
 		CollectionLikeType valueType = TypeFactory.defaultInstance()
 				.constructCollectionLikeType(List.class, Map.class);
-
-		List<Map<?, ?>> payload = this.objectMapper.readValue((String) received.getPayload(), valueType);
-
+		Message<?> received = receiveMessage(10_000);
+		List<Map<?, ?>> payload = extractPayload(received, valueType);
 		assertThat(payload.size()).isEqualTo(3);
 		assertThat(payload.get(0).get("ID")).isEqualTo(1);
 		assertThat(payload.get(2).get("NAME")).isEqualTo("John");

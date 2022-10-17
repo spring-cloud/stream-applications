@@ -17,7 +17,6 @@
 package org.springframework.cloud.stream.app.source.jdbc;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -26,38 +25,33 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestPropertySource(properties = {"jdbc.supplier.query=select id, name from test order by id", "spring.cloud.stream.poller.fixedDelay=1"})
+/**
+ * @author Soby Chacko
+ * @author Chris Bono
+ */
+@TestPropertySource(properties = {
+		"jdbc.supplier.query=select id, name from test order by id",
+		"spring.cloud.stream.poller.fixedDelay=1"
+})
 public class SelectAllWithMinDelayTests extends JdbcSourceIntegrationTests {
 
 	@Test
-	public void testExtraction() throws Exception {
-		Message<?> received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
-		assertThat(received).isNotNull();
-		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
-
-		Map<?, ?> payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
-
+	public void testExtraction() {
+		Message<?> received = receiveMessage(10_000);
+		Map<?, ?> payload = extractPayload(received, Map.class);
 		assertThat(payload.get("ID")).isEqualTo(1);
-		received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
-		assertThat(received).isNotNull();
-		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
-		payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
 
+		received = receiveMessage(10_000);
+		payload = extractPayload(received, Map.class);
 		assertThat(payload.get("ID")).isEqualTo(2);
-		received = messageCollector.forChannel(output).poll(10, TimeUnit.SECONDS);
-		assertThat(received).isNotNull();
-		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
 
-		payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
-
+		received = receiveMessage(10_000);
+		payload = extractPayload(received, Map.class);
 		assertThat(payload.get("ID")).isEqualTo(3);
+
 		// should wrap around to the beginning
-		received = messageCollector.forChannel(output).poll(2, TimeUnit.SECONDS);
-		assertThat(received).isNotNull();
-		assertThat(received.getPayload().getClass()).isEqualTo(String.class);
-
-		payload = this.objectMapper.readValue((String) received.getPayload(), Map.class);
-
+		received = receiveMessage(10_000);
+		payload = extractPayload(received, Map.class);
 		assertThat(payload.get("ID")).isEqualTo(1);
 	}
 

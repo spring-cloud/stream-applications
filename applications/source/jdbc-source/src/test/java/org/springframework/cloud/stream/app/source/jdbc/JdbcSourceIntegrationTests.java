@@ -16,43 +16,74 @@
 
 package org.springframework.cloud.stream.app.source.jdbc;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.fn.supplier.jdbc.JdbcSupplierConfiguration;
-import org.springframework.cloud.stream.test.binder.MessageCollector;
+import org.springframework.cloud.stream.binder.test.OutputDestination;
+import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.lang.Nullable;
+import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Soby Chacko
  * @author Artem Bilan
+ * @author Chris Bono
  */
 @SpringBootTest(properties = "spring.cloud.function.definition=jdbcSupplier")
 @DirtiesContext
 public class JdbcSourceIntegrationTests {
 
 	@Autowired
-	protected ObjectMapper objectMapper;
-
-	@Qualifier("jdbcSupplier-out-0")
-	@Autowired
-	protected MessageChannel output;
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	protected JdbcOperations jdbcOperations;
 
 	@Autowired
-	protected MessageCollector messageCollector;
+	private OutputDestination outputDestination;
 
-	@SpringBootApplication
-	@Import(JdbcSupplierConfiguration.class)
-	public static class JdbcSourceTestApplication {
+	@Nullable
+	protected Message<?> receiveMessageMaybeNull(long timeoutMillis) {
+		return this.outputDestination.receive(timeoutMillis, "jdbcSupplier-out-0");
 	}
 
+	protected Message<?> receiveMessage(long timeoutMillis) {
+		Message<?> received = this.outputDestination.receive(timeoutMillis, "jdbcSupplier-out-0");
+		assertThat(received).isNotNull();
+		assertThat(received.getPayload().getClass()).isEqualTo(byte[].class);
+		return received;
+	}
+
+	protected <T> T extractPayload(Message<?> message, Class<T> type) {
+		try {
+			return this.objectMapper.readValue(new String((byte[]) message.getPayload()), type);
+		}
+		catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected <T> T extractPayload(Message<?> message, JavaType type) {
+		try {
+			return this.objectMapper.readValue(new String((byte[]) message.getPayload()), type);
+		}
+		catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SpringBootApplication
+	@Import({ JdbcSupplierConfiguration.class, TestChannelBinderConfiguration.class })
+	public static class JdbcSourceTestApplication {
+	}
 }
