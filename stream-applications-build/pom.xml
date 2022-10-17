@@ -53,7 +53,7 @@
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 		<mockserver.version>5.13.2</mockserver.version>
 
-		<groovy.version>3.0.10</groovy.version>
+		<groovy.version>4.0.5</groovy.version>
 		<jakarta-jms.version>3.1.0</jakarta-jms.version>
 		<activemq-broker.version>5.16.5</activemq-broker.version>
 		<embedded-mongo.version>3.4.8</embedded-mongo.version>
@@ -105,7 +105,7 @@
 				<type>pom</type>
 			</dependency>
 			<dependency>
-				<groupId>org.codehaus.groovy</groupId>
+				<groupId>org.apache.groovy</groupId>
 				<artifactId>groovy-bom</artifactId>
 				<version>${groovy.version}</version>
 				<type>pom</type>
