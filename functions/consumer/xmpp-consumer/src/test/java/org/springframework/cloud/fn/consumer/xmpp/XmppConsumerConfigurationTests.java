@@ -58,13 +58,13 @@ public class XmppConsumerConfigurationTests {
     private static final String TO = "dmfrey";
 
     @Autowired
-    Consumer<Message<?>> xmppConsumer;
+    private Consumer<Message<?>> xmppConsumer;
 
     @Autowired
-    XMPPConnection xmppConnection;
+    private XMPPConnection xmppConnection;
 
     @Test
-    void testMessageHandlerConfiguration() {
+    void messageHandlerConfiguration() {
         Message<?> testMessage = MessageBuilder.withPayload("test").build();
 
         xmppConnection.addAsyncStanzaListener(this::assertStanza, StanzaTypeFilter.MESSAGE);
