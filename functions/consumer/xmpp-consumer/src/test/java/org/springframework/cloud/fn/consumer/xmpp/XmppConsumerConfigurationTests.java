@@ -80,7 +80,7 @@ public class XmppConsumerConfigurationTests {
                 });
     }
 
-    private void assertStanza( final Stanza stanza ) {
+    private void assertStanza(Stanza stanza) {
 
         log.debug("Stanza Message Received: {}", stanza.toXML());
         assertTo(stanza);
@@ -88,14 +88,14 @@ public class XmppConsumerConfigurationTests {
 
     }
 
-    private void assertTo( final Stanza stanza ) {
+    private void assertTo(Stanza stanza) {
 
         assertThat(stanza.getTo().asBareJid().asUnescapedString()).isEqualTo(TO);
         log.debug("Sending Message To: {}", stanza.getTo().asUnescapedString());
 
     }
 
-    private void assertFrom( final Stanza stanza ) {
+    private void assertFrom(Stanza stanza) {
 
         assertThat(stanza.getFrom().asBareJid().asUnescapedString()).isEqualTo(FROM);
         log.debug("Message Sent From: {}", stanza.getFrom().asUnescapedString());
