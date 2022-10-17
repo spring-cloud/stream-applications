@@ -20,10 +20,10 @@ import java.util.function.Consumer;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.transfer.internal.S3ProgressListener;
+import io.awspring.cloud.core.env.ResourceIdResolver;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.aws.core.env.ResourceIdResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.aws.outbound.S3MessageHandler;
