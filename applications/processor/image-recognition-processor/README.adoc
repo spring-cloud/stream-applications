@@ -41,13 +41,13 @@ If the incoming type is `byte[]` and the content type is set to `application/oct
 == Options
 
 //tag::configuration-properties[]
-$$image.recognition.cache-model$$:: $$cache the pre-trained tensorflow model.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$image.recognition.debug-output$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$image.recognition.debug-output-path$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
-$$image.recognition.model$$:: $$pre-trained tensorflow image recognition model. Note that the model must match the selected model type!$$ *($$String$$, default: `$$<none>$$`)*
+$$image.recognition.cache-model$$:: $$cache the pre-trained tensorflow model.$$ *($$Boolean$$, default: `$$true$$`)*
+$$image.recognition.debug-output$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$false$$`)*
+$$image.recognition.debug-output-path$$:: $$<documentation missing>$$ *($$String$$, default: `$$image-recognition-result.png$$`)*
+$$image.recognition.model$$:: $$pre-trained tensorflow image recognition model. Note that the model must match the selected model type!$$ *($$String$$, default: `$$https://storage.googleapis.com/mobilenet_v2/checkpoints/mobilenet_v2_1.4_224.tgz#mobilenet_v2_1.4_224_frozen.pb$$`)*
 $$image.recognition.model-type$$:: $$Supports three different pre-trained tensorflow image recognition models: Inception, MobileNetV1 and MobileNetV2 1. Inception graph uses 'input' as input and 'output' as output. 2. MobileNetV2 pre-trained models: https://github.com/tensorflow/models/tree/master/research/slim/nets/mobilenet#pretrained-models 	 - normalized image size is always square (e.g. H=W) 	 - graph uses 'input' as input and 'MobilenetV2/Predictions/Reshape_1' as output.  3. MobileNetV1 pre-trained models: https://github.com/tensorflow/models/blob/master/research/slim/nets/mobilenet_v1.md#pre-trained-models 	 - graph uses 'input' as input and 'MobilenetV1/Predictions/Reshape_1' as output.$$ *($$ModelType$$, default: `$$<none>$$`, possible values: `inception`,`mobilenetv1`,`mobilenetv2`)*
-$$image.recognition.normalized-image-size$$:: $$Normalized image size.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$image.recognition.response-size$$:: $$number of recognized images.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$image.recognition.normalized-image-size$$:: $$Normalized image size.$$ *($$Integer$$, default: `$$224$$`)*
+$$image.recognition.response-size$$:: $$number of recognized images.$$ *($$Integer$$, default: `$$5$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

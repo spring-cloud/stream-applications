@@ -15,15 +15,15 @@ Properties grouped by prefix:
 
 === tcp
 
-$$nio$$:: $$Whether or not to use NIO.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$port$$:: $$The port on which to listen; 0 for the OS to choose a port.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$reverse-lookup$$:: $$Perform a reverse DNS lookup on the remote IP Address; if false, just the IP address is included in the message headers.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$socket-timeout$$:: $$The timeout (ms) before closing the socket when no data is received.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$use-direct-buffers$$:: $$Whether or not to use direct buffers.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$nio$$:: $$Whether or not to use NIO.$$ *($$Boolean$$, default: `$$false$$`)*
+$$port$$:: $$The port on which to listen; 0 for the OS to choose a port.$$ *($$Integer$$, default: `$$1234$$`)*
+$$reverse-lookup$$:: $$Perform a reverse DNS lookup on the remote IP Address; if false, just the IP address is included in the message headers.$$ *($$Boolean$$, default: `$$false$$`)*
+$$socket-timeout$$:: $$The timeout (ms) before closing the socket when no data is received.$$ *($$Integer$$, default: `$$120000$$`)*
+$$use-direct-buffers$$:: $$Whether or not to use direct buffers.$$ *($$Boolean$$, default: `$$false$$`)*
 
 === tcp.supplier
 
-$$buffer-size$$:: $$The buffer size used when decoding messages; larger messages will be rejected.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$buffer-size$$:: $$The buffer size used when decoding messages; larger messages will be rejected.$$ *($$Integer$$, default: `$$2048$$`)*
 $$decoder$$:: $$The decoder to use when receiving messages.$$ *($$Encoding$$, default: `$$<none>$$`, possible values: `CRLF`,`LF`,`NULL`,`STXETX`,`RAW`,`L1`,`L2`,`L4`)*
 //end::configuration-properties[]
 

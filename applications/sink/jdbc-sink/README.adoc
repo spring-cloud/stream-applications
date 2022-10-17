@@ -46,11 +46,11 @@ Properties grouped by prefix:
 
 === jdbc.consumer
 
-$$batch-size$$:: $$Threshold in number of messages when data will be flushed to database table.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$columns$$:: $$The comma separated colon-based pairs of column names and SpEL expressions for values to insert/update. Names are used at initialization time to issue the DDL.$$ *($$String$$, default: `$$<none>$$`)*
-$$idle-timeout$$:: $$Idle timeout in milliseconds when data is automatically flushed to database table.$$ *($$Long$$, default: `$$<none>$$`)*
-$$initialize$$:: $$'true', 'false' or the location of a custom initialization script for the table.$$ *($$String$$, default: `$$<none>$$`)*
-$$table-name$$:: $$The name of the table to write into.$$ *($$String$$, default: `$$<none>$$`)*
+$$batch-size$$:: $$Threshold in number of messages when data will be flushed to database table.$$ *($$Integer$$, default: `$$1$$`)*
+$$columns$$:: $$The comma separated colon-based pairs of column names and SpEL expressions for values to insert/update. Names are used at initialization time to issue the DDL.$$ *($$String$$, default: `$$payload:payload.toString()$$`)*
+$$idle-timeout$$:: $$Idle timeout in milliseconds when data is automatically flushed to database table.$$ *($$Long$$, default: `$$-1$$`)*
+$$initialize$$:: $$'true', 'false' or the location of a custom initialization script for the table.$$ *($$String$$, default: `$$false$$`)*
+$$table-name$$:: $$The name of the table to write into.$$ *($$String$$, default: `$$messages$$`)*
 
 === spring.datasource
 

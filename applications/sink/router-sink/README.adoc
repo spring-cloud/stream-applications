@@ -8,11 +8,11 @@ This application routes messages to named channels.
 The **$$router$$** $$sink$$ has the following options:
 
 //tag::configuration-properties[]
-$$router.default-output-channel$$:: $$Where to send un-routable messages.$$ *($$String$$, default: `$$<none>$$`)*
+$$router.default-output-channel$$:: $$Where to send un-routable messages.$$ *($$String$$, default: `$$nullChannel$$`)*
 $$router.destination-mappings$$:: $$Destination mappings as a new line delimited string of name-value pairs, e.g. 'foo=bar\n baz=car'.$$ *($$Properties$$, default: `$$<none>$$`)*
 $$router.expression$$:: $$The expression to be applied to the message to determine the channel(s) to route to. Note that the payload wire format for content types such as text, json or xml is byte[] not String!. Consult the documentation for how to handle byte array payload content.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$router.refresh-delay$$:: $$How often to check for script changes in ms (if present); < 0 means don't refresh.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$router.resolution-required$$:: $$Whether or not channel resolution is required.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$router.refresh-delay$$:: $$How often to check for script changes in ms (if present); < 0 means don't refresh.$$ *($$Integer$$, default: `$$60000$$`)*
+$$router.resolution-required$$:: $$Whether or not channel resolution is required.$$ *($$Boolean$$, default: `$$false$$`)*
 $$router.script$$:: $$The location of a groovy script that returns channels or channel mapping resolution keys.$$ *($$Resource$$, default: `$$<none>$$`)*
 $$router.variables$$:: $$Variable bindings as a new line delimited string of name-value pairs, e.g. 'foo=bar\n baz=car'.$$ *($$Properties$$, default: `$$<none>$$`)*
 $$router.variables-location$$:: $$The location of a properties file containing custom script variable bindings.$$ *($$Resource$$, default: `$$<none>$$`)*

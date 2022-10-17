@@ -43,14 +43,14 @@ The incoming type is `byte[]`, and the content type is `application/octet-stream
 == Options
 
 //tag::configuration-properties[]
-$$object.detection.cache-model$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$object.detection.confidence$$:: $$<documentation missing>$$ *($$Float$$, default: `$$<none>$$`)*
-$$object.detection.debug-output$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$object.detection.debug-output-path$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
-$$object.detection.labels$$:: $$Labels URI.$$ *($$String$$, default: `$$<none>$$`)*
-$$object.detection.model$$:: $$pre-trained tensorflow object detection model.$$ *($$String$$, default: `$$<none>$$`)*
+$$object.detection.cache-model$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$true$$`)*
+$$object.detection.confidence$$:: $$<documentation missing>$$ *($$Float$$, default: `$$0.4$$`)*
+$$object.detection.debug-output$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$false$$`)*
+$$object.detection.debug-output-path$$:: $$<documentation missing>$$ *($$String$$, default: `$$object-detection-result.png$$`)*
+$$object.detection.labels$$:: $$Labels URI.$$ *($$String$$, default: `$$https://storage.googleapis.com/scdf-tensorflow-models/object-detection/mscoco_label_map.pbtxt$$`)*
+$$object.detection.model$$:: $$pre-trained tensorflow object detection model.$$ *($$String$$, default: `$$https://download.tensorflow.org/models/object_detection/ssdlite_mobilenet_v2_coco_2018_05_09.tar.gz#frozen_inference_graph.pb$$`)*
 $$object.detection.response-size$$:: $$<documentation missing>$$ *($$Integer$$, default: `$$<none>$$`)*
-$$object.detection.with-masks$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$object.detection.with-masks$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$false$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
