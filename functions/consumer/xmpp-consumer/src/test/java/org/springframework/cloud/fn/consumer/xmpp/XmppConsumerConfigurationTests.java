@@ -48,15 +48,11 @@ import static org.awaitility.Awaitility.await;
                 "xmpp.factory.password=thisisatest",
                 "xmpp.factory.host=jabb3r.org",
                 "xmpp.factory.service-name=jabb3r.org",
-                "xmpp.consumer.chat-to=dmfrey",
-                "logging.level.org.springframework.integration=DEBUG",
-                "logging.level.org.springframework.cloud.fn.consumer.xmpp=DEBUG"
+                "xmpp.consumer.chat-to=dmfrey"
         }
 )
 @DirtiesContext
 public class XmppConsumerConfigurationTests {
-
-    private static final Logger log = LoggerFactory.getLogger(XmppConsumerConfigurationTests.class);
 
     private static final String FROM = "dmfrey";
     private static final String TO = "dmfrey";
@@ -82,7 +78,6 @@ public class XmppConsumerConfigurationTests {
 
     private void assertStanza(Stanza stanza) {
 
-        log.debug("Stanza Message Received: {}", stanza.toXML());
         assertTo(stanza);
         assertFrom(stanza);
 
@@ -91,14 +86,12 @@ public class XmppConsumerConfigurationTests {
     private void assertTo(Stanza stanza) {
 
         assertThat(stanza.getTo().asBareJid().asUnescapedString()).isEqualTo(TO);
-        log.debug("Sending Message To: {}", stanza.getTo().asUnescapedString());
 
     }
 
     private void assertFrom(Stanza stanza) {
 
         assertThat(stanza.getFrom().asBareJid().asUnescapedString()).isEqualTo(FROM);
-        log.debug("Message Sent From: {}", stanza.getFrom().asUnescapedString());
 
     }
 
