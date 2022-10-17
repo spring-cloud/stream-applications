@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.util.HashSet;
 
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -29,6 +30,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 @TestPropertySource(properties = {
 		"s3.supplier.list-only=true"
 })

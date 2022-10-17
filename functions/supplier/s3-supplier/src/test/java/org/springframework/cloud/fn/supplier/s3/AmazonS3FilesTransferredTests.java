@@ -18,6 +18,7 @@ package org.springframework.cloud.fn.supplier.s3;
 
 import java.io.File;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -27,6 +28,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 @TestPropertySource(properties = {"file.consumer.mode=ref",
 		"s3.supplier.filenameRegex=.*\\\\.test$"})
 public class AmazonS3FilesTransferredTests extends AbstractAwsS3SupplierMockTests {
