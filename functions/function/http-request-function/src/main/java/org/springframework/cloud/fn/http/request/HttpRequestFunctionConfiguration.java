@@ -25,13 +25,16 @@ import reactor.core.publisher.Flux;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.integration.config.IntegrationConverter;
 import org.springframework.messaging.Message;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;
+
 
 /**
  * Configuration for a {@link Function} that makes HTTP requests to a resource and for
@@ -48,6 +51,12 @@ public class HttpRequestFunctionConfiguration {
 	@Bean
 	public HttpRequestFunction httpRequestFunction(WebClient.Builder webClientBuilder, HttpRequestFunctionProperties properties) {
 		return new HttpRequestFunction(webClientBuilder.build(), properties);
+	}
+
+	@Bean
+	@IntegrationConverter
+	public Converter<String, HttpMethod> httpMethodConverter() {
+		return new HttpMethodConverter();
 	}
 
 	/**
@@ -109,4 +118,11 @@ public class HttpRequestFunctionConfiguration {
 
 	}
 
+	public static class HttpMethodConverter implements Converter<String, HttpMethod> {
+
+		@Override
+		public HttpMethod convert(String source) {
+			return HttpMethod.valueOf(source);
+		}
+	}
 }
