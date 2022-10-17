@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
+	<parent>
 		<groupId>org.springframework.cloud.stream.app</groupId>
-        <artifactId>stream-applications-core</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+		<artifactId>stream-applications-core</artifactId>
+		<version>4.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>stream-applications-test-support</artifactId>
-    <name>stream-applications-test-support</name>
+	<name>stream-applications-test-support</name>
 
 	<properties>
-		<rabbitmq-httpclient.version>3.12.1</rabbitmq-httpclient.version>
+		<rabbitmq-httpclient.version>4.1.2</rabbitmq-httpclient.version>
 		<apache-httpclient.version>4.5.13</apache-httpclient.version>
 	</properties>
 
@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
-		<optional>true</optional>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
