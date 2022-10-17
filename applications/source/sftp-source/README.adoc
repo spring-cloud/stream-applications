@@ -87,7 +87,7 @@ Properties grouped by prefix:
 
 === file.consumer
 
-$$markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$true$$`)*
+$$markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$mode$$:: $$The FileReadingMode to use for file reading sources. Values are 'ref' - The File object, 'lines' - a message per line, or 'contents' - the contents as bytes.$$ *($$FileReadingMode$$, default: `$$<none>$$`, possible values: `ref`,`lines`,`contents`)*
 $$with-markers$$:: $$Set to true to emit start of file/end of file marker messages before/after the data. Only valid with FileReadingMode 'lines'.$$ *($$Boolean$$, default: `$$<none>$$`)*
 
@@ -99,10 +99,6 @@ $$read-capacity$$:: $$Read capacity on the table.$$ *($$Long$$, default: `$$1$$`
 $$table$$:: $$Table name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 $$time-to-live$$:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
-
-=== metadata.store.gemfire
-
-$$region$$:: $$Gemfire region name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 
 === metadata.store.jdbc
 
@@ -119,7 +115,7 @@ $$key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 
 === metadata.store
 
-$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
+$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
 
 === metadata.store.zookeeper
 
