@@ -18,6 +18,7 @@ package org.springframework.cloud.fn.header.enricher;
 
 import java.util.function.Function;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ import static org.hamcrest.Matchers.equalTo;
 		"header.enricher.headers=foo='bar' \\n baz='fiz' \\n buz=payload \\n jaz=@value",
 		"header.enricher.overwrite = true" })
 @DirtiesContext
+@Disabled
 public class HeaderEnricherFunctionApplicationTests {
 
 	@Autowired
