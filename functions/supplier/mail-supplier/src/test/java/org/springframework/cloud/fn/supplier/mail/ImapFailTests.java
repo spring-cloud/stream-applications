@@ -17,6 +17,7 @@
 package org.springframework.cloud.fn.supplier.mail;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -29,6 +30,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 @TestPropertySource(properties = {
 		"mail.supplier.url=imap://user:pw@localhost:${test.mail.server.port}/INBOX",
 		"mail.supplier.charset=cp1251"})
