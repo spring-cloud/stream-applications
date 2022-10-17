@@ -165,7 +165,7 @@ public abstract class TwitterUsersFunctionTests {
 
 	@TestPropertySource(properties = {
 			"twitter.users.type=lookup",
-			"twitter.users.lookup.screenName=#jsonPath(payload,'$..[*].code')"
+			"twitter.users.lookup.screenName=#jsonPath(payload,'$[*].code')"
 	})
 	public static class TwitterLookupScreenNamePayloadTests extends TwitterUsersFunctionTests {
 
