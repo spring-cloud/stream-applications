@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.sink.router;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -30,6 +31,7 @@ import org.springframework.messaging.support.MessageBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 public class RouterSinkIntegrationTests {
 
 	@Test
