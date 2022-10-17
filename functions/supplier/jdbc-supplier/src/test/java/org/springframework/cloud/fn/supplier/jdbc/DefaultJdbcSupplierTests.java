@@ -91,6 +91,7 @@ public class DefaultJdbcSupplierTests {
 	void verifyNoIntMessageGroupTable() {
 		assertThatExceptionOfType(BadSqlGrammarException.class)
 				.isThrownBy(() -> this.jdbcTemplate.queryForList("SELECT * FROM INT_MESSAGE_GROUP"))
+				.havingCause()
 				.withMessageContaining("Table \"INT_MESSAGE_GROUP\" not found;");
 	}
 
