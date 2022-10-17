@@ -17,6 +17,7 @@
 		<module>ftp-common</module>
 		<module>function-test-support</module>
 		<module>metadata-store-common</module>
+		<module>mongodb-common</module>
 		<module>mqtt-common</module>
 		<module>redis-common</module>
 		<module>tcp-common</module>

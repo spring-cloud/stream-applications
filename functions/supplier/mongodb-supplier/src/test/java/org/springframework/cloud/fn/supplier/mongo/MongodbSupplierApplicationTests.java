@@ -33,7 +33,10 @@ import reactor.test.StepVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.fn.common.mongo.MongoDbTestContainerSupport;
 import org.springframework.messaging.Message;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
@@ -41,10 +44,15 @@ import static org.assertj.core.api.Assertions.entry;
 @SpringBootTest(properties = {
 		"mongodb.supplier.collection=testing",
 		"mongodb.supplier.query={ name: { $exists: true }}",
-		"mongodb.supplier.update-expression='{ $unset: { name: 0 } }'",
-		"spring.mongodb.embedded.version=3.5.5"
+		"mongodb.supplier.update-expression='{ $unset: { name: 0 } }'"
 })
-class MongodbSupplierApplicationTests {
+class MongodbSupplierApplicationTests implements MongoDbTestContainerSupport {
+
+	@DynamicPropertySource
+	static void mongoDbProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.data.mongodb.uri", MongoDbTestContainerSupport::mongoDbUri);
+		registry.add("spring.data.mongodb.database", () -> "test");
+	}
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
