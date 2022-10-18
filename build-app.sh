@@ -28,15 +28,15 @@ check_env VERSION
 ROOT_DIR=$PWD
 
 pushd $APP_FOLDER > /dev/null
-  $ROOT_DIR/mvnw clean install
+  $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml clean install
   rm -rf apps
   if [ -d "src/main/java" ]; then
-    $ROOT_DIR/mvnw deploy -U -Pintegration
+    $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml deploy -U -Pintegration
   else
-    $ROOT_DIR/mvnw package -U -Pintegration
+    $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml package -U -Pintegration
   fi
   pushd apps
-    $ROOT_DIR/mvnw package jib:build -DskipTests \
+    $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml package jib:build -DskipTests \
                   -Djib.to.tags="$VERSION" \
                   -Djib.httpTimeout=1800000 \
                   -Djib.to.auth.username="$DOCKER_HUB_USERNAME" \
