@@ -31,12 +31,12 @@ if [ "$VERBOSE" == "true" ]; then
 fi
 
 pushd $APP_FOLDER > /dev/null
-  $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean install
   rm -rf apps
+  $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean
   if [ -d "src/main/java" ]; then
-    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml deploy -U -Pintegration
+    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml install deploy -U -Pintegration
   else
-    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml package -U -Pintegration
+    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml install -U -Pintegration
   fi
   pushd apps
     $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml package jib:build -DskipTests \
