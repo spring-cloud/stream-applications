@@ -55,12 +55,25 @@ jobs:
             if ((MAX_PARALLEL == COUNT)); then
               MAX_PARALLEL=$((COUNT + 1))
             fi
-            echo "::set-output name=max_parallel=$MAX_PARALLEL"
-            echo "::set-output name=matrix=$(cat matrix.json)
-            echo "::set-output name=processors=$(jq '.processors' matrix.json)
-            echo "::set-output name=sinks=$(jq '.sinks' matrix.json)
-            echo "::set-output name=sources=$(jq '.sources' matrix.json)
+            export MAX_PARALLEL
+            export MATRIX=$(jq -c . matrix.json)
+            export PROCESSORS=$(jq -c '.processors' matrix.json)
+            export SINKS=$(jq -c '.sinks' matrix.json)
+            export SOURCES=$(jq -c '.sources' matrix.json)
+            if [ "${{ inputs.verbose }}" == "true" ]; then
+              echo "MAX_PARALLEL=$MAX_PARALLEL"
+              echo "MATRIX=$MATRIX"
+              echo "PROCESSORS=$PROCESSORS"
+              echo "SINKS=$SINKS"
+              echo "SOURCES=$SOURCES"
+            fi
           popd
+    outputs:
+      max_parallel: ${{ env.MAX_PARALLEL }}
+      sources: ${{ env.SOURCES }}
+      sinks: ${{ env.SINKS }}
+      processors: ${{ env.PROCESSORS }}
+      matrix: ${{ env.matrix }}
 #  scale-runners:
 #    runs-on: ubuntu-latest
 #    needs:
@@ -196,6 +209,7 @@ jobs:
           $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f applications/stream-applications-core -N -U
           echo "::notice ::core build completed"
   processors:
+    if: ${{ needs.parameters.outputs.processors != '' && needs.parameters.outputs.processors != null }}
     needs:
       - core
       - parameters
@@ -230,6 +244,7 @@ jobs:
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
         run: ./build-apps.sh "stream-applications/applications/processor/${{ matrix.app }}"
   sinks:
+    if: ${{ needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
     needs:
       - core
       - parameters
@@ -264,12 +279,13 @@ jobs:
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
         run: ./build-apps.sh "stream-applications/applications/sink/${{ matrix.app }}"
   sources:
+    if: ${{ needs.parameters.outputs.sources != '' && needs.parameters.outputs.sources != null }}
     needs:
       - core
       - parameters
     strategy:
       matrix:
-        app: ${{ fromJson(needs.build.outputs.sources) }}
+        app: ${{ fromJson(needs.parameters.outputs.sources) }}
     runs-on: ubuntu-latest
     steps:
       - name: 'Configure: checkout stream-applications'
