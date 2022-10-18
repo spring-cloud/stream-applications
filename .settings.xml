@@ -9,28 +9,10 @@
     </servers>
     <profiles>
         <profile>
-            <!--
-                N.B. this profile is only here to support users and IDEs that do not use Maven 3.3.
-                It isn't needed on the command line if you use the wrapper script (mvnw) or if you use
-                a native Maven with the right version. Eclipse users should point their Maven tooling to
-                this settings file, or copy the profile into their ~/.m2/settings.xml.
-            -->
             <id>spring</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <distributionManagement>
-                <repository>
-                    <id>repo.spring.io</id>
-                    <name>Spring Release Repository</name>
-                    <url>https://repo.spring.io/libs-release-local</url>
-                </repository>
-                <snapshotRepository>
-                    <id>repo.spring.io</id>
-                    <name>Spring Snapshot Repository</name>
-                    <url>https://repo.spring.io/libs-snapshot-local</url>
-                </snapshotRepository>
-            </distributionManagement>
             <repositories>
                 <repository>
                     <id>spring-snapshots</id>
@@ -61,7 +43,7 @@
                 <pluginRepository>
                     <id>spring-snapshots</id>
                     <name>Spring Snapshots</name>
-                    <url>https://repo.spring.io/libs-snapshot-local</url>
+                    <url>https://repo.spring.io/snapshot</url>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
@@ -69,7 +51,7 @@
                 <pluginRepository>
                     <id>spring-milestones</id>
                     <name>Spring Milestones</name>
-                    <url>https://repo.spring.io/libs-milestone-local</url>
+                    <url>https://repo.spring.io/milestone</url>
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>

@@ -28,20 +28,33 @@ check_env VERSION
 ROOT_DIR=$(realpath $PWD)
 if [ "$VERBOSE" == "true" ]; then
   MAVEN_OPT=--debug
+else
+  MAVEN_OPT=-q
 fi
 
 pushd $APP_FOLDER > /dev/null
+  echo "Entering:$(pwd)"
   rm -rf apps
   if [ -d "src/main/java" ]; then
+    echo "Deploying:$APP_FOLDER"
     $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean deploy -U -Pintegration
   else
+    echo "Packaging:$APP_FOLDER"
     $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean package -U -Pintegration
   fi
+  if [ ! -d apps ]; then
+    echo "Cannot find $APP_FOLDER/apps"
+    exit 2
+  fi
   pushd apps
+    echo "Entering:$(pwd)"
+    echo "Building:$APP_FOLDER/apps"
     $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml package jib:build -DskipTests \
                   -Djib.to.tags="$VERSION" \
                   -Djib.httpTimeout=1800000 \
                   -Djib.to.auth.username="$DOCKER_HUB_USERNAME" \
                   -Djib.to.auth.password="$DOCKER_HUB_PASSWORD"
+    echo "Leaving:$(pwd)"
   popd
+  echo "Leaving:$(pwd)"
 popd
