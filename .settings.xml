@@ -19,18 +19,6 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <distributionManagement>
-                <repository>
-                    <id>repo.spring.io</id>
-                    <name>Spring Release Repository</name>
-                    <url>https://repo.spring.io/libs-release-local</url>
-                </repository>
-                <snapshotRepository>
-                    <id>repo.spring.io</id>
-                    <name>Spring Snapshot Repository</name>
-                    <url>https://repo.spring.io/libs-snapshot-local</url>
-                </snapshotRepository>
-            </distributionManagement>
             <repositories>
                 <repository>
                     <id>spring-snapshots</id>
