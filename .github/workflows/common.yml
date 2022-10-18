@@ -219,6 +219,7 @@ jobs:
       - core
       - parameters
     strategy:
+      max-parallel: 4
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.processors) }}
     runs-on: ubuntu-latest
@@ -247,13 +248,14 @@ jobs:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
-        run: ./build-apps.sh "stream-applications/applications/processor/${{ matrix.app }}"
+        run: ./build-app.sh "stream-applications/applications/processor/${{ matrix.app }}"
   sinks:
     if: ${{ needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
     needs:
       - core
       - parameters
     strategy:
+      max-parallel: 4
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.sinks) }}
     runs-on: ubuntu-latest
@@ -282,13 +284,15 @@ jobs:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
-        run: ./build-apps.sh "stream-applications/applications/sink/${{ matrix.app }}"
+        run: ./build-app.sh "stream-applications/applications/sink/${{ matrix.app }}"
   sources:
     if: ${{ needs.parameters.outputs.sources != '' && needs.parameters.outputs.sources != null }}
     needs:
       - core
       - parameters
     strategy:
+      # will be removed when private runners are used.
+      max-parallel: 4
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.sources) }}
     runs-on: ubuntu-latest
@@ -317,7 +321,7 @@ jobs:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
-        run: ./build-apps.sh "stream-applications/applications/source/${{ matrix.app }}"
+        run: ./build-app.sh "stream-applications/applications/source/${{ matrix.app }}"
 #  scale-down-runners:
 #    if: ${{ success() }}
 #    runs-on: ubuntu-latest
