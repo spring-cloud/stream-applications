@@ -11,8 +11,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
-        <module>common</module>
 		<module>spring-functions-parent</module>
+        <module>common</module>
 		<module>consumer</module>
 		<module>function</module>
 		<module>supplier</module>

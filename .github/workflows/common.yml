@@ -13,6 +13,11 @@ on:
         required: false
         default: 'main'
         description: 'Version Tag'
+      verbose:
+        type: boolean
+        required: false
+        default: false
+        description: 'Verbose output'
     secrets:
       DOCKER_HUB_USERNAME:
       DOCKER_HUB_PASSWORD:
@@ -39,6 +44,8 @@ jobs:
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
       - name: 'Configure: create streams applications matrix'
         shell: bash
+        env:
+          VERBOSE: ${{ inputs.verbose && 'true' || '' }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
@@ -180,13 +187,13 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           echo "::notice ::building - stream-applications-build"
-          $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml deploy -f stream-applications-build -U
+          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f stream-applications-build -U
           echo "::notice ::building - functions"
-          $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml deploy -f functions -N -U
+          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f functions -N -U
           echo "::notice ::building - function-dependencies"
-          $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml deploy -f functions/function-dependencies -N -U
+          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f functions/function-dependencies -N -U
           echo "::notice ::building - stream-applications-core"
-          $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml deploy -f applications/stream-applications-core -N -U
+          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f applications/stream-applications-core -N -U
           echo "::notice ::core build completed"
   processors:
     needs:

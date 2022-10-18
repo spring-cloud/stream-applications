@@ -25,18 +25,21 @@ check_env DOCKER_HUB_USERNAME
 check_env DOCKER_HUB_PASSWORD
 check_env VERSION
 
-ROOT_DIR=$PWD
+ROOT_DIR=$(realpath $PWD)
+if [ "$VERBOSE" == "true" ]; then
+  MAVEN_OPT=--debug
+fi
 
 pushd $APP_FOLDER > /dev/null
-  $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml clean install
+  $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean install
   rm -rf apps
   if [ -d "src/main/java" ]; then
-    $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml deploy -U -Pintegration
+    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml deploy -U -Pintegration
   else
-    $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml package -U -Pintegration
+    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml package -U -Pintegration
   fi
   pushd apps
-    $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml package jib:build -DskipTests \
+    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml package jib:build -DskipTests \
                   -Djib.to.tags="$VERSION" \
                   -Djib.httpTimeout=1800000 \
                   -Djib.to.auth.username="$DOCKER_HUB_USERNAME" \
