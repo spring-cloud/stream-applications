@@ -40,7 +40,7 @@ jobs:
       - name: 'Configure: create streams applications matrix'
         shell: bash
         run: |
-          ROOT_DIR=$PWD
+          ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
             $ROOT_DIR/create-matrixes.sh
             COUNT=$(jq '.count' matrix.json)
@@ -178,14 +178,15 @@ jobs:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
         run: |
+          ROOT_DIR=$(realpath $PWD)
           echo "::notice ::building - stream-applications-build"
-          ./mvnw deploy -f stream-applications-build -U
+          $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml deploy -f stream-applications-build -U
           echo "::notice ::building - functions"
-          ./mvnw deploy -f functions -N -U
+          $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml deploy -f functions -N -U
           echo "::notice ::building - function-dependencies"
-          ./mvnw deploy -f functions/function-dependencies -N -U
+          $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml deploy -f functions/function-dependencies -N -U
           echo "::notice ::building - stream-applications-core"
-          ./mvnw deploy -f applications/stream-applications-core -N -U
+          $ROOT_DIR/mvnw -s $ROOT_DIR/.settings.xml deploy -f applications/stream-applications-core -N -U
           echo "::notice ::core build completed"
   processors:
     needs:
