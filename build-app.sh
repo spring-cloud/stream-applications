@@ -12,7 +12,7 @@ function check_env() {
   fi
 }
 if [ "$1" == "" ]; then
-  echo "Application folder required"
+  echo "Argument: application-folder required"
   if((sourced > 0)); then
     exit 0
   else
@@ -23,6 +23,8 @@ APP_FOLDER=$1
 
 check_env DOCKER_HUB_USERNAME
 check_env DOCKER_HUB_PASSWORD
+check_env CI_DEPLOY_USERNAME
+check_env CI_DEPLOY_PASSWORD
 check_env VERSION
 
 ROOT_DIR=$(realpath $PWD)
@@ -33,7 +35,6 @@ else
 fi
 
 pushd $APP_FOLDER > /dev/null
-  echo "Entering:$(pwd)"
   rm -rf apps
   if [ -d "src/main/java" ]; then
     echo "Deploying:$APP_FOLDER"
@@ -47,14 +48,12 @@ pushd $APP_FOLDER > /dev/null
     exit 2
   fi
   pushd apps
-    echo "Entering:$(pwd)"
     echo "Building:$APP_FOLDER/apps"
-    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml package jib:build -DskipTests \
+    ./mvnw $MAVEN_OPT install deploy -U -Pintegration
+    ./mvnw $MAVEN_OPT package jib:build -DskipTests \
                   -Djib.to.tags="$VERSION" \
                   -Djib.httpTimeout=1800000 \
                   -Djib.to.auth.username="$DOCKER_HUB_USERNAME" \
                   -Djib.to.auth.password="$DOCKER_HUB_PASSWORD"
-    echo "Leaving:$(pwd)"
   popd
-  echo "Leaving:$(pwd)"
 popd

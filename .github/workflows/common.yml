@@ -54,8 +54,7 @@ jobs:
             MAX_PARALLEL=$((5 * COUNT / 4))
             if ((MAX_PARALLEL == COUNT)); then
               MAX_PARALLEL=$((COUNT + 1))
-            fi
-            
+            fi            
             MATRIX=$(jq -c . matrix.json)
             PROCESSORS=$(jq -c '.processors' matrix.json)
             SINKS=$(jq -c '.sinks' matrix.json)
@@ -213,6 +212,7 @@ jobs:
           echo "::notice ::building - stream-applications-core"
           $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f applications/stream-applications-core -N -U
           echo "::notice ::core build completed"
+  # Build and tests apps and publishes to repo and creates container
   processors:
     if: ${{ needs.parameters.outputs.processors != '' && needs.parameters.outputs.processors != null }}
     needs:
