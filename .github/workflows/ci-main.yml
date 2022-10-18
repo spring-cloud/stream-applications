@@ -2,6 +2,11 @@ name: 'CI - Main'
 
 on:
   workflow_dispatch:
+    inputs:
+      verbose:
+        default: 'false'
+        description: 'Verbose output'
+        required: false
 
 jobs:
   build:
@@ -16,3 +21,4 @@ jobs:
     with:
       version: 'main'
       branch: 'main'
+      verbose: ${{ inputs.verbose == 'true' }}
