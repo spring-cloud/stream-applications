@@ -32,11 +32,10 @@ fi
 
 pushd $APP_FOLDER > /dev/null
   rm -rf apps
-  $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean
   if [ -d "src/main/java" ]; then
-    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml install deploy -U -Pintegration
+    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean deploy -U -Pintegration
   else
-    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml install -U -Pintegration
+    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean package -U -Pintegration
   fi
   pushd apps
     $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml package jib:build -DskipTests \
