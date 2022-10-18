@@ -18,7 +18,12 @@ if [ "$VERBOSE" == "true" ]; then
 else
   MAVEN_OPT=-q
 fi
-./mvnw $MAVEN_OPT -s ./.settings.xml install deploy -f stream-applications-build -U
-./mvnw $MAVEN_OPT -s ./.settings.xml install deploy -f functions -N -U
-./mvnw $MAVEN_OPT -s ./.settings.xml install deploy -f functions/function-dependencies -N -U
-./mvnw $MAVEN_OPT -s ./.settings.xml install deploy -f applications/stream-applications-core -N -U
+if [ "$LOCAL" == "true" ]; then
+  MAVEN_GOAL="install"
+else
+  MAVEN_GOAL="install deploy"
+fi
+./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f stream-applications-build -U
+./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f functions -N -U
+./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f functions/function-dependencies -N -U
+./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f applications/stream-applications-core -N -U

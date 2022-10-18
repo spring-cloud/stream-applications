@@ -34,26 +34,32 @@ else
   MAVEN_OPT=-q
 fi
 
+if [ "$LOCAL" == "true" ]; then
+  MAVEN_GOAL="install"
+else
+  MAVEN_GOAL="install deploy"
+fi
+
 pushd $APP_FOLDER > /dev/null
   rm -rf apps
   if [ -d "src/main/java" ]; then
     echo "Deploying:$APP_FOLDER"
-    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean deploy -U -Pintegration
+    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean $MAVEN_GOAL -U -Pintegration
   else
     echo "Packaging:$APP_FOLDER"
-    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean package -U -Pintegration
+    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean install -U -Pintegration
   fi
   if [ ! -d apps ]; then
     echo "Cannot find $APP_FOLDER/apps"
     exit 2
   fi
-  pushd apps
+  pushd apps > /dev/null
     echo "Building:$APP_FOLDER/apps"
-    ./mvnw $MAVEN_OPT install deploy -U -Pintegration
+    ./mvnw $MAVEN_OPT $MAVEN_GOAL -U -Pintegration
     ./mvnw $MAVEN_OPT package jib:build -DskipTests \
                   -Djib.to.tags="$VERSION" \
                   -Djib.httpTimeout=1800000 \
                   -Djib.to.auth.username="$DOCKER_HUB_USERNAME" \
                   -Djib.to.auth.password="$DOCKER_HUB_PASSWORD"
-  popd
-popd
+  popd > /dev/null
+popd > /dev/null
