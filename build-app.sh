@@ -38,7 +38,8 @@ pushd $APP_FOLDER > /dev/null
     $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean package -U -Pintegration
   fi
   pushd apps
-    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml package jib:build -DskipTests \
+    ./mvnw $MAVEN_OPT install deploy -U -Pintegration
+    ./mvnw $MAVEN_OPT package jib:build -DskipTests \
                   -Djib.to.tags="$VERSION" \
                   -Djib.httpTimeout=1800000 \
                   -Djib.to.auth.username="$DOCKER_HUB_USERNAME" \
