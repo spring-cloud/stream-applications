@@ -42,11 +42,6 @@
                 <artifactId>ftp-supplier</artifactId>
                <version>${project.version}</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>org.springframework.cloud.fn</groupId>-->
-<!--                <artifactId>geode-supplier</artifactId>-->
-<!--               <version>${project.version}</version>-->
-<!--            </dependency>-->
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>http-supplier</artifactId>
@@ -142,11 +137,6 @@
                 <artifactId>ftp-consumer</artifactId>
                <version>${project.version}</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>org.springframework.cloud.fn</groupId>-->
-<!--                <artifactId>geode-consumer</artifactId>-->
-<!--               <version>${project.version}</version>-->
-<!--            </dependency>-->
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>jdbc-consumer</artifactId>
