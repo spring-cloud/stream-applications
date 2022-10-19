@@ -17,7 +17,6 @@
 package org.springframework.cloud.stream.app.processor.header.enricher;
 
 import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -40,7 +39,6 @@ import static org.hamcrest.Matchers.equalTo;
  * @author Christian Tzolov
  * @author Soby Chacko
  */
-@Disabled
 public class HeaderEnricherProcessorTests {
 
 	@Test
