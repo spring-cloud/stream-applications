@@ -29,8 +29,10 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.jxmpp.stringprep.XmppStringprepException;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -40,6 +42,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.integration.xmpp.XmppHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
@@ -58,8 +61,7 @@ import static org.awaitility.Awaitility.await;
 				"xmpp.factory.password=secret",
 				"xmpp.factory.host=localhost",
 				"xmpp.factory.service-name=localhost",
-				"xmpp.consumer.chat-to=jane@localhost",
-				"xmpp.consumer.chat-from=john@localhost"
+				"xmpp.factory.security-mode=disabled"
 		}
 )
 @DirtiesContext
@@ -81,7 +83,10 @@ public class XmppConsumerConfigurationTests {
 	@Autowired
 	private Consumer<Message<?>> xmppConsumer;
 
+	// A client connection is needed to receive the message from the xmpp server
+	//   to verify it was received successfully
 	private XMPPTCPConnection clientConnection;
+
 	@BeforeEach
 	void setup() throws IOException, SmackException, XMPPException, InterruptedException {
 
@@ -99,14 +104,44 @@ public class XmppConsumerConfigurationTests {
 
 	}
 
+	@AfterEach
+	void teardown() {
+
+		this.clientConnection.instantShutdown();
+
+	}
+
 	@Test
-	void messageHandlerConfiguration() throws IOException {
+	void messageHandlerConfiguration() {
 
 		StanzaCollector collector
 				= this.clientConnection.createStanzaCollector(StanzaTypeFilter.MESSAGE);
 
 		Message<?> testMessage =
 				MessageBuilder.withPayload("test")
+						.setHeader(XmppHeaders.TO, TO + "@" + SERVICE_NAME)
+						.build();
+
+		await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
+				.untilAsserted(() -> {
+
+					xmppConsumer.accept(testMessage);
+
+					Stanza stanza = collector.nextResult();
+					assertStanza(stanza);
+
+				});
+
+	}
+
+	@Test
+	void xmppMessageHandlerConfiguration() throws XmppStringprepException {
+
+		StanzaCollector collector
+				= this.clientConnection.createStanzaCollector(StanzaTypeFilter.MESSAGE);
+
+		Message<?> testMessage =
+				MessageBuilder.withPayload(org.jivesoftware.smack.packet.MessageBuilder.buildMessage().addBody("en_us", "test").to(TO + "@" + SERVICE_NAME).build())
 						.build();
 
 		await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
