@@ -16,7 +16,10 @@
 
 package org.springframework.cloud.fn.consumer.xmpp;
 
+import java.util.function.Consumer;
+
 import org.jivesoftware.smack.XMPPConnection;
+
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.fn.common.xmpp.XmppConnectionFactoryConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -26,8 +29,6 @@ import org.springframework.integration.xmpp.XmppHeaders;
 import org.springframework.integration.xmpp.outbound.ChatMessageSendingMessageHandler;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
-
-import java.util.function.Consumer;
 
 /**
  *
@@ -51,7 +52,9 @@ public class XmppConsumerConfiguration {
 
 			Message<?> send = MessageBuilder
 					.fromMessage(message)
+					.copyHeaders(message.getHeaders())
 					.setHeader(XmppHeaders.TO, properties.getChatTo())
+					.setHeader(XmppHeaders.FROM, properties.getChatFrom())
 					.build();
 			chatMessageSendingMessageHandler.handleMessage(send);
 		};

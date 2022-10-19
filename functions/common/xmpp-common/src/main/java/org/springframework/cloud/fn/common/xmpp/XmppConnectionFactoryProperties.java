@@ -18,6 +18,7 @@ package org.springframework.cloud.fn.common.xmpp;
 
 import jakarta.validation.constraints.NotEmpty;
 import org.jivesoftware.smack.roster.Roster;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 

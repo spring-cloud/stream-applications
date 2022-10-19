@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  Openfire:
+    image: fishbowler/openfire:latest
+    ports:
+      - "5222:5222"
+      - "7777:7777"
+      - "9090:9090"
+    volumes:
+      - ./_data/openfire:/var/lib/openfire
+    command:
+      - -demoboot

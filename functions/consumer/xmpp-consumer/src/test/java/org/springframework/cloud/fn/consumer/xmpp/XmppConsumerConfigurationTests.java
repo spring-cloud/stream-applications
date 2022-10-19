@@ -16,15 +16,25 @@
 
 package org.springframework.cloud.fn.consumer.xmpp;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.function.Consumer;
 
-import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.StanzaCollector;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -43,61 +53,94 @@ import static org.awaitility.Awaitility.await;
  * @since 4.0.0
  */
 @SpringBootTest(
-        properties = {
-                "xmpp.factory.user=dmfrey",
-                "xmpp.factory.password=thisisatest",
-                "xmpp.factory.host=jabb3r.org",
-                "xmpp.factory.service-name=jabb3r.org",
-                "xmpp.consumer.chat-to=dmfrey"
-        }
+		properties = {
+				"xmpp.factory.user=john",
+				"xmpp.factory.password=secret",
+				"xmpp.factory.host=localhost",
+				"xmpp.factory.service-name=localhost",
+				"xmpp.consumer.chat-to=jane@localhost",
+				"xmpp.consumer.chat-from=john@localhost"
+		}
 )
 @DirtiesContext
+@Testcontainers
 public class XmppConsumerConfigurationTests {
 
-    private static final String FROM = "dmfrey";
-    private static final String TO = "dmfrey";
+	private static final String XMPP_HOST = "localhost";
+	private static final int XMPP_PORT = 5222;
+	private static final String FROM = "john";
+	private static final String TO = "jane";
+	private static final String TO_PW = "secret";
+	private static final String SERVICE_NAME = "localhost";
 
-    @Autowired
-    private Consumer<Message<?>> xmppConsumer;
+	@Container
+	private static final DockerComposeContainer XMPP_CONTAINER =
+			new DockerComposeContainer(new File("src/test/docker-compose/xmpp/docker-compose.yml"))
+					.withExposedService("Openfire", XMPP_PORT);
 
-    @Autowired
-    private XMPPConnection xmppConnection;
+	@Autowired
+	private Consumer<Message<?>> xmppConsumer;
 
-    @Test
-    void messageHandlerConfiguration() {
-        Message<?> testMessage = MessageBuilder.withPayload("test").build();
+	private XMPPTCPConnection clientConnection;
+	@BeforeEach
+	void setup() throws IOException, SmackException, XMPPException, InterruptedException {
 
-        xmppConnection.addAsyncStanzaListener(this::assertStanza, StanzaTypeFilter.MESSAGE);
+		XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
+		builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
+		builder.setHost(XMPP_HOST);
+		builder.setPort(XMPP_PORT);
+		builder.setResource(SERVICE_NAME);
+		builder.setUsernameAndPassword(TO, TO_PW)
+				.setXmppDomain(SERVICE_NAME);
 
-        await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
-                .untilAsserted(() -> {
-                    xmppConsumer.accept(testMessage);
+		this.clientConnection = new XMPPTCPConnection(builder.build());
+		this.clientConnection.connect();
+		this.clientConnection.login();
 
-                });
-    }
+	}
 
-    private void assertStanza(Stanza stanza) {
+	@Test
+	void messageHandlerConfiguration() throws IOException {
 
-        assertTo(stanza);
-        assertFrom(stanza);
+		StanzaCollector collector
+				= this.clientConnection.createStanzaCollector(StanzaTypeFilter.MESSAGE);
 
-    }
+		Message<?> testMessage =
+				MessageBuilder.withPayload("test")
+						.build();
 
-    private void assertTo(Stanza stanza) {
+		await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
+				.untilAsserted(() -> {
 
-        assertThat(stanza.getTo().asBareJid().asUnescapedString()).isEqualTo(TO);
+					xmppConsumer.accept(testMessage);
 
-    }
+					Stanza stanza = collector.nextResult();
+					assertStanza(stanza);
 
-    private void assertFrom(Stanza stanza) {
+				});
 
-        assertThat(stanza.getFrom().asBareJid().asUnescapedString()).isEqualTo(FROM);
+	}
 
-    }
+	private void assertStanza(Stanza stanza) {
+		assertTo(stanza);
+		assertFrom(stanza);
+	}
 
-    @SpringBootConfiguration
-    @EnableAutoConfiguration
-    @Import(XmppConsumerConfiguration.class)
-    static class XmppConsumerTestApplication { }
+	private void assertTo(Stanza stanza) {
+
+		assertThat(stanza.getTo().asBareJid().asUnescapedString()).isEqualTo(TO + "@" + SERVICE_NAME);
+
+	}
+
+	private void assertFrom(Stanza stanza) {
+
+		assertThat(stanza.getFrom().asBareJid().asUnescapedString()).isEqualTo(FROM + "@" + SERVICE_NAME);
+
+	}
+
+	@SpringBootConfiguration
+	@EnableAutoConfiguration
+	@Import(XmppConsumerConfiguration.class)
+	static class XmppConsumerTestApplication { }
 
 }
