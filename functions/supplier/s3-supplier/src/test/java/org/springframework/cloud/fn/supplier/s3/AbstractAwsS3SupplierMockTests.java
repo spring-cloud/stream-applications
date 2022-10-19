@@ -59,7 +59,8 @@ import static org.mockito.Mockito.mock;
 				"cloud.aws.credentials.secretKey=" + AbstractAwsS3SupplierMockTests.AWS_SECRET_KEY,
 				"cloud.aws.region.static=" + AbstractAwsS3SupplierMockTests.AWS_REGION,
 				"s3.common.endpointUrl=foo",
-				"s3.supplier.remoteDir=" + AbstractAwsS3SupplierMockTests.S3_BUCKET})
+				"s3.supplier.remoteDir=" + AbstractAwsS3SupplierMockTests.S3_BUCKET
+		})
 @DirtiesContext
 @SpringIntegrationTest(noAutoStartup = "*")
 public abstract class AbstractAwsS3SupplierMockTests {
@@ -158,5 +159,7 @@ public abstract class AbstractAwsS3SupplierMockTests {
 			}
 			return amazonS3;
 		}
+
 	}
+
 }

@@ -14,8 +14,8 @@
     <description>metadata-store common</description>
 
     <properties>
-        <aws-java-sdk.version>1.11.951</aws-java-sdk.version>
-        <spring-integration-aws.version>2.5.0</spring-integration-aws.version>
+        <aws-java-sdk.version>1.12.322</aws-java-sdk.version>
+        <spring-integration-aws.version>2.5.2</spring-integration-aws.version>
         <spring-integration-hazelcast.version>3.0.0</spring-integration-hazelcast.version>
         <curator.version>4.0.1</curator.version>
     </properties>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 the original author or authors.
+ * Copyright 2016-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,25 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.cloud.aws.context.annotation.ConditionalOnMissingAmazonClient;
-import org.springframework.cloud.aws.core.region.RegionProvider;
+
+import io.awspring.cloud.autoconfigure.context.ContextCredentialsAutoConfiguration;
+import io.awspring.cloud.autoconfigure.context.ContextRegionProviderAutoConfiguration;
+import io.awspring.cloud.context.annotation.ConditionalOnMissingAmazonClient;
+import io.awspring.cloud.context.config.annotation.ContextDefaultConfigurationRegistrar;
+import io.awspring.cloud.core.region.RegionProvider;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author Artem Bilan
  */
 @AutoConfiguration
 @ConditionalOnMissingAmazonClient(AmazonS3.class)
+@Import({
+		ContextCredentialsAutoConfiguration.class,
+		ContextDefaultConfigurationRegistrar.class,
+		ContextRegionProviderAutoConfiguration.class
+})
 public class AmazonS3Configuration {
 
 	@Bean
