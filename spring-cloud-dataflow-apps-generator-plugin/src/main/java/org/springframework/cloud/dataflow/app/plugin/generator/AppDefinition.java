@@ -222,7 +222,7 @@ public class AppDefinition {
 
 		private String tag = "latest";
 
-		private String baseImage = "springcloud/baseimage:1.0.0";
+		private String baseImage = "springcloud/baseimage:1.0.4";
 
 		public ContainerImageFormat getFormat() {
 			return format;

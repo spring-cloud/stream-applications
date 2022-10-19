@@ -21,7 +21,7 @@
 		<spring-cloud-dependencies.version>Hoxton.RELEASE</spring-cloud-dependencies.version>
 		<spring-cloud-stream-dependencies.version>Horsham.SR2</spring-cloud-stream-dependencies.version>
 		<spring-cloud-function-dependencies.version>3.0.2.RELEASE</spring-cloud-function-dependencies.version>
-		<apps.base-image>springcloud/baseimage:1.0.0</apps.base-image>
+		<apps.base-image>springcloud/baseimage:1.0.4</apps.base-image>
 	</properties>
 
 	<build>
