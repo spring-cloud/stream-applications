@@ -40,7 +40,7 @@ public class XmppConnectionFactoryConfiguration {
 		xmppConnectionFactoryBean.setSubscriptionMode(properties.getSubscriptionMode());
 
 		XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
-		builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
+		builder.setSecurityMode(properties.getSecurityMode());
 		builder.setHost(properties.getHost());
 		builder.setPort(properties.getPort());
 		if (StringUtils.hasText(properties.getResource())) {

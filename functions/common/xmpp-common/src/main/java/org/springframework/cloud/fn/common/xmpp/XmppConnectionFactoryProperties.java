@@ -17,6 +17,7 @@
 package org.springframework.cloud.fn.common.xmpp;
 
 import jakarta.validation.constraints.NotEmpty;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.roster.Roster;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -65,9 +66,8 @@ public class XmppConnectionFactoryProperties {
 
 	private Roster.SubscriptionMode subscriptionMode = Roster.getDefaultSubscriptionMode();
 
-	/**
-	 * @param resource the XMPP to bind to.
-	 */
+	private ConnectionConfiguration.SecurityMode securityMode = ConnectionConfiguration.SecurityMode.required;
+
 	public void setResource(String resource) {
 		this.resource = resource;
 	}
@@ -76,9 +76,6 @@ public class XmppConnectionFactoryProperties {
 		return resource;
 	}
 
-	/**
-	 * @param user the user to connect as.
-	 */
 	public void setUser(String user) {
 		this.user = user;
 	}
@@ -88,9 +85,6 @@ public class XmppConnectionFactoryProperties {
 		return user;
 	}
 
-	/**
-	 * @param password the user's password.
-	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -100,9 +94,6 @@ public class XmppConnectionFactoryProperties {
 		return password;
 	}
 
-	/**
-	 * @param serviceName the xmpp domain to set.
-	 */
 	public void setServiceName(String serviceName) {
 		this.serviceName = serviceName;
 	}
@@ -111,10 +102,6 @@ public class XmppConnectionFactoryProperties {
 		return serviceName;
 	}
 
-	/**
-	 * @param host the XMPP host to connect to.
-	 *
-	 */
 	public void setHost(String host) {
 		this.host = host;
 	}
@@ -124,9 +111,6 @@ public class XmppConnectionFactoryProperties {
 		return host;
 	}
 
-	/**
-	 * @param port the XMPP port to connect to.
-	 */
 	public void setPort(int port) {
 		this.port = port;
 	}
@@ -135,15 +119,20 @@ public class XmppConnectionFactoryProperties {
 		return port;
 	}
 
-	/**
-	 * @param subscriptionMode the {@link Roster.SubscriptionMode} to use.
-	 */
 	public void setSubscriptionMode(Roster.SubscriptionMode subscriptionMode) {
 		this.subscriptionMode = subscriptionMode;
 	}
 
 	public Roster.SubscriptionMode getSubscriptionMode() {
 		return subscriptionMode;
+	}
+
+	public void setSecurityMode(ConnectionConfiguration.SecurityMode securityMode) {
+		this.securityMode = securityMode;
+	}
+
+	public ConnectionConfiguration.SecurityMode getSecurityMode() {
+		return securityMode;
 	}
 
 }
