@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.fn.consumer.xmpp;
 
-import jakarta.validation.constraints.NotEmpty;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -35,27 +33,12 @@ public class XmppConsumerProperties {
 	 */
 	private String chatTo;
 
-	/**
-	 * XMPP handle to send message from.
-	 */
-	private String chatFrom;
-
 	public void setChatTo(String chatTo) {
 		this.chatTo = chatTo;
 	}
 
-	@NotEmpty(message = "chatTo is required")
 	public String getChatTo() {
 		return chatTo;
-	}
-
-	public void setChatFrom(String chatFrom) {
-		this.chatFrom = chatFrom;
-	}
-
-	@NotEmpty(message = "chatFrom is required")
-	public String getChatFrom() {
-		return chatFrom;
 	}
 
 }

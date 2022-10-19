@@ -52,11 +52,11 @@ public class XmppConsumerConfiguration {
 
 			Message<?> send = MessageBuilder
 					.fromMessage(message)
-					.copyHeaders(message.getHeaders())
-					.setHeader(XmppHeaders.TO, properties.getChatTo())
-					.setHeader(XmppHeaders.FROM, properties.getChatFrom())
+					.setHeaderIfAbsent(XmppHeaders.TO, properties.getChatTo())
 					.build();
+
 			chatMessageSendingMessageHandler.handleMessage(send);
+
 		};
 	}
 
