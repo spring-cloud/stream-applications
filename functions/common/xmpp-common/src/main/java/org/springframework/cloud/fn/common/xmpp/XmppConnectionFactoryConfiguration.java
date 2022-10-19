@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.fn.common.xmpp;
 
-import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
