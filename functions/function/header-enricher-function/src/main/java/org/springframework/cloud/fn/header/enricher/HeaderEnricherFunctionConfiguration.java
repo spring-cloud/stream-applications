@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.integration.transformer.HeaderEnricher;
 import org.springframework.integration.transformer.support.ExpressionEvaluatingHeaderValueMessageProcessor;
 import org.springframework.messaging.Message;
@@ -37,6 +36,7 @@ import org.springframework.messaging.Message;
  * @author Gary Russell
  * @author Christian Tzolov
  * @author Soby Chacko
+ * @author Artem Bilan
  */
 @AutoConfiguration
 @EnableConfigurationProperties(HeaderEnricherFunctionProperties.class)
@@ -47,28 +47,25 @@ public class HeaderEnricherFunctionConfiguration {
 	private HeaderEnricherFunctionProperties properties;
 
 	@Bean
-	public Function<Message<?>, Message<?>> headerEnricherFunction() {
-		return headerEnricher()::transform;
+	public Function<Message<?>, Message<?>> headerEnricherFunction(HeaderEnricher headerEnricher) {
+		return headerEnricher::transform;
 	}
 
 	@Bean
-	public HeaderEnricher headerEnricher() {
+	public HeaderEnricher headerEnricher(BeanFactory beanFactory) {
 		Map<String, ExpressionEvaluatingHeaderValueMessageProcessor<?>> headersToAdd = new HashMap<>();
 		Properties props = this.properties.getHeaders();
 		Enumeration<?> enumeration = props.propertyNames();
 		while (enumeration.hasMoreElements()) {
 			String propertyName = (String) enumeration.nextElement();
-			headersToAdd.put(propertyName, processor(props.getProperty(propertyName)));
+			ExpressionEvaluatingHeaderValueMessageProcessor<?> headerValueMessageProcessor =
+					new ExpressionEvaluatingHeaderValueMessageProcessor<>(props.getProperty(propertyName), null);
+			headerValueMessageProcessor.setBeanFactory(beanFactory);
+			headersToAdd.put(propertyName, headerValueMessageProcessor);
 		}
 		HeaderEnricher headerEnricher = new HeaderEnricher(headersToAdd);
 		headerEnricher.setDefaultOverwrite(this.properties.isOverwrite());
 		return headerEnricher;
-	}
-
-	@Bean
-	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) // Need a new processor for each header
-	public ExpressionEvaluatingHeaderValueMessageProcessor<?> processor(String expression) {
-		return new ExpressionEvaluatingHeaderValueMessageProcessor<>(expression, null);
 	}
 
 }
