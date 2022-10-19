@@ -16,8 +16,7 @@
     <properties>
         <aws-java-sdk.version>1.11.951</aws-java-sdk.version>
         <spring-integration-aws.version>2.5.0</spring-integration-aws.version>
-        <spring-integration-hazelcast.version>3.0.0</spring-integration-hazelcast.version>
-        <curator.version>4.0.1</curator.version>
+        <curator.version>5.3.0</curator.version>
     </properties>
 
     <dependencies>
@@ -92,7 +91,6 @@
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-hazelcast</artifactId>
-            <version>${spring-integration-hazelcast.version}</version>
             <optional>true</optional>
         </dependency>
 
