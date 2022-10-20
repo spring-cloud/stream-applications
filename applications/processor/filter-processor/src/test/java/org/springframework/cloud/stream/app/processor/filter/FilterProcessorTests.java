@@ -18,6 +18,8 @@ package org.springframework.cloud.stream.app.processor.filter;
 
 import java.nio.charset.StandardCharsets;
 
+import com.jayway.jsonpath.PathNotFoundException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -42,10 +44,10 @@ public class FilterProcessorTests {
 	@Test
 	public void testFilterProcessor() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorTestApplication.class))
-				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=byteArrayTextToString|filterFunction",
-						"--filter.function.expression=payload.length() > 5")) {
+			TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorTestApplication.class))
+			.web(WebApplicationType.NONE)
+			.run("--spring.cloud.function.definition=byteArrayTextToString|filterFunction",
+				"--filter.function.expression=payload.length() > 5")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
@@ -59,6 +61,69 @@ public class FilterProcessorTests {
 			processorInput.send(new GenericMessage<>(shortMessage.getBytes(StandardCharsets.UTF_8)));
 			Message<byte[]> sourceMessage2 = processorOutput.receive(5000);
 			assertThat(sourceMessage2).isNull();
+		}
+	}
+
+	static Throwable rootCause(Throwable x) {
+		return x.getCause() == null ? x : rootCause(x.getCause());
+	}
+
+	@Test
+	@Disabled
+	public void testFilterProcessorFunctionWithException() {
+		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+			TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorTestApplication.class))
+			.web(WebApplicationType.NONE)
+			.run("--spring.cloud.function.definition=byteArrayTextToString|filterFunction",
+				"--filter.function.expression=#jsonPath(payload, '$.code') != '09'")) {
+
+			InputDestination processorInput = context.getBean(InputDestination.class);
+			OutputDestination processorOutput = context.getBean(OutputDestination.class);
+
+			String json = "{\"cd\":\"01\"}";
+
+			try {
+				processorInput.send(new GenericMessage<>(json.getBytes(StandardCharsets.UTF_8)));
+				Message<byte[]> sourceMessage = processorOutput.receive(10000);
+				assertThat(sourceMessage).isNull();
+			}
+			catch (Throwable x) {
+				Throwable root = rootCause(x);
+				assertThat(root).isInstanceOf(PathNotFoundException.class);
+			}
+			try {
+				processorInput.send(new GenericMessage<>(json.getBytes(StandardCharsets.UTF_8)));
+				Message<byte[]> sourceMessage2 = processorOutput.receive(10000);
+				assertThat(sourceMessage2).isNull();
+			}
+			catch (Throwable x) {
+				Throwable root = rootCause(x);
+				assertThat(root).isInstanceOf(PathNotFoundException.class);
+			}
+		}
+	}
+
+	@Test
+	public void testFilterProcessorFunctionWithValidMessage() {
+		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+			TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorTestApplication.class))
+			.web(WebApplicationType.NONE)
+			.run("--spring.cloud.function.definition=byteArrayTextToString|filterFunction",
+				"--filter.function.expression=#jsonPath(payload, '$.code') != '09'")) {
+
+			InputDestination processorInput = context.getBean(InputDestination.class);
+			OutputDestination processorOutput = context.getBean(OutputDestination.class);
+			String json = "{\"code\":\"01\"}";
+			processorInput.send(new GenericMessage<>(json.getBytes(StandardCharsets.UTF_8)));
+			Message<byte[]> sourceMessage = processorOutput.receive(10000);
+			assertThat(sourceMessage).isNotNull();
+			assertThat(new String(sourceMessage.getPayload())).isEqualTo(json);
+
+			processorInput.send(new GenericMessage<>(json.getBytes(StandardCharsets.UTF_8)));
+			Message<byte[]> sourceMessage2 = processorOutput.receive(10000);
+			assertThat(sourceMessage2).isNotNull();
+			assertThat(new String(sourceMessage2.getPayload())).isEqualTo(json);
+
 		}
 	}
 
