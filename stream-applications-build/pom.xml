@@ -43,6 +43,7 @@
 		<spring-boot.version>3.0.0-SNAPSHOT</spring-boot.version>
 		<spring-kafka.version>3.0.0-SNAPSHOT</spring-kafka.version>
 		<spring-rabbit.version>3.0.0-SNAPSHOT</spring-rabbit.version>
+		<spring-integration.version>6.0.0-SNAPSHOT</spring-integration.version>
 		<spring-geode.version>1.6.7</spring-geode.version>
 		<spring-cloud.version>2022.0.0-SNAPSHOT</spring-cloud.version>
 		<spring-cloud-starters.version>4.0.0-SNAPSHOT</spring-cloud-starters.version>

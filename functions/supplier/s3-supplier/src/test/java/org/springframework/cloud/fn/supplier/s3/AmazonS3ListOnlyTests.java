@@ -20,7 +20,6 @@ import java.time.Duration;
 import java.util.HashSet;
 
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -30,7 +29,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
 @TestPropertySource(properties = {
 		"s3.supplier.list-only=true"
 })
@@ -47,25 +45,25 @@ public class AmazonS3ListOnlyTests extends AbstractAwsS3SupplierMockTests {
 				.assertNext(message -> {
 					S3ObjectSummary summary = (S3ObjectSummary) message.getPayload();
 					assertThat(summary.getBucketName()).isEqualTo(S3_BUCKET);
-					assertThat(keys.contains(summary.getKey()));
+					assertThat(keys).contains(summary.getKey());
 					keys.remove(summary.getKey());
 				})
 				.assertNext(message -> {
 					S3ObjectSummary summary = (S3ObjectSummary) message.getPayload();
 					assertThat(summary.getBucketName()).isEqualTo(S3_BUCKET);
-					assertThat(keys.contains(summary.getKey()));
+					assertThat(keys).contains(summary.getKey());
 					keys.remove(summary.getKey());
 				})
 				.assertNext(message -> {
 					S3ObjectSummary summary = (S3ObjectSummary) message.getPayload();
 					assertThat(summary.getBucketName()).isEqualTo(S3_BUCKET);
-					assertThat(keys.contains(summary.getKey()));
+					assertThat(keys).contains(summary.getKey());
 					keys.remove(summary.getKey());
 				})
-				.expectTimeout(Duration.ofSeconds(1))
+				.thenCancel()
 				.verifyLater();
 		standardIntegrationFlow.start();
 		stepVerifier.verify(Duration.ofSeconds(10));
-		standardIntegrationFlow.stop();
 	}
+
 }

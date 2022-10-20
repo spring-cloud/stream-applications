@@ -43,7 +43,7 @@ import org.springframework.integration.aws.support.filters.S3PersistentAcceptOnc
 import org.springframework.integration.aws.support.filters.S3RegexPatternFileListFilter;
 import org.springframework.integration.aws.support.filters.S3SimplePatternFileListFilter;
 import org.springframework.integration.core.MessageSource;
-import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.endpoint.ReactiveMessageSourceProducer;
 import org.springframework.integration.file.filters.ChainFileListFilter;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
@@ -59,7 +59,7 @@ import org.springframework.util.StringUtils;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ AwsS3SupplierProperties.class, FileConsumerProperties.class })
-public abstract class AwsS3SupplierConfiguration {
+public class AwsS3SupplierConfiguration {
 
 	protected static final String METADATA_STORE_PREFIX = "s3-metadata-";
 
@@ -123,7 +123,7 @@ public abstract class AwsS3SupplierConfiguration {
 		@Bean
 		public Publisher<Message<Object>> s3SupplierFlow(MessageSource<?> s3MessageSource) {
 			return FileUtils.enhanceFlowForReadingMode(
-							IntegrationFlows.from(IntegrationReactiveUtils.messageSourceToFlux(s3MessageSource)),
+							IntegrationFlow.from(IntegrationReactiveUtils.messageSourceToFlux(s3MessageSource)),
 							fileConsumerProperties)
 					.toReactivePublisher(true);
 		}
@@ -179,7 +179,7 @@ public abstract class AwsS3SupplierConfiguration {
 
 		@Bean
 		public Publisher<Message<Object>> s3SupplierFlow(ReactiveMessageSourceProducer s3ListingProducer) {
-			return IntegrationFlows.from(s3ListingProducer).split().toReactivePublisher(true);
+			return IntegrationFlow.from(s3ListingProducer).split().toReactivePublisher(true);
 		}
 
 		@Bean

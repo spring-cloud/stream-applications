@@ -18,7 +18,6 @@ package org.springframework.cloud.fn.common.metadata.store;
 
 import java.beans.Introspector;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -28,10 +27,8 @@ import com.amazonaws.services.dynamodbv2.model.DescribeTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DescribeTableResult;
 import io.awspring.cloud.core.region.RegionProvider;
 import org.apache.curator.test.TestingServer;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -57,14 +54,13 @@ import static org.mockito.Mockito.mock;
 /**
  * @author Artem Bilan
  * @author Corneil du Plessis
+ *
  * @since 2.0.2
  */
-@RunWith(Parameterized.class)
-@Ignore
 public class MetadataStoreAutoConfigurationTests {
 
 	private final static List<Class<? extends ConcurrentMetadataStore>> METADATA_STORE_CLASSES =
-			Arrays.asList(
+			List.of(
 					RedisMetadataStore.class,
 					MongoDbMetadataStore.class,
 					JdbcMetadataStore.class,
@@ -73,15 +69,30 @@ public class MetadataStoreAutoConfigurationTests {
 					DynamoDbMetadataStore.class,
 					SimpleMetadataStore.class
 			);
-	private final ApplicationContextRunner contextRunner;
-	private final Class<? extends ConcurrentMetadataStore> classToInclude;
 
-	public MetadataStoreAutoConfigurationTests(Class<? extends ConcurrentMetadataStore> classToInclude) {
-		this.classToInclude = classToInclude;
-		this.contextRunner =
+	@ParameterizedTest
+	@MethodSource
+	public void testMetadataStore(Class<? extends ConcurrentMetadataStore> classToInclude) {
+		ApplicationContextRunner contextRunner =
 				new ApplicationContextRunner()
 						.withUserConfiguration(TestConfiguration.class)
+						.withPropertyValues("metadata.store.type=" +
+								classToInclude.getSimpleName()
+										.replaceFirst("MetadataStore", "")
+										.toLowerCase()
+										.replaceFirst("simple", "memory"))
 						.withClassLoader(filteredClassLoaderBut(classToInclude));
+		contextRunner
+				.run(context -> {
+					assertThat(context.getBeansOfType(MetadataStore.class)).hasSize(1);
+
+					assertThat(context.getBeanNamesForType(classToInclude))
+							.containsOnlyOnce(Introspector.decapitalize(classToInclude.getSimpleName()));
+				});
+	}
+
+	static List<Class<? extends ConcurrentMetadataStore>> testMetadataStore() {
+		return METADATA_STORE_CLASSES;
 	}
 
 	private static FilteredClassLoader filteredClassLoaderBut(Class<? extends ConcurrentMetadataStore> classToInclude) {
@@ -89,22 +100,6 @@ public class MetadataStoreAutoConfigurationTests {
 				METADATA_STORE_CLASSES.stream()
 						.filter(Predicate.isEqual(classToInclude).negate())
 						.toArray(Class<?>[]::new));
-	}
-
-	@Parameterized.Parameters
-	public static Iterable<?> parameters() {
-		return METADATA_STORE_CLASSES;
-	}
-
-	@Test
-	public void testMetadataStore() {
-		this.contextRunner
-				.run(context -> {
-					assertThat(context.getBeansOfType(MetadataStore.class)).hasSize(1);
-
-					assertThat(context.getBeanNamesForType(this.classToInclude))
-							.containsOnlyOnce(Introspector.decapitalize(this.classToInclude.getSimpleName()));
-				});
 	}
 
 	@Configuration
