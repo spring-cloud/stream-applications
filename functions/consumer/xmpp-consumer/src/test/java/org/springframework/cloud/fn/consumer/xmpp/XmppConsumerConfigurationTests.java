@@ -60,10 +60,10 @@ public class XmppConsumerConfigurationTests extends XmppContainerSupport {
 
 	@DynamicPropertySource
 	static void registerConfigurationProperties(DynamicPropertyRegistry registry) {
-		registry.add("xmpp.factory.user=", () -> JOHN_USER);
-		registry.add("xmpp.factory.password=", () -> USER_PW);
-		registry.add("xmpp.factory.host=", () -> XMPP_HOST);
-		registry.add("xmpp.factory.service-name=", () -> SERVICE_NAME);
+		registry.add("xmpp.factory.user", () -> JOHN_USER);
+		registry.add("xmpp.factory.password", () -> USER_PW);
+		registry.add("xmpp.factory.host", () -> XMPP_HOST);
+		registry.add("xmpp.factory.service-name", () -> SERVICE_NAME);
 		registry.add("xmpp.factory.security-mode", () -> "disabled");
 	}
 
