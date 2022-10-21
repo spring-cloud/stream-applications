@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  Openfire:
+  xmpp:
     image: fishbowler/openfire:latest
     ports:
       - "5222:5222"

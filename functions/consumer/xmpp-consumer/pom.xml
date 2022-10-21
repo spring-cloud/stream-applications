@@ -22,13 +22,46 @@
 			<version>${project.version}</version>
 		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.cloud.fn</groupId>-->
-<!--			<artifactId>function-test-support</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--			<scope>test</scope>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>function-test-support</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
+	<build>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>resource-dependencies</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.springframework.cloud.fn</groupId>
+									<artifactId>function-test-support</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+									<includes>docker-compose/**</includes>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
 </project>
