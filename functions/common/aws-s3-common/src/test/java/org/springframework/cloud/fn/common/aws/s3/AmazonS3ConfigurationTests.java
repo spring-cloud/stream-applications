@@ -21,13 +21,13 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import io.awspring.cloud.core.region.RegionProvider;
+import io.awspring.cloud.core.region.StaticRegionProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.context.annotation.UserConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import io.awspring.cloud.core.region.RegionProvider;
-import io.awspring.cloud.core.region.StaticRegionProvider;
 import org.springframework.context.annotation.Bean;
 
 /**

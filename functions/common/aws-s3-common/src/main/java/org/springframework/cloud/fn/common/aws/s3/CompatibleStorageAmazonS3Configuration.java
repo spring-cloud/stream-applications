@@ -24,13 +24,13 @@ import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import io.awspring.cloud.core.env.ResourceIdResolver;
+import io.awspring.cloud.core.region.RegionProvider;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import io.awspring.cloud.core.region.RegionProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.aws.support.S3SessionFactory;
 import org.springframework.lang.Nullable;

@@ -19,15 +19,14 @@ package org.springframework.cloud.fn.common.aws.s3;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-
 import io.awspring.cloud.autoconfigure.context.ContextCredentialsAutoConfiguration;
 import io.awspring.cloud.autoconfigure.context.ContextRegionProviderAutoConfiguration;
 import io.awspring.cloud.context.annotation.ConditionalOnMissingAmazonClient;
 import io.awspring.cloud.context.config.annotation.ContextDefaultConfigurationRegistrar;
 import io.awspring.cloud.core.region.RegionProvider;
+
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
