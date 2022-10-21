@@ -37,16 +37,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.cloud.fn.test.support.xmpp.XmppContainerSupport;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.integration.xmpp.XmppHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -57,9 +55,17 @@ import static org.awaitility.Awaitility.await;
  * @since 4.0.0
  */
 @SpringBootTest
-@ContextConfiguration(initializers = XmppConsumerConfigurationTests.Initializer.class)
 @DirtiesContext
 public class XmppConsumerConfigurationTests extends XmppContainerSupport {
+
+	@DynamicPropertySource
+	static void registerConfigurationProperties(DynamicPropertyRegistry registry) {
+		registry.add("xmpp.factory.user=", () -> JOHN_USER);
+		registry.add("xmpp.factory.password=", () -> USER_PW);
+		registry.add("xmpp.factory.host=", () -> XMPP_HOST);
+		registry.add("xmpp.factory.service-name=", () -> SERVICE_NAME);
+		registry.add("xmpp.factory.security-mode", () -> "disabled");
+	}
 
 	@Autowired
 	private Consumer<Message<?>> xmppConsumer;
@@ -151,22 +157,6 @@ public class XmppConsumerConfigurationTests extends XmppContainerSupport {
 	private void assertFrom(Stanza stanza) {
 
 		assertThat(stanza.getFrom().asBareJid().asUnescapedString()).isEqualTo(JOHN_USER + "@" + SERVICE_NAME);
-
-	}
-
-	static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-
-		public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-
-			TestPropertyValues.of(
-					"xmpp.factory.user=" + JOHN_USER,
-					"xmpp.factory.password=" + USER_PW,
-					"xmpp.factory.host=" + XMPP_HOST,
-					"xmpp.factory.service-name=" + SERVICE_NAME,
-					"xmpp.factory.security-mode=disabled"
-			).applyTo(configurableApplicationContext.getEnvironment());
-
-		}
 
 	}
 
