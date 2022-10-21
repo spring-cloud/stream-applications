@@ -37,10 +37,10 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.StringUtils;
 
@@ -53,8 +53,8 @@ import org.springframework.util.StringUtils;
  */
 @Conditional(OnHttpCsrfOrSecurityDisabled.class)
 @AutoConfiguration
-@ConditionalOnClass(WebSecurityConfigurerAdapter.class)
-@ConditionalOnMissingBean(WebSecurityConfigurerAdapter.class)
+@ConditionalOnClass(SecurityFilterChain.class)
+@ConditionalOnMissingBean(SecurityFilterChain.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @AutoConfigureBefore({ ManagementWebSecurityAutoConfiguration.class, SecurityAutoConfiguration.class })
 @EnableConfigurationProperties(AppStarterWebSecurityAutoConfigurationProperties.class)
@@ -96,37 +96,33 @@ public class AppStarterWebSecurityAutoConfiguration {
 	}
 
 	@Bean
-	WebSecurityConfigurerAdapter appStarterWebSecurityConfigurerAdapter(
-			AppStarterWebSecurityAutoConfigurationProperties securityProperties) {
+	SecurityFilterChain appStarterWebSecurityFilterChain(HttpSecurity http,
+			AppStarterWebSecurityAutoConfigurationProperties securityProperties) throws Exception {
 
-		return new WebSecurityConfigurerAdapter() {
-			@Override
-			protected void configure(HttpSecurity http) throws Exception {
-				if (!securityProperties.isCsrfEnabled()) {
-					http.csrf().disable();
-				}
-				else {
-					/*
-					 * See https://stackoverflow.com/questions/51079564/spring-security-antmatchers-not-being-
-					 * applied-on-post-requests-and-only-works-wi/51088555
-					 */
-					http.csrf().ignoringRequestMatchers(MethodAwareEndpointRequest.toAnyEndpoint(HttpMethod.POST));
-				}
-				if (securityProperties.isEnabled()) {
-					http.authorizeRequests()
-							.requestMatchers(MethodAwareEndpointRequest.toAnyEndpoint(HttpMethod.POST)).hasRole("ADMIN")
-							.requestMatchers(EndpointRequest.toLinks()).permitAll()
-							.requestMatchers(EndpointRequest.to("health", "info", "bindings")).permitAll()
-							.requestMatchers(EndpointRequest.toAnyEndpoint()).authenticated()
-							.and().formLogin().and().httpBasic();
-				}
-				else {
-					http.authorizeRequests().anyRequest().permitAll();
-
-				}
-			}
-		};
+		if (!securityProperties.isCsrfEnabled()) {
+			http.csrf().disable();
+		}
+		else {
+			/*
+			 * See https://stackoverflow.com/questions/51079564/spring-security-antmatchers-not-being-
+			 * applied-on-post-requests-and-only-works-wi/51088555
+			 */
+			http.csrf().ignoringRequestMatchers(MethodAwareEndpointRequest.toAnyEndpoint(HttpMethod.POST));
+		}
+		if (securityProperties.isEnabled()) {
+			http.authorizeHttpRequests()
+					.requestMatchers(MethodAwareEndpointRequest.toAnyEndpoint(HttpMethod.POST)).hasRole("ADMIN")
+					.requestMatchers(EndpointRequest.toLinks()).permitAll()
+					.requestMatchers(EndpointRequest.to("health", "info", "bindings")).permitAll()
+					.requestMatchers(EndpointRequest.toAnyEndpoint()).authenticated()
+					.and().formLogin().and().httpBasic();
+		}
+		else {
+			http.authorizeHttpRequests().anyRequest().permitAll();
+		}
+		return http.build();
 	}
+
 	/**
 	 * Extends {@link EndpointRequest} to allow HTTP methods to be specified on the request matcher.
 	 */
