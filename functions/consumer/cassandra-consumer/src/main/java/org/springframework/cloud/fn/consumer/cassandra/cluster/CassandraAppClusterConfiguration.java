@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.data.cassandra.config.CqlSessionFactoryBean;
 import org.springframework.data.cassandra.core.ReactiveCassandraTemplate;
-import org.springframework.data.cassandra.core.cql.CqlTemplate;
 import org.springframework.data.cassandra.core.cql.ReactiveCqlOperations;
 import org.springframework.data.cassandra.core.cql.generator.CreateKeyspaceCqlGenerator;
 import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification;
@@ -75,9 +74,9 @@ public class CassandraAppClusterConfiguration {
 							try {
 								builder.withSslContext(TrustAllSSLContextFactory.getSslContext());
 							}
-							catch (NoSuchAlgorithmException | KeyManagementException e) {
+							catch (NoSuchAlgorithmException | KeyManagementException ex) {
 								throw new BeanInitializationException(
-										"Unable to configure a Cassandra cluster using SSL.", e);
+										"Unable to configure a Cassandra cluster using SSL.", ex);
 							}
 
 						});
@@ -93,11 +92,9 @@ public class CassandraAppClusterConfiguration {
 						.ifNotExists();
 
 		String createKeySpaceQuery = new CreateKeyspaceCqlGenerator(createKeyspaceSpecification).toCql();
-		CqlSession systemSession =
-				cqlSessionBuilder.withKeyspace(CqlSessionFactoryBean.CASSANDRA_SYSTEM_SESSION).build();
-
-		CqlTemplate template = new CqlTemplate(systemSession);
-		template.execute(createKeySpaceQuery);
+		try (var systemSession = cqlSessionBuilder.withKeyspace(CqlSessionFactoryBean.CASSANDRA_SYSTEM_SESSION).build()) {
+			systemSession.execute(createKeySpaceQuery);
+		}
 
 		return null;
 	}
@@ -117,7 +114,7 @@ public class CassandraAppClusterConfiguration {
 
 		String scripts =
 				new Scanner(cassandraClusterProperties.getInitScript().getInputStream(),
-						StandardCharsets.UTF_8.name())
+						StandardCharsets.UTF_8)
 						.useDelimiter("\\A")
 						.next();
 

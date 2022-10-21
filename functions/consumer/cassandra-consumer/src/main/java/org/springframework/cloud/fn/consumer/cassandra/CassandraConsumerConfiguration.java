@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2019 the original author or authors.
+ * Copyright 2015-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,30 +21,34 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
+import com.datastax.oss.driver.api.core.ConsistencyLevel;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.consumer.cassandra.cluster.CassandraAppClusterConfiguration;
 import org.springframework.cloud.fn.consumer.cassandra.query.ColumnNameExtractor;
 import org.springframework.cloud.fn.consumer.cassandra.query.InsertQueryColumnNameExtractor;
 import org.springframework.cloud.fn.consumer.cassandra.query.UpdateQueryColumnNameExtractor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.cassandra.core.InsertOptions;
 import org.springframework.data.cassandra.core.ReactiveCassandraOperations;
 import org.springframework.data.cassandra.core.UpdateOptions;
 import org.springframework.data.cassandra.core.WriteResult;
 import org.springframework.data.cassandra.core.cql.WriteOptions;
+import org.springframework.integration.JavaUtils;
 import org.springframework.integration.cassandra.outbound.CassandraMessageHandler;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlowBuilder;
-import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.support.json.Jackson2JsonObjectMapper;
 import org.springframework.integration.transformer.AbstractPayloadTransformer;
 import org.springframework.messaging.MessageHandler;
@@ -56,8 +60,9 @@ import org.springframework.util.StringUtils;
  * @author Ashu Gairola
  * @author Akos Ratku
  */
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties(CassandraConsumerProperties.class)
+@Import(CassandraAppClusterConfiguration.class)
 public class CassandraConsumerConfiguration {
 
 	@Autowired
@@ -66,11 +71,12 @@ public class CassandraConsumerConfiguration {
 	@Bean
 	public IntegrationFlow cassandraConsumerFlow(MessageHandler cassandraSinkMessageHandler,
 												ObjectMapper objectMapper) {
-		IntegrationFlowBuilder integrationFlowBuilder =
-				IntegrationFlows.from(CassandraConsumerFunction.class);
-		if (StringUtils.hasText(this.cassandraSinkProperties.getIngestQuery())) {
+
+		IntegrationFlowBuilder integrationFlowBuilder = IntegrationFlow.from(CassandraConsumerFunction.class);
+		String ingestQuery = this.cassandraSinkProperties.getIngestQuery();
+		if (StringUtils.hasText(ingestQuery)) {
 			integrationFlowBuilder.transform(
-					new PayloadToMatrixTransformer(objectMapper, this.cassandraSinkProperties.getIngestQuery(),
+					new PayloadToMatrixTransformer(objectMapper, ingestQuery,
 							CassandraMessageHandler.Type.UPDATE == this.cassandraSinkProperties.getQueryType()
 									? new UpdateQueryColumnNameExtractor()
 									: new InsertQueryColumnNameExtractor()));
@@ -82,19 +88,19 @@ public class CassandraConsumerConfiguration {
 
 	@Bean
 	public MessageHandler cassandraSinkMessageHandler(ReactiveCassandraOperations cassandraOperations) {
-		CassandraMessageHandler cassandraMessageHandler =
-				this.cassandraSinkProperties.getQueryType() != null
-						? new CassandraMessageHandler(cassandraOperations, this.cassandraSinkProperties.getQueryType())
-						: new CassandraMessageHandler(cassandraOperations);
+		CassandraMessageHandler.Type queryType =
+				Optional.ofNullable(this.cassandraSinkProperties.getQueryType())
+						.orElse(CassandraMessageHandler.Type.INSERT);
+
+		CassandraMessageHandler cassandraMessageHandler = new CassandraMessageHandler(cassandraOperations, queryType);
 		cassandraMessageHandler.setProducesReply(true);
-		cassandraMessageHandler.setAsync(true);
-		if (this.cassandraSinkProperties.getConsistencyLevel() != null
-				|| this.cassandraSinkProperties.getTtl() > 0) {
+		int ttl = this.cassandraSinkProperties.getTtl();
+		ConsistencyLevel consistencyLevel = this.cassandraSinkProperties.getConsistencyLevel();
+		if (consistencyLevel != null || ttl > 0) {
 
 			WriteOptions.WriteOptionsBuilder writeOptionsBuilder = WriteOptions.builder();
 
-			switch (this.cassandraSinkProperties.getQueryType()) {
-
+			switch (queryType) {
 				case INSERT:
 					writeOptionsBuilder = InsertOptions.builder();
 					break;
@@ -103,22 +109,19 @@ public class CassandraConsumerConfiguration {
 					break;
 			}
 
-			if (this.cassandraSinkProperties.getConsistencyLevel() != null) {
-				writeOptionsBuilder.consistencyLevel(this.cassandraSinkProperties.getConsistencyLevel());
-			}
-
-			if (this.cassandraSinkProperties.getTtl() > 0) {
-				writeOptionsBuilder.ttl(this.cassandraSinkProperties.getTtl());
-			}
+			JavaUtils.INSTANCE
+					.acceptIfNotNull(consistencyLevel,
+							writeOptionsBuilder::consistencyLevel)
+							.acceptIfCondition(ttl > 0, ttl, writeOptionsBuilder::ttl);
 
 			cassandraMessageHandler.setWriteOptions(writeOptionsBuilder.build());
 		}
-		if (StringUtils.hasText(this.cassandraSinkProperties.getIngestQuery())) {
-			cassandraMessageHandler.setIngestQuery(this.cassandraSinkProperties.getIngestQuery());
-		}
-		else if (this.cassandraSinkProperties.getStatementExpression() != null) {
-			cassandraMessageHandler.setStatementExpression(this.cassandraSinkProperties.getStatementExpression());
-		}
+
+		JavaUtils.INSTANCE
+				.acceptIfHasText(this.cassandraSinkProperties.getIngestQuery(), cassandraMessageHandler::setIngestQuery)
+				.acceptIfNotNull(this.cassandraSinkProperties.getStatementExpression(),
+						cassandraMessageHandler::setStatementExpression);
+
 		return cassandraMessageHandler;
 	}
 
@@ -164,8 +167,7 @@ public class CassandraConsumerConfiguration {
 						List<Object> row = new ArrayList<>(this.columns.size());
 						for (String column : this.columns) {
 							Object value = entity.get(column);
-							if (value instanceof String) {
-								String string = (String) value;
+							if (value instanceof String string) {
 								if (this.dateFormat.looksLikeISO8601(string)) {
 									synchronized (this.dateFormat) {
 										value = new Date(this.dateFormat.parse(string).getTime()).toLocalDate();
