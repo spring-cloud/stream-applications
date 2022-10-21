@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.fn.consumer.xmpp;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.function.Consumer;
@@ -33,52 +32,42 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport;
 import org.springframework.context.annotation.Import;
 import org.springframework.integration.xmpp.XmppHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 /**
  * @author Daniel Frey
+ * @author Chris Bono
  *
  * @since 4.0.0
  */
-@SpringBootTest(
-		properties = {
-				"xmpp.factory.user=john",
-				"xmpp.factory.password=secret",
-				"xmpp.factory.host=localhost",
-				"xmpp.factory.service-name=localhost",
-				"xmpp.factory.security-mode=disabled"
-		}
-)
+@SpringBootTest
 @DirtiesContext
-@Testcontainers
-public class XmppConsumerConfigurationTests {
+public class XmppConsumerConfigurationTests implements XmppTestContainerSupport {
 
-	private static final String XMPP_HOST = "localhost";
-	private static final int XMPP_PORT = 5222;
-	private static final String FROM = "john";
-	private static final String TO = "jane";
-	private static final String TO_PW = "secret";
-	private static final String SERVICE_NAME = "localhost";
-
-	@Container
-	private static final DockerComposeContainer XMPP_CONTAINER =
-			new DockerComposeContainer(new File("src/test/docker-compose/xmpp/docker-compose.yml"))
-					.withExposedService("Openfire", XMPP_PORT);
+	@DynamicPropertySource
+	static void registerConfigurationProperties(DynamicPropertyRegistry registry) {
+		registry.add("xmpp.factory.user", () -> JOHN_USER);
+		registry.add("xmpp.factory.password", () -> USER_PW);
+		registry.add("xmpp.factory.host", () -> XmppTestContainerSupport.getXmppHost());
+		registry.add("xmpp.factory.port", () -> XmppTestContainerSupport.getXmppMappedPort());
+		registry.add("xmpp.factory.service-name", () -> SERVICE_NAME);
+		registry.add("xmpp.factory.security-mode", () -> "disabled");
+	}
 
 	@Autowired
 	private Consumer<Message<?>> xmppConsumer;
@@ -92,10 +81,10 @@ public class XmppConsumerConfigurationTests {
 
 		XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
 		builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
-		builder.setHost(XMPP_HOST);
-		builder.setPort(XMPP_PORT);
+		builder.setHost(XmppTestContainerSupport.getXmppHost());
+		builder.setPort(XmppTestContainerSupport.getXmppMappedPort());
 		builder.setResource(SERVICE_NAME);
-		builder.setUsernameAndPassword(TO, TO_PW)
+		builder.setUsernameAndPassword(JANE_USER, USER_PW)
 				.setXmppDomain(SERVICE_NAME);
 
 		this.clientConnection = new XMPPTCPConnection(builder.build());
@@ -119,7 +108,7 @@ public class XmppConsumerConfigurationTests {
 
 		Message<?> testMessage =
 				MessageBuilder.withPayload("test")
-						.setHeader(XmppHeaders.TO, TO + "@" + SERVICE_NAME)
+						.setHeader(XmppHeaders.TO, JANE_USER + "@" + SERVICE_NAME)
 						.build();
 
 		await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
@@ -141,7 +130,7 @@ public class XmppConsumerConfigurationTests {
 				= this.clientConnection.createStanzaCollector(StanzaTypeFilter.MESSAGE);
 
 		Message<?> testMessage =
-				MessageBuilder.withPayload(org.jivesoftware.smack.packet.MessageBuilder.buildMessage().addBody("en_us", "test").to(TO + "@" + SERVICE_NAME).build())
+				MessageBuilder.withPayload(org.jivesoftware.smack.packet.MessageBuilder.buildMessage().addBody("en_us", "test").to(JANE_USER + "@" + SERVICE_NAME).build())
 						.build();
 
 		await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
@@ -163,13 +152,13 @@ public class XmppConsumerConfigurationTests {
 
 	private void assertTo(Stanza stanza) {
 
-		assertThat(stanza.getTo().asBareJid().asUnescapedString()).isEqualTo(TO + "@" + SERVICE_NAME);
+		assertThat(stanza.getTo().asBareJid().asUnescapedString()).isEqualTo(JANE_USER + "@" + SERVICE_NAME);
 
 	}
 
 	private void assertFrom(Stanza stanza) {
 
-		assertThat(stanza.getFrom().asBareJid().asUnescapedString()).isEqualTo(FROM + "@" + SERVICE_NAME);
+		assertThat(stanza.getFrom().asBareJid().asUnescapedString()).isEqualTo(JOHN_USER + "@" + SERVICE_NAME);
 
 	}
 

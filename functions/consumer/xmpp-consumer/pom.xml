@@ -22,13 +22,17 @@
 			<version>${project.version}</version>
 		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.cloud.fn</groupId>-->
-<!--			<artifactId>function-test-support</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--			<scope>test</scope>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>function-test-support</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
+
+	<build>
+
+	</build>
 
 </project>
