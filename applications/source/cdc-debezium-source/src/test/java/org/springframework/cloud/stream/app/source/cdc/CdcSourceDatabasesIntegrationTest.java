@@ -168,7 +168,7 @@ public class CdcSourceDatabasesIntegrationTest {
 		}
 		postgres.stop();
 	}
-	
+
 	@Test
 	@Disabled // follow the src/test/docker/db2/README.md instructions.
 	public void db2() {
@@ -199,7 +199,7 @@ public class CdcSourceDatabasesIntegrationTest {
 			List<Message<?>> allMessages = new ArrayList<>();
 			Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
 				List<Message<?>> messageChunk = CdcTestUtils.receiveAll(outputDestination);
-				if (!CollectionUtils.isEmpty(messageChunk)) {					
+				if (!CollectionUtils.isEmpty(messageChunk)) {
 					logger.info("Chunk size: " + messageChunk.size());
 					allMessages.addAll(messageChunk);
 				}
