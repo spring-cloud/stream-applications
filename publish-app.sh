@@ -21,19 +21,24 @@ if [ "$1" == "" ]; then
 fi
 APP_FOLDER=$1
 
-VERSION=$(./mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
+if [ "$VERSION" == "" ]; then
+  VERSIONS=$($ROOT_DIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
+  for v in $VERSIONS; do
+    VERSION=$v
+  done
+fi
 echo "Project Version:$VERSION"
 
 if [[ "$VERSION" == "4."* ]]; then
-  JDKS=17
+  JDKS="17"
   if [ "$DEFAULT_JDK" == "" ];then
-      DEFAULT_JDK=17
+      DEFAULT_JDK="17"
     fi
 else
   if [ "$DEFAULT_JDK" == "" ];then
-    DEFAULT_JDK=11
+    DEFAULT_JDK="11"
   fi
-  JDKS=8 11 17
+  JDKS="8 11 17"
 fi
 pushd $APP_FOLDER > /dev/null
   pushd apps > /dev/null
