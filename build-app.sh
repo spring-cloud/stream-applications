@@ -21,8 +21,6 @@ if [ "$1" == "" ]; then
 fi
 APP_FOLDER=$1
 
-check_env DOCKER_HUB_USERNAME
-check_env DOCKER_HUB_PASSWORD
 check_env CI_DEPLOY_USERNAME
 check_env CI_DEPLOY_PASSWORD
 
