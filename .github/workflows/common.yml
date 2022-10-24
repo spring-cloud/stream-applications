@@ -262,7 +262,7 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./publish-app.sh "stream-applications/applications/sink/${{ matrix.app }}"
+        run: ./publish-app.sh "stream-applications/applications/processor/${{ matrix.app }}"
   sinks:
     if: ${{ needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
     needs:
@@ -351,7 +351,7 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./publish-app.sh "stream-applications/applications/sink/${{ matrix.app }}"
+        run: ./publish-app.sh "stream-applications/applications/source/${{ matrix.app }}"
 #  scale-down-runners:
 #    if: ${{ success() }}
 #    runs-on: ubuntu-latest
