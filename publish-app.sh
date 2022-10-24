@@ -21,7 +21,7 @@ if [ "$1" == "" ]; then
 fi
 APP_FOLDER=$1
 
-VERSION=$($ROOT_DIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
+VERSION=$(./mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
 echo "Project Version:$VERSION"
 
 if [[ "$VERSION" == "4."* ]]; then
