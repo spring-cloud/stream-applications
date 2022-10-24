@@ -14,5 +14,4 @@ jobs:
       CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
       CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
     with:
-      version: '2021.1.x'
       branch: '2021.1.x'

@@ -11,50 +11,25 @@ then
     exit 2
   fi
 fi
-version="3.2.1-SNAPSHOT"
-rootdir="$(pwd)"
-processors="aggregator bridge filter groovy header-enricher http-request image-recognition object-detection script semantic-segmentation splitter transform twitter-trend"
-echo "Build processors:$processor"
-pushd applications/processor
-  for app in $processors
-  do
-    pushd "${app}-processor"
-      echo "$Building $(pwd)"
-      rm -rf apps
-      $rootdir/mvnw clean package -Pintegration
-      pushd apps
-        $rootdir/mvnw package jib:dockerBuild -DskipTests -Djib.to.tags=${version}
-      popd
-    popd
-  done
-popd
-sinks="analytics cassandra elasticsearch file ftp geode jdbc log mongodb mqtt pgcopy rabbit redis router rsocket s3 sftp tcp throughput twitter-message twitter-update wavefront websocket zeromq"
-echo "Build sinks:$sinks"
-pushd applications/sink
-  for app in $sinks
-  do
-      pushd "${app}-sink"
-        echo "$Building $(pwd)"
-        rm -rf apps
-        $rootdir/mvnw clean package -Pintegration
-        pushd apps
-          $rootdir/mvnw package jib:dockerBuild -DskipTests -Djib.to.tags=${version}
-        popd
-      popd
-  done
-popd
-sources="cdc-debezium file ftp geode http jdbc jms load-generator mail mongodb mqtt rabbit s3 sftp syslog tcp time twitter-message twitter-search twitter-stream websocket zeromq"
-echo "Build sources:sources"
-pushd applications/source
-  for app in $sources
-  do
-      pushd "${app}-source"
-        echo "$Building $(pwd)"
-        rm -rf apps
-        $rootdir/mvnw clean package -Pintegration
-        pushd apps
-          $rootdir/mvnw package jib:dockerBuild -DskipTests -Djib.to.tags=${version}
-        popd
-      popd
-  done
-popd
+rootdir="$(realpath $PWD)"
+if [ "$VERSION" == "" ]; then
+  export VERSION=$($ROOT_DIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
+fi
+pushd applications/processor > /dev/null
+processors=$(find * -maxdepth 0 -type d)
+popd  > /dev/null
+for app in $processors; do
+  $rootdir/build-app.sh "applications/processor/$app"
+done
+pushd applications/sink > /dev/null
+sinks=$(find * -maxdepth 0 -type d)
+popd  > /dev/null
+for app in $sinks; do
+  $rootdir/build-app.sh "applications/sink/$app"
+done
+pushd applications/source > /dev/null
+sources=$(find * -maxdepth 0 -type d)
+popd  > /dev/null
+for app in $sinks; do
+  $rootdir/build-app.sh "applications/source/$app"
+done
