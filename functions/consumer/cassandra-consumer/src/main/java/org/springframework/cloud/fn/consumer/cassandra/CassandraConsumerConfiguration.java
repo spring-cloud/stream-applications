@@ -70,7 +70,7 @@ public class CassandraConsumerConfiguration {
 
 	@Bean
 	public IntegrationFlow cassandraConsumerFlow(MessageHandler cassandraSinkMessageHandler,
-												ObjectMapper objectMapper) {
+			ObjectMapper objectMapper) {
 
 		IntegrationFlowBuilder integrationFlowBuilder = IntegrationFlow.from(CassandraConsumerFunction.class);
 		String ingestQuery = this.cassandraSinkProperties.getIngestQuery();
@@ -98,21 +98,16 @@ public class CassandraConsumerConfiguration {
 		ConsistencyLevel consistencyLevel = this.cassandraSinkProperties.getConsistencyLevel();
 		if (consistencyLevel != null || ttl > 0) {
 
-			WriteOptions.WriteOptionsBuilder writeOptionsBuilder = WriteOptions.builder();
-
-			switch (queryType) {
-				case INSERT:
-					writeOptionsBuilder = InsertOptions.builder();
-					break;
-				case UPDATE:
-					writeOptionsBuilder = UpdateOptions.builder();
-					break;
-			}
+			WriteOptions.WriteOptionsBuilder writeOptionsBuilder =
+					switch (queryType) {
+						case INSERT -> InsertOptions.builder();
+						case UPDATE -> UpdateOptions.builder();
+						default -> WriteOptions.builder();
+					};
 
 			JavaUtils.INSTANCE
-					.acceptIfNotNull(consistencyLevel,
-							writeOptionsBuilder::consistencyLevel)
-							.acceptIfCondition(ttl > 0, ttl, writeOptionsBuilder::ttl);
+					.acceptIfNotNull(consistencyLevel, writeOptionsBuilder::consistencyLevel)
+					.acceptIfCondition(ttl > 0, ttl, writeOptionsBuilder::ttl);
 
 			cassandraMessageHandler.setWriteOptions(writeOptionsBuilder.build());
 		}
