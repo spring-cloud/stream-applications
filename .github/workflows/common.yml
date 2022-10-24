@@ -67,7 +67,7 @@ jobs:
               echo "SOURCES=$SOURCES"
             fi
           popd
-          if [ "${{ inputs.branch" == "main" ]; then
+          if [ "${{ inputs.branch }}" == "main" ]; then
             echo "JDK_BUILD=17" >> $GITHUB_ENV
             echo "JRE_DEFAULT=17" >> $GITHUB_ENV
           else
