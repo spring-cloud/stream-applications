@@ -25,6 +25,19 @@ Usage: `create-containers.sh [version] [broker] [jre-version] [filter]`
 * `jre-version` should be one of 11, 17
 * `filter` is a name of an application or a partial name that will be matched.
 
-If the file is not present required to create the
+If the file is not present required to create the container the script will skip the one.
+
+## `pack-containers.sh`
+Creates all containers and pushes to local docker registry.
+
+This script requires [pack](https://buildpacks.io/docs/tools/pack/)
+
+Usage: `pack-containers.sh [version] [broker] [jre-version] [filter]`
+* `version` is the skipper version like `3.2.1` or default is `3.2.2-SNAPSHOT`
+* `broker` is one of rabbitmq, rabbit or kafka
+* `jre-version` should be one of 11, 17
+* `filter` is a name of an application or a partial name that will be matched.
+
+If the file is not present required to create the container the script will skip the one.
 
 *If any parameter is provided all those to the left of it should be considered required.*
