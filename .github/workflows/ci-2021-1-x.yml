@@ -2,7 +2,11 @@ name: 'CI - 2021.1.x'
 
 on:
   workflow_dispatch:
-
+    inputs:
+      verbose:
+        required: false
+        default: 'false'
+        description: 'Produces verbose output'
 jobs:
   build:
     uses: ./.github/workflows/common.yml
@@ -15,3 +19,4 @@ jobs:
       CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
     with:
       branch: '2021.1.x'
+      verbose: ${{ inputs.verbose == 'true' }}
