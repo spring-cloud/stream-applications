@@ -28,3 +28,6 @@ coverage-error.log
 .apt_generated
 aws.credentials.properties
 .flattened-pom.xml
+.secrets
+workspace/
+.vscode
