@@ -25,7 +25,7 @@ check_env DOCKER_HUB_USERNAME
 check_env DOCKER_HUB_PASSWORD
 check_env CI_DEPLOY_USERNAME
 check_env CI_DEPLOY_PASSWORD
-check_env VERSION
+
 
 ROOT_DIR=$(realpath $PWD)
 if [ "$VERBOSE" == "true" ]; then
@@ -33,11 +33,29 @@ if [ "$VERBOSE" == "true" ]; then
 else
   MAVEN_OPT=-q
 fi
-
+if [ "$VERSION" == "" ]; then
+  VERSIONS=$($ROOT_DIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
+  for v in $VERSIONS; do
+    VERSION=$v
+  done
+fi
+echo "Project Version:$VERSION"
 if [ "$LOCAL" == "true" ]; then
   MAVEN_GOAL="install"
 else
   MAVEN_GOAL="install deploy"
+fi
+
+if [[ "$VERSION" == "4."* ]]; then
+  JDKS="17"
+  if [ "$DEFAULT_JDK" == "" ]; then
+    DEFAULT_JDK=17
+  fi
+else
+  JDKS="8 11 17"
+  if [ "$DEFAULT_JDK" == "" ]; then
+      DEFAULT_JDK=11
+    fi
 fi
 
 pushd $APP_FOLDER > /dev/null
@@ -56,10 +74,23 @@ pushd $APP_FOLDER > /dev/null
   pushd apps > /dev/null
     echo "Building:$APP_FOLDER/apps"
     ./mvnw $MAVEN_OPT $MAVEN_GOAL -U -Pintegration
-    ./mvnw $MAVEN_OPT package jib:build -DskipTests \
-                  -Djib.to.tags="$VERSION" \
-                  -Djib.httpTimeout=1800000 \
-                  -Djib.to.auth.username="$DOCKER_HUB_USERNAME" \
-                  -Djib.to.auth.password="$DOCKER_HUB_PASSWORD"
+#    ./mvnw $MAVEN_OPT package jib:build -DskipTests \
+#                  -Djib.to.tags="$VERSION" \
+#                  -Djib.httpTimeout=1800000 \
+#                  -Djib.to.auth.username="$DOCKER_HUB_USERNAME" \
+#                  -Djib.to.auth.password="$DOCKER_HUB_PASSWORD"
+    APPS=$(find * -maxdepth 0 -type d)
+    for app in $APPS; do
+      for v in $JDKS; do
+        echo "Pack:springcloudstream/$app:$VERSION-jdk$v"
+        pack build \
+          --path "springcloudstream/$app-$VERSION.jar" \
+          --builder gcr.io/paketo-buildpacks/builder:base \
+          --env BP_JVM_VERSION=$v "springcloudstream/$app:$VERSION-jdk$v"
+      done
+      if [ "$DEFAULT_JDK" == "" ]; then
+        docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$VERSION"
+      fi
+    done
   popd > /dev/null
 popd > /dev/null

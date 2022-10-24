@@ -221,12 +221,13 @@ cd applications/sink/log-sink/apps/log-sink-rabbit
 ./mvnw clean package
 ----
 
-Rebuild all container images.
+Rebuild all applications and container images.
 
 [source,shell]
 ----
 ./local/build-images.sh
 ----
+
 
 === Additional Resources
 
