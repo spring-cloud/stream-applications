@@ -48,8 +48,12 @@ pushd $APP_FOLDER > /dev/null
       project="$APP_FOLDER-$broker"
       docker tag "springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$project:$VERSION"
       docker push "springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK"
+      echo "Pushed:springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK"
+      docker push "springcloudstream/$project:$VERSION"
+      echo "Pushed:springcloudstream/$project:$VERSION"
       for v in $JDKS; do
         docker push "springcloudstream/$project:$VERSION-jdk$v"
+        echo "Pushed:springcloudstream/$project:$VERSION-jdk$v"
       done
     done
   popd > /dev/null
