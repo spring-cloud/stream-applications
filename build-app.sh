@@ -60,10 +60,14 @@ pushd $APP_FOLDER > /dev/null
   rm -rf apps
   if [ -d "src/main/java" ]; then
     echo "Deploying:$APP_FOLDER"
+    set -e
     $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean $MAVEN_GOAL -U -Pintegration
+    set +e
   else
     echo "Packaging:$APP_FOLDER"
+    set -e
     $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean install -U -Pintegration
+    set +e
   fi
   if [ ! -d apps ]; then
     echo "Cannot find $APP_FOLDER/apps"
@@ -71,11 +75,14 @@ pushd $APP_FOLDER > /dev/null
   fi
   pushd apps > /dev/null
     echo "Building:$APP_FOLDER/apps"
+    set -e
     ./mvnw $MAVEN_OPT $MAVEN_GOAL -U -Pintegration
+    set +e
     APPS=$(find * -maxdepth 0 -type d)
     for app in $APPS; do
       for v in $JDKS; do
         echo "Pack:springcloudstream/$app:$VERSION-jdk$v"
+        set -e
         pack build \
           --path "springcloudstream/$app-$VERSION.jar" \
           --builder gcr.io/paketo-buildpacks/builder:base \
@@ -85,11 +92,14 @@ pushd $APP_FOLDER > /dev/null
           --env BPE_LC_ALL=en_US.utf8 \
           --env BPE_LANG=en_US.utf8 \
           "springcloudstream/$app:$VERSION-jdk$v"
+        set +e
         echo "Created:springcloudstream/$app:$VERSION-jdk$v"
       done
       if [ "$DEFAULT_JDK" == "" ]; then
+        set -e
         docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$VERSION"
         echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$VERSION"
+        set +e
       fi
     done
   popd > /dev/null
