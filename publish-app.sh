@@ -20,7 +20,7 @@ if [ "$1" == "" ]; then
   fi
 fi
 APP_FOLDER=$1
-
+ROOT_DIR=$(realpath $PWD)
 if [ "$VERSION" == "" ]; then
   VERSIONS=$($ROOT_DIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
   for v in $VERSIONS; do
@@ -28,7 +28,6 @@ if [ "$VERSION" == "" ]; then
   done
 fi
 echo "Project Version:$VERSION"
-
 if [[ "$VERSION" == "4."* ]]; then
   JDKS="17"
   if [ "$DEFAULT_JDK" == "" ];then
@@ -40,12 +39,14 @@ else
   fi
   JDKS="8 11 17"
 fi
+
 pushd $APP_FOLDER > /dev/null
   pushd apps > /dev/null
     echo "Pushing:$APP_FOLDER/apps"
     BROKERS=$(find * -maxdepth 0 -type d)
     for broker in $BROKERS; do
       project="$APP_FOLDER-$broker"
+      set -e
       docker tag "springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$project:$VERSION"
       docker push "springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK"
       echo "Pushed:springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK"
@@ -55,6 +56,7 @@ pushd $APP_FOLDER > /dev/null
         docker push "springcloudstream/$project:$VERSION-jdk$v"
         echo "Pushed:springcloudstream/$project:$VERSION-jdk$v"
       done
+      set +e
     done
   popd > /dev/null
 popd > /dev/null

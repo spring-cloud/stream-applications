@@ -23,7 +23,8 @@ if [ "$LOCAL" == "true" ]; then
 else
   MAVEN_GOAL="install deploy"
 fi
+# -T 2C
 ./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f stream-applications-build -U
-./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f functions -U
+./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -T 1.5C -f functions -U
 ./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f functions/function-dependencies -U
 ./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f applications/stream-applications-core -U
