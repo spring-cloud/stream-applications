@@ -210,13 +210,13 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           echo "::notice ::building - stream-applications-build"
-          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f stream-applications-build -U
+          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f stream-applications-build
           echo "::notice ::building - functions"
-          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f functions -N -U
+          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f functions
           echo "::notice ::building - function-dependencies"
-          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f functions/function-dependencies -N -U
+          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f functions/function-dependencies
           echo "::notice ::building - stream-applications-core"
-          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f applications/stream-applications-core -N -U
+          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f applications/stream-applications-core
           echo "::notice ::core build completed"
   # Build and tests apps and publishes to repo and creates container
   processors:
