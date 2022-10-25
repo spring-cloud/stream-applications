@@ -78,7 +78,12 @@ for app in ${PROCESSORS[@]}; do
       pack build \
         --path "$TARGET_FILE" \
         --builder gcr.io/paketo-buildpacks/builder:base \
-        --env BP_JVM_VERSION=$v "springcloudstream/$APP_NAME:$TAG"
+        --env BP_JVM_VERSION=$v \
+        --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
+        --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
+        --env BPE_APPEND_LC_ALL=en_US.utf8 \
+        --env BPE_APPEND_LANG=en_US.utf8 \
+        "springcloudstream/$APP_NAME:$TAG"
       echo "Created springcloudstream/$APP_NAME:$TAG"
     else
       echo "Cannot find $TARGET_FILE won't attempt to create container"
@@ -102,7 +107,12 @@ for app in ${SINKS[@]}; do
       pack build \
         --path "$TARGET_FILE" \
         --builder gcr.io/paketo-buildpacks/builder:base \
-        --env BP_JVM_VERSION=$v "springcloudstream/$APP_NAME:$TAG"
+        --env BP_JVM_VERSION=$v \
+        --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
+        --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
+        --env BPE_APPEND_LC_ALL=en_US.utf8 \
+        --env BPE_APPEND_LANG=en_US.utf8 \
+        "springcloudstream/$APP_NAME:$TAG"
       echo "Created springcloudstream/$APP_NAME:$TAG"
     else
       echo "Cannot find $TARGET_FILE won't attempt to create container"
@@ -126,7 +136,12 @@ for app in ${SOURCES[@]}; do
       pack build \
         --path "$TARGET_FILE" \
         --builder gcr.io/paketo-buildpacks/builder:base \
-        --env BP_JVM_VERSION=$v "springcloudstream/$APP_NAME:$TAG"
+        --env BP_JVM_VERSION=$v \
+        --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
+        --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
+        --env BPE_APPEND_LC_ALL=en_US.utf8 \
+        --env BPE_APPEND_LANG=en_US.utf8 \
+        "springcloudstream/$APP_NAME:$TAG"
       echo "Created springcloudstream/$APP_NAME:$TAG"
     else
       echo "Cannot find $TARGET_FILE won't attempt to create container"
