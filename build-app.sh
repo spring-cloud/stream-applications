@@ -82,12 +82,14 @@ pushd $APP_FOLDER > /dev/null
           --env BP_JVM_VERSION=$v \
           --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
           --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
-          --env BPE_APPEND_LC_ALL=en_US.utf8 \
-          --env BPE_APPEND_LANG=en_US.utf8 \
+          --env BPE_LC_ALL=en_US.utf8 \
+          --env BPE_LANG=en_US.utf8 \
           "springcloudstream/$app:$VERSION-jdk$v"
+        echo "Created:springcloudstream/$app:$VERSION-jdk$v"
       done
       if [ "$DEFAULT_JDK" == "" ]; then
         docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$VERSION"
+        echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$VERSION"
       fi
     done
   popd > /dev/null

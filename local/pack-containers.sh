@@ -81,8 +81,8 @@ for app in ${PROCESSORS[@]}; do
         --env BP_JVM_VERSION=$v \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
-        --env BPE_APPEND_LC_ALL=en_US.utf8 \
-        --env BPE_APPEND_LANG=en_US.utf8 \
+        --env BPE_LC_ALL=en_US.utf8 \
+        --env BPE_LANG=en_US.utf8 \
         "springcloudstream/$APP_NAME:$TAG"
       echo "Created springcloudstream/$APP_NAME:$TAG"
     else
@@ -110,8 +110,8 @@ for app in ${SINKS[@]}; do
         --env BP_JVM_VERSION=$v \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
-        --env BPE_APPEND_LC_ALL=en_US.utf8 \
-        --env BPE_APPEND_LANG=en_US.utf8 \
+        --env BPE_LC_ALL=en_US.utf8 \
+        --env BPE_LANG=en_US.utf8 \
         "springcloudstream/$APP_NAME:$TAG"
       echo "Created springcloudstream/$APP_NAME:$TAG"
     else
@@ -139,8 +139,8 @@ for app in ${SOURCES[@]}; do
         --env BP_JVM_VERSION=$v \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
-        --env BPE_APPEND_LC_ALL=en_US.utf8 \
-        --env BPE_APPEND_LANG=en_US.utf8 \
+        --env BPE_LC_ALL=en_US.utf8 \
+        --env BPE_LANG=en_US.utf8 \
         "springcloudstream/$APP_NAME:$TAG"
       echo "Created springcloudstream/$APP_NAME:$TAG"
     else
