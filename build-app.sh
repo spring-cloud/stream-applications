@@ -72,11 +72,6 @@ pushd $APP_FOLDER > /dev/null
   pushd apps > /dev/null
     echo "Building:$APP_FOLDER/apps"
     ./mvnw $MAVEN_OPT $MAVEN_GOAL -U -Pintegration
-#    ./mvnw $MAVEN_OPT package jib:build -DskipTests \
-#                  -Djib.to.tags="$VERSION" \
-#                  -Djib.httpTimeout=1800000 \
-#                  -Djib.to.auth.username="$DOCKER_HUB_USERNAME" \
-#                  -Djib.to.auth.password="$DOCKER_HUB_PASSWORD"
     APPS=$(find * -maxdepth 0 -type d)
     for app in $APPS; do
       for v in $JDKS; do
@@ -84,7 +79,12 @@ pushd $APP_FOLDER > /dev/null
         pack build \
           --path "springcloudstream/$app-$VERSION.jar" \
           --builder gcr.io/paketo-buildpacks/builder:base \
-          --env BP_JVM_VERSION=$v "springcloudstream/$app:$VERSION-jdk$v"
+          --env BP_JVM_VERSION=$v \
+          --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
+          --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
+          --env BPE_APPEND_LC_ALL=en_US.utf8 \
+          --env BPE_APPEND_LANG=en_US.utf8 \
+          "springcloudstream/$app:$VERSION-jdk$v"
       done
       if [ "$DEFAULT_JDK" == "" ]; then
         docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$VERSION"
