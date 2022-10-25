@@ -20,26 +20,19 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
 		<disable.checks>false</disable.checks>
 		<maven-checkstyle-plugin.failsOnError>true</maven-checkstyle-plugin.failsOnError>
 		<maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
 		<maven-checkstyle-plugin.includeTestSourceDirectory>true</maven-checkstyle-plugin.includeTestSourceDirectory>
-		<puppycrawl-tools-checkstyle.version>8.29</puppycrawl-tools-checkstyle.version>
-		<checkstyle.location>https://raw.githubusercontent.com/spring-cloud/stream-applications/master/etc/checkstyle
-		</checkstyle.location>
-		<checkstyle.suppressions.file>
-			${checkstyle.location}/checkstyle-suppressions.xml
-		</checkstyle.suppressions.file>
-		<checkstyle.nohttp.file>
-			${checkstyle.location}/nohttp-checkstyle.xml
-		</checkstyle.nohttp.file>
-		<checkstyle.additional.suppressions.file>
-			${checkstyle.location}/checkstyle-suppressions.xml
-		</checkstyle.additional.suppressions.file>
+		<puppycrawl-tools-checkstyle.version>10.3.4</puppycrawl-tools-checkstyle.version>
+		<checkstyle.location>${maven.multiModuleProjectDirectory}/etc/checkstyle</checkstyle.location>
+		<checkstyle.suppressions.file>${checkstyle.location}/checkstyle-suppressions.xml</checkstyle.suppressions.file>
+		<checkstyle.nohttp.file>${checkstyle.location}/nohttp-checkstyle.xml</checkstyle.nohttp.file>
+		<checkstyle.additional.suppressions.file>${checkstyle.location}/checkstyle-suppressions.xml</checkstyle.additional.suppressions.file>
 		<nohttp-checkstyle.version>0.0.10</nohttp-checkstyle.version>
 		<disable.nohttp.checks>true</disable.nohttp.checks>
-		<spring-javaformat-checkstyle.version>0.0.29</spring-javaformat-checkstyle.version>
+		<spring-javaformat-checkstyle.version>0.0.35</spring-javaformat-checkstyle.version>
 		<spring-boot.version>3.0.0-SNAPSHOT</spring-boot.version>
 		<spring-kafka.version>3.0.0-SNAPSHOT</spring-kafka.version>
 		<spring-rabbit.version>3.0.0-SNAPSHOT</spring-rabbit.version>

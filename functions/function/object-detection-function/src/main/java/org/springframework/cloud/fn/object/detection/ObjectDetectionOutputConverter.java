@@ -91,7 +91,7 @@ public class ObjectDetectionOutputConverter implements Function<Map<String, Tens
 	/**
 	 * Loads object labels in the string_int_label_map.proto.
 	 * @param labelsResource location of the labels as a resource
-	 * @return
+	 * @return String[] of labels
 	 */
 	private static String[] loadLabels(Resource labelsResource) throws Exception {
 		try (InputStream is = labelsResource.getInputStream()) {

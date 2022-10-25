@@ -29,4 +29,4 @@ See this link:src/test/java/org/springframework/cloud/fn/consumer/cassandra[test
 
 ## Other usage
 
-See this https://github.com/spring-cloud/stream-applications/blob/master/applications/sink/cassandra-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a Cassandra sink.
+See this https://github.com/spring-cloud/stream-applications/blob/main/applications/sink/cassandra-sink/README.adoc[README] where this consumer is used to create a Spring Cloud Stream application where it makes a Cassandra sink.

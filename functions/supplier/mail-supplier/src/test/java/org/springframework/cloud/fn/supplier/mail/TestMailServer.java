@@ -54,6 +54,9 @@ import org.springframework.util.Base64Utils;
 @Deprecated
 public final class TestMailServer {
 
+	private TestMailServer() {
+	}
+
 	public static SmtpServer smtp(int port) {
 		try {
 			return new SmtpServer(port);
@@ -544,7 +547,5 @@ public final class TestMailServer {
 
 	}
 
-	private TestMailServer() {
-	}
 
 }
