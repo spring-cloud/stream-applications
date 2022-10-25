@@ -24,6 +24,6 @@ else
   MAVEN_GOAL="install deploy"
 fi
 ./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f stream-applications-build -U
-./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f functions -N -U
-./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f functions/function-dependencies -N -U
-./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f applications/stream-applications-core -N -U
+./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f functions -U
+./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f functions/function-dependencies -U
+./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -f applications/stream-applications-core -U
