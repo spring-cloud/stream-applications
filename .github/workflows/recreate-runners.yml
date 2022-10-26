@@ -81,7 +81,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Configure: install gcloud cli'
         if: ${{ env.RUNNER_TYPE == 'gke' }}
-        uses: ./.github/actions/auth-gcloud
+        uses: ./.github/actions/install-gcloud
       - name: 'Action: gcloud auth'
         if: ${{ env.RUNNER_TYPE == 'gke' }}
         id: auth_gcloud
