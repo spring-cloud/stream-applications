@@ -15,7 +15,7 @@
 	<description>Change Data Capture (CDC) Debezium Boot Starter</description>
 
 	<properties>
-		<version.debezium>1.7.1.Final</version.debezium>
+		<version.debezium>1.9.6.Final</version.debezium>
 	</properties>
 
 	<dependencies>

@@ -63,19 +63,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A mechanism for running a single Kafka Connect {@link SourceConnector} within an application's process. An embedded connector
- * is entirely standalone and only talks with the source system; no Kafka, Kafka Connect, or Zookeeper processes are needed.
- * Applications using an embedded connector simply set one up and supply a {@link Consumer consumer function} to which the
- * connector will pass all {@link SourceRecord}s containing database change events.
+ * A mechanism for running a single Kafka Connect {@link SourceConnector} within an application's process. An embedded
+ * connector is entirely standalone and only talks with the source system; no Kafka, Kafka Connect, or Zookeeper
+ * processes are needed. Applications using an embedded connector simply set one up and supply a {@link Consumer
+ * consumer function} to which the connector will pass all {@link SourceRecord}s containing database change events.
  * <p>
  * With an embedded connector, the application that runs the connector assumes all responsibility for fault tolerance,
- * scalability, and durability. Additionally, applications must specify how the connector can store its relational database
- * schema history and offsets. By default, this information will be stored in memory and will thus be lost upon application
- * restart.
+ * scalability, and durability. Additionally, applications must specify how the connector can store its relational
+ * database schema history and offsets. By default, this information will be stored in memory and will thus be lost upon
+ * application restart.
  * <p>
- * Embedded connectors are designed to be submitted to an {@link Executor} or {@link ExecutorService} for execution by a single
- * thread, and a running connector can be stopped either by calling {@link #stop()} from another thread or by interrupting
- * the running thread (e.g., as is the case with {@link ExecutorService#shutdownNow()}).
+ * Embedded connectors are designed to be submitted to an {@link Executor} or {@link ExecutorService} for execution by a
+ * single thread, and a running connector can be stopped either by calling {@link #stop()} from another thread or by
+ * interrupting the running thread (e.g., as is the case with {@link ExecutorService#shutdownNow()}).
  *
  * @author Randall Hauch
  */
@@ -87,14 +87,14 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 	 */
 	public static final Field ENGINE_NAME = Field.create("name")
 			.withDescription("Unique name for this connector instance.")
-			.withValidation(Field::isRequired);
+			.required();
 
 	/**
 	 * A required field for an embedded connector that specifies the name of the normal Debezium connector's Java class.
 	 */
 	public static final Field CONNECTOR_CLASS = Field.create("connector.class")
 			.withDescription("The Java class for the connector")
-			.withValidation(Field::isRequired);
+			.required();
 
 	/**
 	 * An optional field that specifies the name of the class that implements the {@link OffsetBackingStore} interface,
@@ -151,22 +151,22 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 					+ KafkaOffsetBackingStore.class.getName() + " class.");
 
 	/**
-	 * An optional advanced field that specifies the maximum amount of time that the embedded connector should wait
-	 * for an offset commit to complete.
+	 * An optional advanced field that specifies the maximum amount of time that the embedded connector should wait for
+	 * an offset commit to complete.
 	 */
 	public static final Field OFFSET_FLUSH_INTERVAL_MS = Field.create("offset.flush.interval.ms")
-			.withDescription("Interval at which to try committing offsets. The default is 1 minute.")
+			.withDescription("Interval at which to try committing offsets, given in milliseconds. Defaults to 1 minute (60,000 ms).")
 			.withDefault(60000L)
 			.withValidation(Field::isNonNegativeInteger);
 
 	/**
-	 * An optional advanced field that specifies the maximum amount of time that the embedded connector should wait
-	 * for an offset commit to complete.
+	 * An optional advanced field that specifies the maximum amount of time that the embedded connector should wait for
+	 * an offset commit to complete.
 	 */
 	public static final Field OFFSET_COMMIT_TIMEOUT_MS = Field.create("offset.flush.timeout.ms")
-			.withDescription("Maximum number of milliseconds to wait for records to flush and partition offset data to be"
+			.withDescription("Time to wait for records to flush and partition offset data to be"
 					+ " committed to offset storage before cancelling the process and restoring the offset "
-					+ "data to be committed in a future attempt.")
+					+ "data to be committed in a future attempt, given in milliseconds. Defaults to 5 seconds (5000 ms).")
 			.withDefault(5000L)
 			.withValidation(Field::isPositiveInteger);
 
@@ -209,8 +209,7 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 			INTERNAL_KEY_CONVERTER_CLASS, INTERNAL_VALUE_CONVERTER_CLASS);
 
 	/**
-	 * How long we wait before forcefully stopping the connector thread when
-	 * shutting down. Must be longer than
+	 * How long we wait before forcefully stopping the connector thread when shutting down. Must be longer than
 	 * {@link ChangeEventSourceCoordinator#SHUTDOWN_WAIT_TIMEOUT} * 2.
 	 */
 	private static final Duration WAIT_FOR_COMPLETION_BEFORE_INTERRUPT_DEFAULT = Duration.ofMinutes(5);
@@ -368,8 +367,8 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 		}
 
 		/**
-		 * Causes the current thread to wait until the {@link #handle(boolean, String, Throwable) completion occurs}
-		 * or until the thread is {@linkplain Thread#interrupt interrupted}.
+		 * Causes the current thread to wait until the {@link #handle(boolean, String, Throwable) completion occurs} or
+		 * until the thread is {@linkplain Thread#interrupt interrupted}.
 		 * <p>
 		 * This method returns immediately if the connector has completed already.
 		 *
@@ -387,8 +386,8 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 		 *
 		 * @param timeout the maximum time to wait
 		 * @param unit the time unit of the {@code timeout} argument
-		 * @return {@code true} if the completion was received, or {@code false} if the waiting time elapsed before the completion
-		 *         was received.
+		 * @return {@code true} if the completion was received, or {@code false} if the waiting time elapsed before the
+		 * completion was received.
 		 * @throws InterruptedException if the current thread is interrupted while waiting
 		 */
 		public boolean await(long timeout, TimeUnit unit) throws InterruptedException {
@@ -398,8 +397,8 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 		/**
 		 * Determine if the connector has completed.
 		 *
-		 * @return {@code true} if the connector has completed, or {@code false} if the connector is still running and this
-		 *         callback has not yet been {@link #handle(boolean, String, Throwable) notified}
+		 * @return {@code true} if the connector has completed, or {@code false} if the connector is still running and
+		 * this callback has not yet been {@link #handle(boolean, String, Throwable) notified}
 		 */
 		public boolean hasCompleted() {
 			return completed.getCount() == 0;
@@ -408,8 +407,9 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 		/**
 		 * Get whether the connector completed normally.
 		 *
-		 * @return {@code true} if the connector completed normally, or {@code false} if the connector produced an error that
-		 *         prevented startup or premature termination (or the connector has not yet {@link #hasCompleted() completed})
+		 * @return {@code true} if the connector completed normally, or {@code false} if the connector produced an error
+		 * that prevented startup or premature termination (or the connector has not yet {@link #hasCompleted()
+		 * completed})
 		 */
 		public boolean success() {
 			return success;
@@ -427,7 +427,8 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 		/**
 		 * Get the completion error, if there is one.
 		 *
-		 * @return the completion error, or null if there is no error or connector has not yet {@link #hasCompleted() completed}
+		 * @return the completion error, or null if there is no error or connector has not yet {@link #hasCompleted()
+		 * completed}
 		 */
 		public Throwable error() {
 			return error;
@@ -437,7 +438,7 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 		 * Determine if there is a completion error.
 		 *
 		 * @return {@code true} if there is a {@link #error completion error}, or {@code false} if there is no error or
-		 *         the connector has not yet {@link #hasCompleted() completed}
+		 * the connector has not yet {@link #hasCompleted() completed}
 		 */
 		public boolean hasError() {
 			return error != null;
@@ -461,40 +462,15 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 	public static interface ChangeConsumer extends DebeziumEngine.ChangeConsumer<SourceRecord> {
 	}
 
-	protected class SourceRecordOffsets implements DebeziumEngine.Offsets {
-
-		private final HashMap<String, Object> offsets = new HashMap<>();
-
-		/**
-		 * Performs {@link HashMap#put(Object, Object)} on the offsets map.
-		 *
-		 * @param key key with which to put the value
-		 * @param value value to be put with the key
-		 */
-		@Override
-		public void set(String key, Object value) {
-			offsets.put(key, value);
-		}
-
-		/**
-		 * Retrieves the offsets map.
-		 *
-		 * @return HashMap of the offsets
-		 */
-		protected HashMap<String, Object> getOffsets() {
-			return offsets;
-		}
-	}
-
 	private static ChangeConsumer buildDefaultChangeConsumer(Consumer<SourceRecord> consumer) {
 		return new ChangeConsumer() {
 
 			/**
 			 * the default implementation that is compatible with the old Consumer api.
 			 *
-			 * On every record, it calls the consumer, and then only marks the record
-			 * as processed when accept returns, additionally, it handles StopConnectorExceptions
-			 * and ensures that we all ways try and mark a batch as finished, even with exceptions
+			 * On every record, it calls the consumer, and then only marks the record as processed when accept returns,
+			 * additionally, it handles StopConnectorExceptions and ensures that we all ways try and mark a batch as
+			 * finished, even with exceptions
 			 * @param records the records to be processed
 			 * @param committer the committer that indicates to the system that we are finished
 			 *
@@ -534,8 +510,8 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 		Builder using(Configuration config);
 
 		/**
-		 * Use the specified clock when needing to determine the current time. Passing <code>null</code> or not calling this
-		 * method results in the connector using the {@link Clock#system() system clock}.
+		 * Use the specified clock when needing to determine the current time. Passing <code>null</code> or not calling
+		 * this method results in the connector using the {@link Clock#system() system clock}.
 		 *
 		 * @param clock the clock
 		 * @return this builder object so methods can be chained together; never null
@@ -667,19 +643,19 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 	}
 
 	/**
-	 * Run this embedded connector and deliver database changes to the registered {@link Consumer}. This method blocks until
-	 * the connector is stopped.
+	 * Run this embedded connector and deliver database changes to the registered {@link Consumer}. This method blocks
+	 * until the connector is stopped.
 	 * <p>
-	 * First, the method checks to see if this instance is currently {@link #run() running}, and if so immediately returns.
+	 * First, the method checks to see if this instance is currently {@link #run() running}, and if so immediately
+	 * returns.
 	 * <p>
-	 * If the configuration is valid, this method starts the connector and starts polling the connector for change events.
-	 * All messages are delivered in batches to the {@link Consumer} registered with this embedded connector. The batch size,
-	 * polling
-	 * frequency, and other parameters are controlled via configuration settings. This continues until this connector is
-	 * {@link #stop() stopped}.
+	 * If the configuration is valid, this method starts the connector and starts polling the connector for change
+	 * events. All messages are delivered in batches to the {@link Consumer} registered with this embedded connector.
+	 * The batch size, polling frequency, and other parameters are controlled via configuration settings. This continues
+	 * until this connector is {@link #stop() stopped}.
 	 * <p>
-	 * Note that there are two ways to stop a connector running on a thread: calling {@link #stop()} from another thread, or
-	 * interrupting the thread (e.g., via {@link ExecutorService#shutdownNow()}).
+	 * Note that there are two ways to stop a connector running on a thread: calling {@link #stop()} from another
+	 * thread, or interrupting the thread (e.g., via {@link ExecutorService#shutdownNow()}).
 	 * <p>
 	 * This method can be called repeatedly as needed.
 	 */
@@ -710,18 +686,19 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 					return;
 				}
 
-				//// Instantiate the offset store ...
-				//final String offsetStoreClassName = config.getString(OFFSET_STORAGE);
-				//OffsetBackingStore offsetStore = null;
-				//try {
-				//	@SuppressWarnings("unchecked")
-				//	Class<? extends OffsetBackingStore> offsetStoreClass = (Class<OffsetBackingStore>) classLoader.loadClass(offsetStoreClassName);
-				//	offsetStore = offsetStoreClass.getDeclaredConstructor().newInstance();
-				//}
-				//catch (Throwable t) {
-				//	fail("Unable to instantiate OffsetBackingStore class '" + offsetStoreClassName + "'", t);
-				//	return;
-				//}
+				// // Instantiate the offset store ...
+				// final String offsetStoreClassName = config.getString(OFFSET_STORAGE);
+				// OffsetBackingStore offsetStore = null;
+				// try {
+				// 	@SuppressWarnings("unchecked")
+				// 	Class<? extends OffsetBackingStore> offsetStoreClass = (Class<OffsetBackingStore>) classLoader
+				// 			.loadClass(offsetStoreClassName);
+				// 	offsetStore = offsetStoreClass.getDeclaredConstructor().newInstance();
+				// }
+				// catch (Throwable t) {
+				// 	fail("Unable to instantiate OffsetBackingStore class '" + offsetStoreClassName + "'", t);
+				// 	return;
+				// }
 
 				// Initialize the offset store ...
 				try {
@@ -762,7 +739,7 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 
 				try {
 					// Start the connector with the given properties and get the task configurations ...
-					connector.start(config.asMap());
+					connector.start(workerConfig.originalsStrings());
 					connectorCallback.ifPresent(DebeziumEngine.ConnectorCallback::connectorStarted);
 					List<Map<String, String>> taskConfigs = connector.taskConfigs(1);
 					Class<? extends Task> taskClass = connector.taskClass();
@@ -798,6 +775,14 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 						connectorCallback.ifPresent(DebeziumEngine.ConnectorCallback::taskStarted);
 					}
 					catch (Throwable t) {
+						// Clean-up allocated resources
+						try {
+							LOGGER.debug("Stopping the task");
+							task.stop();
+						}
+						catch (Throwable tstop) {
+							LOGGER.info("Error while trying to stop the task");
+						}
 						// Mask the passwords ...
 						Configuration config = Configuration.from(taskConfigs.get(0)).withMaskedPasswords();
 						String msg = "Unable to initialize and start connector's task class '" + taskClass.getName() + "' with config: "
@@ -873,7 +858,7 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 						}
 						try {
 							// First stop the task ...
-							LOGGER.debug("Stopping the task and engine");
+							LOGGER.info("Stopping the task and engine");
 							task.stop();
 							connectorCallback.ifPresent(DebeziumEngine.ConnectorCallback::taskStopped);
 							// Always commit offsets that were captured from the source records we actually processed ...
@@ -882,6 +867,10 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 								// We stopped normally ...
 								succeed("Connector '" + connectorClassName + "' completed normally.");
 							}
+						}
+						catch (InterruptedException e) {
+							LOGGER.debug("Interrupted while committing offsets");
+							Thread.currentThread().interrupt();
 						}
 						catch (Throwable t) {
 							fail("Error while trying to stop the task and commit the offsets", t);
@@ -920,8 +909,7 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 	}
 
 	/**
-	 * Creates a new RecordCommitter that is responsible for informing the engine
-	 * about the updates to the given batch
+	 * Creates a new RecordCommitter that is responsible for informing the engine about the updates to the given batch
 	 * @param offsetWriter the offsetWriter current in use
 	 * @param task the sourcetask
 	 * @param commitTimeout the time in ms until a commit times out
@@ -959,6 +947,34 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 	}
 
 	/**
+	 * Implementation of {@link DebeziumEngine.Offsets} which can be used to construct a {@link SourceRecord} with its
+	 * offsets.
+	 */
+	protected class SourceRecordOffsets implements DebeziumEngine.Offsets {
+		private HashMap<String, Object> offsets = new HashMap<>();
+
+		/**
+		 * Performs {@link HashMap#put(Object, Object)} on the offsets map.
+		 *
+		 * @param key key with which to put the value
+		 * @param value value to be put with the key
+		 */
+		@Override
+		public void set(String key, Object value) {
+			offsets.put(key, value);
+		}
+
+		/**
+		 * Retrieves the offsets map.
+		 *
+		 * @return HashMap of the offsets
+		 */
+		protected HashMap<String, Object> getOffsets() {
+			return offsets;
+		}
+	}
+
+	/**
 	 * Determine if we should flush offsets to storage, and if so then attempt to flush offsets.
 	 *
 	 * @param offsetWriter the offset storage writer; may not be null
@@ -967,7 +983,8 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 	 * @param task the task which produced the records for which the offsets have been committed
 	 */
 	protected void maybeFlush(OffsetStorageWriter offsetWriter, OffsetCommitPolicy policy, Duration commitTimeout,
-			SourceTask task) {
+			SourceTask task)
+			throws InterruptedException {
 		// Determine if we need to commit to offset storage ...
 		long timeSinceLastCommitMillis = clock.currentTimeInMillis() - timeOfLastCommitMillis;
 		if (policy.performCommit(recordsSinceLastCommit, Duration.ofMillis(timeSinceLastCommitMillis))) {
@@ -982,7 +999,8 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 	 * @param commitTimeout the timeout to wait for commit results
 	 * @param task the task which produced the records for which the offsets have been committed
 	 */
-	protected void commitOffsets(OffsetStorageWriter offsetWriter, Duration commitTimeout, SourceTask task) {
+	protected void commitOffsets(OffsetStorageWriter offsetWriter, Duration commitTimeout, SourceTask task)
+			throws InterruptedException {
 		long started = clock.currentTimeInMillis();
 		long timeout = started + commitTimeout.toMillis();
 		if (!offsetWriter.beginFlush()) {
@@ -1004,6 +1022,14 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 		catch (InterruptedException e) {
 			LOGGER.warn("Flush of {} offsets interrupted, cancelling", this);
 			offsetWriter.cancelFlush();
+
+			if (this.runningThread.get() == Thread.currentThread()) {
+				// this thread is still set as the running thread -> we were not interrupted
+				// due the stop() call -> probably someone else called the interrupt on us ->
+				// -> we should raise the interrupt flag
+				Thread.currentThread().interrupt();
+				throw e;
+			}
 		}
 		catch (ExecutionException e) {
 			LOGGER.error("Flush of {} offsets threw an unexpected exception: ", this, e);
@@ -1028,8 +1054,8 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 	 * Stop the execution of this embedded connector. This method does not block until the connector is stopped; use
 	 * {@link #await(long, TimeUnit)} for this purpose.
 	 *
-	 * @return {@code true} if the connector was {@link #run() running} and will eventually stop, or {@code false} if it was not
-	 *         running when this method is called
+	 * @return {@code true} if the connector was {@link #run() running} and will eventually stop, or {@code false} if it
+	 * was not running when this method is called
 	 * @see #await(long, TimeUnit)
 	 */
 	public boolean stop() {
@@ -1060,14 +1086,14 @@ public final class EmbeddedEngine implements DebeziumEngine<SourceRecord> {
 	}
 
 	/**
-	 * Wait for the connector to complete processing. If the processor is not running, this method returns immediately; however,
-	 * if the processor is {@link #stop() stopped} and restarted before this method is called, this method will return only
-	 * when it completes the second time.
+	 * Wait for the connector to complete processing. If the processor is not running, this method returns immediately;
+	 * however, if the processor is {@link #stop() stopped} and restarted before this method is called, this method will
+	 * return only when it completes the second time.
 	 *
 	 * @param timeout the maximum amount of time to wait before returning
 	 * @param unit the unit of time; may not be null
-	 * @return {@code true} if the connector completed within the timeout (or was not running), or {@code false} if it is still
-	 *         running when the timeout occurred
+	 * @return {@code true} if the connector completed within the timeout (or was not running), or {@code false} if it
+	 * is still running when the timeout occurred
 	 * @throws InterruptedException if this thread is interrupted while waiting for the completion of the connector
 	 */
 	public boolean await(long timeout, TimeUnit unit) throws InterruptedException {
