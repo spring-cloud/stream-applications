@@ -33,10 +33,7 @@ else
   MAVEN_OPT=-q
 fi
 if [ "$VERSION" == "" ]; then
-  VERSIONS=$($SCDIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q | sed 's/\"//g')
-  for v in $VERSIONS; do
-    VERSION=$v
-  done
+  VERSION=$($SCDIR/mvn-get-version.sh)
 fi
 echo "Project Version:$VERSION"
 if [ "$LOCAL" == "true" ]; then
