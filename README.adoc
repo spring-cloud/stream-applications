@@ -165,21 +165,17 @@ The following are the various components of this repository.
 
 You can build everything from the root of the repository.
 
-NOTE: The build depends on the global property `${revision}` to configure the current project version.
-This value is resolved with the `maven-flatten-plugin`.
-Because of this, you need to install some core poms in the local maven repository before running a build command.
-To perform this necessary step, run `setup-build.sh`.
-
-`./setup-build.sh`
-
 `./mvnw clean install`
 
 TIP: By default the build skips long running tests, annotated with `@Tag("integration")`,including tests requiring Testcontainers. To run the full test suite, activate the `integration` Maven profile:
 `./mvnw clean install -Pintegration`. This applies to building functions or individual applications as well.
 
 However, this may not be what you are interested in since you are probably interested in a single application or a few of them.
+To build the functions and applications that you are interested in, you need to first build the base module with the following.
 
-To build the functions and applications that you are interested in, you need to build them selectively, as shown below.
+`./mvnw clean install -f stream-applications-build`
+
+You can then build the desired functions/apps selectively, as shown below.
 
 ==== Building Functions
 

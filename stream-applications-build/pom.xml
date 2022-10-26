@@ -14,7 +14,7 @@
 		<java.version>17</java.version>
 		<maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+		<maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
@@ -44,7 +44,6 @@
 		<spring-cloud-stream-dependencies.version>4.0.0-SNAPSHOT</spring-cloud-stream-dependencies.version>
 		<spring-cloud-stream.version>4.0.0-SNAPSHOT</spring-cloud-stream.version>
 		<test-containers.version>1.17.5</test-containers.version>
-		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 		<mockserver.version>5.13.2</mockserver.version>
 
 		<groovy.version>4.0.5</groovy.version>
@@ -150,15 +149,10 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
-					<includes>
-						<include>**/*Tests.java</include>
-						<include>**/*Test.java</include>
-					</includes>
-					<excludes>
-						<exclude>**/Abstract*.java</exclude>
-					</excludes>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>

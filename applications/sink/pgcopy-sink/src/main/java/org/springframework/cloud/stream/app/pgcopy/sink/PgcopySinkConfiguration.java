@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import javax.sql.DataSource;
 
@@ -70,10 +71,10 @@ import org.springframework.util.StringUtils;
  *
  * @author Thomas Risberg
  * @author Janne Valkealahti
+ * @author Chris Bono
  */
 @Configuration
 @EnableScheduling
-//@EnableBinding(Sink.class)
 @EnableConfigurationProperties(PgcopySinkProperties.class)
 public class PgcopySinkConfiguration {
 
@@ -83,13 +84,12 @@ public class PgcopySinkConfiguration {
 	private PgcopySinkProperties properties;
 
 	@Bean
-	public MessageChannel toSink() {
-		return new DirectChannel();
+	public Consumer<Message<?>> pgcopyConsumer(MessageHandler aggregatingMessageHandler) {
+		return aggregatingMessageHandler::handleMessage;
 	}
 
 	@Bean
 	@Primary
-	@ServiceActivator(inputChannel = "input")
 	FactoryBean<MessageHandler> aggregatorFactoryBean(MessageChannel toSink, MessageGroupStore messageGroupStore) {
 		AggregatorFactoryBean aggregatorFactoryBean = new AggregatorFactoryBean();
 		aggregatorFactoryBean.setCorrelationStrategy(
@@ -101,6 +101,11 @@ public class PgcopySinkConfiguration {
 		aggregatorFactoryBean.setSendPartialResultOnExpiry(true);
 		aggregatorFactoryBean.setOutputChannel(toSink);
 		return aggregatorFactoryBean;
+	}
+
+	@Bean
+	public MessageChannel toSink() {
+		return new DirectChannel();
 	}
 
 	@Bean

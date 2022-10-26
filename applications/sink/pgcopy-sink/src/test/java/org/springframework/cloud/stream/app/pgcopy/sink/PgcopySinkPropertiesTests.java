@@ -16,11 +16,9 @@
 
 package org.springframework.cloud.stream.app.pgcopy.sink;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -28,6 +26,7 @@ import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -39,25 +38,23 @@ public class PgcopySinkPropertiesTests {
 
 	private AnnotationConfigApplicationContext context;
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
-	@Before
+	@BeforeEach
 	public void setUp() {
 		this.context = new AnnotationConfigApplicationContext();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		this.context.close();
 	}
 
 	@Test
 	public void tableNameIsRequired() {
-		this.thrown.expect(BeanCreationException.class);
-		this.thrown.expectMessage("Failed to bind properties under 'pgcopy' to org.springframework.cloud.stream.app.pgcopy.sink.PgcopySinkProperties");
 		this.context.register(Conf.class);
-		this.context.refresh();
+		assertThatThrownBy(() -> this.context.refresh())
+				.isInstanceOf(BeanCreationException.class)
+				.cause()
+				.hasMessageContaining("Failed to bind properties under 'pgcopy' to org.springframework.cloud.stream.app.pgcopy.sink.PgcopySinkProperties");
 	}
 
 	@Test

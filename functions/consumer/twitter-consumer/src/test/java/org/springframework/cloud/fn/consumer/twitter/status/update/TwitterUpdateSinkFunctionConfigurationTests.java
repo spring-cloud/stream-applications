@@ -19,10 +19,11 @@ package org.springframework.cloud.fn.consumer.twitter.status.update;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.junit.Test;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+
+import org.junit.jupiter.api.Test;
 
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;

@@ -20,10 +20,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
@@ -56,7 +55,6 @@ import static org.mockserver.verify.VerificationTimes.once;
 /**
  * @author Christian Tzolov
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(
 		webEnvironment = SpringBootTest.WebEnvironment.NONE,
 		properties = {
@@ -82,7 +80,7 @@ public abstract class TwitterStreamSupplierTests {
 	@Autowired
 	protected Supplier<Flux<Message<?>>> twitterStreamSupplier;
 
-	@BeforeClass
+	@BeforeAll
 	public static void startServer() {
 
 		mockServer = ClientAndServer.startClientAndServer(MOCK_SERVER_PORT);
@@ -109,7 +107,7 @@ public abstract class TwitterStreamSupplierTests {
 				.withBody(new StringBody("count=0&stall_warnings=true")));
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void stopServer() {
 		mockServer.stop();
 	}

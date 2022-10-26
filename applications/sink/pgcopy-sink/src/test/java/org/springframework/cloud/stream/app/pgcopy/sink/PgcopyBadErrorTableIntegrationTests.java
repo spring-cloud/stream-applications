@@ -21,16 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.postgresql.util.PSQLException;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.cloud.stream.app.pgcopy.test.PostgresTestSupport;
+import org.springframework.cloud.stream.app.pgcopy.test.PostgresAvailableExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.dao.DataAccessException;
@@ -38,7 +37,7 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration Tests testing bad error table specified for PgcopySink. Only runs if PostgreSQL database is available.
@@ -46,10 +45,8 @@ import static org.hamcrest.Matchers.is;
  * @author Thomas Risberg
  * @author Artem Bilan
  */
+@ExtendWith(PostgresAvailableExtension.class)
 public class PgcopyBadErrorTableIntegrationTests {
-
-	@ClassRule
-	public static PostgresTestSupport postgresAvailable = new PostgresTestSupport();
 
 	private String[] env = { "pgcopy.tableName=names", "pgcopy.columns=id,name,age", "pgcopy.format=CSV" };
 
@@ -57,7 +54,7 @@ public class PgcopyBadErrorTableIntegrationTests {
 
 	private Properties appProperties = new Properties();
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		try {
 			appProperties = PropertiesLoaderUtils.loadAllProperties("application.properties");
@@ -95,12 +92,11 @@ public class PgcopyBadErrorTableIntegrationTests {
 					dae = cause;
 				}
 			}
-			Assert.assertThat(cause.getClass().getName(), is(PSQLException.class.getName()));
-			Assert.assertNotNull(ise);
-			Assert.assertTrue(ise.getMessage().contains("Invalid error table specified"));
-			Assert.assertNotNull(dae);
-			Assert.assertTrue(cause.getMessage().contains("relation"));
-			Assert.assertTrue(cause.getMessage().contains("does not exist"));
+			assertThat(cause).isInstanceOf(PSQLException.class)
+					.hasMessageContaining("relation")
+					.hasMessageContaining("does not exist");
+			assertThat(ise).hasMessageContaining("Invalid error table specified");
+			assertThat(dae).isNotNull();
 		}
 		context.close();
 	}
@@ -148,12 +144,11 @@ public class PgcopyBadErrorTableIntegrationTests {
 					dae = cause;
 				}
 			}
-			Assert.assertThat(cause.getClass().getName(), is(PSQLException.class.getName()));
-			Assert.assertNotNull(ise);
-			Assert.assertTrue(ise.getMessage().contains("Invalid error table specified"));
-			Assert.assertNotNull(dae);
-			Assert.assertTrue(cause.getMessage().contains("column"));
-			Assert.assertTrue(cause.getMessage().contains("does not exist"));
+			assertThat(cause).isInstanceOf(PSQLException.class)
+					.hasMessageContaining("column")
+					.hasMessageContaining("does not exist");
+			assertThat(ise).hasMessageContaining("Invalid error table specified");
+			assertThat(dae).isNotNull();
 		}
 		context.close();
 	}
