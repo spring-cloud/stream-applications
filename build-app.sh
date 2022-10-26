@@ -29,8 +29,11 @@ check_env CI_DEPLOY_PASSWORD
 
 if [ "$VERBOSE" == "true" ]; then
   MAVEN_OPT=--debug
+fi
+if [ "$MAVEN_OPT" == "" ]; then
+  MAVEN_OPT=-B
 else
-  MAVEN_OPT=-q
+  MAVEN_OPT="$MAVEN_OPT -B"
 fi
 if [ "$VERSION" == "" ]; then
   VERSION=$($SCDIR/mvn-get-version.sh)

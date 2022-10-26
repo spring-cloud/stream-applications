@@ -210,17 +210,18 @@ jobs:
           VERBOSE: ${{ inputs.verbose }}
         run: |
           ROOT_DIR=$(realpath $PWD)
+          MAVEN_OPT="-B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
           echo "::notice ::building - stream-applications-build"
           set -e
-          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f stream-applications-build
+          $ROOT_DIR/mvnw $MAVEN_OPT deploy -f stream-applications-build
           set +e
           echo "::notice ::building - functions"
           set -e
-          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -T 1.5C -s $ROOT_DIR/.settings.xml deploy -f functions
+          $ROOT_DIR/mvnw $MAVEN_OPT deploy -f functions
           set +e
           echo "::notice ::building - stream-applications-core"
           set -e
-          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f applications/stream-applications-core
+          $ROOT_DIR/mvnw $MAVEN_OPT deploy -f applications/stream-applications-core
           set +e
           echo "::notice ::core build completed"
   # Build and tests apps and publishes to repo and creates container
