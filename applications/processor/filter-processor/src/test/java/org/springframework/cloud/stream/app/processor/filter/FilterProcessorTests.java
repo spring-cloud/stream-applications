@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.processor.filter;
 
 import java.nio.charset.StandardCharsets;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -59,6 +60,68 @@ public class FilterProcessorTests {
 			processorInput.send(new GenericMessage<>(shortMessage.getBytes(StandardCharsets.UTF_8)));
 			Message<byte[]> sourceMessage2 = processorOutput.receive(5000);
 			assertThat(sourceMessage2).isNull();
+		}
+	}
+
+	@Test
+	@Disabled
+	public void testFilterProcessorJson() {
+		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+			TestChannelBinderConfiguration.getCompleteConfiguration(FilterProcessorTestApplication.class))
+			.web(WebApplicationType.NONE)
+			.run("--spring.cloud.function.definition=byteArrayTextToString|filterFunction",
+				"--filter.function.expression=#jsonPath(payload, '$.code') != '09'")) {
+
+			InputDestination processorInput = context.getBean(InputDestination.class);
+			OutputDestination processorOutput = context.getBean(OutputDestination.class);
+			// How do we configure a DeadLetter destination?
+			String jsonCodeOne = "{\"code\":\"01\"}";
+			processorInput.send(new GenericMessage<>(jsonCodeOne.getBytes()));
+			Message<byte[]> sourceMessage2 = processorOutput.receive(10000);
+			assertThat(sourceMessage2).isNotNull();
+			assertThat(sourceMessage2.getPayload()).isNotNull();
+			assertThat(new String(sourceMessage2.getPayload())).isEqualTo(jsonCodeOne);
+
+			String jsonCodeNine = "{\"code\":\"09\"}";
+			processorInput.send(new GenericMessage<>(jsonCodeNine.getBytes()));
+			Message<byte[]> sourceMessage3 = processorOutput.receive(10000);
+			assertThat(sourceMessage3).isNull();
+
+			String jsonCdOne = "{\"cd\":\"01\"}";
+			processorInput.send(new GenericMessage<>(jsonCdOne.getBytes()));
+			Message<byte[]> sourceMessage = processorOutput.receive(10000);
+			// If the jsonPath throws an exception we expect the message to be sent to DLQ
+			// If the jsonPath doesn't throw and exception and evaluates to null we expect the message to pass through the filter
+			boolean expectFiltered = true;
+			if(expectFiltered) {
+				assertThat(sourceMessage).isNull();
+			} else {
+				assertThat(sourceMessage).isNotNull();
+				assertThat(sourceMessage.getPayload()).isNotNull();
+				assertThat(new String(sourceMessage.getPayload())).isEqualTo(jsonCdOne);
+			}
+
+			processorInput.send(new GenericMessage<>(jsonCdOne.getBytes()));
+			Message<byte[]> sourceMessageX = processorOutput.receive(10000);
+			// If the jsonPath throws an exception we expect the message to be sent to DLQ
+			// If the jsonPath doesn't throw and exception and evaluates to null we expect the message to pass through the filter
+			if(expectFiltered) {
+				assertThat(sourceMessageX).isNull();
+			} else {
+				assertThat(sourceMessageX).isNotNull();
+				assertThat(sourceMessageX.getPayload()).isNotNull();
+				assertThat(new String(sourceMessageX.getPayload())).isEqualTo(jsonCdOne);
+			}
+
+			processorInput.send(new GenericMessage<>(jsonCodeOne.getBytes()));
+			sourceMessage2 = processorOutput.receive(10000);
+			assertThat(sourceMessage2).isNotNull();
+			assertThat(sourceMessage2.getPayload()).isNotNull();
+			assertThat(new String(sourceMessage2.getPayload())).isEqualTo(jsonCodeOne);
+
+			processorInput.send(new GenericMessage<>(jsonCodeNine.getBytes()));
+			sourceMessage3 = processorOutput.receive(10000);
+			assertThat(sourceMessage3).isNull();
 		}
 	}
 
