@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+SCDIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+SCDIR=$(realpath $SCDIR)
 (return 0 2>/dev/null) && sourced=1 || sourced=0
 function check_env() {
   eval ev='$'$1
@@ -25,14 +27,13 @@ check_env CI_DEPLOY_USERNAME
 check_env CI_DEPLOY_PASSWORD
 
 
-ROOT_DIR=$(realpath $PWD)
 if [ "$VERBOSE" == "true" ]; then
   MAVEN_OPT=--debug
 else
   MAVEN_OPT=-q
 fi
 if [ "$VERSION" == "" ]; then
-  VERSIONS=$($ROOT_DIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
+  VERSIONS=$($SCDIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
   for v in $VERSIONS; do
     VERSION=$v
   done
@@ -61,12 +62,12 @@ pushd $APP_FOLDER > /dev/null
   if [ -d "src/main/java" ]; then
     echo "Deploying:$APP_FOLDER"
     set -e
-    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean $MAVEN_GOAL -U -Pintegration
+    $SCDIR/mvnw $MAVEN_OPT -s $SCDIR/.settings.xml clean $MAVEN_GOAL -U -Pintegration
     set +e
   else
     echo "Packaging:$APP_FOLDER"
     set -e
-    $ROOT_DIR/mvnw $MAVEN_OPT -s $ROOT_DIR/.settings.xml clean install -U -Pintegration
+    $SCDIR/mvnw $MAVEN_OPT -s $SCDIR/.settings.xml clean install -U -Pintegration
     set +e
   fi
   if [ ! -d apps ]; then
@@ -76,7 +77,7 @@ pushd $APP_FOLDER > /dev/null
   pushd apps > /dev/null
     echo "Building:$APP_FOLDER/apps"
     set -e
-    ./mvnw $MAVEN_OPT $MAVEN_GOAL -U -Pintegration
+    ./mvnw $MAVEN_OPT -s $SCDIR/.settings.xml $MAVEN_GOAL -U -Pintegration
     set +e
     APPS=$(find * -maxdepth 0 -type d)
     for app in $APPS; do

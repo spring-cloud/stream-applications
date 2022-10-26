@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+SCDIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+SCDIR=$(realpath $SCDIR)
 (return 0 2>/dev/null) && sourced=1 || sourced=0
 function check_env() {
   eval ev='$'$1
@@ -20,9 +22,8 @@ if [ "$1" == "" ]; then
   fi
 fi
 APP_FOLDER=$1
-ROOT_DIR=$(realpath $PWD)
 if [ "$VERSION" == "" ]; then
-  VERSIONS=$($ROOT_DIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
+  VERSIONS=$($SCDIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
   for v in $VERSIONS; do
     VERSION=$v
   done
