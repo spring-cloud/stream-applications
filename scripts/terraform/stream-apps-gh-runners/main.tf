@@ -1,5 +1,5 @@
 variable "cluster_name" {
-  default = "scdf-empty"
+  default = "stream-ci-empty"
 }
 variable "region" {
   default = "us-central1"
@@ -93,7 +93,7 @@ resource "google_container_node_pool" "nodes" {
     disk_size_gb = var.disk_size
     disk_type    = "pd-ssd"
     image_type   = "UBUNTU_CONTAINERD"
-    tags         = ["scdf-node", var.cluster_name, "${var.cluster_name}-node"]
+    tags         = ["stream-ci-node", var.cluster_name, "${var.cluster_name}-node"]
   }
   management {
     auto_upgrade = false
@@ -133,7 +133,7 @@ resource "google_container_cluster" "primary" {
   }
 }
 
-resource "google_compute_firewall" "scdf-fw" {
+resource "google_compute_firewall" "stream-ci-fw" {
   name    = "${var.cluster_name}-firewall"
   network = google_compute_network.vpc.name
 

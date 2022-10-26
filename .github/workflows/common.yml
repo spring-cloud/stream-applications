@@ -207,6 +207,7 @@ jobs:
         env:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          VERBOSE: ${{ inputs.verbose }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           echo "::notice ::building - stream-applications-build"
@@ -219,7 +220,7 @@ jobs:
           set +e
           echo "::notice ::building - function-dependencies"
           set -e
-          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f functions/function-dependencies
+          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f function-dependencies
           set +e
           echo "::notice ::building - stream-applications-core"
           set -e
@@ -262,6 +263,7 @@ jobs:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          VERBOSE: ${{ inputs.verbose }}
         run: ./build-app.sh "stream-applications/applications/processor/${{ matrix.app }}"
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
@@ -269,6 +271,7 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          VERBOSE: ${{ inputs.verbose }}
         run: ./publish-app.sh "stream-applications/applications/processor/${{ matrix.app }}"
   sinks:
     if: ${{ needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
@@ -312,6 +315,7 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          VERBOSE: ${{ inputs.verbose }}
         run: ./publish-app.sh "stream-applications/applications/sink/${{ matrix.app }}"
   sources:
     if: ${{ needs.parameters.outputs.sources != '' && needs.parameters.outputs.sources != null }}
@@ -349,6 +353,7 @@ jobs:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          VERBOSE: ${{ inputs.verbose }}
         run: ./build-app.sh "stream-applications/applications/source/${{ matrix.app }}"
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
@@ -356,6 +361,7 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          VERBOSE: ${{ inputs.verbose }}
         run: ./publish-app.sh "stream-applications/applications/source/${{ matrix.app }}"
 #  scale-down-runners:
 #    if: ${{ success() }}
