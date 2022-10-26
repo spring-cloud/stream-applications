@@ -82,10 +82,10 @@ pushd $APP_FOLDER > /dev/null
     APPS=$(find * -maxdepth 0 -type d)
     for app in $APPS; do
       for v in $JDKS; do
-        echo "Pack:springcloudstream/$app:$VERSION-jdk$v"
+        echo "Pack:$app:$VERSION-jdk$v"
         set -e
         pack build \
-          --path "springcloudstream/$app-$VERSION.jar" \
+          --path "$app/target/$app-$VERSION.jar" \
           --builder gcr.io/paketo-buildpacks/builder:base \
           --env BP_JVM_VERSION=$v \
           --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
