@@ -33,7 +33,7 @@ else
   MAVEN_OPT=-q
 fi
 if [ "$VERSION" == "" ]; then
-  VERSIONS=$($SCDIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q)
+  VERSIONS=$($SCDIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q | sed 's/\"//g')
   for v in $VERSIONS; do
     VERSION=$v
   done
