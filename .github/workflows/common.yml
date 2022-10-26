@@ -218,10 +218,6 @@ jobs:
           set -e
           $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -T 1.5C -s $ROOT_DIR/.settings.xml deploy -f functions
           set +e
-          echo "::notice ::building - function-dependencies"
-          set -e
-          $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f function-dependencies
-          set +e
           echo "::notice ::building - stream-applications-core"
           set -e
           $ROOT_DIR/mvnw ${{ inputs.verbose && '--debug' || '' }} -s $ROOT_DIR/.settings.xml deploy -f applications/stream-applications-core
