@@ -26,5 +26,4 @@ fi
 # -T 2C
 ./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -T 1.5C -f stream-applications-build -U
 ./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -T 1.5C -f functions -U
-./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -T 1.5C -f function-dependencies
 ./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -T 1.5C -f applications/stream-applications-core -U
