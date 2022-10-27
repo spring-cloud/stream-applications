@@ -124,6 +124,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
+      - name: 'Configure: Install xsltproc'
+        run: sudo apt-get install -y xsltproc
       - name: 'Action: build initial dependencies'
         shell: bash
         env:
@@ -176,6 +178,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
+      - name: 'Configure: Install xsltproc'
+        run: sudo apt-get install -y xsltproc
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
       - name: 'Build: ${{ matrix.app }}'
@@ -222,6 +226,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
+      - name: 'Configure: Install xsltproc'
+        run: sudo apt-get install -y xsltproc
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
       - name: 'Build: ${{ matrix.app }}'
@@ -269,6 +275,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
+      - name: 'Configure: Install xsltproc'
+        run: sudo apt-get install -y xsltproc
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
       - name: 'Build: ${{ matrix.app }}'
