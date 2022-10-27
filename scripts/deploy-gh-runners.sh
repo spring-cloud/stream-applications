@@ -100,7 +100,11 @@ fi
 set -e
 echo "Creating runners"
 kubectl apply -f "$SCDIR/k8s/runners-stream-ci-large.yaml"
-SCALING=$(jq '.stream-apps-gh-runners.runner_scaling' $PARENT/config/defaults.json | sed 's/\"//g')
+SCALING=$($SCDIR/determine-default.sh stream-apps-gh-runners "runner_scaling")
+if [ "$SCALING" == "" ] || [ "$SCALING" == "null" ]; then
+  echo "Cannot determine runner_scaling"
+  exit 2
+fi
 kubectl apply -f "$SCDIR/k8s/runners-stream-ci-${SCALING}.yaml"
 if [ "$SCALING" != "auto" ]; then
   $SCDIR/wait-k8s.sh 1 --for=condition=ready --timeout=1m pod -l runner-deployment-name=runners-stream-ci
