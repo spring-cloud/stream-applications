@@ -146,8 +146,9 @@ NODES=$(jq '.nodes' nodes.json)
 SHRINK=$(jq '.shrink' nodes.json)
 echo "NODES=$NODES, ZONES=$ZONES, SHRINK=$SHRINK"
 TARGET=$(div_round_up $NODES $ZONES)
-if ((TARGET < 0)); then
-  TARGET=$($SCDIR/determine-default.sh $CLUSTER_NAME "scale_down")
+SCALE_DOWN=$($SCDIR/determine-default.sh $CLUSTER_NAME "scale_down")
+if ((TARGET < SCALE_DOWN)); then
+  TARGET=$SCALE_DOWN
 fi
 if ((TARGET < INITIAL_NODE_COUNT)); then
   if [ "$SHRINK" == "true" ]; then

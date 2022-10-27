@@ -7,7 +7,7 @@ if [ "$REGION" == "" ]; then
   export REGION="us-central1"
 fi
 
-# MACHINE_TYPE="e2-standard-4"
+# MACHINE_TYPE="e2-standard-8"
 export K8S="1.23"
 export MACHINE_TYPE=$($SCDIR/determine-default.sh $CLUSTER_NAME "machine_type")
 export DISK_SIZE=$($SCDIR/determine-default.sh $CLUSTER_NAME "disk_size")
