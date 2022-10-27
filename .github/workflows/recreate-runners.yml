@@ -49,10 +49,10 @@ jobs:
       - name: 'Configure: ensure scripts are executable'
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
-      - name: 'Check: active workflows'
-        uses: ./.github/actions/there_can_be_only_one
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: 'Check: active workflows'
+#        uses: ./.github/actions/there_can_be_only_one
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Configure: runner type and cluster name'
         shell: bash
         run: |
