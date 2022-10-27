@@ -103,12 +103,9 @@ jobs:
           VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
         run: |
           set +e
-          source ./scripts/use-${RUNNER_TYPE}.sh $CLUSTER_NAME
-          RC=$?
-          if (( $RC == 0 )); then
-            set +e
-            ./scripts/delete-runners-${RUNNER_TYPE}.sh
-          fi
+          ./scripts/kubeconfig-runners.sh
+          ./scripts/delete-runners.sh
+          ./scripts/delete-runners-${RUNNER_TYPE}.sh
       - name: 'Action: create GH Runners Cluster'
         shell: bash
         timeout-minutes: 30

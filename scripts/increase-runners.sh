@@ -4,16 +4,16 @@ SCDIR=$(realpath $SCDIR)
 PARENT=$(realpath $SCDIR/..)
 
 function max_replicas() {
-  kubectl get horizontalrunnerautoscalers --output=json | jq '.items | map(select(.spec.scaleTargetRef.name == "runners-ci")) | .[] | .spec.maxReplicas'
+  kubectl get horizontalrunnerautoscalers --output=json | jq '.items | map(select(.spec.scaleTargetRef.name == "runners-stream-ci")) | .[] | .spec.maxReplicas'
 }
 function min_replicas() {
-  kubectl get horizontalrunnerautoscalers --output=json | jq '.items | map(select(.spec.scaleTargetRef.name == "runners-ci")) | .[] | .spec.minReplicas'
+  kubectl get horizontalrunnerautoscalers --output=json | jq '.items | map(select(.spec.scaleTargetRef.name == "runners-stream-ci")) | .[] | .spec.minReplicas'
 }
 function count_runners() {
-  kubectl get rdeploy runners-ci --output=json | jq '.spec.replicas'
+  kubectl get rdeploy runners-stream-ci --output=json | jq '.spec.replicas'
 }
 function count_running() {
-  kubectl get rdeploy | grep -F "runners-ci" | awk '{print $4}'
+  kubectl get rdeploy | grep -F "runners-stream-ci" | awk '{print $4}'
 }
 
 if [ "$1" = "" ]; then
@@ -25,8 +25,8 @@ INC=$1
 
 # shellcheck disable=SC2003
 MAX_RUNNERS=$2
-SCALING=$(jq '.scdf_pro_gh_runners.runner_scaling' $PARENT/config/defaults.json | sed 's/\"//g')
-cp $SCDIR/k8s/runners-ci-${SCALING}-template.yaml runners-ci-change.yaml
+SCALING=$(jq '.stream-apps-gh-runners.runner_scaling' $PARENT/config/defaults.json | sed 's/\"//g')
+cp $SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml runners-stream-ci-change.yaml
 
 if [ "$SCALING" == "auto" ]; then
   if [ "$MAX_RUNNERS" == "" ]; then
@@ -73,26 +73,26 @@ IMAGE_SHA=$(wget -q -O- https://hub.docker.com/v2/repositories/summerwind/action
 if [ "$IMAGE_SHA" == "" ]; then
   IMAGE_SHA="latest"
 fi
-sed -i 's/tag-placeholder/'"$IMAGE_SHA"'/g' runners-ci-change.yaml
+sed -i 's/tag-placeholder/'"$IMAGE_SHA"'/g' runners-stream-ci-change.yaml
 if [ "$SCALING" == "auto" ]; then
   echo "Runners: changing scaling min: $MIN_RUNNERS, max: $MAX_RUNNERS"
-  sed -i 's/max-replicas-placeholder/'"$MAX_RUNNERS"'/g' runners-ci-change.yaml
-  sed -i 's/min-replicas-placeholder/'"$MIN_RUNNERS"'/g' runners-ci-change.yaml
+  sed -i 's/max-replicas-placeholder/'"$MAX_RUNNERS"'/g' runners-stream-ci-change.yaml
+  sed -i 's/min-replicas-placeholder/'"$MIN_RUNNERS"'/g' runners-stream-ci-change.yaml
 else
   echo "Runners:$CURRENT increase by $INC to $RUNNERS"
-  sed -i 's/replicas-placeholder/'"$RUNNERS"'/g' runners-ci-change.yaml
+  sed -i 's/replicas-placeholder/'"$RUNNERS"'/g' runners-stream-ci-change.yaml
 fi
 
-cmp --silent "$SCDIR/k8s/runners-ci-${SCALING}-template.yaml" runners-ci-change.yaml
+cmp --silent "$SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml" runners-stream-ci-change.yaml
 RC=$?
 if ((RC != 0)); then
-  kubectl apply -f runners-ci-change.yaml
+  kubectl apply -f runners-stream-ci-change.yaml
   echo "Runners: applied change to $RUNNERS"
   if [ "$SCALING" != "auto" ]; then
-    $SCDIR/wait-k8s.sh 1 --for=condition=ready --timeout=1m pod -l runner-deployment-name=runners-ci --all-namespaces=true
+    $SCDIR/wait-k8s.sh 1 --for=condition=ready --timeout=1m pod -l runner-deployment-name=runners-stream-ci --all-namespaces=true
   fi
 else
   echo "Runners: no changes required"
 fi
-rm -f runners-ci-change.yaml
+rm -f runners-stream-ci-change.yaml
 $SCDIR/check-runners.sh

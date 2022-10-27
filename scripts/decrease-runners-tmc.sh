@@ -3,7 +3,7 @@ SCDIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 SCDIR=$(realpath $SCDIR)
 
 function count_runners() {
-    kubectl get pods --namespace default | grep Running |  grep -c "runners-ci"
+    kubectl get pods --namespace default | grep Running |  grep -c "runners-stream-ci"
 }
 
 if [ "$1" = "" ]; then

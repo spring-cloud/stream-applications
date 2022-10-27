@@ -15,6 +15,8 @@
     "cpu_per_pod": 1,
     "machine_type": "n2-standard-8",
     "runner_scaling": "manual",
-    "scale_down": 1
+    "scale_down": 1,
+    "arc_version": "v0.26.0",
+    "helm_version": "0.21.0"
   }
 }

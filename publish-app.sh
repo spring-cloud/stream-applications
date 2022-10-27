@@ -46,6 +46,10 @@ pushd $APP_FOLDER > /dev/null
       project="$APP_FOLDER-$broker"
       set -e
       docker tag "springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$project:$VERSION"
+      if [ "$BRANCH" != "" ]; then
+        docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$BRANCH"
+        echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$BRANCH"
+      fi
       docker push "springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK"
       echo "Pushed:springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK"
       docker push "springcloudstream/$project:$VERSION"

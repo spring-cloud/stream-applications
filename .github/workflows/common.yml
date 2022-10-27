@@ -26,6 +26,9 @@ on:
       CI_DEPLOY_USERNAME:
       CI_DEPLOY_PASSWORD:
 
+env:
+  VERBOSE: ${{ inputs.verbose && 'true' || '' }}
+
 jobs:
   parameters:
     runs-on: ubuntu-latest
@@ -44,8 +47,6 @@ jobs:
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
       - name: 'Configure: create streams applications matrix'
         shell: bash
-        env:
-          VERBOSE: ${{ inputs.verbose && 'true' || '' }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           echo "::info ::checking stream-applications for apps"
@@ -93,17 +94,25 @@ jobs:
       matrix: ${{ env.matrix }}
       jdk_build: ${{ env.JDK_BUILD }}
       jre_version: ${{ env.JRE_DEFAULT }}
-#  scale-runners:
-#    if: ${{ inputs.scale }}
-#    needs:
-#      - parameters
-#    concurrency:
-#      group: stream-apps-gh-runners
-#      cancel-in-progress: false
-#    uses: ./.github/workflows/scale-runners-up.yml
-#    with:
-#      verbose: ${{ inputs.verbose }}
-#      max_parallel: ${{ toJson(needs.parameters.outputs.max_parallel) }}
+  scale-runners:
+    if: ${{ inputs.scale }}
+    runs-on: ubuntu-latest
+    needs:
+      - parameters
+    concurrency:
+      group: stream-apps-gh-runners
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Action: Scale Runners Up by ${{ needs.parameters.outputs.max_parallel }}'
+        uses: ./.github/actions/scale-runners-up
+        timeout-minutes: 45
+        with:
+          verbose: ${{ inputs.verbose }}
+          max_parallel: ${{ toJson(needs.parameters.outputs.max_parallel) }}
   core:
     runs-on: ubuntu-latest
     needs:
@@ -125,7 +134,6 @@ jobs:
         env:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
-          VERBOSE: ${{ inputs.verbose }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           MAVEN_OPT="-B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
@@ -178,7 +186,6 @@ jobs:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-          VERBOSE: ${{ inputs.verbose }}
         run: ./build-app.sh "stream-applications/applications/processor/${{ matrix.app }}"
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
@@ -186,7 +193,6 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-          VERBOSE: ${{ inputs.verbose }}
         run: ./publish-app.sh "stream-applications/applications/processor/${{ matrix.app }}"
   sinks:
     if: ${{ needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
@@ -230,7 +236,6 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-          VERBOSE: ${{ inputs.verbose }}
         run: ./publish-app.sh "stream-applications/applications/sink/${{ matrix.app }}"
   sources:
     if: ${{ needs.parameters.outputs.sources != '' && needs.parameters.outputs.sources != null }}
@@ -268,7 +273,6 @@ jobs:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-          VERBOSE: ${{ inputs.verbose }}
         run: ./build-app.sh "stream-applications/applications/source/${{ matrix.app }}"
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
@@ -276,21 +280,28 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-          VERBOSE: ${{ inputs.verbose }}
         run: ./publish-app.sh "stream-applications/applications/source/${{ matrix.app }}"
-#  scale-down-runners:
-#    if: ${{ inputs.scale && success() }}
-#    needs:
-#      - parameters
-#      - scale-runners-up
-#      - core
-#      - processors
-#      - sinks
-#      - sources
-#    concurrency:
-#      group: stream-apps-gh-runners
-#      cancel-in-progress: false
-#    uses: ./.github/workflows/scale-runners-down.yml
-#    with:
-#      verbose: ${{ inputs.verbose }}
-#      max_parallel: ${{ toJson(needs.parameters.outputs.max_parallel) }}
+  scale-down-runners:
+    if: ${{ inputs.scale && success() }}
+    runs-on: ubuntu-latest
+    needs:
+      - parameters
+      - scale-runners-up
+      - core
+      - processors
+      - sinks
+      - sources
+    concurrency:
+      group: stream-apps-gh-runners
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Action: Scale Runners Down with ${{ needs.parameters.outputs.max_parallel }}'
+        uses: ./.github/actions/scale-runners-down
+        timeout-minutes: 15
+        with:
+          verbose: ${{ inputs.verbose }}
+          max_parallel: ${{ needs.parameters.outputs.max_parallel }}
