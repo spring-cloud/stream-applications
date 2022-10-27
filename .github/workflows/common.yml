@@ -113,10 +113,15 @@ jobs:
     needs:
       - parameters
     steps:
+      - name: 'Configure: checkout stream-applications@main'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
       - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
         uses: actions/checkout@v3
         with:
           ref: ${{ inputs.branch }}
+          path: 'stream-applications'
       - name: 'Configure: Ensure scripts are executable'
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
@@ -143,19 +148,21 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           MAVEN_OPT="-B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
+          pushd stream-applications > /dev/null
           echo "::notice ::building - stream-applications-build"
           set -e
-          $ROOT_DIR/mvnw $MAVEN_OPT deploy -f stream-applications-build
+          ./mvnw $MAVEN_OPT deploy -f stream-applications-build
           set +e
           echo "::notice ::building - functions"
           set -e
-          $ROOT_DIR/mvnw $MAVEN_OPT deploy -f functions
+          ./mvnw $MAVEN_OPT deploy -f functions
           set +e
           echo "::notice ::building - stream-applications-core"
           set -e
-          $ROOT_DIR/mvnw $MAVEN_OPT deploy -f applications/stream-applications-core
+          ./mvnw $MAVEN_OPT deploy -f applications/stream-applications-core
           set +e
           echo "::notice ::core build completed"
+          popd > /dev/null
   # Build and tests apps and publishes to repo and creates container
   processors:
     if: ${{ needs.parameters.outputs.processors != '' && needs.parameters.outputs.processors != null }}
@@ -206,14 +213,14 @@ jobs:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./build-app.sh "stream-applications/applications/processor/${{ matrix.app }}"
+        run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./publish-app.sh "stream-applications/applications/processor/${{ matrix.app }}"
+        run: ./publish-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
   sinks:
     if: ${{ needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
     needs:
@@ -263,14 +270,14 @@ jobs:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./build-app.sh "stream-applications/applications/sink/${{ matrix.app }}"
+        run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./publish-app.sh "stream-applications/applications/sink/${{ matrix.app }}"
+        run: ./publish-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
   sources:
     if: ${{ needs.parameters.outputs.sources != '' && needs.parameters.outputs.sources != null }}
     needs:
@@ -321,14 +328,14 @@ jobs:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./build-app.sh "stream-applications/applications/source/${{ matrix.app }}"
+        run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./publish-app.sh "stream-applications/applications/source/${{ matrix.app }}"
+        run: ./publish-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
 #  scale-runners-down:
 #    if: ${{ success() }}
 #    runs-on: ubuntu-latest

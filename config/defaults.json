@@ -11,8 +11,8 @@
   },
   "streams_apps_gh_runners": {
     "pods_per_job": 1,
-    "ram_per_pod": 4,
-    "cpu_per_pod": 1,
+    "ram_per_pod": 3,
+    "cpu_per_pod": 1.5,
     "machine_type": "n2-standard-8",
     "runner_scaling": "manual",
     "scale_down": 1,

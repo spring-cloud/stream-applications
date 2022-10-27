@@ -17,8 +17,8 @@ spec:
           name: controller-manager-secret
       resources:
         requests:
-          cpu: "1000m"
-          memory: "1Gi"
+          cpu: "1500m"
+          memory: "2Gi"
       labels:
         - stream-ci
 ---
