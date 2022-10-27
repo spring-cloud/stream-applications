@@ -47,7 +47,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.Message;
-import org.springframework.util.SocketUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.matchers.Times.exactly;
@@ -57,12 +56,13 @@ import static org.mockserver.verify.VerificationTimes.once;
 
 /**
  * @author Christian Tzolov
+ * @author Corneil du Plessis
  */
 public class TwitterMessageSourceIntegrationTests {
 
 	private static final String MOCK_SERVER_IP = "127.0.0.1";
 
-	private static final Integer MOCK_SERVER_PORT = SocketUtils.findAvailableTcpPort();
+	private static Integer mockServerPort = 0;
 
 	private static ClientAndServer mockServer;
 
@@ -72,8 +72,9 @@ public class TwitterMessageSourceIntegrationTests {
 
 	@BeforeAll
 	public static void startServer() {
-		mockServer = ClientAndServer.startClientAndServer(MOCK_SERVER_PORT);
-		mockClient = new MockServerClient(MOCK_SERVER_IP, MOCK_SERVER_PORT);
+		mockServer = ClientAndServer.startClientAndServer(mockServerPort);
+		mockServerPort = mockServer.getPort();
+		mockClient = new MockServerClient(MOCK_SERVER_IP, mockServerPort);
 
 		messageRequest = setExpectation(request()
 				.withMethod("GET")
@@ -153,7 +154,7 @@ public class TwitterMessageSourceIntegrationTests {
 			Function<TwitterConnectionProperties, ConfigurationBuilder> mockedConfiguration =
 					toConfigurationBuilder.andThen(
 							new TwitterTestUtils().mockTwitterUrls(
-									String.format("http://%s:%s", MOCK_SERVER_IP, MOCK_SERVER_PORT)));
+									String.format("http://%s:%s", MOCK_SERVER_IP, mockServerPort)));
 
 			return mockedConfiguration.apply(properties).build();
 		}
