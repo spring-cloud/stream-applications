@@ -13,11 +13,6 @@ on:
         required: false
         default: true
         description: 'Verbose output'
-      scale:
-        type: boolean
-        required: false
-        default: false
-        description: 'Scale and use private runners'
     secrets:
       DOCKER_HUB_USERNAME:
       DOCKER_HUB_PASSWORD:
@@ -95,25 +90,24 @@ jobs:
       matrix: ${{ env.matrix }}
       jdk_build: ${{ env.JDK_BUILD }}
       jre_version: ${{ env.JRE_DEFAULT }}
-  scale-runners-up:
-    if: ${{ inputs.scale }}
-    runs-on: ubuntu-latest
-    needs:
-      - parameters
-    concurrency:
-      group: stream-apps-gh-runners
-      cancel-in-progress: false
-    steps:
-      - name: 'Configure: checkout stream-applications'
-        uses: actions/checkout@v3
-        with:
-          ref: 'main'
-      - name: 'Action: Scale Runners Up by ${{ needs.parameters.outputs.max_parallel }}'
-        uses: ./.github/actions/scale-runners-up
-        timeout-minutes: 45
-        with:
-          verbose: ${{ inputs.verbose }}
-          max_parallel: ${{ toJson(needs.parameters.outputs.max_parallel) }}
+#  scale-runners-up:
+#    runs-on: ubuntu-latest
+#    needs:
+#      - parameters
+#    concurrency:
+#      group: stream-apps-gh-runners
+#      cancel-in-progress: false
+#    steps:
+#      - name: 'Configure: checkout stream-applications'
+#        uses: actions/checkout@v3
+#        with:
+#          ref: 'main'
+#      - name: 'Action: Scale Runners Up by ${{ needs.parameters.outputs.max_parallel }}'
+#        uses: ./.github/actions/scale-runners-up
+#        timeout-minutes: 45
+#        with:
+#          verbose: ${{ inputs.verbose }}
+#          max_parallel: ${{ toJson(needs.parameters.outputs.max_parallel) }}
   core:
     runs-on: ubuntu-latest
     needs:
@@ -157,12 +151,14 @@ jobs:
     needs:
       - core
       - parameters
-      - scale-runners-up
+#      - scale-runners-up
     strategy:
       fail-fast: false
+      max-parallel: 4
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.processors) }}
-    runs-on: ${{ inputs.scale && 'ubuntu-latest' || 'stream-ci' }}
+    runs-on: 'ubuntu-latest'
+#    runs-on: 'stream-ci'
     steps:
       - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
@@ -201,12 +197,14 @@ jobs:
     needs:
       - core
       - parameters
-      - scale-runners-up
+#      - scale-runners-up
     strategy:
+      max-parallel: 4
       fail-fast: false
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.sinks) }}
-    runs-on: ${{ inputs.scale && 'ubuntu-latest' || 'stream-ci' }}
+    runs-on: 'ubuntu-latest'
+#    runs-on: 'stream-ci'
     steps:
       - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
@@ -245,13 +243,15 @@ jobs:
     needs:
       - core
       - parameters
-      - scale-runners-up
+#      - scale-runners-up
     strategy:
+      max-parallel: 4
       fail-fast: false
       # will be removed when private runners are used.
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.sources) }}
-    runs-on: ${{ inputs.scale && 'ubuntu-latest' || 'stream-ci' }}
+    runs-on: 'ubuntu-latest'
+#    runs-on: 'stream-ci'
     steps:
       - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
@@ -285,27 +285,27 @@ jobs:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./publish-app.sh "stream-applications/applications/source/${{ matrix.app }}"
-  scale-down-runners:
-    if: ${{ inputs.scale && success() }}
-    runs-on: ubuntu-latest
-    needs:
-      - parameters
-      - scale-runners-up
-      - core
-      - processors
-      - sinks
-      - sources
-    concurrency:
-      group: stream-apps-gh-runners
-      cancel-in-progress: false
-    steps:
-      - name: 'Configure: checkout stream-applications'
-        uses: actions/checkout@v3
-        with:
-          ref: 'main'
-      - name: 'Action: Scale Runners Down with ${{ needs.parameters.outputs.max_parallel }}'
-        uses: ./.github/actions/scale-runners-down
-        timeout-minutes: 15
-        with:
-          verbose: ${{ inputs.verbose }}
-          max_parallel: ${{ needs.parameters.outputs.max_parallel }}
+#  scale-runners-down:
+#    if: ${{ success() }}
+#    runs-on: ubuntu-latest
+#    needs:
+#      - parameters
+#      - scale-runners-up
+#      - core
+#      - processors
+#      - sinks
+#      - sources
+#    concurrency:
+#      group: stream-apps-gh-runners
+#      cancel-in-progress: false
+#    steps:
+#      - name: 'Configure: checkout stream-applications'
+#        uses: actions/checkout@v3
+#        with:
+#          ref: 'main'
+#      - name: 'Action: Scale Runners Down with ${{ needs.parameters.outputs.max_parallel }}'
+#        uses: ./.github/actions/scale-runners-down
+#        timeout-minutes: 15
+#        with:
+#          verbose: ${{ inputs.verbose }}
+#          max_parallel: ${{ needs.parameters.outputs.max_parallel }}
