@@ -43,22 +43,21 @@ pushd "$PROJECT_FOLDER" > /dev/null
   pushd "$APP_FOLDER" > /dev/null
     pushd apps > /dev/null
       echo "Pushing:$APP_FOLDER/apps"
-      BROKERS=$(find * -maxdepth 0 -type d)
-      for broker in $BROKERS; do
-        project="$APP_FOLDER-$broker"
+      APPS=$(find * -maxdepth 0 -type d)
+      for app in $APPS; do
         set -e
-        docker tag "springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$project:$VERSION"
+        docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$VERSION"
         if [ "$BRANCH" != "" ]; then
           docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$BRANCH"
           echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$BRANCH"
         fi
-        docker push "springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK"
-        echo "Pushed:springcloudstream/$project:$VERSION-jdk$DEFAULT_JDK"
-        docker push "springcloudstream/$project:$VERSION"
-        echo "Pushed:springcloudstream/$project:$VERSION"
+        docker push "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK"
+        echo "Pushed:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK"
+        docker push "springcloudstream/$app:$VERSION"
+        echo "Pushed:springcloudstream/$app:$VERSION"
         for v in $JDKS; do
-          docker push "springcloudstream/$project:$VERSION-jdk$v"
-          echo "Pushed:springcloudstream/$project:$VERSION-jdk$v"
+          docker push "springcloudstream/$app:$VERSION-jdk$v"
+          echo "Pushed:springcloudstream/$app:$VERSION-jdk$v"
         done
         set +e
       done
