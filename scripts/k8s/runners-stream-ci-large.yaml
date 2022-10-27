@@ -30,7 +30,7 @@ spec:
   githubAPICredentialsFrom:
     secretRef:
       name: controller-manager-secret
-  minReplicas: 0
+  minReplicas: 1
   maxReplicas: 2
   scaleTargetRef:
     kind: RunnerDeployment
