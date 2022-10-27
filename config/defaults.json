@@ -10,7 +10,7 @@
     "scale_down": 0,
     "disk_size": "200"
   },
-  "streams_apps_gh_runners": {
+  "stream_apps_gh_runners": {
     "pods_per_job": 1,
     "ram_per_pod": 3,
     "cpu_per_pod": 1.5,
