@@ -208,6 +208,12 @@ jobs:
         run: sudo apt-get install -q -y xsltproc
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
+      - name: 'Configure: Docker login'
+        uses: docker/login-action@v1
+        with:
+          registry: dev.registry.pivotal.io
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         env:
@@ -265,6 +271,12 @@ jobs:
         run: sudo apt-get install -q -y xsltproc
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
+      - name: 'Configure: Docker login'
+        uses: docker/login-action@v1
+        with:
+          registry: dev.registry.pivotal.io
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         env:
@@ -323,6 +335,12 @@ jobs:
         run: sudo apt-get install -q -y xsltproc
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
+      - name: 'Configure: Docker login'
+        uses: docker/login-action@v1
+        with:
+          registry: dev.registry.pivotal.io
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         env:
