@@ -18,6 +18,6 @@
     "runner_scaling": "manual",
     "scale_down": 1,
     "arc_version": "v0.26.0",
-    "helm_version": "0.21.0"
+    "helm_version": "0.21.1"
   }
 }
