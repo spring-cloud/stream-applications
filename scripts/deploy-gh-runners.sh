@@ -44,10 +44,8 @@ export SVC=controller-manager
 $SCDIR/ensure-ns.sh $NS
 kubectl apply -f $SCDIR/k8s/pod-priorities.yaml
 kubectl apply -f $SCDIR/k8s/pod-priorities.yaml --namespace $NS
-COUNT=$(kubectl get secrets --namespace $NS | grep -c -F "$SVC")
-if ((COUNT > 0)); then
-  kubectl delete secret "$SVC" --namespace $NS
-fi
+echo "Create secret $SVC in $NS"
+$SCDIR/delete-secret.sh $SVC $NS
 if [ "$GH_ARC_PAT" != "" ]; then
   echo "Using GH_ARC_PAT as github_token"
   kubectl create secret generic "$SVC" \
@@ -61,22 +59,19 @@ else
     --from-literal=github_app_installation_id="${GH_ARC_INSTALLATION_ID}" \
     --from-literal=github_app_private_key="${GH_ARC_PRIVATE_KEY}"
 fi
-COUNT=$(kubectl get secrets --namespace $NS | grep -c -F "scdf-metadata-default")
-if ((COUNT > 0)); then
-  kubectl delete secret scdf-metadata-default --namespace $NS
-fi
+echo "Create secret scdf-metadata-default in $NS"
+$SCDIR/delete-secret.sh scdf-metadata-default $NS
 kubectl create secret docker-registry scdf-metadata-default --namespace $NS \
   --docker-server=registry-1.docker.io \
   --docker-username=$DOCKER_HUB_USERNAME \
   --docker-password=$DOCKER_HUB_PASSWORD
-COUNT=$(kubectl get secrets --namespace default | grep -c -F "scdf-metadata-default")
-if ((COUNT > 0)); then
-  kubectl delete secret scdf-metadata-default --namespace default
-fi
+echo "Create secret scdf-metadata-default in default"
+$SCDIR/delete-secret.sh scdf-metadata-default default
 kubectl create secret docker-registry scdf-metadata-default --namespace default \
   --docker-server=registry-1.docker.io \
   --docker-username=$DOCKER_HUB_USERNAME \
   --docker-password=$DOCKER_HUB_PASSWORD
+
 if [ "$DEPLOY_TYPE" == "helm" ]; then
   HELM_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "helm_version")
   if [ "$HELM_VER" == "" ] || [ "$HELM_VER" == "null" ]; then
