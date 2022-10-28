@@ -2,7 +2,7 @@ syncPeriod: 2m
 authSecret:
   create: false
   name: controller-manager-secret
-priorityClassName:
+priorityClassName: high-priority
 imagePullSecrets:
   - name: scdf-metadata-default
 githubWebhookServer:
