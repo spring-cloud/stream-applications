@@ -48,25 +48,29 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.JOHN_USER;
+import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.SERVICE_NAME;
+import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.USER_PW;
 
 /**
  * @author Daniel Frey
  * @author Chris Bono
- *
- * @since 4.0.0
  */
-@SpringBootTest
+@SpringBootTest(
+		properties = {
+				"xmpp.factory.user=" + JOHN_USER,
+				"xmpp.factory.password=" + USER_PW,
+				"xmpp.factory.service-name=" + SERVICE_NAME,
+				"xmpp.factory.security-mode=disabled"
+		}
+)
 @DirtiesContext
 public class XmppConsumerConfigurationTests implements XmppTestContainerSupport {
 
 	@DynamicPropertySource
 	static void registerConfigurationProperties(DynamicPropertyRegistry registry) {
-		registry.add("xmpp.factory.user", () -> JOHN_USER);
-		registry.add("xmpp.factory.password", () -> USER_PW);
 		registry.add("xmpp.factory.host", () -> XmppTestContainerSupport.getXmppHost());
 		registry.add("xmpp.factory.port", () -> XmppTestContainerSupport.getXmppMappedPort());
-		registry.add("xmpp.factory.service-name", () -> SERVICE_NAME);
-		registry.add("xmpp.factory.security-mode", () -> "disabled");
 	}
 
 	@Autowired
@@ -78,7 +82,6 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 
 	@BeforeEach
 	void setup() throws IOException, SmackException, XMPPException, InterruptedException {
-
 		XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
 		builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
 		builder.setHost(XmppTestContainerSupport.getXmppHost());
@@ -86,23 +89,18 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 		builder.setResource(SERVICE_NAME);
 		builder.setUsernameAndPassword(JANE_USER, USER_PW)
 				.setXmppDomain(SERVICE_NAME);
-
 		this.clientConnection = new XMPPTCPConnection(builder.build());
 		this.clientConnection.connect();
 		this.clientConnection.login();
-
 	}
 
 	@AfterEach
 	void teardown() {
-
 		this.clientConnection.instantShutdown();
-
 	}
 
 	@Test
 	void messageHandlerConfiguration() {
-
 		StanzaCollector collector
 				= this.clientConnection.createStanzaCollector(StanzaTypeFilter.MESSAGE);
 
@@ -113,19 +111,14 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 
 		await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
 				.untilAsserted(() -> {
-
 					xmppConsumer.accept(testMessage);
-
 					Stanza stanza = collector.nextResult();
 					assertStanza(stanza);
-
 				});
-
 	}
 
 	@Test
 	void xmppMessageHandlerConfiguration() throws XmppStringprepException {
-
 		StanzaCollector collector
 				= this.clientConnection.createStanzaCollector(StanzaTypeFilter.MESSAGE);
 
@@ -135,14 +128,10 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 
 		await().atMost(Duration.ofSeconds(20)).pollDelay(Duration.ofMillis(100))
 				.untilAsserted(() -> {
-
 					xmppConsumer.accept(testMessage);
-
 					Stanza stanza = collector.nextResult();
 					assertStanza(stanza);
-
 				});
-
 	}
 
 	private void assertStanza(Stanza stanza) {
@@ -151,15 +140,11 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 	}
 
 	private void assertTo(Stanza stanza) {
-
 		assertThat(stanza.getTo().asBareJid().asUnescapedString()).isEqualTo(JANE_USER + "@" + SERVICE_NAME);
-
 	}
 
 	private void assertFrom(Stanza stanza) {
-
 		assertThat(stanza.getFrom().asBareJid().asUnescapedString()).isEqualTo(JOHN_USER + "@" + SERVICE_NAME);
-
 	}
 
 	@SpringBootConfiguration
