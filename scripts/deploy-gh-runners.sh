@@ -81,7 +81,7 @@ if [ "$DEPLOY_TYPE" == "helm" ]; then
   echo "Adding Helm chart https://actions-runner-controller.github.io/actions-runner-controller"
   helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
   echo "Installing application: actions-runner-controller, Helm chart version:$HELM_VER into $NS"
-  helm upgrade --install --version "$HELM_VER" --namespace $NS -f $SCDIR/arc/values.yml --wait actions-runner-controller actions-runner-controller/actions-runner-controller
+  helm upgrade --install --version "$HELM_VER" --namespace $NS -f $SCDIR/arc/values.yml --timeout 15m --wait actions-runner-controller actions-runner-controller/actions-runner-controller
 else
   ARC_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "arc_version")
   if [ "$ARC_VER" == "" ] || [ "$ARC_VER" == "null" ]; then
