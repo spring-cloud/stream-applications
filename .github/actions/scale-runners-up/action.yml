@@ -36,45 +36,6 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: 'Configure: checkout stream-applications'
-      uses: actions/checkout@v3
-      with:
-        ref: 'main'
-    - name: Ensure scripts are executable
-      shell: bash
-      run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
-    - name: 'Configure: Configure provider for stream-apps-gh-runners'
-      id: 'configure-runner-type'
-      shell: bash
-      run: |
-        RUNNER_TYPE=$(./scripts/determine-provider.sh stream-apps-gh-runners)
-        echo "RUNNER_TYPE=$RUNNER_TYPE"
-        echo "RUNNER_TYPE=$RUNNER_TYPE" >> $GITHUB_ENV
-      outputs:
-        runner-type: '${{ env.RUNNER_TYPE }}'
-    - name: 'Install: gcloud cli'
-      if: ${{ env.RUNNER_TYPE == 'gke' }}
-      uses: ./.github/actions/install-gcloud
-    - name: 'Action: gcloud auth'
-      if: ${{ env.RUNNER_TYPE == 'gke' }}
-      id: auth_gcloud
-      uses: 'google-github-actions/auth@v0'
-      with:
-        create_credentials_file: true
-        credentials_json: ${{ inputs.GCP_CRED_JSON }}
-    - name: 'Configure: Install TMC'
-      if: ${{ env.RUNNER_TYPE == 'tmc' }}
-      uses: ./.github/actions/install-tmc
-    - name: 'Action: Login to TMC'
-      if: ${{ env.RUNNER_TYPE == 'tmc' }}
-      uses: ./.github/actions/auth-tmc
-      with:
-        tmc_api_token: '${{ inputs.TMC_API_TOKEN }}'
-        fail_on_error: false
-    - name: 'Install: Groovy'
-      uses: ./.github/actions/install-groovy
-      with:
-        version: 4.0.4
     - name: 'Action: wait for cluster - stream-apps-gh-runners'
       shell: bash
       env:

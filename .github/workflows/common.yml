@@ -20,6 +20,11 @@ on:
       GCP_CRED_JSON:
       CI_DEPLOY_USERNAME:
       CI_DEPLOY_PASSWORD:
+      GH_ARC_APP_ID:
+      GH_ARC_INSTALLATION_ID:
+      GH_ARC_PRIVATE_KEY:
+      GH_ARC_PAT:
+
 
 env:
   VERBOSE: ${{ inputs.verbose && 'true' || '' }}
@@ -102,12 +107,55 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: 'main'
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: Ensure scripts are executable
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Configure provider for stream-apps-gh-runners'
+        id: 'configure-runner-type'
+        shell: bash
+        run: |
+          RUNNER_TYPE=$(./scripts/determine-provider.sh stream-apps-gh-runners)
+          echo "RUNNER_TYPE=$RUNNER_TYPE"
+          echo "RUNNER_TYPE=$RUNNER_TYPE" >> $GITHUB_ENV
+        outputs:
+          runner-type: '${{ env.RUNNER_TYPE }}'
+      - name: 'Install: gcloud cli'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        uses: ./.github/actions/install-gcloud
+      - name: 'Action: gcloud auth'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        id: auth_gcloud
+        uses: 'google-github-actions/auth@v0'
+        with:
+          create_credentials_file: true
+          credentials_json: ${{ secrets.GCP_CRED_JSON }}
+      - name: 'Configure: Install TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/install-tmc
+      - name: 'Action: Login to TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/auth-tmc
+        with:
+          tmc_api_token: ${{ secrets.TMC_API_TOKEN }}
+          fail_on_error: false
+      - name: 'Install: Groovy'
+        uses: ./.github/actions/install-groovy
+        with:
+          version: 4.0.4
       - name: 'Action: Scale Runners Up by ${{ needs.parameters.outputs.max_parallel }}'
         uses: ./.github/actions/scale-runners-up
         timeout-minutes: 45
         with:
           verbose: ${{ inputs.verbose }}
           max_parallel: ${{ toJson(needs.parameters.outputs.max_parallel) }}
+          GH_ARC_APP_ID: ${{ secrets.GH_ARC_APP_ID }}
+          GH_ARC_INSTALLATION_ID: ${{ secrets.GH_ARC_INSTALLATION_ID }}
+          GH_ARC_PRIVATE_KEY: ${{ secrets.GH_ARC_PRIVATE_KEY }}
+          GH_ARC_PAT: ${{ secrets.GH_ARC_PAT }}
   core:
 #    runs-on: ubuntu-latest
     runs-on: 'stream-ci-large'
@@ -368,9 +416,36 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: 'main'
-      - name: 'Action: Scale Runners Down with ${{ needs.parameters.outputs.max_parallel }}'
-        uses: ./.github/actions/scale-runners-down
-        timeout-minutes: 15
+      - name: 'Action: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Runners Cluster provider'
+        shell: bash
+        run: |
+          RUNNER_TYPE=$(./scripts/determine-provider.sh stream-apps-gh-runners)
+          if [ "$RUNNER_TYPE" != "gke" ]; then
+            RUNNER_TYPE=tmc
+          fi
+          echo "RUNNER_TYPE=$RUNNER_TYPE" >> $GITHUB_ENV
+      - name: 'Install: gcloud cli'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        uses: ./.github/actions/install-gcloud
+      - name: 'Action: gcloud auth'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        id: auth_gcloud
+        uses: 'google-github-actions/auth@v0'
         with:
-          verbose: ${{ inputs.verbose }}
-          max_parallel: ${{ needs.parameters.outputs.max_parallel }}
+          create_credentials_file: true
+          credentials_json: ${{ secrets.GCP_CRED_JSON }}
+      - name: 'Configure: Install TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/install-tmc
+      - name: 'Action: Login to TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/auth-tmc
+        with:
+          tmc_api_token: ${{ secrets.TMC_API_TOKEN }}
+      - name: 'Action: Decrease runners with ${{ needs.parameters.outputs.max_parallel }}'
+        uses: ./.github/actions/decrease-runners
+        with:
+          dec: ${{ needs.parameters.outputs.max_parallel }}
