@@ -3,7 +3,6 @@ SCDIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 SCDIR=$(realpath $SCDIR)
 PARENT=$(realpath $SCDIR/..)
 
-set +e
 function check_env() {
   eval ev='$'$1
   if [ "$ev" == "" ]; then
@@ -16,6 +15,7 @@ function check_env() {
   fi
 }
 
+set -e
 if [ "$1" != "" ]; then
   DEPLOY_TYPE=$1
 else
@@ -37,15 +37,14 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/downlo
 set -e
 $SCDIR/wait-deployment.sh $SVC $NS
 echo "Certificate Manager installed"
+
 echo "Configuring actions-runner-controller"
-set +e
 export NS=actions-runner-system
 export SVC=controller-manager
 $SCDIR/ensure-ns.sh $NS
 kubectl apply -f $SCDIR/k8s/pod-priorities.yaml
 kubectl apply -f $SCDIR/k8s/pod-priorities.yaml --namespace $NS
-set -e
-COUNT=$(kubectl get secrets "$SVC" --namespace $NS)
+COUNT=$(kubectl get secrets --namespace $NS | grep -c -F "$SVC")
 if ((COUNT > 0)); then
   kubectl delete secret "$SVC" --namespace $NS
 fi
@@ -98,7 +97,6 @@ else
   kubectl create --save-config --namespace $NS -f https://github.com/actions-runner-controller/actions-runner-controller/releases/download/$ARC_VER/actions-runner-controller.yaml
   $SCDIR/wait-deployment.sh $SVC $NS
 fi
-set -e
 echo "Creating runners"
 kubectl apply -f "$SCDIR/k8s/runners-stream-ci-large.yaml"
 SCALING=$($SCDIR/determine-default.sh stream-apps-gh-runners "runner_scaling")
