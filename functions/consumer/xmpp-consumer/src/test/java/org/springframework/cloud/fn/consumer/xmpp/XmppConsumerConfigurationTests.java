@@ -37,7 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.fn.test.support.xmpp.XmppContainerSupport;
+import org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport;
 import org.springframework.context.annotation.Import;
 import org.springframework.integration.xmpp.XmppHeaders;
 import org.springframework.messaging.Message;
@@ -51,18 +51,20 @@ import static org.awaitility.Awaitility.await;
 
 /**
  * @author Daniel Frey
+ * @author Chris Bono
  *
  * @since 4.0.0
  */
 @SpringBootTest
 @DirtiesContext
-public class XmppConsumerConfigurationTests extends XmppContainerSupport {
+public class XmppConsumerConfigurationTests implements XmppTestContainerSupport {
 
 	@DynamicPropertySource
 	static void registerConfigurationProperties(DynamicPropertyRegistry registry) {
 		registry.add("xmpp.factory.user", () -> JOHN_USER);
 		registry.add("xmpp.factory.password", () -> USER_PW);
-		registry.add("xmpp.factory.host", () -> XMPP_HOST);
+		registry.add("xmpp.factory.host", () -> XmppTestContainerSupport.getXmppHost());
+		registry.add("xmpp.factory.port", () -> XmppTestContainerSupport.getXmppMappedPort());
 		registry.add("xmpp.factory.service-name", () -> SERVICE_NAME);
 		registry.add("xmpp.factory.security-mode", () -> "disabled");
 	}
@@ -79,8 +81,8 @@ public class XmppConsumerConfigurationTests extends XmppContainerSupport {
 
 		XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
 		builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
-		builder.setHost(XMPP_HOST);
-		builder.setPort(XMPP_PORT);
+		builder.setHost(XmppTestContainerSupport.getXmppHost());
+		builder.setPort(XmppTestContainerSupport.getXmppMappedPort());
 		builder.setResource(SERVICE_NAME);
 		builder.setUsernameAndPassword(JANE_USER, USER_PW)
 				.setXmppDomain(SERVICE_NAME);
