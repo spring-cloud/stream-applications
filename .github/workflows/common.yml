@@ -183,7 +183,7 @@ jobs:
         if: ${{ needs.parameters.outputs.jdk_build != '8' }}
         uses: graalvm/setup-graalvm@v1
         with:
-#          version: '22.3'
+          version: 'latest'
           java-version: ${{ needs.parameters.outputs.jdk_build }}
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -248,7 +248,7 @@ jobs:
         if: ${{ needs.parameters.outputs.jdk_build != '8' }}
         uses: graalvm/setup-graalvm@v1
         with:
-#          version: '22.3'
+          version: 'latest'
           java-version: ${{ needs.parameters.outputs.jdk_build }}
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -310,7 +310,7 @@ jobs:
         if: ${{ needs.parameters.outputs.jdk_build != '8' }}
         uses: graalvm/setup-graalvm@v1
         with:
-#          version: '22.3'
+          version: 'latest'
           java-version: ${{ needs.parameters.outputs.jdk_build }}
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
