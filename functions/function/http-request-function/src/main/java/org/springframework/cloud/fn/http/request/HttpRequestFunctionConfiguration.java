@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 the original author or authors.
+ * Copyright 2018-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,20 @@
 
 package org.springframework.cloud.fn.http.request;
 
-import java.time.Duration;
+import java.net.URI;
 import java.util.Map;
 import java.util.function.Function;
-
-import reactor.core.publisher.Flux;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.Message;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;
 
@@ -39,6 +38,7 @@ import org.springframework.web.util.UriBuilderFactory;
  * each request, returns a {@link ResponseEntity}.
  *
  * @author David Turanski
+ * @author Corneil du Plessis
  *
  **/
 @Configuration
@@ -46,46 +46,42 @@ import org.springframework.web.util.UriBuilderFactory;
 public class HttpRequestFunctionConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean(WebClient.class)
-	public WebClient webClient(HttpRequestFunctionProperties properties) {
-		return WebClient.builder()
-				.codecs(clientCodecConfigurer ->
-						clientCodecConfigurer.defaultCodecs().maxInMemorySize(properties.getMaximumBufferSize()))
-				.build();
+	@ConditionalOnMissingBean(RestTemplate.class)
+	public RestTemplate webClient(HttpRequestFunctionProperties properties) {
+		return new RestTemplate();
 	}
 
 	@Bean
-	public HttpRequestFunction httpRequestFunction(WebClient webClient, HttpRequestFunctionProperties properties) {
-		return new HttpRequestFunction(webClient, properties);
+	public HttpRequestFunction httpRequestFunction(RestTemplate restTemplate, HttpRequestFunctionProperties properties) {
+		return new HttpRequestFunction(restTemplate, properties);
 	}
 
 	/**
 	 * Function that accepts a {@code Flux<Message<?>>} containing body and headers and
 	 * returns a {@code Flux<ResponseEntity<?>>}.
 	 */
-	public static class HttpRequestFunction implements Function<Flux<Message<?>>, Flux<?>> {
-		private final WebClient webClient;
+	public static class HttpRequestFunction implements Function<Message<?>, Object> {
+		private final RestTemplate restTemplate;
 
 		private final UriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
 
 		private final HttpRequestFunctionProperties properties;
 
-		public HttpRequestFunction(WebClient webClient, HttpRequestFunctionProperties properties) {
-			this.webClient = webClient;
+		public HttpRequestFunction(RestTemplate restTemplate, HttpRequestFunctionProperties properties) {
+			this.restTemplate = restTemplate;
 			this.properties = properties;
 		}
 
 		@Override
-		public Flux<?> apply(Flux<Message<?>> messageFlux) {
-			return messageFlux.flatMap(message -> this.webClient
-					.method(resolveHttpMethod(message))
-					.uri(uriBuilderFactory.uriString(resolveUrl(message)).build())
-					.bodyValue(resolveBody(message))
-					.headers(httpHeaders -> httpHeaders.addAll(resolveHeaders(message)))
-					.retrieve()
-					.toEntity(properties.getExpectedResponseType())
-					.map(responseEntity -> properties.getReplyExpression().getValue(responseEntity))
-					.timeout(Duration.ofMillis(properties.getTimeout())));
+		public Object apply(Message<?> message) {
+			HttpEntity<?> httpEntity = new HttpEntity<>(resolveBody(message), resolveHeaders(message));
+			URI uri = uriBuilderFactory.uriString(resolveUrl(message)).build();
+			ResponseEntity<?> responseEntity = restTemplate.exchange(uri,
+				resolveHttpMethod(message),
+				httpEntity,
+				properties.getExpectedResponseType()
+			);
+			return properties.getReplyExpression().getValue(responseEntity);
 		}
 
 		private String resolveUrl(Message<?> message) {
@@ -98,7 +94,7 @@ public class HttpRequestFunctionConfiguration {
 
 		private Object resolveBody(Message<?> message) {
 			return properties.getBodyExpression() != null ? properties.getBodyExpression().getValue(message)
-					: message.getPayload();
+				: message.getPayload();
 		}
 
 		private HttpHeaders resolveHeaders(Message<?> message) {
@@ -108,7 +104,7 @@ public class HttpRequestFunctionConfiguration {
 				for (Map.Entry<?, ?> header : headersMap.entrySet()) {
 					if (header.getKey() != null && header.getValue() != null) {
 						headers.add(header.getKey().toString(),
-								header.getValue().toString());
+							header.getValue().toString());
 					}
 				}
 			}

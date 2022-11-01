@@ -27,8 +27,6 @@ import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -42,6 +40,7 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class HttpRequestFunctionTestApplicationTests {
 	private MockWebServer server = new MockWebServer();
@@ -51,30 +50,25 @@ public class HttpRequestFunctionTestApplicationTests {
 	@BeforeEach
 	void setup() {
 		this.runner = new ApplicationContextRunner()
-				.withUserConfiguration(HttpRequestFunctionTestApplication.class)
-				.withPropertyValues(
-						"http.request.reply-expression=#root",
-						"http.request.url-expression='" + url() + "'");
+			.withUserConfiguration(HttpRequestFunctionTestApplication.class)
+			.withPropertyValues(
+				"http.request.reply-expression=#root",
+				"http.request.url-expression='" + url() + "'");
 	}
 
 	@Test
 	void shouldReturnString() {
 
 		server.enqueue(new MockResponse()
-				.setResponseCode(HttpStatus.OK.value())
-				.setBody("hello"));
+			.setResponseCode(HttpStatus.OK.value())
+			.setBody("hello"));
 
 		runner.withPropertyValues("http.request.http-method-expression='POST'").run(context -> {
 			HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
 			Message<?> message = MessageBuilder.withPayload("").build();
-			StepVerifier.create(httpRequestFunction.apply(Flux.just(message)))
-					.assertNext(o -> {
-						ResponseEntity r = (ResponseEntity) o;
-						assertThat(r.getBody()).isEqualTo("hello");
-						assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
-					})
-					.expectComplete()
-					.verify();
+			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+			assertThat(r.getBody()).isEqualTo("hello");
+			assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
 		});
 	}
 
@@ -86,29 +80,25 @@ public class HttpRequestFunctionTestApplicationTests {
 			public MockResponse dispatch(RecordedRequest recordedRequest) {
 				return new MockResponse().setHeader(HttpHeaders.CONTENT_TYPE,
 						recordedRequest.getHeader(HttpHeaders.CONTENT_TYPE))
-						.setBody(recordedRequest.getBody())
-						.setResponseCode(HttpStatus.CREATED.value());
+					.setBody(recordedRequest.getBody())
+					.setResponseCode(HttpStatus.CREATED.value());
 			}
 		});
 
 		runner.withPropertyValues("http.request.http-method-expression='POST'",
-				"http.request.headers-expression={'Content-Type':'application/json'}").run(context -> {
-					HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
-					String json = "{\"hello\":\"world\"}";
-					Message<?> message = MessageBuilder.withPayload(json)
-							.build();
-					StepVerifier.create(httpRequestFunction.apply(Flux.just(message)))
-							.assertNext(o -> {
-								ResponseEntity r = (ResponseEntity) o;
-								assertThat(r.getBody()).isEqualTo(json);
-								assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
-								assertThat(r.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON);
-							})
-							.expectComplete()
-							.verify();
-					RecordedRequest request = server.takeRequest(100, TimeUnit.MILLISECONDS);
-					assertThat(request.getMethod()).isEqualTo("POST");
-				});
+			"http.request.headers-expression={'Content-Type':'application/json'}").run(context -> {
+			HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
+			String json = "{\"hello\":\"world\"}";
+			Message<?> message = MessageBuilder.withPayload(json)
+				.build();
+			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+			assertThat(r.getBody()).isEqualTo(json);
+			assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
+			assertThat(r.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON);
+
+			RecordedRequest request = server.takeRequest(100, TimeUnit.MILLISECONDS);
+			assertThat(request.getMethod()).isEqualTo("POST");
+		});
 	}
 
 	@Test
@@ -119,29 +109,26 @@ public class HttpRequestFunctionTestApplicationTests {
 			public MockResponse dispatch(RecordedRequest recordedRequest) {
 				return new MockResponse().setHeader(HttpHeaders.CONTENT_TYPE,
 						recordedRequest.getHeader(HttpHeaders.CONTENT_TYPE))
-						.setBody(recordedRequest.getBody())
-						.setResponseCode(HttpStatus.CREATED.value());
+					.setBody(recordedRequest.getBody())
+					.setResponseCode(HttpStatus.CREATED.value());
 			}
 		});
 
 		runner.withPropertyValues("http.request.http-method-expression='POST'",
-				"http.request.expected-response-type=" + Map.class.getName()).run(context -> {
-					HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
-					Map<String, String> json = Collections.singletonMap("hello", "world");
-					Message<?> message = MessageBuilder.withPayload(json)
-							.build();
-					StepVerifier.create(httpRequestFunction.apply(Flux.just(message)))
-							.assertNext(o -> {
-								ResponseEntity r = (ResponseEntity) o;
-								assertThat(r.getBody()).isEqualTo(json);
-								assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
-								assertThat(r.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON);
-							})
-							.expectComplete()
-							.verify();
-					RecordedRequest request = server.takeRequest(100, TimeUnit.MILLISECONDS);
-					assertThat(request.getMethod()).isEqualTo("POST");
-				});
+			"http.request.expected-response-type=" + Map.class.getName()).run(context -> {
+			HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
+			Map<String, String> json = Collections.singletonMap("hello", "world");
+			Message<?> message = MessageBuilder.withPayload(json)
+				.build();
+			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+
+			assertThat(r.getBody()).isEqualTo(json);
+			assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
+			assertThat(r.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON);
+
+			RecordedRequest request = server.takeRequest(100, TimeUnit.MILLISECONDS);
+			assertThat(request.getMethod()).isEqualTo("POST");
+		});
 	}
 
 	@Test
@@ -151,27 +138,22 @@ public class HttpRequestFunctionTestApplicationTests {
 			public MockResponse dispatch(RecordedRequest recordedRequest) {
 				return new MockResponse().setHeader(HttpHeaders.CONTENT_TYPE,
 						recordedRequest.getHeader(HttpHeaders.CONTENT_TYPE))
-						.setBody(recordedRequest.getBody())
-						.setResponseCode(HttpStatus.ACCEPTED.value());
+					.setBody(recordedRequest.getBody())
+					.setResponseCode(HttpStatus.ACCEPTED.value());
 			}
 		});
 
 		runner.withPropertyValues("http.request.http-method-expression='DELETE'",
-				"http.request.expected-response-type=" + Void.class.getName()).run(context -> {
-					HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
-					Message<?> message = MessageBuilder.withPayload("")
-							.build();
-					StepVerifier.create(httpRequestFunction.apply(Flux.just(message)))
-							.assertNext(o -> {
-								ResponseEntity r = (ResponseEntity) o;
-								assertThat(r.getBody()).isNull();
-								assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
-							})
-							.expectComplete()
-							.verify();
-					RecordedRequest request = server.takeRequest(100, TimeUnit.MILLISECONDS);
-					assertThat(request.getMethod()).isEqualTo("DELETE");
-				});
+			"http.request.expected-response-type=" + Void.class.getName()).run(context -> {
+			HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
+			Message<?> message = MessageBuilder.withPayload("")
+				.build();
+			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+			assertThat(r.getBody()).isNull();
+			assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
+			RecordedRequest request = server.takeRequest(100, TimeUnit.MILLISECONDS);
+			assertThat(request.getMethod()).isEqualTo("DELETE");
+		});
 	}
 
 	@Test
@@ -179,9 +161,12 @@ public class HttpRequestFunctionTestApplicationTests {
 		server.shutdown();
 		runner.run(context -> {
 			HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
-			StepVerifier.create(httpRequestFunction.apply(Flux.just(new GenericMessage(""))))
-					.expectErrorMatches(throwable -> throwable.getMessage().contains("Connection refused"))
-					.verify();
+			try {
+				httpRequestFunction.apply(new GenericMessage(""));
+				fail("Expected exception");
+			} catch (Throwable x) {
+				assertThat(x.getMessage()).contains("Connection refused");
+			}
 		});
 	}
 
@@ -192,8 +177,8 @@ public class HttpRequestFunctionTestApplicationTests {
 			public MockResponse dispatch(RecordedRequest recordedRequest) {
 				return new MockResponse().setHeader(HttpHeaders.CONTENT_TYPE,
 						recordedRequest.getHeader(HttpHeaders.ACCEPT))
-						.setBody(recordedRequest.getBody())
-						.setResponseCode(HttpStatus.OK.value());
+					.setBody(recordedRequest.getBody())
+					.setResponseCode(HttpStatus.OK.value());
 			}
 		});
 
@@ -202,25 +187,20 @@ public class HttpRequestFunctionTestApplicationTests {
 				"http.request.http-method-expression=headers['method']",
 				"http.request.body-expression=headers['body']",
 				"http.request.headers-expression={Accept:'application/json'}")
-				.run(context -> {
-					Message<?> message = MessageBuilder.withPayload("")
-							.setHeader("url", url())
-							.setHeader("method", "POST")
-							.setHeader("body", "{\"hello\":\"world\"}")
-							.build();
+			.run(context -> {
+				Message<?> message = MessageBuilder.withPayload("")
+					.setHeader("url", url())
+					.setHeader("method", "POST")
+					.setHeader("body", "{\"hello\":\"world\"}")
+					.build();
 
-					HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
-					StepVerifier.create(httpRequestFunction.apply(Flux.just(message)))
-							.assertNext(o -> {
-								ResponseEntity responseEntity = (ResponseEntity) o;
-								assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-								assertThat(responseEntity.getBody()).isEqualTo(message.getHeaders().get("body"));
-								assertThat(responseEntity.getHeaders().getContentType())
-										.isEqualTo(MediaType.APPLICATION_JSON);
-							})
-							.expectComplete()
-							.verify();
-				});
+				HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
+				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+				assertThat(r.getStatusCode()).isEqualTo(HttpStatus.OK);
+				assertThat(r.getBody()).isEqualTo(message.getHeaders().get("body"));
+				assertThat(r.getHeaders().getContentType())
+					.isEqualTo(MediaType.APPLICATION_JSON);
+			});
 	}
 
 	@Test
@@ -230,29 +210,24 @@ public class HttpRequestFunctionTestApplicationTests {
 			public MockResponse dispatch(RecordedRequest recordedRequest) {
 				return new MockResponse().setHeader(HttpHeaders.CONTENT_TYPE,
 						recordedRequest.getHeader(HttpHeaders.CONTENT_TYPE))
-						.setBody(recordedRequest.getBody())
-						.setResponseCode(HttpStatus.OK.value());
+					.setBody(recordedRequest.getBody())
+					.setResponseCode(HttpStatus.OK.value());
 			}
 		});
 		runner.withPropertyValues(
 				"http.request..http-method-expression='POST'",
 				"http.request.headers-expression={'Content-Type':'application/octet-stream'}",
 				"http.request.expected-response-type=byte[]")
-				.run(context -> {
-					Message<?> message = MessageBuilder.withPayload("hello")
-							.build();
-					HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
-					StepVerifier.create(httpRequestFunction.apply(Flux.just(message)))
-							.assertNext(o -> {
-								ResponseEntity responseEntity = (ResponseEntity) o;
-								assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-								assertThat(responseEntity.getBody()).isEqualTo("hello".getBytes());
-								assertThat(responseEntity.getHeaders().getContentType())
-										.isEqualTo(MediaType.APPLICATION_OCTET_STREAM);
-							})
-							.expectComplete()
-							.verify();
-				});
+			.run(context -> {
+				Message<?> message = MessageBuilder.withPayload("hello")
+					.build();
+				HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
+				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+				assertThat(r.getStatusCode()).isEqualTo(HttpStatus.OK);
+				assertThat(r.getBody()).isEqualTo("hello".getBytes());
+				assertThat(r.getHeaders().getContentType())
+					.isEqualTo(MediaType.APPLICATION_OCTET_STREAM);
+			});
 	}
 
 	@Test
@@ -261,28 +236,22 @@ public class HttpRequestFunctionTestApplicationTests {
 			@Override
 			public MockResponse dispatch(RecordedRequest recordedRequest) {
 				return new MockResponse()
-						.setBody(recordedRequest.getBody())
-						.setHeader("method", recordedRequest.getMethod())
-						.setResponseCode(HttpStatus.OK.value());
+					.setBody(recordedRequest.getBody())
+					.setHeader("method", recordedRequest.getMethod())
+					.setResponseCode(HttpStatus.OK.value());
 			}
 		});
 		runner.withPropertyValues(
 				"http.request.http-method-expression=#jsonPath(payload,'$.myMethod')")
-				.run(context -> {
-					Message<?> message = MessageBuilder
-							.withPayload("{\"name\":\"Fred\",\"age\":41, \"myMethod\":\"POST\"}")
-							.build();
-					HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
-					StepVerifier.create(httpRequestFunction.apply(Flux.just(message)))
-							.assertNext(o -> {
-								ResponseEntity responseEntity = (ResponseEntity) o;
-								assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-								assertThat(responseEntity.getBody()).isEqualTo(message.getPayload());
-							})
-							.expectComplete()
-							.verify();
-
-				});
+			.run(context -> {
+				Message<?> message = MessageBuilder
+					.withPayload("{\"name\":\"Fred\",\"age\":41, \"myMethod\":\"POST\"}")
+					.build();
+				HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
+				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+				assertThat(r.getStatusCode()).isEqualTo(HttpStatus.OK);
+				assertThat(r.getBody()).isEqualTo(message.getPayload());
+			});
 	}
 
 	private String url() {
