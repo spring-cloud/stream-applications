@@ -20,12 +20,15 @@ if [ "$1" = "" ]; then
   echo "Expected number to decrease"
   exit 1
 fi
+CLUSTER_NAME=stream-apps-gh-runners
 echo "Checking stream-apps-gh-runners"
 DEC=$1
 MIN_RUNNERS=$2
 
-SCALING=$(jq '.stream-apps-gh-runners.runner_scaling' $PARENT/config/defaults.json | sed 's/\"//g')
-cp $SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml runners-stream-ci-change.yaml
+
+SCALE_MIN=$($SCDIR/determine-default.sh $CLUSTER_NAME "scale_down")
+SCALING=$($SCDIR/determine-default.sh $CLUSTER_NAME "runner_scaling")
+
 if [ "$SCALING" == "auto" ]; then
   MAX_RUNNERS=$(max_replicas)
   MAX_RUNNERS=$((MAX_RUNNERS - DEC))
@@ -33,11 +36,11 @@ if [ "$SCALING" == "auto" ]; then
   if [ "$MIN_RUNNERS" == "" ]; then
     MIN_RUNNERS=$((CURRENT - DEC))
   fi
-  if ((MAX_RUNNERS < 1)); then
-    MAX_RUNNERS=1
+  if ((MAX_RUNNERS < SCALE_MIN)); then
+    MAX_RUNNERS=SCALE_MIN
   fi
-  if ((MIN_RUNNERS < 1)); then
-    MIN_RUNNERS=1
+  if ((MIN_RUNNERS < SCALE_MIN)); then
+    MIN_RUNNERS=SCALE_MIN
   fi
 else
   CURRENT=$(count_runners)
@@ -50,20 +53,31 @@ if [ "$MIN_RUNNERS" != "" ]; then
     TARGET=$MIN_RUNNERS
   fi
 fi
-if ((TARGET < 1)); then
-  TARGET=1
+if ((TARGET < SCALE_MIN)); then
+  TARGET=SCALE_MIN
 fi
-OS=$(uname)
-OS="${OS//./L&}"
-ARCH=$(uname -i)
+if [ "$OS" = "" ]; then
+  OS=$(uname)
+fi
+OS="${OS//./L&}" #lowercase
+if [ "$ARCH" = "" ]; then
+  ARCH=$(uname -i)
+fi
+ARCH="${ARCH//./L&}" #lowercase
 case $ARCH in
 "x86_64")
   ARCH=amd64
+  ;;
+"arm" | "arm64" | "armv8" | "aarch64")
+  ARCH=arm64
   ;;
 *)
   echo "Architecture:$ARCH may not be supported by summerwind/actions-runner"
   ;;
 esac
+# the specific template
+cp $SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml runners-stream-ci-change.yaml
+
 IMAGE_SHA=$(wget -q -O- https://hub.docker.com/v2/repositories/summerwind/actions-runner/tags | jq --arg os $OS --arg arch $ARCH '.results | map(select(.name="latest")) | .[0].images | map(select(.os==$os and .architecture==$arch)) | .[0].digest' | sed 's/\"//g')
 if [ "$IMAGE_SHA" == "" ]; then
   IMAGE_SHA="latest"
