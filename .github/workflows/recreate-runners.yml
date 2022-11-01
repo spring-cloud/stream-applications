@@ -44,7 +44,7 @@ jobs:
       group: stream-apps-gh-runners
       cancel-in-progress: false
     steps:
-      - name: 'Configure: checkout scdf-pro'
+      - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
       - name: 'Configure: ensure scripts are executable'
         shell: bash
