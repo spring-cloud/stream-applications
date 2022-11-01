@@ -102,7 +102,7 @@ else
   $SCDIR/wait-deployment.sh $SVC $NS
 fi
 echo "Creating runners"
-kubectl apply -f "$SCDIR/k8s/runners-stream-ci-large.yaml"
+#kubectl apply -f "$SCDIR/k8s/runners-stream-ci-large.yaml"
 SCALING=$($SCDIR/determine-default.sh stream-apps-gh-runners "runner_scaling")
 if [ "$SCALING" == "" ] || [ "$SCALING" == "null" ]; then
   echo "Cannot determine runner_scaling"
