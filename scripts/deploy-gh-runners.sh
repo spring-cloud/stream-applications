@@ -45,16 +45,25 @@ $SCDIR/ensure-ns.sh $NS
 kubectl apply -f $SCDIR/k8s/pod-priorities.yaml
 kubectl apply -f $SCDIR/k8s/pod-priorities.yaml --namespace $NS
 echo "Create secret controller-manager-secret in $NS"
+$SCDIR/delete-secret.sh controller-manager-secret
 $SCDIR/delete-secret.sh controller-manager-secret $NS
 if [ "$GH_ARC_PAT" != "" ]; then
   echo "Using GH_ARC_PAT as github_token"
   kubectl create secret generic controller-manager-secret \
     --namespace $NS \
     --from-literal=github_token="$GH_ARC_PAT"
+    
+    kubectl create secret generic controller-manager-secret \
+    --from-literal=github_token="$GH_ARC_PAT"
 else
   echo "Using GitHub App $GH_ARC_APP_ID / $GH_ARC_INSTALLATION_ID"
   kubectl create secret generic controller-manager-secret \
     --namespace $NS \
+    --from-literal=github_app_id="${GH_ARC_APP_ID}" \
+    --from-literal=github_app_installation_id="${GH_ARC_INSTALLATION_ID}" \
+    --from-literal=github_app_private_key="${GH_ARC_PRIVATE_KEY}"
+    
+    kubectl create secret generic controller-manager-secret \
     --from-literal=github_app_id="${GH_ARC_APP_ID}" \
     --from-literal=github_app_installation_id="${GH_ARC_INSTALLATION_ID}" \
     --from-literal=github_app_private_key="${GH_ARC_PRIVATE_KEY}"
