@@ -63,10 +63,10 @@ pushd "$PROJECT_FOLDER" > /dev/null
     rm -rf apps
     if [ -d "src/main/java" ]; then
       echo "Deploying:$APP_FOLDER"
-      $PROJECT_FOLDER/mvnw $MAVEN_OPT -s $SCDIR/.settings.xml clean $MAVEN_GOAL -U -Pintegration
+      $PROJECT_FOLDER/mvnw $MAVEN_OPT -s $SCDIR/.settings.xml clean $MAVEN_GOAL -Pintegration
     else
       echo "Packaging:$APP_FOLDER"
-      $PROJECT_FOLDER/mvnw $MAVEN_OPT -s $SCDIR/.settings.xml clean install -U -Pintegration
+      $PROJECT_FOLDER/mvnw $MAVEN_OPT -s $SCDIR/.settings.xml clean install -Pintegration
     fi
     if [ ! -d apps ]; then
       echo "Cannot find $APP_FOLDER/apps"
@@ -81,7 +81,7 @@ pushd "$PROJECT_FOLDER" > /dev/null
       for app in $APPS; do
         pushd "$app" > /dev/null
           echo "Building:$APP_FOLDER/apps/$app"
-          ./mvnw $MAVEN_OPT -s $SCDIR/.settings.xml install deploy -U -Pintegration
+          ./mvnw $MAVEN_OPT -s $SCDIR/.settings.xml install deploy -Pintegration
           for v in $JDKS; do
             echo "Pack:$app:$VERSION-jdk$v"
             pack build \
