@@ -17,11 +17,13 @@
 package org.springframework.cloud.fn.http.request;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
@@ -48,7 +50,8 @@ public class HttpRequestFunctionConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(RestTemplate.class)
 	public RestTemplate webClient(HttpRequestFunctionProperties properties) {
-		return new RestTemplate();
+		RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
+		return restTemplateBuilder.setReadTimeout(Duration.ofMillis(properties.getTimeout())).build();
 	}
 
 	@Bean
