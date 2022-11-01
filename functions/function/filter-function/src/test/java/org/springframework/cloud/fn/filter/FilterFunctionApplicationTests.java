@@ -18,12 +18,7 @@ package org.springframework.cloud.fn.filter;
 
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import org.junit.jupiter.api.Test;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,6 +27,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.annotation.DirtiesContext;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Artem Bilan
@@ -54,13 +51,13 @@ public class FilterFunctionApplicationTests {
 		// when
 		Message<?> result1 = this.filter.apply(message1);
 		// then: filter 'hello' not longer than 5
-		assertNull(result1);
+		assertThat(result1).isNull();
 		// when
 		Message<?> result2 = this.filter.apply(message2);
 		// then: pass 'hello world' longer 5
-		assertNotNull(result2);
-		assertNotNull(result2.getPayload());
-		assertEquals("hello world", result2.getPayload());
+		assertThat(result2).isNotNull();
+		assertThat(result2.getPayload()).isNotNull();
+		assertThat(result2.getPayload()).isEqualTo("hello world");
 
 	}
 
