@@ -25,7 +25,6 @@ on:
       GH_ARC_PRIVATE_KEY:
       GH_ARC_PAT:
 
-
 env:
   VERBOSE: ${{ inputs.verbose && 'true' || '' }}
   BRANCH: ${{ inputs.branch }}
@@ -121,8 +120,6 @@ jobs:
           RUNNER_TYPE=$(./scripts/determine-provider.sh stream-apps-gh-runners)
           echo "RUNNER_TYPE=$RUNNER_TYPE"
           echo "RUNNER_TYPE=$RUNNER_TYPE" >> $GITHUB_ENV
-        outputs:
-          runner-type: '${{ env.RUNNER_TYPE }}'
       - name: 'Install: gcloud cli'
         if: ${{ env.RUNNER_TYPE == 'gke' }}
         uses: ./.github/actions/install-gcloud
