@@ -185,7 +185,9 @@ jobs:
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Configure: Install xsltproc'
-        run: sudo apt-get install -q -y xsltproc
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -q -y xsltproc
       - name: 'Action: build initial dependencies'
         shell: bash
         env:
