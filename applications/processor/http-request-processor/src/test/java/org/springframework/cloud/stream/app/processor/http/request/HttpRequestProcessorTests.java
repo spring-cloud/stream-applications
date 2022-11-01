@@ -113,7 +113,6 @@ public class HttpRequestProcessorTests {
 	}
 
 	@Test
-	@Disabled // Enable after fix in Spring Cloud Function
 	void requestUsingReturnType() {
 		applicationContextRunner
 				.withPropertyValues(
