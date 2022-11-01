@@ -166,7 +166,11 @@ public class HttpRequestFunctionTestApplicationTests {
 				fail("Expected exception");
 			}
 			catch (Throwable x) {
-				assertThat(x.getMessage()).contains("Connection refused");
+				final String message = x.getMessage();
+				assertThat(message).isNotNull();
+				if (!message.contains("Connection refused") && !message.contains("Failed to connect")) {
+					fail(message);
+				}
 			}
 		});
 	}
