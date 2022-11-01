@@ -18,9 +18,12 @@ package org.springframework.cloud.fn.filter;
 
 import java.util.function.Function;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,6 +36,7 @@ import org.springframework.test.annotation.DirtiesContext;
 /**
  * @author Artem Bilan
  * @author David Turanski
+ * @author Corneil du Plessis
  */
 @SpringBootTest(properties = "filter.function.expression=payload.length() > 5")
 @DirtiesContext
@@ -40,21 +44,24 @@ public class FilterFunctionApplicationTests {
 
 	@Autowired
 	@Qualifier("filterFunction")
-	Function<Flux<Message<?>>, Flux<Message<?>>> filter;
+	Function<Message<?>, Message<?>> filter;
 
 	@Test
 	public void testFilter() {
-		Flux<Message<?>> messageFlux =
-				Flux.just("hello", "hello world")
-						.map(GenericMessage::new);
-		Flux<Message<?>> result = this.filter.apply(messageFlux);
-		result
-				.map(Message::getPayload)
-				.cast(String.class)
-				.as(StepVerifier::create)
-				.expectNext("hello world")
-				.expectComplete()
-				.verify();
+		// given
+		GenericMessage<?> message1 = new GenericMessage<>("hello");
+		GenericMessage<?> message2 = new GenericMessage<>("hello world");
+		// when
+		Message<?> result1 = this.filter.apply(message1);
+		// then: filter 'hello' not longer than 5
+		assertNull(result1);
+		// when
+		Message<?> result2 = this.filter.apply(message2);
+		// then: pass 'hello world' longer 5
+		assertNotNull(result2);
+		assertNotNull(result2.getPayload());
+		assertEquals("hello world", result2.getPayload());
+
 	}
 
 	@SpringBootApplication

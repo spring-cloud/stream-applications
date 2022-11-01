@@ -18,8 +18,6 @@ package org.springframework.cloud.fn.filter;
 
 import java.util.function.Function;
 
-import reactor.core.publisher.Flux;
-
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,12 +33,11 @@ import org.springframework.messaging.Message;
 public class FilterFunctionConfiguration {
 
 	@Bean
-	public Function<Flux<Message<?>>, Flux<Message<?>>> filterFunction(
+	public Function<Message<?>, Message<?>> filterFunction(
 			ExpressionEvaluatingTransformer filterExpressionEvaluatingTransformer) {
 
-		return flux ->
-				flux.filter((message) ->
-						(Boolean) filterExpressionEvaluatingTransformer.transform(message).getPayload());
+		return message -> ((Boolean) filterExpressionEvaluatingTransformer.transform(message).getPayload())
+			? message : null;
 	}
 
 	@Bean
