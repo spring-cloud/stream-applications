@@ -6,7 +6,7 @@ spec:
   replicas: 2
   template:
     spec:
-      image: 'summerwind/actions-runner:latest'
+      image: 'summerwind/actions-runner-dind:latest'
       dockerdWithinRunnerContainer: true
       priorityClassName: high-priority
       imagePullPolicy: IfNotPresent

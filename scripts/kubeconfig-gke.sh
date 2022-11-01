@@ -29,9 +29,9 @@ mkdir -p $HOME/.kube
 echo "Connecting to $CLUSTER_NAME"
 set +e
 MAX=45
-export KUBECONFIG=
+export KUBECONFIG=$HOME/.kube/config-gke
 for i in $(seq $MAX); do
-  gcloud container clusters get-credentials $CLUSTER_NAME --region $REGION > $HOME/.kube/config
+  gcloud container clusters get-credentials $CLUSTER_NAME --region $REGION
   RC=$?
   if [ "$RC" = "0" ]; then
     break;
@@ -42,5 +42,4 @@ if [ "$RC" != "0" ]; then
   echo "Error connecting to $CLUSTER_NAME"
   exit $RC
 fi
-export KUBECONFIG=$HOME/.kube/config
 echo "Connected to $CLUSTER_NAME"
