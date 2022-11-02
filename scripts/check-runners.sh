@@ -15,5 +15,5 @@ echo ""
 echo "Runners:"
 RUNNER_DEPLOYMENTS=$(echo "$DEPLOYMENTS" | grep -F "runner" | awk '{print $1}')
 for deployment in $RUNNER_DEPLOYMENTS; do
-  kubectl get runners -l runner-deployment-name=$deployment --output=json | jq '.items | map(.status) | group_by(.phase,.ready) | map({ "deployment": '"\"$deployment\""', "count": length, "phase": .[0].phase})'
+  kubectl get runners -l runner-deployment-name=$deployment --output=json | jq --arg deployment $deployment '.items | map(.status) | group_by(.phase,.ready) | map({ "deployment": $deployment, "count": length, "phase": .[0].phase})'
 done
