@@ -146,10 +146,10 @@ int maxNodes = -1
 int minNodes = -1
 String outputFile
 String machineType
-String podFile;
-int ramUsed = 0;
-int cpuUsed = 0;
-
+String podFile
+int ramUsed = 0
+int cpuUsed = 0
+int additionalNodes = 0
 int requiredRam = 0
 int requiredCpu = 0
 Integer requiredNodes = null
@@ -179,11 +179,18 @@ for (int i = 0; i < args.length; i++) {
             outputFile = args[i + 1]
             i += 1
             break
+        case '--add':
+            if (args.length <= i + 1) {
+                usageExit('Missing arguments after --add')
+            }
+            additionalNodes = args[i+1].toInteger()
+            i += 1
+            break
         case '--cpu':
             if (args.length <= i + 1) {
                 usageExit('Missing arguments after --cpu')
             }
-            requiredCpu = args[i + 1].toInteger()
+            requiredCpu = Math.ceil(Double.parseDouble(args[i + 1])).intValue()
             if (requiredCpu < 0) {
                 shrink = true
             }
@@ -193,7 +200,7 @@ for (int i = 0; i < args.length; i++) {
             if (args.length <= i + 1) {
                 usageExit('Missing arguments after --ram')
             }
-            requiredRam = args[i + 1].toInteger()
+            requiredRam = Math.ceil(Double.parseDouble(args[i + 1])).intValue()
             if (requiredRam < 0) {
                 shrink = true
             }
@@ -403,7 +410,7 @@ if (cpuNodes != 0 && ramNodes != 0) {
 if (requiredNodes == null) {
     requiredNodes = 0
 }
-int targetNodes = currentNodes + requiredNodes
+int targetNodes = currentNodes + requiredNodes + additionalNodes
 if (minNodes >= 0 && targetNodes < minNodes) {
     if (verbose || outputFile != null) {
         println "Min:$minNodes"
@@ -422,7 +429,7 @@ if (!shrink && targetNodes < currentNodes) {
 }
 
 if (verbose || outputFile != null) {
-    println "Nodes: current=$currentNodes, required: $requiredNodes, target=$targetNodes, shrink=$shrink"
+    println "Nodes: current=$currentNodes, required=$requiredNodes, target=$targetNodes, shrink=$shrink"
 }
 def result = [nodes: targetNodes, shrink: shrink]
 String output = JsonOutput.toJson(result)

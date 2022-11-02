@@ -30,8 +30,23 @@ PODS=$2
 RAM_PER_POD=$($SCDIR/determine-default.sh $CLUSTER_NAME "ram-per-pod")
 CPU_PER_POD=$($SCDIR/determine-default.sh $CLUSTER_NAME "cpu-per-pod")
 PODS_PER_JOB=$($SCDIR/determine-default.sh $CLUSTER_NAME "pods_per_job")
-TOTAL_RAM=$((RAM_PER_POD * PODS * PODS_PER_JOB))
-TOTAL_CPU=$((CPU_PER_POD * PODS * PODS_PER_JOB))
+# provide for fractions
+set +e
+bc -v > /dev/null
+RC=$?
+if ((RC > 0)); then
+  bc -v
+  echo "Error finding bc"
+  exit 1
+fi
+cp $SCDIR/ceil.bc calc-ram.bc
+echo "ceil($RAM_PER_POD * $PODS * $PODS_PER_JOB)" >> calc-ram.bc
+echo "quit" >> calc-ram.bc
+TOTAL_RAM=$(bc calc-ram.bc)
+cp $SCDIR/ceil.bc calc-cpu.bc
+echo "ceil($CPU_PER_POD * $PODS * $PODS_PER_JOB)" >> calc-cpu.bc
+echo "quit" >> calc-cpu.bc
+TOTAL_CPU=$(bc calc-cpu.bc)
 echo "Scaling $CLUSTER_NAME with $PODS pods at ${RAM_PER_POD}Gi and $CPU_PER_POD vCPUs per pod using $PODS_PER_JOB per job. Total RAM:$TOTAL_RAM and CPU:$TOTAL_CPU"
 ARGS=
 while [ "$3" != "" ]; do

@@ -83,7 +83,7 @@ function set_nodecount_machine_type() {
 }
 
 function usage() {
-  echo "Usage $0 <provider> <cluster> [--ram <min-ram>] | [--nodes <min-nodes>] [--cpu <min-cpu>] [--max fixed-nodes] [--shrink]"
+  echo "Usage $0 <provider> <cluster> [--ram <min-ram>] | [--nodes <min-nodes>] [--cpu <min-cpu>] [--max fixed-nodes] [--add <additional>] [--shrink]"
   echo "  If nodes and fixed-nodes is the same the node count will be set to that value"
   echo "  If nodes is negative the number will be reduced by that many nodes"
   echo "  If --ram then the machine type will be used to determine the number of nodes"
@@ -98,6 +98,7 @@ fi
 export CLUSTER_NAME=$1
 DETERMINE_TYPE=false
 ZONES=1
+ADDITIONAL_NODES=0
 VERBOSE=false
 ARGS=
 while [ "$2" != "" ]; do
@@ -166,7 +167,7 @@ fi
 if [ "$TARGET" != "" ]; then
   if [ "$PROVIDER" == "gke" ]; then
     if [ "$DRY_RUN" == "true" ]; then
-      echo "gcloud container clusters resize "$CLUSTER_NAME" --region "$REGION" "--num-nodes=$TARGET" --node-pool=$NODE_POOL --quiet"
+      echo "gcloud container clusters resize $CLUSTER_NAME --region $REGION --num-nodes=$TARGET --node-pool=$NODE_POOL --quiet"
     else
       gcloud container clusters resize "$CLUSTER_NAME" --region "$REGION" "--num-nodes=$TARGET" --node-pool=$NODE_POOL --quiet
     fi
