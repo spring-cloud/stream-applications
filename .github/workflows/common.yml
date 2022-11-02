@@ -218,7 +218,23 @@ jobs:
           set +e
           echo "::notice ::core build completed"
           popd > /dev/null
-  # Build and tests apps and publishes to repo and creates container
+      - name: 'Action: Re-run ${{ github.workflow }}'
+        if: ${{ failure() }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FAILURES=$(gh run view ${{ github.run_id }} -v | grep "^X")
+          COUNT_TESTS=$(echo "$FAILURES" | grep -c -F "tests ")
+          if((COUNT_TESTS > 0)); then
+            echo "Re-run ${{ github.workflow }} run ${{ github.run_id }}"
+            gh run rerun ${{ github.run_id }} --failed --debug
+          else
+            echo "Checked ${{ github.workflow }} run ${{ github.run_id }}. No failures in tests jobs:"
+            for msg in $FAILURES; do
+              echo "$msg"
+            done
+          fi
   processors:
     if: ${{ needs.parameters.outputs.processors != '' && needs.parameters.outputs.processors != null }}
     needs:
@@ -433,6 +449,32 @@ jobs:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./publish-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
+  rerun-jobs:
+    if: ${{ failure() && github.run_attempt == '1' }}
+    runs-on: ubuntu-latest
+    needs:
+      - sources
+      - processors
+      - sinks
+    steps:
+      - name: 'Configure: Checkout stream-applications'
+        uses: actions/checkout@v3
+      - name: 'Action: Re-run ${{ github.workflow }}'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FAILURES=$(gh run view ${{ github.run_id }} -v | grep "^X")
+          COUNT_TESTS=$(echo "$FAILURES" | grep -c -F "tests ")
+          if((COUNT_TESTS > 0)); then
+            echo "Re-run ${{ github.workflow }} run ${{ github.run_id }}"
+            gh run rerun ${{ github.run_id }} --failed --debug
+          else
+            echo "Checked ${{ github.workflow }} run ${{ github.run_id }}. No failures in tests jobs:"
+            for msg in $FAILURES; do
+              echo "$msg"
+            done
+          fi
   scale-runners-down:
     if: ${{ success() }}
     runs-on: ubuntu-latest
