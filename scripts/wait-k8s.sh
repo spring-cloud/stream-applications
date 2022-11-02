@@ -7,9 +7,9 @@ shift
 # shellcheck disable=SC2086
 CONDITION=$(kubectl wait $* 2> $ERR_FILE)
 COUNT=$(echo "$CONDITION" | grep -c -F "condition met")
-if [ $COUNT -gt 0 ]; then
+if ((COUNT > 0)); then
   echo "Condition met $COUNT times"
-  exit 1
+  exit 0
 fi
 RC=$?
 while [ "$RC" != "0" ]; do
@@ -19,9 +19,9 @@ while [ "$RC" != "0" ]; do
       rm -f "$ERR_FILE"
   fi
   kubectl wait $* 2> "$ERR_FILE"
-  if [ $COUNT -gt 0 ]; then
+  if ((COUNT > 0)); then
     echo "Condition met $COUNT times"
-    exit 1
+    exit 0
   fi
   RC=$?
   RETRIES=$(( RETRIES - 1 ))
