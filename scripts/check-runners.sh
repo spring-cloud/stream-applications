@@ -2,7 +2,7 @@
 SCDIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 SCDIR=$(realpath $SCDIR)
 PARENT=$(realpath $SCDIR/..)
-SCALING=$(jq '.stream-apps-gh-runners.runner_scaling' $PARENT/config/defaults.json | sed 's/\"//g')
+SCALING=$($SCDIR/determine-default.sh stream-apps-gh-runners runner_scaling)
 if [ "$SCALING" == "auto" ]; then
   echo "Auto scaling:"
   kubectl get horizontalrunnerautoscalers

@@ -25,7 +25,7 @@ INC=$1
 
 # shellcheck disable=SC2003
 MAX_RUNNERS=$2
-SCALING=$(jq '.stream-apps-gh-runners.runner_scaling' $PARENT/config/defaults.json | sed 's/\"//g')
+SCALING=$($SCDIR/determine-default.sh stream-apps-gh-runners runner_scaling)
 cp $SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml runners-stream-ci-change.yaml
 
 if [ "$SCALING" == "auto" ]; then
@@ -79,15 +79,15 @@ if [ "$SCALING" == "auto" ]; then
   sed -i 's/max-replicas-placeholder/'"$MAX_RUNNERS"'/g' runners-stream-ci-change.yaml
   sed -i 's/min-replicas-placeholder/'"$MIN_RUNNERS"'/g' runners-stream-ci-change.yaml
 else
-  echo "Runners:$CURRENT increase by $INC to $RUNNERS"
-  sed -i 's/replicas-placeholder/'"$RUNNERS"'/g' runners-stream-ci-change.yaml
+  echo "Runners:$CURRENT increase by $INC to $TARGET"
+  sed -i 's/replicas-placeholder/'"$TARGET"'/g' runners-stream-ci-change.yaml
 fi
 
 cmp --silent "$SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml" runners-stream-ci-change.yaml
 RC=$?
 if ((RC != 0)); then
   kubectl apply -f runners-stream-ci-change.yaml
-  echo "Runners: applied change to $RUNNERS"
+  echo "Runners: changes applied"
   if [ "$SCALING" != "auto" ]; then
     $SCDIR/wait-k8s.sh 1 --for=condition=ready --timeout=1m pod -l runner-deployment-name=runners-stream-ci --all-namespaces=true
   fi
