@@ -218,7 +218,7 @@ jobs:
       - scale-runners-up
     strategy:
       fail-fast: false
-      max-parallel: 4
+#      max-parallel: 4
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.processors) }}
 #    runs-on: 'ubuntu-latest'
@@ -279,7 +279,7 @@ jobs:
       - parameters
       - scale-runners-up
     strategy:
-      max-parallel: 4
+#      max-parallel: 4
       fail-fast: false
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.sinks) }}
@@ -341,7 +341,7 @@ jobs:
       - parameters
       - scale-runners-up
     strategy:
-      max-parallel: 4
+#      max-parallel: 4
       fail-fast: false
       # will be removed when private runners are used.
       matrix:
