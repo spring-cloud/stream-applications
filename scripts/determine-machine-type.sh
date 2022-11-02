@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 function check_env() {
     eval ev='$'$1
     if [ "$ev" == "" ]; then

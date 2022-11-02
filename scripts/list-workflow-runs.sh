@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 if [ "$1" == "" ]; then
   echo "Provide one or more workflow names like ci.yml that does produce download artefacts"
   exit 1

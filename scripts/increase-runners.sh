@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 SCDIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 SCDIR=$(realpath $SCDIR)
 PARENT=$(realpath $SCDIR/..)

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 SCDIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 SCDIR=$(realpath $SCDIR)
 (return 0 2>/dev/null) && sourced=1 || sourced=0

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 WAIT=
 CARVEL=false
 NS=default

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 if [ "$1" == "" ]; then
   echo "Expect name of workflow to ignore"
   exit 1

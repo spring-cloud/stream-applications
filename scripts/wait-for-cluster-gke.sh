@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set +e
 WAIT_NODES=false
 while [ "$1" != "" ]; do

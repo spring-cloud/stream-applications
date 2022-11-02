@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 (return 0 2>/dev/null) && sourced=1 || sourced=0
 function check_env() {
   eval ev='$'$1

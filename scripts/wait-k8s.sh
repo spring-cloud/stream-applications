@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 RETRIES=$1
 ERR_DIR="/tmp/$(dirname $0)"
 ERR_FILE="/tmp/$0.err"

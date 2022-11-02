@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 pushd applications/processor > /dev/null
 PROCESSORS=$(find * -maxdepth 0 -type d)
 popd  > /dev/null

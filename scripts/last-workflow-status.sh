@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 SCDIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 SCDIR=$(realpath $SCDIR)
 if [ "$1" = "" ]; then

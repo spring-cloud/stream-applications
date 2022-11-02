@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 NS=default
 if [ "$1" == "" ]; then
   echo "Arguments: <secret-name> [namespace]"

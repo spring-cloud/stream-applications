@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 if [ "$1" = "" ]; then
   echo "cluster name portion to match must be provided"
   exit 1

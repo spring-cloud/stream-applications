@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 SCDIR=$(realpath $(dirname "$(readlink -f "${BASH_SOURCE[0]}")" ))
 if [ "$1" = "" ]; then
   echo "Usage $0 <pom-file>"

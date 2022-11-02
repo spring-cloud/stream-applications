@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set +e
 if [ "$1" == "" ]; then
   echo "Deployment name required"

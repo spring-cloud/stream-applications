@@ -371,7 +371,6 @@ jobs:
     uses: ./.github/workflows/recreate-runners.yml
     with:
       verbose: ${{ inputs.verbose == 'true' && 'true' || 'false' }}
-      deployment_type: 'helm'
     secrets:
       TMC_API_TOKEN: ${{ secrets.TMC_API_TOKEN }}
       GCP_CRED_JSON: ${{ secrets.GCP_CRED_JSON }}
