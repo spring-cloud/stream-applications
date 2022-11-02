@@ -184,6 +184,15 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Action: build initial dependencies'
@@ -193,7 +202,7 @@ jobs:
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          MAVEN_OPT="-B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
+          MAVEN_OPT="-U -B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
           pushd stream-applications > /dev/null
           echo "::notice ::building - stream-applications-build"
           set -e
@@ -249,6 +258,15 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install Pack'
@@ -311,6 +329,15 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install Pack'
@@ -374,6 +401,15 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install Pack'
