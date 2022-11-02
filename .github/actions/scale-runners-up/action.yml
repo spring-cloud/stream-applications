@@ -80,7 +80,7 @@ runs:
         VERBOSE: ${{ inputs.verbose && '--verbose' || '' }}
       run: |
         echo "::notice ::Scaling stream-apps-gh-runners to ${{ inputs.max_parallel }} pods"
-        ./scripts/scale-cluster-pods.sh stream-apps-gh-runners ${{ inputs.max_parallel }}
+        ./scripts/scale-cluster-pods.sh stream-apps-gh-runners ${{ inputs.max_parallel }} --add 1
     - name: 'Check: Wait for cluster nodes: stream-apps-gh-runners'
       shell: bash
       env:
