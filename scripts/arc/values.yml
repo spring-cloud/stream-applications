@@ -12,6 +12,6 @@ githubWebhookServer:
   enabled: true
 image:
   tag: v0.26.0
-#runner:
-#  statusUpdateHook:
-#    enabled: true
+runner:
+  statusUpdateHook:
+    enabled: true

@@ -32,3 +32,5 @@ fi
 ./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -T 1C -f stream-applications-build
 ./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -T 1C -f functions
 ./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -T 1C -f applications/stream-applications-core
+
+

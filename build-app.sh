@@ -33,9 +33,9 @@ pushd "$PROJECT_FOLDER" > /dev/null
     MAVEN_OPT=--debug
   fi
   if [ "$MAVEN_OPT" == "" ]; then
-    MAVEN_OPT=-B
+    MAVEN_OPT="-B -U"
   else
-    MAVEN_OPT="$MAVEN_OPT -B"
+    MAVEN_OPT="$MAVEN_OPT -B -U"
   fi
   if [ "$VERSION" == "" ]; then
 

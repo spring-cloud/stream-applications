@@ -45,7 +45,7 @@ IMAGE_SHA=$(wget -q -O- https://hub.docker.com/v2/repositories/summerwind/action
 if [ "$IMAGE_SHA" == "" ]; then
   IMAGE_SHA="latest"
 fi
-SCALING=$(jq '.stream-apps-gh-runners.runner_scaling' $PARENT/config/defaults.json | sed 's/\"//g')
+SCALING=$($SCDIR/determine-default.sh stream_apps_gh_runners runner_scaling)
 cp $SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml runners-stream-ci-change.yaml
 sed -i 's/tag-placeholder/'"$IMAGE_SHA"'/g' runners-stream-ci-change.yaml
 if [ "$SCALING" == "auto" ]; then

@@ -27,27 +27,21 @@ if [ "$2" == "" ]; then
   exit 1
 fi
 PODS=$2
+
 RAM_PER_POD=$($SCDIR/determine-default.sh $CLUSTER_NAME "ram-per-pod")
 CPU_PER_POD=$($SCDIR/determine-default.sh $CLUSTER_NAME "cpu-per-pod")
 PODS_PER_JOB=$($SCDIR/determine-default.sh $CLUSTER_NAME "pods_per_job")
-# provide for fractions
-set +e
-bc -v > /dev/null
-RC=$?
-if ((RC > 0)); then
-  bc -v
-  echo "Error finding bc"
-  exit 1
+if [ "$RAM_PER_POD" = "" ] || [ "$RAM_PER_POD" = "null" ]; then
+  RAM_PER_POD=1
 fi
-cp $SCDIR/ceil.bc calc-ram.bc
-echo "ceil($RAM_PER_POD * $PODS * $PODS_PER_JOB)" >> calc-ram.bc
-echo "quit" >> calc-ram.bc
-TOTAL_RAM=$(bc calc-ram.bc)
-cp $SCDIR/ceil.bc calc-cpu.bc
-echo "ceil($CPU_PER_POD * $PODS * $PODS_PER_JOB)" >> calc-cpu.bc
-echo "quit" >> calc-cpu.bc
-TOTAL_CPU=$(bc calc-cpu.bc)
-echo "Scaling $CLUSTER_NAME with $PODS pods at ${RAM_PER_POD}Gi and $CPU_PER_POD vCPUs per pod using $PODS_PER_JOB per job. Total RAM:$TOTAL_RAM and CPU:$TOTAL_CPU"
+if [ "$CPU_PER_POD" = "" ] || [ "$CPU_PER_POD" = "null" ]; then
+  CPU_PER_POD=1
+fi
+if [ "$PODS_PER_JOB" = "" ] || [ "$PODS_PER_JOB" = "null" ]; then
+  PODS_PER_JOB=1
+fi
+# provide for fractions
+echo "Scaling $CLUSTER_NAME with $PODS pods at ${RAM_PER_POD}Gi and $CPU_PER_POD vCPUs per pod using $PODS_PER_JOB per job"
 ARGS=
 while [ "$3" != "" ]; do
   if [ "$ARGS" != "" ]; then
@@ -57,4 +51,4 @@ while [ "$3" != "" ]; do
   fi
   shift
 done
-$SCDIR/scale-cluster-nodes.sh $CLUSTER_NAME --ram $TOTAL_RAM --cpu $TOTAL_CPU $ARGS
+$SCDIR/scale-cluster-nodes.sh $CLUSTER_NAME --ram-per-pod $RAM_PER_POD --cpu-per-pod $CPU_PER_POD --pods-per-job $PODS_PER_JOB --pods $PODS $ARGS

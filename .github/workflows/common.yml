@@ -184,6 +184,15 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Action: build initial dependencies'
@@ -193,7 +202,7 @@ jobs:
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          MAVEN_OPT="-B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
+          MAVEN_OPT="-U -B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
           pushd stream-applications > /dev/null
           echo "::notice ::building - stream-applications-build"
           set -e
@@ -209,7 +218,23 @@ jobs:
           set +e
           echo "::notice ::core build completed"
           popd > /dev/null
-  # Build and tests apps and publishes to repo and creates container
+      - name: 'Action: Re-run ${{ github.workflow }}'
+        if: ${{ failure() }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FAILURES=$(gh run view ${{ github.run_id }} -v | grep "^X")
+          COUNT_TESTS=$(echo "$FAILURES" | grep -c -F "tests ")
+          if((COUNT_TESTS > 0)); then
+            echo "Re-run ${{ github.workflow }} run ${{ github.run_id }}"
+            gh run rerun ${{ github.run_id }} --failed --debug
+          else
+            echo "Checked ${{ github.workflow }} run ${{ github.run_id }}. No failures in tests jobs:"
+            for msg in $FAILURES; do
+              echo "$msg"
+            done
+          fi
   processors:
     if: ${{ needs.parameters.outputs.processors != '' && needs.parameters.outputs.processors != null }}
     needs:
@@ -249,6 +274,15 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install Pack'
@@ -311,6 +345,15 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install Pack'
@@ -374,6 +417,15 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
 #          components: 'native-image' # add when starting native builds.
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install Pack'
@@ -397,6 +449,32 @@ jobs:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./publish-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
+  rerun-jobs:
+    if: ${{ failure() && github.run_attempt == '1' }}
+    runs-on: ubuntu-latest
+    needs:
+      - sources
+      - processors
+      - sinks
+    steps:
+      - name: 'Configure: Checkout stream-applications'
+        uses: actions/checkout@v3
+      - name: 'Action: Re-run ${{ github.workflow }}'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FAILURES=$(gh run view ${{ github.run_id }} -v | grep "^X")
+          COUNT_TESTS=$(echo "$FAILURES" | grep -c -F "tests ")
+          if((COUNT_TESTS > 0)); then
+            echo "Re-run ${{ github.workflow }} run ${{ github.run_id }}"
+            gh run rerun ${{ github.run_id }} --failed --debug
+          else
+            echo "Checked ${{ github.workflow }} run ${{ github.run_id }}. No failures in tests jobs:"
+            for msg in $FAILURES; do
+              echo "$msg"
+            done
+          fi
   scale-runners-down:
     if: ${{ success() }}
     runs-on: ubuntu-latest
