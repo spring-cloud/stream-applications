@@ -124,7 +124,7 @@ void usageExit(String message = null) {
     if (message != null) {
         println message
     }
-    println 'Usage: [--output <outputFile>] [--verbose] [--shrink] [--machine <machineType>] [--current <currentNodeCount>] [--ram <requiredRam>] [--cpu <requiredCpu>] [--min <minimumNodes>] [--max <maximumNodes>] [--nodes <requiredNodes>] [--podfile <podfile>]'
+    println 'Usage: [--output <outputFile>] [--verbose] [--shrink] [--machine <machineType>] [--current <currentNodeCount>] [--ram <requiredRam>] [--cpu <requiredCpu>] [--min <minimumNodes>] [--max <maximumNodes>] [--nodes <requiredNodes>] [--cpu-per-pod <cpuPerPod>] [--pods-per-job <podsPerJob>] [--pods <requiredPods>] [--podfile <podfile>]'
     println '''
 \tmachine-type:      The machine used by provider for nodes.
 \tcurrentNodeCount:  Total number of nodes in cluster.
@@ -140,7 +140,8 @@ void usageExit(String message = null) {
 '''
     System.exit(1)
 }
-
+Integer requiredRam
+Integer requiredCpu
 int currentNodes = 0
 int maxNodes = -1
 int minNodes = -1
@@ -150,8 +151,10 @@ String podFile
 int ramUsed = 0
 int cpuUsed = 0
 int additionalNodes = 0
-int requiredRam = 0
-int requiredCpu = 0
+int requiredPods = 1
+int podsPerJob = 1
+double ramPerPod = 1.0
+double cpuPerPod = 1.0
 Integer requiredNodes = null
 boolean shrink = false
 boolean verbose = false
@@ -184,6 +187,46 @@ for (int i = 0; i < args.length; i++) {
                 usageExit('Missing arguments after --add')
             }
             additionalNodes = args[i+1].toInteger()
+            i += 1
+            break
+        case '--pods':
+            if (args.length <= i + 1) {
+                usageExit('Missing arguments after --pods')
+            }
+            requiredPods = args[i + 1].toInteger()
+            if (requiredPods == 0) {
+                usageExit('pods-required must not be 0')
+            }
+            i += 1
+            break
+        case '--pods-per-job':
+            if (args.length <= i + 1) {
+                usageExit('Missing arguments after --pods-per-job')
+            }
+            podsPerJob = args[i + 1].toInteger()
+            if (podsPerJob <= 0) {
+                usageExit('pods-required must be greater than 0')
+            }
+            i += 1
+            break
+        case '--cpu-per-pod':
+            if (args.length <= i + 1) {
+                usageExit('Missing arguments after --cpu-per-pod')
+            }
+            cpuPerPod = Double.parseDouble(args[i + 1])
+            if (cpuPerPod == 0) {
+                usageExit('cpu-per-pod must not be 0')
+            }
+            i += 1
+            break
+        case '--ram-per-pod':
+            if (args.length <= i + 1) {
+                usageExit('Missing arguments after --ram-per-pod')
+            }
+            ramPerPod = Double.parseDouble(args[i + 1])
+            if (ramPerPod == 0) {
+                usageExit('ram-per-pod must not be 0')
+            }
             i += 1
             break
         case '--cpu':
@@ -250,112 +293,112 @@ for (int i = 0; i < args.length; i++) {
             usageExit("Invalid argument: $arg")
     }
 }
-if ((requiredRam > 0 || requiredCpu > 0) && (machineType == null)) {
-    usageExit("Machine type is required to calculate nodes from RAM or CPU required")
+if ((requiredPods > 0 || requiredRam > 0 || requiredCpu > 0) && (machineType == null)) {
+    usageExit("Machine type is required to calculate nodes from Pods, RAM or CPU required")
 }
-if ((requiredRam > 0 || requiredCpu > 0) && (requiredNodes != null)) {
-    usageExit("Cannot require Nodes and CPU or RAM")
+if ((requiredPods > 0 || requiredRam > 0 || requiredCpu > 0) && (requiredNodes != null)) {
+    usageExit("Cannot require Nodes and Pods, CPU or RAM")
 }
 
-int machineRam = -1
-int machineCpu = -1
+int nodeRam = -1
+int nodeCpu = -1
 if(machineType) {
     switch (machineType) {
         case 't2.small':
-            machineRam = 2
-            machineCpu = 1
+            nodeRam = 2
+            nodeCpu = 1
             break
         case 't3.small': case 't3a.small':
-            machineRam = 2
-            machineCpu = 2
+            nodeRam = 2
+            nodeCpu = 2
             break
 
         case 'n2-highcpu-2': case 'n2d-highcpu-2': case 'e2-highcpu-2':
-            machineCpu = 2
-            machineRam = 2
+            nodeCpu = 2
+            nodeRam = 2
             break
         case 'c2d-highcpu-2': case 't2.medium': case 't3.medium': case 't3a.medium':
-            machineRam = 4
-            machineCpu = 2
+            nodeRam = 4
+            nodeCpu = 2
             break
         case 'n2-highcpu-4': case 'n2d-highcpu-4': case 'e2-highcpu-4':
-            machineRam = 4
-            machineCpu = 4
+            nodeRam = 4
+            nodeCpu = 4
             break
         case 'n2-highmem-2': case 'n2d-highmem-2': case 'c2d-highmem-2': case 'e2-highmem-2':
-            machineRam = 16
-            machineCpu = 2
+            nodeRam = 16
+            nodeCpu = 2
             break
         case 'n2-standard-2': case 'n2d-standard-2': case 'c2d-standard-2': case 'e2-standard-2':
         case 'm5.large': case 'm5a.large': case 't2.large': case 't3a.large': case 't3.large':
-            machineRam = 8
-            machineCpu = 2
+            nodeRam = 8
+            nodeCpu = 2
             break
         case 'c2d-highcpu-4':
-            machineRam = 8
-            machineCpu = 4
+            nodeRam = 8
+            nodeCpu = 4
             break
         case 'n2-highcpu-8': case 'n2d-highcpu-8': case 'e2-highcpu-8':
-            machineRam = 8
-            machineCpu = 8
+            nodeRam = 8
+            nodeCpu = 8
             break
         case 'n2-standard-4': case 'n2d-standard-4': case 'c2-standard-4': case 'c2d-standard-4': case 'e2-standard-4':
         case 'm5.xlarge': case 'm5a.xlarge': case 't2.xlarge': case 't3a.xlarge': case 't3.xlarge':
-            machineRam = 16
-            machineCpu = 4
+            nodeRam = 16
+            nodeCpu = 4
             break
         case 'c2d-highcpu-8':
-            machineRam = 16
-            machineCpu = 8
+            nodeRam = 16
+            nodeCpu = 8
             break
         case 'n2-highcpu-16': case 'n2d-highcpu-16': case 'e2-highcpu-16':
-            machineRam = 16
-            machineCpu = 16
+            nodeRam = 16
+            nodeCpu = 16
             break
         case 'n2-highmem-4': case 'n2d-highmem-4': case 'c2d-highmem-4': case 'e2-highmem-4':
-            machineRam = 32
-            machineCpu = 4
+            nodeRam = 32
+            nodeCpu = 4
             break
         case 'n2-standard-8': case 'n2d-standard-8': case 'c2-standard-8': case 'c2d-standard-8': case 'e2-standard-8':
         case 'm5.2xlarge': case 'm5a.2xlarge': case 't2.2xlarge': case 't3a.2xlarge': case 't3.2xlarge':
-            machineRam = 32
-            machineCpu = 8
+            nodeRam = 32
+            nodeCpu = 8
             break
         case 'c2d-highcpu-16':
-            machineRam = 32
-            machineCpu = 16
+            nodeRam = 32
+            nodeCpu = 16
             break
         case 'n2-highcpu-32': case 'n2d-highcpu-32': case 'e2-highcpu-32':
-            machineRam = 32
-            machineCpu = 32
+            nodeRam = 32
+            nodeCpu = 32
             break
         case 'n2-highmem-8': case 'n2d-highmem-8': case 'c2d-highmem-8': case 'e2-highmem-8':
-            machineRam = 64
-            machineCpu = 8
+            nodeRam = 64
+            nodeCpu = 8
             break
         case 'n2-standard-16': case 'n2d-standard-16': case 'c2-standard-16': case 'c2d-standard-16': case 'e2-standard-16':
         case 'm5.4xlarge': case 'm5a.4xlarge':
-            machineRam = 64
-            machineCpu = 16
+            nodeRam = 64
+            nodeCpu = 16
             break
         case 'c2d-highcpu-32':
-            machineRam = 64
-            machineCpu = 32
+            nodeRam = 64
+            nodeCpu = 32
             break
         case 'n2-highcpu-64': case 'n2d-highcpu-64':
-            machineRam = 64
-            machineCpu = 64
+            nodeRam = 64
+            nodeCpu = 64
             break
         case 'n2-highmem-16': case 'n2d-highmem-16': case 'c2d-highmem-16': case 'e2-highmem-16':
-            machineRam = 128
-            machineCpu = 16
+            nodeRam = 128
+            nodeCpu = 16
             break
         default:
             println "Unknown machine type $machineType"
             System.exit(1)
     }
     if (verbose || outputFile != null) {
-        println "Machine Type:$machineType CPU=$machineCpu, RAM=$machineRam"
+        println "Machine Type:$machineType CPU=$nodeCpu, RAM=$nodeRam"
     }
 }
 
@@ -374,38 +417,48 @@ if (podFile != null && currentNodes > 0) {
         usedCpu = (int) Math.ceil(sizes.cpu)
     }
 }
+int podsNodes = 0
 int ramNodes = 0
-if (requiredRam != 0) {
-    int totalRam = currentNodes * machineRam
-    int availableRam = totalRam - usedMemory
-    if (requiredRam > availableRam) {
-        ramNodes = divideRoundUp(requiredRam - availableRam, machineRam)
-    } else if (requiredRam < 0 && Math.abs(requiredRam) < availableRam) {
-        ramNodes = divideRoundUp(availableRam - Math.abs(requiredRam), machineRam) * -1
-    }
-    if (verbose || outputFile != null) {
-        println "RAM: total=$totalRam, used=$usedMemory, available=$availableRam, required=$requiredRam. Nodes=$ramNodes"
-    }
-}
 int cpuNodes = 0
-if (requiredCpu != 0) {
-    int totalCpu = currentNodes * machineCpu
-    int availableCpu = totalCpu - usedCpu
-    if (requiredCpu > availableCpu) {
-        cpuNodes = divideRoundUp(requiredCpu - availableCpu, machineRam)
-    } else if (requiredCpu < 0 && Math.abs(requiredCpu) < availableCpu) {
-        cpuNodes = divideRoundUp(availableCpu - Math.abs(requiredCpu), machineRam) * -1
+if(requiredPods != 0) {
+    int nodesFromRam = Math.ceil(requiredPods.doubleValue() / Math.floor(nodeRam.doubleValue() / ramPerPod) * podsPerJob.doubleValue()).intValue()
+    int nodesFromCpu = Math.ceil(requiredPods.doubleValue() / Math.floor(nodeCpu.doubleValue() / cpuPerPod) * podsPerJob.doubleValue()).intValue()
+    requiredNodes = Math.max(nodesFromCpu, nodesFromRam)
+    println "PODS: Nodes from RAM:$nodesFromRam, CPU:$nodesFromCpu, Additional Nodes: $additionalNodes, Required Nodes: $requiredNodes"
+} else {
+
+    if (requiredRam != 0) {
+        int totalRam = currentNodes * nodeRam
+        int availableRam = totalRam - usedMemory
+        if (requiredRam > availableRam) {
+            ramNodes = divideRoundUp(requiredRam - availableRam, nodeRam)
+        } else if (requiredRam < 0 && Math.abs(requiredRam) < availableRam) {
+            ramNodes = divideRoundUp(availableRam - Math.abs(requiredRam), nodeRam) * -1
+        }
+        if (verbose || outputFile != null) {
+            println "RAM: total=$totalRam, used=$usedMemory, available=$availableRam, required=$requiredRam. Nodes=$ramNodes"
+        }
     }
-    if (verbose || outputFile != null) {
-        println "CPU: total=$totalCpu, used=$usedCpu, available=$availableCpu, required=$requiredCpu. Nodes=$cpuNodes"
+
+    if (requiredCpu != 0) {
+        int totalCpu = currentNodes * nodeCpu
+        int availableCpu = totalCpu - usedCpu
+        if (requiredCpu > availableCpu) {
+            cpuNodes = divideRoundUp(requiredCpu - availableCpu, nodeRam)
+        } else if (requiredCpu < 0 && Math.abs(requiredCpu) < availableCpu) {
+            cpuNodes = divideRoundUp(availableCpu - Math.abs(requiredCpu), nodeRam) * -1
+        }
+        if (verbose || outputFile != null) {
+            println "CPU: total=$totalCpu, used=$usedCpu, available=$availableCpu, required=$requiredCpu. Nodes=$cpuNodes"
+        }
     }
-}
-if (cpuNodes != 0 && ramNodes != 0) {
-    requiredNodes = Math.max(cpuNodes, ramNodes)
-} else if (cpuNodes != 0) {
-    requiredNodes = cpuNodes
-} else if (ramNodes != 0) {
-    requiredNodes = ramNodes
+    if (cpuNodes != 0 && ramNodes != 0) {
+        requiredNodes = Math.max(cpuNodes, ramNodes)
+    } else if (cpuNodes != 0) {
+        requiredNodes = cpuNodes
+    } else if (ramNodes != 0) {
+        requiredNodes = ramNodes
+    }
 }
 if (requiredNodes == null) {
     requiredNodes = 0

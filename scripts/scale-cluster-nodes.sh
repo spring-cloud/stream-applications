@@ -98,12 +98,11 @@ fi
 export CLUSTER_NAME=$1
 DETERMINE_TYPE=false
 ZONES=1
-ADDITIONAL_NODES=0
 VERBOSE=false
 ARGS=
 while [ "$2" != "" ]; do
   case $2 in
-  "--cpu" | "--ram")
+  "--cpu" | "--ram" | "--pods-per-job" | "--pods" | "--cpu-per-pod" | "--ram-per-pod")
     DETERMINE_TYPE=true
     ;;
   "--verbose")
