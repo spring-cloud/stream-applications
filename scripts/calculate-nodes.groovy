@@ -140,8 +140,8 @@ void usageExit(String message = null) {
 '''
     System.exit(1)
 }
-Integer requiredRam
-Integer requiredCpu
+Integer requiredRam = 0
+Integer requiredCpu = 0
 int currentNodes = 0
 int maxNodes = -1
 int minNodes = -1
@@ -151,7 +151,7 @@ String podFile
 int ramUsed = 0
 int cpuUsed = 0
 int additionalNodes = 0
-int requiredPods = 1
+int requiredPods = 0
 int podsPerJob = 1
 double ramPerPod = 1.0
 double cpuPerPod = 1.0
