@@ -164,6 +164,9 @@ The following are the various components of this repository.
 |
 |
 |link:applications/sink/websocket-sink/README.adoc[Websocket]
+|
+|
+|link:applications/sink/xmpp-sink/README.adoc[XMPP]
 |===
 
 === Build

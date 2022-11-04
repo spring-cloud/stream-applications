@@ -1,0 +1,58 @@
+//tag::ref-doc[]
+= ZeroMQ Sink
+
+The "zeromq" sink enables sending messages to a ZeroMQ socket.
+
+== Input
+
+* `byte[]`
+
+== Output
+
+=== Payload
+
+N/A
+
+== Options
+
+The **$$zeromq$$** $$sink$$ has the following options:
+
+//tag::configuration-properties[]
+Properties grouped by prefix:
+
+
+=== xmpp.consumer
+
+$$chat-to$$:: $$XMPP handle to send message to.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== xmpp.factory
+
+$$host$$:: $$XMPP Host server to connect to.$$ *($$String$$, default: `$$<none>$$`)*
+$$password$$:: $$The Password for the connected user.$$ *($$String$$, default: `$$<none>$$`)*
+$$port$$:: $$Port for connecting to the host.   - Default Client Port: 5222$$ *($$Integer$$, default: `$$5222$$`)*
+$$resource$$:: $$The Resource to bind to on the XMPP Host.   - Can be empty, server will generate one if not set$$ *($$String$$, default: `$$<none>$$`)*
+$$security-mode$$:: $$<documentation missing>$$ *($$SecurityMode$$, default: `$$<none>$$`, possible values: `required`,`ifpossible`,`disabled`)*
+$$service-name$$:: $$The Service Name to set for the XMPP Domain.$$ *($$String$$, default: `$$<none>$$`)*
+$$subscription-mode$$:: $$<documentation missing>$$ *($$SubscriptionMode$$, default: `$$<none>$$`, possible values: `accept_all`,`reject_all`,`manual`)*
+$$user$$:: $$The User the connection should connect as.$$ *($$String$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+== Build
+
+```
+$ ./mvnw clean install -PgenerateApps
+$ cd apps
+```
+You can find the corresponding binder based projects here.
+You can then cd into one of the folders and build it:
+```
+$ ./mvnw clean package
+```
+
+== Examples
+
+```
+java -jar zeromq-sink.jar --zeromq.consumer.connectUrl=tcp://server:port --zeromq.consumer.topic=
+```
+
+//end::ref-doc[]
