@@ -51,7 +51,7 @@ jobs:
           ROOT_DIR=$(realpath $PWD)
           echo "::info ::checking stream-applications for apps"
           pushd stream-applications > /dev/null
-            $ROOT_DIR/create-matrixes.sh
+            $ROOT_DIR/create-matrices.sh
             if [ ! -f matrix.json ]; then
               echo "Expected to find matrix.json in:"
               ls -al
