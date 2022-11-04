@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
@@ -48,22 +47,12 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.JOHN_USER;
-import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.SERVICE_NAME;
-import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.USER_PW;
 
 /**
  * @author Daniel Frey
  * @author Chris Bono
  */
-@SpringBootTest(
-		properties = {
-				"xmpp.factory.user=" + JOHN_USER,
-				"xmpp.factory.password=" + USER_PW,
-				"xmpp.factory.service-name=" + SERVICE_NAME,
-				"xmpp.factory.security-mode=disabled"
-		}
-)
+@SpringBootTest
 @DirtiesContext
 public class XmppConsumerConfigurationTests implements XmppTestContainerSupport {
 
@@ -71,6 +60,10 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 	static void registerConfigurationProperties(DynamicPropertyRegistry registry) {
 		registry.add("xmpp.factory.host", () -> XmppTestContainerSupport.getXmppHost());
 		registry.add("xmpp.factory.port", () -> XmppTestContainerSupport.getXmppMappedPort());
+		registry.add("xmpp.factory.user", () -> JOHN_USER);
+		registry.add("xmpp.factory.password", () -> USER_PW);
+		registry.add("xmpp.factory.service-name", () -> SERVICE_NAME);
+		registry.add("xmpp.factory.security-mode", () -> "disabled");
 	}
 
 	@Autowired
@@ -82,7 +75,8 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 
 	@BeforeEach
 	void setup() throws IOException, SmackException, XMPPException, InterruptedException {
-		XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
+
+		var builder = XMPPTCPConnectionConfiguration.builder();
 		builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
 		builder.setHost(XmppTestContainerSupport.getXmppHost());
 		builder.setPort(XmppTestContainerSupport.getXmppMappedPort());
@@ -92,6 +86,7 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 		this.clientConnection = new XMPPTCPConnection(builder.build());
 		this.clientConnection.connect();
 		this.clientConnection.login();
+
 	}
 
 	@AfterEach
@@ -101,10 +96,10 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 
 	@Test
 	void messageHandlerConfiguration() {
-		StanzaCollector collector
+		var collector
 				= this.clientConnection.createStanzaCollector(StanzaTypeFilter.MESSAGE);
 
-		Message<?> testMessage =
+		var testMessage =
 				MessageBuilder.withPayload("test")
 						.setHeader(XmppHeaders.TO, JANE_USER + "@" + SERVICE_NAME)
 						.build();
@@ -119,10 +114,10 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 
 	@Test
 	void xmppMessageHandlerConfiguration() throws XmppStringprepException {
-		StanzaCollector collector
+		var collector
 				= this.clientConnection.createStanzaCollector(StanzaTypeFilter.MESSAGE);
 
-		Message<?> testMessage =
+		var testMessage =
 				MessageBuilder.withPayload(org.jivesoftware.smack.packet.MessageBuilder.buildMessage().addBody("en_us", "test").to(JANE_USER + "@" + SERVICE_NAME).build())
 						.build();
 
