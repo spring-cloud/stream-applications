@@ -51,7 +51,7 @@ jobs:
           ROOT_DIR=$(realpath $PWD)
           echo "::info ::checking stream-applications for apps"
           pushd stream-applications > /dev/null
-            $ROOT_DIR/create-matrixes.sh
+            $ROOT_DIR/create-matrices.sh
             if [ ! -f matrix.json ]; then
               echo "Expected to find matrix.json in:"
               ls -al
@@ -154,7 +154,6 @@ jobs:
           GH_ARC_PRIVATE_KEY: ${{ secrets.GH_ARC_PRIVATE_KEY }}
           GH_ARC_PAT: ${{ secrets.GH_ARC_PAT }}
   core:
-#    runs-on: ubuntu-latest
     runs-on: 'stream-ci-large'
     needs:
       - parameters
@@ -243,10 +242,8 @@ jobs:
       - scale-runners-up
     strategy:
       fail-fast: false
-#      max-parallel: 4
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.processors) }}
-#    runs-on: 'ubuntu-latest'
     runs-on: 'stream-ci'
     steps:
       - name: 'Configure: checkout stream-applications'
@@ -299,6 +296,14 @@ jobs:
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ matrix.app }}-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
@@ -313,11 +318,9 @@ jobs:
       - parameters
       - scale-runners-up
     strategy:
-#      max-parallel: 4
       fail-fast: false
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.sinks) }}
-#    runs-on: 'ubuntu-latest'
     runs-on: 'stream-ci'
     steps:
       - name: 'Configure: checkout stream-applications'
@@ -370,6 +373,14 @@ jobs:
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ matrix.app }}-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
@@ -384,13 +395,11 @@ jobs:
       - parameters
       - scale-runners-up
     strategy:
-#      max-parallel: 4
       fail-fast: false
       # will be removed when private runners are used.
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.sources) }}
-#    runs-on: 'ubuntu-latest'
-    runs-on: 'stream-ci'
+    runs-on: ${{ matrix.app == 'cdc-debezium-source' && 'stream-ci-large' || 'stream-ci' }}
     steps:
       - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
@@ -442,6 +451,14 @@ jobs:
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ matrix.app }}-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
