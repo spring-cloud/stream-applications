@@ -73,7 +73,7 @@ public class XmppSupplierConfigurationTests implements XmppTestContainerSupport 
 	@BeforeEach
 	void setup() throws IOException, SmackException, XMPPException, InterruptedException {
 
-		XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
+		var builder = XMPPTCPConnectionConfiguration.builder();
 		builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
 		builder.setHost(XmppTestContainerSupport.getXmppHost());
 		builder.setPort(XmppTestContainerSupport.getXmppMappedPort());

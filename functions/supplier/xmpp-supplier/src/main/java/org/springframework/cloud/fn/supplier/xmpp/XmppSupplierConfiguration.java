@@ -46,9 +46,9 @@ public class XmppSupplierConfiguration {
 	@Bean
 	public ChatMessageListeningEndpoint chatMessageListeningEndpoint(XMPPConnection xmppConnection, XmppSupplierProperties properties) {
 
-		ChatMessageListeningEndpoint chatMessageListeningEndpoint = new ChatMessageListeningEndpoint(xmppConnection);
+		var chatMessageListeningEndpoint = new ChatMessageListeningEndpoint(xmppConnection);
 
-		if(properties.getPayloadExpression() != null) {
+		if (properties.getPayloadExpression() != null) {
 			chatMessageListeningEndpoint.setPayloadExpression(properties.getPayloadExpression());
 		}
 
