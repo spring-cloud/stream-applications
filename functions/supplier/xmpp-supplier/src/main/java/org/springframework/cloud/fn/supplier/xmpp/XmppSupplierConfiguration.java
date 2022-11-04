@@ -44,11 +44,17 @@ public class XmppSupplierConfiguration {
 	private FluxMessageChannel output = new FluxMessageChannel();
 
 	@Bean
-	public ChatMessageListeningEndpoint chatMessageListeningEndpoint(XMPPConnection xmppConnection) {
+	public ChatMessageListeningEndpoint chatMessageListeningEndpoint(XMPPConnection xmppConnection, XmppSupplierProperties properties) {
 
 		ChatMessageListeningEndpoint chatMessageListeningEndpoint = new ChatMessageListeningEndpoint(xmppConnection);
 
+		if(properties.getPayloadExpression() != null) {
+			chatMessageListeningEndpoint.setPayloadExpression(properties.getPayloadExpression());
+		}
+
+		chatMessageListeningEndpoint.setStanzaFilter(properties.getStanzaFilter());
 		chatMessageListeningEndpoint.setOutputChannel(output);
+		chatMessageListeningEndpoint.setAutoStartup(false);
 
 		return chatMessageListeningEndpoint;
 	}

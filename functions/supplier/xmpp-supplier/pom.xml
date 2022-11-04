@@ -20,6 +20,8 @@
 			<artifactId>xmpp-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>function-test-support</artifactId>

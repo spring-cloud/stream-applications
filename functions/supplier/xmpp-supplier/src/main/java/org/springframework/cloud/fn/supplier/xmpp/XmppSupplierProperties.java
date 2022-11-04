@@ -16,7 +16,11 @@
 
 package org.springframework.cloud.fn.supplier.xmpp;
 
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.expression.Expression;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -28,17 +32,23 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class XmppSupplierProperties {
 
-	/**
-	 * XMPP handle to receive message from.
-	 */
-	private String chatFrom;
+	private StanzaFilter stanzaFilter = StanzaTypeFilter.MESSAGE;
 
-	public void setChatFrom(String chatFrom) {
-		this.chatFrom = chatFrom;
+	private Expression payloadExpression;
+
+	public void setStanzaFilter(StanzaFilter stanzaFilter) {
+		this.stanzaFilter = stanzaFilter;
 	}
 
-	public String getChatFrom() {
-		return chatFrom;
+	public StanzaFilter getStanzaFilter() {
+		return stanzaFilter;
+	}
+
+	public void setPayloadExpression(Expression payloadExpression) {
+		this.payloadExpression = payloadExpression;
+	}
+	public Expression getPayloadExpression() {
+		return payloadExpression;
 	}
 
 }
