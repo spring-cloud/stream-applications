@@ -10,15 +10,15 @@ jobs:
   check:
     runs-on: 'stream-ci-large'
     steps:
-      - name: 'Configure: checkout'
-        uses: actions/checkout@v3
-        with:
-          ref: 'main'
       - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
         uses: actions/checkout@v3
         with:
           ref: ${{ github.ref }}
-          path: 'stream-applications'
+      - name: 'Configure: checkout'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+          path: 'main-build'
       - name: 'Configure: Ensure scripts are executable'
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
@@ -49,8 +49,8 @@ jobs:
       - name: 'Action: build initial dependencies'
         shell: bash
         run: |
-          ROOT_DIR=$(realpath $PWD)
-          MAVEN_OPT="-U -B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
+          BUILD_DIR=./main-build
+          MAVEN_OPT="-U -B -T 1C -s $BUILD_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
           echo "::notice ::building - stream-applications-build"
           set -e
           ./mvnw $MAVEN_OPT install -DskipTests -f stream-applications-build
@@ -69,13 +69,12 @@ jobs:
         uses: tj-actions/changed-files@v34
       - name: 'Action: verify changed modules'
         run: |
-          $ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications > /dev/null
-            $ROOT_DIR/create-matrices.sh
-            $ROOT_DIR/scripts/determine-modules-changed.sh "${{ steps.changed-files.outputs.all_changed_files }}"
-            MODULES=$(jq '.[]' modules.json | sed 's/\"//g')
-            for module in $MODULES; do
-              echo "::info ::verify module $module"
-              ./mvnw $MAVEN_OPT verify -f $module -amd
-            done
-          popd > /dev/null
+          BUILD_DIR=./main-build
+          $BUILD_DIR/create-matrices.sh
+          $BUILD_DIR/scripts/determine-modules-changed.sh "${{ steps.changed-files.outputs.all_changed_files }}"
+          MODULES=$(jq '.[]' modules.json | sed 's/\"//g')
+          for module in $MODULES; do
+            echo "::info ::verify module $module"
+            ./mvnw $MAVEN_OPT verify -f $module -amd
+          done
+          
