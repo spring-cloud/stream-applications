@@ -296,6 +296,14 @@ jobs:
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ matrix.app }}-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
@@ -365,6 +373,14 @@ jobs:
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ matrix.app }}-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
@@ -435,6 +451,14 @@ jobs:
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ matrix.app }}-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
