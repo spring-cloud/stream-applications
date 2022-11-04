@@ -89,7 +89,7 @@ public class XmppConnectionFactoryProperties {
 		this.password = password;
 	}
 
-	@NotEmpty(message = "port is required")
+	@NotEmpty(message = "password is required")
 	public String getPassword() {
 		return password;
 	}
