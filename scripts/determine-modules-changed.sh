@@ -1,7 +1,7 @@
 #!/bin/bash
 function itemInModules() {
   local e
-  for e in ${!MODULES[@]}; do
+  for e in ${MODULES}; do
     if [[ "$e" == "$ITEM" ]]; then
       echo "1"
       return 0
@@ -9,14 +9,21 @@ function itemInModules() {
   done
   echo "0"
 }
-MODIFIED="$1"
+function addItem() {
+    if [ "$MODULES" == "" ]; then
+      echo "$1"
+    else
+      echo "$MODULES $1"
+    fi
+}
+MODIFIED="$*"
 FUNCTIONS=$(jq -c '.functions | .[]' matrix.json | sed 's/\"//g')
 CONSUMERS=$(jq -c '.consumers | .[]' matrix.json | sed 's/\"//g')
 SUPPLIERS=$(jq -c '.suppliers | .[]' matrix.json | sed 's/\"//g')
 PROCESSORS=$(jq -c '.processors | .[]' matrix.json | sed 's/\"//g')
 SINKS=$(jq -c '.sinks | .[]' matrix.json | sed 's/\"//g')
 SOURCES=$(jq -c '.sources | .[]' matrix.json | sed 's/\"//g')
-declare -A MODULES
+MODULES=
 for file in $MODIFIED; do
   FILE=$(realpath $file)
   echo "$file was changed"
@@ -28,7 +35,7 @@ for file in $MODIFIED; do
       HAS_ITEM=$(itemInModules)
       if ((HAS_ITEM == 0)); then
         echo "Add:$ITEM"
-        MODULES+=("$ITEM")
+        MODULES=$(addItem "$ITEM")
       fi
     fi
   done
@@ -40,7 +47,7 @@ for file in $MODIFIED; do
       HAS_ITEM=$(itemInModules)
       if ((HAS_ITEM == 0)); then
         echo "Add:$ITEM"
-        MODULES+=("$ITEM")
+        MODULES=$(addItem "$ITEM")
       fi
     fi
   done
@@ -52,7 +59,7 @@ for file in $MODIFIED; do
       HAS_ITEM=$(itemInModules)
       if ((HAS_ITEM == 0)); then
         echo "Add:$ITEM"
-        MODULES+=("$ITEM")
+        MODULES=$(addItem "$ITEM")
       fi
     fi
   done
@@ -64,7 +71,7 @@ for file in $MODIFIED; do
       HAS_ITEM=$(itemInModules)
       if ((HAS_ITEM == 0)); then
         echo "Add:$ITEM"
-        MODULES+=("$ITEM")
+        MODULES=$(addItem "$ITEM")
       fi
     fi
   done
@@ -76,7 +83,7 @@ for file in $MODIFIED; do
       HAS_ITEM=$(itemInModules)
       if ((HAS_ITEM == 0)); then
         echo "Add:$ITEM"
-        MODULES+=("$ITEM")
+        MODULES=$(addItem "$ITEM")
       fi
     fi
   done
@@ -88,19 +95,19 @@ for file in $MODIFIED; do
       HAS_ITEM=$(itemInModules)
       if ((HAS_ITEM == 0)); then
         echo "Add:$ITEM"
-        MODULES+=("$ITEM")
+        MODULES=$(addItem "$ITEM")
       fi
     fi
   done
 done
 echo "[" >modules.json
 COUNT=0
-for module in ${!MODULES[@]}; do
+for module in $MODULES; do
   if ((COUNT > 0)); then
-    echo "," >>modules.json
+    echo "," >> modules.json
   fi
   COUNT=$((COUNT + 1))
-  echo "\"$module\"" >>modules.json
+  echo "\"$module\"" >> modules.json
 done
 echo "]" >>modules.json
 
