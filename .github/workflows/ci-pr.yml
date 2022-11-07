@@ -10,15 +10,12 @@ jobs:
   check:
     runs-on: 'stream-ci-large'
     steps:
-      - name: 'Configure: checkout'
+      - name: 'Configure: checkout stream-applications@${{ github.ref }}'
+        uses: actions/checkout@v3
+      - name: 'Configure: checkout stream-applications@main'
         uses: actions/checkout@v3
         with:
-          ref: 'main'
-      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.ref }}
-          path: 'stream-applications'
+          ref: 'build-dir'
       - name: 'Configure: Ensure scripts are executable'
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
@@ -39,43 +36,55 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: maven-repo-${{ hashFiles('**/pom.xml') }}-pr
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-pr-${{ github.base_ref }}
           restore-keys: |
-            maven-repo-${{ hashFiles('**/pom.xml') }}-pr
+            maven-repo-${{ hashFiles('**/pom.xml') }}-pr-${{ github.base_ref }}
             maven-repo-${{ hashFiles('**/pom.xml') }}
             maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Action: build initial dependencies'
         shell: bash
+        env:
+          VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
-          ROOT_DIR=$(realpath $PWD)
+          BUILD_DIR=$(realpath build-dir)
           MAVEN_OPT="-U -B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
           echo "::notice ::building - stream-applications-build"
           set -e
-          ./mvnw $MAVEN_OPT install -DskipTests -f stream-applications-build
+          $BUILD_DIR/build-folder.sh stream-applications-build
           set +e
           echo "::notice ::building - functions"
           set -e
-          ./mvnw $MAVEN_OPT install -DskipTests -f functions
+          $BUILD_DIR/build-folder.sh functions
           set +e
           echo "::notice ::building - stream-applications-core"
           set -e
-          ./mvnw $MAVEN_OPT deploy -DskipTests -f applications/stream-applications-core
+          $BUILD_DIR/build-folder.sh applications/stream-applications-core
           set +e
           echo "::notice ::core build completed"
       - name: 'Configure: get changed files'
         id: changed-files
         uses: tj-actions/changed-files@v34
       - name: 'Action: verify changed modules'
+        shell: bash
+        env:
+          VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
-          $ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications > /dev/null
-            $ROOT_DIR/create-matrices.sh
-            $ROOT_DIR/scripts/determine-modules-changed.sh "${{ steps.changed-files.outputs.all_changed_files }}"
-            MODULES=$(jq '.[]' modules.json | sed 's/\"//g')
-            for module in $MODULES; do
-              echo "::info ::verify module $module"
-              ./mvnw $MAVEN_OPT verify -f $module -amd
-            done
-          popd > /dev/null
+          $BUILD_DIR=$(realpath build-dir)
+          $BUILD_DIR/create-matrices.sh
+          $BUILD_DIR/scripts/determine-modules-changed.sh "${{ steps.changed-files.outputs.all_changed_files }}"
+          MODULES=$(jq '.[]' modules.json | sed 's/\"//g')
+          FOLDERS=
+          for module in $MODULES; do            
+             if [ "$FOLDERS" = "" ]; then
+              FOLDERS="$module"
+            else
+              FOLDERS="$FOLDERS,$module"
+            fi
+            if [[ "$module" == *"application" ]]; then
+              $BUILD_DIR/scripts/remove-jib-plugin.sh $module/pom.xml
+            fi
+          done
+          echo "::info ::verify $FOLDERS"
+          $BUILD_DIR/build-folder.sh $FOLDERS install verify -amd
