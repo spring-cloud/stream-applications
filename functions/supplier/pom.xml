@@ -28,6 +28,7 @@
         <module>twitter-supplier</module>
         <module>cdc-debezium-supplier</module>
         <module>syslog-supplier</module>
+        <module>xmpp-supplier</module>
         <module>zeromq-supplier</module>
     </modules>
     <build>
