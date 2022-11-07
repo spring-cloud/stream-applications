@@ -6,6 +6,8 @@ on:
       - main
       - 2021.1.x
 
+env:
+  MAIN_PATH: 'build-dir'
 jobs:
   check:
     runs-on: 'stream-ci-large'
@@ -13,9 +15,11 @@ jobs:
       - name: 'Configure: checkout stream-applications@${{ github.ref }}'
         uses: actions/checkout@v3
       - name: 'Configure: checkout stream-applications@main'
+        id: checkout-main
         uses: actions/checkout@v3
         with:
-          ref: '/tmp/build-dir'
+          ref: 'main'
+          path: ${{ env.MAIN_PATH }}
       - name: 'Configure: Ensure scripts are executable'
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
@@ -48,7 +52,8 @@ jobs:
         env:
           VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
-          BUILD_DIR=/tmp/build-dir          
+          BUILD_DIR=$(realpath $MAIN_PATH)          
+          MAVEN_OPT="-U -B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
           echo "::notice ::building - stream-applications-build"
           set +e
           $BUILD_DIR/build-folder.sh stream-applications-build
@@ -77,7 +82,7 @@ jobs:
         env:
           VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
-          BUILD_DIR=/tmp/build-dir
+          BUILD_DIR=$(realpath $MAIN_PATH)
           $BUILD_DIR/create-matrices.sh
           $BUILD_DIR/scripts/determine-modules-changed.sh "${{ steps.changed-files.outputs.all_changed_files }}"
           MODULES=$(jq '.[]' modules.json | sed 's/\"//g')
