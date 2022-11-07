@@ -7,7 +7,7 @@ on:
       - 2021.1.x
 
 env:
-  MAIN_PATH: '../build-dir'
+  MAIN_PATH: 'build-dir'
 jobs:
   check:
     runs-on: 'stream-ci-large'
