@@ -20,8 +20,6 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.function.Function;
 
-import reactor.core.publisher.Flux;
-
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +40,7 @@ import org.springframework.web.util.UriBuilderFactory;
  *
  * @author David Turanski
  * @author Sunny Hemdev
- *
+ * @author Corneil du Plessis
  **/
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(HttpRequestFunctionProperties.class)
@@ -63,7 +61,7 @@ public class HttpRequestFunctionConfiguration {
 	 * Function that accepts a {@code Flux<Message<?>>} containing body and headers and
 	 * returns a {@code Flux<ResponseEntity<?>>}.
 	 */
-	public static class HttpRequestFunction implements Function<Flux<Message<?>>, Flux<?>> {
+	public static class HttpRequestFunction implements Function<Message<?>, Object> {
 
 		private final WebClient webClient;
 
@@ -77,16 +75,17 @@ public class HttpRequestFunctionConfiguration {
 		}
 
 		@Override
-		public Flux<?> apply(Flux<Message<?>> messageFlux) {
-			return messageFlux.flatMap(message -> this.webClient
-					.method(resolveHttpMethod(message))
-					.uri(uriBuilderFactory.uriString(resolveUrl(message)).build())
-					.bodyValue(resolveBody(message))
-					.headers(httpHeaders -> httpHeaders.addAll(resolveHeaders(message)))
-					.retrieve()
-					.toEntity(properties.getExpectedResponseType())
-					.map(responseEntity -> properties.getReplyExpression().getValue(responseEntity))
-					.timeout(Duration.ofMillis(properties.getTimeout())));
+		public Object apply(Message<?> message) {
+			return this.webClient
+				.method(resolveHttpMethod(message))
+				.uri(uriBuilderFactory.uriString(resolveUrl(message)).build())
+				.bodyValue(resolveBody(message))
+				.headers(httpHeaders -> httpHeaders.addAll(resolveHeaders(message)))
+				.retrieve()
+				.toEntity(properties.getExpectedResponseType())
+				.map(responseEntity -> properties.getReplyExpression().getValue(responseEntity))
+				.timeout(Duration.ofMillis(properties.getTimeout()))
+				.block();
 		}
 
 		private String resolveUrl(Message<?> message) {
@@ -99,7 +98,7 @@ public class HttpRequestFunctionConfiguration {
 
 		private Object resolveBody(Message<?> message) {
 			return properties.getBodyExpression() != null ? properties.getBodyExpression().getValue(message)
-					: message.getPayload();
+				: message.getPayload();
 		}
 
 		private HttpHeaders resolveHeaders(Message<?> message) {
@@ -109,7 +108,7 @@ public class HttpRequestFunctionConfiguration {
 				for (Map.Entry<?, ?> header : headersMap.entrySet()) {
 					if (header.getKey() != null && header.getValue() != null) {
 						headers.add(header.getKey().toString(),
-								header.getValue().toString());
+							header.getValue().toString());
 					}
 				}
 			}
