@@ -194,6 +194,8 @@ jobs:
             maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
+      - name: 'Configure: Install gh cli'
+        uses: ./.github/actions/install-gh
       - name: 'Action: build initial dependencies'
         shell: bash
         env:
@@ -476,6 +478,8 @@ jobs:
     steps:
       - name: 'Configure: Checkout stream-applications'
         uses: actions/checkout@v3
+      - name: 'Configure: Install gh cli'
+        uses: ./.github/actions/install-gh
       - name: 'Action: Re-run ${{ github.workflow }}'
         shell: bash
         env:
