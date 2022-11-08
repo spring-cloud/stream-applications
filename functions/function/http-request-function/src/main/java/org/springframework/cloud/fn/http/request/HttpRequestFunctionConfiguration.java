@@ -16,22 +16,21 @@
 
 package org.springframework.cloud.fn.http.request;
 
-import java.net.URI;
+
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpEntity;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.integration.config.IntegrationConverter;
 import org.springframework.messaging.Message;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;
 
@@ -41,50 +40,51 @@ import org.springframework.web.util.UriBuilderFactory;
  *
  * @author David Turanski
  * @author Corneil du Plessis
- *
  **/
 @Configuration
 @EnableConfigurationProperties(HttpRequestFunctionProperties.class)
 public class HttpRequestFunctionConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean(RestTemplate.class)
-	public RestTemplate webClient(HttpRequestFunctionProperties properties) {
-		RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
-		return restTemplateBuilder.setReadTimeout(Duration.ofMillis(properties.getTimeout())).build();
+	public HttpRequestFunction httpRequestFunction(WebClient.Builder webClientBuilder, HttpRequestFunctionProperties properties) {
+		return new HttpRequestFunction(webClientBuilder.build(), properties);
 	}
 
 	@Bean
-	public HttpRequestFunction httpRequestFunction(RestTemplate restTemplate, HttpRequestFunctionProperties properties) {
-		return new HttpRequestFunction(restTemplate, properties);
+	@IntegrationConverter
+	public Converter<String, HttpMethod> httpMethodConverter() {
+		return new HttpMethodConverter();
 	}
 
 	/**
-	 * Function that accepts a {@code Flux<Message<?>>} containing body and headers and
-	 * returns a {@code Flux<ResponseEntity<?>>}.
+	 * Function that accepts a {@code Message<?>} containing body and headers and
+	 * returns a {@code ResponseEntity<?>}.
 	 */
 	public static class HttpRequestFunction implements Function<Message<?>, Object> {
-		private final RestTemplate restTemplate;
+
+		private final WebClient webClient;
 
 		private final UriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
 
 		private final HttpRequestFunctionProperties properties;
 
-		public HttpRequestFunction(RestTemplate restTemplate, HttpRequestFunctionProperties properties) {
-			this.restTemplate = restTemplate;
+		public HttpRequestFunction(WebClient webClient, HttpRequestFunctionProperties properties) {
+			this.webClient = webClient;
 			this.properties = properties;
 		}
 
 		@Override
 		public Object apply(Message<?> message) {
-			HttpEntity<?> httpEntity = new HttpEntity<>(resolveBody(message), resolveHeaders(message));
-			URI uri = uriBuilderFactory.uriString(resolveUrl(message)).build();
-			ResponseEntity<?> responseEntity = restTemplate.exchange(uri,
-				resolveHttpMethod(message),
-				httpEntity,
-				properties.getExpectedResponseType()
-			);
-			return properties.getReplyExpression().getValue(responseEntity);
+			return this.webClient
+				.method(resolveHttpMethod(message))
+				.uri(uriBuilderFactory.uriString(resolveUrl(message)).build())
+				.bodyValue(resolveBody(message))
+				.headers(httpHeaders -> httpHeaders.addAll(resolveHeaders(message)))
+				.retrieve()
+				.toEntity(properties.getExpectedResponseType())
+				.map(responseEntity -> properties.getReplyExpression().getValue(responseEntity))
+				.timeout(Duration.ofMillis(properties.getTimeout()))
+				.block();
 		}
 
 		private String resolveUrl(Message<?> message) {
@@ -111,8 +111,19 @@ public class HttpRequestFunctionConfiguration {
 					}
 				}
 			}
+			if (properties.getContentTypeExpression() != null) {
+				headers.set(HttpHeaders.CONTENT_TYPE, properties.getContentTypeExpression().getValue(message).toString());
+			}
 			return headers;
 		}
 
+	}
+
+	public static class HttpMethodConverter implements Converter<String, HttpMethod> {
+
+		@Override
+		public HttpMethod convert(String source) {
+			return HttpMethod.valueOf(source);
+		}
 	}
 }

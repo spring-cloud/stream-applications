@@ -28,7 +28,6 @@ import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -113,7 +112,6 @@ public class HttpRequestProcessorTests {
 	}
 
 	@Test
-	@Disabled // Until fix is in spring-cloud-functions build.
 	void requestUsingReturnType() {
 		applicationContextRunner
 				.withPropertyValues(
@@ -121,6 +119,7 @@ public class HttpRequestProcessorTests {
 						"http.request.http-method-expression='POST'",
 						"http.request.headers-expression={Accept:'application/octet-stream'}",
 						"http.request.expected-response-type=byte[]",
+						"http.request.content-type-expression='application/octet-stream'",
 						"spring.cloud.stream.bindings.httpRequestFunction-out-0.contentType=application/octet-stream")
 				.run(context -> {
 					Message<?> message = MessageBuilder.withPayload("hello")
@@ -131,7 +130,7 @@ public class HttpRequestProcessorTests {
 					Message<byte[]> reply = outputDestination.receive(10000, "httpRequestFunction-out-0");
 					assertThat(new String(reply.getPayload())).isEqualTo(message.getPayload());
 					assertThat(reply.getHeaders().get(MessageHeaders.CONTENT_TYPE))
-							.isEqualTo(MediaType.APPLICATION_OCTET_STREAM.toString());
+							.isEqualTo(MediaType.APPLICATION_OCTET_STREAM_VALUE);
 				});
 	}
 

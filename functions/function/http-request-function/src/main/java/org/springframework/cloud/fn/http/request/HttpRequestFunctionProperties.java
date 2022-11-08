@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.springframework.validation.annotation.Validated;
  * @author Christian Tzolov
  * @author Artem Bilan
  * @author David Turanski
+ * @author Corneil du Plessis
  */
 @Validated
 @ConfigurationProperties("http.request")
@@ -85,6 +86,12 @@ public class HttpRequestFunctionProperties {
 	 */
 	private Expression replyExpression = new FunctionExpression<ResponseEntity>(ResponseEntity::getBody);
 
+	/**
+	 * A SpEL expression used to compute the contentType applied to the outgoing message. If null it will be determined by binder.
+	 * @return
+	 */
+	private Expression contentTypeExpression;
+
 	@NotNull
 	public Expression getUrlExpression() {
 		return urlExpression;
@@ -109,6 +116,14 @@ public class HttpRequestFunctionProperties {
 
 	public void setExpectedResponseType(Class<?> expectedResponseType) {
 		this.expectedResponseType = expectedResponseType;
+	}
+
+	public Expression getContentTypeExpression() {
+		return contentTypeExpression;
+	}
+
+	public void setContentTypeExpression(Expression contentTypeExpression) {
+		this.contentTypeExpression = contentTypeExpression;
 	}
 
 	public long getTimeout() {

@@ -234,6 +234,33 @@ public class HttpRequestFunctionTestApplicationTests {
 					.isEqualTo(MediaType.APPLICATION_OCTET_STREAM);
 			});
 	}
+	@Test
+	void requestUsingContentType() {
+		server.setDispatcher(new Dispatcher() {
+			@Override
+			public MockResponse dispatch(RecordedRequest recordedRequest) {
+				return new MockResponse().setHeader(HttpHeaders.CONTENT_TYPE,
+						recordedRequest.getHeader(HttpHeaders.CONTENT_TYPE))
+					.setBody(recordedRequest.getBody())
+					.setResponseCode(HttpStatus.OK.value());
+			}
+		});
+		runner.withPropertyValues(
+				"http.request..http-method-expression='POST'",
+				"http.request.headers-expression={'Content-Type':'application/octet-stream'}",
+				"http.request.expected-response-type=java.lang.String",
+				"http.request.content-type-expression='text/plain'")
+			.run(context -> {
+				Message<?> message = MessageBuilder.withPayload("hello")
+					.build();
+				HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
+				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+				assertThat(r.getStatusCode()).isEqualTo(HttpStatus.OK);
+				assertThat(r.getBody()).isEqualTo("hello");
+				assertThat(r.getHeaders().getContentType())
+					.isEqualTo(MediaType.TEXT_PLAIN);
+			});
+	}
 
 	@Test
 	void requestUsingJsonPathMethodExpression() {
