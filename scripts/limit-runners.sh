@@ -65,9 +65,9 @@ RC=$?
 if ((RC != 0)); then
   kubectl apply -f runners-stream-ci-change.yaml
   echo "Runners: applying changes"
-  if [ "$SCALING" != "auto" ]; then
-    $SCDIR/wait-k8s.sh 1 --for=condition=ready --timeout=1m pod -l runner-deployment-name=runners-stream-ci --all-namespaces=true
-  fi
+#  if [ "$SCALING" != "auto" ]; then
+#    $SCDIR/wait-k8s.sh 1 --for=condition=ready --timeout=1m pod -l runner-deployment-name=runners-stream-ci --all-namespaces=true
+#  fi
 else
   echo "Runners:no changes required"
 fi
