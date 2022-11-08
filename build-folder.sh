@@ -61,21 +61,21 @@ if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
 fi
 
 RETRIES=3
-while ((RETRIES >= 0)); do
-  set +e
-  for FOLDER in $FOLDERS; do
+for FOLDER in $FOLDERS; do
+  while ((RETRIES >= 0)); do
     echo -e "Resolving dependencies for ${bold}$FOLDER${end}"
+    set +e
     ./mvnw -U -f "$FOLDER" $MAVEN_OPTS dependency:resolve
+    RESULT=$?
+    set -e
+    if ((RESULT == 0)); then
+      break
+    fi
+    RETRIES=$((RETRIES - 1))
+    if ((RETRIES >= 0)); then
+      echo -e "RETRY:Resolving dependencies for ${bold}$FOLDER${end}"
+    fi
   done
-  set -e
-  RESULT=$?
-  if ((RESULT == 0)); then
-    break
-  fi
-  RETRIES=$((RETRIES - 1))
-  if ((RETRIES >= 0)); then
-    echo -e "RETRY:Resolving dependencies for ${bold}$FOLDER${end}"
-  fi
 done
 if ((RESULT == 0)); then
   for FOLDER in $FOLDERS; do
@@ -83,9 +83,13 @@ if ((RESULT == 0)); then
     while ((RETRIES >= 0)); do
       set +e
       echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}"
-      ./mvnw -f "$FOLDER" $MAVEN_OPTS $MAVEN_GOAL
-      set -e
+      ./mvnw -f "$FOLDER" $MAVEN_OPTS $MAVEN_GOAL | tee build.log
       RESULT=$?
+      set -e
+      if ((RESULT == 0)); then
+        break
+      fi
+      RESULT=$(grep -c -F "BUILD FAILURE" build.log)
       if ((RESULT == 0)); then
         break
       fi
