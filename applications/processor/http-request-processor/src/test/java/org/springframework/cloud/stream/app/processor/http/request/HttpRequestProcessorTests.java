@@ -113,7 +113,6 @@ public class HttpRequestProcessorTests {
 	}
 
 	@Test
-	@Disabled // Until fix is in spring-cloud-functions build.
 	void requestUsingReturnType() {
 		applicationContextRunner
 				.withPropertyValues(
@@ -121,7 +120,9 @@ public class HttpRequestProcessorTests {
 						"http.request.http-method-expression='POST'",
 						"http.request.headers-expression={Accept:'application/octet-stream'}",
 						"http.request.expected-response-type=byte[]",
+						"http.request.content-type-expression='application/octet-stream'",
 						"spring.cloud.stream.bindings.httpRequestFunction-out-0.contentType=application/octet-stream")
+						// spring.cloud.stream.bindings.httpRequestFunction-out-0.contentType can be removed when the stream bindings are fixed.
 				.run(context -> {
 					Message<?> message = MessageBuilder.withPayload("hello")
 							.build();
