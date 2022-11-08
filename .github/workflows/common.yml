@@ -207,18 +207,22 @@ jobs:
           pushd stream-applications > /dev/null
           echo "::notice ::building - stream-applications-build"
           set -e
-          ./mvnw $MAVEN_OPT deploy -f stream-applications-build
-          set +e
+          $ROOT_DIR/build-folder.sh stream-applications-build deploy
           echo "::notice ::building - functions"
-          set -e
-          ./mvnw $MAVEN_OPT deploy -f functions
-          set +e
+          $ROOT_DIR/build-folder.sh functions deploy
           echo "::notice ::building - stream-applications-core"
-          set -e
-          ./mvnw $MAVEN_OPT deploy -f applications/stream-applications-core
+          $ROOT_DIR/build-folder.sh applications/stream-applications-core
           set +e
           echo "::notice ::core build completed"
           popd > /dev/null
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'core-surefire-reports'
+          path: 'stream-applications/**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
       - name: 'Action: Re-run ${{ github.workflow }}'
         if: ${{ failure() }}
         shell: bash
