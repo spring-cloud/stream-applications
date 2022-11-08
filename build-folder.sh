@@ -99,3 +99,4 @@ fi
 END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
 echo "Build of $FOLDER_NAMES $MAVEN_GOAL completed with result:$RESULT in $DURATION seconds"
+exit $RESULT
