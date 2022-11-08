@@ -77,26 +77,19 @@ for FOLDER in $FOLDERS; do
     fi
   done
 done
+
 if ((RESULT == 0)); then
   for FOLDER in $FOLDERS; do
-    RETRIES=2
-    while ((RETRIES >= 0)); do
-      set +e
-      echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}"
-      ./mvnw -f "$FOLDER" $MAVEN_OPTS $MAVEN_GOAL | tee build.log
-      RESULT=$?
-      set -e
-      if ((RESULT == 0)); then
-        RESULT=$(grep -c -F "BUILD FAILURE" build.log)
-        if ((RESULT == 0)); then
-          break
-        fi
-      fi
-      RETRIES=$((RETRIES - 1))
-      if ((RETRIES >= 0)); then
-        echo -e "RETRY:Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}"
-      fi
-    done
+    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}"
+    set +e
+    ./mvnw -f "$FOLDER" $MAVEN_OPTS $MAVEN_GOAL
+    RESULT=$?
+    set -e
+    if ((RESULT != 0)); then
+      echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:FAILED"
+      break
+    fi
+    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:SUCCESS"
   done
 fi
 END_TIME=$(date +%s)
