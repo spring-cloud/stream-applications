@@ -80,7 +80,15 @@ runs:
         VERBOSE: ${{ inputs.verbose && '--verbose' || '' }}
       run: |
         echo "::notice ::Scaling stream-apps-gh-runners to ${{ inputs.max_parallel }} pods"
-        ./scripts/scale-cluster-pods.sh stream-apps-gh-runners ${{ inputs.max_parallel }} --add 1
+        source ./scripts/kubeconfig-runners.sh
+        IDLE=$(./scripts/count-runners-idle.sh runners-stream-ci)
+        if ((IDLE < ${{ inputs.max_parallel }})); then
+          REQUEST=$((${{ inputs.max_parallel }} - IDLE))
+          echo "::info Requesting $REQUEST runners with $IDLE idle"
+          ./scripts/scale-cluster-pods.sh stream-apps-gh-runners $REQUEST --add 1
+        else
+          echo "::info Sufficient runners idle:$IDLE"
+        fi
     - name: 'Check: Wait for cluster nodes: stream-apps-gh-runners'
       shell: bash
       env:
