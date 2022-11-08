@@ -14,4 +14,10 @@ function check_env() {
   fi
 }
 
+if [ "$1" = "" ]; then
+  MAVEN_GOAL="install"
+else
+  MAVEN_GOAL="$*"
+fi
+
 $SCDIR/build-folder.sh stream-applications-build,functions,applications/stream-applications-core "$MAVEN_GOAL"
