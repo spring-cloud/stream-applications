@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.springframework.cloud.fn</groupId>
+	<artifactId>functions-common</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
+	<name>java-functions-common</name>
+	<description>Java Functions Common</description>
+	<packaging>pom</packaging>
+
+	<modules>
+        <module>config-common</module>
+        <module>aws-s3-common</module>
+		<module>file-common</module>
+		<module>ftp-common</module>
+		<module>function-test-support</module>
+		<module>metadata-store-common</module>
+		<module>mongodb-common</module>
+		<module>mqtt-common</module>
+		<module>redis-common</module>
+		<module>tcp-common</module>
+		<module>twitter-common</module>
+		<module>tensorflow-common</module>
+		<module>cdc-debezium-common</module>
+		<module>cdc-debezium-boot-starter</module>
+		<module>xmpp-common</module>
+	</modules>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

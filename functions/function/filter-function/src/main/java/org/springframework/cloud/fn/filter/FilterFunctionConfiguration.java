@@ -18,9 +18,9 @@ package org.springframework.cloud.fn.filter;
 
 import java.util.function.Function;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.transformer.ExpressionEvaluatingTransformer;
 import org.springframework.messaging.Message;
 
@@ -29,7 +29,7 @@ import org.springframework.messaging.Message;
  * @author David Turanski
  * @author Corneil du Plessis
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties(FilterFunctionProperties.class)
 public class FilterFunctionConfiguration {
 

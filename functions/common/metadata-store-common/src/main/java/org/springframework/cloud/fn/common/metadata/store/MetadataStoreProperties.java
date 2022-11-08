@@ -21,20 +21,19 @@ import java.nio.charset.StandardCharsets;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.integration.aws.metadata.DynamoDbMetadataStore;
-import org.springframework.integration.gemfire.metadata.GemfireMetadataStore;
 import org.springframework.integration.jdbc.metadata.JdbcMetadataStore;
 import org.springframework.integration.redis.metadata.RedisMetadataStore;
 
 /**
  * @author Artem Bilan
  * @author David Turanski
+ * @author Corneil du Plessis
  * @since 2.0.2
  */
 @ConfigurationProperties("metadata.store")
 public class MetadataStoreProperties {
 	enum StoreType {
 		mongodb,
-		gemfire,
 		redis,
 		dynamodb,
 		jdbc,
@@ -50,8 +49,6 @@ public class MetadataStoreProperties {
 	private StoreType type = StoreType.memory;
 
 	private final Mongo mongoDb = new Mongo();
-
-	private final Gemfire gemfire = new Gemfire();
 
 	private final Redis redis = new Redis();
 
@@ -71,10 +68,6 @@ public class MetadataStoreProperties {
 
 	public Mongo getMongoDb() {
 		return this.mongoDb;
-	}
-
-	public Gemfire getGemfire() {
-		return this.gemfire;
 	}
 
 	public Redis getRedis() {
@@ -106,23 +99,6 @@ public class MetadataStoreProperties {
 
 		public void setCollection(String collection) {
 			this.collection = collection;
-		}
-
-	}
-
-	public static class Gemfire {
-
-		/**
-		 * Gemfire region name for metadata.
-		 */
-		private String region = GemfireMetadataStore.KEY;
-
-		public String getRegion() {
-			return this.region;
-		}
-
-		public void setRegion(String region) {
-			this.region = region;
 		}
 
 	}

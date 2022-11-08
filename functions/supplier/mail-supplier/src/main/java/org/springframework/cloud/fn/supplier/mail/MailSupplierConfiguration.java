@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,29 +21,29 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import javax.mail.URLName;
-
+import jakarta.mail.URLName;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.channel.FluxMessageChannel;
 import org.springframework.integration.core.MessageSource;
-import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.MessageProducerSpec;
 import org.springframework.integration.dsl.MessageSourceSpec;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.endpoint.ReactiveMessageSourceProducer;
 import org.springframework.integration.mail.MailHeaders;
+import org.springframework.integration.mail.dsl.ImapIdleChannelAdapterSpec;
 import org.springframework.integration.mail.dsl.Mail;
 import org.springframework.integration.mail.dsl.MailInboundChannelAdapterSpec;
 import org.springframework.integration.transformer.support.AbstractHeaderValueMessageProcessor;
 import org.springframework.integration.transformer.support.HeaderValueMessageProcessor;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 
 /**
@@ -54,7 +54,7 @@ import org.springframework.messaging.Message;
  * @author Chris Schaefer
  * @author Soby Chacko
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MailSupplierProperties.class)
 public class MailSupplierConfiguration {
 
@@ -62,28 +62,21 @@ public class MailSupplierConfiguration {
 	private MailSupplierProperties properties;
 
 	@Bean
-	public Supplier<Flux<Message<?>>> mailSupplier(@Qualifier("mailChannelAdapter") MessageProducerSupport mailChannelAdapter) {
-		return () -> Flux.from(mailInputChannel())
-				.doOnSubscribe(subscription -> mailChannelAdapter.start());
-	}
+	public Publisher<Message<Object>> mailInboundFlow(MessageProducerSupport messageProducer) {
 
-	@Bean
-	public IntegrationFlow mailInboundFlow(MessageProducerSupport messageProducer) {
 		return IntegrationFlows.from(messageProducer)
 				.transform(Mail.toStringTransformer(this.properties.getCharset()))
-				.enrichHeaders(h -> {
-					h.defaultOverwrite(true)
-							.header(MailHeaders.TO, arrayToListProcessor(MailHeaders.TO))
-							.header(MailHeaders.CC, arrayToListProcessor(MailHeaders.CC))
-							.header(MailHeaders.BCC, arrayToListProcessor(MailHeaders.BCC));
-				})
-				.channel(mailInputChannel())
-				.get();
+				.enrichHeaders(h -> h
+						.defaultOverwrite(true)
+						.header(MailHeaders.TO, arrayToListProcessor(MailHeaders.TO))
+						.header(MailHeaders.CC, arrayToListProcessor(MailHeaders.CC))
+						.header(MailHeaders.BCC, arrayToListProcessor(MailHeaders.BCC)))
+				.toReactivePublisher(true);
 	}
 
 	@Bean
-	public FluxMessageChannel mailInputChannel() {
-		return new FluxMessageChannel();
+	public Supplier<Flux<Message<?>>> mailSupplier(Publisher<Message<Object>> messagePublisher) {
+		return () -> Flux.from(messagePublisher);
 	}
 
 	private HeaderValueMessageProcessor<?> arrayToListProcessor(final String header) {
@@ -99,20 +92,29 @@ public class MailSupplierConfiguration {
 
 	@Bean("mailChannelAdapter")
 	@ConditionalOnProperty("mail.supplier.idle-imap")
-	MessageProducerSpec<?, ?> imapIdleProducer() {
+	MessageProducerSpec<?, ?> imapIdleProducer(
+			@Nullable ComponentCustomizer<ImapIdleChannelAdapterSpec> imapIdleChannelAdapterSpecCustomizer) {
+
 		URLName urlName = this.properties.getUrl();
-		return Mail.imapIdleAdapter(urlName.toString())
-				.autoStartup(false)
+		ImapIdleChannelAdapterSpec imapIdleChannelAdapterSpec = Mail.imapIdleAdapter(urlName.toString())
 				.shouldDeleteMessages(this.properties.isDelete())
 				.userFlag(this.properties.getUserFlag())
 				.javaMailProperties(getJavaMailProperties(urlName))
 				.selectorExpression(this.properties.getExpression())
 				.shouldMarkMessagesAsRead(this.properties.isMarkAsRead());
+
+		if (imapIdleChannelAdapterSpecCustomizer != null) {
+			imapIdleChannelAdapterSpecCustomizer.customize(imapIdleChannelAdapterSpec);
+		}
+		return imapIdleChannelAdapterSpec;
 	}
 
 	@Bean
 	@ConditionalOnProperty(value = "mail.supplier.idle-imap", matchIfMissing = true, havingValue = "false")
-	MessageSourceSpec<?, ?> mailMessageSource() {
+	MessageSourceSpec<?, ?> mailMessageSource(
+			@Nullable ComponentCustomizer<MailInboundChannelAdapterSpec<?, ?>>
+					mailInboundChannelAdapterSpecCustomizer) {
+
 		MailInboundChannelAdapterSpec<?, ?> adapterSpec;
 		URLName urlName = this.properties.getUrl();
 		switch (urlName.getProtocol().toUpperCase()) {
@@ -128,18 +130,22 @@ public class MailSupplierConfiguration {
 				throw new IllegalArgumentException(
 						"Unsupported mail protocol: " + urlName.getProtocol());
 		}
-		return adapterSpec.javaMailProperties(getJavaMailProperties(urlName))
+		adapterSpec.javaMailProperties(getJavaMailProperties(urlName))
 				.userFlag(this.properties.getUserFlag())
 				.selectorExpression(this.properties.getExpression())
 				.shouldDeleteMessages(this.properties.isDelete());
+
+		if (mailInboundChannelAdapterSpecCustomizer != null) {
+			mailInboundChannelAdapterSpecCustomizer.customize(adapterSpec);
+		}
+
+		return adapterSpec;
 	}
 
 	@Bean("mailChannelAdapter")
 	@ConditionalOnProperty(value = "mail.supplier.idle-imap", matchIfMissing = true, havingValue = "false")
 	MessageProducerSupport mailMessageProducer(MessageSource<?> mailMessageSource) {
-		final ReactiveMessageSourceProducer reactiveMessageSourceProducer = new ReactiveMessageSourceProducer(mailMessageSource);
-		reactiveMessageSourceProducer.setAutoStartup(false);
-		return reactiveMessageSourceProducer;
+		return new ReactiveMessageSourceProducer(mailMessageSource);
 	}
 
 	/**
@@ -195,4 +201,5 @@ public class MailSupplierConfiguration {
 		javaMailProperties.putAll(this.properties.getJavaMailProperties());
 		return javaMailProperties;
 	}
+
 }

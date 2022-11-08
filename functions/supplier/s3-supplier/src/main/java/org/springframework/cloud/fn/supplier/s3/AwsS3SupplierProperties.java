@@ -19,10 +19,9 @@ package org.springframework.cloud.fn.supplier.s3;
 import java.io.File;
 import java.util.regex.Pattern;
 
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

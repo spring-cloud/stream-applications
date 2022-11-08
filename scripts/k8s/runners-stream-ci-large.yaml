@@ -1,0 +1,41 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: runners-stream-ci-large
+spec:
+  template:
+    spec:
+      image: 'summerwind/actions-runner-dind:latest'
+      priorityClassName: high-priority
+      dockerdWithinRunnerContainer: true
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+        - name: stream-metadata-default
+      repository: spring-cloud/stream-applications
+      githubAPICredentialsFrom:
+        secretRef:
+          name: controller-manager-secret
+      resources:
+        requests:
+          cpu: "3000m"
+          memory: "4Gi"
+      labels:
+        - stream-ci-large
+---
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: HorizontalRunnerAutoscaler
+metadata:
+  name: runners-stream-ci-large-scaling
+spec:
+  githubAPICredentialsFrom:
+    secretRef:
+      name: controller-manager-secret
+  minReplicas: 1
+  maxReplicas: 2
+  scaleTargetRef:
+    kind: RunnerDeployment
+    name: runners-stream-ci-large
+  scaleUpTriggers:
+    - githubEvent:
+        workflowJob: {}
+      duration: "30m"

@@ -1,0 +1,26 @@
+name: 'Install Groovy using SDKMAN'
+description: 'Install Groovy using SDKMAN'
+inputs:
+  version:
+    required: false
+    description: 'Version number to use'
+runs:
+  using: "composite"
+  steps:
+    - name: 'Download and install Groovy ${{ inputs.version }} using SDKMAN'
+      shell: bash
+      run: |
+        VERSION=${{ inputs.version }}
+        if [ "$VERSION" == "" ]; then
+          VERSION="4.0.4"
+        fi
+        ZIP="apache-groovy-binary-${VERSION}.zip"
+        curl -s -o "$ZIP" "https://groovy.jfrog.io/artifactory/dist-release-local/groovy-zips/apache-groovy-binary-${VERSION}.zip"
+        GROOVY_ROOT="$HOME/.groovy"
+        mkdir -p "$GROOVY_ROOT"
+        GROOVY_HOME="$GROOVY_ROOT/groovy-$VERSION"
+        unzip -u -q "$ZIP" -d "$GROOVY_ROOT" 
+        echo "$GROOVY_HOME/bin" >> $GITHUB_PATH
+        export PATH="$PATH:$GROOVY_HOME/bin"
+        groovy -version
+        echo "::notice ::Groovy installed"

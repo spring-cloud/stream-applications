@@ -1,0 +1,24 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: runners-stream-ci
+spec:
+  replicas: replicas-placeholder
+  template:
+    spec:
+      image: 'summerwind/actions-runner-dind:latest'
+      dockerdWithinRunnerContainer: true
+      priorityClassName: high-priority
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+        - name: stream-metadata-default
+      repository: spring-cloud/stream-applications
+      githubAPICredentialsFrom:
+        secretRef:
+          name: controller-manager-secret
+      resources:
+        requests:
+          cpu: "1500m"
+          memory: "2Gi"
+      labels:
+        - stream-ci

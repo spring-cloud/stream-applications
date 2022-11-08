@@ -19,8 +19,8 @@ package org.springframework.cloud.fn.task.launch.request;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.constraints.AssertFalse;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.AssertFalse;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;

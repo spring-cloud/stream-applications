@@ -3,7 +3,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jms-source</artifactId>
-    <version>${revision}</version>
     <name>jms-source</name>
     <description>jms source apps</description>
     <packaging>jar</packaging>
@@ -11,8 +10,8 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
-        <version>3.2.2-SNAPSHOT</version>
-        <relativePath/>
+        <version>4.0.0-SNAPSHOT</version>
+        <relativePath>../../stream-applications-core/pom.xml</relativePath>
     </parent>
 
     <dependencies>
@@ -21,15 +20,21 @@
             <artifactId>jms-supplier</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-broker</artifactId>
+            <groupId>jakarta.jms</groupId>
+            <artifactId>jakarta.jms-api</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>javax.jms-api</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-artemis</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>artemis-jms-server</artifactId>
+			<version>2.26.0</version>
+			<scope>test</scope>
+		</dependency>
     </dependencies>
 
     <build>

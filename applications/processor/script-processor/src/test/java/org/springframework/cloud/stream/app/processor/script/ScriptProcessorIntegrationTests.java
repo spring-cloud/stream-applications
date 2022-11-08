@@ -19,6 +19,7 @@ package org.springframework.cloud.stream.app.processor.script;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -45,6 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ScriptProcessorIntegrationTests {
 
+	@Disabled
 	@Test
 	public void testJavascriptFunctions() throws IOException {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -66,6 +68,7 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
+	@Disabled
 	@Test
 	public void testJavascriptVariableTake1() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -85,6 +88,7 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
+	@Disabled
 	@Test
 	public void testJavascriptVariableTake2() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -142,6 +146,7 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
+	@Disabled
 	@Test
 	public void testRubyScript() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -160,6 +165,7 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
+	@Disabled
 	@Test
 	public void testRubyScriptComplex() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -214,6 +220,7 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
+	@Disabled
 	@Test
 	public void testGroovyToJavascript() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(

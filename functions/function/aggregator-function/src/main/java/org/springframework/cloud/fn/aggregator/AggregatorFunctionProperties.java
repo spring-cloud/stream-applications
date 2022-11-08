@@ -117,8 +117,6 @@ public class AggregatorFunctionProperties {
 
 		static final String REDIS = "redis";
 
-		static final String GEMFIRE = "gemfire";
-
 	}
 
 }

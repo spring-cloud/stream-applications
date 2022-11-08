@@ -18,7 +18,7 @@ package org.springframework.cloud.stream.app.processor.script;
 
 import java.util.Properties;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;

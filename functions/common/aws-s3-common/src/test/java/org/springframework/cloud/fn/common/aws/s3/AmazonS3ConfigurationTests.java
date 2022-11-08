@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,32 +21,36 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import io.awspring.cloud.core.region.RegionProvider;
+import io.awspring.cloud.core.region.StaticRegionProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.boot.context.annotation.UserConfigurations;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.aws.core.region.RegionProvider;
-import org.springframework.cloud.aws.core.region.StaticRegionProvider;
 import org.springframework.context.annotation.Bean;
 
 /**
  * @author Timo Salm
+ * @author Artem Bilan
  */
 public class AmazonS3ConfigurationTests {
 
 	private final ApplicationContextRunner runner = new ApplicationContextRunner()
-			.withConfiguration(UserConfigurations.of(CompatibleStorageAmazonS3Configuration.class,
-					AmazonS3Configuration.class, TestConfiguration.class));
+			.withConfiguration(
+					AutoConfigurations.of(
+							CompatibleStorageAmazonS3Configuration.class,
+							AmazonS3Configuration.class))
+			.withUserConfiguration(TestConfiguration.class);
 
-	private final String testRegionName = "eu-central-1";
+	private static final String TEST_REGION_NAME = "eu-central-1";
 
 	@Test
 	public void testAmazonS3Configuration() {
 		runner.withPropertyValues().run(context -> {
 			final AmazonS3Client amazonS3 = (AmazonS3Client) context.getBean(AmazonS3.class);
 			Assertions.assertNotNull(amazonS3);
-			Assertions.assertEquals(testRegionName, amazonS3.getRegionName());
+			Assertions.assertEquals(TEST_REGION_NAME, amazonS3.getRegionName());
 			Assertions.assertTrue(amazonS3.getResourceUrl("b", "k")
 					.startsWith("https://s3.eu-central-1.amazonaws.com"));
 		});
@@ -65,14 +69,17 @@ public class AmazonS3ConfigurationTests {
 	}
 
 	private static class TestConfiguration {
+
 		@Bean
 		RegionProvider regionProvider() {
-			return new StaticRegionProvider("eu-central-1");
+			return new StaticRegionProvider(TEST_REGION_NAME);
 		}
 
 		@Bean
 		AWSCredentialsProvider awsCredentialsProvider() {
 			return new AWSStaticCredentialsProvider(new BasicAWSCredentials("accessKey", "secretKey"));
 		}
+
 	}
+
 }

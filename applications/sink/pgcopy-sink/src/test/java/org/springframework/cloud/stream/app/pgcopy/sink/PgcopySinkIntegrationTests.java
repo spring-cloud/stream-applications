@@ -16,41 +16,45 @@
 
 package org.springframework.cloud.stream.app.pgcopy.sink;
 
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.function.Consumer;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.stream.app.pgcopy.test.PostgresTestSupport;
-import org.springframework.cloud.stream.messaging.Sink;
+import org.springframework.cloud.stream.app.pgcopy.test.PostgresAvailableExtension;
+import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration Tests for PgcopySink. Only runs if PostgreSQL database is available.
  *
  * @author Thomas Risberg
+ * @author Chris Bono
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
-		classes = PgcopySinkIntegrationTests.PgcopySinkApplication.class)
+@SpringBootTest(
+		webEnvironment = SpringBootTest.WebEnvironment.NONE,
+		classes = PgcopyErrorTableIntegrationTests.PgcopySinkApplication.class,
+		properties = {
+				"spring.cloud.function.definition=pgcopyConsumer"
+		})
+@ExtendWith(PostgresAvailableExtension.class)
 @DirtiesContext
 public abstract class PgcopySinkIntegrationTests {
 
-	@ClassRule
-	public static PostgresTestSupport postgresAvailable = new PostgresTestSupport();
-
 	@Autowired
-	protected Sink channels;
+	protected Consumer<Message<?>> pgcopyConsumer;
 
 	@Autowired
 	protected JdbcOperations jdbcOperations;
@@ -61,9 +65,9 @@ public abstract class PgcopySinkIntegrationTests {
 		@Test
 		public void testBasicCopy() {
 			String sent = "hello42";
-			channels.input().send(MessageBuilder.withPayload(sent).build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload(sent).build());
 			String result = jdbcOperations.queryForObject("select payload from test", String.class);
-			Assert.assertThat(result, is("hello42"));
+			assertThat(result).isEqualTo("hello42");
 		}
 	}
 
@@ -73,12 +77,12 @@ public abstract class PgcopySinkIntegrationTests {
 
 		@Test
 		public void testCopyText() {
-			channels.input().send(MessageBuilder.withPayload("123\tNisse\t25").build());
-			channels.input().send(MessageBuilder.withPayload("124\tAnna\t21").build());
-			channels.input().send(MessageBuilder.withPayload("125\tBubba\t22").build());
-			channels.input().send(MessageBuilder.withPayload("126\tPelle\t32").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("123\tNisse\t25").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("124\tAnna\t21").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("125\tBubba\t22").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("126\tPelle\t32").build());
 			int result = jdbcOperations.queryForObject("select count(*) from names", Integer.class);
-			Assert.assertThat(result, is(4));
+			assertThat(result).isEqualTo(4);
 		}
 	}
 
@@ -88,11 +92,11 @@ public abstract class PgcopySinkIntegrationTests {
 
 		@Test
 		public void testCopyCSV() {
-			channels.input().send(MessageBuilder.withPayload("123,\"Nisse\",25").build());
-			channels.input().send(MessageBuilder.withPayload("124,\"Anna\",21").build());
-			channels.input().send(MessageBuilder.withPayload("125,\"Bubba\",22").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("123,\"Nisse\",25").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("124,\"Anna\",21").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("125,\"Bubba\",22").build());
 			int result = jdbcOperations.queryForObject("select count(*) from names", Integer.class);
-			Assert.assertThat(result, is(3));
+			assertThat(result).isEqualTo(3);
 		}
 	}
 
@@ -102,13 +106,13 @@ public abstract class PgcopySinkIntegrationTests {
 
 		@Test
 		public void testCopyCSV() {
-			channels.input().send(MessageBuilder.withPayload("123,\"Nisse\",25").build());
-			channels.input().send(MessageBuilder.withPayload("124,,21").build());
-			channels.input().send(MessageBuilder.withPayload("125,\"Bubba\",22").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("123,\"Nisse\",25").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("124,,21").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("125,\"Bubba\",22").build());
 			int result = jdbcOperations.queryForObject("select count(*) from names", Integer.class);
 			int nulls = jdbcOperations.queryForObject("select count(*) from names where name is null", Integer.class);
-			Assert.assertThat(result, is(3));
-			Assert.assertThat(nulls, is(1));
+			assertThat(result).isEqualTo(3);
+			assertThat(nulls).isEqualTo(1);
 		}
 	}
 
@@ -118,13 +122,13 @@ public abstract class PgcopySinkIntegrationTests {
 
 		@Test
 		public void testCopyCSV() {
-			channels.input().send(MessageBuilder.withPayload("123,\"Nisse\",25").build());
-			channels.input().send(MessageBuilder.withPayload("124,null,21").build());
-			channels.input().send(MessageBuilder.withPayload("125,\"Bubba\",22").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("123,\"Nisse\",25").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("124,null,21").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("125,\"Bubba\",22").build());
 			int result = jdbcOperations.queryForObject("select count(*) from names", Integer.class);
 			int nulls = jdbcOperations.queryForObject("select count(*) from names where name is null", Integer.class);
-			Assert.assertThat(result, is(3));
-			Assert.assertThat(nulls, is(1));
+			assertThat(result).isEqualTo(3);
+			assertThat(nulls).isEqualTo(1);
 		}
 	}
 
@@ -134,11 +138,11 @@ public abstract class PgcopySinkIntegrationTests {
 
 		@Test
 		public void testCopyCSV() {
-			channels.input().send(MessageBuilder.withPayload("123|\"Nisse\"|25").build());
-			channels.input().send(MessageBuilder.withPayload("124|\"Anna\"|21").build());
-			channels.input().send(MessageBuilder.withPayload("125|\"Bubba\"|22").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("123|\"Nisse\"|25").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("124|\"Anna\"|21").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("125|\"Bubba\"|22").build());
 			int result = jdbcOperations.queryForObject("select count(*) from names", Integer.class);
-			Assert.assertThat(result, is(3));
+			assertThat(result).isEqualTo(3);
 		}
 	}
 
@@ -148,11 +152,11 @@ public abstract class PgcopySinkIntegrationTests {
 
 		@Test
 		public void testCopyCSV() {
-			channels.input().send(MessageBuilder.withPayload("123\t\"Nisse\"\t25").build());
-			channels.input().send(MessageBuilder.withPayload("124\t\"Anna\"\t21").build());
-			channels.input().send(MessageBuilder.withPayload("125\t\"Bubba\"\t22").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("123\t\"Nisse\"\t25").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("124\t\"Anna\"\t21").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("125\t\"Bubba\"\t22").build());
 			int result = jdbcOperations.queryForObject("select count(*) from names", Integer.class);
-			Assert.assertThat(result, is(3));
+			assertThat(result).isEqualTo(3);
 		}
 	}
 
@@ -162,13 +166,13 @@ public abstract class PgcopySinkIntegrationTests {
 
 		@Test
 		public void testCopyCSV() {
-			channels.input().send(MessageBuilder.withPayload("123,Nisse,25").build());
-			channels.input().send(MessageBuilder.withPayload("124,'Anna',21").build());
-			channels.input().send(MessageBuilder.withPayload("125,Bubba,22").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("123,Nisse,25").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("124,'Anna',21").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("125,Bubba,22").build());
 			int result = jdbcOperations.queryForObject("select count(*) from names", Integer.class);
 			int quoted = jdbcOperations.queryForObject("select count(*) from names where name = 'Anna'", Integer.class);
-			Assert.assertThat(result, is(3));
-			Assert.assertThat(quoted, is(1));
+			assertThat(result).isEqualTo(3);
+			assertThat(quoted).isEqualTo(1);
 		}
 	}
 
@@ -178,17 +182,19 @@ public abstract class PgcopySinkIntegrationTests {
 
 		@Test
 		public void testCopyCSV() {
-			channels.input().send(MessageBuilder.withPayload("123,Nisse,25").build());
-			channels.input().send(MessageBuilder.withPayload("124,\"Anna\\\"\",21").build());
-			channels.input().send(MessageBuilder.withPayload("125,Bubba,22").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("123,Nisse,25").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("124,\"Anna\\\"\",21").build());
+			this.pgcopyConsumer.accept(MessageBuilder.withPayload("125,Bubba,22").build());
 			int result = jdbcOperations.queryForObject("select count(*) from names", Integer.class);
 			int quoted = jdbcOperations.queryForObject("select count(*) from names where name = 'Anna\"'", Integer.class);
-			Assert.assertThat(result, is(3));
-			Assert.assertThat(quoted, is(1));
+			assertThat(result).isEqualTo(3);
+			assertThat(quoted).isEqualTo(1);
 		}
 	}
 
-	@SpringBootApplication
+	@SpringBootConfiguration
+	@EnableAutoConfiguration
+	@Import({ PgcopySinkConfiguration.class, TestChannelBinderConfiguration.class })
 	public static class PgcopySinkApplication {
 		public static void main(String[] args) {
 			SpringApplication.run(PgcopySinkApplication.class, args);

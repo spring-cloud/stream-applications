@@ -16,8 +16,7 @@
 
 package org.springframework.cloud.fn.supplier.jms;
 
-import javax.jms.Session;
-
+import jakarta.jms.Session;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.integration.test.util.TestUtils;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 the original author or authors.
+ * Copyright 2017-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import reactor.core.publisher.Flux;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.cloud.fn.common.mqtt.MqttConfiguration;
 import org.springframework.cloud.fn.common.mqtt.MqttProperties;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,7 @@ import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 
 /**
@@ -56,32 +58,39 @@ public class MqttSupplierConfiguration {
 	private BeanFactory beanFactory;
 
 	@Bean
-	public Supplier<Flux<Message<?>>> mqttSupplier(Publisher<Message<?>> mqttPublisher, MqttPahoMessageDrivenChannelAdapter mqttInbound) {
-		return () -> Flux.from(mqttPublisher)
-				.doOnSubscribe(subscription -> mqttInbound.start())
-				.doOnTerminate(mqttInbound::stop);
+	public Supplier<Flux<Message<?>>> mqttSupplier(Publisher<Message<?>> mqttPublisher) {
+		return () -> Flux.from(mqttPublisher);
 	}
 
-	private MqttPahoMessageDrivenChannelAdapter mqttInbound() {
-		MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(properties.getClientId(),
-				mqttClientFactory, properties.getTopics());
-		adapter.setQos(properties.getQos());
-		adapter.setConverter(pahoMessageConverter(beanFactory));
+	@Bean
+	public MqttPahoMessageDrivenChannelAdapter mqttInbound(
+			@Nullable ComponentCustomizer<MqttPahoMessageDrivenChannelAdapter> mqttMessageProducerCustomizer) {
+
+		MqttPahoMessageDrivenChannelAdapter adapter =
+				new MqttPahoMessageDrivenChannelAdapter(this.properties.getClientId(), this.mqttClientFactory,
+						this.properties.getTopics());
+		adapter.setQos(this.properties.getQos());
+		adapter.setConverter(pahoMessageConverter(this.beanFactory));
 		adapter.setAutoStartup(false);
+
+		if (mqttMessageProducerCustomizer != null) {
+			mqttMessageProducerCustomizer.customize(adapter);
+		}
+
 		return adapter;
 	}
 
 	@Bean
-	public Publisher<Message<byte[]>> mqttPublisher() {
-		return IntegrationFlows.from(
-				mqttInbound())
-				.toReactivePublisher();
+	public Publisher<Message<byte[]>> mqttPublisher(MqttPahoMessageDrivenChannelAdapter mqttInbound) {
+		return IntegrationFlows.from(mqttInbound)
+				.toReactivePublisher(true);
 	}
 
-	public DefaultPahoMessageConverter pahoMessageConverter(BeanFactory beanFactory) {
+	private DefaultPahoMessageConverter pahoMessageConverter(BeanFactory beanFactory) {
 		DefaultPahoMessageConverter converter = new DefaultPahoMessageConverter(properties.getCharset());
 		converter.setPayloadAsBytes(properties.isBinary());
 		converter.setBeanFactory(beanFactory);
 		return converter;
 	}
+
 }

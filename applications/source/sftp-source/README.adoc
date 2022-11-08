@@ -100,10 +100,6 @@ $$table$$:: $$Table name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 $$time-to-live$$:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
 
-=== metadata.store.gemfire
-
-$$region$$:: $$Gemfire region name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
-
 === metadata.store.jdbc
 
 $$region$$:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$DEFAULT$$`)*
@@ -119,7 +115,7 @@ $$key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$<none>$$`)*
 
 === metadata.store
 
-$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`gemfire`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
+$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
 
 === metadata.store.zookeeper
 

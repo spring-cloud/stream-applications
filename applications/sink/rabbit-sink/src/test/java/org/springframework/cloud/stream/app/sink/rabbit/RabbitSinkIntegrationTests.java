@@ -17,7 +17,6 @@
 package org.springframework.cloud.stream.app.sink.rabbit;
 
 import org.junit.jupiter.api.Tag;
-import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -33,25 +32,25 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.fn.consumer.rabbit.RabbitConsumerConfiguration;
 import org.springframework.cloud.fn.consumer.rabbit.RabbitConsumerProperties;
+import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.SubscribableChannel;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest(
-		properties = {"spring.cloud.function.definition=rabbitConsumer", "spring.rabbitmq.port = ${spring.rabbitmq.test.port}"},
+		properties = {"spring.cloud.function.definition=rabbitConsumer"},
 		webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @DirtiesContext
 @Tag("integration")
 @Import(RabbitSinkIntegrationTests.FooConfiguration.class)
-abstract class RabbitSinkIntegrationTests {
+abstract class RabbitSinkIntegrationTests implements RabbitMqTestContainerSupport {
 
-	static {
-		GenericContainer rabbitmq = new GenericContainer("rabbitmq")
-				.withExposedPorts(5672);
-		rabbitmq.start();
-		final Integer mappedPort = rabbitmq.getMappedPort(5672);
-		System.setProperty("spring.rabbitmq.test.port", mappedPort.toString());
+	@DynamicPropertySource
+	static void rabbitProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.rabbitmq.port", RabbitMqTestContainerSupport::getPort);
 	}
 
 	@Qualifier("rabbitConsumer-in-0")
@@ -93,7 +92,7 @@ abstract class RabbitSinkIntegrationTests {
 	}
 
 	@SpringBootApplication
-	@Import({RabbitConsumerConfiguration.class})
+	@Import({RabbitConsumerConfiguration.class, TestChannelBinderConfiguration.class})
 	public static class RabbitSinkTestApplication {
 	}
 }

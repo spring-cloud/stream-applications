@@ -34,14 +34,16 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;
 
+
 /**
  * Configuration for a {@link Function} that makes HTTP requests to a resource and for
  * each request, returns a {@link ResponseEntity}.
  *
  * @author David Turanski
+ * @author Sunny Hemdev
  * @author Corneil du Plessis
  **/
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(HttpRequestFunctionProperties.class)
 public class HttpRequestFunctionConfiguration {
 

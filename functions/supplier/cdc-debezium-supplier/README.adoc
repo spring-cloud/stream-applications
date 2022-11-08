@@ -28,12 +28,13 @@ Once injected, you can use the `get` method of the `Supplier` to invoke it and t
 All configuration properties are prefixed with `cdc`.
 Use the `cdc.config.` prefix to inject native, Debezium properties. Convenient shortcuts for the most frequently used
 Debezium properties are available.
-Uses `BackingOffsetStore` configuration, based on the [MetadataStore](https://github.com/spring-cloud/stream-applications/tree/master/functions/common/metadata-store-common) service.
+Uses `BackingOffsetStore` configuration, based on the https://github.com/spring-cloud/stream-applications/tree/master/functions/common/metadata-store-common[MetadataStore] service.
 Later provides various microservices friendly ways for storing the offset metadata.
 
 For more information on the various options available, please see:
+
  * link:../../common/cdc-debezium-common/src/main/java/org/springframework/cloud/fn/common/cdc/CdcCommonProperties.java[CdcCommonProperties].
- * link:src/main/java/org/springframework/cloud/fn/supplier/cdc-debezium-supplier/CdcSupplierProperties.java[CdcSupplierProperties].
+ * link:src/main/java/org/springframework/cloud/fn/supplier/cdc/CdcSupplierProperties.java[CdcSupplierProperties].
 
 ## Examples
 See this link:../../../applications/source/cdc-debezium-source/src/test/java/org/springframework/cloud/stream/app/source/cdc[test suite] for the various ways, this supplier is used.

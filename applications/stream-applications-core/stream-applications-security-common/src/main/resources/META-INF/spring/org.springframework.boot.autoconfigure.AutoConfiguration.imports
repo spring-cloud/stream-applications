@@ -1,0 +1,2 @@
+org.springframework.cloud.stream.app.security.common.AppStarterWebSecurityAutoConfiguration
+org.springframework.cloud.stream.app.security.common.AppStarterWebFluxSecurityAutoConfiguration

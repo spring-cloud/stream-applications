@@ -35,7 +35,7 @@ import org.springframework.cloud.stream.app.test.integration.OutputMatcher;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainerTestUtils;
 import org.springframework.cloud.stream.app.test.integration.junit.jupiter.BaseContainerExtension;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -72,7 +72,7 @@ public abstract class HttpSourceTests {
 	@Test
 	void plaintext() throws InterruptedException {
 		CountDownLatch countDownLatch = new CountDownLatch(1);
-		AtomicReference<HttpStatus> httpStatus = new AtomicReference<>();
+		AtomicReference<HttpStatusCode> httpStatus = new AtomicReference<>();
 		webClient
 				.post()
 				.uri("http://localhost:" + source.getMappedPort(serverPort))

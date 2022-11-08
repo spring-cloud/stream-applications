@@ -16,9 +16,8 @@
 
 package org.springframework.cloud.fn.consumer.mqtt;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Range;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

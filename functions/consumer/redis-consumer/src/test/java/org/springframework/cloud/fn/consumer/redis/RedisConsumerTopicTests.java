@@ -23,15 +23,11 @@ import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.integration.test.util.TestUtils;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.TestPropertySource;
@@ -40,12 +36,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Soby Chacko
+ * @author Corneil du Plessis
  */
 @TestPropertySource(properties = "redis.consumer.topic = foo-topic")
 public class RedisConsumerTopicTests extends AbstractRedisConsumerTests {
-
-	@Autowired
-	RedisConnectionFactory connectionFactory;
 
 	@Test
 	public void testWithTopic() throws Exception {
@@ -60,13 +54,12 @@ public class RedisConsumerTopicTests extends AbstractRedisConsumerTests {
 		listener.afterPropertiesSet();
 
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-		container.setConnectionFactory(connectionFactory);
+		container.setConnectionFactory(redisTemplate.getConnectionFactory());
 		container.afterPropertiesSet();
 		container.addMessageListener(listener, Collections.<Topic>singletonList(new ChannelTopic(topic)));
 		container.start();
 
-		Awaitility.await().until(() -> TestUtils.getPropertyValue(container, "subscriptionTask.connection",
-				RedisConnection.class) != null);
+		Awaitility.await().until(container::isListening);
 
 		Message<String> message = MessageBuilder.withPayload("hello").build();
 		for (int i = 0; i < numToTest; i++) {

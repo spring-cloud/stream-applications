@@ -33,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Artem Bilan
+ * @author Corneil du Plessis
  */
 @TestPropertySource(properties = "aggregator.message-store-type=jdbc")
 public class JdbcMessageStoreAggregatorTests extends AbstractAggregatorFunctionTests {
@@ -67,9 +68,6 @@ public class JdbcMessageStoreAggregatorTests extends AbstractAggregatorFunctionT
 		assertThat(this.messageGroupStore).isInstanceOf(JdbcMessageStore.class);
 
 		assertThat(this.aggregatingMessageHandler.getMessageStore()).isSameAs(this.messageGroupStore);
-
-		// Also verify geode ssl flag not enabled for non-geode message stores
-		assertThat(this.geodeSslEnable).isFalse();
 	}
 
 }

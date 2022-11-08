@@ -22,7 +22,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.SocketUtils;
 
 /**
  * Support utility for stream application integration testing .
@@ -62,6 +61,6 @@ public abstract class StreamAppContainerTestUtils {
 	}
 
 	public static final int findAvailablePort() {
-		return SocketUtils.findAvailableTcpPort(10000, 20000);
+		return TestSocketUtils.findAvailableTcpPort(10000, 20000);
 	}
 }

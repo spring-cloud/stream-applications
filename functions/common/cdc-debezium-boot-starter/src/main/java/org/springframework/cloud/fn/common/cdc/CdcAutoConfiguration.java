@@ -19,22 +19,21 @@ package org.springframework.cloud.fn.common.cdc;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.kafka.connect.source.SourceRecord;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
  * @author Christian Tzolov
  */
-@Configuration
+@AutoConfiguration
 @Import(CdcCommonConfiguration.class)
 public class CdcAutoConfiguration {
 

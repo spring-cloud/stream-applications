@@ -2,30 +2,29 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>stream-applications-core</artifactId>
-    <version>${revision}</version>
-    <name>stream-applications-core</name>
-    <description>Stream Applications Core Parent</description>
-    <packaging>pom</packaging>
 
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-build</artifactId>
-        <version>1.2.2-SNAPSHOT</version>
-        <relativePath/>
+        <version>4.0.0-SNAPSHOT</version>
+        <relativePath>../../stream-applications-build/pom.xml</relativePath>
     </parent>
 
+    <artifactId>stream-applications-core</artifactId>
+    <name>stream-applications-core</name>
+    <description>Stream Applications Core Parent</description>
+    <packaging>pom</packaging>
+
     <properties>
-        <revision>3.2.2-SNAPSHOT</revision>
-        <stream-apps-core.version>${revision}</stream-apps-core.version>
-        <java-functions.version>1.2.2-SNAPSHOT</java-functions.version>
+        <stream-apps-core.version>4.0.0-SNAPSHOT</stream-apps-core.version>
+        <java-functions.version>4.0.0-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.3</apps.base-image>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.7</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.7</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.7</spring-cloud-dataflow-apps-metadata-plugin.version>
         <java-cfenv-boot.version>2.4.0</java-cfenv-boot.version>
-        <prometheus-rsocket.version>1.4.0</prometheus-rsocket.version>
-        <wavefront-spring-boot.version>2.2.2</wavefront-spring-boot.version>
+        <prometheus-rsocket.version>1.5.0</prometheus-rsocket.version>
+        <wavefront-spring-boot.version>2.3.0</wavefront-spring-boot.version>
     </properties>
 
     <modules>
@@ -309,6 +308,15 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
-
 </project>

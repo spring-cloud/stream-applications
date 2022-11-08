@@ -26,8 +26,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.cloud.stream.messaging.Sink;
-import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
@@ -41,6 +39,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Chris Schaefer
  */
 public class ContentTypeEnvironmentPostProcessorTests {
+
+	private static final String SINK_INPUT = "input";
+
+	private static final String SOURCE_OUTPUT = "output";
+
 	private static String getContentTypeProperty(String channelName) {
 		return ContentTypeEnvironmentPostProcessor.CONTENT_TYPE_PROPERTY_PREFIX + channelName
 				+ ContentTypeEnvironmentPostProcessor.CONTENT_TYPE_PROPERTY_SUFFIX;
@@ -54,25 +57,25 @@ public class ContentTypeEnvironmentPostProcessorTests {
 				.get(ContentTypeEnvironmentPostProcessor.PROPERTY_SOURCE_KEY_NAME);
 
 		assertThat(propertySource).isNotNull();
-		assertThat(propertySource.getProperty(getContentTypeProperty(Sink.INPUT))).isEqualTo("application/octet-stream");
-		assertThat(propertySource.getProperty(getContentTypeProperty(Source.OUTPUT))).isEqualTo("application/octet-stream");
+		assertThat(propertySource.getProperty(getContentTypeProperty(SINK_INPUT))).isEqualTo("application/octet-stream");
+		assertThat(propertySource.getProperty(getContentTypeProperty(SOURCE_OUTPUT))).isEqualTo("application/octet-stream");
 	}
 
 	@Test
 	public void testUserDefinedOutputContentType() {
-		PropertiesPropertySource testProperties = buildTestProperties(Source.OUTPUT, "text/plain");
+		PropertiesPropertySource testProperties = buildTestProperties(SOURCE_OUTPUT, "text/plain");
 		ConfigurableEnvironment configurableEnvironment = getEnvironment(testProperties);
-		assertThat(configurableEnvironment.containsProperty(getContentTypeProperty(Source.OUTPUT))).isTrue();
-		assertThat(configurableEnvironment.getProperty(getContentTypeProperty(Source.OUTPUT))).isEqualTo("text/plain");
+		assertThat(configurableEnvironment.containsProperty(getContentTypeProperty(SOURCE_OUTPUT))).isTrue();
+		assertThat(configurableEnvironment.getProperty(getContentTypeProperty(SOURCE_OUTPUT))).isEqualTo("text/plain");
 	}
 
 	@Test
 	public void testUserDefinedInputContentType() {
-		PropertiesPropertySource testProperties = buildTestProperties(Sink.INPUT, "text/html");
+		PropertiesPropertySource testProperties = buildTestProperties(SINK_INPUT, "text/html");
 		ConfigurableEnvironment configurableEnvironment = getEnvironment(testProperties);
 
-		assertThat(configurableEnvironment.containsProperty(getContentTypeProperty(Sink.INPUT))).isTrue();
-		assertThat(configurableEnvironment.getProperty(getContentTypeProperty(Sink.INPUT))).isEqualTo("text/html");
+		assertThat(configurableEnvironment.containsProperty(getContentTypeProperty(SINK_INPUT))).isTrue();
+		assertThat(configurableEnvironment.getProperty(getContentTypeProperty(SINK_INPUT))).isEqualTo("text/html");
 	}
 
 	@Test
@@ -95,10 +98,10 @@ public class ContentTypeEnvironmentPostProcessorTests {
 				.get(ContentTypeEnvironmentPostProcessor.PROPERTY_SOURCE_KEY_NAME);
 
 		assertThat(propertySource).isNotNull();
-		assertThat(propertySource.containsProperty(getContentTypeProperty(Source.OUTPUT))).isTrue();
-		assertThat(propertySource.getProperty(getContentTypeProperty(Source.OUTPUT))).isEqualTo("image/jpeg");
-		assertThat(propertySource.containsProperty(getContentTypeProperty(Sink.INPUT))).isTrue();
-		assertThat(propertySource.getProperty(getContentTypeProperty(Sink.INPUT))).isEqualTo("image/gif");
+		assertThat(propertySource.containsProperty(getContentTypeProperty(SOURCE_OUTPUT))).isTrue();
+		assertThat(propertySource.getProperty(getContentTypeProperty(SOURCE_OUTPUT))).isEqualTo("image/jpeg");
+		assertThat(propertySource.containsProperty(getContentTypeProperty(SINK_INPUT))).isTrue();
+		assertThat(propertySource.getProperty(getContentTypeProperty(SINK_INPUT))).isEqualTo("image/gif");
 	}
 
 	@Test
@@ -110,10 +113,10 @@ public class ContentTypeEnvironmentPostProcessorTests {
 
 
 		assertThat(propertySource).isNotNull();
-		assertThat(propertySource.containsProperty(getContentTypeProperty(Source.OUTPUT))).isTrue();
-		assertThat(propertySource.getProperty(getContentTypeProperty(Source.OUTPUT))).isEqualTo("image/jpeg");
-		assertThat(propertySource.containsProperty(getContentTypeProperty(Sink.INPUT))).isTrue();
-		assertThat(propertySource.getProperty(getContentTypeProperty(Sink.INPUT))).isEqualTo("image/jpeg");
+		assertThat(propertySource.containsProperty(getContentTypeProperty(SOURCE_OUTPUT))).isTrue();
+		assertThat(propertySource.getProperty(getContentTypeProperty(SOURCE_OUTPUT))).isEqualTo("image/jpeg");
+		assertThat(propertySource.containsProperty(getContentTypeProperty(SINK_INPUT))).isTrue();
+		assertThat(propertySource.getProperty(getContentTypeProperty(SINK_INPUT))).isEqualTo("image/jpeg");
 	}
 
 	private PropertiesPropertySource buildTestProperties(String channelName, String contentType) {
@@ -185,8 +188,8 @@ public class ContentTypeEnvironmentPostProcessorTests {
 
 		private static Map<String, String> createChannelMap() {
 			Map<String, String> channelMap = new HashMap<>();
-			channelMap.put(Source.OUTPUT, "image/jpeg");
-			channelMap.put(Sink.INPUT, "image/gif");
+			channelMap.put(SOURCE_OUTPUT, "image/jpeg");
+			channelMap.put(SINK_INPUT, "image/gif");
 
 			return channelMap;
 		}

@@ -1,0 +1,26 @@
+name: 'Install gh cli'
+description: 'Install gh cli'
+
+runs:
+  using: composite
+  steps:
+    - name: 'Install gh cli'
+      shell: bash
+      run: |
+        set +e
+        gh --version
+        RC=$?
+        if ((RC != 0)); then
+          sudo apt install gh -q -y
+          RC=$?
+          if ((RC != 0)); then
+            type -p curl >/dev/null || sudo apt install curl -y
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+                && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+                && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+                && sudo apt update -q \
+                && sudo apt install gh -q -y
+            RC=$?
+          fi
+        fi
+        exit $RC

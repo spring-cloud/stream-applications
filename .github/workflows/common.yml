@@ -1,0 +1,548 @@
+name: 'Stream Applications - Common'
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        type: string
+        required: false
+        default: 'main'
+        description: 'Version Tag'
+      verbose:
+        type: boolean
+        required: false
+        default: true
+        description: 'Verbose output'
+    secrets:
+      DOCKER_HUB_USERNAME:
+      DOCKER_HUB_PASSWORD:
+      TMC_API_TOKEN:
+      GCP_CRED_JSON:
+      CI_DEPLOY_USERNAME:
+      CI_DEPLOY_PASSWORD:
+      GH_ARC_APP_ID:
+      GH_ARC_INSTALLATION_ID:
+      GH_ARC_PRIVATE_KEY:
+      GH_ARC_PAT:
+
+env:
+  VERBOSE: ${{ inputs.verbose && 'true' || '' }}
+  BRANCH: ${{ inputs.branch }}
+
+jobs:
+  parameters:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Configure: checkout'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+          path: 'stream-applications'
+      - name: 'Configure: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: create streams applications matrix'
+        shell: bash
+        run: |
+          ROOT_DIR=$(realpath $PWD)
+          echo "::info ::checking stream-applications for apps"
+          pushd stream-applications > /dev/null
+            $ROOT_DIR/create-matrices.sh
+            if [ ! -f matrix.json ]; then
+              echo "Expected to find matrix.json in:"
+              ls -al
+              exit 2
+            fi
+            COUNT=$(jq '.count' matrix.json)
+            MAX_PARALLEL=$((5 * COUNT / 4))
+            if ((MAX_PARALLEL == COUNT)); then
+              MAX_PARALLEL=$((COUNT + 1))
+            fi          
+            MATRIX=$(jq -c . matrix.json)
+            PROCESSORS=$(jq -c '.processors' matrix.json)
+            SINKS=$(jq -c '.sinks' matrix.json)
+            SOURCES=$(jq -c '.sources' matrix.json)
+            echo "MAX_PARALLEL=$MAX_PARALLEL" >> $GITHUB_ENV
+            echo "MATRIX=$MATRIX" >> $GITHUB_ENV
+            echo "PROCESSORS=$PROCESSORS" >> $GITHUB_ENV
+            echo "SINKS=$SINKS" >> $GITHUB_ENV
+            echo "SOURCES=$SOURCES" >> $GITHUB_ENV
+            if [ "${{ inputs.verbose }}" == "true" ]; then
+              echo "::debug ::MAX_PARALLEL=$MAX_PARALLEL"
+              echo "::debug ::MATRIX=$MATRIX"
+              echo "::debug ::PROCESSORS=$PROCESSORS"
+              echo "::debug ::SINKS=$SINKS"
+              echo "::debug ::SOURCES=$SOURCES"
+            fi
+          popd
+          if [ "${{ inputs.branch }}" == "main" ]; then
+            echo "JDK_BUILD=17" >> $GITHUB_ENV
+            echo "JRE_DEFAULT=17" >> $GITHUB_ENV
+          else
+            echo "JDK_BUILD=8" >> $GITHUB_ENV
+            echo "JRE_DEFAULT=11" >> $GITHUB_ENV
+          fi
+    outputs:
+      max_parallel: ${{ env.MAX_PARALLEL }}
+      sources: ${{ env.SOURCES }}
+      sinks: ${{ env.SINKS }}
+      processors: ${{ env.PROCESSORS }}
+      matrix: ${{ env.matrix }}
+      jdk_build: ${{ env.JDK_BUILD }}
+      jre_version: ${{ env.JRE_DEFAULT }}
+  scale-runners-up:
+    runs-on: ubuntu-latest
+    needs:
+      - parameters
+    concurrency:
+      group: stream-apps-gh-runners
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: Ensure scripts are executable
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Configure provider for stream-apps-gh-runners'
+        id: 'configure-runner-type'
+        shell: bash
+        run: |
+          RUNNER_TYPE=$(./scripts/determine-provider.sh stream-apps-gh-runners)
+          echo "RUNNER_TYPE=$RUNNER_TYPE"
+          echo "RUNNER_TYPE=$RUNNER_TYPE" >> $GITHUB_ENV
+      - name: 'Install: gcloud cli'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        uses: ./.github/actions/install-gcloud
+      - name: 'Action: gcloud auth'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        id: auth_gcloud
+        uses: 'google-github-actions/auth@v0'
+        with:
+          create_credentials_file: true
+          credentials_json: ${{ secrets.GCP_CRED_JSON }}
+      - name: 'Configure: Install TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/install-tmc
+      - name: 'Action: Login to TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/auth-tmc
+        with:
+          tmc_api_token: ${{ secrets.TMC_API_TOKEN }}
+          fail_on_error: false
+      - name: 'Install: Groovy'
+        uses: ./.github/actions/install-groovy
+        with:
+          version: 4.0.4
+      - name: 'Action: Scale Runners Up by ${{ needs.parameters.outputs.max_parallel }}'
+        uses: ./.github/actions/scale-runners-up
+        timeout-minutes: 45
+        with:
+          verbose: ${{ inputs.verbose }}
+          max_parallel: ${{ toJson(needs.parameters.outputs.max_parallel) }}
+          GH_ARC_APP_ID: ${{ secrets.GH_ARC_APP_ID }}
+          GH_ARC_INSTALLATION_ID: ${{ secrets.GH_ARC_INSTALLATION_ID }}
+          GH_ARC_PRIVATE_KEY: ${{ secrets.GH_ARC_PRIVATE_KEY }}
+          GH_ARC_PAT: ${{ secrets.GH_ARC_PAT }}
+  core:
+    runs-on: 'stream-ci-large'
+    needs:
+      - parameters
+    steps:
+      - name: 'Configure: checkout stream-applications@main'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+          path: 'stream-applications'
+      - name: 'Configure: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Install Java'
+        if: ${{ needs.parameters.outputs.jdk_build == '8' }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ needs.parameters.outputs.jdk_build }}
+      - name: 'Configure: Install GraalVM'
+        if: ${{ needs.parameters.outputs.jdk_build != '8' }}
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: ${{ needs.parameters.outputs.jdk_build }}
+#          components: 'native-image' # add when starting native builds.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
+      - name: 'Configure: Install xsltproc'
+        uses: ./.github/actions/install-xsltproc
+      - name: 'Configure: Install gh cli'
+        uses: ./.github/actions/install-gh
+      - name: 'Action: build initial dependencies'
+        shell: bash
+        env:
+          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
+          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+        run: |
+          ROOT_DIR=$(realpath $PWD)
+          MAVEN_OPT="-U -B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
+          pushd stream-applications > /dev/null
+          echo "::notice ::building - stream-applications-build,functions,applications/stream-applications-core"
+          set -e
+          $ROOT_DIR/build-folder.sh stream-applications-build,functions,applications/stream-applications-core "install verify deploy"
+          set +e
+          echo "::notice ::core build completed"
+          popd > /dev/null
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'core-surefire-reports'
+          path: 'stream-applications/**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: 'Action: Re-run ${{ github.workflow }}'
+        if: ${{ failure() }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh run view ${{ github.run_id }} -v | grep "^X"
+          FAILURES=$(gh run view ${{ github.run_id }} -v | grep "^X")
+          COUNT_TESTS=$(echo "$FAILURES" | grep -c -F "tests ")
+          if((COUNT_TESTS > 0)); then
+            echo "::info ::Re-run ${{ github.workflow }} run ${{ github.run_id }}"
+            gh run rerun ${{ github.run_id }} --failed --debug
+          else
+            echo "Checked ${{ github.workflow }} run ${{ github.run_id }}. No failures in tests jobs:"
+            for msg in $FAILURES; do
+              echo "$msg"
+            done
+          fi
+  processors:
+    if: ${{ needs.parameters.outputs.processors != '' && needs.parameters.outputs.processors != null }}
+    needs:
+      - core
+      - parameters
+      - scale-runners-up
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.parameters.outputs.processors) }}
+    runs-on: 'stream-ci'
+    steps:
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+          path: 'stream-applications'
+      - name: Ensure scripts are executable
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Install Java'
+        if: ${{ needs.parameters.outputs.jdk_build == '8' }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ needs.parameters.outputs.jdk_build }}
+      - name: 'Configure: Install GraalVM'
+        if: ${{ needs.parameters.outputs.jdk_build != '8' }}
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: ${{ needs.parameters.outputs.jdk_build }}
+#          components: 'native-image' # add when starting native builds.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
+      - name: 'Configure: Install xsltproc'
+        uses: ./.github/actions/install-xsltproc
+      - name: 'Configure: Install Pack'
+        uses: ./.github/actions/install-pack
+      - name: 'Configure: Docker login'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      - name: 'Build: ${{ matrix.app }}'
+        shell: bash
+        env:
+          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
+          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+        run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ matrix.app }}-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: 'Publish: ${{ matrix.app }}'
+        shell: bash
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+        run: ./publish-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
+  sinks:
+    if: ${{ needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
+    needs:
+      - core
+      - parameters
+      - scale-runners-up
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.parameters.outputs.sinks) }}
+    runs-on: 'stream-ci'
+    steps:
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+          path: 'stream-applications'
+      - name: Ensure scripts are executable
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Install Java'
+        if: ${{ needs.parameters.outputs.jdk_build == '8' }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ needs.parameters.outputs.jdk_build }}
+      - name: 'Configure: Install GraalVM'
+        if: ${{ needs.parameters.outputs.jdk_build != '8' }}
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: ${{ needs.parameters.outputs.jdk_build }}
+#          components: 'native-image' # add when starting native builds.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
+      - name: 'Configure: Install xsltproc'
+        uses: ./.github/actions/install-xsltproc
+      - name: 'Configure: Install Pack'
+        uses: ./.github/actions/install-pack
+      - name: 'Configure: Docker login'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      - name: 'Build: ${{ matrix.app }}'
+        shell: bash
+        env:
+          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
+          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+        run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ matrix.app }}-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: 'Publish: ${{ matrix.app }}'
+        shell: bash
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+        run: ./publish-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
+  sources:
+    if: ${{ needs.parameters.outputs.sources != '' && needs.parameters.outputs.sources != null }}
+    needs:
+      - core
+      - parameters
+      - scale-runners-up
+    strategy:
+      fail-fast: false
+      # will be removed when private runners are used.
+      matrix:
+        app: ${{ fromJson(needs.parameters.outputs.sources) }}
+    runs-on: ${{ matrix.app == 'cdc-debezium-source' && 'stream-ci-large' || 'stream-ci' }}
+    steps:
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+          path: 'stream-applications'
+      - name: Ensure scripts are executable
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Install Java'
+        if: ${{ needs.parameters.outputs.jdk_build == '8' }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ needs.parameters.outputs.jdk_build }}
+      - name: 'Configure: Install GraalVM'
+        if: ${{ needs.parameters.outputs.jdk_build != '8' }}
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: ${{ needs.parameters.outputs.jdk_build }}
+#          components: 'native-image' # add when starting native builds.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
+      - name: 'Configure: Install xsltproc'
+        uses: ./.github/actions/install-xsltproc
+      - name: 'Configure: Install Pack'
+        uses: ./.github/actions/install-pack
+      - name: 'Configure: Docker login'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      - name: 'Build: ${{ matrix.app }}'
+        shell: bash
+        env:
+          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
+          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+        run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ matrix.app }}-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: 'Publish: ${{ matrix.app }}'
+        shell: bash
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+        run: ./publish-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
+  rerun-jobs:
+    if: ${{ failure() && github.run_attempt == '1' }}
+    runs-on: ubuntu-latest
+    needs:
+      - sources
+      - processors
+      - sinks
+    steps:
+      - name: 'Configure: Checkout stream-applications'
+        uses: actions/checkout@v3
+      - name: 'Configure: Install gh cli'
+        uses: ./.github/actions/install-gh
+      - name: 'Action: Re-run ${{ github.workflow }}'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FAILURES=$(gh run view ${{ github.run_id }} -v | grep "^X")
+          COUNT_TESTS=$(echo "$FAILURES" | grep -c -F "tests ")
+          if((COUNT_TESTS > 0)); then
+            echo "Re-run ${{ github.workflow }} run ${{ github.run_id }}"
+            gh run rerun ${{ github.run_id }} --failed --debug
+          else
+            echo "Checked ${{ github.workflow }} run ${{ github.run_id }}. No failures in tests jobs:"
+            for msg in $FAILURES; do
+              echo "$msg"
+            done
+          fi
+  scale-runners-down:
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    needs:
+      - parameters
+      - processors
+      - sinks
+      - sources
+    concurrency:
+      group: stream-apps-gh-runners
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Action: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Runners Cluster provider'
+        shell: bash
+        run: |
+          RUNNER_TYPE=$(./scripts/determine-provider.sh stream-apps-gh-runners)
+          if [ "$RUNNER_TYPE" != "gke" ]; then
+            RUNNER_TYPE=tmc
+          fi
+          echo "RUNNER_TYPE=$RUNNER_TYPE" >> $GITHUB_ENV
+      - name: 'Install: gcloud cli'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        uses: ./.github/actions/install-gcloud
+      - name: 'Action: gcloud auth'
+        if: ${{ env.RUNNER_TYPE == 'gke' }}
+        id: auth_gcloud
+        uses: 'google-github-actions/auth@v0'
+        with:
+          create_credentials_file: true
+          credentials_json: ${{ secrets.GCP_CRED_JSON }}
+      - name: 'Configure: Install TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/install-tmc
+      - name: 'Action: Login to TMC'
+        if: ${{ env.RUNNER_TYPE == 'tmc' }}
+        uses: ./.github/actions/auth-tmc
+        with:
+          tmc_api_token: ${{ secrets.TMC_API_TOKEN }}
+      - name: 'Action: Decrease runners with ${{ needs.parameters.outputs.max_parallel }}'
+        uses: ./.github/actions/decrease-runners
+        with:
+          dec: ${{ needs.parameters.outputs.max_parallel }}

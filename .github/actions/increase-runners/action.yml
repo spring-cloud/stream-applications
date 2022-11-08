@@ -1,0 +1,20 @@
+name: 'Increase Runner Count'
+description: 'Increase the number of runners'
+inputs:
+  inc:
+    description: 'number to increase'
+    required: true
+  max:
+    description: 'maximum allowed'
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v1
+    - name: Increase runners with ${{ inputs.inc }}
+      shell: bash
+      run: |
+        source ./scripts/kubeconfig-runners.sh
+        ./scripts/increase-runners.sh ${{ inputs.inc }} ${{ inputs.max }}
+        echo "::notice ::Increased runners with ${{ inputs.inc }}"

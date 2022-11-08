@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
         <artifactId>spring-functions-parent</artifactId>
-        <version>${revision}</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../../spring-functions-parent/pom.xml</relativePath>
     </parent>
 
@@ -14,8 +14,8 @@
     <description>aws-s3 consumer</description>
 
     <properties>
-        <spring-integration-aws.version>2.3.4.RELEASE</spring-integration-aws.version>
-        <spring-cloud-aws.version>2.2.4.RELEASE</spring-cloud-aws.version>
+        <spring-integration-aws.version>2.5.2</spring-integration-aws.version>
+        <spring-cloud-aws.version>2.4.2</spring-cloud-aws.version>
     </properties>
 
     <dependencies>
@@ -25,7 +25,7 @@
             <version>${spring-integration-aws.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>io.awspring.cloud</groupId>
             <artifactId>spring-cloud-starter-aws</artifactId>
             <version>${spring-cloud-aws.version}</version>
         </dependency>

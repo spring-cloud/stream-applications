@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import twitter4j.GeoLocation;
 import twitter4j.HashtagEntity;
 import twitter4j.MediaEntity;

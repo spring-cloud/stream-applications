@@ -5,8 +5,8 @@
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
         <artifactId>spring-functions-parent</artifactId>
-        <version>${revision}</version>
-        <relativePath>../../spring-functions-parent</relativePath>
+        <version>4.0.0-SNAPSHOT</version>
+        <relativePath>../../spring-functions-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>metadata-store-common</artifactId>
@@ -14,10 +14,10 @@
     <description>metadata-store common</description>
 
     <properties>
-        <aws-java-sdk.version>1.11.951</aws-java-sdk.version>
-        <spring-integration-aws.version>2.5.0</spring-integration-aws.version>
+        <aws-java-sdk.version>1.12.322</aws-java-sdk.version>
+        <spring-integration-aws.version>2.5.2</spring-integration-aws.version>
         <spring-integration-hazelcast.version>3.0.0</spring-integration-hazelcast.version>
-        <curator.version>4.0.1</curator.version>
+        <curator.version>5.3.0</curator.version>
     </properties>
 
     <dependencies>
@@ -45,13 +45,7 @@
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>de.flapdoodle.embed</groupId>
-            <artifactId>de.flapdoodle.embed.mongo</artifactId>
-            <scope>test</scope>
-        </dependency>
 
-        <!--Gemfire-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
@@ -62,22 +56,6 @@
                     <artifactId>log4j-to-slf4j</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.integration</groupId>
-            <artifactId>spring-integration-gemfire</artifactId>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.data</groupId>
-                    <artifactId>spring-data-gemfire</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-geode</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!--JDBC-->
@@ -114,7 +92,6 @@
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-hazelcast</artifactId>
-            <version>${spring-integration-hazelcast.version}</version>
             <optional>true</optional>
         </dependency>
 

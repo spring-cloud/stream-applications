@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.cloud.stream.messaging.DirectWithAttributesChannel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
@@ -29,6 +30,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageBuilder;
 
+@AutoConfiguration
 public class ContentTypeHeaderBeanPostProcessorAutoConfiguration {
 
 	private static Log log = LogFactory.getLog(ContentTypeHeaderBeanPostProcessorAutoConfiguration.class);

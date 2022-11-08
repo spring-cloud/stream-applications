@@ -1,0 +1,336 @@
+name: 'Housekeeping'
+
+on:
+  workflow_dispatch:
+    inputs:
+      last_success:
+        description: 'Default is 90 - The number of minutes since last success required to run'
+        default: '120'
+        required: false
+      delete_clusters:
+        default: 'false'
+        description: 'true - Indicates that remaining ci clusters should be deleted'
+        required: false
+      verbose:
+        description: 'Increase verbosity of script outputs'
+        required: false
+        default: 'false'
+  schedule:
+    - cron: '*/30 * * * *'
+
+jobs:
+  housekeeping:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: housekeeping
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: Checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Action: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Check: Check for active workflows'
+        id: only_one
+        uses: ./.github/actions/is_there_only_one
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Check: Needs to re-run'
+        if: ${{ env.ALLOW_HOUSEKEEPING == 'true' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LAST_SUCCESS=$(./scripts/last-workflow-status.sh "${{ github.workflow }}" success)          
+          LAST_LIMIT=${{ inputs.last_success }}
+          if [ "$LAST_LIMIT" == "" ] || [ "$LAST_LIMIT" == "null" ]; then
+            LAST_LIMIT=120
+          fi
+          if (( LAST_SUCCESS < LAST_LIMIT )); then
+            echo "::warning ::Housekeeping prevented, Last: $LAST_SUCCESS, Limit: $LAST_LIMIT"
+            echo "ALLOW_HOUSEKEEPING=false" >> $GITHUB_ENV
+          else
+            ./scripts/list-last-workflows.sh
+            LATEST_FAILED=$(jq 'map(select(.status == "completed" and .conclusion == "failure" and .event == "schedule")) | .[0] | .updated' sort_last.json | sed 's/\"//g')
+            NAME_FAILED=$(jq 'map(select(.status == "completed" and .conclusion == "failure" and .event == "schedule")) | .[0] | .name' sort_last.json | sed 's/\"//g')
+            if [ "$LATEST_FAILED" != "" ] && [ "$LATEST_FAILED" != "null" ]; then
+              LAST_SEC=$(date --date "$LATEST_FAILED" +%s)
+              CURRENT_SEC=$(date +%s)
+              DIFF_MIN=$(((CURRENT_SEC - LAST_SEC) / 60))
+              echo "::notice ::Last failed: $NAME_FAILED, $DIFF_MIN minutes ago"
+              if ((DIFF_MIN < LAST_LIMIT)); then
+                echo "::warning ::Housekeeping prevented, scheduled: $NAME_FAILED failed: $LATEST_FAILED, Limit: $LAST_LIMIT"
+                echo "ALLOW_HOUSEKEEPING=false" >> $GITHUB_ENV
+              fi
+            fi
+          fi
+      - name: 'Action: Cancel when no housekeeping'
+        if: ${{ env.ALLOW_HOUSEKEEPING != 'true' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh run cancel ${{ github.run_id }}
+          echo "::notice ::Cancelled"
+    outputs:
+      allow_housekeeping: ${{ env.ALLOW_HOUSEKEEPING }}
+  scale-down-runners:
+    if: ${{ needs.housekeeping.outputs.allow_housekeeping == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [ housekeeping ]
+    concurrency:
+      group: stream-apps-gh-runners
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: Checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Action: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Runners Cluster provider'
+        shell: bash
+        run: |
+          PROVIDER=$(./scripts/determine-provider.sh stream-apps-gh-runners)
+          echo "PROVIDER=$PROVIDER" >> $GITHUB_ENV
+      - name: 'Install: gcloud cli'
+        if: ${{ env.PROVIDER == 'gke' }}
+        uses: ./.github/actions/install-gcloud
+      - name: 'Action: gcloud auth'
+        if: ${{ env.PROVIDER == 'gke' }}
+        id: auth_gcloud
+        uses: 'google-github-actions/auth@v0'
+        with:
+          create_credentials_file: true
+          credentials_json: ${{ secrets.GCP_CRED_JSON }}
+      - name: 'Configure: Install TMC'
+        if: ${{ env.PROVIDER == 'tmc' }}
+        uses: ./.github/actions/install-tmc
+      - name: 'Action: Login to TMC'
+        if: ${{ env.PROVIDER == 'tmc' }}
+        uses: ./.github/actions/auth-tmc
+        with:
+          tmc_api_token: '${{ secrets.TMC_API_TOKEN }}'
+      - name: 'Install: Groovy'
+        uses: ./.github/actions/install-groovy
+        with:
+          version: 4.0.4
+      - name: 'Configure: Connect to stream-apps-gh-runners'
+        shell: bash
+        env:
+          VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
+        run: |
+          set +e
+          CLUSTER_NAME="stream-apps-gh-runners"
+          source "./scripts/use-${PROVIDER}.sh" $CLUSTER_NAME
+          RC=$?
+          if (( RC != 0 )); then
+            echo "::error ::Could not connect cluster on ${PROVIDER}"            
+            exit 1
+          fi
+          source ./scripts/kubeconfig-${PROVIDER}.sh
+          RC=$?
+          if (( RC != 0 )); then
+            echo "::error ::Could not connect to runners on ${PROVIDER}"
+            exit 1
+          fi
+          echo "CLUSTER_NAME=$CLUSTER_NAME" >> $GITHUB_ENV
+          echo "KUBECONFIG=$KUBECONFIG" >> $GITHUB_ENV
+      - name: 'Action: Check re-run'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
+        run: |
+          # check ci jobs failed less than 90 minutes ago 
+          RE_RUN=$(./scripts/check-rerun-workflows.sh 120)
+          if [ "$RE_RUN" != "" ]; then
+            for run in $RE_RUN; do
+              ./scripts/re-run-workflow.sh $run
+            done
+            echo "RE_RUN=true" >> $GITHUB_ENV
+            exit 0
+          else
+            echo "::notice ::No jobs targeted for re-run"
+          fi
+      - name: 'Action: Limit runners'
+        if: ${{ env.RE_RUN != 'true' }}
+        shell: bash
+        env:
+          VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
+        run: |
+          set +e
+          ./scripts/limit-runners.sh 1 2
+          RC=$?
+          if (( RC != 0 )); then
+            echo "::warning ::Could not limit runners on ${PROVIDER}"
+            echo "RECREATE=true" >> $GITHUB_ENV
+            exit 0
+          fi
+      - name: 'Action: Scale down stream-apps-gh-runners'
+        if: ${{ env.RE_RUN != 'true' }}
+        shell: bash
+        env:
+          VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
+        run: |
+          set +e
+          SCALE=$(./scripts/determine-default.sh stream-apps-gh-runners "scale_down")
+          ./scripts/scale-cluster-nodes.sh stream-apps-gh-runners --nodes $SCALE --max $SCALE --shrink
+          RC=$?
+          if ((RC != 0)); then
+            echo "RECREATE=true" >> $GITHUB_ENV
+          fi
+    outputs:
+      recreate: ${{ env.RECREATE }}
+  scale-down-cluster:
+    if: ${{ needs.housekeeping.outputs.allow_housekeeping == 'true' && needs.housekeeping.outputs.scale-down-matrix != null && needs.housekeeping.outputs.scale-down-matrix != '' }}
+    runs-on: ubuntu-latest
+    needs: [ housekeeping ]
+    strategy:
+      fail-fast: false
+      matrix:
+        cluster: ${{ fromJson(needs.housekeeping.outputs.scale-down-matrix) }}
+    concurrency:
+      group: ${{ matrix.cluster }}
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: Checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: cluster provider'
+        shell: bash
+        run: |
+          PROVIDER=$(./scripts/determine-provider.sh ${{ matrix.cluster }})
+          echo "PROVIDER=$PROVIDER" >> $GITHUB_ENV
+      - name: 'Install: gcloud cli'
+        if: ${{ env.PROVIDER == 'gke' }}
+        uses: ./.github/actions/install-gcloud
+      - name: 'Action: gcloud auth'
+        if: ${{ env.PROVIDER == 'gke' }}
+        id: auth_gcloud
+        uses: 'google-github-actions/auth@v0'
+        with:
+          create_credentials_file: true
+          credentials_json: ${{ secrets.GCP_CRED_JSON }}
+      - name: 'Configure: Install TMC'
+        if: ${{ env.PROVIDER == 'tmc' }}
+        uses: ./.github/actions/install-tmc
+      - name: 'Action: Login to TMC'
+        if: ${{ env.PROVIDER == 'tmc' }}
+        uses: ./.github/actions/auth-tmc
+        with:
+          tmc_api_token: '${{ secrets.TMC_API_TOKEN }}'
+      - name: 'Install: Groovy'
+        uses: ./.github/actions/install-groovy
+        with:
+          version: 4.0.4
+      - name: 'Action: Uninstall infrastructure services in: ${{ matrix.cluster }} in ${{ env.REGION }} for ${{ matrix.jobs }}'
+        shell: bash
+        env:
+          VERBOSE: ${{ inputs.verbose && '--verbose' || '' }}
+          CLUSTER_NAME: ${{ matrix.cluster }}
+        # Add 2 for the infrastructure
+        run: |
+          source ./scripts/kubeconfig-${{ env.PROVIDER }}.sh
+          echo "::notice ::Deleting install infrastructure services on ${{ matrix.cluster }}"
+          ./scripts/delete-infra.sh
+      - name: 'Action: Reduce cluster ${{ matrix.cluster }}'
+        shell: bash
+        timeout-minutes: 20
+        env:
+          VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
+        run: |
+          SCALE=$(./scripts/determine-default.sh ${{ matrix.cluster }} "scale_down")          
+          ./scripts/scale-cluster-nodes.sh ${{ matrix.cluster }} $VERBOSE --shrink --nodes $SCALE --max $SCALE
+  delete-clusters:
+    if: ${{ needs.housekeeping.outputs.allow_housekeeping == 'true' && needs.housekeeping.outputs.delete-matrix != null && needs.housekeeping.outputs.delete-matrix != '' }}
+    runs-on: ubuntu-latest
+    needs: [ housekeeping ]
+    strategy:
+      fail-fast: false
+      matrix:
+        cluster: ${{ fromJson(needs.housekeeping.outputs.delete-matrix) }}
+    concurrency:
+      group: ${{ matrix.cluster }}
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: Checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: cluster provider'
+        shell: bash
+        run: |
+          PROVIDER=$(./scripts/determine-provider.sh ${{ matrix.cluster }})
+          echo "PROVIDER=$PROVIDER" >> $GITHUB_ENV
+      - name: 'Install: gcloud cli'
+        if: ${{ env.PROVIDER == 'gke' }}
+        uses: ./.github/actions/install-gcloud
+      - name: 'Action: gcloud auth'
+        if: ${{ env.PROVIDER == 'gke' }}
+        id: auth_gcloud
+        uses: 'google-github-actions/auth@v0'
+        with:
+          create_credentials_file: true
+          credentials_json: ${{ secrets.GCP_CRED_JSON }}
+      - name: 'Configure: Install TMC'
+        if: ${{ env.PROVIDER == 'tmc' }}
+        uses: ./.github/actions/install-tmc
+      - name: 'Action: Login to TMC'
+        if: ${{ env.PROVIDER == 'tmc' }}
+        uses: ./.github/actions/auth-tmc
+        with:
+          tmc_api_token: '${{ secrets.TMC_API_TOKEN }}'
+      - name: 'Action: delete cluster ${{ matrix.cluster }} on ${{ env.PROVIDER }}'
+        shell: bash
+        env:
+          VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
+        run: ./scripts/delete-cluster-${PROVIDER}.sh ${{ matrix.cluster }}
+  recreate-runners:
+    if: ${{ needs.scale-down-runners.outputs.recreate == 'true' }}
+    needs:
+      - scale-down-runners
+    uses: ./.github/workflows/recreate-runners.yml
+    with:
+      verbose: ${{ inputs.verbose == 'true' && 'true' || 'false' }}
+    secrets:
+      TMC_API_TOKEN: ${{ secrets.TMC_API_TOKEN }}
+      GCP_CRED_JSON: ${{ secrets.GCP_CRED_JSON }}
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      GH_ARC_APP_ID: ${{ secrets.GH_ARC_APP_ID }}
+      GH_ARC_INSTALLATION_ID: ${{ secrets.GH_ARC_INSTALLATION_ID }}
+      GH_ARC_PRIVATE_KEY: ${{ secrets.GH_ARC_PRIVATE_KEY }}
+  cleanup:
+    if: ${{ always() }}
+    needs:
+      - recreate-runners
+      - scale-down-runners
+      - housekeeping
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Configure: Checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Action: Launch housekeeping cleanup'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run clean-housekeeping.yml --json
+      - name: 'Action: Launch housekeeping on failure'
+        if: ${{ failure() }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run housekeeping.yml

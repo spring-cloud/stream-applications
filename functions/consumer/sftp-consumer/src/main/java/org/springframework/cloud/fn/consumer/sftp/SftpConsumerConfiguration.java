@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2021 the original author or authors.
+ * Copyright 2015-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,10 @@ package org.springframework.cloud.fn.consumer.sftp;
 
 import java.util.function.Consumer;
 
-import com.jcraft.jsch.ChannelSftp;
+import org.apache.sshd.sftp.client.SftpClient;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -31,16 +32,23 @@ import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.sftp.dsl.Sftp;
 import org.springframework.integration.sftp.dsl.SftpMessageHandlerSpec;
 import org.springframework.integration.sftp.session.SftpRemoteFileTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 
-@Configuration
+/**
+ * Configuration for SFTP Consumer.
+ * @author Soby Chacko
+ * @author Corneil du Plessis
+ */
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(SftpConsumerProperties.class)
 @Import(SftpConsumerSessionFactoryConfiguration.class)
 public class SftpConsumerConfiguration {
 
 	@Bean
 	public IntegrationFlow ftpOutboundFlow(SftpConsumerProperties properties,
-			SessionFactory<ChannelSftp.LsEntry> ftpSessionFactory) {
+			SessionFactory<SftpClient.DirEntry> ftpSessionFactory,
+			@Nullable ComponentCustomizer<SftpMessageHandlerSpec> sftpMessageHandlerSpecCustomizer) {
 
 		IntegrationFlowBuilder integrationFlowBuilder =
 				IntegrationFlows.from(MessageConsumer.class, (gateway) -> gateway.beanName("sftpConsumer"));
@@ -56,6 +64,11 @@ public class SftpConsumerConfiguration {
 		if (properties.getFilenameExpression() != null) {
 			handlerSpec.fileNameExpression(properties.getFilenameExpression());
 		}
+
+		if (sftpMessageHandlerSpecCustomizer != null) {
+			sftpMessageHandlerSpecCustomizer.customize(handlerSpec);
+		}
+
 		return integrationFlowBuilder
 				.handle(handlerSpec)
 				.get();

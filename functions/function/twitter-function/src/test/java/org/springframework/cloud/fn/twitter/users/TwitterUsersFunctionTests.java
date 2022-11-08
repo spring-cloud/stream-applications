@@ -37,6 +37,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.fn.common.twitter.TwitterConnectionProperties;
 import org.springframework.cloud.fn.common.twitter.util.TwitterTestUtils;
+import org.springframework.cloud.fn.twitter.TestSocketUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
@@ -67,6 +68,7 @@ import static org.mockserver.verify.VerificationTimes.once;
 public abstract class TwitterUsersFunctionTests {
 
 	private static final String MOCK_SERVER_IP = "127.0.0.1";
+
 
 	private static Integer mockServerPort = 0;
 
@@ -166,7 +168,7 @@ public abstract class TwitterUsersFunctionTests {
 
 	@TestPropertySource(properties = {
 			"twitter.users.type=lookup",
-			"twitter.users.lookup.screenName=#jsonPath(payload,'$..[*].code')"
+			"twitter.users.lookup.screenName=#jsonPath(payload,'$[*].code')"
 	})
 	public static class TwitterLookupScreenNamePayloadTests extends TwitterUsersFunctionTests {
 

@@ -6,13 +6,12 @@
     <artifactId>filter-processor</artifactId>
     <name>filter-processor</name>
     <description>filter processor apps</description>
-    <version>${revision}</version>
 
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
-        <version>3.2.2-SNAPSHOT</version>
-        <relativePath/>
+        <version>4.0.0-SNAPSHOT</version>
+        <relativePath>../../stream-applications-core/pom.xml</relativePath>
     </parent>
 
     <dependencies>

@@ -1,0 +1,27 @@
+name: 'Housekeeping cleanup'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: housekeeping
+      cancel-in-progress: false
+    steps:
+      - name: 'Configure: Checkout stream-applications'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+      - name: 'Action: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Action: Delete cancelled housekeeping'
+        if: ${{ always() }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./scripts/delete-cancelled-housekeeping.sh
+          echo "::notice ::Deleted cancelled housekeeping jobs"

@@ -16,9 +16,8 @@
 
 package org.springframework.cloud.fn.consumer.sftp;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Range;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -30,6 +29,7 @@ import org.springframework.validation.annotation.Validated;
 /**
  * @author Gary Russell
  * @author Artem Bilan
+ * @author Corneil du Plessis
  */
 @ConfigurationProperties("sftp.consumer")
 @Validated
@@ -43,7 +43,7 @@ public class SftpConsumerProperties {
 	private String temporaryRemoteDir = "/";
 
 	/**
-	 * Whether or not to create the remote directory.
+	 * Whether to create the remote directory.
 	 */
 	private boolean autoCreateDir = true;
 
@@ -53,7 +53,7 @@ public class SftpConsumerProperties {
 	private FileExistsMode mode = FileExistsMode.REPLACE;
 
 	/**
-	 * Whether or not to write to a temporary file and rename.
+	 * Whether to write to a temporary file and rename.
 	 */
 	private boolean useTemporaryFilename = true;
 

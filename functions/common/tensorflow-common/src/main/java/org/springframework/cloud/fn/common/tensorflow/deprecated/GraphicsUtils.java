@@ -606,7 +606,7 @@ public final class GraphicsUtils {
 	 * BufferedImage.TYPE_3BYTE_BGR, BufferedImage.TYPE_3BYTE_BGR.
 	 * @param image image to be converted into buffer
 	 * @param imageType desired type
-	 * @return
+	 * @return BufferedImage
 	 */
 	public static BufferedImage toBufferedImageType(BufferedImage image, int imageType) {
 		if (image.getType() == imageType) {

@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.springframework.cloud.fn</groupId>
-        <artifactId>spring-functions-parent</artifactId>
-        <version>${revision}</version>
-        <relativePath>../../spring-functions-parent</relativePath>
-    </parent>
+	<parent>
+		<groupId>org.springframework.cloud.fn</groupId>
+		<artifactId>spring-functions-parent</artifactId>
+		<version>4.0.0-SNAPSHOT</version>
+		<relativePath>../../spring-functions-parent/pom.xml</relativePath>
+	</parent>
 
-    <artifactId>jms-supplier</artifactId>
-    <name>jms-supplier</name>
-    <description>jms supplier</description>
+	<artifactId>jms-supplier</artifactId>
+	<name>jms-supplier</name>
+	<description>jms supplier</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.integration</groupId>
-            <artifactId>spring-integration-jms</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>javax.jms-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-broker</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-jms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.jms</groupId>
+			<artifactId>jakarta.jms-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-artemis</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>artemis-jms-server</artifactId>
+			<version>2.26.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>

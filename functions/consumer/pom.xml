@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.springframework.cloud.fn</groupId>
+	<artifactId>java-functions-consumer</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
+	<name>java-functions-consumer</name>
+	<description>Java Functions Consumer</description>
+	<packaging>pom</packaging>
+
+	<modules>
+
+		<module>cassandra-consumer</module>
+		<module>elasticsearch-consumer</module>
+		<module>analytics-consumer</module>
+		<module>file-consumer</module>
+		<module>ftp-consumer</module>
+		<module>jdbc-consumer</module>
+		<module>log-consumer</module>
+		<module>mongodb-consumer</module>
+		<module>mqtt-consumer</module>
+		<module>rabbit-consumer</module>
+		<module>redis-consumer</module>
+		<module>sftp-consumer</module>
+		<module>tcp-consumer</module>
+		<module>websocket-consumer</module>
+		<module>s3-consumer</module>
+		<module>twitter-consumer</module>
+		<module>wavefront-consumer</module>
+		<module>rsocket-consumer</module>
+		<module>xmpp-consumer</module>
+		<module>zeromq-consumer</module>
+	</modules>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

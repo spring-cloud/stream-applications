@@ -3,11 +3,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>org.springframework.cloud.stream.app</groupId>
 		<artifactId>stream-applications-core</artifactId>
-		<version>3.2.1-SNAPSHOT</version>
-		<relativePath/>
+		<version>4.0.0-SNAPSHOT</version>
+		<relativePath>../stream-applications-core/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>stream-applications-integration-tests</artifactId>
@@ -17,7 +18,7 @@
 	<properties>
 		<mariadb-client.version>2.6.2</mariadb-client.version>
 		<wiremock.version>2.27.1</wiremock.version>
-		<aws.version>1.11.415</aws.version>
+		<aws.version>1.12.261</aws.version>
 		<mysql-connector-java.version>8.0.28</mysql-connector-java.version>
 	</properties>
 
@@ -71,17 +72,6 @@
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>function-test-support</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-geode</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-			</exclusions>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

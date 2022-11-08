@@ -16,9 +16,8 @@
 
 package org.springframework.cloud.fn.consumer.s3;
 
-import javax.validation.constraints.AssertTrue;
-
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import jakarta.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.Length;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

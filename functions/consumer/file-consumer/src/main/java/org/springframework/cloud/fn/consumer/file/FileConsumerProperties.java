@@ -18,7 +18,7 @@ package org.springframework.cloud.fn.consumer.file;
 
 import java.io.File;
 
-import javax.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.AssertTrue;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.integration.file.support.FileExistsMode;

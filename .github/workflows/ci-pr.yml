@@ -1,0 +1,111 @@
+name: 'CI - PR'
+
+on:
+  pull_request:
+    branches:
+      - main
+      - 2021.1.x
+
+env:
+  MAIN_PATH: 'build-dir'
+jobs:
+  check:
+    runs-on: 'stream-ci-large'
+    steps:
+      - name: 'Configure: checkout stream-applications@${{ github.ref }}'
+        uses: actions/checkout@v3
+      - name: 'Configure: checkout stream-applications@main'
+        id: checkout-main
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+          path: ${{ env.MAIN_PATH }}
+      - name: 'Configure: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Install Java'
+        if: ${{ github.base_ref != 'main' }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ needs.parameters.outputs.jdk_build }}
+      - name: 'Configure: Install GraalVM'
+        if: ${{ github.base_ref == 'main' }}
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: '17'
+          #          components: 'native-image' # add when starting native builds.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-pr-${{ github.base_ref }}
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-pr-${{ github.base_ref }}
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
+      - name: 'Configure: Install xsltproc'
+        uses: ./.github/actions/install-xsltproc
+      - name: 'Action: build initial dependencies'
+        shell: bash
+        env:
+          VERBOSE: ${{ github.debug && 'true' || '' }}
+        run: |
+          BUILD_DIR=$(realpath $MAIN_PATH)          
+          MAVEN_OPT="-U -B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
+          echo "::notice ::building - stream-applications-build"
+          set +e
+          $BUILD_DIR/build-folder.sh stream-applications-build install -DskipTests
+          RC=$?
+          if ((RC!=0)); then
+            exit $RC
+          fi
+          echo "::notice ::building - functions"
+          $BUILD_DIR/build-folder.sh functions install -DskipTests
+          RC=$?
+          if ((RC!=0)); then
+            exit $RC
+          fi
+          echo "::notice ::building - stream-applications-core"
+          $BUILD_DIR/build-folder.sh applications/stream-applications-core install -DskipTests
+          RC=$?
+          if ((RC!=0)); then
+            exit $RC
+          fi
+          echo "::notice ::core build completed"
+      - name: 'Configure: get changed files'
+        id: changed-files
+        uses: tj-actions/changed-files@v34
+      - name: 'Action: verify changed modules'
+        shell: bash
+        env:
+          VERBOSE: ${{ github.debug && 'true' || '' }}
+        run: |
+          BUILD_DIR=$(realpath $MAIN_PATH)
+          $BUILD_DIR/create-matrices.sh
+          $BUILD_DIR/scripts/determine-modules-changed.sh "${{ steps.changed-files.outputs.all_changed_files }}"
+          MODULES=$(jq '.[]' modules.json | sed 's/\"//g')
+          FOLDERS=
+          for module in $MODULES; do            
+             if [ "$FOLDERS" = "" ]; then
+              FOLDERS="$module"
+            else
+              FOLDERS="$FOLDERS,$module"
+            fi
+          done
+          echo "::info ::verify $FOLDERS"
+          set +e
+          $BUILD_DIR/build-folder.sh $FOLDERS install verify -amd
+          RC=$?
+          if ((RC!=0)); then
+            exit $RC
+          fi
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'modified-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore

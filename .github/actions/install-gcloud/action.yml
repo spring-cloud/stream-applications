@@ -1,0 +1,17 @@
+name: Install GCP CLI
+description: Install Google cloud CLI
+inputs:
+  credentials_json:
+    required: true
+    description: 'GCP_CRED_JSON from secrets'
+outputs:
+  credentials_file_path:
+    value: ${{ steps.google_auth.outputs.credentials_file_path }}
+    description: 'Path of GCP credentials json file'
+runs:
+  using: "composite"
+  steps:
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+      with:
+        install_components: kubectl,docker-credential-gcr,gke-gcloud-auth-plugin

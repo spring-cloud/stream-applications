@@ -24,10 +24,13 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
+import org.springframework.cloud.fn.common.mongo.MongoDbTestContainerSupport;
 import org.springframework.integration.mongodb.store.ConfigurableMongoDbMessageStore;
 import org.springframework.integration.test.util.TestUtils;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,10 +43,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"aggregator.release=!messages.?[payload == 'bar'].empty",
 		"aggregator.aggregation=#this.?[payload == 'foo'].![payload]",
 		"aggregator.messageStoreType=mongodb",
-		"aggregator.message-store-entity=aggregatorTest",
-		"spring.mongodb.embedded.version=3.5.5" })
+		"aggregator.message-store-entity=aggregatorTest"
+})
 @AutoConfigureDataMongo
-public class CustomPropsAndMongoMessageStoreAggregatorTests extends AbstractAggregatorFunctionTests {
+public class CustomPropsAndMongoMessageStoreAggregatorTests extends AbstractAggregatorFunctionTests
+		implements MongoDbTestContainerSupport {
+
+	@DynamicPropertySource
+	static void mongoDbProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.data.mongodb.uri", MongoDbTestContainerSupport::mongoDbUri);
+		registry.add("spring.data.mongodb.database", () -> "test");
+	}
 
 	@Test
 	public void test() {

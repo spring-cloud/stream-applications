@@ -48,8 +48,10 @@ public class ZeroMqSinkInvalidConfigTests {
 					context.refresh();
 
 				})
-				.withMessageContaining(
-						"Error creating bean with name 'zeromq.consumer-org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerProperties': Could not bind properties to 'ZeroMqConsumerProperties' : prefix=zeromq.consumer, ignoreInvalidFields=false, ignoreUnknownFields=true; nested exception is org.springframework.boot.context.properties.bind.BindException: Failed to bind properties under 'zeromq.consumer' to org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerProperties");
+				.withMessageContaining("Error creating bean with name 'zeromq.consumer-org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerProperties': Could not bind properties to 'ZeroMqConsumerProperties'")
+				.havingRootCause()
+				.withMessageContaining("Binding validation errors on zeromq.consumer")
+				.withMessageContaining("Field error in object 'zeromq.consumer' on field 'connectUrl': rejected value []");
 	}
 
 	@Test
@@ -67,8 +69,9 @@ public class ZeroMqSinkInvalidConfigTests {
 					context.refresh();
 
 				})
-				.withMessageContaining(
-						"Error creating bean with name 'zeromq.consumer-org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerProperties': Could not bind properties to 'ZeroMqConsumerProperties' : prefix=zeromq.consumer, ignoreInvalidFields=false, ignoreUnknownFields=true; nested exception is org.springframework.boot.context.properties.bind.BindException: Failed to bind properties under 'zeromq.consumer.topic' to org.springframework.expression.Expression");
+				.withMessageContaining("Error creating bean with name 'zeromq.consumer-org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerProperties': Could not bind properties to 'ZeroMqConsumerProperties'")
+				.havingCause()
+				.withMessageContaining("Failed to bind properties under 'zeromq.consumer.topic' to org.springframework.expression.Expression");
 	}
 
 	@Configuration

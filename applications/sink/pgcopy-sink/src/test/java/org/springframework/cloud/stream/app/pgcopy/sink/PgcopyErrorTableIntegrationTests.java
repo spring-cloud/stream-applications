@@ -16,62 +16,69 @@
 
 package org.springframework.cloud.stream.app.pgcopy.sink;
 
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.function.Consumer;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.stream.app.pgcopy.test.PostgresTestSupport;
-import org.springframework.cloud.stream.messaging.Sink;
+import org.springframework.cloud.stream.app.pgcopy.test.PostgresAvailableExtension;
+import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration Tests for PgcopySink with error table. Only runs if PostgreSQL database is available.
  *
  * @author Thomas Risberg
  * @author Janne Valkealahti
+ * @author Chris Bono
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
-		classes = PgcopyErrorTableIntegrationTests.PgcopySinkApplication.class)
-@TestPropertySource(properties = { "pgcopy.tableName=names", "pgcopy.batch-size=3", "pgcopy.initialize=true",
-		"pgcopy.columns=id,name,age", "pgcopy.format=CSV", "pgcopy.error-table=test_errors",
-		"spring.datasource.initialization-mode=always", "spring.datasource.schema=classpath:error-table-ddl.sql",
-		"spring.datasource.continue-on-error=true" })
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SpringBootTest(
+		webEnvironment = SpringBootTest.WebEnvironment.NONE,
+		classes = PgcopyErrorTableIntegrationTests.PgcopySinkApplication.class,
+		properties = {
+				"spring.cloud.function.definition=pgcopyConsumer",
+				"pgcopy.tableName=names", "pgcopy.batch-size=3", "pgcopy.initialize=true",
+				"pgcopy.columns=id,name,age", "pgcopy.format=CSV", "pgcopy.error-table=test_errors",
+				"spring.sql.init.mode=always", "spring.sql.init.schema-locations=classpath:error-table-ddl.sql",
+				"spring.sql.init.continue-on-error=true"
+		})
+@ExtendWith(PostgresAvailableExtension.class)
+@DirtiesContext
 public class PgcopyErrorTableIntegrationTests {
 
-	@ClassRule
-	public static PostgresTestSupport postgresAvailable = new PostgresTestSupport();
+	@Autowired
+	private Consumer<Message<?>> pgcopyConsumer;
 
 	@Autowired
-	protected Sink channels;
-
-	@Autowired
-	protected JdbcOperations jdbcOperations;
+	private JdbcOperations jdbcOperations;
 
 	@Test
 	public void testCopyCSV() {
-		channels.input().send(MessageBuilder.withPayload("123,Nisse,25").build());
-		channels.input().send(MessageBuilder.withPayload("GARBAGE").build());
-		channels.input().send(MessageBuilder.withPayload("125,Bubba,22").build());
-		int result = jdbcOperations.queryForObject("select count(*) from names", Integer.class);
-		int errors = jdbcOperations.queryForObject("select count(*) from test_errors", Integer.class);
-		Assert.assertThat(result, is(2));
-		Assert.assertThat(errors, is(1));
+		this.pgcopyConsumer.accept(MessageBuilder.withPayload("123,Nisse,25").build());
+		this.pgcopyConsumer.accept(MessageBuilder.withPayload("GARBAGE").build());
+		this.pgcopyConsumer.accept(MessageBuilder.withPayload("125,Bubba,22").build());
+
+		int result = this.jdbcOperations.queryForObject("select count(*) from names", Integer.class);
+		int errors = this.jdbcOperations.queryForObject("select count(*) from test_errors", Integer.class);
+
+		assertThat(result).isEqualTo(2);
+		assertThat(errors).isEqualTo(1);
 	}
 
-	@SpringBootApplication
+	@SpringBootConfiguration
+	@EnableAutoConfiguration
+	@Import({ PgcopySinkConfiguration.class, TestChannelBinderConfiguration.class })
 	public static class PgcopySinkApplication {
 		public static void main(String[] args) {
 			SpringApplication.run(PgcopySinkApplication.class, args);

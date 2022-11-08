@@ -45,25 +45,25 @@ public class AmazonS3ListOnlyTests extends AbstractAwsS3SupplierMockTests {
 				.assertNext(message -> {
 					S3ObjectSummary summary = (S3ObjectSummary) message.getPayload();
 					assertThat(summary.getBucketName()).isEqualTo(S3_BUCKET);
-					assertThat(keys.contains(summary.getKey()));
+					assertThat(keys).contains(summary.getKey());
 					keys.remove(summary.getKey());
 				})
 				.assertNext(message -> {
 					S3ObjectSummary summary = (S3ObjectSummary) message.getPayload();
 					assertThat(summary.getBucketName()).isEqualTo(S3_BUCKET);
-					assertThat(keys.contains(summary.getKey()));
+					assertThat(keys).contains(summary.getKey());
 					keys.remove(summary.getKey());
 				})
 				.assertNext(message -> {
 					S3ObjectSummary summary = (S3ObjectSummary) message.getPayload();
 					assertThat(summary.getBucketName()).isEqualTo(S3_BUCKET);
-					assertThat(keys.contains(summary.getKey()));
+					assertThat(keys).contains(summary.getKey());
 					keys.remove(summary.getKey());
 				})
-				.expectTimeout(Duration.ofSeconds(1))
+				.thenCancel()
 				.verifyLater();
 		standardIntegrationFlow.start();
 		stepVerifier.verify(Duration.ofSeconds(10));
-		standardIntegrationFlow.stop();
 	}
+
 }

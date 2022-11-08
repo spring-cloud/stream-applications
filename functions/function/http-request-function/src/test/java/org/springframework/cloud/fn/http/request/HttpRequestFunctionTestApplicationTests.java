@@ -165,12 +165,8 @@ public class HttpRequestFunctionTestApplicationTests {
 				httpRequestFunction.apply(new GenericMessage(""));
 				fail("Expected exception");
 			}
-			catch (Throwable x) {
-				final String message = x.getMessage();
-				assertThat(message).isNotNull();
-				if (!message.contains("Connection refused") && !message.contains("Failed to connect")) {
-					fail(message);
-				}
+			catch (Throwable throwable) {
+				assertThat(throwable.getMessage()).contains("Connection refused");
 			}
 		});
 	}
@@ -200,6 +196,7 @@ public class HttpRequestFunctionTestApplicationTests {
 					.build();
 
 				HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
+
 				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
 				assertThat(r.getStatusCode()).isEqualTo(HttpStatus.OK);
 				assertThat(r.getBody()).isEqualTo(message.getHeaders().get("body"));
@@ -227,6 +224,7 @@ public class HttpRequestFunctionTestApplicationTests {
 				Message<?> message = MessageBuilder.withPayload("hello")
 					.build();
 				HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
+
 				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
 				assertThat(r.getStatusCode()).isEqualTo(HttpStatus.OK);
 				assertThat(r.getBody()).isEqualTo("hello".getBytes());
@@ -280,6 +278,7 @@ public class HttpRequestFunctionTestApplicationTests {
 					.withPayload("{\"name\":\"Fred\",\"age\":41, \"myMethod\":\"POST\"}")
 					.build();
 				HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
+
 				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
 				assertThat(r.getStatusCode()).isEqualTo(HttpStatus.OK);
 				assertThat(r.getBody()).isEqualTo(message.getPayload());

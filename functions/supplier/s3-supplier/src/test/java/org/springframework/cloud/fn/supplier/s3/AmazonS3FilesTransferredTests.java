@@ -17,6 +17,7 @@
 package org.springframework.cloud.fn.supplier.s3;
 
 import java.io.File;
+import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
@@ -48,7 +49,7 @@ public class AmazonS3FilesTransferredTests extends AbstractAwsS3SupplierMockTest
 						.thenCancel()
 						.verifyLater();
 		standardIntegrationFlow.start();
-		stepVerifier.verify();
+		stepVerifier.verify(Duration.ofSeconds(10));
 	}
 
 }

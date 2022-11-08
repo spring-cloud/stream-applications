@@ -20,9 +20,9 @@ import io.micrometer.core.instrument.MeterRegistry;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /**
@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Profile;
  *
  * @author Christian Tzolov
  */
-@Configuration
+@AutoConfiguration
 @Profile("cloud")
 @ConditionalOnProperty(name = "spring.cloud.stream.app.metrics.cf.tags.enabled", havingValue = "true", matchIfMissing = true)
 public class CloudFoundryMicrometerCommonTags {

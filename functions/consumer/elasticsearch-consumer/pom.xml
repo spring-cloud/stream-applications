@@ -5,9 +5,13 @@
     <parent>
         <groupId>org.springframework.cloud.fn</groupId>
         <artifactId>spring-functions-parent</artifactId>
-        <version>${revision}</version>
-        <relativePath>../../spring-functions-parent</relativePath>
+        <version>4.0.0-SNAPSHOT</version>
+        <relativePath>../../spring-functions-parent/pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <elasticsearch.version>7.15.2</elasticsearch.version>
+    </properties>
 
     <artifactId>elasticsearch-consumer</artifactId>
     <name>elasticsearch-consumer</name>
@@ -17,6 +21,12 @@
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>${elasticsearch.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -25,7 +35,7 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>payload-converter-function</artifactId>
-            <version>${revision}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>

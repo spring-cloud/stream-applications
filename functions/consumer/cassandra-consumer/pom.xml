@@ -6,18 +6,13 @@
 	<parent>
 		<groupId>org.springframework.cloud.fn</groupId>
 		<artifactId>spring-functions-parent</artifactId>
-		<version>${revision}</version>
-		<relativePath>../../spring-functions-parent</relativePath>
+		<version>4.0.0-SNAPSHOT</version>
+		<relativePath>../../spring-functions-parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>cassandra-consumer</artifactId>
 	<name>cassandra-consumer</name>
 	<description>Cassandra Consumer</description>
-
-	<properties>
-		<springIntegrationCassandara.version>0.8.0.RELEASE</springIntegrationCassandara.version>
-		<cassandra-unit-spring.version>4.3.1.0</cassandra-unit-spring.version>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -27,19 +22,11 @@
 		<dependency>
 			<groupId>org.springframework.integration</groupId>
 			<artifactId>spring-integration-cassandra</artifactId>
-			<version>${springIntegrationCassandara.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.cassandraunit</groupId>
-			<artifactId>cassandra-unit-spring</artifactId>
-			<version>${cassandra-unit-spring.version}</version>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>cassandra</artifactId>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>com.addthis.metrics</groupId>
-					<artifactId>reporter-config3</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 

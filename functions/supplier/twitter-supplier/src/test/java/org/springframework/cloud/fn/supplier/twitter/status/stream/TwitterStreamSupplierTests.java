@@ -20,10 +20,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
@@ -45,8 +44,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.SocketUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.matchers.Times.exactly;
@@ -57,7 +54,6 @@ import static org.mockserver.verify.VerificationTimes.once;
 /**
  * @author Christian Tzolov
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(
 		webEnvironment = SpringBootTest.WebEnvironment.NONE,
 		properties = {
@@ -71,7 +67,7 @@ public abstract class TwitterStreamSupplierTests {
 
 	private static final String MOCK_SERVER_IP = "127.0.0.1";
 
-	private static final Integer MOCK_SERVER_PORT = SocketUtils.findAvailableTcpPort();
+	private static final Integer MOCK_SERVER_PORT = TestSocketUtils.findAvailableTcpPort();
 
 	private static ClientAndServer mockServer;
 
@@ -83,7 +79,7 @@ public abstract class TwitterStreamSupplierTests {
 	@Autowired
 	protected Supplier<Flux<Message<?>>> twitterStreamSupplier;
 
-	@BeforeClass
+	@BeforeAll
 	public static void startServer() {
 
 		mockServer = ClientAndServer.startClientAndServer(MOCK_SERVER_PORT);
@@ -110,7 +106,7 @@ public abstract class TwitterStreamSupplierTests {
 				.withBody(new StringBody("count=0&stall_warnings=true")));
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void stopServer() {
 		mockServer.stop();
 	}

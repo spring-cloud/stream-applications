@@ -24,12 +24,9 @@ import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.stream.binder.ProducerProperties;
-import org.springframework.cloud.stream.binding.BinderAwareChannelResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
-import org.springframework.integration.channel.AbstractMessageChannel;
 import org.springframework.integration.groovy.GroovyScriptExecutingMessageProcessor;
 import org.springframework.integration.router.AbstractMappingMessageRouter;
 import org.springframework.integration.router.AbstractMessageRouter;
@@ -40,9 +37,6 @@ import org.springframework.integration.scripting.DefaultScriptVariableGenerator;
 import org.springframework.integration.scripting.RefreshableResourceScriptSource;
 import org.springframework.integration.scripting.ScriptVariableGenerator;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.converter.CompositeMessageConverter;
-import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.scripting.ScriptSource;
 import org.springframework.util.CollectionUtils;
 
@@ -67,7 +61,7 @@ public class RouterSinkConfiguration {
 	}
 
 	@Bean
-	public MessageRouter router(BinderAwareChannelResolver channelResolver,
+	public MessageRouter router(//BinderAwareChannelResolver channelResolver,
 								ScriptVariableGenerator scriptVariableGenerator) {
 		AbstractMappingMessageRouter router;
 		if (properties.getScript() != null) {
@@ -81,7 +75,7 @@ public class RouterSinkConfiguration {
 		if (properties.getDestinationMappings() != null) {
 			router.replaceChannelMappings(properties.getDestinationMappings());
 		}
-		router.setChannelResolver(channelResolver);
+		//router.setChannelResolver(channelResolver);
 		return router;
 	}
 
@@ -90,6 +84,7 @@ public class RouterSinkConfiguration {
 	// https://github.com/spring-cloud/spring-cloud-stream/commit/5d9de8ad579d3464d1503d1a5d1390168bccbdb9
 	// Therefore we are adding it back in the router sink app by programmatically converting the String back to
 	// byte[] before sending it out to the bound router channel.
+	/*
 	@Bean
 	public BinderAwareChannelResolver.NewDestinationBindingCallback newDestinationBindingCallback(CompositeMessageConverter messageConverter) {
 		return new BinderAwareChannelResolver.NewDestinationBindingCallback() {
@@ -112,6 +107,7 @@ public class RouterSinkConfiguration {
 			}
 		};
 	}
+	*/
 
 	@Bean(name = "variableGenerator")
 	public ScriptVariableGenerator scriptVariableGenerator() throws IOException {

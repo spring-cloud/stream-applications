@@ -1,0 +1,21 @@
+name: 'There can be only one'
+description: 'Checks that this is only current workflow running'
+inputs:
+  github_token:
+    description: 'GITHUB_TOKEN'
+    required: true
+  retries:
+    description: 'Retries'
+    required: false
+    default: '1'
+runs:
+  using: "composite"
+  steps:
+    - name: 'Check active'
+      shell: bash
+      env:
+        GH_TOKEN: '${{ inputs.github_token }}'
+      run: |
+        ALLOW_HOUSEKEEPING=$(./scripts/is_there_only_one.sh "${{ github.workflow }}" ${{ inputs.retries }})
+        echo "ALLOW_HOUSEKEEPING=$ALLOW_HOUSEKEEPING" >> $GITHUB_ENV        
+        echo "::notice ::ALLOW_HOUSEKEEPING=$ALLOW_HOUSEKEEPING"

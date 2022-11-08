@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.cloud.fn.supplier.ftp;
 
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 import org.apache.commons.net.ftp.FTPFile;
 import org.reactivestreams.Publisher;
@@ -24,10 +25,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.cloud.fn.common.file.FileConsumerProperties;
 import org.springframework.cloud.fn.common.file.FileReadingMode;
 import org.springframework.cloud.fn.common.file.FileUtils;
@@ -47,6 +50,7 @@ import org.springframework.integration.ftp.filters.FtpSimplePatternFileListFilte
 import org.springframework.integration.ftp.inbound.FtpInboundFileSynchronizingMessageSource;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
 import org.springframework.integration.util.IntegrationReactiveUtils;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.util.StringUtils;
 
@@ -57,7 +61,7 @@ import org.springframework.util.StringUtils;
  * @author Artem Bilan
  * @author Christian Tzolov
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ FtpSupplierProperties.class, FileConsumerProperties.class })
 @Import(FtpSessionFactoryConfiguration.class)
 public class FtpSupplierConfiguration {
@@ -66,7 +70,7 @@ public class FtpSupplierConfiguration {
 
 	private final FileConsumerProperties fileConsumerProperties;
 
-	private ConcurrentMetadataStore metadataStore;
+	private final ConcurrentMetadataStore metadataStore;
 
 	SessionFactory<FTPFile> ftpSessionFactory;
 
@@ -79,6 +83,7 @@ public class FtpSupplierConfiguration {
 			FileConsumerProperties fileConsumerProperties,
 			ConcurrentMetadataStore metadataStore,
 			SessionFactory<FTPFile> ftpSessionFactory) {
+
 		this.ftpSupplierProperties = ftpSupplierProperties;
 		this.fileConsumerProperties = fileConsumerProperties;
 		this.metadataStore = metadataStore;
@@ -86,7 +91,9 @@ public class FtpSupplierConfiguration {
 	}
 
 	@Bean
-	public FtpInboundChannelAdapterSpec ftpMessageSource() {
+	public FtpInboundChannelAdapterSpec ftpMessageSource(
+			@Nullable ComponentCustomizer<FtpInboundChannelAdapterSpec> ftpInboundChannelAdapterSpecCustomizer) {
+
 		FtpInboundChannelAdapterSpec messageSourceBuilder = Ftp.inboundAdapter(ftpSessionFactory)
 				.preserveTimestamp(this.ftpSupplierProperties.isPreserveTimestamp())
 				.remoteDirectory(this.ftpSupplierProperties.getRemoteDir())
@@ -98,16 +105,21 @@ public class FtpSupplierConfiguration {
 
 		ChainFileListFilter<FTPFile> chainFileListFilter = new ChainFileListFilter<>();
 
-		if (StringUtils.hasText(this.ftpSupplierProperties.getFilenamePattern())) {
-			chainFileListFilter.addFilter(new FtpSimplePatternFileListFilter(this.ftpSupplierProperties.getFilenamePattern()));
+		String filenamePattern = this.ftpSupplierProperties.getFilenamePattern();
+		Pattern filenameRegex = this.ftpSupplierProperties.getFilenameRegex();
+		if (StringUtils.hasText(filenamePattern)) {
+			chainFileListFilter.addFilter(new FtpSimplePatternFileListFilter(filenamePattern));
 		}
-		else if (this.ftpSupplierProperties.getFilenameRegex() != null) {
-			chainFileListFilter.addFilter(new FtpRegexPatternFileListFilter(this.ftpSupplierProperties.getFilenameRegex()));
+		else if (filenameRegex != null) {
+			chainFileListFilter.addFilter(new FtpRegexPatternFileListFilter(filenameRegex));
 		}
 
 		chainFileListFilter.addFilter(new FtpPersistentAcceptOnceFileListFilter(this.metadataStore, "ftpSource/"));
 
 		messageSourceBuilder.filter(chainFileListFilter);
+		if (ftpInboundChannelAdapterSpecCustomizer != null) {
+			ftpInboundChannelAdapterSpecCustomizer.customize(messageSourceBuilder);
+		}
 		return messageSourceBuilder;
 	}
 
@@ -123,19 +135,24 @@ public class FtpSupplierConfiguration {
 
 	@Bean
 	@ConditionalOnExpression("environment['file.consumer.mode'] != 'ref'")
-	public Publisher<Message<Object>> ftpReadingFlow() {
+	public Publisher<Message<Object>> ftpReadingFlow(FtpInboundFileSynchronizingMessageSource ftpMessageSource) {
 		return FileUtils.enhanceFlowForReadingMode(IntegrationFlows
-				.from(IntegrationReactiveUtils.messageSourceToFlux(ftpMessageSource().get())), fileConsumerProperties)
+				.from(IntegrationReactiveUtils.messageSourceToFlux(ftpMessageSource)), fileConsumerProperties)
 				.toReactivePublisher();
 	}
 
 	@Bean
-	public Supplier<Flux<Message<?>>> ftpSupplier() {
+	public Supplier<Flux<Message<?>>> ftpSupplier(@Nullable Publisher<Message<Object>> ftpReadingFlow) {
 		if (this.fileConsumerProperties.getMode() == FileReadingMode.ref) {
 			return this::ftpMessageFlux;
 		}
+		else if (ftpReadingFlow != null) {
+			return () -> Flux.from(ftpReadingFlow);
+		}
 		else {
-			return () -> Flux.from(ftpReadingFlow());
+			throw new BeanInitializationException(
+					"Cannot creat 'ftpSupplier' bean: no 'ftpReadingFlow' dependency and is not 'FileReadingMode.ref'.");
 		}
 	}
+
 }

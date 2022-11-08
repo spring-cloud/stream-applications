@@ -62,6 +62,7 @@ public class TwitterMessageSourceIntegrationTests {
 
 	private static final String MOCK_SERVER_IP = "127.0.0.1";
 
+
 	private static Integer mockServerPort = 0;
 
 	private static ClientAndServer mockServer;

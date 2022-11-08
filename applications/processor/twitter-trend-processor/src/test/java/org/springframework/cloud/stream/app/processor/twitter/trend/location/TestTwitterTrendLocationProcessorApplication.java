@@ -29,10 +29,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.fn.common.twitter.TwitterConnectionProperties;
 import org.springframework.cloud.fn.common.twitter.util.TwitterTestUtils;
 import org.springframework.cloud.fn.twitter.trend.TwitterTrendFunctionConfiguration;
+import org.springframework.cloud.stream.app.processor.twitter.trend.TestSocketUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
-import org.springframework.util.SocketUtils;
 
 import static org.mockserver.matchers.Times.exactly;
 import static org.mockserver.model.HttpResponse.response;
@@ -47,7 +47,7 @@ public class TestTwitterTrendLocationProcessorApplication {
 
 	public static final String MOCK_SERVER_IP = "127.0.0.1";
 
-	public static final Integer MOCK_SERVER_PORT = SocketUtils.findAvailableTcpPort();
+	public static final Integer MOCK_SERVER_PORT = TestSocketUtils.findAvailableTcpPort();
 
 	@Bean
 	@Primary

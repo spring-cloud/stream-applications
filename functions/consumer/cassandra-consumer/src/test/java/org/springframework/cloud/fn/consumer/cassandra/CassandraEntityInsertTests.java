@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,7 @@ package org.springframework.cloud.fn.consumer.cassandra;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -35,22 +32,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Artem Bilan
  */
-@DisabledOnOs(OS.WINDOWS)
 @TestPropertySource(properties = {
-		"spring.data.cassandra.schema-action=RECREATE",
+		"spring.cassandra.schema-action=RECREATE",
 		"cassandra.cluster.entity-base-packages=org.springframework.cloud.fn.consumer.cassandra.domain" })
 class CassandraEntityInsertTests extends CassandraConsumerApplicationTests {
 
 	@Test
-	@Disabled
 	void testInsert() {
-		Book book = new Book();
-		book.setIsbn(UUID.randomUUID());
-		book.setTitle("Spring Integration Cassandra");
-		book.setAuthor("Cassandra Guru");
-		book.setPages(521);
-		book.setSaleDate(LocalDate.now());
-		book.setInStock(true);
+		Book book =
+				new Book(
+						UUID.randomUUID(),
+						"Spring Integration Cassandra",
+						"Cassandra Guru",
+						521,
+						LocalDate.now(),
+						true);
 
 		Mono<? extends WriteResult> result = this.cassandraConsumer.apply(book);
 

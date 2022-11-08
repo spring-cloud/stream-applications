@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Artem Bilan
+ * @author Corneil du Plessis
  */
 public class DefaultAggregatorTests extends AbstractAggregatorFunctionTests {
 
@@ -65,8 +66,6 @@ public class DefaultAggregatorTests extends AbstractAggregatorFunctionTests {
 		assertThat(this.messageGroupStore).isNull();
 		assertThat(this.aggregatingMessageHandler.getMessageStore()).isInstanceOf(SimpleMessageStore.class);
 
-		// Also verify geode ssl flag not enabled for default message store (non-geode)
-		assertThat(this.geodeSslEnable).isFalse();
 	}
 
 }

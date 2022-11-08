@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2020 the original author or authors.
+ * Copyright 2015-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.apache.commons.net.ftp.FTPFile;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.cloud.fn.common.ftp.FtpSessionFactoryConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,9 +36,10 @@ import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.ftp.dsl.Ftp;
 import org.springframework.integration.ftp.dsl.FtpMessageHandlerSpec;
 import org.springframework.integration.ftp.session.FtpRemoteFileTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(FtpConsumerProperties.class)
 @Import(FtpSessionFactoryConfiguration.class)
 public class FtpConsumerConfiguration {
@@ -48,7 +50,8 @@ public class FtpConsumerConfiguration {
 	FtpConsumerProperties ftpConsumerProperties;
 
 	@Bean
-	public IntegrationFlow ftpInboundFlow(FtpConsumerProperties properties, SessionFactory<FTPFile> ftpSessionFactory) {
+	public IntegrationFlow ftpInboundFlow(FtpConsumerProperties properties, SessionFactory<FTPFile> ftpSessionFactory,
+			@Nullable ComponentCustomizer<FtpMessageHandlerSpec> ftpMessageHandlerSpecCustomizer) {
 
 		IntegrationFlowBuilder integrationFlowBuilder =
 				IntegrationFlows.from(MessageConsumer.class, (gateway) -> gateway.beanName("ftpConsumer"));
@@ -60,8 +63,14 @@ public class FtpConsumerConfiguration {
 						.autoCreateDirectory(properties.isAutoCreateDir())
 						.temporaryFileSuffix(properties.getTmpFileSuffix());
 		if (properties.getFilenameExpression() != null) {
-			handlerSpec.fileNameExpression(EXPRESSION_PARSER.parseExpression(properties.getFilenameExpression()).getExpressionString());
+			handlerSpec.fileNameExpression(
+					EXPRESSION_PARSER.parseExpression(properties.getFilenameExpression()).getExpressionString());
 		}
+
+		if (ftpMessageHandlerSpecCustomizer != null) {
+			ftpMessageHandlerSpecCustomizer.customize(handlerSpec);
+		}
+
 		return integrationFlowBuilder
 				.handle(handlerSpec)
 				.get();

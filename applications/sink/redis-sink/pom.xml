@@ -3,7 +3,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>redis-sink</artifactId>
-    <version>${revision}</version>
     <name>redis-sink</name>
     <description>redis sink apps</description>
     <packaging>jar</packaging>
@@ -11,8 +10,8 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-core</artifactId>
-        <version>3.2.2-SNAPSHOT</version>
-        <relativePath/>
+        <version>4.0.0-SNAPSHOT</version>
+        <relativePath>../../stream-applications-core/pom.xml</relativePath>
     </parent>
 
     <properties>
@@ -25,12 +24,18 @@
             <artifactId>redis-consumer</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.playtika.testcontainers</groupId>
-            <artifactId>embedded-redis</artifactId>
-            <version>${embedded-redis.version}</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>redis-common</artifactId>
+			<version>4.0.0-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>

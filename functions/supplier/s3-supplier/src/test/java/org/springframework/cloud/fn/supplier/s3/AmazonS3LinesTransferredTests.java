@@ -17,6 +17,7 @@
 package org.springframework.cloud.fn.supplier.s3;
 
 import java.io.File;
+import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
@@ -35,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AmazonS3LinesTransferredTests extends AbstractAwsS3SupplierMockTests {
 
 	@Test
-	public void test() throws Exception {
+	public void test() {
 		final Flux<Message<?>> messageFlux = s3Supplier.get();
 		StepVerifier stepVerifier =
 				StepVerifier.create(messageFlux)
@@ -52,7 +53,7 @@ public class AmazonS3LinesTransferredTests extends AbstractAwsS3SupplierMockTest
 						.thenCancel()
 						.verifyLater();
 		standardIntegrationFlow.start();
-		stepVerifier.verify();
+		stepVerifier.verify(Duration.ofSeconds(10));
 
 		assertThat(this.awsS3SupplierProperties.getLocalDir().list().length).isEqualTo(1);
 	}

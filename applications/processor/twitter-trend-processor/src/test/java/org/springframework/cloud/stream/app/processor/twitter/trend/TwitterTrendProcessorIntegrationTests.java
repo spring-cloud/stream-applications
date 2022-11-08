@@ -46,7 +46,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.util.SocketUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.matchers.Times.exactly;
@@ -61,7 +60,7 @@ public class TwitterTrendProcessorIntegrationTests {
 
 	private static final String MOCK_SERVER_IP = "127.0.0.1";
 
-	private static final Integer MOCK_SERVER_PORT = SocketUtils.findAvailableTcpPort();
+	private static final Integer MOCK_SERVER_PORT = TestSocketUtils.findAvailableTcpPort();
 
 	private static ClientAndServer mockServer;
 

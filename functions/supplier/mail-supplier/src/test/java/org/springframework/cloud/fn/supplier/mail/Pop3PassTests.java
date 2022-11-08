@@ -17,16 +17,17 @@
 package org.springframework.cloud.fn.supplier.mail;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import org.springframework.integration.test.mail.TestMailServer;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 @TestPropertySource(properties = "mail.supplier.url=pop3://user:pw@localhost:${test.mail.server.port}/INBOX")
 public class Pop3PassTests extends AbstractMailSupplierTests {
 

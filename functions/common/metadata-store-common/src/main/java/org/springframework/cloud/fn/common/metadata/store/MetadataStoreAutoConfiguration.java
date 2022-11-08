@@ -24,22 +24,17 @@ import io.awspring.cloud.core.region.RegionProvider;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryForever;
-import org.apache.geode.cache.GemFireCache;
-import org.apache.geode.cache.Region;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.gemfire.client.ClientRegionFactoryBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.integration.aws.metadata.DynamoDbMetadataStore;
-import org.springframework.integration.gemfire.metadata.GemfireMetadataStore;
 import org.springframework.integration.hazelcast.metadata.HazelcastMetadataStore;
 import org.springframework.integration.jdbc.metadata.JdbcMetadataStore;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
@@ -53,9 +48,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /**
  * @author Artem Bilan
  * @author David Turanski
+ * @author Corneil du Plessis
  * @since 2.0.2
  */
-@Configuration
+@AutoConfiguration
 @ConditionalOnClass(ConcurrentMetadataStore.class)
 @EnableConfigurationProperties(MetadataStoreProperties.class)
 public class MetadataStoreAutoConfiguration {
@@ -89,35 +85,6 @@ public class MetadataStoreAutoConfiguration {
 				MetadataStoreProperties metadataStoreProperties) {
 
 			return new MongoDbMetadataStore(mongoTemplate, metadataStoreProperties.getMongoDb().getCollection());
-		}
-
-	}
-
-	@ConditionalOnProperty(prefix = "metadata.store", name = "type", havingValue = "gemfire")
-	@Import(ClientCacheAutoConfiguration.class)
-	static class Gemfire {
-
-		@Bean
-		@ConditionalOnMissingBean
-		public ClientRegionFactoryBean<?, ?> gemfireRegion(GemFireCache cache,
-				MetadataStoreProperties metadataStoreProperties) {
-
-			ClientRegionFactoryBean<?, ?> clientRegionFactoryBean = new ClientRegionFactoryBean<>();
-			clientRegionFactoryBean.setCache(cache);
-			clientRegionFactoryBean.setName(metadataStoreProperties.getGemfire().getRegion());
-			return clientRegionFactoryBean;
-		}
-
-		@Bean
-		@ConditionalOnMissingBean
-		public ConcurrentMetadataStore gemfireMetadataStore(Region<?, ?> region,
-				ObjectProvider<MetadataStoreListener> metadataStoreListenerObjectProvider) {
-
-			@SuppressWarnings("unchecked")
-			GemfireMetadataStore gemfireMetadataStore = new GemfireMetadataStore((Region<String, String>) region);
-			metadataStoreListenerObjectProvider.ifAvailable(gemfireMetadataStore::addListener);
-
-			return gemfireMetadataStore;
 		}
 
 	}
