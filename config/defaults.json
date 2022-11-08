@@ -14,7 +14,7 @@
     "pods_per_job": 1,
     "ram_per_pod": 2,
     "cpu_per_pod": 1.5,
-    "machine_type": "e2-standard-8",
+    "machine_type": "e2-custom-8-16",
     "runner_scaling": "manual",
     "scale_down": 1,
     "arc_version": "v0.26.0",
