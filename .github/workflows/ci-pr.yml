@@ -56,19 +56,19 @@ jobs:
           MAVEN_OPT="-U -B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
           echo "::notice ::building - stream-applications-build"
           set +e
-          $BUILD_DIR/build-folder.sh stream-applications-build
+          $BUILD_DIR/build-folder.sh stream-applications-build install -DskipTests
           RC=$?
           if ((RC!=0)); then
             exit $RC
           fi
           echo "::notice ::building - functions"
-          $BUILD_DIR/build-folder.sh functions
+          $BUILD_DIR/build-folder.sh functions install -DskipTests
           RC=$?
           if ((RC!=0)); then
             exit $RC
           fi
           echo "::notice ::building - stream-applications-core"
-          $BUILD_DIR/build-folder.sh applications/stream-applications-core
+          $BUILD_DIR/build-folder.sh applications/stream-applications-core install -DskipTests
           RC=$?
           if ((RC!=0)); then
             exit $RC
@@ -93,9 +93,6 @@ jobs:
             else
               FOLDERS="$FOLDERS,$module"
             fi
-            if [[ "$module" == *"application" ]]; then
-              $BUILD_DIR/scripts/remove-jib-plugin.sh $module/pom.xml
-            fi
           done
           echo "::info ::verify $FOLDERS"
           set +e
@@ -104,3 +101,11 @@ jobs:
           if ((RC!=0)); then
             exit $RC
           fi
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'modified-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
