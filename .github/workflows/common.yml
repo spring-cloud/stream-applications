@@ -207,7 +207,7 @@ jobs:
           pushd stream-applications > /dev/null
           echo "::notice ::building - stream-applications-build,functions,applications/stream-applications-core"
           set -e
-          $ROOT_DIR/build-folder.sh stream-applications-build,functions,applications/stream-applications-core deploy
+          $ROOT_DIR/build-folder.sh stream-applications-build,functions,applications/stream-applications-core install verify deploy
           set +e
           echo "::notice ::core build completed"
           popd > /dev/null
