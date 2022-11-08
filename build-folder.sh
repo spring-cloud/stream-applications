@@ -87,11 +87,10 @@ if ((RESULT == 0)); then
       RESULT=$?
       set -e
       if ((RESULT == 0)); then
-        break
-      fi
-      RESULT=$(grep -c -F "BUILD FAILURE" build.log)
-      if ((RESULT == 0)); then
-        break
+        RESULT=$(grep -c -F "BUILD FAILURE" build.log)
+        if ((RESULT == 0)); then
+          break
+        fi
       fi
       RETRIES=$((RETRIES - 1))
       if ((RETRIES >= 0)); then
