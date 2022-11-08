@@ -207,7 +207,7 @@ jobs:
           pushd stream-applications > /dev/null
           echo "::notice ::building - stream-applications-build,functions,applications/stream-applications-core"
           set -e
-          $ROOT_DIR/build-folder.sh stream-applications-build,functions,applications/stream-applications-core install verify deploy
+          $ROOT_DIR/build-folder.sh stream-applications-build,functions,applications/stream-applications-core "install verify deploy"
           set +e
           echo "::notice ::core build completed"
           popd > /dev/null
@@ -225,10 +225,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          gh run view ${{ github.run_id }} -v | grep "^X"
           FAILURES=$(gh run view ${{ github.run_id }} -v | grep "^X")
           COUNT_TESTS=$(echo "$FAILURES" | grep -c -F "tests ")
           if((COUNT_TESTS > 0)); then
-            echo "Re-run ${{ github.workflow }} run ${{ github.run_id }}"
+            echo "::info ::Re-run ${{ github.workflow }} run ${{ github.run_id }}"
             gh run rerun ${{ github.run_id }} --failed --debug
           else
             echo "Checked ${{ github.workflow }} run ${{ github.run_id }}. No failures in tests jobs:"

@@ -52,31 +52,57 @@ if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
   check_env CI_DEPLOY_USERNAME
   check_env CI_DEPLOY_PASSWORD
 fi
-for FOLDER in $FOLDERS; do
-  RETRIES=3
-  while ((RETRIES > 0)); do
-    set +e
-    ./mvnw -U -f "$FOLDER" $MAVEN_OPTS dependency:tree
-    set -e
-    RESULT=$?
-    if ((RESULT == 0)); then
-      break
-    fi
-    RETRIES=$((RETRIES - 1))
-  done
-done
 
 MODULE_ARGS=""
 for FOLDER in $FOLDERS; do
-  if [ "$MAVEN_GOAL" != "install" ]; then
-    echo -e "Maven goals:${bold}-f $FOLDER -DskipTests install${end}"
-    ./mvnw -f "$FOLDER" -DskipTests $MAVEN_OPTS install
-  fi
   if [ "$MODULE_ARGS" == "" ]; then
     MODULE_ARGS="$FOLDER"
   else
     MODULE_ARGS="$MODULE_ARGS,$FOLDER"
   fi
 done
+
+RETRIES=3
+while ((RETRIES > 0)); do
+  set +e
+  ./mvnw -U -pl "$MODULE_ARGS" $MAVEN_OPTS dependency:collect
+  set -e
+  RESULT=$?
+  if ((RESULT == 0)); then
+    break
+  fi
+  RETRIES=$((RETRIES - 1))
+done
+if [ "$MAVEN_GOAL" != "install" ]; then
+  echo -e "Maven goals:${bold}-pl $MODULE_ARGS -DskipTests install${end}"
+  RETRIES=1
+  while ((RETRIES > 0)); do
+    set +e
+    ./mvnw -pl "$MODULE_ARGS" -DskipTests $MAVEN_OPTS install
+    set -e
+    RESULT=$?
+    if ((RESULT == 0)); then
+      break
+    fi
+    RETRIES=$((RETRIES - 1))
+    if ((RETRIES > 0)); then
+      echo -e "RETRY:Maven goals:${bold}-pl $MODULE_ARGS -DskipTests install${end}"
+    fi
+  done
+fi
+
 echo -e "Maven goals:${bold}-pl $MODULE_ARGS $MAVEN_GOAL${end}"
-./mvnw -pl "$MODULE_ARGS" $MAVEN_OPTS $MAVEN_GOAL
+RETRIES=1
+while ((RETRIES > 0)); do
+  set +e
+  ./mvnw -pl "$MODULE_ARGS" $MAVEN_OPTS $MAVEN_GOAL
+  set -e
+  RESULT=$?
+  if ((RESULT == 0)); then
+    break
+  fi
+  RETRIES=$((RETRIES - 1))
+  if ((RETRIES > 0)); then
+    echo -e "RETRY:Maven goals:${bold}-pl $MODULE_ARGS $MAVEN_GOAL${end}"
+  fi
+done
