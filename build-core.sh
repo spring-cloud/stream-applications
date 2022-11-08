@@ -13,22 +13,5 @@ function check_env() {
     fi
   fi
 }
-check_env CI_DEPLOY_USERNAME
-check_env CI_DEPLOY_PASSWORD
 
-if [ "$VERBOSE" == "true" ]; then
-  MAVEN_OPT=--debug
-fi
-if [ "$MAVEN_OPT" == "" ]; then
-  MAVEN_OPT="-B -U -T 1C"
-else
-  MAVEN_OPT="$MAVEN_OPT -B -U -T 1C"
-fi
-if [ "$1" = "" ]; then
-  MAVEN_GOAL="install"
-else
-  MAVEN_GOAL="$*"
-fi
-$SCDIR/build-folder.sh stream-applications-build "$MAVEN_GOAL"
-$SCDIR/build-folder.sh functions "$MAVEN_GOAL"
-$SCDIR/build-folder.sh applications/stream-applications-core "$MAVEN_GOAL"
+$SCDIR/build-folder.sh stream-applications-build,functions,applications/stream-applications-core "$MAVEN_GOAL"
