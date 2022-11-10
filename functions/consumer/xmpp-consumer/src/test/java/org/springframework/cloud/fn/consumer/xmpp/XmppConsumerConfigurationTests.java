@@ -47,12 +47,20 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.*;
 
 /**
  * @author Daniel Frey
  * @author Chris Bono
  */
-@SpringBootTest
+@SpringBootTest(
+		properties = {
+				"xmpp.factory.user=" + JOHN_USER,
+				"xmpp.factory.password=" + USER_PW,
+				"xmpp.factory.service-name=" + SERVICE_NAME,
+				"xmpp.factory.security-mode=disabled"
+		}
+)
 @DirtiesContext
 public class XmppConsumerConfigurationTests implements XmppTestContainerSupport {
 
@@ -60,10 +68,6 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 	static void registerConfigurationProperties(DynamicPropertyRegistry registry) {
 		registry.add("xmpp.factory.host", () -> XmppTestContainerSupport.getXmppHost());
 		registry.add("xmpp.factory.port", () -> XmppTestContainerSupport.getXmppMappedPort());
-		registry.add("xmpp.factory.user", () -> JOHN_USER);
-		registry.add("xmpp.factory.password", () -> USER_PW);
-		registry.add("xmpp.factory.service-name", () -> SERVICE_NAME);
-		registry.add("xmpp.factory.security-mode", () -> "disabled");
 	}
 
 	@Autowired
