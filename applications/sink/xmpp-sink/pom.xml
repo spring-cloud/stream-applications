@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>xmpp-sink</artifactId>
+    <name>xmpp-sink</name>
+    <description>XMPP sink apps</description>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>org.springframework.cloud.stream.app</groupId>
+        <artifactId>stream-applications-core</artifactId>
+        <version>4.0.0-SNAPSHOT</version>
+        <relativePath>../../stream-applications-core/pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+
+        <!-- Spring Cloud Function dependencies -->
+        <dependency>
+            <groupId>org.springframework.cloud.fn</groupId>
+            <artifactId>xmpp-consumer</artifactId>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud.fn</groupId>
+            <artifactId>function-test-support</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-docs-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
+                <configuration>
+                    <application>
+                        <name>xmpp</name>
+                        <type>sink</type>
+                        <version>${project.version}</version>
+                        <configClass>org.springframework.cloud.fn.consumer.xmpp.XmppConsumerConfiguration.class
+                        </configClass>
+
+                        <maven>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.fn</groupId>
+                                    <artifactId>xmpp-consumer</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.stream.app</groupId>
+                                    <artifactId>stream-applications-composite-function-support</artifactId>
+                                    <version>${stream-apps-core.version}</version>
+                                </dependency>
+                            </dependencies>
+                        </maven>
+                    </application>
+
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

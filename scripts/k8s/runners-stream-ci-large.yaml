@@ -30,7 +30,7 @@ spec:
   githubAPICredentialsFrom:
     secretRef:
       name: controller-manager-secret
-  minReplicas: 1
+  minReplicas: 0
   maxReplicas: 2
   scaleTargetRef:
     kind: RunnerDeployment
@@ -38,4 +38,4 @@ spec:
   scaleUpTriggers:
     - githubEvent:
         workflowJob: {}
-      duration: "30m"
+      duration: "20m"

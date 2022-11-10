@@ -194,6 +194,8 @@ jobs:
             maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
+      - name: 'Configure: Install gh cli'
+        uses: ./.github/actions/install-gh
       - name: 'Action: build initial dependencies'
         shell: bash
         env:
@@ -203,30 +205,31 @@ jobs:
           ROOT_DIR=$(realpath $PWD)
           MAVEN_OPT="-U -B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
           pushd stream-applications > /dev/null
-          echo "::notice ::building - stream-applications-build"
+          echo "::notice ::building - stream-applications-build,functions,applications/stream-applications-core"
           set -e
-          ./mvnw $MAVEN_OPT deploy -f stream-applications-build
-          set +e
-          echo "::notice ::building - functions"
-          set -e
-          ./mvnw $MAVEN_OPT deploy -f functions
-          set +e
-          echo "::notice ::building - stream-applications-core"
-          set -e
-          ./mvnw $MAVEN_OPT deploy -f applications/stream-applications-core
+          $ROOT_DIR/build-folder.sh stream-applications-build,functions,applications/stream-applications-core "install verify deploy"
           set +e
           echo "::notice ::core build completed"
           popd > /dev/null
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'core-surefire-reports'
+          path: 'stream-applications/**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
       - name: 'Action: Re-run ${{ github.workflow }}'
         if: ${{ failure() }}
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          gh run view ${{ github.run_id }} -v | grep "^X"
           FAILURES=$(gh run view ${{ github.run_id }} -v | grep "^X")
           COUNT_TESTS=$(echo "$FAILURES" | grep -c -F "tests ")
           if((COUNT_TESTS > 0)); then
-            echo "Re-run ${{ github.workflow }} run ${{ github.run_id }}"
+            echo "::info ::Re-run ${{ github.workflow }} run ${{ github.run_id }}"
             gh run rerun ${{ github.run_id }} --failed --debug
           else
             echo "Checked ${{ github.workflow }} run ${{ github.run_id }}. No failures in tests jobs:"
@@ -476,6 +479,8 @@ jobs:
     steps:
       - name: 'Configure: Checkout stream-applications'
         uses: actions/checkout@v3
+      - name: 'Configure: Install gh cli'
+        uses: ./.github/actions/install-gh
       - name: 'Action: Re-run ${{ github.workflow }}'
         shell: bash
         env:

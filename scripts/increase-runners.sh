@@ -15,6 +15,9 @@ function count_runners() {
 function count_running() {
   kubectl get rdeploy | grep -F "runners-stream-ci" | awk '{print $4}'
 }
+function count_idle() {
+    kubectl get runners -l runner-deployment-name="runners-stream-ci" --output=json | jq -c '.items | map(.status) | .[] | .phase' | grep -c -F "Idle"
+}
 
 if [ "$1" = "" ]; then
   echo "Expected number to increase"
@@ -43,19 +46,27 @@ if [ "$SCALING" == "auto" ]; then
     MIN_RUNNERS=$MAX_RUNNERS
   fi
 else
-  CURRENT=$(count_runners)
-  echo "There are now $CURRENT runners"
-  TARGET=$((CURRENT + INC))
-  if [ "$MAX_RUNNERS" != "" ]; then
-    MAX=$MAX_RUNNERS
-    if ((TARGET > MAX)); then
-      if ((CURRENT > MAX)); then
-        echo "There are $CURRENT which is more than $MAX"
-        exit 0
+  RUNNING=$(count_runners)
+  IDLE=$(count_idle)
+  CURRENT=$((RUNNING - IDLE))
+  echo "There are now $RUNNING runners and $IDLE idle"
+  if ((INC > IDLE)); then
+    TARGET=$((CURRENT+INC-IDLE))
+    if [ "$MAX_RUNNERS" != "" ]; then
+      MAX=$MAX_RUNNERS
+      if ((TARGET > MAX)); then
+        if ((CURRENT > MAX)); then
+          echo "There are $CURRENT which is more than $MAX"
+          exit 0
+        fi
+        echo "There cannot be more than $MAX runners"
+        TARGET=$MAX
       fi
-      echo "There cannot be more than $MAX runners"
-      TARGET=$MAX
     fi
+  else
+    echo "Sufficient idle"
+    $SCDIR/check-runners.sh
+    exit 0
   fi
 fi
 OS=$(uname)

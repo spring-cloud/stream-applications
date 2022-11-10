@@ -43,9 +43,9 @@ pushd "$PROJECT_FOLDER" > /dev/null
   fi
   echo "Project Version:$VERSION"
   if [ "$LOCAL" == "true" ]; then
-    MAVEN_GOAL="install"
+    MAVEN_GOAL="install verify"
   else
-    MAVEN_GOAL="install deploy"
+    MAVEN_GOAL="install verify deploy"
   fi
 
   if [[ "$VERSION" == "4."* ]]; then
@@ -81,7 +81,7 @@ pushd "$PROJECT_FOLDER" > /dev/null
       for app in $APPS; do
         pushd "$app" > /dev/null
           echo "Building:$APP_FOLDER/apps/$app"
-          ./mvnw $MAVEN_OPT -s $SCDIR/.settings.xml install deploy -Pintegration
+          ./mvnw $MAVEN_OPT -s $SCDIR/.settings.xml $MAVEN_GOAL -Pintegration
           for v in $JDKS; do
             echo "Pack:$app:$VERSION-jdk$v"
             pack build \

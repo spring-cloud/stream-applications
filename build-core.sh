@@ -1,4 +1,6 @@
 #!/bin/bash
+SCDIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+SCDIR=$(realpath "$SCDIR")
 (return 0 2>/dev/null) && sourced=1 || sourced=0
 function check_env() {
   eval ev='$'$1
@@ -11,26 +13,11 @@ function check_env() {
     fi
   fi
 }
-check_env CI_DEPLOY_USERNAME
-check_env CI_DEPLOY_PASSWORD
 
-if [ "$VERBOSE" == "true" ]; then
-  MAVEN_OPT=--debug
-fi
-if [ "$MAVEN_OPT" == "" ]; then
-  MAVEN_OPT=-B
-else
-  MAVEN_OPT="$MAVEN_OPT -B"
-fi
-
-if [ "$LOCAL" == "true" ]; then
+if [ "$1" = "" ]; then
   MAVEN_GOAL="install"
 else
-  MAVEN_GOAL="install deploy"
+  MAVEN_GOAL="$*"
 fi
-# -T 2C
-./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -T 1C -f stream-applications-build
-./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -T 1C -f functions
-./mvnw $MAVEN_OPT -s ./.settings.xml $MAVEN_GOAL -T 1C -f applications/stream-applications-core
 
-
+$SCDIR/build-folder.sh stream-applications-build,functions,applications/stream-applications-core "$MAVEN_GOAL"

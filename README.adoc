@@ -36,7 +36,8 @@ The following are the various components of this repository.
 |link:functions/supplier/ftp-supplier/README.adoc[FTP]
 |link:functions/function/header-enricher-function/README.adoc[Header-Enricher]
 |link:functions/consumer/elasticsearch-consumer/README.adoc[Elasticsearch]
-// |link:functions/supplier/geode-supplier/README.adoc[Geode]
+|
+//|link:functions/supplier/geode-supplier/README.adoc[Geode]
 |link:functions/function/http-request-function/README.adoc[HTTP Request]
 |link:functions/consumer/file-consumer/README.adoc[File]
 |link:functions/supplier/http-supplier/README.adoc[HTTP]
@@ -44,7 +45,8 @@ The following are the various components of this repository.
 |link:functions/consumer/ftp-consumer/README.adoc[FTP]
 |link:functions/supplier/jdbc-supplier/README.adoc[JDBC]
 |link:functions/function/object-detection-function/README.adoc[Object Detection(Tensorflow)]
-// |link:functions/consumer/geode-consumer/README.adoc[Geode]
+|
+//|link:functions/consumer/geode-consumer/README.adoc[Geode]
 |link:functions/supplier/jms-supplier/README.adoc[JMS]
 |link:functions/function/semantic-segmentation-function/README.adoc[Semantic Segmentation(Tensorflow)]
 |link:functions/consumer/jdbc-consumer/README.adoc[JDBC]
@@ -81,9 +83,12 @@ The following are the various components of this repository.
 |link:functions/supplier/websocket-supplier/README.adoc[Websocket]
 |
 |link:functions/consumer/websocket-consumer/README.adoc[Websocket]
-|
+|link:functions/supplier/xmpp-supplier/README.adoc[XMPP]
 |
 |link:functions/consumer/wavefront-consumer/README.adoc[Wavefront]
+|
+|
+|link:functions/consumer/xmpp-consumer/README.adoc[XMPP]
 |===
 
 === Reusable Spring Cloud Stream Applications
@@ -159,6 +164,9 @@ The following are the various components of this repository.
 |
 |
 |link:applications/sink/websocket-sink/README.adoc[Websocket]
+|
+|
+|link:applications/sink/xmpp-sink/README.adoc[XMPP]
 |===
 
 === Build
