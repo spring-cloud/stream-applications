@@ -10,26 +10,27 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>cdc-debezium-source</module>
         <module>file-source</module>
         <module>ftp-source</module>
         <module>jdbc-source</module>
         <module>jms-source</module>
         <module>http-source</module>
-        <module>mqtt-source</module>
-        <module>time-source</module>
         <module>load-generator-source</module>
+        <module>mail-source</module>
         <module>mongodb-source</module>
-        <module>tcp-source</module>
+        <module>mqtt-source</module>
         <module>rabbit-source</module>
         <module>s3-source</module>
         <module>sftp-source</module>
-        <module>twitter-stream-source</module>
-        <module>twitter-search-source</module>
-        <module>twitter-message-source</module>
-        <module>websocket-source</module>
-        <module>cdc-debezium-source</module>
         <module>syslog-source</module>
-        <module>mail-source</module>
+        <module>tcp-source</module>
+        <module>time-source</module>
+        <module>twitter-message-source</module>
+        <module>twitter-search-source</module>
+        <module>twitter-stream-source</module>
+        <module>websocket-source</module>
+        <module>xmpp-source</module>
         <module>zeromq-source</module>
     </modules>
     <build>
