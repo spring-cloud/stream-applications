@@ -50,7 +50,7 @@ public class XmppConsumerConfiguration {
 	public Consumer<Message<?>> xmppConsumer(ChatMessageSendingMessageHandler chatMessageSendingMessageHandler, XmppConsumerProperties properties) {
 		return message -> {
 
-			Message<?> send = MessageBuilder
+			var send = MessageBuilder
 					.fromMessage(message)
 					.setHeaderIfAbsent(XmppHeaders.TO, properties.getChatTo())
 					.build();
