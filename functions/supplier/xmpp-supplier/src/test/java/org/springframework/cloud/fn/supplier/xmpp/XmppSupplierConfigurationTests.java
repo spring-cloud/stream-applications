@@ -47,21 +47,27 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.JANE_USER;
+import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.SERVICE_NAME;
+import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.USER_PW;
 
 /**
  * @author Daniel Frey
  */
-@SpringBootTest
+@SpringBootTest(
+		properties = {
+				"xmpp.factory.user=" + JANE_USER,														// Connect as user intended to listen for messages on behalf of
+				"xmpp.factory.password=" + USER_PW,
+				"xmpp.factory.service-name=" + SERVICE_NAME,
+				"xmpp.factory.security-mode=disabled"
+		}
+)
 public class XmppSupplierConfigurationTests implements XmppTestContainerSupport {
 
 	@DynamicPropertySource
 	static void registerConfigurationProperties(DynamicPropertyRegistry registry) {
 		registry.add("xmpp.factory.host", () -> XmppTestContainerSupport.getXmppHost());
 		registry.add("xmpp.factory.port", () -> XmppTestContainerSupport.getXmppMappedPort());
-		registry.add("xmpp.factory.user", () -> JANE_USER);										// Connect as user intended to listen for messages on behalf of
-		registry.add("xmpp.factory.password", () -> USER_PW);
-		registry.add("xmpp.factory.service-name", () -> SERVICE_NAME);
-		registry.add("xmpp.factory.security-mode", () -> "disabled");
 	}
 
 	@Autowired
