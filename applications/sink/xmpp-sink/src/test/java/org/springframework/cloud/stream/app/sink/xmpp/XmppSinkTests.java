@@ -16,12 +16,9 @@
 
 package org.springframework.cloud.stream.app.sink.xmpp;
 
-import java.io.IOException;
 import java.time.Duration;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
@@ -51,20 +48,18 @@ import static org.awaitility.Awaitility.await;
  *
  * @since 4.0.0
  */
-public class XmppSinkTests implements XmppTestContainerSupport {
+class XmppSinkTests implements XmppTestContainerSupport {
 
 	private XMPPTCPConnection clientConnection;
 
 	@BeforeEach
-	void setup() throws IOException, SmackException, XMPPException, InterruptedException {
-
+	void prepareForTest() throws Exception {
 		var builder = XMPPTCPConnectionConfiguration.builder();
 		builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
 		builder.setHost(XmppTestContainerSupport.getXmppHost());
 		builder.setPort(XmppTestContainerSupport.getXmppMappedPort());
 		builder.setResource(SERVICE_NAME);
-		builder.setUsernameAndPassword(JANE_USER, USER_PW)
-				.setXmppDomain(SERVICE_NAME);
+		builder.setUsernameAndPassword(JANE_USER, USER_PW).setXmppDomain(SERVICE_NAME);
 		this.clientConnection = new XMPPTCPConnection(builder.build());
 		this.clientConnection.connect();
 		this.clientConnection.login();
@@ -72,7 +67,7 @@ public class XmppSinkTests implements XmppTestContainerSupport {
 
 
 	@Test
-	public void testSinkFromFunction() {
+	void sinkFromConsumerFunction() {
 
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(XmppSinkTestApplication.class)).run(
@@ -98,22 +93,10 @@ public class XmppSinkTests implements XmppTestContainerSupport {
 					.untilAsserted(() -> {
 						inputDestination.send(testMessage);
 						Stanza stanza = collector.nextResult();
-						assertStanza(stanza);
-			});
+						assertThat(stanza.getTo().asBareJid().asUnescapedString()).isEqualTo(JANE_USER + "@" + SERVICE_NAME);
+						assertThat(stanza.getFrom().asBareJid().asUnescapedString()).isEqualTo(JOHN_USER + "@" + SERVICE_NAME);
+					});
 		}
-	}
-
-	private void assertStanza(Stanza stanza) {
-		assertTo(stanza);
-		assertFrom(stanza);
-	}
-
-	private void assertTo(Stanza stanza) {
-		assertThat(stanza.getTo().asBareJid().asUnescapedString()).isEqualTo(JANE_USER + "@" + SERVICE_NAME);
-	}
-
-	private void assertFrom(Stanza stanza) {
-		assertThat(stanza.getFrom().asBareJid().asUnescapedString()).isEqualTo(JOHN_USER + "@" + SERVICE_NAME);
 	}
 
 	@SpringBootConfiguration

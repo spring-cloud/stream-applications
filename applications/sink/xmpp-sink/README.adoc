@@ -1,7 +1,7 @@
 //tag::ref-doc[]
-= ZeroMQ Sink
+= XMPP Sink
 
-The "zeromq" sink enables sending messages to a ZeroMQ socket.
+The "xmpp" sink enables sending messages to a XMPP server.
 
 == Input
 
@@ -47,12 +47,6 @@ You can find the corresponding binder based projects here.
 You can then cd into one of the folders and build it:
 ```
 $ ./mvnw clean package
-```
-
-== Examples
-
-```
-java -jar zeromq-sink.jar --zeromq.consumer.connectUrl=tcp://server:port --zeromq.consumer.topic=
 ```
 
 //end::ref-doc[]

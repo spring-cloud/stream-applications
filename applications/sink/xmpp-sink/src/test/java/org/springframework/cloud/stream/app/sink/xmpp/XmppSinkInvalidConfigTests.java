@@ -16,7 +16,8 @@
 
 package org.springframework.cloud.stream.app.sink.xmpp;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -32,59 +33,25 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Tests for XMPP Sink with invalid config.
  *
  * @author Daniel Frey
+ * @author Chris Bono
  * @since 4.0.0
  */
-public class XmppSinkInvalidConfigTests {
+class XmppSinkInvalidConfigTests {
 
-	@Test
-	public void testEmptyFactoryHost() {
+	@ParameterizedTest
+	@ValueSource(strings = { "host", "user", "password" })
+	void requiredXmppConnectionFactoryPropertyIsSetEmpty(String propertyName) {
 		assertThatExceptionOfType(BeanCreationException.class)
 				.isThrownBy(() -> {
-
 					AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-					TestPropertyValues.of("xmpp.factory.host: ").applyTo(context);
+					TestPropertyValues.of(String.format("xmpp.factory.%s: ", propertyName)).applyTo(context);
 					context.register(Config.class);
 					context.refresh();
-
 				})
 				.withMessageContaining("Error creating bean with name 'xmpp.factory-org.springframework.cloud.fn.common.xmpp.XmppConnectionFactoryProperties': Could not bind properties to 'XmppConnectionFactoryProperties'")
 				.havingRootCause()
 				.withMessageContaining("Binding validation errors on xmpp.factory")
-				.withMessageContaining("Field error in object 'xmpp.factory' on field 'host': rejected value []");
-	}
-
-	@Test
-	public void testEmptyFactoryUser() {
-		assertThatExceptionOfType(BeanCreationException.class)
-				.isThrownBy(() -> {
-
-					AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-					TestPropertyValues.of("xmpp.factory.user: ").applyTo(context);
-					context.register(Config.class);
-					context.refresh();
-
-				})
-				.withMessageContaining("Error creating bean with name 'xmpp.factory-org.springframework.cloud.fn.common.xmpp.XmppConnectionFactoryProperties': Could not bind properties to 'XmppConnectionFactoryProperties'")
-				.havingRootCause()
-				.withMessageContaining("Binding validation errors on xmpp.factory")
-				.withMessageContaining("Field error in object 'xmpp.factory' on field 'user': rejected value []");
-	}
-
-	@Test
-	public void testEmptyFactoryPassword() {
-		assertThatExceptionOfType(BeanCreationException.class)
-				.isThrownBy(() -> {
-
-					AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-					TestPropertyValues.of("xmpp.factory.password: ").applyTo(context);
-					context.register(Config.class);
-					context.refresh();
-
-				})
-				.withMessageContaining("Error creating bean with name 'xmpp.factory-org.springframework.cloud.fn.common.xmpp.XmppConnectionFactoryProperties': Could not bind properties to 'XmppConnectionFactoryProperties'")
-				.havingRootCause()
-				.withMessageContaining("Binding validation errors on xmpp.factory")
-				.withMessageContaining("Field error in object 'xmpp.factory' on field 'password': rejected value []");
+				.withMessageContaining("Field error in object 'xmpp.factory' on field '%s': rejected value []", propertyName);
 	}
 
 	@Configuration
