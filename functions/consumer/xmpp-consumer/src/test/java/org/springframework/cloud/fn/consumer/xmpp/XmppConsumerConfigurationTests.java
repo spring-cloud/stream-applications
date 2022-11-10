@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
@@ -82,7 +81,8 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 
 	@BeforeEach
 	void setup() throws IOException, SmackException, XMPPException, InterruptedException {
-		XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
+
+		var builder = XMPPTCPConnectionConfiguration.builder();
 		builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
 		builder.setHost(XmppTestContainerSupport.getXmppHost());
 		builder.setPort(XmppTestContainerSupport.getXmppMappedPort());
@@ -92,6 +92,7 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 		this.clientConnection = new XMPPTCPConnection(builder.build());
 		this.clientConnection.connect();
 		this.clientConnection.login();
+
 	}
 
 	@AfterEach
@@ -101,10 +102,10 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 
 	@Test
 	void messageHandlerConfiguration() {
-		StanzaCollector collector
+		var collector
 				= this.clientConnection.createStanzaCollector(StanzaTypeFilter.MESSAGE);
 
-		Message<?> testMessage =
+		var testMessage =
 				MessageBuilder.withPayload("test")
 						.setHeader(XmppHeaders.TO, JANE_USER + "@" + SERVICE_NAME)
 						.build();
@@ -119,10 +120,10 @@ public class XmppConsumerConfigurationTests implements XmppTestContainerSupport 
 
 	@Test
 	void xmppMessageHandlerConfiguration() throws XmppStringprepException {
-		StanzaCollector collector
+		var collector
 				= this.clientConnection.createStanzaCollector(StanzaTypeFilter.MESSAGE);
 
-		Message<?> testMessage =
+		var testMessage =
 				MessageBuilder.withPayload(org.jivesoftware.smack.packet.MessageBuilder.buildMessage().addBody("en_us", "test").to(JANE_USER + "@" + SERVICE_NAME).build())
 						.build();
 
