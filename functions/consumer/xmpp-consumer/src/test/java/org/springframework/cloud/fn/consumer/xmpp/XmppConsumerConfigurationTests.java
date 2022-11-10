@@ -47,7 +47,9 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.*;
+import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.JOHN_USER;
+import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.SERVICE_NAME;
+import static org.springframework.cloud.fn.test.support.xmpp.XmppTestContainerSupport.USER_PW;
 
 /**
  * @author Daniel Frey
