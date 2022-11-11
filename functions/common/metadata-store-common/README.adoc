@@ -47,48 +47,6 @@ Additional configuration property for `MongoDbMetadataStore` is:
 
 $$metadata.store.mongo-db.collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$metadataStore$$`)*
 
-==== Pivotal Gemfire / Apache Geode
-
-The `GemfireMetadataStore` requires these dependencies for auto-configuration:
-
-[source,xml]
-----
-<dependency>
-    <groupId>org.springframework.integration</groupId>
-    <artifactId>spring-integration-gemfire</artifactId>
-</dependency>
-----
-
-or when your environment is based on the Open Source https://geode.apache.org/[Apache Geode]:
-
-[source,xml]
-----
-<dependency>
-    <groupId>org.springframework.integration</groupId>
-    <artifactId>spring-integration-gemfire</artifactId>
-    <exclusions>
-        <exclusion>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-gemfire</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
-<dependency>
-    <groupId>org.springframework.data</groupId>
-    <artifactId>spring-data-geode</artifactId>
-</dependency>
-----
-
-You also can consider to use https://github.com/spring-projects/spring-boot-data-geode[Spring Boot Data Geode] instead for automatic dependency management and proper Spring Boot auto-configuration for Pivotal Gemfire/Apache Geode.
-
-Additional configuration property for `GemfireMetadataStore` is:
-
-$$metadata.store.gemfire.region$$:: $$Gemfire region name for metadata.$$ *($$String$$, default: `$$MetaData$$`)*
-
-In addition, for the `GemfireMetadataStore`, a `MetadataStoreListener` bean can be configured in the application context to react to the `MetadataStore` events.
-
-A default auto-configured `ClientRegionFactoryBean`, based on the auto-configured `GemFireCache`, bean can be overridden in the target application.
-
 ==== Hazelcast
 
 The `HazelcastMetadataStore` requires regular Spring Boot auto-configuration for https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-caching-provider-hazelcast[Hazelcast] and minimal set of dependencies is like this:

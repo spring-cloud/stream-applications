@@ -12,9 +12,6 @@ include::{stream-apps-root}/{branch}/applications/source/file-source/README.adoc
 [[spring-cloud-stream-modules-ftp-source]]
 include::{stream-apps-root}/{branch}/applications/source/ftp-source/README.adoc[tags=ref-doc]
 
-[[spring-cloud-stream-modules-geode-source]]
-include::{stream-apps-root}/{branch}/applications/source/geode-source/README.adoc[tags=ref-doc]
-
 [[spring-cloud-stream-modules-http-source]]
 include::{stream-apps-root}/{branch}/applications/source/http-source/README.adoc[tags=ref-doc]
 
@@ -70,4 +67,3 @@ include::{stream-apps-root}/{branch}/applications/source/websocket-source/README
 include::{stream-apps-root}/{branch}/applications/source/zeromq-source/README.adoc[tags=ref-doc]
 
 :leveloffset: -2
-

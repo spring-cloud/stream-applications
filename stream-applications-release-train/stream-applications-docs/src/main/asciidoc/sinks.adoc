@@ -18,9 +18,6 @@ include::{stream-apps-root}/{branch}/applications/sink/file-sink/README.adoc[tag
 [[spring-cloud-stream-modules-ftp-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/ftp-sink/README.adoc[tags=ref-doc]
 
-[[spring-cloud-stream-modules-geode-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/geode-sink/README.adoc[tags=ref-doc]
-
 [[spring-cloud-stream-modules-jdbc-sink]]
 include::{stream-apps-root}/{branch}/applications/sink/jdbc-sink/README.adoc[tags=ref-doc]
 
