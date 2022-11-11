@@ -34,19 +34,19 @@
         <nohttp-checkstyle.version>0.0.10</nohttp-checkstyle.version>
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.35</spring-javaformat-checkstyle.version>
-        <spring-boot.version>3.0.0-SNAPSHOT</spring-boot.version>
-        <spring-kafka.version>3.0.0-SNAPSHOT</spring-kafka.version>
-        <spring-rabbit.version>3.0.0-SNAPSHOT</spring-rabbit.version>
-        <spring-integration.version>6.0.0-SNAPSHOT</spring-integration.version>
 
-        <spring-cloud.version>2022.0.0-SNAPSHOT</spring-cloud.version>
-        <spring-cloud-starters.version>4.0.0-SNAPSHOT</spring-cloud-starters.version>
-        <spring-cloud-function.version>4.0.0-SNAPSHOT</spring-cloud-function.version>
-        <spring-cloud-stream-dependencies.version>4.0.0-SNAPSHOT</spring-cloud-stream-dependencies.version>
-        <spring-cloud-stream.version>4.0.0-SNAPSHOT</spring-cloud-stream.version>
+        <spring-boot.version>3.0.0-RC2</spring-boot.version>
+        <spring-kafka.version>3.0.0-RC2</spring-kafka.version>
+        <spring-rabbit.version>3.0.0-RC1</spring-rabbit.version>
+        <spring-integration.version>6.0.0-RC2</spring-integration.version>
+        <spring-cloud.version>2022.0.0-RC1</spring-cloud.version>
+        <spring-cloud-starters.version>4.0.0-RC1</spring-cloud-starters.version>
+        <spring-cloud-function.version>4.0.0-RC1</spring-cloud-function.version>
+        <spring-cloud-stream-dependencies.version>4.0.0-RC1</spring-cloud-stream-dependencies.version>
+        <spring-cloud-stream.version>4.0.0-RC1</spring-cloud-stream.version>
+
         <test-containers.version>1.17.5</test-containers.version>
         <mockserver.version>5.13.2</mockserver.version>
-
         <groovy.version>4.0.5</groovy.version>
         <jakarta-jms.version>3.1.0</jakarta-jms.version>
         <activemq-broker.version>5.16.5</activemq-broker.version>
