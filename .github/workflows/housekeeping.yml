@@ -20,6 +20,7 @@ on:
 
 jobs:
   housekeeping:
+    if: github.repository == 'spring-cloud/stream-applications'
     runs-on: ubuntu-latest
     concurrency:
       group: housekeeping
