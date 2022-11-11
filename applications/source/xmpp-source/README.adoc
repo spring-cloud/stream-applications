@@ -1,0 +1,62 @@
+//tag::ref-doc[]
+= XMPP Source
+
+The "xmpp" source enables receiving messages from an XMPP Server.
+
+== Input
+
+N/A
+
+== Output
+
+=== Payload
+
+* `byte[]`
+
+== Options
+
+The **$$xmpp$$** $$source$$ has the following options:
+
+//tag::configuration-properties[]
+Properties grouped by prefix:
+
+
+=== xmpp.factory
+
+$$host$$:: $$XMPP Host server to connect to.$$ *($$String$$, default: `$$<none>$$`)*
+$$password$$:: $$The Password for the connected user.$$ *($$String$$, default: `$$<none>$$`)*
+$$port$$:: $$Port for connecting to the host.   - Default Client Port: 5222$$ *($$Integer$$, default: `$$5222$$`)*
+$$resource$$:: $$The Resource to bind to on the XMPP Host.   - Can be empty, server will generate one if not set$$ *($$String$$, default: `$$<none>$$`)*
+$$security-mode$$:: $$<documentation missing>$$ *($$SecurityMode$$, default: `$$<none>$$`, possible values: `required`,`ifpossible`,`disabled`)*
+$$service-name$$:: $$The Service Name to set for the XMPP Domain.$$ *($$String$$, default: `$$<none>$$`)*
+$$subscription-mode$$:: $$<documentation missing>$$ *($$SubscriptionMode$$, default: `$$<none>$$`, possible values: `accept_all`,`reject_all`,`manual`)*
+$$user$$:: $$The User the connection should connect as.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== xmpp.supplier
+
+$$payload-expression$$:: $$<documentation missing>$$ *($$Expression$$, default: `$$<none>$$`)*
+$$stanza-filter$$:: $$<documentation missing>$$ *($$StanzaFilter$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+Also see the https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[Spring Boot Documentation]
+for addition properties for the broker connections and listener properties.
+
+== Build
+
+```
+$ ./mvnw clean install -PgenerateApps
+$ cd apps
+```
+You can find the corresponding binder based projects here.
+You can then cd into one of the folders and build it:
+```
+$ ./mvnw clean package
+```
+
+== Examples
+
+```
+java -jar xmpp-source.jar --xmpp.factory.host=localhost --xmpp.factory.port=5222 --xmpp.factory.user=jane --xmpp.factory.password=secret --xmpp.factory.service-name=localhost
+```
+
+//end::ref-doc[]

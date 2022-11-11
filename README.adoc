@@ -158,7 +158,7 @@ The following are the various components of this repository.
 |link:applications/source/websocket-source/README.adoc[Websocket]
 |
 |link:applications/sink/twitter-update-sink/README.adoc[Twitter Update]
-|
+|link:applications/source/xmpp-source/README.adoc[XMPP]
 |
 |link:applications/sink/wavefront-sink/README.adoc[Wavefront]
 |
