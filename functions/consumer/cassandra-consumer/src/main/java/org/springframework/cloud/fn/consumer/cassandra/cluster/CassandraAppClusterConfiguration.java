@@ -123,7 +123,7 @@ public class CassandraAppClusterConfiguration {
 
 		Flux.fromArray(StringUtils.delimitedListToStringArray(scripts, ";", "\r\n\f"))
 				.filter(StringUtils::hasText) // an empty String after the last ';'
-				.flatMap(script -> reactiveCqlOperations.execute(script + ";"))
+				.concatMap(script -> reactiveCqlOperations.execute(script + ";"))
 				.blockLast();
 
 		return null;
