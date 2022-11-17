@@ -43,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Oliver Moser
  * @author Gary Russell
  * @author Artem Bilan
+ * @author Corneil du Plessis
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 		properties = {
@@ -162,10 +163,12 @@ public class WebsocketConsumerTests {
 
 	private List<String> submitMultipleMessages(int messageCount) {
 		List<String> messagesToSend = new ArrayList<>(messageCount);
-		for (int i = 0; i < messageCount; i++) {
-			String message = "message_" + i;
-			messagesToSend.add(message);
-			websocketConsumer.accept(MessageBuilder.withPayload(message).build());
+		synchronized (websocketConsumer) {
+			for (int i = 0; i < messageCount; i++) {
+				String message = "message_" + i;
+				messagesToSend.add(message);
+				websocketConsumer.accept(MessageBuilder.withPayload(message).build());
+			}
 		}
 
 		return messagesToSend;
