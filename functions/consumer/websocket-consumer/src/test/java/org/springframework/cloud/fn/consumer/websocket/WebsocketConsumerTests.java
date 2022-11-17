@@ -157,7 +157,7 @@ public class WebsocketConsumerTests {
 	private WebSocketSession doHandshake(WebsocketConsumerClientHandler handler)
 			throws InterruptedException, ExecutionException {
 		String wsEndpoint = "ws://localhost:" + this.consumerServer.getPort() + this.properties.getPath();
-		return new StandardWebSocketClient().doHandshake(handler, wsEndpoint).get();
+		return new StandardWebSocketClient().execute(handler, wsEndpoint).get();
 	}
 
 	private List<String> submitMultipleMessages(int messageCount) {
