@@ -27,12 +27,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 
 /**
  * @author Christian Tzolov
  * @author Artem Bilan
  * @author David Turanski
+ * @author Corneil du Plessis
  * @since 3.0
  */
 @TestPropertySource(properties = {
@@ -73,7 +74,7 @@ public class SecurityEnabledManagementSecurityEnabledTests extends AbstractSecur
 	public void testEnvEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/env", Map.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-		assertThat(response.hasBody()).isTrue();
+		// SB3 no body when not authorized. assertThat(response.hasBody()).isTrue();
 	}
 
 	@Test
@@ -87,11 +88,10 @@ public class SecurityEnabledManagementSecurityEnabledTests extends AbstractSecur
 	@Test
 	@SuppressWarnings("rawtypes")
 	public void testPostBindingsEndpoint() {
-		/*
-		 * With no auth, this results in some weird RestTemplate error related to HttpRetry.
-		 */
-		assertThatThrownBy(() ->
-		this.restTemplate.postForEntity("/actuator/bindings/upper-in-0",
-				Collections.singletonMap("state", "STOPPED"), Object.class));
+		ResponseEntity<Object> response = this.restTemplate.postForEntity(
+											"/actuator/bindings/upper-in-0",
+												Collections.singletonMap("state", "STOPPED"),
+												Object.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 	}
 }
