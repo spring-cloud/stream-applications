@@ -82,8 +82,9 @@ runs:
         echo "::notice ::Scaling stream-apps-gh-runners to ${{ inputs.max_parallel }} pods"
         source ./scripts/kubeconfig-runners.sh
         IDLE=$(./scripts/count-runners-idle.sh runners-stream-ci)
-        if ((IDLE < ${{ inputs.max_parallel }})); then
-          REQUEST=$((${{ inputs.max_parallel }} - IDLE))
+        INC=$((11 * ${{ inputs.max_parallel }} / 10))
+        if ((IDLE < INC)); then
+          REQUEST=$((INC - IDLE))
           echo "::info Requesting $REQUEST runners with $IDLE idle"
           ./scripts/scale-cluster-pods.sh stream-apps-gh-runners $REQUEST --add 1
         else

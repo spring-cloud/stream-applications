@@ -23,9 +23,9 @@ elif [ "$VERBOSE" == "false" ]; then
   MAVEN_OPTS="-q"
 fi
 if [ "$MAVEN_OPTS" == "" ]; then
-  MAVEN_OPTS="-s ./.settings.xml -B -T 1C"
+  MAVEN_OPTS="-s ./.settings.xml -B -T 0.3C"
 else
-  MAVEN_OPTS="$MAVEN_OPTS -s ./.settings.xml -B -T 1C"
+  MAVEN_OPTS="$MAVEN_OPTS -s ./.settings.xml -B -T 0.3C"
 fi
 
 if [ "$1" == "" ]; then

@@ -16,14 +16,12 @@
 
 package org.springframework.cloud.fn.consumer.websocket;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -82,22 +80,13 @@ public class WebsocketConsumerTests {
 	@Timeout(TIMEOUT)
 	public void testMultipleMessageSingleSubscriber() throws Exception {
 		WebsocketConsumerClientHandler handler = new WebsocketConsumerClientHandler("handler_0", MESSAGE_COUNT, TIMEOUT);
-		try (WebSocketSession session = doHandshake(handler)) {
-			assertThat(session.isOpen());
-			List<String> messagesToSend = submitMultipleMessages(MESSAGE_COUNT);
-			List<String> received = new ArrayList<>();
-			Awaitility.await()
-				.atMost(Duration.ofSeconds(10))
-				.until(() -> {
-						handler.await();
-						received.addAll(handler.getReceivedMessages());
-						return received.size() == MESSAGE_COUNT;
-					}
-				);
+		doHandshake(handler);
 
-			assertThat(received.size()).isEqualTo(MESSAGE_COUNT);
-			messagesToSend.forEach(s -> assertThat(received.contains(s)).isTrue());
-		}
+		List<String> messagesToSend = submitMultipleMessages(MESSAGE_COUNT);
+		handler.await();
+
+		assertThat(handler.getReceivedMessages().size()).isEqualTo(MESSAGE_COUNT);
+		messagesToSend.forEach(s -> assertThat(handler.getReceivedMessages().contains(s)).isTrue());
 	}
 
 	@Test
@@ -110,25 +99,13 @@ public class WebsocketConsumerTests {
 		// submit a single message
 		String payload = UUID.randomUUID().toString();
 		websocketConsumer.accept(MessageBuilder.withPayload(payload).build());
-		List<String> responses = new ArrayList<>();
+
 		// await completion on each handler
 		for (WebsocketConsumerClientHandler handler : handlers) {
-			Awaitility.await()
-				.atMost(Duration.ofSeconds(5))
-				.until(() -> {
-					handler.await();
-					if (!handler.getReceivedMessages().isEmpty()) {
-						responses.add(handler.getReceivedMessages().get(0));
-					}
-					return !handler.getReceivedMessages().isEmpty();
-				});
-
+			handler.await();
+			assertThat(handler.getReceivedMessages().size()).isEqualTo(1);
+			assertThat(handler.getReceivedMessages().get(0)).isEqualTo(payload);
 		}
-		assertThat(responses.size()).isEqualTo(handlers.size());
-		responses.forEach(s -> {
-			assertThat(s).isEqualTo(payload);
-		});
-
 	}
 
 	@Test
@@ -143,22 +120,16 @@ public class WebsocketConsumerTests {
 
 		// wait on each handle
 		for (WebsocketConsumerClientHandler handler : handlers) {
-			Awaitility.await()
-				.atMost(Duration.ofSeconds(5))
-				.until(() -> {
-					handler.await();
-					if (handler.getReceivedMessages().size() == messagesReceived.size()) {
-						return handler.getReceivedMessages().equals(messagesReceived);
-					}
-					return false;
-				});
+			handler.await();
+			assertThat(handler.getReceivedMessages().size()).isEqualTo(messagesReceived.size());
+			assertThat(handler.getReceivedMessages()).isEqualTo(messagesReceived);
 		}
 	}
 
 	private WebSocketSession doHandshake(WebsocketConsumerClientHandler handler)
 			throws InterruptedException, ExecutionException {
 		String wsEndpoint = "ws://localhost:" + this.consumerServer.getPort() + this.properties.getPath();
-		return new StandardWebSocketClient().execute(handler, wsEndpoint).get();
+		return new StandardWebSocketClient().doHandshake(handler, wsEndpoint).get();
 	}
 
 	private List<String> submitMultipleMessages(int messageCount) {

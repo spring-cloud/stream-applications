@@ -53,7 +53,7 @@ jobs:
           VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
           BUILD_DIR=$(realpath $MAIN_PATH)          
-          MAVEN_OPT="-U -B -T 1C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
+          MAVEN_OPT="-U -B -T 0.3C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
           echo "::notice ::building - stream-applications-build"
           set +e
           $BUILD_DIR/build-folder.sh stream-applications-build install -DskipTests

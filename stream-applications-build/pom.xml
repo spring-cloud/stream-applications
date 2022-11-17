@@ -149,6 +149,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <parallel>classes</parallel>
+                    <forkCount>0.3C</forkCount>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
             </plugin>
@@ -326,6 +327,7 @@
                         <version>${maven-surefire-plugin.version}</version>
                         <configuration>
                             <parallel>classes</parallel>
+                            <forkCount>0.3C</forkCount>
                             <excludedGroups>integration</excludedGroups>
                         </configuration>
                     </plugin>
@@ -342,6 +344,7 @@
                         <version>${maven-surefire-plugin.version}</version>
                         <configuration>
                             <parallel>classes</parallel>
+                            <forkCount>0.3C</forkCount>
                             <groups>integration</groups>
                         </configuration>
                     </plugin>
