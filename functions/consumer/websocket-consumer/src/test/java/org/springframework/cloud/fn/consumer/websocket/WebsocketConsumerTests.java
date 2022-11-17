@@ -86,7 +86,7 @@ public class WebsocketConsumerTests {
 			List<String> messagesToSend = submitMultipleMessages(MESSAGE_COUNT);
 			List<String> received = new ArrayList<>();
 			Awaitility.await()
-				.atMost(Duration.ofSeconds(5))
+				.atMost(Duration.ofSeconds(10))
 				.until(() -> {
 						handler.await();
 						received.addAll(handler.getReceivedMessages());
