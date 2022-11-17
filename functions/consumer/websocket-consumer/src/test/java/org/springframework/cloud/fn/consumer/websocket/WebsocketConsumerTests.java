@@ -81,20 +81,22 @@ public class WebsocketConsumerTests {
 	@Timeout(TIMEOUT)
 	public void testMultipleMessageSingleSubscriber() throws Exception {
 		WebsocketConsumerClientHandler handler = new WebsocketConsumerClientHandler("handler_0", MESSAGE_COUNT, TIMEOUT);
-		doHandshake(handler);
-		List<String> messagesToSend = submitMultipleMessages(MESSAGE_COUNT);
-		List<String> received = new ArrayList<>();
-		Awaitility.await()
-			.atMost(Duration.ofSeconds(10))
-			.until(() -> {
-					handler.await();
-					received.addAll(handler.getReceivedMessages());
-					return received.size() == MESSAGE_COUNT;
-				}
-			);
+		try (WebSocketSession session = doHandshake(handler)) {
+			assertThat(session.isOpen());
+			List<String> messagesToSend = submitMultipleMessages(MESSAGE_COUNT);
+			List<String> received = new ArrayList<>();
+			Awaitility.await()
+				.atMost(Duration.ofSeconds(5))
+				.until(() -> {
+						handler.await();
+						received.addAll(handler.getReceivedMessages());
+						return received.size() == MESSAGE_COUNT;
+					}
+				);
 
-		assertThat(received.size()).isEqualTo(MESSAGE_COUNT);
-		messagesToSend.forEach(s -> assertThat(received.contains(s)).isTrue());
+			assertThat(received.size()).isEqualTo(MESSAGE_COUNT);
+			messagesToSend.forEach(s -> assertThat(received.contains(s)).isTrue());
+		}
 	}
 
 	@Test
@@ -111,7 +113,7 @@ public class WebsocketConsumerTests {
 		// await completion on each handler
 		for (WebsocketConsumerClientHandler handler : handlers) {
 			Awaitility.await()
-				.atMost(Duration.ofSeconds(2))
+				.atMost(Duration.ofSeconds(5))
 				.until(() -> {
 					handler.await();
 					if (!handler.getReceivedMessages().isEmpty()) {
@@ -125,6 +127,7 @@ public class WebsocketConsumerTests {
 		responses.forEach(s -> {
 			assertThat(s).isEqualTo(payload);
 		});
+
 	}
 
 	@Test
@@ -139,9 +142,15 @@ public class WebsocketConsumerTests {
 
 		// wait on each handle
 		for (WebsocketConsumerClientHandler handler : handlers) {
-			handler.await();
-			assertThat(handler.getReceivedMessages().size()).isEqualTo(messagesReceived.size());
-			assertThat(handler.getReceivedMessages()).isEqualTo(messagesReceived);
+			Awaitility.await()
+				.atMost(Duration.ofSeconds(5))
+				.until(() -> {
+					handler.await();
+					if (handler.getReceivedMessages().size() == messagesReceived.size()) {
+						return handler.getReceivedMessages().equals(messagesReceived);
+					}
+					return false;
+				});
 		}
 	}
 
@@ -169,7 +178,8 @@ public class WebsocketConsumerTests {
 		List<WebsocketConsumerClientHandler> handlers = new ArrayList<>(handlerCount);
 		for (int i = 0; i < handlerCount; i++) {
 			WebsocketConsumerClientHandler handler = new WebsocketConsumerClientHandler("handler_" + i, messageCount, TIMEOUT);
-			doHandshake(handler);
+			WebSocketSession session = doHandshake(handler);
+			assertThat(session.isOpen());
 			handlers.add(handler);
 		}
 		return handlers;
