@@ -35,6 +35,7 @@ import org.springframework.validation.annotation.Validated;
  * @author Christian Tzolov
  * @author Artem Bilan
  * @author David Turanski
+ * @author Corneil du Plessis
  */
 @Validated
 @ConfigurationProperties("http.request")
@@ -84,6 +85,11 @@ public class HttpRequestFunctionProperties {
 	 * {@link org.springframework.http.ResponseEntity}.
 	 */
 	private Expression replyExpression = new FunctionExpression<ResponseEntity>(ResponseEntity::getBody);
+
+	/**
+	 * A SpEL expression that determines the return type when present.
+	 */
+	private Expression contentTypeExpression;
 
 	@NotNull
 	public Expression getUrlExpression() {
@@ -153,4 +159,11 @@ public class HttpRequestFunctionProperties {
 		this.replyExpression = replyExpression;
 	}
 
+	public Expression getContentTypeExpression() {
+		return contentTypeExpression;
+	}
+
+	public void setContentTypeExpression(Expression contentTypeExpression) {
+		this.contentTypeExpression = contentTypeExpression;
+	}
 }

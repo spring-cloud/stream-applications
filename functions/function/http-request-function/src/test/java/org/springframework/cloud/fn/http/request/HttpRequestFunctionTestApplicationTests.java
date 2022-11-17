@@ -66,7 +66,7 @@ public class HttpRequestFunctionTestApplicationTests {
 		runner.withPropertyValues("http.request.http-method-expression='POST'").run(context -> {
 			HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
 			Message<?> message = MessageBuilder.withPayload("").build();
-			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message).getPayload();
 			assertThat(r.getBody()).isEqualTo("hello");
 			assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
 		});
@@ -91,7 +91,7 @@ public class HttpRequestFunctionTestApplicationTests {
 			String json = "{\"hello\":\"world\"}";
 			Message<?> message = MessageBuilder.withPayload(json)
 				.build();
-			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message).getPayload();
 			assertThat(r.getBody()).isEqualTo(json);
 			assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
 			assertThat(r.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON);
@@ -120,7 +120,7 @@ public class HttpRequestFunctionTestApplicationTests {
 			Map<String, String> json = Collections.singletonMap("hello", "world");
 			Message<?> message = MessageBuilder.withPayload(json)
 				.build();
-			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message).getPayload();
 
 			assertThat(r.getBody()).isEqualTo(json);
 			assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
@@ -148,7 +148,7 @@ public class HttpRequestFunctionTestApplicationTests {
 			HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
 			Message<?> message = MessageBuilder.withPayload("")
 				.build();
-			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+			ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message).getPayload();
 			assertThat(r.getBody()).isNull();
 			assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
 			RecordedRequest request = server.takeRequest(100, TimeUnit.MILLISECONDS);
@@ -200,7 +200,7 @@ public class HttpRequestFunctionTestApplicationTests {
 					.build();
 
 				HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
-				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message).getPayload();
 				assertThat(r.getStatusCode()).isEqualTo(HttpStatus.OK);
 				assertThat(r.getBody()).isEqualTo(message.getHeaders().get("body"));
 				assertThat(r.getHeaders().getContentType())
@@ -227,7 +227,7 @@ public class HttpRequestFunctionTestApplicationTests {
 				Message<?> message = MessageBuilder.withPayload("hello")
 					.build();
 				HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
-				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message).getPayload();
 				assertThat(r.getStatusCode()).isEqualTo(HttpStatus.OK);
 				assertThat(r.getBody()).isEqualTo("hello".getBytes());
 				assertThat(r.getHeaders().getContentType())
@@ -253,7 +253,7 @@ public class HttpRequestFunctionTestApplicationTests {
 					.withPayload("{\"name\":\"Fred\",\"age\":41, \"myMethod\":\"POST\"}")
 					.build();
 				HttpRequestFunction httpRequestFunction = context.getBean(HttpRequestFunction.class);
-				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message);
+				ResponseEntity r = (ResponseEntity) httpRequestFunction.apply(message).getPayload();
 				assertThat(r.getStatusCode()).isEqualTo(HttpStatus.OK);
 				assertThat(r.getBody()).isEqualTo(message.getPayload());
 			});

@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.http.request;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -30,7 +31,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;
@@ -41,7 +45,6 @@ import org.springframework.web.util.UriBuilderFactory;
  *
  * @author David Turanski
  * @author Corneil du Plessis
- *
  **/
 @Configuration
 @EnableConfigurationProperties(HttpRequestFunctionProperties.class)
@@ -63,7 +66,7 @@ public class HttpRequestFunctionConfiguration {
 	 * Function that accepts a {@code Flux<Message<?>>} containing body and headers and
 	 * returns a {@code Flux<ResponseEntity<?>>}.
 	 */
-	public static class HttpRequestFunction implements Function<Message<?>, Object> {
+	public static class HttpRequestFunction implements Function<Message<?>, Message<?>> {
 		private final RestTemplate restTemplate;
 
 		private final UriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
@@ -76,7 +79,7 @@ public class HttpRequestFunctionConfiguration {
 		}
 
 		@Override
-		public Object apply(Message<?> message) {
+		public Message<?> apply(Message<?> message) {
 			HttpEntity<?> httpEntity = new HttpEntity<>(resolveBody(message), resolveHeaders(message));
 			URI uri = uriBuilderFactory.uriString(resolveUrl(message)).build();
 			ResponseEntity<?> responseEntity = restTemplate.exchange(uri,
@@ -84,7 +87,21 @@ public class HttpRequestFunctionConfiguration {
 				httpEntity,
 				properties.getExpectedResponseType()
 			);
-			return properties.getReplyExpression().getValue(responseEntity);
+
+			MessageBuilder<Object> builder = MessageBuilder
+				.withPayload(Objects.requireNonNull(properties.getReplyExpression().getValue(responseEntity)))
+				.copyHeaders(responseEntity.getHeaders().toSingleValueMap());
+			String contentType = null;
+			if (properties.getContentTypeExpression() != null) {
+				contentType = properties.getContentTypeExpression().getValue(message, String.class);
+			}
+			if (!StringUtils.hasText(contentType) && responseEntity.getHeaders().getContentType() != null) {
+				contentType = responseEntity.getHeaders().getContentType().getType();
+			}
+			if (StringUtils.hasText(contentType)) {
+				builder.setHeader(MessageHeaders.CONTENT_TYPE, contentType);
+			}
+			return builder.build();
 		}
 
 		private String resolveUrl(Message<?> message) {
