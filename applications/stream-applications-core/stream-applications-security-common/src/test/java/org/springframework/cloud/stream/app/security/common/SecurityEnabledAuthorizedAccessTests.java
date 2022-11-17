@@ -113,8 +113,7 @@ public class SecurityEnabledAuthorizedAccessTests extends AbstractSecurityCommon
 	@SuppressWarnings("rawtypes")
 	public void testEnvEndpoint() {
 		ResponseEntity<Map> response = this.restTemplate.getForEntity("/actuator/env", Map.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		assertThat(response.hasBody()).isTrue();
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 	}
 
 	@AfterEach
