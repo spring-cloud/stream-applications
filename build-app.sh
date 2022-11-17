@@ -38,7 +38,6 @@ pushd "$PROJECT_FOLDER" > /dev/null
     MAVEN_OPT="$MAVEN_OPT -B -U"
   fi
   if [ "$VERSION" == "" ]; then
-
     VERSION=$($SCDIR/mvn-get-version.sh)
   fi
   echo "Project Version:$VERSION"
