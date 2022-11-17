@@ -107,13 +107,24 @@ public class WebsocketConsumerTests {
 		// submit a single message
 		String payload = UUID.randomUUID().toString();
 		websocketConsumer.accept(MessageBuilder.withPayload(payload).build());
-
+		List<String> responses = new ArrayList<>();
 		// await completion on each handler
 		for (WebsocketConsumerClientHandler handler : handlers) {
-			handler.await();
-			assertThat(handler.getReceivedMessages().size()).isEqualTo(1);
-			assertThat(handler.getReceivedMessages().get(0)).isEqualTo(payload);
+			Awaitility.await()
+				.atMost(Duration.ofSeconds(2))
+				.until(() -> {
+					handler.await();
+					if (!handler.getReceivedMessages().isEmpty()) {
+						responses.add(handler.getReceivedMessages().get(0));
+					}
+					return !handler.getReceivedMessages().isEmpty();
+				});
+
 		}
+		assertThat(responses.size()).isEqualTo(handlers.size());
+		responses.forEach(s -> {
+			assertThat(s).isEqualTo(payload);
+		});
 	}
 
 	@Test
