@@ -13,6 +13,11 @@ on:
         required: false
         default: true
         description: 'Verbose output'
+      useMavenThreads:
+        type: boolean
+        required: false
+        default: false
+        description: 'Enable Maven Threads'
     secrets:
       DOCKER_HUB_USERNAME:
       DOCKER_HUB_PASSWORD:
@@ -201,6 +206,7 @@ jobs:
         env:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
@@ -297,6 +303,7 @@ jobs:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
@@ -312,6 +319,7 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./publish-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
   sinks:
     if: ${{ needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
@@ -374,6 +382,7 @@ jobs:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
@@ -453,6 +462,7 @@ jobs:
           CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
@@ -468,6 +478,7 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./publish-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
   rerun-jobs:
     if: ${{ failure() && github.run_attempt == '1' }}
