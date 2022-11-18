@@ -23,9 +23,9 @@ elif [ "$VERBOSE" == "false" ]; then
   MAVEN_OPTS="-q"
 fi
 if [ "$MAVEN_OPTS" == "" ]; then
-  MAVEN_OPTS="-s ./.settings.xml -B -T 0.3C"
+  MAVEN_OPTS="-s ./.settings.xml -B"
 else
-  MAVEN_OPTS="$MAVEN_OPTS -s ./.settings.xml -B -T 0.3C"
+  MAVEN_OPTS="$MAVEN_OPTS -s ./.settings.xml -B"
 fi
 
 if [ "$1" == "" ]; then
@@ -82,7 +82,7 @@ if ((RESULT == 0)); then
   for FOLDER in $FOLDERS; do
     echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}"
     set +e
-    ./mvnw -f "$FOLDER" $MAVEN_OPTS $MAVEN_GOAL
+    ./mvnw -f "$FOLDER" $MAVEN_OPTS -T 0.3C $MAVEN_GOAL
     RESULT=$?
     set -e
     if ((RESULT != 0)); then
