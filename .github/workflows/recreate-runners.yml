@@ -103,7 +103,7 @@ jobs:
           VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
         run: |
           set +e
-          ./scripts/kubeconfig-runners.sh
+          source ./scripts/kubeconfig-runners.sh
           ./scripts/delete-runners.sh
           ./scripts/delete-runners-${RUNNER_TYPE}.sh
       - name: 'Action: create GH Runners Cluster'
@@ -122,7 +122,9 @@ jobs:
         shell: bash
         env:
           VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
-        run: source ./scripts/kubeconfig-${RUNNER_TYPE}.sh stream-apps-gh-runners
+        run: |
+          source ./scripts/kubeconfig-${RUNNER_TYPE}.sh stream-apps-gh-runners
+          echo "KUBECONFIG=$KUBECONFIG" >> $GITHUB_ENV
       - name: 'Configure: deploy actions-runner-controller into stream-apps-gh-runners'
         shell: bash
         env:
