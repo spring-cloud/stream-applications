@@ -82,7 +82,8 @@ if ((RESULT == 0)); then
   for FOLDER in $FOLDERS; do
     echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}"
     set +e
-    ./mvnw -f "$FOLDER" $MAVEN_OPTS -T 0.25C $MAVEN_GOAL
+    # -T 0.25C
+    ./mvnw -f "$FOLDER" $MAVEN_OPTS -T 0.3C $MAVEN_GOAL
     RESULT=$?
     set -e
     if ((RESULT != 0)); then
