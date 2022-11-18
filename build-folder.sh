@@ -65,7 +65,7 @@ for FOLDER in $FOLDERS; do
   while ((RETRIES >= 0)); do
     echo -e "Resolving dependencies for ${bold}$FOLDER${end}"
     set +e
-    ./mvnw -U -f "$FOLDER" $MAVEN_OPTS dependency:resolve
+    ./mvnw -U -f "$FOLDER" $MAVEN_OPTS -T 0.75C dependency:resolve
     RESULT=$?
     set -e
     if ((RESULT == 0)); then
@@ -82,7 +82,7 @@ if ((RESULT == 0)); then
   for FOLDER in $FOLDERS; do
     echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}"
     set +e
-    ./mvnw -f "$FOLDER" $MAVEN_OPTS -T 0.3C $MAVEN_GOAL
+    ./mvnw -f "$FOLDER" $MAVEN_OPTS -T 0.25C $MAVEN_GOAL
     RESULT=$?
     set -e
     if ((RESULT != 0)); then

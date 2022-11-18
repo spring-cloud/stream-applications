@@ -203,7 +203,6 @@ jobs:
           CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          MAVEN_OPT="-U -B -T 0.3C -s $ROOT_DIR/.settings.xml ${{ inputs.verbose && '--debug' || '' }}"
           pushd stream-applications > /dev/null
           echo "::notice ::building - stream-applications-build,functions,applications/stream-applications-core"
           set -e
