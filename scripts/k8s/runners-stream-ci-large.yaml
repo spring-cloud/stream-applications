@@ -18,7 +18,7 @@ spec:
       resources:
         requests:
           cpu: "3000m"
-          memory: "4Gi"
+          memory: "3Gi"
       labels:
         - stream-ci-large
 ---

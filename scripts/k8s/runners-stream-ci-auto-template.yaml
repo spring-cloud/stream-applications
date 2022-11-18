@@ -18,7 +18,7 @@ spec:
       resources:
         requests:
           cpu: "1500m"
-          memory: "2Gi"
+          memory: "1536Mi"
       labels:
         - stream-ci
 ---
