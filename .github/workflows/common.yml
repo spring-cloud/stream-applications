@@ -187,11 +187,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single-${{ inputs.branch }}
           restore-keys: |
-            maven-repo-${{ hashFiles('**/pom.xml') }}-8
-            maven-repo-${{ hashFiles('**/pom.xml') }}
-            maven-repo-
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8-${{ inputs.branch }}
+            maven-repo-${{ hashFiles('**/pom.xml') }}-${{ inputs.branch }}
+            maven-repo-${{ inputs.branch }}
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install gh cli'
@@ -278,11 +278,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single-${{ inputs.branch }}
           restore-keys: |
-            maven-repo-${{ hashFiles('**/pom.xml') }}-8
-            maven-repo-${{ hashFiles('**/pom.xml') }}
-            maven-repo-
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8-${{ inputs.branch }}
+            maven-repo-${{ hashFiles('**/pom.xml') }}-${{ inputs.branch }}
+            maven-repo-${{ inputs.branch }}
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install Pack'
@@ -355,11 +355,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single-${{ inputs.branch }}
           restore-keys: |
-            maven-repo-${{ hashFiles('**/pom.xml') }}-8
-            maven-repo-${{ hashFiles('**/pom.xml') }}
-            maven-repo-
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8-${{ inputs.branch }}
+            maven-repo-${{ hashFiles('**/pom.xml') }}-${{ inputs.branch }}
+            maven-repo-${{ inputs.branch }}
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install Pack'
@@ -393,6 +393,8 @@ jobs:
         run: ./publish-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
   sources:
     if: ${{ needs.parameters.outputs.sources != '' && needs.parameters.outputs.sources != null }}
+    runs-on: ${{ matrix.app == 'cdc-debezium-source' && 'stream-ci-large' || 'stream-ci' }}
+    #    runs-on: 'stream-ci'
     needs:
       - core
       - parameters
@@ -402,7 +404,6 @@ jobs:
       # will be removed when private runners are used.
       matrix:
         app: ${{ fromJson(needs.parameters.outputs.sources) }}
-    runs-on: ${{ matrix.app == 'cdc-debezium-source' && 'stream-ci-large' || 'stream-ci' }}
     steps:
       - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
@@ -433,11 +434,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single-${{ inputs.branch }}
           restore-keys: |
-            maven-repo-${{ hashFiles('**/pom.xml') }}-8
-            maven-repo-${{ hashFiles('**/pom.xml') }}
-            maven-repo-
+            maven-repo-${{ hashFiles('**/pom.xml') }}-8-${{ inputs.branch }}
+            maven-repo-${{ hashFiles('**/pom.xml') }}-${{ inputs.branch }}
+            maven-repo-${{ inputs.branch }}
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install Pack'
