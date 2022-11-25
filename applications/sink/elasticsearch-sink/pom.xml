@@ -14,10 +14,6 @@
         <relativePath>../../stream-applications-core/pom.xml</relativePath>
     </parent>
 
-    <properties>
-        <test-containers.version>1.14.3</test-containers.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>

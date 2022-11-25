@@ -18,35 +18,42 @@ package org.springframework.cloud.stream.app.sink.elasticsearch;
 
 import java.time.Duration;
 
-import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.junit.jupiter.api.Disabled;
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.GetRequest;
+import co.elastic.clients.elasticsearch.core.GetResponse;
+import co.elastic.clients.json.JsonData;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.fn.consumer.elasticsearch.ElasticsearchConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.elasticsearch.client.ClientConfiguration;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.support.GenericMessage;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("integration")
-@Disabled
 @Testcontainers(disabledWithoutDocker = true)
 public class ElasticsearchSinkTests {
 
 	@Container
-	static final ElasticsearchContainer elasticsearch = new ElasticsearchContainer().withStartupAttempts(5)
-			.withStartupTimeout(Duration.ofMinutes(10));
+	static final ElasticsearchContainer elasticsearch = new ElasticsearchContainer(
+		DockerImageName.parse("docker.elastic.co/elasticsearch/elasticsearch")
+		.withTag("7.17.7")
+	).withStartupAttempts(5)
+		.withStartupTimeout(Duration.ofMinutes(10));
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(TestChannelBinderConfiguration.getCompleteConfiguration(ElasticsearchSinkTestApplication.class));
@@ -60,16 +67,18 @@ public class ElasticsearchSinkTests {
 						"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
 				.run(context -> {
 
-					InputDestination inputDestination = context.getBean(InputDestination.class);
-					String jsonObject = "{\"age\":10,\"dateOfBirth\":1471466076564,"
+					final InputDestination inputDestination = context.getBean(InputDestination.class);
+					final String jsonObject = "{\"age\":10,\"dateOfBirth\":1471466076564,"
 							+ "\"fullName\":\"John Doe\"}";
+
 					inputDestination.send(new GenericMessage<>(jsonObject));
 
-					RestHighLevelClient restHighLevelClient = context.getBean(RestHighLevelClient.class);
-					GetRequest getRequest = new GetRequest("foo").id("1");
-					final GetResponse response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
-					assertThat(response.isExists()).isTrue();
-					assertThat(response.getSourceAsString()).isEqualTo(jsonObject);
+					final ElasticsearchClient elasticsearchClient = context.getBean(ElasticsearchClient.class);
+					final GetRequest getRequest = new GetRequest.Builder().index("foo").id("1").build();
+					final GetResponse<JsonData> response = elasticsearchClient.get(getRequest, JsonData.class);
+					assertThat(response.found()).isTrue();
+					assertThat(response.source()).isNotNull();
+					assertThat(response.source().toJson()).isEqualTo(JsonData.fromJson(jsonObject).toJson());
 				});
 	}
 
@@ -77,6 +86,16 @@ public class ElasticsearchSinkTests {
 	@Import(ElasticsearchConsumerConfiguration.class)
 	static class ElasticsearchSinkTestApplication {
 
+	}
+	@Configuration
+	static class Config extends ElasticsearchConfiguration {
+		@NonNull
+		@Override
+		public ClientConfiguration clientConfiguration() {
+			return ClientConfiguration.builder()
+				.connectedTo(elasticsearch.getHttpHostAddress())
+				.build();
+		}
 	}
 
 }
