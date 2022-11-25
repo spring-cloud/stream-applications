@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.sink.rabbit;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -29,7 +31,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public interface RabbitMqTestContainerSupport {
 
 	GenericContainer<?> RABBIT_MQ_CONTAINER = new GenericContainer<>("rabbitmq")
-			.withExposedPorts(5672);
+		.withExposedPorts(5672)
+		.withStartupTimeout(Duration.ofSeconds(120))
+		.withStartupAttempts(3);
 
 	@BeforeAll
 	static void startContainer() {

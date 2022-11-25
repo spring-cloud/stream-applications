@@ -55,9 +55,10 @@ public abstract class HttpSourceTests {
 	@BeforeAll
 	static void configureSource() {
 		source = BaseContainerExtension.containerInstance()
-				.withEnv("SERVER_PORT", String.valueOf(serverPort))
-				.withExposedPorts(serverPort)
-				.waitingFor(Wait.forListeningPort().withStartupTimeout(DEFAULT_DURATION));
+					.withEnv("SERVER_PORT", String.valueOf(serverPort))
+					.withExposedPorts(serverPort)
+					.waitingFor(Wait.forListeningPort()
+					.withStartupTimeout(DEFAULT_DURATION));
 		source.withLogConsumer(AppLog.appLog("http")).start();
 	}
 

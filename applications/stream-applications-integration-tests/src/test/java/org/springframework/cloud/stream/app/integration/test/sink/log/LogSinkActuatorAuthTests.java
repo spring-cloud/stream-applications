@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.integration.test.sink.log;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,11 +38,13 @@ public abstract class LogSinkActuatorAuthTests {
 
 	@Container
 	private static StreamAppContainer sink = BaseContainerExtension.containerInstance()
-			.withExposedPorts(8080)
-			.withEnv("SPRING_CLOUD_STREAMAPP_SECURITY_ADMIN-PASSWORD", "password")
-			.withEnv("SPRING_CLOUD_STREAMAPP_SECURITY_ADMIN-USER", "user")
-			.withEnv("MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE", "*")
-			.waitingFor(Wait.forLogMessage(".*Started LogSink.*", 1));
+		.withExposedPorts(8080)
+		.withEnv("SPRING_CLOUD_STREAMAPP_SECURITY_ADMIN-PASSWORD", "password")
+		.withEnv("SPRING_CLOUD_STREAMAPP_SECURITY_ADMIN-USER", "user")
+		.withEnv("MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE", "*")
+		.waitingFor(Wait.forLogMessage(".*Started LogSink.*", 1))
+		.withStartupTimeout(Duration.ofSeconds(120))
+		.withStartupAttempts(3);
 
 	@Test
 	void testActuatorGetWithAdminAuth() {

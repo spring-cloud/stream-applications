@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.fn.common.mongo;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -28,8 +30,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers(disabledWithoutDocker = true)
 public interface MongoDbTestContainerSupport {
 
-	MongoDBContainer MONGO_CONTAINER = new MongoDBContainer("mongo:5.0.9");
-
+	MongoDBContainer MONGO_CONTAINER = new MongoDBContainer("mongo:5.0.9")
+		.withStartupTimeout(Duration.ofSeconds(120))
+		.withStartupAttempts(3);
 	@BeforeAll
 	static void startContainer() {
 		MONGO_CONTAINER.start();

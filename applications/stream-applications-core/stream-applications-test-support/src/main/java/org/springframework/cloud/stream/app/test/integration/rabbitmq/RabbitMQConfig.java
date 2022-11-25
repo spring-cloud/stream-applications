@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.test.integration.rabbitmq;
 
+import java.time.Duration;
+
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -34,8 +36,10 @@ public abstract class RabbitMQConfig {
 
 	static {
 		rabbitmq = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3.8-management"))
-				.withNetwork(network)
-				.withExposedPorts(5672, 15672);
+			.withNetwork(network)
+			.withExposedPorts(5672, 15672)
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 		rabbitmq.start();
 	}
 }

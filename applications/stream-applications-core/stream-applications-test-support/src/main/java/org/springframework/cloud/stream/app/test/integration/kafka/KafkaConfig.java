@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.test.integration.kafka;
 
+import java.time.Duration;
+
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.utility.DockerImageName;
@@ -35,8 +37,10 @@ public abstract class KafkaConfig {
 	 */
 	public final static KafkaContainer kafka = new KafkaContainer(
 			DockerImageName.parse("confluentinc/cp-kafka"))
-					.withExposedPorts(9092, 9093)
-					.withNetwork(network);
+			.withExposedPorts(9092, 9093)
+			.withNetwork(network)
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 
 	static {
 		kafka.start();

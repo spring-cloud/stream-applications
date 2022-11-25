@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.source.mqtt;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -46,7 +48,9 @@ public class MqttSourceTests {
 
 	static {
 		GenericContainer mosquitto = new GenericContainer("cyrilix/rabbitmq-mqtt")
-				.withExposedPorts(1883);
+			.withExposedPorts(1883)
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 		mosquitto.start();
 		final Integer mappedPort = mosquitto.getMappedPort(1883);
 		System.setProperty("mqtt.url", "tcp://localhost:" + mappedPort);

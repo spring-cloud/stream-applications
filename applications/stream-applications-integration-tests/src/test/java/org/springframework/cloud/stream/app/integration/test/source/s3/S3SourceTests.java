@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.integration.test.source.s3;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -65,15 +66,17 @@ abstract class S3SourceTests {
 	@Container
 	private static final GenericContainer minio = new GenericContainer(
 			DockerImageName.parse("minio/minio:RELEASE.2020-10-18T21-54-12Z"))
-					.withExposedPorts(9000)
-					.withEnv("MINIO_ACCESS_KEY", "minio")
-					.withEnv("MINIO_SECRET_KEY", "minio123")
-					.waitingFor(Wait.forHttp("/minio/health/live"))
-					.withCreateContainerCmdModifier(
-							(Consumer<CreateContainerCmd>) createContainerCmd -> createContainerCmd
-									.withHostName("minio"))
-					.withLogConsumer(appLog("minio"))
-					.withCommand("minio", "server", "/data");
+				.withExposedPorts(9000)
+				.withEnv("MINIO_ACCESS_KEY", "minio")
+				.withEnv("MINIO_SECRET_KEY", "minio123")
+				.waitingFor(Wait.forHttp("/minio/health/live"))
+				.withCreateContainerCmdModifier(
+						(Consumer<CreateContainerCmd>) createContainerCmd -> createContainerCmd
+								.withHostName("minio"))
+				.withLogConsumer(appLog("minio"))
+				.withCommand("minio", "server", "/data")
+				.withStartupTimeout(Duration.ofSeconds(120))
+				.withStartupAttempts(3);
 
 	@BeforeAll
 	static void initS3() {

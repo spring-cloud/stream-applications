@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.integration.test.stream.jdbclog;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -45,14 +47,16 @@ public class KafkaJdbcLogStreamTests {
 
 	@Container
 	private static MySQLContainer mySQL = new MySQLContainer<>(DockerImageName.parse("mysql:5.7"))
-			.withUsername("test")
-			.withPassword("secret")
-			.withExposedPorts(3306)
-			.withNetwork(KafkaConfig.kafka.getNetwork())
-			.withNetworkAliases("mysql-for-stream")
-			.withLogConsumer(appLog("mySQL"))
-			.withClasspathResourceMapping("init.sql", "/init.sql", BindMode.READ_ONLY)
-			.withCommand("--init-file", "/init.sql");
+		.withUsername("test")
+		.withPassword("secret")
+		.withExposedPorts(3306)
+		.withNetwork(KafkaConfig.kafka.getNetwork())
+		.withNetworkAliases("mysql-for-stream")
+		.withLogConsumer(appLog("mySQL"))
+		.withClasspathResourceMapping("init.sql", "/init.sql", BindMode.READ_ONLY)
+		.withCommand("--init-file", "/init.sql")
+		.withStartupTimeout(Duration.ofSeconds(120))
+		.withStartupAttempts(3);
 
 	/**
 	 * Nested test whose purpose is to delay the starting of the stream app containers until the MySQL container

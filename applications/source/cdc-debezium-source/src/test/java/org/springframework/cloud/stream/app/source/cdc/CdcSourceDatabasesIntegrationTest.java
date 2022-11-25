@@ -74,11 +74,13 @@ public class CdcSourceDatabasesIntegrationTest {
 	@Test
 	public void mysql() {
 		GenericContainer debeziumMySQL = new GenericContainer<>(DEBEZIUM_EXAMPLE_MYSQL_1_9_6_FINAL)
-				.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
-				.withEnv("MYSQL_USER", "mysqluser")
-				.withEnv("MYSQL_PASSWORD", "mysqlpw")
-				// .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("mysql")))
-				.withExposedPorts(3306);
+			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
+			.withEnv("MYSQL_USER", "mysqluser")
+			.withEnv("MYSQL_PASSWORD", "mysqlpw")
+			// .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("mysql")))
+			.withExposedPorts(3306)
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 		debeziumMySQL.start();
 
 		String MAPPED_PORT = String.valueOf(debeziumMySQL.getMappedPort(3306));
@@ -103,16 +105,18 @@ public class CdcSourceDatabasesIntegrationTest {
 	@Disabled
 	public void sqlServer() {
 		GenericContainer sqlServer = new GenericContainer(new ImageFromDockerfile()
-				.withFileFromClasspath("Dockerfile", "sqlserver/Dockerfile")
-				.withFileFromClasspath("import-data.sh", "sqlserver/import-data.sh")
-				.withFileFromClasspath("inventory.sql", "sqlserver/inventory.sql")
-				.withFileFromClasspath("entrypoint.sh", "sqlserver/entrypoint.sh"))
-				.withEnv("ACCEPT_EULA", "Y")
-				.withEnv("MSSQL_PID", "Standard")
-				.withEnv("SA_PASSWORD", "Password!")
-				.withEnv("MSSQL_AGENT_ENABLED", "true")
-				.withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("sqlServer")))
-				.withExposedPorts(1433);
+			.withFileFromClasspath("Dockerfile", "sqlserver/Dockerfile")
+			.withFileFromClasspath("import-data.sh", "sqlserver/import-data.sh")
+			.withFileFromClasspath("inventory.sql", "sqlserver/inventory.sql")
+			.withFileFromClasspath("entrypoint.sh", "sqlserver/entrypoint.sh"))
+			.withEnv("ACCEPT_EULA", "Y")
+			.withEnv("MSSQL_PID", "Standard")
+			.withEnv("SA_PASSWORD", "Password!")
+			.withEnv("MSSQL_AGENT_ENABLED", "true")
+			.withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("sqlServer")))
+			.withExposedPorts(1433)
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 		//sqlServer.waitingFor(Wait.forLogMessage(".*(1 rows affected).*", 50)).start();
 		//sqlServer.waitingFor(Wait.forLogMessage(".*(Service Broker manager has started).*", 50)).start();
 		sqlServer.start();
@@ -137,9 +141,11 @@ public class CdcSourceDatabasesIntegrationTest {
 	@Test
 	public void postgres() {
 		GenericContainer postgres = new GenericContainer(DEBEZIUM_EXAMPLE_POSTGRES_1_9_6_FINAL)
-				.withEnv("POSTGRES_USER", "postgres")
-				.withEnv("POSTGRES_PASSWORD", "postgres")
-				.withExposedPorts(5432);
+			.withEnv("POSTGRES_USER", "postgres")
+			.withEnv("POSTGRES_PASSWORD", "postgres")
+			.withExposedPorts(5432)
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 		postgres.start();
 
 		try (ConfigurableApplicationContext context = applicationBuilder
@@ -173,9 +179,11 @@ public class CdcSourceDatabasesIntegrationTest {
 	@Disabled
 	public void mongodb() {
 		GenericContainer mongodb = new GenericContainer(DEBEZIUM_EXAMPLE_MONGODB_1_9_6_FINAL)
-				.withEnv("MONGODB_USER", "debezium")
-				.withEnv("MONGODB_PASSWORD", "dbz")
-				.withExposedPorts(27017);
+			.withEnv("MONGODB_USER", "debezium")
+			.withEnv("MONGODB_PASSWORD", "dbz")
+			.withExposedPorts(27017)
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 		mongodb.start();
 		try (ConfigurableApplicationContext context = applicationBuilder
 				.run("--cdc.connector=mongodb",

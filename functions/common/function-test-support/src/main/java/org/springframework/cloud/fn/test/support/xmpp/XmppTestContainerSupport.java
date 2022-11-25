@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.fn.test.support.xmpp;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
@@ -56,9 +58,11 @@ public interface XmppTestContainerSupport {
 	 * The container.
 	 */
 	GenericContainer<?> XMPP_CONTAINER = new GenericContainer<>("fishbowler/openfire:v4.7.0")
-			.withExposedPorts(5222)
-			.withClasspathResourceMapping("xmpp/conf", "/var/lib/openfire/conf", BindMode.READ_ONLY)
-			.withCommand("-demoboot");
+		.withExposedPorts(5222)
+		.withClasspathResourceMapping("xmpp/conf", "/var/lib/openfire/conf", BindMode.READ_ONLY)
+		.withCommand("-demoboot")
+		.withStartupTimeout(Duration.ofSeconds(120))
+		.withStartupAttempts(3);
 
 	@BeforeAll
 	static void startContainer() {

@@ -51,11 +51,13 @@ public class CdcBootStarterIntegrationTest {
 	@Container
 	static GenericContainer debeziumMySQL =
 			new GenericContainer<>(DockerImageName.parse("debezium/example-mysql:1.9.6.Final"))
-					.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
-					.withEnv("MYSQL_USER", "mysqluser")
-					.withEnv("MYSQL_PASSWORD", "mysqlpw")
-					// .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("mysql")))
-					.withExposedPorts(3306);
+				.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
+				.withEnv("MYSQL_USER", "mysqluser")
+				.withEnv("MYSQL_PASSWORD", "mysqlpw")
+				// .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("mysql")))
+				.withExposedPorts(3306)
+				.withStartupTimeout(Duration.ofSeconds(120))
+				.withStartupAttempts(3);
 
 	private static JdbcTemplate jdbcTemplate;
 

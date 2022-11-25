@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.fn.consumer.redis;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -28,7 +30,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers(disabledWithoutDocker = true)
 public interface RedisTestContainerSupport {
 	GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>("redis:7.0.2")
-		.withExposedPorts(6379);
+		.withExposedPorts(6379)
+		.withStartupTimeout(Duration.ofSeconds(120))
+		.withStartupAttempts(3);
 
 	@BeforeAll
 	static void startContainer() {

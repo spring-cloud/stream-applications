@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.integration.test.source.jdbc;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
@@ -53,7 +55,9 @@ abstract class JdbcSourceTests {
 			.withNetworkAliases("mysql-for-source")
 			.withLogConsumer(appLog("mysql-for-source"))
 			.withClasspathResourceMapping("init.sql", "/init.sql", BindMode.READ_ONLY)
-			.withCommand("--init-file", "/init.sql");
+			.withCommand("--init-file", "/init.sql")
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 
 	@BeforeAll
 	protected static void configureSource() {

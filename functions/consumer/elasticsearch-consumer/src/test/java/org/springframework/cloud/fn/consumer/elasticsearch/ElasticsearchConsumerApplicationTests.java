@@ -61,7 +61,8 @@ public class ElasticsearchConsumerApplicationTests {
 	static final ElasticsearchContainer elasticsearch = new ElasticsearchContainer(
 		DockerImageName.parse("docker.elastic.co/elasticsearch/elasticsearch")
 			.withTag("7.17.7")
-	).withStartupAttempts(5).withStartupTimeout(Duration.ofMinutes(10));
+	).withStartupTimeout(Duration.ofSeconds(120))
+		.withStartupAttempts(3);
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 		.withUserConfiguration(ElasticsearchConsumerTestApplication.class, SpelExpressionConverterConfiguration.class);

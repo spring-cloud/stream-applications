@@ -50,8 +50,9 @@ abstract class MongoDBSinkTests {
 	private TestTopicSender testTopicSender;
 
 	private static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:4.0.10")
-			.withExposedPorts(27017)
-			.withStartupTimeout(Duration.ofMinutes(2));
+		.withExposedPorts(27017)
+		.withStartupTimeout(Duration.ofSeconds(120))
+		.withStartupAttempts(3);
 
 	private static String mongoConnectionString() {
 		return String.format("mongodb://%s:%s/%s", StreamAppContainerTestUtils.localHostAddress(),

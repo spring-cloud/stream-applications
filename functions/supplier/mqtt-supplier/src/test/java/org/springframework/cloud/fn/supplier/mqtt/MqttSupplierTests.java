@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.supplier.mqtt;
 
+import java.time.Duration;
 import java.util.Properties;
 import java.util.function.Supplier;
 
@@ -63,9 +64,11 @@ public class MqttSupplierTests {
 	static {
 		GenericContainer<?> mosquitto =
 				new GenericContainer<>("eclipse-mosquitto:2.0.13")
-						.withCommand("mosquitto -c /mosquitto-no-auth.conf")
-						.withReuse(true)
-						.withExposedPorts(1883);
+					.withCommand("mosquitto -c /mosquitto-no-auth.conf")
+					.withReuse(true)
+					.withExposedPorts(1883)
+					.withStartupTimeout(Duration.ofSeconds(120))
+					.withStartupAttempts(3);
 		mosquitto.start();
 		final Integer mappedPort = mosquitto.getMappedPort(1883);
 		System.setProperty("mqtt.url", "tcp://localhost:" + mappedPort);

@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.app.source.cdc;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.testcontainers.containers.GenericContainer;
@@ -34,11 +36,13 @@ public abstract class CdcMySqlTestSupport {
 	static String MAPPED_PORT;
 
 	static GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.9.6.Final")
-			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
-			.withEnv("MYSQL_USER", "mysqluser")
-			.withEnv("MYSQL_PASSWORD", "mysqlpw")
-			// .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("mysql")))
-			.withExposedPorts(3306);
+		.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
+		.withEnv("MYSQL_USER", "mysqluser")
+		.withEnv("MYSQL_PASSWORD", "mysqlpw")
+		// .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("mysql")))
+		.withExposedPorts(3306)
+		.withStartupTimeout(Duration.ofSeconds(120))
+		.withStartupAttempts(3);
 
 	static {
 		debeziumMySQL.start();

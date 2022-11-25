@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.app.integration.test.source.time;
 
+import java.time.Duration;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.AfterAll;
@@ -59,11 +60,13 @@ abstract class TimeSourceTests {
 	@BeforeAll
 	static void configureSource() {
 		source = BaseContainerExtension.containerInstance()
-				.withExposedPorts(8080)
-				.withEnv("SPRING_CLOUD_STREAMAPP_SECURITY_ADMIN-PASSWORD", "password")
-				.withEnv("SPRING_CLOUD_STREAMAPP_SECURITY_ADMIN-USER", "user")
-				.withLogConsumer(appLog("time-source"))
-				.waitingFor(Wait.forLogMessage(".*Started TimeSource.*", 1));
+			.withExposedPorts(8080)
+			.withEnv("SPRING_CLOUD_STREAMAPP_SECURITY_ADMIN-PASSWORD", "password")
+			.withEnv("SPRING_CLOUD_STREAMAPP_SECURITY_ADMIN-USER", "user")
+			.withLogConsumer(appLog("time-source"))
+			.waitingFor(Wait.forLogMessage(".*Started TimeSource.*", 1))
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 		source.start();
 	}
 
