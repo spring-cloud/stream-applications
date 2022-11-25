@@ -47,6 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Gary Russell
  * @author Chris Schaefer
+ * @author Corneil du Plessis
  */
 @Tag("integration")
 public class RabbitSourceListenerTests {
@@ -83,9 +84,9 @@ public class RabbitSourceListenerTests {
 				)) {
 
 			final RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
+			final OutputDestination target = context.getBean(OutputDestination.class);
 			rabbitTemplate.convertAndSend("scsapp-testex", "", "hello");
 
-			OutputDestination target = context.getBean(OutputDestination.class);
 			Message<byte[]> sourceMessage = target.receive(600000, "output");
 
 			final String actual = new String(sourceMessage.getPayload());
@@ -110,11 +111,12 @@ public class RabbitSourceListenerTests {
 			// Reset the boot connection factory -should not matter to container as it SHOULD be using its own connection factory
 			final CachingConnectionFactory bootFactory = context.getBean(CachingConnectionFactory.class);
 			bootFactory.resetConnection();
+			final OutputDestination target = context.getBean(OutputDestination.class);
 
 			// Send a message on a separate connection - the container should still receive it.
 			sendMessageOnSeparateConnection("scsapp-testOwnSource", "foo", bootFactory);
 
-			OutputDestination target = context.getBean(OutputDestination.class);
+
 			Message<byte[]> sourceMessage = target.receive(600000, "rabbitSupplier-out-0");
 
 			final String actual = new String(sourceMessage.getPayload());
@@ -175,6 +177,8 @@ public class RabbitSourceListenerTests {
 
 			final RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
 			final SimpleMessageListenerContainer container = context.getBean(SimpleMessageListenerContainer.class);
+			final OutputDestination target = context.getBean(OutputDestination.class);
+
 			Advice[] adviceChain = TestUtils.getPropertyValue(container, "adviceChain", Advice[].class);
 			assertThat(adviceChain.length).isEqualTo(1);
 			RetryTemplate retryTemplate = TestUtils.getPropertyValue(adviceChain[0], "retryOperations",
@@ -196,7 +200,6 @@ public class RabbitSourceListenerTests {
 				return message;
 			});
 
-			OutputDestination target = context.getBean(OutputDestination.class);
 			Message<byte[]> sourceMessage = target.receive(600000, "rabbitSupplier-out-0");
 
 			final String actual = new String(sourceMessage.getPayload());

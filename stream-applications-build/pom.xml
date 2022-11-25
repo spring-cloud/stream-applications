@@ -34,10 +34,10 @@
         <nohttp-checkstyle.version>0.0.10</nohttp-checkstyle.version>
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.35</spring-javaformat-checkstyle.version>
-        <spring-boot.version>3.0.0-SNAPSHOT</spring-boot.version>
-        <spring-kafka.version>3.0.0-SNAPSHOT</spring-kafka.version>
-        <spring-rabbit.version>3.0.0-SNAPSHOT</spring-rabbit.version>
-        <spring-integration.version>6.0.0-SNAPSHOT</spring-integration.version>
+        <spring-boot.version>3.0.0</spring-boot.version>
+        <spring-kafka.version>3.0.0</spring-kafka.version>
+        <spring-rabbit.version>3.0.0</spring-rabbit.version>
+        <spring-integration.version>6.0.2</spring-integration.version>
 
         <spring-cloud.version>2022.0.0-SNAPSHOT</spring-cloud.version>
         <spring-cloud-starters.version>4.0.0-SNAPSHOT</spring-cloud-starters.version>

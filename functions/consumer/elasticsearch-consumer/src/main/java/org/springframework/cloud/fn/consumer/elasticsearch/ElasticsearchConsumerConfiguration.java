@@ -17,27 +17,25 @@
 package org.springframework.cloud.fn.consumer.elasticsearch;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.StreamSupport;
 
+import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.Time;
+import co.elastic.clients.elasticsearch.core.BulkRequest;
+import co.elastic.clients.elasticsearch.core.BulkResponse;
+import co.elastic.clients.elasticsearch.core.IndexRequest;
+import co.elastic.clients.elasticsearch.core.IndexResponse;
+import co.elastic.clients.elasticsearch.core.bulk.BulkResponseItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.elasticsearch.action.ActionListener;
-import org.elasticsearch.action.DocWriteResponse;
-import org.elasticsearch.action.bulk.BulkItemResponse;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.core.TimeValue;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -120,11 +118,14 @@ public class ElasticsearchConsumerConfiguration {
 	}
 
 	@Bean
-	IntegrationFlow elasticsearchConsumerFlow(@Qualifier("aggregator") MessageHandler aggregator, ElasticsearchConsumerProperties properties,
-											@Qualifier("indexingHandler") MessageHandler indexingHandler) {
+	IntegrationFlow elasticsearchConsumerFlow(
+		@Qualifier("aggregator") MessageHandler aggregator,
+		ElasticsearchConsumerProperties properties,
+		@Qualifier("indexingHandler") MessageHandler indexingHandler
+	) {
 
 		final IntegrationFlowBuilder builder =
-				IntegrationFlows.from(Consumer.class, gateway -> gateway.beanName("elasticsearchConsumer"));
+			IntegrationFlows.from(Consumer.class, gateway -> gateway.beanName("elasticsearchConsumer"));
 		if (properties.getBatchSize() > 1) {
 			builder.handle(aggregator);
 		}
@@ -132,34 +133,38 @@ public class ElasticsearchConsumerConfiguration {
 	}
 
 	@Bean
-	public MessageHandler indexingHandler(RestHighLevelClient restHighLevelClient,
-										ElasticsearchConsumerProperties consumerProperties) {
+	public MessageHandler indexingHandler(
+		ElasticsearchClient elasticsearchClient,
+		ElasticsearchConsumerProperties consumerProperties
+	) {
 		return message -> {
 			if (message.getPayload() instanceof Iterable) {
-				BulkRequest bulkRequest = new BulkRequest();
+				BulkRequest.Builder builder = new BulkRequest.Builder();
 				StreamSupport.stream(((Iterable<?>) message.getPayload()).spliterator(), false)
-						.filter(MessageWrapper.class::isInstance)
-						.map(itemPayload -> ((MessageWrapper) itemPayload).getMessage())
-						.map(m -> buildIndexRequest(m, consumerProperties))
-						.forEach(bulkRequest::add);
+					.filter(MessageWrapper.class::isInstance)
+					.map(itemPayload -> ((MessageWrapper) itemPayload).getMessage())
+					.map(m -> buildIndexRequest(m, consumerProperties))
+					.forEach(indexRequest ->
+						builder.operations(builder1 -> builder1.index(idx -> idx.index(indexRequest.index()).id(indexRequest.id()).document(indexRequest.document())))
+					);
 
-				index(restHighLevelClient, bulkRequest, consumerProperties.isAsync());
+				index(elasticsearchClient, builder.build(), consumerProperties.isAsync());
 			}
 			else {
 				IndexRequest request = buildIndexRequest(message, consumerProperties);
-				index(restHighLevelClient, request, consumerProperties.isAsync());
+				index(elasticsearchClient, request, consumerProperties.isAsync());
 			}
 		};
 	}
 
 	private IndexRequest buildIndexRequest(Message<?> message, ElasticsearchConsumerProperties consumerProperties) {
-		IndexRequest request = new IndexRequest();
+		IndexRequest.Builder requestBuilder = new IndexRequest.Builder();
 
 		String index = consumerProperties.getIndex();
 		if (message.getHeaders().containsKey(INDEX_NAME_HEADER)) {
 			index = (String) message.getHeaders().get(INDEX_NAME_HEADER);
 		}
-		request.index(index);
+		requestBuilder.index(index);
 
 		String id = "";
 		if (message.getHeaders().containsKey(INDEX_ID_HEADER)) {
@@ -168,45 +173,42 @@ public class ElasticsearchConsumerConfiguration {
 		else if (consumerProperties.getId() != null) {
 			id = consumerProperties.getId().getValue(message, String.class);
 		}
-		request.id(id);
+		requestBuilder.id(id);
 
 		if (message.getPayload() instanceof String) {
-			request.source((String) message.getPayload(), XContentType.JSON);
+			requestBuilder.withJson(new StringReader((String) message.getPayload()));
 		}
 		else if (message.getPayload() instanceof Map) {
-			request.source((Map<String, ?>) message.getPayload(), XContentType.JSON);
-		}
-		else if (message.getPayload() instanceof XContentBuilder) {
-			request.source((XContentBuilder) message.getPayload());
+			requestBuilder.document((Map<String, ?>) message.getPayload());
 		}
 
-		if (!StringUtils.isEmpty(consumerProperties.getRouting())) {
-			request.routing(consumerProperties.getRouting());
+		if (StringUtils.hasText(consumerProperties.getRouting())) {
+			requestBuilder.routing(consumerProperties.getRouting());
 		}
 		if (consumerProperties.getTimeoutSeconds() > 0) {
-			request.timeout(TimeValue.timeValueSeconds(consumerProperties.getTimeoutSeconds()));
+			requestBuilder.timeout(new Time.Builder().time(consumerProperties.getTimeoutSeconds() + "s").build());
 		}
 
-		return request;
+		return requestBuilder.build();
 	}
 
-	private void index(RestHighLevelClient restHighLevelClient, BulkRequest request, boolean isAsync) {
+	private void index(ElasticsearchClient elasticsearchClient, BulkRequest request, boolean isAsync) {
 		if (isAsync) {
-			restHighLevelClient.bulkAsync(request, RequestOptions.DEFAULT, new ActionListener<BulkResponse>() {
-				@Override
-				public void onResponse(BulkResponse bulkResponse) {
+			ElasticsearchAsyncClient elasticsearchAsyncClient = new ElasticsearchAsyncClient(elasticsearchClient._transport());
+			CompletableFuture<BulkResponse> responseCompletableFuture = elasticsearchAsyncClient.bulk(request);
+			responseCompletableFuture.whenComplete((bulkResponse, x) -> {
+				if (x != null) {
+					throw new IllegalStateException("Error occurred while performing bulk index operation: " + x.getMessage(), x);
+				}
+				else {
 					handleBulkResponse(bulkResponse);
 				}
-
-				@Override
-				public void onFailure(Exception e) {
-					throw new IllegalStateException("Error occurred while performing bulk index operation: " + e.getMessage(), e);
-				}
 			});
+
 		}
 		else {
 			try {
-				BulkResponse bulkResponse = restHighLevelClient.bulk(request, RequestOptions.DEFAULT);
+				BulkResponse bulkResponse = elasticsearchClient.bulk(request);
 				handleBulkResponse(bulkResponse);
 			}
 			catch (IOException e) {
@@ -215,23 +217,22 @@ public class ElasticsearchConsumerConfiguration {
 		}
 	}
 
-	private void index(RestHighLevelClient restHighLevelClient, IndexRequest request, boolean isAsync) {
+	private void index(ElasticsearchClient elasticsearchClient, IndexRequest request, boolean isAsync) {
 		if (isAsync) {
-			restHighLevelClient.indexAsync(request, RequestOptions.DEFAULT, new ActionListener<IndexResponse>() {
-				@Override
-				public void onResponse(IndexResponse indexResponse) {
-					handleResponse(indexResponse);
+			ElasticsearchAsyncClient elasticsearchAsyncClient = new ElasticsearchAsyncClient(elasticsearchClient._transport());
+			CompletableFuture<IndexResponse> responseCompletableFuture = elasticsearchAsyncClient.index(request);
+			responseCompletableFuture.whenComplete((indexResponse, x) -> {
+				if (x != null) {
+					throw new IllegalStateException("Error occurred while indexing document: " + x.getMessage(), x);
 				}
-
-				@Override
-				public void onFailure(Exception e) {
-					throw new IllegalStateException("Error occurred while indexing document: " + e.getMessage(), e);
+				else {
+					handleResponse(indexResponse);
 				}
 			});
 		}
 		else {
 			try {
-				IndexResponse response = restHighLevelClient.index(request, RequestOptions.DEFAULT);
+				IndexResponse response = elasticsearchClient.index(request);
 				handleResponse(response);
 			}
 			catch (IOException e) {
@@ -241,30 +242,46 @@ public class ElasticsearchConsumerConfiguration {
 	}
 
 	private void handleBulkResponse(BulkResponse response) {
-		if (logger.isDebugEnabled() || response.hasFailures()) {
-			for (BulkItemResponse itemResponse : response) {
-				if (itemResponse.isFailed()) {
-					logger.error(String.format("Index operation [i=%d, id=%s, index=%s] failed: %s",
-							itemResponse.getItemId(), itemResponse.getId(), itemResponse.getIndex(), itemResponse.getFailureMessage())
+		if (logger.isDebugEnabled() || response.errors()) {
+			for (BulkResponseItem itemResponse : response.items()) {
+				if (itemResponse.error() != null) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("itemResponse.error=" + itemResponse.error());
+					}
+					logger.error(String.format("Index operation [id=%s, index=%s] failed: %s",
+						itemResponse.id(), itemResponse.index(), itemResponse.error().toString())
 					);
 				}
 				else {
-					DocWriteResponse r = itemResponse.getResponse();
-					logger.debug(String.format("Index operation [i=%d, id=%s, index=%s] succeeded: document [id=%s, version=%d] was written on shard %s.",
-							itemResponse.getItemId(), itemResponse.getId(), itemResponse.getIndex(), r.getId(), r.getVersion(), r.getShardId())
-					);
+					var r = itemResponse.get();
+					if (r != null) {
+						if (logger.isDebugEnabled()) {
+							logger.debug("itemResponse:" + r);
+						}
+						logger.debug(String.format("Index operation [id=%s, index=%s] succeeded: document [id=%s, version=%s] was written on shard %s.",
+							itemResponse.id(), itemResponse.index(), r.source().get("id"), r.source().get("version"), r.source().get("shardId"))
+						);
+					}
+					else {
+						logger.debug(String.format("Index operation [id=%s, index=%s] succeeded", itemResponse.id(), itemResponse.index()));
+					}
 				}
 			}
 		}
 
-		if (response.hasFailures()) {
-			throw new IllegalStateException("Bulk indexing operation completed with failures: " + response.buildFailureMessage());
+		if (response.errors()) {
+			String error = response.items()
+				.stream()
+				.map(bulkResponseItem ->  bulkResponseItem.error() != null ? bulkResponseItem.error().toString() : "")
+				.reduce((errorCause, errorCause2) -> errorCause != null ? errorCause + " : " + errorCause2 : errorCause2)
+				.orElseGet(() -> response.toString());
+			throw new IllegalStateException("Bulk indexing operation completed with failures: " + error);
 		}
 	}
 
 	private void handleResponse(IndexResponse response) {
 		logger.debug(String.format("Index operation [index=%s] succeeded: document [id=%s, version=%d] was written on shard %s.",
-				response.getIndex(), response.getId(), response.getVersion(), response.getShardId())
+			response.index(), response.id(), response.version(), response.shards().toString())
 		);
 	}
 
