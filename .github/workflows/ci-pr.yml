@@ -73,9 +73,6 @@ jobs:
             exit $RC
           fi
           echo "::notice ::core build completed"
-      - name: 'Configure: get changed files'
-        id: changed-files
-        uses: tj-actions/changed-files@v34
       - name: 'Action: verify changed modules'
         shell: bash
         env:
@@ -83,7 +80,10 @@ jobs:
         run: |
           BUILD_DIR=$(realpath $MAIN_PATH)
           $BUILD_DIR/create-matrices.sh
-          $BUILD_DIR/scripts/determine-modules-changed.sh "${{ steps.changed-files.outputs.all_changed_files }}"
+          echo "Changed files:"
+          gh pr diff --name-only
+          CHANGED=$(gh pr diff --name-only)
+          $BUILD_DIR/scripts/determine-modules-changed.sh "$CHANGED"
           MODULES=$(jq '.[]' modules.json | sed 's/\"//g')
           FOLDERS=
           for module in $MODULES; do            
