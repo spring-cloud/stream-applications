@@ -60,6 +60,7 @@ import org.springframework.util.StringUtils;
 /**
  * @author Soby Chacko
  * @author Andrea Montemaggio
+ * @author Corneil du Plessis
  */
 @Configuration
 @EnableConfigurationProperties(ElasticsearchConsumerProperties.class)
@@ -179,7 +180,7 @@ public class ElasticsearchConsumerConfiguration {
 			requestBuilder.withJson(new StringReader((String) message.getPayload()));
 		}
 		else if (message.getPayload() instanceof Map) {
-			requestBuilder.document((Map<String, ?>) message.getPayload());
+			requestBuilder.document(message.getPayload());
 		}
 
 		if (StringUtils.hasText(consumerProperties.getRouting())) {
@@ -274,7 +275,7 @@ public class ElasticsearchConsumerConfiguration {
 				.stream()
 				.map(bulkResponseItem ->  bulkResponseItem.error() != null ? bulkResponseItem.error().toString() : "")
 				.reduce((errorCause, errorCause2) -> errorCause != null ? errorCause + " : " + errorCause2 : errorCause2)
-				.orElseGet(() -> response.toString());
+				.orElseGet(response::toString);
 			throw new IllegalStateException("Bulk indexing operation completed with failures: " + error);
 		}
 	}
