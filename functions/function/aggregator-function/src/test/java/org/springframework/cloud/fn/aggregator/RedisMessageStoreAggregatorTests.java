@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.utility.DockerImageName;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -38,7 +40,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = "aggregator.message-store-type=redis")
 @Disabled("Needs real Redis Server to be run")
 public class RedisMessageStoreAggregatorTests extends AbstractAggregatorFunctionTests {
-
+	static {
+		GenericContainer<?> redis =
+			new GenericContainer<>(DockerImageName.parse("redis:5.0.3-alpine")).withExposedPorts(6379);
+		redis.start();
+		System.setProperty("spring.redis.host", redis.getHost());
+		System.setProperty("spring.redis.port", redis.getMappedPort(6379).toString());
+	}
 	@Test
 	public void test() {
 		Flux<Message<?>> input =
