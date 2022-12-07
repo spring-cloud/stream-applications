@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>stream-applications-release-train</artifactId>
         <groupId>org.springframework.cloud.stream.app</groupId>
@@ -10,7 +11,6 @@
     <artifactId>stream-applications-descriptor</artifactId>
     <name>stream-applications-descriptor</name>
     <packaging>jar</packaging>
-
     <build>
         <resources>
             <resource>
@@ -31,9 +31,18 @@
 
         <plugins>
             <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>1.5</version>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>2.1.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>3.0.9</version>
+                        <type>pom</type>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -41,12 +50,16 @@
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <source><![CDATA[
-                                pom.properties['repo-spring-io'] =
-                                        "${apps.version}".contains('SNAPSHOT') ? 'repo.spring.io/snapshot' :
+                            <scripts>
+                                <script>
+                                    <![CDATA[
+                                def repoSpring = "${apps.version}".contains('SNAPSHOT') ? 'repo.spring.io/snapshot' :
                                                 "${apps.version}".contains('-') ? 'repo.spring.io/milestone' : 'repo.maven.apache.org/maven2'
+                                project.properties.setProperty('repo-spring-io', repoSpring)
+                                println('repo-spring-io=$repoSpring')
                                 ]]>
-                            </source>
+                                </script>
+                            </scripts>
                         </configuration>
                     </execution>
                 </executions>
@@ -102,7 +115,6 @@
                 </executions>
             </plugin>
         </plugins>
-
     </build>
 
 </project>
