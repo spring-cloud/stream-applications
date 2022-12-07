@@ -23,8 +23,8 @@ on:
       DOCKER_HUB_PASSWORD:
       TMC_API_TOKEN:
       GCP_CRED_JSON:
-      CI_DEPLOY_USERNAME:
-      CI_DEPLOY_PASSWORD:
+      ARTIFACTORY_USERNAME:
+      ARTIFACTORY_PASSWORD:
       GH_ARC_APP_ID:
       GH_ARC_INSTALLATION_ID:
       GH_ARC_PRIVATE_KEY:
@@ -204,8 +204,8 @@ jobs:
       - name: 'Action: build initial dependencies'
         shell: bash
         env:
-          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
-          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: |
           ROOT_DIR=$(realpath $PWD)
@@ -300,8 +300,8 @@ jobs:
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         env:
-          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
-          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
@@ -379,8 +379,8 @@ jobs:
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         env:
-          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
-          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
@@ -459,8 +459,8 @@ jobs:
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         env:
-          CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
-          CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
@@ -526,8 +526,8 @@ jobs:
         - name: 'Build: stream-applications-release-train'
           shell: bash
           env:
-            CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
-            CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+            ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+            ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
             DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
             MAVEN_THREADS: ${{ inputs.useMavenThreads }}
           run: |

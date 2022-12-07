@@ -56,8 +56,8 @@ done
 # IFS will affect mvnw ability to split arguments.
 IFS=$SAVED_IFS
 if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
-  check_env CI_DEPLOY_USERNAME
-  check_env CI_DEPLOY_PASSWORD
+  check_env ARTIFACTORY_USERNAME
+  check_env ARTIFACTORY_PASSWORD
 fi
 
 RETRIES=3

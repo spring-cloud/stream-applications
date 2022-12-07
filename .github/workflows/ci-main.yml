@@ -16,8 +16,8 @@ jobs:
       DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
       TMC_API_TOKEN: ${{ secrets.TMC_API_TOKEN }}
       GCP_CRED_JSON: ${{ secrets.GCP_CRED_JSON }}
-      CI_DEPLOY_USERNAME: ${{ secrets.CI_DEPLOY_USERNAME }}
-      CI_DEPLOY_PASSWORD: ${{ secrets.CI_DEPLOY_PASSWORD }}
+      ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+      ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
     with:
       branch: 'main'
       verbose: ${{ inputs.verbose == 'true' }}

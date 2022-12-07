@@ -25,8 +25,8 @@ PROJECT_FOLDER=$(realpath "$1")
 APP_FOLDER=$2
 
 set -e
-check_env CI_DEPLOY_USERNAME
-check_env CI_DEPLOY_PASSWORD
+check_env ARTIFACTORY_USERNAME
+check_env ARTIFACTORY_PASSWORD
 
 pushd "$PROJECT_FOLDER" > /dev/null
   if [ "$VERBOSE" == "true" ]; then
