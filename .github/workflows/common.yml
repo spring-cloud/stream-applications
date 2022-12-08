@@ -483,6 +483,9 @@ jobs:
   release-train:
     needs:
       - core
+      - sinks
+      - sources
+      - processors
       - parameters
       - scale-runners-up
     runs-on: 'stream-ci'
