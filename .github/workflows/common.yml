@@ -584,7 +584,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - parameters
-      - release-train
+      - sinks
+      - sources
+      - processors
     concurrency:
       group: stream-apps-gh-runners
       cancel-in-progress: false
