@@ -29,14 +29,6 @@ check_env ARTIFACTORY_USERNAME
 check_env ARTIFACTORY_PASSWORD
 
 pushd "$PROJECT_FOLDER" > /dev/null
-  if [ "$VERBOSE" == "true" ]; then
-    MAVEN_OPT=--debug
-  fi
-  if [ "$MAVEN_OPT" == "" ]; then
-    MAVEN_OPT="-B -U"
-  else
-    MAVEN_OPT="$MAVEN_OPT -B -U"
-  fi
   if [ "$VERSION" == "" ]; then
     VERSION=$($SCDIR/mvn-get-version.sh)
   fi
@@ -58,15 +50,14 @@ pushd "$PROJECT_FOLDER" > /dev/null
         DEFAULT_JDK=11
       fi
   fi
+  rm -rf apps
+  echo "Deploying:$APP_FOLDER"
+  $SCDIR/build-folder.sh "$APP_FOLDER" $MAVEN_GOAL -Pintegration
+#   else
+#    echo "Packaging:$APP_FOLDER"
+#    $SCDIR/build-folder.sh "$APP_FOLDER" "verify install" -Pintegration
+#  fi
   pushd "$APP_FOLDER" > /dev/null
-    rm -rf apps
-    if [ -d "src/main/java" ]; then
-      echo "Deploying:$APP_FOLDER"
-      $PROJECT_FOLDER/mvnw $MAVEN_OPT -s $SCDIR/.settings.xml clean $MAVEN_GOAL -Pintegration
-    else
-      echo "Packaging:$APP_FOLDER"
-      $PROJECT_FOLDER/mvnw $MAVEN_OPT -s $SCDIR/.settings.xml clean install -Pintegration
-    fi
     if [ ! -d apps ]; then
       echo "Cannot find $APP_FOLDER/apps"
       exit 2
