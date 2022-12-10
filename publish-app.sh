@@ -39,29 +39,28 @@ pushd "$PROJECT_FOLDER" > /dev/null
     fi
     JDKS="8 11 17"
   fi
-
-  pushd "$APP_FOLDER" > /dev/null
-    pushd apps > /dev/null
-      echo "Pushing:$APP_FOLDER/apps"
-      APPS=$(find * -maxdepth 0 -type d)
-      for app in $APPS; do
-        set -e
-        docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$VERSION"
-        docker push "springcloudstream/$app:$VERSION"
-        echo "Pushed:springcloudstream/$app:$VERSION"
-        if [ "$BRANCH" != "" ]; then
-          docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$BRANCH"
-          echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$BRANCH"
-          docker push "springcloudstream/$app:$BRANCH"
-        fi
-        docker push "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK"
-        echo "Pushed:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK"
-        for v in $JDKS; do
-          docker push "springcloudstream/$app:$VERSION-jdk$v"
-          echo "Pushed:springcloudstream/$app:$VERSION-jdk$v"
-        done
-        set +e
+popd > /dev/null
+pushd "$APP_FOLDER" > /dev/null
+  pushd apps > /dev/null
+    echo "Pushing:$APP_FOLDER/apps"
+    APPS=$(find * -maxdepth 0 -type d)
+    for app in $APPS; do
+      set -e
+      docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$VERSION"
+      docker push "springcloudstream/$app:$VERSION"
+      echo "Pushed:springcloudstream/$app:$VERSION"
+      if [ "$BRANCH" != "" ]; then
+        docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$BRANCH"
+        echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$BRANCH"
+        docker push "springcloudstream/$app:$BRANCH"
+      fi
+      docker push "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK"
+      echo "Pushed:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK"
+      for v in $JDKS; do
+        docker push "springcloudstream/$app:$VERSION-jdk$v"
+        echo "Pushed:springcloudstream/$app:$VERSION-jdk$v"
       done
-    popd > /dev/null
+      set +e
+    done
   popd > /dev/null
 popd > /dev/null
