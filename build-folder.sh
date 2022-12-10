@@ -1,4 +1,7 @@
 #!/bin/bash
+SCDIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+SCDIR=$(realpath $SCDIR)
+
 bold="\033[1m"
 red="\033[31m"
 dim="\033[2m"
@@ -23,9 +26,9 @@ elif [ "$VERBOSE" == "false" ]; then
   MAVEN_OPTS="-q"
 fi
 if [ "$MAVEN_OPTS" == "" ]; then
-  MAVEN_OPTS="-s ./.settings.xml -B"
+  MAVEN_OPTS="-s $SCDIR/.settings.xml -B"
 else
-  MAVEN_OPTS="$MAVEN_OPTS -s ./.settings.xml -B"
+  MAVEN_OPTS="$MAVEN_OPTS -s $SCDIR/.settings.xml -B"
 fi
 
 if [ "$1" == "" ]; then

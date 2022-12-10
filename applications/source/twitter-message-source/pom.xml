@@ -42,6 +42,14 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dataflow-apps-docs-plugin</artifactId>
 			</plugin>
