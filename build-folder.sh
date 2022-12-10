@@ -90,9 +90,9 @@ if ((RESULT == 0)); then
       MVN_THR=
     fi
     echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
-    MVNW="$SCDIR/mvnw"
-    if [ -f $MVNW ]; then
-      MVNW="./mvnw"
+    MVNW="./mvnw"
+    if [ ! -f $MVNW ]; then
+      MVNW="$SCDIR/mvnw"
     fi
     $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
     RESULT=$?
