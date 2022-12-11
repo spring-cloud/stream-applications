@@ -39,8 +39,7 @@ pushd "$PROJECT_FOLDER" > /dev/null
     fi
     JDKS="8 11 17"
   fi
-popd > /dev/null
-pushd "$APP_FOLDER" > /dev/null
+  pushd "$APP_FOLDER" > /dev/null
   pushd apps > /dev/null
     echo "Pushing:$APP_FOLDER/apps"
     APPS=$(find * -maxdepth 0 -type d)
@@ -62,5 +61,6 @@ pushd "$APP_FOLDER" > /dev/null
       done
       set +e
     done
+  popd > /dev/null
   popd > /dev/null
 popd > /dev/null
