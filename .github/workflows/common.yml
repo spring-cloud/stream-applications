@@ -304,7 +304,8 @@ jobs:
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           MAVEN_THREADS: ${{ inputs.useMavenThreads }}
-        run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
+        run: | 
+          ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
