@@ -77,7 +77,7 @@ class MailSourceTests {
 		assertThat(n < 100).isTrue();
 	}
 	*/
-	@Disabled
+	@Disabled // TODO find TestContainer solution for testing email.
 	@Test
 	void mailMessagesAreSuppliedToOutputDestination(@Autowired OutputDestination target) {
 		Message<byte[]> sourceMessage = target.receive(10000, "mailSupplier-out-0");

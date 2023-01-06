@@ -26,6 +26,7 @@
         <maven-checkstyle-plugin.failOnViolation>true</maven-checkstyle-plugin.failOnViolation>
         <maven-checkstyle-plugin.includeTestSourceDirectory>true</maven-checkstyle-plugin.includeTestSourceDirectory>
         <puppycrawl-tools-checkstyle.version>10.3.4</puppycrawl-tools-checkstyle.version>
+        <!--suppress UnresolvedMavenProperty -->
         <checkstyle.location>${maven.multiModuleProjectDirectory}/etc/checkstyle</checkstyle.location>
         <checkstyle.suppressions.file>${checkstyle.location}/checkstyle-suppressions.xml</checkstyle.suppressions.file>
         <checkstyle.nohttp.file>${checkstyle.location}/nohttp-checkstyle.xml</checkstyle.nohttp.file>
@@ -34,23 +35,21 @@
         <nohttp-checkstyle.version>0.0.10</nohttp-checkstyle.version>
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.35</spring-javaformat-checkstyle.version>
-        <spring-boot.version>3.0.0</spring-boot.version>
-        <spring-kafka.version>3.0.0</spring-kafka.version>
+        <spring-boot.version>3.0.1</spring-boot.version>
+        <spring-kafka.version>3.0.1</spring-kafka.version>
         <spring-rabbit.version>3.0.0</spring-rabbit.version>
-        <spring-integration.version>6.0.2</spring-integration.version>
+        <spring-integration.version>6.0.1</spring-integration.version>
 
-        <spring-cloud.version>2022.0.0-SNAPSHOT</spring-cloud.version>
-        <spring-cloud-starters.version>4.0.0-SNAPSHOT</spring-cloud-starters.version>
-        <spring-cloud-function.version>4.0.0-SNAPSHOT</spring-cloud-function.version>
-        <spring-cloud-stream-dependencies.version>4.0.0-SNAPSHOT</spring-cloud-stream-dependencies.version>
-        <spring-cloud-stream.version>4.0.0-SNAPSHOT</spring-cloud-stream.version>
-        <test-containers.version>1.17.5</test-containers.version>
+        <spring-cloud.version>2022.0.0</spring-cloud.version>
+        <spring-cloud-starters.version>4.0.0</spring-cloud-starters.version>
+        <spring-cloud-function.version>4.0.0</spring-cloud-function.version>
+        <spring-cloud-stream-dependencies.version>4.0.0</spring-cloud-stream-dependencies.version>
+        <spring-cloud-stream.version>4.0.0</spring-cloud-stream.version>
+        <test-containers.version>1.17.6</test-containers.version>
         <mockserver.version>5.13.2</mockserver.version>
 
         <groovy.version>4.0.5</groovy.version>
         <jakarta-jms.version>3.1.0</jakarta-jms.version>
-        <activemq-broker.version>5.16.5</activemq-broker.version>
-        <embedded-mongo.version>3.4.8</embedded-mongo.version>
 
     </properties>
 
@@ -227,14 +226,14 @@
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
             <comments>Copyright 2014-2020 the original author or authors.
 
                 Licensed under the Apache License, Version 2.0 (the "License");
                 you may not use this file except in compliance with the License.
                 You may obtain a copy of the License at
 
-                http://www.apache.org/licenses/LICENSE-2.0
+                https://www.apache.org/licenses/LICENSE-2.0
 
                 Unless required by applicable law or agreed to in writing, software
                 distributed under the License is distributed on an "AS IS" BASIS,

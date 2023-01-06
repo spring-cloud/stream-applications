@@ -27,7 +27,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
+@Disabled // TODO add test container based solution
 @TestPropertySource(properties = "mail.supplier.url=pop3://user:pw@localhost:${test.mail.server.port}/INBOX")
 public class Pop3PassTests extends AbstractMailSupplierTests {
 

@@ -27,7 +27,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
+@Disabled // TODO add test container based solution
 @TestPropertySource(properties = {
 		"mail.supplier.idle-imap=true",
 		"mail.supplier.url=imap://user:pw@localhost:${test.mail.server.port}/INBOX"})

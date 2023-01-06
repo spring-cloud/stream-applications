@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Artem Bilan
  */
 @TestPropertySource(properties = "aggregator.message-store-type=redis")
-@Disabled("Needs real Redis Server to be run")
+@Disabled("Needs real Redis Server to be run") // TODO add redis test container
 public class RedisMessageStoreAggregatorTests extends AbstractAggregatorFunctionTests {
 
 	@Test

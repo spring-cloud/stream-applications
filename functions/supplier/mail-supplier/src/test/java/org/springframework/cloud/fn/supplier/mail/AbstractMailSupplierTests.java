@@ -34,7 +34,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
+@Disabled // TODO add test container solution
 @SpringIntegrationTest(noAutoStartup = "*")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {
 		"mail.supplier.mark-as-read=true",

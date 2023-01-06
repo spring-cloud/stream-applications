@@ -28,11 +28,10 @@ import co.elastic.clients.elasticsearch.core.GetRequest;
 import co.elastic.clients.elasticsearch.core.GetResponse;
 import co.elastic.clients.json.JsonData;
 import org.awaitility.Awaitility;
-import org.elasticsearch.xcontent.XContentBuilder;
-import org.elasticsearch.xcontent.XContentFactory;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -61,6 +60,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 @Tag("integration")
 @Testcontainers(disabledWithoutDocker = true)
 public class ElasticsearchConsumerApplicationTests {
+	private static final Logger log = LoggerFactory.getLogger(ElasticsearchConsumerApplicationTests.class);
 
 	@Container
 	static final ElasticsearchContainer elasticsearch = new ElasticsearchContainer(
@@ -107,7 +107,7 @@ public class ElasticsearchConsumerApplicationTests {
 					+ "\"fullName\":\"John Doe\"}";
 				final Message<String> message = MessageBuilder.withPayload(jsonObject)
 					.setHeader(ElasticsearchConsumerConfiguration.INDEX_ID_HEADER, "2").build();
-
+				log.info("elasticsearchConsumer.accept:{}", message);
 				elasticsearchConsumer.accept(message);
 
 				final ElasticsearchClient elasticsearchClient = context.getBean(ElasticsearchClient.class);
@@ -133,7 +133,7 @@ public class ElasticsearchConsumerApplicationTests {
 				jsonMap.put("dateOfBirth", 1471466076564L);
 				jsonMap.put("fullName", "John Doe");
 				final Message<Map<String, Object>> message = MessageBuilder.withPayload(jsonMap).build();
-
+				log.info("elasticsearchConsumer.accept:{}", message);
 				elasticsearchConsumer.accept(message);
 				final ElasticsearchClient elasticsearchClient = context.getBean(ElasticsearchClient.class);
 				final GetRequest getRequest = new GetRequest.Builder().index("foo").id("3").build();
@@ -152,35 +152,6 @@ public class ElasticsearchConsumerApplicationTests {
 	}
 
 	@Test
-	@Disabled
-	public void testXContentBuilder() {
-		this.contextRunner
-			.withPropertyValues("elasticsearch.consumer.index=foo", "elasticsearch.consumer.id=4",
-				"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
-			.run(context -> {
-				Consumer<Message<?>> elasticsearchConsumer = context.getBean("elasticsearchConsumer", Consumer.class);
-
-				XContentBuilder builder = XContentFactory.jsonBuilder();
-				builder.startObject();
-				builder.field("user", "kimchy");
-				builder.timeField("postDate", 1471466076564L);
-				builder.field("message", "trying out Elasticsearch");
-				builder.endObject();
-
-				final Message<XContentBuilder> message = MessageBuilder.withPayload(builder).build();
-
-				elasticsearchConsumer.accept(message);
-
-				final ElasticsearchClient elasticsearchClient = context.getBean(ElasticsearchClient.class);
-				final GetRequest getRequest = new GetRequest.Builder().index("foo").id("4").build();
-
-				final GetResponse<String> response = elasticsearchClient.get(getRequest, String.class);
-				assertThat(response.found()).isTrue();
-
-				assertThat(response.source()).isEqualTo(builder.toString());
-			});
-	}
-	@Test
 	public void testAsyncIndexing() {
 		this.contextRunner
 			.withPropertyValues("elasticsearch.consumer.index=foo", "elasticsearch.consumer.async=true",
@@ -192,7 +163,7 @@ public class ElasticsearchConsumerApplicationTests {
 				final String jsonObject = "{\"age\":10,\"dateOfBirth\":1471466076564,"
 					+ "\"fullName\":\"John Doe\"}";
 				final Message<String> message = MessageBuilder.withPayload(jsonObject).build();
-
+				log.info("elasticsearchConsumer.accept:{}", message);
 				elasticsearchConsumer.accept(message);
 
 				final ElasticsearchClient elasticsearchClient = context.getBean(ElasticsearchClient.class);
@@ -228,7 +199,7 @@ public class ElasticsearchConsumerApplicationTests {
 							+ "\"fullName\":\"John Doe\"}")
 						.setHeader(ElasticsearchConsumerConfiguration.INDEX_ID_HEADER, Integer.toString(i))
 						.build();
-
+					log.info("elasticsearchConsumer.accept:{}", message);
 					elasticsearchConsumer.accept(message);
 				}
 
@@ -275,9 +246,9 @@ public class ElasticsearchConsumerApplicationTests {
 					final Message<String> message = builder.build();
 
 					if (i < properties.getBatchSize() - 1) {
+						log.info("elasticsearchConsumer.accept:{}", message);
 						elasticsearchConsumer.accept(message);
-					}
-					else {
+					} else {
 						// last invocation
 						assertThatIllegalStateException()
 							.isThrownBy(() -> elasticsearchConsumer.accept(message))
@@ -304,7 +275,7 @@ public class ElasticsearchConsumerApplicationTests {
 					.setHeader(ElasticsearchConsumerConfiguration.INDEX_ID_HEADER, "2")
 					.setHeader(ElasticsearchConsumerConfiguration.INDEX_NAME_HEADER, dynamicIndex)
 					.build();
-
+				log.info("elasticsearchConsumer.accept:{}", message);
 				elasticsearchConsumer.accept(message);
 				final ElasticsearchClient elasticsearchClient = context.getBean(ElasticsearchClient.class);
 

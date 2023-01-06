@@ -59,7 +59,7 @@ public class HeadersMappedLastTests {
 			Message received = this.rabbitTemplate.receive("scsapp-testq");
 			assertThat(new String(received.getBody())).isEqualTo("{}");
 			//TODO: What should be the actual content type?
-			// assertThat(received.getMessageProperties().getContentType()).isEqualTo("application/octet-stream");
+			assertThat(received.getMessageProperties().getContentType()).isEqualTo("application/octet-stream");
 		}
 	}
 }
