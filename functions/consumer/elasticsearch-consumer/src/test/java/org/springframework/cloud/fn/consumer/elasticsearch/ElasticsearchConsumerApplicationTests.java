@@ -248,7 +248,8 @@ public class ElasticsearchConsumerApplicationTests {
 					if (i < properties.getBatchSize() - 1) {
 						log.info("elasticsearchConsumer.accept:{}", message);
 						elasticsearchConsumer.accept(message);
-					} else {
+					}
+					else {
 						// last invocation
 						assertThatIllegalStateException()
 							.isThrownBy(() -> elasticsearchConsumer.accept(message))
