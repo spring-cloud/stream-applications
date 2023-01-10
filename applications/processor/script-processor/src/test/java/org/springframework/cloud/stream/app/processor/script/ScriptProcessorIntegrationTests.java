@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2022 the original author or authors.
+ * Copyright 2015-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package org.springframework.cloud.stream.app.processor.script;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -46,7 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ScriptProcessorIntegrationTests {
 
-	@Disabled
+	@EnabledIfSystemProperty(named = "org.graalvm.language.js.home", matches = ".+js$")
 	@Test
 	public void testJavascriptFunctions() throws IOException {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -68,7 +68,7 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
-	@Disabled
+	@EnabledIfSystemProperty(named = "org.graalvm.language.js.home", matches = ".+js$")
 	@Test
 	public void testJavascriptVariableTake1() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -88,7 +88,7 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
-	@Disabled
+	@EnabledIfSystemProperty(named = "org.graalvm.language.js.home", matches = ".+js$")
 	@Test
 	public void testJavascriptVariableTake2() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -104,7 +104,7 @@ public class ScriptProcessorIntegrationTests {
 
 			processorInput.send(new GenericMessage<>(9));
 			Message<byte[]> sourceMessage = processorOutput.receive(10000, "scriptProcessorFunction-out-0");
-			assertThat(new String(sourceMessage.getPayload())).isEqualTo("45.0");
+			assertThat(new String(sourceMessage.getPayload())).isEqualTo("45");
 		}
 	}
 
@@ -146,7 +146,6 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
-	@Disabled
 	@Test
 	public void testRubyScript() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -165,7 +164,6 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
-	@Disabled
 	@Test
 	public void testRubyScriptComplex() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -220,7 +218,7 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
-	@Disabled
+	@EnabledIfSystemProperty(named = "org.graalvm.language.js.home", matches = ".+js$")
 	@Test
 	public void testGroovyToJavascript() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -241,7 +239,8 @@ public class ScriptProcessorIntegrationTests {
 	}
 
 	@EnableAutoConfiguration
-	@Import({ScriptProcessorConfiguration.class})
+	@Import(ScriptProcessorConfiguration.class)
 	public static class ScriptProcessorTestConfiguration {
 	}
+
 }
