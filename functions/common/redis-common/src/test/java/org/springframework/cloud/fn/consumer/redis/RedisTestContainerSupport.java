@@ -29,7 +29,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  */
 @Testcontainers(disabledWithoutDocker = true)
 public interface RedisTestContainerSupport {
-	GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>("redis:7.0.2")
+	GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>("redis:7")
 		.withExposedPorts(6379)
 		.withStartupTimeout(Duration.ofSeconds(120))
 		.withStartupAttempts(3);

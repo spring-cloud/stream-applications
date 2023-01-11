@@ -19,15 +19,17 @@ package org.springframework.cloud.fn.aggregator;
 import java.time.Duration;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import org.springframework.cloud.fn.consumer.redis.RedisTestContainerSupport;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.redis.store.RedisMessageStore;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,35 +38,38 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Artem Bilan
  */
 @TestPropertySource(properties = "aggregator.message-store-type=redis")
-@Disabled("Needs real Redis Server to be run") // TODO add redis test container
-public class RedisMessageStoreAggregatorTests extends AbstractAggregatorFunctionTests {
+public class RedisMessageStoreAggregatorTests extends AbstractAggregatorFunctionTests implements RedisTestContainerSupport {
+	@DynamicPropertySource
+	static void redisProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.data.redis.url", RedisTestContainerSupport::getUri);
+	}
 
 	@Test
 	public void test() {
 		Flux<Message<?>> input =
-				Flux.just(MessageBuilder.withPayload("2")
-								.setHeader(IntegrationMessageHeaderAccessor.CORRELATION_ID, "my_correlation")
-								.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_NUMBER, 2)
-								.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_SIZE, 2)
-								.build(),
-						MessageBuilder.withPayload("1")
-								.setHeader(IntegrationMessageHeaderAccessor.CORRELATION_ID, "my_correlation")
-								.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_NUMBER, 1)
-								.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_SIZE, 2)
-								.build());
+			Flux.just(MessageBuilder.withPayload("2")
+					.setHeader(IntegrationMessageHeaderAccessor.CORRELATION_ID, "my_correlation")
+					.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_NUMBER, 2)
+					.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_SIZE, 2)
+					.build(),
+				MessageBuilder.withPayload("1")
+					.setHeader(IntegrationMessageHeaderAccessor.CORRELATION_ID, "my_correlation")
+					.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_NUMBER, 1)
+					.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_SIZE, 2)
+					.build());
 
 		Flux<Message<?>> output = this.aggregatorFunction.apply(input);
 
 		output.as(StepVerifier::create)
-				.assertNext((message) ->
-						assertThat(message)
-								.extracting(Message::getPayload)
-								.isInstanceOf(List.class)
-								.asList()
-								.hasSize(2)
-								.contains("1", "2"))
-				.thenCancel()
-				.verify(Duration.ofSeconds(10));
+			.assertNext((message) ->
+				assertThat(message)
+					.extracting(Message::getPayload)
+					.isInstanceOf(List.class)
+					.asList()
+					.hasSize(2)
+					.contains("1", "2"))
+			.thenCancel()
+			.verify(Duration.ofSeconds(10));
 
 		assertThat(this.messageGroupStore).isInstanceOf(RedisMessageStore.class);
 
