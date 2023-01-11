@@ -9,3 +9,8 @@ spring:
     cloud:
         function:
             definition: imageRecognitionFunction
+management:
+  defaults:
+    metrics:
+      export:
+        enabled: false

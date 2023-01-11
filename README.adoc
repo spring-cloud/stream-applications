@@ -167,67 +167,29 @@ The following are the various components of this repository.
 
 === Build
 
-You can build everything from the root of the repository.
+This build requires GraalVM JDK 17 distribution in order to build the script function and processor.
 
-`./mvnw clean install`
+If you are building locally and don't want to publish to a repository set: `export LOCAL=true`
 
-TIP: By default the build skips long running tests, annotated with `@Tag("integration")`,including tests requiring Testcontainers. To run the full test suite, activate the `integration` Maven profile:
-`./mvnw clean install -Pintegration`. This applies to building functions or individual applications as well.
+==== Core
 
-However, this may not be what you are interested in since you are probably interested in a single application or a few of them.
-To build the functions and applications that you are interested in, you need to first build the base module with the following.
-
-`./mvnw clean install -f stream-applications-build`
-
-You can then build the desired functions/apps selectively, as shown below.
-
-==== Building Functions
-
-`./mvnw clean install -f functions`
-
-You can also build a single function or group of functions.
-For example, if you are only interested in `jdbc-supplier` and `log-consumer`, do the following.
-
-`./mvnw clean install -pl :jdbc-supplier,:log-consumer`
-
-==== Building Stream Applications Core
-
-If you want to re-run the common core build, you can build it with the following.
-
-`./mvnw clean install -f applications/stream-applications-core`
-
-=== Building Stream Applications
-
-Let's assume that you want to build a `jdbc-source` application based on Kafka Binder in Spring Cloud Stream and Log Sink application based on Rabbit binder.
-
-Here is what you need to do.
-Assuming that you already built both functions and stream-applications-core as above,
+This will build the core functionality and all functions.
 
 [source,shell]
-----
-./mvnw clean package -pl :jdbc-source
-cd applications/source/jdbc-source/apps/jdbc-source-kafka
-./mvnw clean package
-----
+....
+./build-core.sh
+....
 
-This will generate the Kafka binder based uber jar in the target folder.
+You can then build the desired apps.
 
-Similarly, for the `log-sink`, do the following.
+==== Application
 
 [source,shell]
-----
-./mvnw clean package -pl :log-sink
-cd applications/sink/log-sink/apps/log-sink-rabbit
-./mvnw clean package
-----
+....
+./build-app.sh . applications/sink/log-sink
+....
 
-Rebuild all applications and container images.
-
-[source,shell]
-----
-./local/build-images.sh
-----
-
+NOTE: In order to disable metrics by default there needs to be application properties configured like in `default-application.properties`. The `build-app.sh` script will copy default-application.properties into src/main/resources if no application.properties,yml,yaml or json is present.
 
 === Additional Resources
 

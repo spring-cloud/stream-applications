@@ -23,8 +23,6 @@
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.7</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.7</spring-cloud-dataflow-apps-metadata-plugin.version>
         <java-cfenv-boot.version>2.4.0</java-cfenv-boot.version>
-        <prometheus-rsocket.version>1.5.0</prometheus-rsocket.version>
-        <wavefront-spring-boot.version>2.3.0</wavefront-spring-boot.version>
     </properties>
 
     <modules>
@@ -157,8 +155,7 @@
                                     <spring.zipkin.enabled>false</spring.zipkin.enabled>
 
                                     <!-- Enforce Spring Integration tracing instrumentation even for SCF apps -->
-                                    <spring.sleuth.integration.enabled>true</spring.sleuth.integration.enabled>
-                                    <spring.sleuth.sampler.probability>1.0</spring.sleuth.sampler.probability>
+                                    <spring.sleuth.integration.enabled>false</spring.sleuth.integration.enabled>
 
 									<!-- Temporarily disable Spring Cloud Sleuth function instrumentation -->
 									<spring.sleuth.function.enabled>false</spring.sleuth.function.enabled>
@@ -192,14 +189,6 @@
                                             <artifactId>function-dependencies</artifactId>
                                             <version>${java-functions.version}</version>
                                         </dependency>
-
-                                        <dependency>
-                                            <groupId>com.wavefront</groupId>
-                                            <artifactId>wavefront-spring-boot-bom</artifactId>
-                                            <version>${wavefront-spring-boot.version}</version>
-                                            <type>pom</type>
-                                            <scope>import</scope>
-                                        </dependency>
                                     </dependencyManagement>
                                     <dependencies>
                                         <dependency>
@@ -224,15 +213,6 @@
                                         <dependency>
                                             <groupId>io.micrometer</groupId>
                                             <artifactId>micrometer-registry-prometheus</artifactId>
-                                        </dependency>
-                                        <dependency>
-                                            <groupId>io.micrometer.prometheus</groupId>
-                                            <artifactId>prometheus-rsocket-spring</artifactId>
-                                            <version>${prometheus-rsocket.version}</version>
-                                        </dependency>
-                                        <dependency>
-                                            <groupId>io.micrometer</groupId>
-                                            <artifactId>micrometer-registry-datadog</artifactId>
                                         </dependency>
                                         <dependency>
                                             <groupId>io.micrometer</groupId>
@@ -262,18 +242,6 @@
                                         <dependency>
                                             <groupId>org.springframework.boot</groupId>
                                             <artifactId>spring-boot-starter-security</artifactId>
-                                        </dependency>
-                                        <dependency>
-                                            <groupId>com.wavefront</groupId>
-                                            <artifactId>wavefront-spring-boot-starter</artifactId>
-                                        </dependency>
-                                        <dependency>
-                                            <groupId>org.springframework.cloud</groupId>
-                                            <artifactId>spring-cloud-starter-sleuth</artifactId>
-                                        </dependency>
-                                        <dependency>
-                                            <groupId>org.springframework.cloud</groupId>
-                                            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
                                         </dependency>
                                         <dependency>
                                             <groupId>org.springframework.cloud</groupId>

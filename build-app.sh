@@ -54,13 +54,18 @@ pushd "$PROJECT_FOLDER" >/dev/null
 
   pushd "$APP_FOLDER" >/dev/null
     rm -rf apps
+    if [[ ! -f "src/main/resources/application.properties" ]] && [[ ! -f "src/main/resources/application.yml" ]] && [[ ! -f "src/main/resources/application.yaml" ]] && [[ ! -f "src/main/resources/application.json" ]]; then
+      mkdir -p "src/main/resources"
+      cp $SCDIR/default-application.properties src/main/resources/application.properties
+    fi
+
     echo "Deploying:$APP_FOLDER"
     if [ -d "src/main/java" ]; then
       echo "Deploying:$APP_FOLDER"
       $SCDIR/build-folder.sh "." "$MAVEN_GOAL -Pintegration"
     else
       echo "Installing:$APP_FOLDER"
-      $SCDIR//build-folder.sh "." "clean install -Pintegration"
+      $SCDIR/build-folder.sh "." "clean install -Pintegration"
     fi
 
     if [ ! -d apps ]; then
