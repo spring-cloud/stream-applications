@@ -20,7 +20,6 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -46,7 +45,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ScriptProcessorIntegrationTests {
 
-	@EnabledIfSystemProperty(named = "org.graalvm.language.js.home", matches = ".+js$")
 	@Test
 	public void testJavascriptFunctions() throws IOException {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -68,7 +66,6 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
-	@EnabledIfSystemProperty(named = "org.graalvm.language.js.home", matches = ".+js$")
 	@Test
 	public void testJavascriptVariableTake1() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -88,7 +85,6 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
-	@EnabledIfSystemProperty(named = "org.graalvm.language.js.home", matches = ".+js$")
 	@Test
 	public void testJavascriptVariableTake2() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -218,7 +214,6 @@ public class ScriptProcessorIntegrationTests {
 		}
 	}
 
-	@EnabledIfSystemProperty(named = "org.graalvm.language.js.home", matches = ".+js$")
 	@Test
 	public void testGroovyToJavascript() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
