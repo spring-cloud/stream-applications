@@ -15,15 +15,27 @@
     </parent>
 
     <properties>
-        <jruby-complete.version>9.0.5.0</jruby-complete.version>
-        <jython-standalone.version>2.7.2</jython-standalone.version>
+        <jruby-complete.version>9.3.9.0</jruby-complete.version>
+        <jython-standalone.version>2.7.3</jython-standalone.version>
         <apache-ivy.version>2.5.1</apache-ivy.version>
+        <graalvm.version>22.3.0</graalvm.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-groovy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>graal-sdk</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js</artifactId>
+            <version>${graalvm.version}</version>
         </dependency>
 
         <dependency>
@@ -78,6 +90,17 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        --add-opens java.base/sun.nio.ch=ALL-UNNAMED
+                        --add-opens java.base/java.io=ALL-UNNAMED
+                    </argLine>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>

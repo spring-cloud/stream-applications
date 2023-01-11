@@ -186,7 +186,7 @@ jobs:
         with:
           version: 'latest'
           java-version: ${{ needs.parameters.outputs.jdk_build }}
-#          components: 'native-image' # add when starting native builds.
+          components: 'js'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Configure: cache for maven dependencies'
         uses: actions/cache@v3
@@ -277,7 +277,7 @@ jobs:
         with:
           version: 'latest'
           java-version: ${{ needs.parameters.outputs.jdk_build }}
-#          components: 'native-image' # add when starting native builds.
+          components: 'js'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Configure: cache for maven dependencies'
         uses: actions/cache@v3
@@ -357,7 +357,7 @@ jobs:
         with:
           version: 'latest'
           java-version: ${{ needs.parameters.outputs.jdk_build }}
-#          components: 'native-image' # add when starting native builds.
+          components: 'js'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Configure: cache for maven dependencies'
         uses: actions/cache@v3
@@ -437,7 +437,7 @@ jobs:
         with:
           version: 'latest'
           java-version: ${{ needs.parameters.outputs.jdk_build }}
-#          components: 'native-image' # add when starting native builds.
+          components: 'js'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Configure: cache for maven dependencies'
         uses: actions/cache@v3
@@ -514,7 +514,7 @@ jobs:
         with:
           version: 'latest'
           java-version: ${{ needs.parameters.outputs.jdk_build }}
-          #          components: 'native-image' # add when starting native builds.
+          components: 'js'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Configure: cache for maven dependencies'
         uses: actions/cache@v3
