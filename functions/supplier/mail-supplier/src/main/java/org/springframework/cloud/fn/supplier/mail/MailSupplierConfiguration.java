@@ -25,14 +25,13 @@ import jakarta.mail.URLName;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.core.MessageSource;
-import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.MessageProducerSpec;
 import org.springframework.integration.dsl.MessageSourceSpec;
 import org.springframework.integration.endpoint.MessageProducerSupport;
@@ -53,18 +52,23 @@ import org.springframework.messaging.Message;
  * @author Artem Bilan
  * @author Chris Schaefer
  * @author Soby Chacko
+ * @author Corneil du Plessis
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MailSupplierProperties.class)
 public class MailSupplierConfiguration {
 
-	@Autowired
-	private MailSupplierProperties properties;
+
+	final private MailSupplierProperties properties;
+
+	public MailSupplierConfiguration(MailSupplierProperties properties) {
+		this.properties = properties;
+	}
 
 	@Bean
 	public Publisher<Message<Object>> mailInboundFlow(MessageProducerSupport messageProducer) {
 
-		return IntegrationFlows.from(messageProducer)
+		return IntegrationFlow.from(messageProducer)
 				.transform(Mail.toStringTransformer(this.properties.getCharset()))
 				.enrichHeaders(h -> h
 						.defaultOverwrite(true)

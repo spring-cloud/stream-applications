@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.fn.supplier.mail;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -27,28 +25,25 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled // TODO add test container based solution
 @TestPropertySource(properties = {
-		"mail.supplier.idle-imap=true",
-		"mail.supplier.url=imap://user:pw@localhost:${test.mail.server.port}/INBOX"})
+	"mail.supplier.idle-imap=true",
+	"mail.supplier.url=imap://user:pw@localhost:${test.mail.server.imap.port}/INBOX"})
 public class ImapIdlePassTests extends AbstractMailSupplierTests {
 
-	@BeforeAll
-	public static void startImapServer() throws Throwable {
-		startMailServer(TestMailServer.imap(0));
-	}
-
 	@Test
-	public void testSimpleTest() throws Exception {
-
+	public void testSimpleTest() {
+		// given
+		sendMessage("test", "foo");
+		// when
 		final Flux<Message<?>> messageFlux = mailSupplier.get();
-
+		// then
 		StepVerifier.create(messageFlux)
-				.assertNext((message) -> {
-							assertThat(((String) message.getPayload()).endsWith("\r\n\r\nfoo\r\n\r\n"));
-						}
-				)
-				.thenCancel()
-				.verify();
+			.assertNext((message) -> {
+					System.out.println("Message:" + message);
+					assertThat(((String) message.getPayload())).isEqualTo("foo");
+				}
+			)
+			.thenCancel()
+			.verify();
 	}
 }

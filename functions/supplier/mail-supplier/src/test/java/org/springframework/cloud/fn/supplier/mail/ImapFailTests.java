@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.fn.supplier.mail;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -30,34 +28,29 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled // TODO add test container based solution
 @TestPropertySource(properties = {
-		"mail.supplier.url=imap://user:pw@localhost:${test.mail.server.port}/INBOX",
-		"mail.supplier.charset=cp1251"})
+	"mail.supplier.url=imap://user:pw@localhost:${test.mail.server.imap.port}/INBOX",
+	"mail.supplier.charset=cp1251"})
 public class ImapFailTests extends AbstractMailSupplierTests {
 
 	@Autowired
-	MailToStringTransformer mailToStringTransformer;
+	protected MailToStringTransformer mailToStringTransformer;
 
-	@BeforeAll
-	public static void startImapServer() throws Throwable {
-		startMailServer(TestMailServer.imap(0));
-	}
 
 	@Test
-	public void testSimpleTest() throws Exception {
-
-		assertThat(TestUtils.getPropertyValue(mailToStringTransformer, "charset").equals("cp1251")).isTrue();
-
+	public void testSimpleTest() {
+		// given
+		sendMessage("test", "foo");
+		// when
 		final Flux<Message<?>> messageFlux = mailSupplier.get();
-
+		// then
+		assertThat(TestUtils.getPropertyValue(mailToStringTransformer, "charset").equals("cp1251")).isTrue();
 		StepVerifier.create(messageFlux)
-				.assertNext((message) -> {
-							assertThat(((String) message.getPayload()).equals("Test Mail")).isFalse();
-						}
-				)
-				.thenCancel()
-				.verify();
-
+			.assertNext((message) -> {
+					assertThat(((String) message.getPayload())).isNotEqualTo("Test Mail");
+				}
+			)
+			.thenCancel()
+			.verify();
 	}
 }

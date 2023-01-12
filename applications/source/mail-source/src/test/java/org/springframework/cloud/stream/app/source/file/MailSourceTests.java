@@ -16,9 +16,13 @@
 
 package org.springframework.cloud.stream.app.source.file;
 
+import com.icegreen.greenmail.user.GreenMailUser;
+import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.util.GreenMailUtil;
+import com.icegreen.greenmail.util.ServerSetup;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Soby Chacko
  * @author Chris Bono
+ * @author Corneil du Plessis
  */
 @SpringBootTest(
 		webEnvironment = SpringBootTest.WebEnvironment.NONE,
@@ -47,42 +52,38 @@ import static org.assertj.core.api.Assertions.assertThat;
 				"mail.supplier.mark-as-read=true",
 				"mail.supplier.delete=false",
 				"mail.supplier.user-flag=testSIUserFlag",
-				"mail.supplier.java-mail-properties=mail.imap.socketFactory.fallback=true\\n mail.store.protocol=imap\\n mail.debug=true"
+				"mail.supplier.java-mail-properties=mail.store.protocol=imap\\nmail.debug=true"
 		})
 @DirtiesContext
 class MailSourceTests {
-
-	//private static TestMailServer.MailServer MAIL_SERVER;
-
+	private static GreenMail mailServer;
+	private static GreenMailUser mailUser;
 	@BeforeAll
-	public static void startImapServer() throws Throwable {
-		//startMailServer(TestMailServer.imap(0));
+	public static void setup() {
+		ServerSetup imap = ServerSetupTest.IMAP.dynamicPort();
+		imap.setServerStartupTimeout(10000);
+		mailServer = new GreenMail(imap);
+		mailUser = mailServer.setUser("user", "pw");
+		mailServer.start();
+		String imapPort = Integer.toString(mailServer.getImap().getServerSetup().getPort());
+		System.setProperty("test.mail.server.port", imapPort);
 	}
 
 	@AfterAll
 	public static void cleanup() {
 		System.clearProperty("test.mail.server.port");
-		//MAIL_SERVER.stop();
+		mailServer.stop();
 	}
 
-	/*
-	private static void startMailServer(TestMailServer.MailServer mailServer)
-			throws InterruptedException {
-		MAIL_SERVER = mailServer;
-		System.setProperty("test.mail.server.port", "" + MAIL_SERVER.getPort());
-		int n = 0;
-		while (n++ < 100 && (!MAIL_SERVER.isListening())) {
-			Thread.sleep(100);
-		}
-		assertThat(n < 100).isTrue();
-	}
-	*/
-	@Disabled // TODO find TestContainer solution for testing email.
 	@Test
 	void mailMessagesAreSuppliedToOutputDestination(@Autowired OutputDestination target) {
+		// given
+		mailUser.deliver(GreenMailUtil.createTextEmail("bar@bax", "test@test", "test", "\r\nfoo", mailServer.getImap().getServerSetup()));
+		// when
 		Message<byte[]> sourceMessage = target.receive(10000, "mailSupplier-out-0");
+		// then
 		final String actual = new String(sourceMessage.getPayload());
-		assertThat(actual.endsWith("\r\n\r\nfoo\r\n\r\n")).isTrue();
+		assertThat(actual).isEqualTo("\r\nfoo");
 	}
 
 	@SpringBootApplication

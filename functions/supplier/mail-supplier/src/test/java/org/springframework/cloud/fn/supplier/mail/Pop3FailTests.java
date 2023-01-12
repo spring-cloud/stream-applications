@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.fn.supplier.mail;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -27,27 +25,24 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled // TODO add test container based solution
-@TestPropertySource(properties = "mail.supplier.url=pop3://user:pw@localhost:${test.mail.server.port}/INBOX")
+@TestPropertySource(properties = "mail.supplier.url=pop3://user:pw@localhost:${test.mail.server.pop3.port}/INBOX")
 public class Pop3FailTests extends AbstractMailSupplierTests {
 
-	@BeforeAll
-	public static void startImapServer() throws Throwable {
-		startMailServer(TestMailServer.pop3(0));
-	}
 
 	@Test
-	public void testSimpleTest() throws Exception {
-
+	public void testSimpleTest() {
+		// given
+		sendMessage("test", "foo");
+		// when
 		final Flux<Message<?>> messageFlux = mailSupplier.get();
-
+		// then
 		StepVerifier.create(messageFlux)
-				.assertNext((message) -> {
-							assertThat(((String) message.getPayload()).equals("Test Mail")).isFalse();
-						}
-				)
-				.thenCancel()
-				.verify();
+			.assertNext((message) -> {
+					assertThat(((String) message.getPayload())).isNotEqualTo("Test Mail");
+				}
+			)
+			.thenCancel()
+			.verify();
 	}
 
 }

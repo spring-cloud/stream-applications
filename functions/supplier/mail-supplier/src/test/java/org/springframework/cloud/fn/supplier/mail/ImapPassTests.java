@@ -16,10 +16,13 @@
 
 package org.springframework.cloud.fn.supplier.mail;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+import com.icegreen.greenmail.util.GreenMailUtil;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -31,33 +34,34 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled // TODO add test container based solution
-@TestPropertySource(properties = "mail.supplier.url=imap://user:pw@localhost:${test.mail.server.port}/INBOX")
+@TestPropertySource(properties = "mail.supplier.url=imap://user:pw@localhost:${test.mail.server.imap.port}/INBOX")
 public class ImapPassTests extends AbstractMailSupplierTests {
 
-	@BeforeAll
-	public static void startImapServer() throws Throwable {
-		startMailServer(TestMailServer.imap(0));
-	}
 
 	@Test
-	public void testSimpleTest() {
-
+	public void testSimpleTest() throws UnsupportedEncodingException, MessagingException {
+		// given
+		MimeMessage mailMessage = GreenMailUtil.createTextEmail("bar@foo", "test@test", "test", "foo", mailServer.getSmtp().getServerSetup());
+		mailMessage.addRecipients(jakarta.mail.Message.RecipientType.TO, new InternetAddress[]{new InternetAddress("foo@bar", "Foo")});
+		mailMessage.addRecipients(jakarta.mail.Message.RecipientType.CC, new InternetAddress[]{new InternetAddress("a@b"), new InternetAddress("c@d")});
+		mailMessage.addRecipients(jakarta.mail.Message.RecipientType.BCC, new InternetAddress[]{new InternetAddress("e@f"), new InternetAddress("g@h")});
+		mailUser.deliver(mailMessage);
+		// when
 		final Flux<Message<?>> messageFlux = mailSupplier.get();
-
+		// then
 		StepVerifier.create(messageFlux)
-				.assertNext((message) -> {
-							assertThat(((String) message.getPayload()).endsWith("\r\n\r\nfoo\r\n\r\n"));
-							MessageHeaders headers = message.getHeaders();
-							assertThat(headers.get(MailHeaders.TO)).isInstanceOf(List.class);
-							assertThat(headers.get(MailHeaders.CC)).isInstanceOf(List.class);
-							assertThat(headers.get(MailHeaders.BCC)).isInstanceOf(List.class);
-							assertThat(headers.get(MailHeaders.TO).toString()).isEqualTo("[Foo <foo@bar>]");
-							assertThat(headers.get(MailHeaders.CC).toString()).isEqualTo("[a@b, c@d]");
-							assertThat(headers.get(MailHeaders.BCC).toString()).isEqualTo("[e@f, g@h]");
-						}
-				)
-				.thenCancel()
-				.verify();
+			.assertNext((message) -> {
+					assertThat(((String) message.getPayload())).isEqualTo("foo");
+					MessageHeaders headers = message.getHeaders();
+					assertThat(headers.get(MailHeaders.TO)).isInstanceOf(List.class);
+					assertThat(headers.get(MailHeaders.CC)).isInstanceOf(List.class);
+					assertThat(headers.get(MailHeaders.BCC)).isInstanceOf(List.class);
+					assertThat(headers.get(MailHeaders.TO).toString()).isEqualTo("[bar@foo, Foo <foo@bar>]");
+					assertThat(headers.get(MailHeaders.CC).toString()).isEqualTo("[a@b, c@d]");
+					assertThat(headers.get(MailHeaders.BCC).toString()).isEqualTo("[e@f, g@h]");
+				}
+			)
+			.thenCancel()
+			.verify();
 	}
 }
