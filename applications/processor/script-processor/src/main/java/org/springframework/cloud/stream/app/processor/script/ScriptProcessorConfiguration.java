@@ -59,11 +59,15 @@ public class ScriptProcessorConfiguration {
 
 	private static final Log logger = LogFactory.getLog(ScriptProcessorConfiguration.class);
 
-	@Autowired
+
 	private ScriptProcessorProperties properties;
 
-	@Autowired
 	private ScriptVariableGenerator scriptVariableGenerator;
+
+	public ScriptProcessorConfiguration(ScriptProcessorProperties properties, ScriptVariableGenerator scriptVariableGenerator) {
+		this.properties = properties;
+		this.scriptVariableGenerator = scriptVariableGenerator;
+	}
 
 	@Bean
 	public Function<Message<?>, Object> scriptProcessorFunction() {
