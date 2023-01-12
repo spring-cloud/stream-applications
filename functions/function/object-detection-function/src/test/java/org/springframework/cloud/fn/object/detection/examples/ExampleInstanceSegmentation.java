@@ -34,9 +34,9 @@ import org.springframework.core.io.ResourceLoader;
 /**
  * 4 of the pre-trained model in the model zoo (https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md)
  * can also compute the masks of the detected objects, providing instance segmentation.
- *
+ * <p>
  * Here are the models that can be used for instance segmentation.
- *
+ * <p>
  * mask_rcnn_inception_resnet_v2_atrous_coco	771	36	Masks
  * mask_rcnn_inception_v2_coco					79	25	Masks
  * mask_rcnn_resnet101_atrous_coco				470	33	Masks
@@ -71,7 +71,7 @@ public class ExampleInstanceSegmentation {
 		float CONFIDENCE_THRESHOLD = 0.4f;
 
 		ObjectDetectionService detectionService =
-				new ObjectDetectionService(model, labels, CONFIDENCE_THRESHOLD, INSTANCE_SEGMENTATION, CACHE_TF_MODEL);
+			new ObjectDetectionService(model, labels, CONFIDENCE_THRESHOLD, INSTANCE_SEGMENTATION, CACHE_TF_MODEL);
 
 		// You can use file:, http: or classpath: to provide the path to the input image.
 		byte[] image = GraphicsUtils.loadAsByteArray("classpath:/images/object-detection.jpg");
@@ -86,8 +86,8 @@ public class ExampleInstanceSegmentation {
 		// Draw the detected object metadata on top of the original image and store the result
 		byte[] annotatedImage = new ObjectDetectionImageAugmenter(INSTANCE_SEGMENTATION).apply(image, detectedObjects);
 		File projectDir = new File("functions/function/object-detection-function");
-		File output = new File(projectDir,"target/object-detection-segmentation-augmented.jpg");
+		File output = new File(projectDir, "target/object-detection-segmentation-augmented.jpg");
 		IOUtils.write(annotatedImage, new FileOutputStream(output));
-		System.out.println("Created:" +output.getPath());
+		System.out.println("Created:" + output.getPath());
 	}
 }
