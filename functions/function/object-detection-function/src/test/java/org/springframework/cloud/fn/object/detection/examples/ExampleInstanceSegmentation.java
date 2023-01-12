@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.object.detection.examples;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -84,6 +85,9 @@ public class ExampleInstanceSegmentation {
 
 		// Draw the detected object metadata on top of the original image and store the result
 		byte[] annotatedImage = new ObjectDetectionImageAugmenter(INSTANCE_SEGMENTATION).apply(image, detectedObjects);
-		IOUtils.write(annotatedImage, new FileOutputStream("./object-detection-function/target/object-detection-segmentation-augmented.jpg"));
+		File projectDir = new File("functions/function/object-detection-function");
+		File output = new File(projectDir,"target/object-detection-segmentation-augmented.jpg");
+		IOUtils.write(annotatedImage, new FileOutputStream(output));
+		System.out.println("Created:" +output.getPath());
 	}
 }

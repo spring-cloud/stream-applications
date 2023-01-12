@@ -26,6 +26,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string name = 1;</code>
+     * @return Whether the name field is set.
      */
     boolean hasName();
     /**
@@ -36,6 +37,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string name = 1;</code>
+     * @return The name.
      */
     java.lang.String getName();
     /**
@@ -46,6 +48,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string name = 1;</code>
+     * @return The bytes for name.
      */
     com.google.protobuf.ByteString
         getNameBytes();
@@ -57,6 +60,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional int32 id = 2;</code>
+     * @return Whether the id field is set.
      */
     boolean hasId();
     /**
@@ -66,6 +70,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional int32 id = 2;</code>
+     * @return The id.
      */
     int getId();
 
@@ -75,6 +80,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string display_name = 3;</code>
+     * @return Whether the displayName field is set.
      */
     boolean hasDisplayName();
     /**
@@ -83,6 +89,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string display_name = 3;</code>
+     * @return The displayName.
      */
     java.lang.String getDisplayName();
     /**
@@ -91,6 +98,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string display_name = 3;</code>
+     * @return The bytes for displayName.
      */
     com.google.protobuf.ByteString
         getDisplayNameBytes();
@@ -110,6 +118,13 @@ public final class StringIntLabelMapOuterClass {
     private StringIntLabelMapItem() {
       name_ = "";
       displayName_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new StringIntLabelMapItem();
     }
 
     @java.lang.Override
@@ -196,6 +211,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string name = 1;</code>
+     * @return Whether the name field is set.
      */
     public boolean hasName() {
       return ((bitField0_ & 0x00000001) != 0);
@@ -208,6 +224,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string name = 1;</code>
+     * @return The name.
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -231,6 +248,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string name = 1;</code>
+     * @return The bytes for name.
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -255,6 +273,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional int32 id = 2;</code>
+     * @return Whether the id field is set.
      */
     public boolean hasId() {
       return ((bitField0_ & 0x00000002) != 0);
@@ -266,6 +285,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional int32 id = 2;</code>
+     * @return The id.
      */
     public int getId() {
       return id_;
@@ -279,6 +299,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string display_name = 3;</code>
+     * @return Whether the displayName field is set.
      */
     public boolean hasDisplayName() {
       return ((bitField0_ & 0x00000004) != 0);
@@ -289,6 +310,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string display_name = 3;</code>
+     * @return The displayName.
      */
     public java.lang.String getDisplayName() {
       java.lang.Object ref = displayName_;
@@ -310,6 +332,7 @@ public final class StringIntLabelMapOuterClass {
      * </pre>
      *
      * <code>optional string display_name = 3;</code>
+     * @return The bytes for displayName.
      */
     public com.google.protobuf.ByteString
         getDisplayNameBytes() {
@@ -700,6 +723,7 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string name = 1;</code>
+       * @return Whether the name field is set.
        */
       public boolean hasName() {
         return ((bitField0_ & 0x00000001) != 0);
@@ -712,6 +736,7 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string name = 1;</code>
+       * @return The name.
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -735,6 +760,7 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string name = 1;</code>
+       * @return The bytes for name.
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -757,6 +783,8 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string name = 1;</code>
+       * @param value The name to set.
+       * @return This builder for chaining.
        */
       public Builder setName(
           java.lang.String value) {
@@ -776,6 +804,7 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string name = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearName() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -791,6 +820,8 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string name = 1;</code>
+       * @param value The bytes for name to set.
+       * @return This builder for chaining.
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
@@ -811,6 +842,7 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional int32 id = 2;</code>
+       * @return Whether the id field is set.
        */
       public boolean hasId() {
         return ((bitField0_ & 0x00000002) != 0);
@@ -822,6 +854,7 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional int32 id = 2;</code>
+       * @return The id.
        */
       public int getId() {
         return id_;
@@ -833,6 +866,8 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional int32 id = 2;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
        */
       public Builder setId(int value) {
         bitField0_ |= 0x00000002;
@@ -847,6 +882,7 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional int32 id = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearId() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -862,6 +898,7 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string display_name = 3;</code>
+       * @return Whether the displayName field is set.
        */
       public boolean hasDisplayName() {
         return ((bitField0_ & 0x00000004) != 0);
@@ -872,6 +909,7 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string display_name = 3;</code>
+       * @return The displayName.
        */
       public java.lang.String getDisplayName() {
         java.lang.Object ref = displayName_;
@@ -893,6 +931,7 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string display_name = 3;</code>
+       * @return The bytes for displayName.
        */
       public com.google.protobuf.ByteString
           getDisplayNameBytes() {
@@ -913,6 +952,8 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string display_name = 3;</code>
+       * @param value The displayName to set.
+       * @return This builder for chaining.
        */
       public Builder setDisplayName(
           java.lang.String value) {
@@ -930,6 +971,7 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string display_name = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDisplayName() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -943,6 +985,8 @@ public final class StringIntLabelMapOuterClass {
        * </pre>
        *
        * <code>optional string display_name = 3;</code>
+       * @param value The bytes for displayName to set.
+       * @return This builder for chaining.
        */
       public Builder setDisplayNameBytes(
           com.google.protobuf.ByteString value) {
@@ -1049,6 +1093,13 @@ public final class StringIntLabelMapOuterClass {
     }
     private StringIntLabelMap() {
       item_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new StringIntLabelMap();
     }
 
     @java.lang.Override
@@ -1815,18 +1866,10 @@ public final class StringIntLabelMapOuterClass {
       "ingframework.cloud.fn.object.detection.p" +
       "rotos.StringIntLabelMapItem"
     };
-    com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
-          public com.google.protobuf.ExtensionRegistry assignDescriptors(
-              com.google.protobuf.Descriptors.FileDescriptor root) {
-            descriptor = root;
-            return null;
-          }
-        };
-    com.google.protobuf.Descriptors.FileDescriptor
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-        }, assigner);
+        });
     internal_static_org_springframework_cloud_fn_object_detection_protos_StringIntLabelMapItem_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_org_springframework_cloud_fn_object_detection_protos_StringIntLabelMapItem_fieldAccessorTable = new

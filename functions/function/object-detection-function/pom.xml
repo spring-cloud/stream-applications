@@ -20,6 +20,11 @@
 			<artifactId>tensorflow-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.19.6</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -27,8 +32,8 @@
 			<plugin>
 				<groupId>com.github.os72</groupId>
 				<artifactId>protoc-jar-maven-plugin</artifactId>
-				<!-- NOTE upgrading with versions above 3.8.0 generates incompatible for protobuf-java:3.5.1 comming with TF 1.15.0 -->
-				<version>3.7.0</version>
+				<!-- NOTE upgrading with versions above 3.8.0 generates incompatible for protobuf-java:3.5.1 coming with TF 1.15.0 -->
+				<version>3.11.4</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
