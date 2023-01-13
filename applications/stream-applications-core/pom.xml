@@ -288,7 +288,7 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>false</skip>
                 </configuration>
             </plugin>
         </plugins>
