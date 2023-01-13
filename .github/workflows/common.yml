@@ -203,6 +203,7 @@ jobs:
         uses: ./.github/actions/install-gh
       - name: 'Action: build initial dependencies'
         shell: bash
+        timeout-minutes: 30
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
@@ -299,6 +300,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
+        timeout-minutes: 30
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
@@ -379,6 +381,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
+        timeout-minutes: 30
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
@@ -459,6 +462,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
+        timeout-minutes: 30
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
@@ -529,6 +533,7 @@ jobs:
         uses: ./.github/actions/install-pack
       - name: 'Build: stream-applications-release-train'
         shell: bash
+        timeout-minutes: 30
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
