@@ -1,5 +1,6 @@
-if (headers.route.equals('foo')) {
+if ('foo' == headers.route) {
     return "$foo" // mapped to baz in 'variables'
-} else {
+}
+else {
     return "$bar" // mapped to qux in properties file
 }

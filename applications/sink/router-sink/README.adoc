@@ -18,51 +18,25 @@ $$router.variables$$:: $$Variable bindings as a new line delimited string of nam
 $$router.variables-location$$:: $$The location of a properties file containing custom script variable bindings.$$ *($$Resource$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
-NOTE: Since this is a dynamic router, destinations are created as needed; therefore, by default the `defaultOutputChannel`
-and `resolutionRequired` will only be used if the `Binder` has some problem binding to the destination.
+NOTE: This router sink is based on a `StreamBridge` API from Spring Cloud Stream, therefore destinations can be created as needed.
+In this case a `defaultOutputBinding` can only be reached if key is not included into `destinationMappings`.
+The `resolutionRequired = true` neglects `defaultOutputBinding` and throws an exception if no mapping and no respective binding already declared.
 
 You can restrict the creation of dynamic bindings using the `spring.cloud.stream.dynamicDestinations` property.
-By default, all resolved destinations will be bound dynamically; if this property has a comma-delimited list of
-destination names, only those will be bound.
-Messages that resolve to a destination that is not in this list will be routed to the `defaultOutputChannel`, which
-must also appear in the list.
+By default, all resolved destinations will be bound dynamically; if this property has a comma-delimited list of destination names, only those will be bound.
+Messages that resolve to a destination that is not in this list will be routed to the `defaultOutputBinding`, which must also appear in the list.
 
-`destinationMappings` are used to map the evaluation results to an actual destination name.
+The `destinationMappings` are used to map the evaluation results to an actual destination name.
 
 == SpEL-based Routing
 
 The expression evaluates against the message and returns either a channel name, or the key to a map of channel names.
 
-For more information, please see the "Routers and the Spring Expression Language (SpEL)" subsection in the Spring
-Integration Reference manual
-https://docs.spring.io/spring-integration/reference/html/router.html#router-namespace[Configuring a Generic Router] section.
-
-NOTE: Starting with Spring Cloud Stream 2.0 onwards the message wire format for `json`, `text` and `xml` content types is `byte[]` not `String`!
-This is an altering change from SCSt 1.x that treats those types as Strings!
-Depends on the content type, different techniques for handling the `byte[]` payloads are available. For plain `text`
-content types, one can covert the octet payload into string using the `new String(payload)` SpEL expression. For `json`
-types the https://docs.spring.io/spring-integration/reference/html/spel.html#spel-functions[jsonPath()] SpEL utility
-already supports string and byte array content interchangeably. Same applies for the `xml` content type and the
-https://docs.spring.io/spring-integration/reference/html/xml.html#xpath-spel-function[#xpath()] SpEL utility.
-
-For example for `text` content type one should use:
-
-[source,java]
-----
- new String(payload).contains('a');
-----
-
-and for `json` content type SpEL expressions like this:
-
-[source,text]
-----
- #jsonPath(payload, '$.person.name')
-----
+For more information, please see the "Routers and the Spring Expression Language (SpEL)" subsection in the Spring Integration Reference manual https://docs.spring.io/spring-integration/reference/html/router.html#router-namespace[Configuring a Generic Router] section.
 
 == Groovy-based Routing
 
-Instead of SpEL expressions, Groovy scripts can also be used. Let's create a Groovy script in the file system at
-"file:/my/path/router.groovy", or "classpath:/my/path/router.groovy" :
+Instead of SpEL expressions, Groovy scripts can also be used. Let's create a Groovy script in the file system at "file:/my/path/router.groovy", or "classpath:/my/path/router.groovy" :
 
 [source,groovy]
 ----
@@ -75,15 +49,10 @@ else {
 }
 ----
 
-If you want to pass variable values to your script, you can statically bind values using the _variables_ option or
-optionally pass the path to a properties file containing the bindings using the _propertiesLocation_ option.
-All properties in the file will be made available to the script as variables. You may specify both _variables_ and
-_propertiesLocation_, in which case any duplicate values provided as _variables_ override values provided in
-_propertiesLocation_.
+If you want to pass variable values to your script, you can statically bind values using the _variables_ option or optionally pass the path to a properties file containing the bindings using the _propertiesLocation_ option.
+All properties in the file will be made available to the script as variables. You may specify both _variables_ and _propertiesLocation_, in which case any duplicate values provided as _variables_ override values provided in _propertiesLocation_.
 Note that _payload_ and _headers_ are implicitly bound to give you access to the data contained in a message.
 
-For more information, see the Spring Integration Reference manual
-https://docs.spring.io/spring-integration/reference/html/messaging-endpoints-chapter.html#groovy[Groovy Support].
+For more information, see the Spring Integration Reference manual https://docs.spring.io/spring-integration/reference/html/messaging-endpoints-chapter.html#groovy[Groovy Support].
 
 //end::ref-doc[]
-
