@@ -90,7 +90,7 @@ if [ "$DEPLOY_TYPE" == "helm" ]; then
   echo "Adding Helm chart https://actions-runner-controller.github.io/actions-runner-controller"
   helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
   echo "Installing application: actions-runner-controller, Helm chart version:$HELM_VER into $NS"
-  helm upgrade --install --version "$HELM_VER" --namespace $NS -f $SCDIR/arc/values.yml --timeout 15m --wait actions-runner-controller actions-runner-controller/actions-runner-controller
+  helm upgrade --install --version "$HELM_VER" --namespace $NS -f $SCDIR/arc/values.yml actions-runner-controller actions-runner-controller/actions-runner-controller
 else
   ARC_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "arc_version")
   if [ "$ARC_VER" == "" ] || [ "$ARC_VER" == "null" ]; then
@@ -99,8 +99,8 @@ else
   fi
   echo "Deploying actions-runner-controller:$ARC_VER using kubectl"
   kubectl create --save-config --namespace $NS -f https://github.com/actions-runner-controller/actions-runner-controller/releases/download/$ARC_VER/actions-runner-controller.yaml
-  $SCDIR/wait-deployment.sh $SVC $NS
 fi
+$SCDIR/wait-deployment.sh $SVC $NS
 echo "Creating runners"
 ARC_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "arc_version")
 ARC_RUNNER_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "actions_runner_version")
