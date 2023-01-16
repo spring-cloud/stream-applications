@@ -127,6 +127,7 @@ jobs:
           echo "KUBECONFIG=$KUBECONFIG" >> $GITHUB_ENV
       - name: 'Configure: deploy actions-runner-controller into stream-apps-gh-runners'
         shell: bash
+        timeout-minutes: 30
         env:
           VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -136,3 +137,8 @@ jobs:
           GH_ARC_PRIVATE_KEY: ${{ secrets.GH_ARC_PRIVATE_KEY }}
           GH_ARC_PAT: ${{ inputs.github_personal_access_token }}
         run: ./scripts/deploy-gh-runners-${RUNNER_TYPE}.sh
+      - name: 'Retrieve: Pod Logs'
+        if: ${{ failure() }}
+        shell: bash
+        run: |
+          ./scripts/get-logs-pods.sh actions-runner-system | tee ./pods.log
