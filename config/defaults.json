@@ -18,7 +18,7 @@
     "runner_scaling": "manual",
     "scale_down": 1,
     "arc_version": "v0.27.0",
-    "helm_version": "0.21.1",
+    "helm_version": "0.22.0",
     "actions_runner_version": "ubuntu:22.04"
   }
 }
