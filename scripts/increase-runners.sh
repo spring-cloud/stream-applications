@@ -29,7 +29,7 @@ INC=$1
 # shellcheck disable=SC2003
 MAX_RUNNERS=$2
 SCALING=$($SCDIR/determine-default.sh stream-apps-gh-runners runner_scaling)
-cp $SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml runners-stream-ci-change.yaml
+cp $SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml runners-stream-ci.yaml
 
 if [ "$SCALING" == "auto" ]; then
   if [ "$MAX_RUNNERS" == "" ]; then
@@ -80,24 +80,25 @@ case $ARCH in
   echo "Architecture:$ARCH may not be supported by summerwind/actions-runner"
   ;;
 esac
-IMAGE_SHA=$(wget -q -O- https://hub.docker.com/v2/repositories/summerwind/actions-runner/tags | jq --arg os $OS --arg arch $ARCH '.results | map(select(.name="latest")) | .[0].images | map(select(.os==$os and .architecture==$arch)) | .[0].digest' | sed 's/\"//g')
-if [ "$IMAGE_SHA" == "" ]; then
-  IMAGE_SHA="latest"
+
+ARC_RUNNER_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "actions_runner_version")
+if [ "$ARC_RUNNER_VER" == "" ]; then
+  ARC_RUNNER_VER=latest
 fi
-sed -i 's/tag-placeholder/'"$IMAGE_SHA"'/g' runners-stream-ci-change.yaml
+sed -i 's/tag-placeholder/'"$ARC_RUNNER_VER"'/g' runners-stream-ci.yaml
 if [ "$SCALING" == "auto" ]; then
   echo "Runners: changing scaling min: $MIN_RUNNERS, max: $MAX_RUNNERS"
-  sed -i 's/max-replicas-placeholder/'"$MAX_RUNNERS"'/g' runners-stream-ci-change.yaml
-  sed -i 's/min-replicas-placeholder/'"$MIN_RUNNERS"'/g' runners-stream-ci-change.yaml
+  sed -i 's/max-replicas-placeholder/'"$MAX_RUNNERS"'/g' runners-stream-ci.yaml
+  sed -i 's/min-replicas-placeholder/'"$MIN_RUNNERS"'/g' runners-stream-ci.yaml
 else
   echo "Runners:$CURRENT increase by $INC to $TARGET"
-  sed -i 's/replicas-placeholder/'"$TARGET"'/g' runners-stream-ci-change.yaml
+  sed -i 's/replicas-placeholder/'"$TARGET"'/g' runners-stream-ci.yaml
 fi
-
-cmp --silent "$SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml" runners-stream-ci-change.yaml
+echo "actions runner version = $ARC_RUNNER_VER"
+cmp --silent "$SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml" runners-stream-ci.yaml
 RC=$?
 if ((RC != 0)); then
-  kubectl apply -f runners-stream-ci-change.yaml
+  kubectl apply -f runners-stream-ci.yaml
   echo "Runners: changes applied"
   if [ "$SCALING" != "auto" ]; then
     $SCDIR/wait-k8s.sh 1 --for=condition=ready --timeout=1m pod -l runner-deployment-name=runners-stream-ci --all-namespaces=true

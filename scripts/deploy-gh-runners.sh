@@ -102,13 +102,27 @@ else
   $SCDIR/wait-deployment.sh $SVC $NS
 fi
 echo "Creating runners"
-kubectl apply -f "$SCDIR/k8s/runners-stream-ci-large.yaml"
+ARC_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "arc_version")
+ARC_RUNNER_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "actions_runner_version")
+if [ "$ARC_RUNNER_VER" == "" ]; then
+  ARC_RUNNER_VER=latest
+fi
+SCALING=$($SCDIR/determine-default.sh stream-apps-gh-runners runner_scaling)
+cp $SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml runners-stream-ci.yaml
+sed -i 's/tag-placeholder/'"$ARC_RUNNER_VER"'/g' runners-stream-ci.yaml
+echo "actions runner version = $ARC_RUNNER_VER"
+cmp --silent "$SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml" runners-stream-ci.yaml
+RC=$?
+if ((RC != 0)); then
+  echo "Expected changes to $SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml"
+  cat runners-stream-ci.yaml
+fi
+kubectl apply -f runners-stream-ci.yaml
 SCALING=$($SCDIR/determine-default.sh stream-apps-gh-runners "runner_scaling")
 if [ "$SCALING" == "" ] || [ "$SCALING" == "null" ]; then
   echo "Cannot determine runner_scaling"
   exit 2
 fi
-kubectl apply -f "$SCDIR/k8s/runners-stream-ci-${SCALING}.yaml"
 if [ "$SCALING" != "auto" ]; then
   $SCDIR/wait-k8s.sh 1 --for=condition=ready --timeout=1m pod -l runner-deployment-name=runners-stream-ci
 fi

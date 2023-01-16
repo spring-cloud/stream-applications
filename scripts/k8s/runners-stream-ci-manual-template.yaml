@@ -6,7 +6,7 @@ spec:
   replicas: replicas-placeholder
   template:
     spec:
-      image: 'summerwind/actions-runner-dind:latest'
+      image: 'summerwind/actions-runner-dind:tag-placeholder'
       dockerdWithinRunnerContainer: true
       priorityClassName: high-priority
       imagePullPolicy: IfNotPresent
