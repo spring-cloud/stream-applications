@@ -40,7 +40,7 @@ echo "Certificate Manager installed"
 
 echo "Configuring actions-runner-controller"
 export NS=actions-runner-system
-export SVC=controller-manager
+export SVC=actions-runner-controller
 $SCDIR/ensure-ns.sh $NS
 kubectl apply -f $SCDIR/k8s/pod-priorities.yaml
 kubectl apply -f $SCDIR/k8s/pod-priorities.yaml --namespace $NS
@@ -99,8 +99,8 @@ else
   fi
   echo "Deploying actions-runner-controller:$ARC_VER using kubectl"
   kubectl create --save-config --namespace $NS -f https://github.com/actions-runner-controller/actions-runner-controller/releases/download/$ARC_VER/actions-runner-controller.yaml
+  $SCDIR/wait-deployment.sh $SVC $NS
 fi
-$SCDIR/wait-deployment.sh $SVC $NS
 echo "Creating runners"
 ARC_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "arc_version")
 ARC_RUNNER_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "actions_runner_version")
