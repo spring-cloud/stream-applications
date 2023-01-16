@@ -15,7 +15,7 @@ spec:
       repository: spring-cloud/stream-applications
       githubAPICredentialsFrom:
         secretRef:
-          name: controller-manager-secret
+          name: controller-manager
       resources:
         requests:
           cpu: "1500m"
