@@ -1,5 +1,5 @@
 {
-  "default_version": "1.23",
+  "default_version": "1.24",
   "versions": [
     {
       "k8s": "1.19",
@@ -11,19 +11,19 @@
     },
     {
       "k8s": "1.21",
-      "k8s_version": "1.21.14-gke.2700"
+      "k8s_version": "1.21.14-gke.14600"
     },
     {
       "k8s": "1.22",
-      "k8s_version": "1.22.12-gke.500"
+      "k8s_version": "1.22.17-gke.1900"
     },
     {
       "k8s": "1.23",
-      "k8s_version": "1.23.8-gke.1900"
+      "k8s_version": "1.23.15-gke.1900"
     },
     {
       "k8s": "1.24",
-      "k8s_version": "1.24.6-gke.1500"
+      "k8s_version": "1.24.8-gke.2000"
     }
   ]
 }
