@@ -11,7 +11,6 @@ spec:
       imagePullPolicy: IfNotPresent
       imagePullSecrets:
         - name: stream-metadata-default
-      repository: spring-cloud/stream-applications
       githubAPICredentialsFrom:
         secretRef:
           name: controller-manager
@@ -30,12 +29,11 @@ spec:
   githubAPICredentialsFrom:
     secretRef:
       name: controller-manager
-  minReplicas: 0
-  maxReplicas: 2
+  minReplicas: min-replicas-placeholder
+  maxReplicas: max-replicas-placeholder
   scaleTargetRef:
     kind: RunnerDeployment
     name: runners-stream-ci-large
   scaleUpTriggers:
     - githubEvent:
         workflowJob: {}
-      duration: "20m"
