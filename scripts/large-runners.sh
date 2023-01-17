@@ -48,17 +48,12 @@ if [ "$ARC_RUNNER_VER" == "" ]; then
   ARC_RUNNER_VER=latest
 fi
 sed -i 's/tag-placeholder/'"$ARC_RUNNER_VER"'/g' runners-stream-ci.yaml
-if [ "$SCALING" == "auto" ]; then
-  if [ "$MAX_RUNNERS" == "" ]; then
-    MAX_RUNNERS=$(max_replicas)
-  fi
-  echo "Runners: Max runners to $MAX_RUNNERS"
-  echo "Runners: changing scaling min: $TARGET, max: $MAX_RUNNERS"
-  sed -i 's/max-replicas-placeholder/'"$MAX_RUNNERS"'/g' runners-stream-ci.yaml
-  sed -i 's/min-replicas-placeholder/'"$TARGET"'/g' runners-stream-ci.yaml
-else
-  echo "Runners:$CURRENT change to $TARGET"
-  sed -i 's/replicas-placeholder/'"$TARGET"'/g' runners-stream-ci.yaml
+if [ "$MAX_RUNNERS" == "" ]; then
+  MAX_RUNNERS=$(max_replicas)
 fi
+echo "Runners: Max runners to $MAX_RUNNERS"
+echo "Runners: changing scaling min: $TARGET, max: $MAX_RUNNERS"
+sed -i 's/max-replicas-placeholder/'"$MAX_RUNNERS"'/g' runners-stream-ci.yaml
+sed -i 's/min-replicas-placeholder/'"$TARGET"'/g' runners-stream-ci.yaml
 rm -f runners-stream-ci.yaml
 $SCDIR/check-runners.sh
