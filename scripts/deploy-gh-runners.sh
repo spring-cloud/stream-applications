@@ -101,5 +101,6 @@ else
   kubectl create --save-config --namespace $NS -f https://github.com/actions-runner-controller/actions-runner-controller/releases/download/$ARC_VER/actions-runner-controller.yaml
   $SCDIR/wait-deployment.sh $SVC $NS
 fi
+$SCDIR/large-runners.sh 1
 SCALE_MIN=$($SCDIR/determine-default.sh $CLUSTER_NAME "scale_down")
 $SCDIR/limit-runners.sh $SCALE_MIN
