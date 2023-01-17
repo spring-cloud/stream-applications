@@ -12,7 +12,6 @@ spec:
       imagePullPolicy: IfNotPresent
       imagePullSecrets:
         - name: stream-metadata-default
-      repository: spring-cloud/stream-applications
       githubAPICredentialsFrom:
         secretRef:
           name: controller-manager
