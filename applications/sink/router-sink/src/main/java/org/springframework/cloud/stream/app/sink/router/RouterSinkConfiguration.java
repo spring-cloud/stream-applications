@@ -86,9 +86,8 @@ public class RouterSinkConfiguration {
 			router.replaceChannelMappings(destinationMappings);
 		}
 
-		BindingChannelResolver bindingChannelResolver = new BindingChannelResolver(bindingService, streamBridge);
-		bindingChannelResolver.setResolutionRequired(this.properties.isResolutionRequired());
-		router.setChannelResolver(bindingChannelResolver);
+		router.setChannelResolver(
+				new BindingChannelResolver(bindingService, streamBridge, this.properties.isResolutionRequired()));
 		return router;
 	}
 

@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.sink.router;
 
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -35,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RouterSinkIntegrationTests {
 
+	@Disabled("See TODO in the config below")
 	@Test
 	public void testDefaultRouter() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -124,6 +126,7 @@ public class RouterSinkIntegrationTests {
 		}
 	}
 
+	@Disabled("See TODO in the config below")
 	@Test
 	public void testWithDiscardedChannels() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(

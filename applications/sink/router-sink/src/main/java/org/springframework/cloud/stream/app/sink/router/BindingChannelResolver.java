@@ -37,14 +37,11 @@ class BindingChannelResolver implements DestinationResolver<MessageChannel> {
 
 	private final StreamBridge streamBridge;
 
-	private boolean resolutionRequired;
+	private final boolean resolutionRequired;
 
-	BindingChannelResolver(BindingService bindingService, StreamBridge streamBridge) {
+	BindingChannelResolver(BindingService bindingService, StreamBridge streamBridge, boolean resolutionRequired) {
 		this.bindingService = bindingService;
 		this.streamBridge = streamBridge;
-	}
-
-	public void setResolutionRequired(boolean resolutionRequired) {
 		this.resolutionRequired = resolutionRequired;
 	}
 
