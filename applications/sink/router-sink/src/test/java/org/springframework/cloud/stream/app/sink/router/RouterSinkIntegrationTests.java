@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.stream.app.sink.router;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

@@ -20,7 +20,6 @@ import java.util.Properties;
 import java.util.function.Function;
 
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;
@@ -42,7 +41,8 @@ public class RouterSinkProperties {
 	/**
 	 * Default SpEL expression.
 	 */
-	public static final Expression DEFAULT_EXPRESSION = new FunctionExpression<>((Function<Message<?>, Object>) message -> message.getHeaders().get("routeTo"));
+	public static final Expression DEFAULT_EXPRESSION =
+			new FunctionExpression<>((Function<Message<?>, Object>) message -> message.getHeaders().get("routeTo"));
 
 	/**
 	 * Variable bindings as a new line delimited string of name-value pairs, e.g. 'foo=bar\n baz=car'.
