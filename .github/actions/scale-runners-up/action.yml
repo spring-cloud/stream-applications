@@ -97,6 +97,9 @@ runs:
       run: |
         echo "::notice ::Waiting for cluster stream-apps-gh-runners and it's nodes"
         ./scripts/wait-for-cluster-${RUNNER_TYPE}.sh stream-apps-gh-runners --nodes
+    - name: 'Action: Ensure large runner'
+      shell: bash
+      run: ./scripts/large-runners.sh
     - name: 'Action: Increase runners with ${{ inputs.max_parallel }}'
       uses: ./.github/actions/increase-runners
       with:
