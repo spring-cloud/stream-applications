@@ -55,5 +55,6 @@ echo "Runners: Max runners to $MAX_RUNNERS"
 echo "Runners: changing scaling min: $TARGET, max: $MAX_RUNNERS"
 sed -i 's/max-replicas-placeholder/'"$MAX_RUNNERS"'/g' runners-stream-ci.yaml
 sed -i 's/min-replicas-placeholder/'"$TARGET"'/g' runners-stream-ci.yaml
+kubectl apply -f runners-stream-ci.yaml
 rm -f runners-stream-ci.yaml
 $SCDIR/check-runners.sh

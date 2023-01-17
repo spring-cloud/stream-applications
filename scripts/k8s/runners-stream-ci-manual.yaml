@@ -6,6 +6,7 @@ spec:
   replicas: 2
   template:
     spec:
+      repository: spring-cloud/stream-applications
       image: 'summerwind/actions-runner-dind:tag-placeholder'
       dockerdWithinRunnerContainer: true
       priorityClassName: high-priority
