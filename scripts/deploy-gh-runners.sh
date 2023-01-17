@@ -101,8 +101,7 @@ else
   kubectl create --save-config --namespace $NS -f https://github.com/actions-runner-controller/actions-runner-controller/releases/download/$ARC_VER/actions-runner-controller.yaml
   $SCDIR/wait-deployment.sh $SVC $NS
 fi
-echo "Creating runners"
-ARC_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "arc_version")
+set +e
 ARC_RUNNER_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "actions_runner_version")
 if [ "$ARC_RUNNER_VER" == "" ]; then
   ARC_RUNNER_VER=latest
@@ -117,12 +116,8 @@ if ((RC != 0)); then
   echo "Expected changes to $SCDIR/k8s/runners-stream-ci-${SCALING}-template.yaml"
   cat runners-stream-ci.yaml
 fi
+echo "Creating runners. Version=$ARC_RUNNER_VER, Scaling=$SCALING"
 kubectl apply -f runners-stream-ci.yaml
-SCALING=$($SCDIR/determine-default.sh stream-apps-gh-runners "runner_scaling")
-if [ "$SCALING" == "" ] || [ "$SCALING" == "null" ]; then
-  echo "Cannot determine runner_scaling"
-  exit 2
-fi
 if [ "$SCALING" != "auto" ]; then
   $SCDIR/wait-k8s.sh 1 --for=condition=ready --timeout=1m pod -l runner-deployment-name=runners-stream-ci
 fi
