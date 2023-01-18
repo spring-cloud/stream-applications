@@ -20,6 +20,8 @@ jobs:
         with:
           ref: 'main'
           path: ${{ env.MAIN_PATH }}
+      - name: 'Configure: Install gh cli'
+        uses: ./.github/actions/install-gh
       - name: 'Configure: Ensure scripts are executable'
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
