@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.stream.app.sink.router;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -122,7 +121,6 @@ public class RouterSinkIntegrationTests {
 		}
 	}
 
-	@Disabled("See TODO in the config below")
 	@Test
 	public void testWithDiscardedChannels() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -130,10 +128,12 @@ public class RouterSinkIntegrationTests {
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=routerSinkConsumer",
 						"--router.expression=headers['route']",
-						// TODO Need a consistency in SCST between dynamic and predefined bindings: it requires an -out-0 suffix now
 						"--router.defaultOutputBinding=discards",
 						"--router.destinationMappings=foo=foo \n bar=bar",
-						"--spring.cloud.stream.output-bindings=foo;bar;discards")) {
+						"--spring.cloud.stream.output-bindings=foo;bar;discards",
+						"--spring.cloud.stream.function.bindings.foo-out-0=foo",
+						"--spring.cloud.stream.function.bindings.bar-out-0=bar",
+						"--spring.cloud.stream.function.bindings.discards-out-0=discards")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 
