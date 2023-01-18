@@ -34,7 +34,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RouterSinkIntegrationTests {
 
-	@Disabled("See TODO in the config below")
 	@Test
 	public void testDefaultRouter() {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
@@ -42,7 +41,6 @@ public class RouterSinkIntegrationTests {
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=routerSinkConsumer",
 						"--spring.cloud.stream.output-bindings=baz",
-						// TODO SCST tries to resolve 'baz' function for some reason
 						"--spring.cloud.stream.function.bindings.baz-out-0=baz",
 						"--router.resolutionRequired=true")) {
 
