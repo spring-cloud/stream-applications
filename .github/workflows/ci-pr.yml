@@ -8,6 +8,7 @@ on:
 
 env:
   MAIN_PATH: 'build-dir'
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   check:
     runs-on: 'stream-ci-large'
