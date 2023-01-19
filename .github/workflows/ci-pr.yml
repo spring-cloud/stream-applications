@@ -13,7 +13,7 @@ jobs:
   check:
     runs-on: 'stream-ci-large'
     steps:
-      - name: 'Configure: checkout stream-applications@${{ github.ref }}'
+      - name: 'Configure: checkout stream-applications@${{ github.ref_name }}'
         uses: actions/checkout@v3
       - name: 'Configure: checkout stream-applications@main'
         id: checkout-main
@@ -55,22 +55,13 @@ jobs:
         env:
           VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
+          PR=$(echo "${{ github.ref_name }}" | grep -o '[[:digit:]]*')
+          echo "Checking out pull request #$PR"
+          gh pr checkout $PR
           BUILD_DIR=$(realpath $MAIN_PATH)                    
-          echo "::notice ::building - stream-applications-build"
+          echo "::notice ::building - stream-applications - core"
           set +e
-          $BUILD_DIR/build-folder.sh stream-applications-build install -DskipTests
-          RC=$?
-          if ((RC!=0)); then
-            exit $RC
-          fi
-          echo "::notice ::building - functions"
-          $BUILD_DIR/build-folder.sh functions install -DskipTests
-          RC=$?
-          if ((RC!=0)); then
-            exit $RC
-          fi
-          echo "::notice ::building - stream-applications-core"
-          $BUILD_DIR/build-folder.sh applications/stream-applications-core install -DskipTests
+          $BUILD_DIR/build-folder.sh stream-applications-build,functions/common,functions/spring-functions-parent,applications/stream-applications-core install -DskipTests
           RC=$?
           if ((RC!=0)); then
             exit $RC
@@ -98,10 +89,12 @@ jobs:
           done
           echo "::info ::verify $FOLDERS"
           set +e
-          $BUILD_DIR/build-folder.sh $FOLDERS install verify -amd
-          RC=$?
-          if ((RC!=0)); then
-            exit $RC
+          if [ "$FOLDERS" != "" ]; then
+            $BUILD_DIR/build-folder.sh $FOLDERS install verify -amd
+            RC=$?
+            if ((RC!=0)); then
+              exit $RC
+            fi
           fi
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
