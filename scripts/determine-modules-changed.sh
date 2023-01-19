@@ -29,7 +29,6 @@ for file in $MODIFIED; do
   echo "$file was changed"
   for app in $FUNCTIONS; do
     ITEM="functions/function/$app"
-    echo "Checking:$ITEM"
     if [[ "$file" == *"$ITEM"* ]]; then
       echo "Matched $ITEM"
       HAS_ITEM=$(itemInModules)
@@ -41,7 +40,6 @@ for file in $MODIFIED; do
   done
   for app in $CONSUMERS; do
     ITEM="functions/consumer/$app"
-    echo "Checking:$ITEM"
     if [[ "$file" == *"$ITEM"* ]]; then
       echo "Matched $ITEM"
       HAS_ITEM=$(itemInModules)
@@ -53,7 +51,6 @@ for file in $MODIFIED; do
   done
   for app in $SUPPLIERS; do
     ITEM="functions/supplier/$app"
-    echo "Checking:$ITEM"
     if [[ "$file" == *"$ITEM"* ]]; then
       echo "Matched $ITEM"
       HAS_ITEM=$(itemInModules)
@@ -65,7 +62,6 @@ for file in $MODIFIED; do
   done
   for app in $PROCESSORS; do
     ITEM="applications/processor/$app"
-    echo "Checking:$ITEM"
     if [[ "$file" == *"$ITEM"* ]]; then
       echo "Matched $ITEM"
       HAS_ITEM=$(itemInModules)
@@ -77,7 +73,6 @@ for file in $MODIFIED; do
   done
   for app in $SINKS; do
     ITEM="applications/sink/$app"
-    echo "Checking:$ITEM"
     if [[ "$file" == *"$ITEM"* ]]; then
       echo "Matched $ITEM"
       HAS_ITEM=$(itemInModules)
@@ -89,7 +84,6 @@ for file in $MODIFIED; do
   done
   for app in $SOURCES; do
     ITEM="applications/source/$app"
-    echo "Checking:$ITEM"
     if [[ "$file" == *"$ITEM"* ]]; then
       echo "Matched $ITEM"
       HAS_ITEM=$(itemInModules)
