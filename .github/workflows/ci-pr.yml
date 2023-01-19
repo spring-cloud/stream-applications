@@ -66,7 +66,7 @@ jobs:
           MODULES=$(jq '.[]' modules.json | sed 's/\"//g')
           FOLDERS=
           ROOT_MODULES=
-          MAVEN_OPTS="-s .settings.xml -B -T 0.3C"
+          MAVEN_OPTS="-s $BUILD_DIR/.settings.xml -B -T 0.3C"
           for module in $MODULES; do
             if [[ "$module" == *"/"* ]]; then            
               if [ "$FOLDERS" = "" ]; then
