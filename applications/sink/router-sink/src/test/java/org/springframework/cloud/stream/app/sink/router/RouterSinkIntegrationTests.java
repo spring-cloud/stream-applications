@@ -40,7 +40,6 @@ public class RouterSinkIntegrationTests {
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=routerSinkConsumer",
 						"--spring.cloud.stream.output-bindings=baz",
-						"--spring.cloud.stream.function.bindings.baz-out-0=baz",
 						"--router.resolutionRequired=true")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
@@ -130,10 +129,7 @@ public class RouterSinkIntegrationTests {
 						"--router.expression=headers['route']",
 						"--router.defaultOutputBinding=discards",
 						"--router.destinationMappings=foo=foo \n bar=bar",
-						"--spring.cloud.stream.output-bindings=foo;bar;discards",
-						"--spring.cloud.stream.function.bindings.foo-out-0=foo",
-						"--spring.cloud.stream.function.bindings.bar-out-0=bar",
-						"--spring.cloud.stream.function.bindings.discards-out-0=discards")) {
+						"--spring.cloud.stream.output-bindings=foo;bar;discards")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 
