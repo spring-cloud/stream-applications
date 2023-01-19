@@ -50,7 +50,7 @@ jobs:
             maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
-      - name: 'Action: build initial dependencies'
+      - name: 'Action: verify changed modules'
         shell: bash
         env:
           VERBOSE: ${{ github.debug && 'true' || '' }}
@@ -58,39 +58,43 @@ jobs:
           PR=$(echo "${{ github.ref_name }}" | grep -o '[[:digit:]]*')
           echo "Checking out pull request #$PR"
           gh pr checkout $PR
-          BUILD_DIR=$(realpath $MAIN_PATH)                    
-          echo "::notice ::building - stream-applications - core"
-          set +e
-          $BUILD_DIR/build-folder.sh stream-applications-build,functions/common,functions/spring-functions-parent,applications/stream-applications-core install -DskipTests
-          RC=$?
-          if ((RC!=0)); then
-            exit $RC
-          fi
-          echo "::notice ::core build completed"
-      - name: 'Action: verify changed modules'
-        shell: bash
-        env:
-          VERBOSE: ${{ github.debug && 'true' || '' }}
-        run: |
           BUILD_DIR=$(realpath $MAIN_PATH)
-          $BUILD_DIR/create-matrices.sh
           echo "Changed files:"
           gh pr diff --name-only
           CHANGED=$(gh pr diff --name-only)
           $BUILD_DIR/scripts/determine-modules-changed.sh "$CHANGED"
           MODULES=$(jq '.[]' modules.json | sed 's/\"//g')
           FOLDERS=
-          for module in $MODULES; do            
-             if [ "$FOLDERS" = "" ]; then
-              FOLDERS="$module"
+          ROOT_MODULES=
+          MAVEN_OPTS="-s .settings.xml -B -T 0.3C"
+          for module in $MODULES; do
+            if [[ "$module" == *"/"* ]]; then            
+              if [ "$FOLDERS" = "" ]; then
+                FOLDERS="$module"
+              else
+                FOLDERS="$FOLDERS,$module"
+              fi
             else
-              FOLDERS="$FOLDERS,$module"
+              if [ "$ROOT_MODULES" == "" ]; then
+                ROOT_MODULES=$module
+              else
+                ROOT_MODULES="$ROOT_MODULES,$module"
+              fi
             fi
           done
-          echo "::info ::verify $FOLDERS"
           set +e
+          if [ "$ROOT_MODULES" != "" ]; then
+              # Module with no / are probable a root module that contains other modules and will trigger a lot of dependant builds without real value
+              echo "::info ::building $ROOT_MODULES"
+              ./mvnw $MAVEN_OPTS -pl $ROOT_MODULES install
+              RC=$?
+              if ((RC!=0)); then
+                exit $RC
+              fi
+          fi
           if [ "$FOLDERS" != "" ]; then
-            $BUILD_DIR/build-folder.sh $FOLDERS install verify -amd
+            echo "::info ::verify $FOLDERS and dependents"
+            ./mvnw $MAVEN_OPTS -pl $FOLDERS install -amd
             RC=$?
             if ((RC!=0)); then
               exit $RC

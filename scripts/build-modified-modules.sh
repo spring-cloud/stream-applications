@@ -34,13 +34,21 @@ for file in $MODIFIED; do
     fi
   done
 done
-echo "[" >modules.json
-COUNT=0
+
+MVN_MODULES=
+
 for module in $MODULES; do
-  if ((COUNT > 0)); then
-    echo "," >> modules.json
+  if [[ "$module" == *"/"* ]]; then
+    if [ "$MVN_MODULES" == "" ]; then
+      MVN_MODULES=$module
+    else
+      MVN_MODULES="$MVN_MODULES,$module"
+    fi
+  else
+    ./mvnw install -pl $module
   fi
-  COUNT=$((COUNT + 1))
-  echo "\"$module\"" >> modules.json
 done
-echo "]" >>modules.json
+if [ "$MVN_MODULES" != "" ]; then
+  echo "Building $MVN_MODULES"
+  ./mvnw install -pl "$MVN_MODULES" -amd
+fi
