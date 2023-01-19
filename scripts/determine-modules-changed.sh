@@ -64,7 +64,7 @@ for file in $MODIFIED; do
     fi
   done
   for app in $PROCESSORS; do
-    ITEM="application/processor/$app"
+    ITEM="applications/processor/$app"
     echo "Checking:$ITEM"
     if [[ "$file" == *"$ITEM"* ]]; then
       echo "Matched $ITEM"
@@ -76,7 +76,7 @@ for file in $MODIFIED; do
     fi
   done
   for app in $SINKS; do
-    ITEM="application/sink/$app"
+    ITEM="applications/sink/$app"
     echo "Checking:$ITEM"
     if [[ "$file" == *"$ITEM"* ]]; then
       echo "Matched $ITEM"
@@ -88,7 +88,7 @@ for file in $MODIFIED; do
     fi
   done
   for app in $SOURCES; do
-    ITEM="application/source/$app"
+    ITEM="applications/source/$app"
     echo "Checking:$ITEM"
     if [[ "$file" == *"$ITEM"* ]]; then
       echo "Matched $ITEM"
