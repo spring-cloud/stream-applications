@@ -24,7 +24,6 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.core.DestinationResolutionException;
 import org.springframework.messaging.core.DestinationResolver;
-import org.springframework.util.ObjectUtils;
 
 /**
  * @author Artem Bilan
@@ -51,10 +50,7 @@ class BindingChannelResolver implements DestinationResolver<MessageChannel> {
 	}
 
 	private MessageChannel createMessageChannelProxyForBinding(String bindingName) {
-		if (this.resolutionRequired &&
-				// TODO Need BindingService.getBinding(String bindingName) API
-				!ObjectUtils.containsElement(this.bindingService.getProducerBindingNames(), bindingName)) {
-
+		if (this.resolutionRequired && this.bindingService.getProducerBinding(bindingName) == null) {
 			throw new DestinationResolutionException("Binding for name [" + bindingName + "] is not provided.");
 		}
 
