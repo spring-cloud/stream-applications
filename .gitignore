@@ -29,4 +29,4 @@ aws.credentials.properties
 .secrets
 workspace/
 .vscode
-*/hostkey.ser
+hostkey.ser
