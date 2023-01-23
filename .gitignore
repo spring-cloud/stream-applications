@@ -20,9 +20,7 @@ _site/
 *.ipr
 *.iws
 .idea/
-.gradle/
 .factorypath
-spring-xd-samples/*/xd
 dump.rdb
 coverage-error.log
 .apt_generated
@@ -31,3 +29,4 @@ aws.credentials.properties
 .secrets
 workspace/
 .vscode
+*/hostkey.ser
