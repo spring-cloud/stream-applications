@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 the original author or authors.
+ * Copyright 2016-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.util.Properties;
 import java.util.function.Function;
 
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;
@@ -34,6 +33,7 @@ import org.springframework.messaging.Message;
  * the channel mappings map.
  *
  * @author Gary Russell
+ * @author Artem Bilan
  */
 @ConfigurationProperties("router")
 public class RouterSinkProperties {
@@ -41,7 +41,8 @@ public class RouterSinkProperties {
 	/**
 	 * Default SpEL expression.
 	 */
-	public static final Expression DEFAULT_EXPRESSION = new FunctionExpression<>((Function<Message<?>, Object>) message -> message.getHeaders().get("routeTo"));
+	public static final Expression DEFAULT_EXPRESSION =
+			new FunctionExpression<>((Function<Message<?>, Object>) message -> message.getHeaders().get("routeTo"));
 
 	/**
 	 * Variable bindings as a new line delimited string of name-value pairs, e.g. 'foo=bar\n baz=car'.
@@ -74,10 +75,10 @@ public class RouterSinkProperties {
 	/**
 	 * Where to send un-routable messages.
 	 */
-	private String defaultOutputChannel = "nullChannel";
+	private String defaultOutputBinding;
 
 	/**
-	 * Whether or not channel resolution is required.
+	 * Whether channel resolution is required.
 	 */
 	private boolean resolutionRequired = false;
 
@@ -118,13 +119,12 @@ public class RouterSinkProperties {
 		this.script = script;
 	}
 
-	@NotNull
-	public String getDefaultOutputChannel() {
-		return this.defaultOutputChannel;
+	public String getDefaultOutputBinding() {
+		return this.defaultOutputBinding;
 	}
 
-	public void setDefaultOutputChannel(String defaultOutputChannel) {
-		this.defaultOutputChannel = defaultOutputChannel;
+	public void setDefaultOutputBinding(String defaultOutputBinding) {
+		this.defaultOutputBinding = defaultOutputBinding;
 	}
 
 	public int getRefreshDelay() {
