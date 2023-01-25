@@ -202,12 +202,12 @@
 		<repository>
 			<id>repo.spring.io</id>
 			<name>Spring Release Repository</name>
-			<url>https://repo.spring.io/release</url>
+			<url>https://repo.spring.io/libs-release-local</url>
 		</repository>
 		<snapshotRepository>
 			<id>repo.spring.io</id>
 			<name>Spring Snapshot Repository</name>
-			<url>https://repo.spring.io/snapshot</url>
+			<url>https://repo.spring.io/libs-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
 	<repositories>
@@ -229,12 +229,12 @@
 		<pluginRepository>
 			<id>spring-milestones</id>
 			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
+			<url>https://repo.spring.io/plugins-milestone</url>
 		</pluginRepository>
 		<pluginRepository>
 			<id>spring-snapshots</id>
 			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
+			<url>https://repo.spring.io/plugins-snapshot</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -249,7 +249,7 @@
 				<repository>
 					<id>repo.spring.io</id>
 					<name>Spring Milestone Repository</name>
-					<url>https://repo.spring.io/milestone</url>
+					<url>https://repo.spring.io/libs-milestone-local</url>
 				</repository>
 			</distributionManagement>
 		</profile>
