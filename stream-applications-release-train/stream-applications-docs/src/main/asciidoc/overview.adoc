@@ -42,10 +42,10 @@ The core functionality of the applications is available as functions.
 See the https://github.com/spring-cloud/stream-applications/tree/main/functions[Java Functions] section in the `stream-applications` repository for more details.
 Prebuilt applications are available as Maven artifacts.
 You can download the executable jar artifacts from the Spring Maven repositories.
-The root directory of the Maven repository that hosts release versions is https://repo.spring.io/release/org/springframework/cloud/stream/app/.
+The root directory of the Maven repository that hosts release versions is https://repo1.maven.apache.org/maven2/org/springframework/cloud/stream/app/.
 From there, you can navigate to the latest released version of a specific app.
 If you want to use functions directly in a custom application, those artifacts are available under the directory structure `org/springframework/cloud/fn`.
-You need to use the link:https://repo.spring.io/release/org/springframework/cloud/stream/app[Release], link:https://repo.spring.io/milestone/org/springframework/cloud/stream/app[Milestone] and link:https://repo.spring.io/snapshot/org/springframework/cloud/stream/app[Snapshot] repository locations for Release, Milestone and Snapshot executable jar artifacts respectively.
+You need to use the link:https://repo1.maven.apache.org/maven2/org/springframework/cloud/stream/app[Release], link:https://repo.spring.io/milestone/org/springframework/cloud/stream/app[Milestone] and link:https://repo.spring.io/snapshot/org/springframework/cloud/stream/app[Snapshot] repository locations for Release, Milestone and Snapshot executable jar artifacts respectively.
 
 === Docker Access
 
