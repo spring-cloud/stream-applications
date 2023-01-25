@@ -307,8 +307,8 @@ jobs:
     secrets:
       TMC_API_TOKEN: ${{ secrets.TMC_API_TOKEN }}
       GCP_CRED_JSON: ${{ secrets.GCP_CRED_JSON }}
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       GH_ARC_APP_ID: ${{ secrets.GH_ARC_APP_ID }}
       GH_ARC_INSTALLATION_ID: ${{ secrets.GH_ARC_INSTALLATION_ID }}
       GH_ARC_PRIVATE_KEY: ${{ secrets.GH_ARC_PRIVATE_KEY }}

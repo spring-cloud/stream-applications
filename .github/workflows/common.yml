@@ -19,8 +19,8 @@ on:
         default: false
         description: 'Enable Maven Threads'
     secrets:
-      DOCKER_HUB_USERNAME:
-      DOCKER_HUB_PASSWORD:
+      DOCKERHUB_USERNAME:
+      DOCKERHUB_TOKEN:
       TMC_API_TOKEN:
       GCP_CRED_JSON:
       ARTIFACTORY_USERNAME:
@@ -294,10 +294,10 @@ jobs:
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
       - name: 'Configure: Docker login'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         timeout-minutes: 30
@@ -319,8 +319,8 @@ jobs:
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./publish-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
@@ -375,10 +375,11 @@ jobs:
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
       - name: 'Configure: Docker login'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         timeout-minutes: 30
@@ -399,8 +400,8 @@ jobs:
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./publish-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
   sources:
@@ -456,10 +457,10 @@ jobs:
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
       - name: 'Configure: Docker login'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         timeout-minutes: 30
@@ -480,8 +481,8 @@ jobs:
       - name: 'Publish: ${{ matrix.app }}'
         shell: bash
         env:
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./publish-app.sh "stream-applications" "applications/source/${{ matrix.app }}"

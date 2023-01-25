@@ -16,9 +16,9 @@ on:
         required: true
       GCP_CRED_JSON:
         required: true
-      DOCKER_HUB_USERNAME:
+      DOCKERHUB_USERNAME:
         required: true
-      DOCKER_HUB_PASSWORD:
+      DOCKERHUB_TOKEN:
         required: true
       GH_ARC_APP_ID:
         required: false
@@ -130,8 +130,8 @@ jobs:
         timeout-minutes: 30
         env:
           VERBOSE: ${{ inputs.verbose == 'true' && '--verbose' || '' }}
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           GH_ARC_APP_ID: ${{ secrets.GH_ARC_APP_ID }}
           GH_ARC_INSTALLATION_ID: ${{ secrets.GH_ARC_INSTALLATION_ID }}
           GH_ARC_PRIVATE_KEY: ${{ secrets.GH_ARC_PRIVATE_KEY }}

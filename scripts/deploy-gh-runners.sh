@@ -72,14 +72,14 @@ echo "Create secret scdf-metadata-default in $NS"
 $SCDIR/delete-secret.sh scdf-metadata-default $NS
 kubectl create secret docker-registry scdf-metadata-default --namespace $NS \
   --docker-server=registry-1.docker.io \
-  --docker-username=$DOCKER_HUB_USERNAME \
-  --docker-password=$DOCKER_HUB_PASSWORD
+  --docker-username=$DOCKERHUB_USERNAME \
+  --docker-password=$DOCKERHUB_TOKEN
 echo "Create secret scdf-metadata-default in default"
 $SCDIR/delete-secret.sh scdf-metadata-default default
 kubectl create secret docker-registry scdf-metadata-default --namespace default \
   --docker-server=registry-1.docker.io \
-  --docker-username=$DOCKER_HUB_USERNAME \
-  --docker-password=$DOCKER_HUB_PASSWORD
+  --docker-username=$DOCKERHUB_USERNAME \
+  --docker-password=$DOCKERHUB_TOKEN
 
 if [ "$DEPLOY_TYPE" == "helm" ]; then
   HELM_VER=$($SCDIR/determine-default.sh stream-apps-gh-runners "helm_version")
