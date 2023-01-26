@@ -14,7 +14,13 @@
     <properties>
         <docs.resources.version>0.2.5</docs.resources.version>
     </properties>
-
+    <repositories>
+        <repository>
+            <id>spring-release</id>
+            <name>spring-release</name>
+            <url>https://repo.spring.io/release</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>io.spring.docresources</groupId>
@@ -394,6 +400,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.3.0</version>
                         <executions>
                             <execution>
                                 <id>copy-asciidoc-resources</id>
