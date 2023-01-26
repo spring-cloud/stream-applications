@@ -15,14 +15,6 @@
             </activation>
             <repositories>
                 <repository>
-                    <id>maven-central</id>
-                    <name>Maven Central</name>
-                    <url>https://repo.maven.apache.org/maven2</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
                     <id>spring-snapshots</id>
                     <name>Spring Snapshots</name>
                     <url>https://repo.spring.io/snapshot</url>
@@ -41,17 +33,9 @@
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
-                    <id>maven-central</id>
-                    <name>Maven Central</name>
-                    <url>https://repo.maven.apache.org/maven2</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </pluginRepository>
-                <pluginRepository>
                     <id>spring-snapshots</id>
                     <name>Spring Snapshots</name>
-                    <url>https://repo.spring.io/plugins-snapshot</url>
+                    <url>https://repo.spring.io/snapshot</url>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
@@ -59,7 +43,7 @@
                 <pluginRepository>
                     <id>spring-milestones</id>
                     <name>Spring Milestones</name>
-                    <url>https://repo.spring.io/plugins-milestone</url>
+                    <url>https://repo.spring.io/milestone</url>
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>
