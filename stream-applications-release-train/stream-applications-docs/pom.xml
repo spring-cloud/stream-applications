@@ -11,9 +11,15 @@
 	</parent>
 
 	<properties>
-		<docs.resources.version>0.2.1.RELEASE</docs.resources.version>
+		<docs.resources.version>0.2.5</docs.resources.version>
 	</properties>
-
+	<repositories>
+		<repository>
+			<id>spring-release</id>
+			<url>https://repo.spring.io/release</url>
+			<name>spring-release</name>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>io.spring.docresources</groupId>
