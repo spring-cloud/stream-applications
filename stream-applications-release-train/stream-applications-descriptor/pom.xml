@@ -4,7 +4,7 @@
     <parent>
         <artifactId>stream-applications-release-train</artifactId>
         <groupId>org.springframework.cloud.stream.app</groupId>
-        <version>2022.0.0-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
