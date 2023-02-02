@@ -301,6 +301,16 @@
             <artifactId>twitter-function</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud.fn</groupId>
+            <artifactId>xmpp-consumer</artifactId>
+            <version>${java-functions.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud.fn</groupId>
+            <artifactId>xmpp-supplier</artifactId>
+            <version>${java-functions.version}</version>
+        </dependency>
         <!-- Apps don't use external functions as baseline, but contain @ConfigurationProperties -->
         <dependency>
             <groupId>org.springframework.cloud.stream.app</groupId>
@@ -332,7 +342,16 @@
             <artifactId>script-processor</artifactId>
             <version>${apps.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.cloud.stream.app</groupId>
+            <artifactId>xmpp-source</artifactId>
+            <version>${apps.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud.stream.app</groupId>
+            <artifactId>xmpp-sink</artifactId>
+            <version>${apps.version}</version>
+        </dependency>
     </dependencies>
     <profiles>
         <profile>
