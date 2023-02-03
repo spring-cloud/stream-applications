@@ -342,16 +342,6 @@
             <artifactId>script-processor</artifactId>
             <version>${apps.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud.stream.app</groupId>
-            <artifactId>xmpp-source</artifactId>
-            <version>${apps.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud.stream.app</groupId>
-            <artifactId>xmpp-sink</artifactId>
-            <version>${apps.version}</version>
-        </dependency>
     </dependencies>
     <profiles>
         <profile>
