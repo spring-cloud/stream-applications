@@ -20,9 +20,9 @@ function check_env() {
   fi
 }
 
-if [ "$VERBOSE" == "true" ]; then
-  MAVEN_OPTS="--debug"
-elif [ "$VERBOSE" == "false" ]; then
+if [ "$VERBOSE" = "true" ]; then
+  MAVEN_OPTS="-D"
+elif [ "$VERBOSE" = "false" ]; then
   MAVEN_OPTS="-q"
 fi
 if [ "$MAVEN_OPTS" == "" ]; then
