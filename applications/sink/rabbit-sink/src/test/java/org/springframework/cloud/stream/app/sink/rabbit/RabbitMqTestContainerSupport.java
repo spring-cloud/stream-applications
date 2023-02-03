@@ -30,7 +30,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers(disabledWithoutDocker = true)
 public interface RabbitMqTestContainerSupport {
 
-	GenericContainer<?> RABBIT_MQ_CONTAINER = new GenericContainer<>("rabbitmq")
+	GenericContainer<?> RABBIT_MQ_CONTAINER = new GenericContainer<>("rabbitmq:3.10")
 		.withExposedPorts(5672)
 		.withStartupTimeout(Duration.ofSeconds(120))
 		.withStartupAttempts(3);
