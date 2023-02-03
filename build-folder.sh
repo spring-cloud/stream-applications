@@ -84,6 +84,10 @@ done
 if ((RESULT == 0)); then
   for FOLDER in $FOLDERS; do
     set +e
+    if [ -f "$FOLDER/set-env.sh" ]; then
+      echo "Sourcing:$FOLDER/set-env.sh"
+      source "$FOLDER/set-env.sh"
+    fi
     if [ "$MAVEN_THREADS" = "true" ]; then
       MVN_THR="-T 0.3C"
     else
