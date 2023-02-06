@@ -11,7 +11,7 @@ env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   check:
-    runs-on: 'stream-ci-large'
+    runs-on: ubuntu-latest
     steps:
       - name: 'Configure: checkout stream-applications@${{ github.ref_name }}'
         uses: actions/checkout@v3
