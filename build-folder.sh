@@ -21,7 +21,7 @@ function check_env() {
 }
 
 if [ "$VERBOSE" = "true" ]; then
-  MAVEN_OPTS="-D"
+  MAVEN_OPTS="-X"
 elif [ "$VERBOSE" = "false" ]; then
   MAVEN_OPTS="-q"
 fi
