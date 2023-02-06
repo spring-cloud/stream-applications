@@ -92,7 +92,7 @@ resource "google_container_node_pool" "nodes" {
     }
     disk_size_gb = var.disk_size
     disk_type    = "pd-ssd"
-    image_type   = "COS"
+    image_type   = "UBUNTU_CONTAINERD"
     tags         = ["stream-ci-node", var.cluster_name, "${var.cluster_name}-node"]
   }
   management {
