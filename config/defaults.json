@@ -2,7 +2,7 @@
   "default": {
     "provider": "gke",
     "region": "us-central1",
-    "k8s_version": "1.24",
+    "k8s_version": "1.23",
     "machine_type": "n2-standard-8",
     "pods_per_job": 1,
     "ram_per_pod": 4,
