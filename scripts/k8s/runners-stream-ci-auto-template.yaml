@@ -22,6 +22,8 @@ spec:
       env:
         - name: STARTUP_DELAY_IN_SECONDS
           value: "10"
+        - name: DISABLE_WAIT_FOR_DOCKER
+          value: "true"
       labels:
         - stream-ci
 ---
