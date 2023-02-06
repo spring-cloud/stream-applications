@@ -7,7 +7,7 @@ spec:
   template:
     spec:
       repository: spring-cloud/stream-applications
-      image: 'summerwind/actions-runner-dind:tag-placeholder'
+#      image: 'summerwind/actions-runner-dind:tag-placeholder'
       dockerdWithinRunnerContainer: true
       priorityClassName: high-priority
       imagePullPolicy: IfNotPresent
