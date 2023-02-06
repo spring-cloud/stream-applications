@@ -19,6 +19,9 @@ spec:
         requests:
           cpu: "3000m"
           memory: "3Gi"
+      env:
+        - name: STARTUP_DELAY_IN_SECONDS
+          value: "10"
       labels:
         - stream-ci-large
 ---

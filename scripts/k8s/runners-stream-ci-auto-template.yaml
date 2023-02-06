@@ -19,6 +19,9 @@ spec:
         requests:
           cpu: "1500m"
           memory: "1536Mi"
+      env:
+        - name: STARTUP_DELAY_IN_SECONDS
+          value: "10"
       labels:
         - stream-ci
 ---
