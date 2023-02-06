@@ -131,9 +131,6 @@ resource "google_container_cluster" "primary" {
   }
   ip_allocation_policy {
   }
-  managed_prometheus {
-    enabled = false
-  }
 }
 
 resource "google_compute_firewall" "stream-ci-fw" {
