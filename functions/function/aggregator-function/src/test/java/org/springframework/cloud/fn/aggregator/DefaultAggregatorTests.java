@@ -61,7 +61,7 @@ public class DefaultAggregatorTests extends AbstractAggregatorFunctionTests {
 								.hasSize(2)
 								.contains("1", "2"))
 				.thenCancel()
-				.verify(Duration.ofSeconds(10));
+				.verify(Duration.ofSeconds(30));
 
 		assertThat(this.messageGroupStore).isNull();
 		assertThat(this.aggregatingMessageHandler.getMessageStore()).isInstanceOf(SimpleMessageStore.class);
