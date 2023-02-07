@@ -21,4 +21,4 @@ jobs:
     with:
       branch: 'main'
       verbose: ${{ inputs.verbose == 'true' }}
-      useMavenThreads: false
+      useMavenThreads: true
