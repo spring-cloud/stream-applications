@@ -68,7 +68,12 @@ for FOLDER in $FOLDERS; do
   while ((RETRIES >= 0)); do
     echo -e "Resolving dependencies for ${bold}$FOLDER${end}"
     set +e
-    $SCDIR/mvnw -U -f "$FOLDER" $MAVEN_OPTS -T 0.75C dependency:resolve
+    if [ "$MAVEN_THREADS" = "true" ]; then
+      MVN_THR="-T 0.75C"
+    else
+      MVN_THR=
+    fi
+    $SCDIR/mvnw -U -f "$FOLDER" $MAVEN_OPTS $MVN_THR dependency:resolve
     RESULT=$?
     set -e
     if ((RESULT == 0)); then

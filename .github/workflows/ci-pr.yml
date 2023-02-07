@@ -9,6 +9,7 @@ on:
 env:
   MAIN_PATH: 'build-dir'
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MAVEN_THREADS: 'true'
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -66,7 +67,12 @@ jobs:
           MODULES=$(jq '.[]' modules.json | sed 's/\"//g')
           FOLDERS=
           ROOT_MODULES=
-          MAVEN_OPTS="-s $BUILD_DIR/.settings.xml -B -T 0.3C"
+          if [ "$MAVEN_THREADS" = "true" ]; then
+            MVN_THR="-T 0.3C"
+          else
+            MVN_THR=
+          fi
+          MAVEN_OPTS="-s $BUILD_DIR/.settings.xml -B $MVN_THR"
           for module in $MODULES; do
             if [[ "$module" == *"/"* ]]; then            
               if [ "$FOLDERS" = "" ]; then
