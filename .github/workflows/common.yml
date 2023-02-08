@@ -209,6 +209,8 @@ jobs:
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
+          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
@@ -318,8 +320,9 @@ jobs:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: | 
-          ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
+          VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
+          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
+        run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
@@ -399,6 +402,8 @@ jobs:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
+          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
@@ -480,6 +485,8 @@ jobs:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
+          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
@@ -550,6 +557,8 @@ jobs:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
+          VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
+          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
