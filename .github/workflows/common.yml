@@ -218,8 +218,8 @@ jobs:
           set +e
           echo "::notice ::core build completed"
           popd > /dev/null
-      - name: 'Upload: Error logs'
-        if: ${{ failure() }}
+      - name: 'Upload: Test Reports'
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: 'core-surefire-reports'
@@ -320,8 +320,8 @@ jobs:
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: | 
           ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
-      - name: 'Upload: Error logs'
-        if: ${{ failure() }}
+      - name: 'Upload: Test Reports'
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: '${{ matrix.app }}-surefire-reports'
@@ -400,8 +400,8 @@ jobs:
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
-      - name: 'Upload: Error logs'
-        if: ${{ failure() }}
+      - name: 'Upload: Test Reports'
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: '${{ matrix.app }}-surefire-reports'
@@ -481,8 +481,8 @@ jobs:
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
-      - name: 'Upload: Error logs'
-        if: ${{ failure() }}
+      - name: 'Upload: Test Reports'
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: '${{ matrix.app }}-surefire-reports'
@@ -559,8 +559,8 @@ jobs:
             set +e
             echo "::notice ::stream-applications-release-train build completed"
           popd > /dev/null
-      - name: 'Upload: Error logs'
-        if: ${{ failure() }}
+      - name: 'Upload: Test Reports'
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: '${{ matrix.app }}-surefire-reports'
@@ -585,6 +585,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set +e
           FAILURES=$(gh run view ${{ github.run_id }} -v | grep "^X")
           COUNT_TESTS=$(echo "$FAILURES" | grep -c -F "tests ")
           if((COUNT_TESTS > 0)); then
