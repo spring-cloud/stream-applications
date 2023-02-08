@@ -18,12 +18,10 @@ spec:
       resources:
         requests:
           cpu: "3000m"
-          memory: "3Gi"
+          memory: "6Gi"
       env:
         - name: STARTUP_DELAY_IN_SECONDS
           value: "10"
-        - name: DISABLE_WAIT_FOR_DOCKER
-          value: "true"
       labels:
         - stream-ci-large
 ---
@@ -35,8 +33,8 @@ spec:
   githubAPICredentialsFrom:
     secretRef:
       name: controller-manager
-  minReplicas: 0
-  maxReplicas: 2
+  minReplicas: min-replicas-placeholder
+  maxReplicas: max-replicas-placeholder
   scaleTargetRef:
     kind: RunnerDeployment
     name: runners-stream-ci-large
