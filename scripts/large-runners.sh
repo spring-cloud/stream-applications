@@ -48,8 +48,11 @@ if [ "$ARC_RUNNER_VER" == "" ]; then
   ARC_RUNNER_VER=latest
 fi
 sed -i 's/tag-placeholder/'"$ARC_RUNNER_VER"'/g' runners-stream-ci.yaml
-if [ "$MAX_RUNNERS" == "" ]; then
+if [ "$MAX_RUNNERS" == "" ] || [ "$MAX_RUNNERS" == "null" ]; then
   MAX_RUNNERS=$(max_replicas)
+fi
+if [ "$MAX_RUNNERS" == "" ] || [ "$MAX_RUNNERS" == "null" ]; then
+  MAX_RUNNERS=2
 fi
 echo "Runners: Max runners to $MAX_RUNNERS"
 echo "Runners: changing scaling min: $TARGET, max: $MAX_RUNNERS"

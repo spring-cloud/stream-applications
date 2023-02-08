@@ -33,7 +33,8 @@ echo "Create Certificate Manager"
 NS=cert-manager
 SVC=cert-manager
 $SCDIR/ensure-ns.sh $NS
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
+#kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.yaml
 set -e
 $SCDIR/wait-deployment.sh $SVC $NS
 echo "Certificate Manager installed"
