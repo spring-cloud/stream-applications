@@ -111,10 +111,9 @@ resource "google_container_node_pool" "nodes" {
 
 resource "google_container_cluster" "primary" {
   name                      = var.cluster_name
-  location                  = var.region
+  location                  = "${var.region}-f" # zonal cluster
   network                   = google_compute_network.vpc.name
   subnetwork                = google_compute_subnetwork.scdf.name
-  node_locations            = ["${var.region}-c"] #, "${var.region}-a","${var.region}-b",
   initial_node_count        = 1
   remove_default_node_pool  = true
   default_max_pods_per_node = var.pods_per_node
