@@ -160,8 +160,8 @@ jobs:
 #          GH_ARC_PRIVATE_KEY: ${{ secrets.GH_ARC_PRIVATE_KEY }}
 #          GH_ARC_PAT: ${{ secrets.GH_ARC_PAT }}
   core:
-#    runs-on: 'stream-ci-large'
-    runs-on: ubuntu-20.04
+    runs-on: 'stream-ci-large'
+#    runs-on: ubuntu-20.04
     needs:
       - parameters
     steps:
