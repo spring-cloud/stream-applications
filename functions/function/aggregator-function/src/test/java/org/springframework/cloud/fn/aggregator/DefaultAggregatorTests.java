@@ -56,7 +56,6 @@ public class DefaultAggregatorTests extends AbstractAggregatorFunctionTests {
 				.assertNext((message) ->
 						assertThat(message)
 								.extracting(Message::getPayload)
-								.isInstanceOf(List.class)
 								.asList()
 								.hasSize(2)
 								.contains("1", "2"))
