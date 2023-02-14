@@ -52,11 +52,10 @@ public class DefaultAggregatorTests extends AbstractAggregatorFunctionTests {
 					.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_SIZE, 2)
 					.build());
 
-		Flux<Message<?>> output = this.aggregatorFunction.apply(input);
-
-		StepVerifier.create(output)
+		Flux<Message<?>> output = this.aggregatorFunction.apply(input.log("DefaultAggregatorTests:input"));
+		output.log("DefaultAggregatorTests:output")
+			.as(StepVerifier::create)
 			.assertNext((message) -> {
-				logger.info("Message:payload:\n\theaders:{},\n\tclass={},\n\tdata={}", message.getHeaders(), message.getPayload().getClass(), message.getPayload());
 				assertThat(message)
 					.extracting(Message::getPayload)
 					.asList()
@@ -70,5 +69,4 @@ public class DefaultAggregatorTests extends AbstractAggregatorFunctionTests {
 		assertThat(this.aggregatingMessageHandler.getMessageStore()).isInstanceOf(SimpleMessageStore.class);
 
 	}
-
 }
