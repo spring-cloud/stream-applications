@@ -32,9 +32,11 @@
             <exclusions>
                 <exclusion>
                     <groupId>com.sun.mail</groupId>
+                    <artifactId>jakarta.mail</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>jakarta.activation</groupId>
+                    <artifactId>jakarta.activation-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
