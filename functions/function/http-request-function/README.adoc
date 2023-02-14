@@ -2,7 +2,7 @@
 
 This module provides an HTTP request function that can be reused and composed in other applications.
 The `Function` uses the reactive `WebClient` from `Spring WebFlux` and is implemented as a `java.util.function.Function`.
-This function gives you a reactive stream of `ResponseEntity` given a stream of request messages as the function a signature of `Function<Flux<Message<?>,Flux<ResponseEntity>>`.
+This function gives you a reactive stream of `ResponseEntity` given a stream of request messages as the function a signature of `Function<Message<?>,ResponseEntity>`.
 Users have to subscribe to the returned `Flux` to receive the data.
 
 ## Beans for injection
