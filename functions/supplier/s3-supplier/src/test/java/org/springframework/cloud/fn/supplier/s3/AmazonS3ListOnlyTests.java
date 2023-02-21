@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,9 @@ public class AmazonS3ListOnlyTests extends AbstractAwsS3SupplierMockTests {
 	public void test() {
 		final Flux<Message<?>> messageFlux = s3Supplier.get();
 		final HashSet<String> keys = new HashSet<>();
-		keys.add("1.test");
-		keys.add("2.test");
-		keys.add("otherFile");
+		keys.add("subdir/1.test");
+		keys.add("subdir/2.test");
+		keys.add("subdir/otherFile");
 		StepVerifier stepVerifier = StepVerifier.create(messageFlux)
 				.assertNext(message -> {
 					S3ObjectSummary summary = (S3ObjectSummary) message.getPayload();
