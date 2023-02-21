@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 the original author or authors.
+ * Copyright 2016-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,14 @@ import reactor.core.publisher.Flux;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.integration.aws.inbound.S3InboundFileSynchronizingMessageSource;
 import org.springframework.integration.dsl.StandardIntegrationFlow;
+import org.springframework.integration.file.RecursiveDirectoryScanner;
+import org.springframework.integration.file.filters.AbstractFileListFilter;
+import org.springframework.integration.file.filters.FileListFilter;
 import org.springframework.integration.test.context.SpringIntegrationTest;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
@@ -104,7 +109,7 @@ public abstract class AbstractAwsS3SupplierMockTests {
 		for (File file : f.listFiles()) {
 			S3Object s3Object = new S3Object();
 			s3Object.setBucketName(S3_BUCKET);
-			s3Object.setKey(file.getName());
+			s3Object.setKey("subdir/" + file.getName());
 			s3Object.setObjectContent(new FileInputStream(file));
 			S3_OBJECTS.add(s3Object);
 		}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 the original author or authors.
+ * Copyright 2016-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = {
 		"file.consumer.mode=lines",
-		"s3.supplier.filenamePattern=otherFile",
+		"s3.supplier.filenamePattern=*/otherFile",
 		"file.consumer.with-markers=false" })
 public class AmazonS3LinesTransferredTests extends AbstractAwsS3SupplierMockTests {
 
@@ -41,10 +41,10 @@ public class AmazonS3LinesTransferredTests extends AbstractAwsS3SupplierMockTest
 		StepVerifier stepVerifier =
 				StepVerifier.create(messageFlux)
 						.assertNext((message) -> {
-									assertThat(message.getPayload().toString()).isEqualTo("Other");
-									assertThat(message.getHeaders().containsKey(FileHeaders.ORIGINAL_FILE)).isTrue();
-									assertThat(message.getHeaders().containsValue(
-											new File(this.awsS3SupplierProperties.getLocalDir(), "otherFile"))).isTrue();
+									assertThat(message.getPayload()).isEqualTo("Other");
+									assertThat(message.getHeaders()).containsKey(FileHeaders.ORIGINAL_FILE);
+									assertThat(message.getHeaders()).containsValue(
+											new File(this.awsS3SupplierProperties.getLocalDir(), "subdir/otherFile"));
 								}
 						)
 						.assertNext((message) -> {
@@ -55,6 +55,6 @@ public class AmazonS3LinesTransferredTests extends AbstractAwsS3SupplierMockTest
 		standardIntegrationFlow.start();
 		stepVerifier.verify(Duration.ofSeconds(10));
 
-		assertThat(this.awsS3SupplierProperties.getLocalDir().list().length).isEqualTo(1);
+		assertThat(this.awsS3SupplierProperties.getLocalDir().list()).hasSize(1);
 	}
 }

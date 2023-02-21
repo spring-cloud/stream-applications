@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 the original author or authors.
+ * Copyright 2016-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.fn.supplier.s3;
 
-import java.io.File;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -121,9 +120,11 @@ public class AwsS3SupplierConfiguration {
 		}
 
 		@Bean
-		public Publisher<Message<Object>> s3SupplierFlow(MessageSource<?> s3MessageSource) {
+		public Publisher<Message<Object>> s3SupplierFlow(S3InboundFileSynchronizingMessageSource s3MessageSource) {
 			return FileUtils.enhanceFlowForReadingMode(
-							IntegrationFlow.from(IntegrationReactiveUtils.messageSourceToFlux(s3MessageSource)),
+							IntegrationFlow.from(
+									IntegrationReactiveUtils.messageSourceToFlux(s3MessageSource)
+											.doOnSubscribe((s) -> s3MessageSource.start())),
 							fileConsumerProperties)
 					.toReactivePublisher(true);
 		}
@@ -144,13 +145,15 @@ public class AwsS3SupplierConfiguration {
 		}
 
 		@Bean
-		public MessageSource<File> s3MessageSource(S3InboundFileSynchronizer s3InboundFileSynchronizer,
+		public S3InboundFileSynchronizingMessageSource s3MessageSource(
+				S3InboundFileSynchronizer s3InboundFileSynchronizer,
 				@Nullable ComponentCustomizer<S3InboundFileSynchronizingMessageSource> s3MessageSourceCustomizer) {
 
 			S3InboundFileSynchronizingMessageSource s3MessageSource = new S3InboundFileSynchronizingMessageSource(
 					s3InboundFileSynchronizer);
 			s3MessageSource.setLocalDirectory(this.awsS3SupplierProperties.getLocalDir());
 			s3MessageSource.setAutoCreateLocalDirectory(this.awsS3SupplierProperties.isAutoCreateLocalDir());
+			s3MessageSource.setUseWatchService(true);
 
 			if (s3MessageSourceCustomizer != null) {
 				s3MessageSourceCustomizer.customize(s3MessageSource);
