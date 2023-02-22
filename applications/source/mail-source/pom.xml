@@ -32,7 +32,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>com.sun.mail</groupId>
-                    <artifactId>javax.mail</artifactId>
+                    <artifactId>jakarta.mail</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>jakarta.activation</groupId>

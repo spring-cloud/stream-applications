@@ -16,11 +16,15 @@
 
 package org.springframework.cloud.fn.filter;
 
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +33,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.annotation.DirtiesContext;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Artem Bilan
@@ -40,21 +46,17 @@ public class FilterFunctionApplicationTests {
 
 	@Autowired
 	@Qualifier("filterFunction")
-	Function<Flux<Message<?>>, Flux<Message<?>>> filter;
+	Function<Message<?>, Message<?>> filter;
 
 	@Test
 	public void testFilter() {
-		Flux<Message<?>> messageFlux =
-				Flux.just("hello", "hello world")
-						.map(GenericMessage::new);
-		Flux<Message<?>> result = this.filter.apply(messageFlux);
-		result
-				.map(Message::getPayload)
-				.cast(String.class)
-				.as(StepVerifier::create)
-				.expectNext("hello world")
-				.expectComplete()
-				.verify();
+		Stream<Message<?>> messages = List.of("hello", "hello world")
+			.stream()
+			.map(GenericMessage::new);
+		List<Message<?>> result = messages.filter(message -> this.filter.apply(message) != null).collect(Collectors.toList());
+		assertThat(result.size()).isEqualTo(1);
+		assertThat(result.get(0).getPayload()).isNotNull();
+		assertThat(result.get(0).getPayload()).isEqualTo("hello world");
 	}
 
 	@SpringBootApplication
