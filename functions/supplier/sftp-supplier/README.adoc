@@ -8,17 +8,18 @@ These include:
 * Stream remote file contents as a byte array directly without copying to a local directory.
 * List the remote file names only.
 
-Messages emitted by the supplier are provided as a byte array by default. However, this can be customized using the `--mode` option:
+Messages emitted by the supplier are provided as a byte array by default. However, this can be customized using the `mode` option:
 
 - *ref* Provides a `java.io.File` reference
 - *lines* Will split files line-by-line and emit a new message for each line
 - *contents* The default. Provides the contents of a file as a byte array
 
+NOTE: The `ref` mode (`file.consumer.mode=ref`) is not compatible when streaming results (`sftp.stream=true`).
 
-NOTE: When using `--mode=lines`, you can provide an additional option `--withMarkers=true`.
+NOTE: When using the `lines` mode, you can provide an additional `withMarker` option (via the `file.consumer.with-marker` property).
 If set to `true`, the underlying `FileSplitter` will emit additional _start-of-file_ and _end-of-file_ marker messages before and after the actual data.
 The payload of these 2 additional marker messages is of type `FileSplitter.FileMarker`.
-The option `withMarkers` defaults to `false` if not explicitly set.
+When not explicitly set, the option defaults to `false`.
 
 When configuring the `sftp.factory.known-hosts-expression` option, the root object of the evaluation is the application context, an example might be `sftp.factory.known-hosts-expression = @systemProperties['user.home'] + '/.ssh/known_hosts'`.
 
@@ -71,7 +72,7 @@ Once injected, you can use the `get` method of the `Supplier` to invoke it and t
 
 ## Configuration Options
 
-All configuration properties are prefixed with `ftp.supplier`.
+All configuration properties are prefixed with `sftp.supplier`.
 There are also properties that need to be used with the prefix `file.consumer`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/sftp/SftpSupplierProperties.java[SftpSupplierProperties].
