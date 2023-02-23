@@ -32,7 +32,7 @@ else
 fi
 
 if [ "$1" == "" ]; then
-  echo -e "Options: ${bold} <folder> [<maven-goals>]*${end}"
+  echo -e "Options: ${bold} <comma-separated-folders> [<maven-goals>]*${end}"
 fi
 FOLDER_NAMES="$1"
 shift
@@ -64,54 +64,63 @@ if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
 fi
 
 RETRIES=3
-for FOLDER in $FOLDERS; do
-  while ((RETRIES >= 0)); do
-    echo -e "Resolving dependencies for ${bold}$FOLDER${end}"
-    set +e
-    if [ "$MAVEN_THREADS" = "true" ]; then
-      MVN_THR="-T 0.75C"
-    else
-      MVN_THR=
-    fi
-    $SCDIR/mvnw -U -f "$FOLDER" $MAVEN_OPTS $MVN_THR dependency:resolve
-    RESULT=$?
-    set -e
-    if ((RESULT == 0)); then
-      break
-    fi
-    RETRIES=$((RETRIES - 1))
-    if ((RETRIES >= 0)); then
-      echo -e "RETRY:Resolving dependencies for ${bold}$FOLDER${end}"
-    fi
-  done
+while ((RETRIES >= 0)); do
+  echo -e "Resolving dependencies for ${bold}$FOLDER_FOLDER_NAMES${end}"
+  set +e
+  if [ "$MAVEN_THREADS" = "true" ]; then
+    MVN_THR="-T 0.75C"
+  else
+    MVN_THR=
+  fi
+  $SCDIR/mvnw -U -pl "$FOLDER_NAMES" $MAVEN_OPTS $MVN_THR dependency:resolve
+  RESULT=$?
+  set -e
+  if ((RESULT == 0)); then
+    break
+  fi
+  RETRIES=$((RETRIES - 1))
+  if ((RETRIES >= 0)); then
+    echo -e "RETRY:Resolving dependencies for ${bold}$FOLDER${end}"
+  fi
 done
 
+
 if ((RESULT == 0)); then
+  ENV_SET=false
   for FOLDER in $FOLDERS; do
     set +e
     if [ -f "$FOLDER/set-env.sh" ]; then
       echo "Sourcing:$FOLDER/set-env.sh"
       source "$FOLDER/set-env.sh"
+      ENV_SET=true
     fi
-    if [ "$MAVEN_THREADS" = "true" ]; then
-      MVN_THR="-T 0.3C"
-    else
-      MVN_THR=
-    fi
-    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
-    MVNW="./mvnw"
-    if [ ! -f $MVNW ]; then
-      MVNW="$SCDIR/mvnw"
-    fi
-    $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
-    RESULT=$?
-    set -e
-    if ((RESULT != 0)); then
-      echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:FAILED"
-      break
-    fi
-    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:SUCCESS"
   done
+  if [ "$MAVEN_THREADS" = "true" ]; then
+    MVN_THR="-T 0.3C"
+  else
+    MVN_THR=
+  fi
+  if [ "$ENV_SET" == "true" ]; then
+    for FOLDER in $FOLDERS; do
+      set +e
+      echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
+      MVNW="./mvnw"
+      if [ ! -f $MVNW ]; then
+        MVNW="$SCDIR/mvnw"
+      fi
+      $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
+      RESULT=$?
+      set -e
+      if ((RESULT != 0)); then
+        echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:FAILED"
+        break
+      fi
+      echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:SUCCESS"
+    done
+  else
+    echo -e "Maven goals:${bold}-pl $FOLDER_NAMES $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
+    $SCDIR/mvnw -pl "$FOLDER_NAMES" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
+  fi
 fi
 END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
