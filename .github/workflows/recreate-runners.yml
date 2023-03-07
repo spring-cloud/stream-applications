@@ -68,7 +68,7 @@ jobs:
           tmc_api_token: ${{ secrets.TMC_API_TOKEN }}
       - name: 'Configure: install kubectl'
         if: ${{ env.RUNNER_TYPE == 'tmc' }}
-        uses: azure/setup-kubectl@v1
+        uses: azure/setup-kubectl@v3
       - name: 'Configure: install carvel'
         if: ${{ env.RUNNER_TYPE == 'gke' }}
         uses: vmware-tanzu/carvel-setup-action@v1
