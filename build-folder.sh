@@ -100,27 +100,22 @@ if ((RESULT == 0)); then
   else
     MVN_THR=
   fi
-  if [ "$ENV_SET" == "true" ]; then
-    for FOLDER in $FOLDERS; do
-      set +e
-      echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
-      MVNW="./mvnw"
-      if [ ! -f $MVNW ]; then
-        MVNW="$SCDIR/mvnw"
-      fi
-      $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
-      RESULT=$?
-      set -e
-      if ((RESULT != 0)); then
-        echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:FAILED"
-        break
-      fi
-      echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:SUCCESS"
-    done
-  else
-    echo -e "Maven goals:${bold}-pl $FOLDER_NAMES $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
-    $SCDIR/mvnw -pl "$FOLDER_NAMES" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
-  fi
+  for FOLDER in $FOLDERS; do
+    set +e
+    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
+    MVNW="./mvnw"
+    if [ ! -f $MVNW ]; then
+      MVNW="$SCDIR/mvnw"
+    fi
+    $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
+    RESULT=$?
+    set -e
+    if ((RESULT != 0)); then
+      echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:FAILED"
+      break
+    fi
+    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:SUCCESS"
+  done
 fi
 END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
