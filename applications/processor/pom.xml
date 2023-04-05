@@ -15,6 +15,7 @@
         <module>filter-processor</module>
         <module>groovy-processor</module>
         <module>header-enricher-processor</module>
+        <module>header-filter-processor</module>
         <module>http-request-processor</module>
         <module>splitter-processor</module>
         <module>transform-processor</module>

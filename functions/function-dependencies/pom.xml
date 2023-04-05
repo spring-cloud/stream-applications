@@ -229,6 +229,11 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
+                <artifactId>header-filter-function</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud.fn</groupId>
                 <artifactId>http-request-function</artifactId>
                <version>${project.version}</version>
             </dependency>
