@@ -14,6 +14,7 @@
         <module>aggregator-function</module>
         <module>filter-function</module>
         <module>header-enricher-function</module>
+        <module>header-filter-function</module>
         <module>http-request-function</module>
         <module>spel-function</module>
         <module>payload-converter-function</module>

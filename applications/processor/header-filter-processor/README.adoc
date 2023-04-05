@@ -1,0 +1,17 @@
+//tag::ref-doc[]
+= Header Filter Processor
+
+Use the header-filter app to remove message headers.
+
+The names of headers to remove are presented as a comma or space separated list. For example `--remove='foo,bar,pf-*'`.
+
+== Options
+
+The **$$header-filter$$** $$processor$$ has the following options:
+
+//tag::configuration-properties[]
+$$header.filter.delete-all$$:: $$Indicates the need to remove all headers.$$ *($$Boolean$$, default: `$$false$$`)*
+$$header.filter.remove$$:: $$Remove all headers named. A comma, space separated list of header names. The names may contain patterns.$$ *($$String$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]
