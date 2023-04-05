@@ -11,7 +11,7 @@ runs:
   using: "composite"
   steps:
     - name: Install kubectl
-      uses: azure/setup-kubectl@v1
+      uses: azure/setup-kubectl@v3
     - name: Increase runners with ${{ inputs.inc }}
       shell: bash
       run: |
