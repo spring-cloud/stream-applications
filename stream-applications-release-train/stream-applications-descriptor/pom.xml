@@ -53,6 +53,23 @@
                 </dependencies>
                 <executions>
                     <execution>
+                        <id>add-boot3</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <dir>${project.build.directory}/classes</dir>
+                            </properties>
+                            <bindPropertiesToSeparateVariables>false</bindPropertiesToSeparateVariables>
+                            <scripts>
+                                <script>file:src/main/groovy/add-boot3.groovy</script>
+                            </scripts>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>validate-repo</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>execute</goal>

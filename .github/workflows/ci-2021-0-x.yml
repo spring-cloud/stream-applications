@@ -7,6 +7,11 @@ on:
         required: false
         default: 'false'
         description: 'Produces verbose output'
+  push:
+    paths-ignore:
+      - '.github/**'
+    branches:
+      - '2021.0.x'
 jobs:
   build:
     uses: ./.github/workflows/common.yml

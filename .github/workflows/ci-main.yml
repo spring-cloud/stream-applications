@@ -7,6 +7,11 @@ on:
         default: 'false'
         description: 'Verbose output'
         required: false
+  push:
+    paths-ignore:
+      - '.github/**'
+    branches:
+      - 'main'
 
 jobs:
   build:
