@@ -14,7 +14,7 @@
         <java.version>17</java.version>
         <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -35,17 +35,17 @@
         <nohttp-checkstyle.version>0.0.10</nohttp-checkstyle.version>
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.35</spring-javaformat-checkstyle.version>
-        <spring-boot.version>3.0.2</spring-boot.version>
-        <spring-kafka.version>3.0.2</spring-kafka.version>
-        <spring-rabbit.version>3.0.1</spring-rabbit.version>
-        <spring.version>6.0.4</spring.version>
-        <spring-integration.version>6.0.2</spring-integration.version>
+        <spring-boot.version>3.0.5</spring-boot.version>
+        <spring-kafka.version>3.0.5</spring-kafka.version>
+        <spring-rabbit.version>3.0.3</spring-rabbit.version>
+        <spring.version>6.0.7</spring.version>
+        <spring-integration.version>6.0.4</spring-integration.version>
 
-        <spring-cloud.version>2022.0.1</spring-cloud.version>
-        <spring-cloud-starters.version>4.0.1</spring-cloud-starters.version>
-        <spring-cloud-function.version>4.0.1</spring-cloud-function.version>
-        <spring-cloud-stream-dependencies.version>4.0.1</spring-cloud-stream-dependencies.version>
-        <spring-cloud-stream.version>4.0.1</spring-cloud-stream.version>
+        <spring-cloud.version>2022.0.2</spring-cloud.version>
+        <spring-cloud-starters.version>4.0.2</spring-cloud-starters.version>
+        <spring-cloud-function.version>4.0.2</spring-cloud-function.version>
+        <spring-cloud-stream-dependencies.version>4.0.2</spring-cloud-stream-dependencies.version>
+        <spring-cloud-stream.version>4.0.2</spring-cloud-stream.version>
         <test-containers.version>1.17.6</test-containers.version>
         <mockserver.version>5.13.2</mockserver.version>
 
