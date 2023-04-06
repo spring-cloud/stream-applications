@@ -28,6 +28,7 @@ import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.store.SimpleMessageStore;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Artem Bilan
  * @author Corneil du Plessis
  */
+@TestPropertySource(properties = "aggregator.message-store-type=simple")
 public class DefaultAggregatorTests extends AbstractAggregatorFunctionTests {
 	private static final Logger logger = LoggerFactory.getLogger(DefaultAggregatorTests.class);
 

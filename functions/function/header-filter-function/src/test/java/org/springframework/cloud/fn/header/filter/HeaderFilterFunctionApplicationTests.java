@@ -76,7 +76,7 @@ public class HeaderFilterFunctionApplicationTests {
 			.build();
 		Message<?> result = headerFilter.apply(message);
 		var headers = HeaderUtils.getNonReadOnlyHeaders(result);
-		assertThat(result.getHeaders().keySet()).isEqualTo(Set.of("pfBar"));
+		assertThat(headers).isEqualTo(Set.of("pfBar"));
 	}
 
 	@Test

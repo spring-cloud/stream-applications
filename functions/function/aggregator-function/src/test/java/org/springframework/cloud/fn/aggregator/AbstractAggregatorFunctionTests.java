@@ -21,6 +21,7 @@ import java.util.function.Function;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.aggregator.AggregatingMessageHandler;
@@ -46,8 +47,10 @@ public abstract class AbstractAggregatorFunctionTests {
 	protected AggregatingMessageHandler aggregatingMessageHandler;
 
 	@SpringBootApplication
-	static class AggregatorFunctionTestApplication {
-
+	public static class AggregatorFunctionTestApplication {
+		public static void main(String[] args) {
+			SpringApplication.run(AggregatorFunctionTestApplication.class, args);
+		}
 	}
 
 }
