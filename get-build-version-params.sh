@@ -10,7 +10,7 @@ grep --version
 # get the target release version and type
 export BUILD_VERSION=$(cat $SCDIR/version/RELEASE_VERSION)
 echo "BUILD_VERSION: $BUILD_VERSION"
-
+set +e
 IS_SNAPSHOT=$(echo $BUILD_VERSION | grep -E "^.*-SNAPSHOT$")
 IS_MILESTONE=$(echo $BUILD_VERSION | grep -E "^.*-(M|RC)[0-9]+$")
 IS_GA=$(echo $BUILD_VERSION | grep -E "^.*\.[0-9]+$")
