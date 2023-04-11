@@ -80,7 +80,7 @@ jobs:
           popd
           echo "::info ::getting build version params"
           pushd stream-applications > /dev/null
-            $ROOT_DIR/get-build-version-params.sh
+            source $ROOT_DIR/get-build-version-params.sh
             echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_ENV
             echo "BUILD_VERSION_TYPE=$BUILD_VERSION_TYPE" >> $GITHUB_ENV
             echo "CUR_VERSION=$CUR_VERSION" >> $GITHUB_ENV
