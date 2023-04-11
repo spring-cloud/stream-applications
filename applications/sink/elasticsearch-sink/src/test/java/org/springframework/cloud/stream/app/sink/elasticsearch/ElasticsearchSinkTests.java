@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.sink.elasticsearch;
 
 import java.time.Duration;
+import java.util.Map;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.GetRequest;
@@ -60,7 +61,7 @@ public class ElasticsearchSinkTests {
 
 
 	@Test
-	public void tesElasticSearchSink() {
+	void elasticSearchSinkWithIndexNameProperty() {
 		this.contextRunner
 				.withPropertyValues("spring.cloud.function.definition=elasticsearchConsumer",
 						"elasticsearch.consumer.index=foo", "elasticsearch.consumer.id=1",
@@ -82,12 +83,34 @@ public class ElasticsearchSinkTests {
 				});
 	}
 
+	@Test
+	void elasticSearchSinkWithIndexNameFromHeader() {
+		this.contextRunner
+				.withPropertyValues("spring.cloud.function.definition=elasticsearchConsumer", "elasticsearch.consumer.id=1",
+						"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
+				.run(context -> {
+
+					final InputDestination inputDestination = context.getBean(InputDestination.class);
+					final String jsonObject = "{\"age\":10,\"dateOfBirth\":1471466076564,"
+							+ "\"fullName\":\"John Doe\"}";
+
+					inputDestination.send(new GenericMessage<>(jsonObject, Map.of("INDEX_NAME", "foo")));
+
+					final ElasticsearchClient elasticsearchClient = context.getBean(ElasticsearchClient.class);
+					final GetRequest getRequest = new GetRequest.Builder().index("foo").id("1").build();
+					final GetResponse<JsonData> response = elasticsearchClient.get(getRequest, JsonData.class);
+					assertThat(response.found()).isTrue();
+					assertThat(response.source()).isNotNull();
+					assertThat(response.source().toJson()).isEqualTo(JsonData.fromJson(jsonObject).toJson());
+				});
+	}
+
 	@SpringBootApplication
 	@Import(ElasticsearchConsumerConfiguration.class)
 	static class ElasticsearchSinkTestApplication {
-
 	}
-	@Configuration
+
+	@Configuration(proxyBeanMethods = false)
 	static class Config extends ElasticsearchConfiguration {
 		@NonNull
 		@Override
