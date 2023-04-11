@@ -89,7 +89,23 @@ if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
   check_env ARTIFACTORY_PASSWORD
 fi
 
-if [ "$SKIP_RESOLVE" = "true" ]; then
+case $MAVEN_THREADS in
+"true")
+  MVN_THR="-T 0.75C"
+  ;;
+"false")
+  MVN_THR=
+  ;;
+*)
+  MVN_THR="-T 0.5C"
+  ;;
+esac
+
+if [ "$SKIP_RESOLVE" = "" ]; then
+  SKIP_RESOLVE=true
+fi
+
+if [ "$SKIP_RESOLVE" = "false" ]; then
   RETRIES=-1
   RESULT=0
 else
@@ -98,11 +114,7 @@ fi
 while ((RETRIES >= 0)); do
   echo -e "Resolving dependencies for ${bold}$FOLDER_FOLDER_NAMES${end}"
   set +e
-  if [ "$MAVEN_THREADS" = "true" ]; then
-    MVN_THR="-T 0.75C"
-  else
-    MVN_THR=
-  fi
+
   $SCDIR/mvnw -U -pl "$FOLDER_NAMES" $MAVEN_OPTS $MVN_THR dependency:resolve
   RESULT=$?
   set -e
@@ -116,12 +128,11 @@ while ((RETRIES >= 0)); do
 done
 
 if ((RESULT == 0)); then
-  if [ "$MAVEN_THREADS" = "true" ]; then
-    MVN_THR="-T 0.3C"
-  else
-    MVN_THR=
-  fi
   for FOLDER in $FOLDERS; do
+    # save values that may be modified by set-env.sh
+    SAVED_MAVEN_OPTS="$MAVEN_OPTS"
+    SAVED_MVN_THR="$MVN_THR"
+    SAVED_MAVEN_GOAL="$MAVEN_GOAL"
     if [ -f "$FOLDER/set-env.sh" ]; then
       echo "Sourcing:$FOLDER/set-env.sh"
       source "$FOLDER/set-env.sh"
@@ -140,6 +151,10 @@ if ((RESULT == 0)); then
       break
     fi
     echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:SUCCESS"
+    # restore values that may be modified by set-env.sh
+    MAVEN_OPTS="$SAVED_MAVEN_OPTS"
+    MVN_THR="$SAVED_MVN_THR"
+    MAVEN_GOAL="$SAVED_MAVEN_GOAL"
   done
 fi
 END_TIME=$(date +%s)
