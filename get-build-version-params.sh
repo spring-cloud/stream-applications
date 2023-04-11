@@ -10,12 +10,9 @@ fi
 # get the target release version and type
 export BUILD_VERSION=$(cat $SCDIR/version/RELEASE_VERSION)
 
-IS_MILESTONE=$(echo $BUILD_VERSION | grep -E "^.*-(M|RC)\d+$")
-echo "*** IS_MILESTONE=$IS_MILESTONE"
 IS_SNAPSHOT=$(echo $BUILD_VERSION | grep -E "^.*-SNAPSHOT$")
-echo "*** IS_SNAPSHOT=$IS_SNAPSHOT"
+IS_MILESTONE=$(echo $BUILD_VERSION | grep -E "^.*-(M|RC)\d+$")
 IS_GA=$(echo $BUILD_VERSION | grep -E "^.*\.\d+$")
-echo "**** HERE 1"
 
 if [ -n "$IS_MILESTONE" ]; then
   export BUILD_VERSION_TYPE="milestone"
@@ -27,7 +24,6 @@ else
   echo "Bad version format: $BUILD_VERSION"
   exit 1
 fi
-echo "**** HERE 2"
 
 echo "BUILD_VERSION: $BUILD_VERSION"
 echo "BUILD_VERSION_TYPE: $BUILD_VERSION_TYPE"
