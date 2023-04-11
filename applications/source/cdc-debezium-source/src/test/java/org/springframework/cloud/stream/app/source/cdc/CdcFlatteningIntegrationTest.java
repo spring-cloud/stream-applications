@@ -51,7 +51,7 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 			.withUserConfiguration(
 					TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
 			.withPropertyValues(
-					"spring.cloud.stream.function.definition=cdcSupplier",
+					"spring.cloud.function.definition=cdcSupplier",
 					"cdc.name=my-sql-connector",
 					"cdc.schema=false",
 					"cdc.stream.header.offset=false",

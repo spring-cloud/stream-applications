@@ -35,7 +35,7 @@ import org.springframework.util.StreamUtils;
 public final class CdcTestUtils {
 
 	/**
-	 * derived from the spring.cloud.stream.function.definition value
+	 * derived from the spring.cloud.function.definition value
 	 */
 	public static final String CDC_SUPPLIER_OUT_0 = "cdcSupplier-out-0";
 

@@ -42,10 +42,9 @@
         <spring-integration.version>6.0.4</spring-integration.version>
 
         <spring-cloud.version>2022.0.2</spring-cloud.version>
-        <spring-cloud-starters.version>4.0.1</spring-cloud-starters.version>
-        <spring-cloud-function.version>4.0.1</spring-cloud-function.version>
-        <spring-cloud-stream-dependencies.version>4.0.1</spring-cloud-stream-dependencies.version>
-        <spring-cloud-stream.version>4.0.1</spring-cloud-stream.version>
+        <spring-cloud-starters.version>4.0.2</spring-cloud-starters.version>
+        <spring-cloud-function.version>4.0.2</spring-cloud-function.version>
+        <spring-cloud-stream-dependencies.version>4.0.2</spring-cloud-stream-dependencies.version>
         <test-containers.version>1.17.6</test-containers.version>
         <mockserver.version>5.13.2</mockserver.version>
 

@@ -62,7 +62,7 @@ public class CdcSourceDatabasesIntegrationTest {
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
 			TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
 			.web(WebApplicationType.NONE)
-			.properties("spring.cloud.stream.function.definition=cdcSupplier",
+			.properties("spring.cloud.function.definition=cdcSupplier",
 					"cdc.name=my-connector",
 					"cdc.flattening.dropTombstones=false",
 					"cdc.schema=false",

@@ -26,7 +26,7 @@ finally publish a task launch request every second to the rabbit exchange with t
 ----
 java -jar target/time-source-rabbit-3.0.0-SNAPSHOT.jar \
      --spring.cloud.stream.bindings.output.destination=time-test \
-     --spring.cloud.stream.function.definition="timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction" \
+     --spring.cloud.function.definition="timeSupplier|spelFunction|headerEnricherFunction|taskLaunchRequestFunction" \
      --spel.function.expression="payload.length()" \
      --header.enricher.headers=task-id=payload*2 \
      --task.launch.request.task-name-expression="'task-'+headers['task-id']"
