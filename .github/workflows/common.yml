@@ -58,11 +58,14 @@ jobs:
           
           pushd stream-applications > /dev/null
             echo "::info ::getting build version params"
-            
+
             echo "::info ::ROOT_DIR=$ROOT_DIR"
             FOO=$PWD
             echo "::info ::FOO=$FOO"
-            ls $ROOT_DIR/get-build-version-params.sh
+            BAR=$(ls $ROOT_DIR/get-build-version-params.sh)
+            echo "::info ::BAR=$BAR"
+            ZAA=${ls $PWD/get-build-version-params.sh)
+            echo "::info ::ZAA=$ZAA"
 
             source $ROOT_DIR/get-build-version-params.sh
             echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_ENV
