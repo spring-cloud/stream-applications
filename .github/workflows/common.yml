@@ -54,9 +54,17 @@ jobs:
       - name: 'Configure: create streams applications matrix'
         shell: bash
         run: |
-          ROOT_DIR=$(realpath $PWD)
-          echo "::info ::creating streams applications matrix"
+          ROOT_DIR=$(realpath $PWD)          
+          
           pushd stream-applications > /dev/null
+            echo "::info ::getting build version params"
+            source $ROOT_DIR/get-build-version-params.sh
+            echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_ENV
+            echo "BUILD_VERSION_TYPE=$BUILD_VERSION_TYPE" >> $GITHUB_ENV
+            echo "CUR_VERSION=$CUR_VERSION" >> $GITHUB_ENV
+            echo "IS_VERSION_CHANGE=$IS_VERSION_CHANGE" >> $GITHUB_ENV
+
+            echo "::info ::creating streams applications matrix"
             $ROOT_DIR/create-matrices.sh
             if [ ! -f matrix.json ]; then
               echo "Expected to find matrix.json in:"
@@ -78,14 +86,7 @@ jobs:
             echo "SINKS=$SINKS" >> $GITHUB_ENV
             echo "SOURCES=$SOURCES" >> $GITHUB_ENV
           popd
-          echo "::info ::getting build version params"
-          pushd stream-applications > /dev/null
-            source $ROOT_DIR/get-build-version-params.sh
-            echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_ENV
-            echo "BUILD_VERSION_TYPE=$BUILD_VERSION_TYPE" >> $GITHUB_ENV
-            echo "CUR_VERSION=$CUR_VERSION" >> $GITHUB_ENV
-            echo "IS_VERSION_CHANGE=$IS_VERSION_CHANGE" >> $GITHUB_ENV
-          popd
+          
           if [ "${{ inputs.branch }}" == "main" ]; then
             echo "JDK_BUILD=17" >> $GITHUB_ENV
             echo "JRE_DEFAULT=17" >> $GITHUB_ENV
