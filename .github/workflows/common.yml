@@ -64,7 +64,9 @@ jobs:
             echo "::info ::FOO=$FOO"
             BAR=$(ls $ROOT_DIR/get-build-version-params.sh)
             echo "::info ::BAR=$BAR"
-            ZAA=${ls $PWD/get-build-version-params.sh)
+            BAR2=$(ls $ROOT_DIR)
+            echo "::info ::BAR2=$BAR2"
+            ZAA=${ls $ROOT_DIR/stream-applications/get-build-version-params.sh)
             echo "::info ::ZAA=$ZAA"
 
             source $ROOT_DIR/get-build-version-params.sh
