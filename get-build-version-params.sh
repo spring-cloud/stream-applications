@@ -6,10 +6,11 @@ if (( sourced == 0 )); then
   echo "This script must be invoked using: source $0 $*"
   exit 1
 fi
-
+grep --version
 # get the target release version and type
 export BUILD_VERSION=$(cat $SCDIR/version/RELEASE_VERSION)
-grep --version
+echo "BUILD_VERSION: $BUILD_VERSION"
+
 IS_SNAPSHOT=$(echo $BUILD_VERSION | grep -E "^.*-SNAPSHOT$")
 IS_MILESTONE=$(echo $BUILD_VERSION | grep -E "^.*-(M|RC)[0-9]+$")
 IS_GA=$(echo $BUILD_VERSION | grep -E "^.*\.[0-9]+$")
@@ -25,7 +26,6 @@ else
   exit 1
 fi
 
-echo "BUILD_VERSION: $BUILD_VERSION"
 echo "BUILD_VERSION_TYPE: $BUILD_VERSION_TYPE"
 
 # get the current version from pom.xml
