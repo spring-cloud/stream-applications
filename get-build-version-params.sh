@@ -6,10 +6,11 @@ if (( sourced == 0 )); then
   echo "This script must be invoked using: source $0 $*"
   exit 1
 fi
-FOO=$(ls $SCDIR)
-BAR=$(ls $SCDIR/version)
-echo "Hello $FOO"
-echo "Hello $BAR"
+
+FOO=$(ls $SCDIR/version/RELEASE_VERSION)
+echo "** FOO = $FOO"
+BAR=$(cat $SCDIR/version/RELEASE_VERSION)
+echo "** BAR = $BAR"
 
 # get the target release version and type
 export BUILD_VERSION=$(cat $SCDIR/version/RELEASE_VERSION)
