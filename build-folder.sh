@@ -91,6 +91,7 @@ fi
 
 if [ "$SKIP_RESOLVE" = "true" ]; then
   RETRIES=-1
+  RESULT=0
 else
   RETRIES=3
 fi
@@ -114,23 +115,17 @@ while ((RETRIES >= 0)); do
   fi
 done
 
-
 if ((RESULT == 0)); then
-  ENV_SET=false
-  for FOLDER in $FOLDERS; do
-    set +e
-    if [ -f "$FOLDER/set-env.sh" ]; then
-      echo "Sourcing:$FOLDER/set-env.sh"
-      source "$FOLDER/set-env.sh"
-      ENV_SET=true
-    fi
-  done
   if [ "$MAVEN_THREADS" = "true" ]; then
     MVN_THR="-T 0.3C"
   else
     MVN_THR=
   fi
   for FOLDER in $FOLDERS; do
+    if [ -f "$FOLDER/set-env.sh" ]; then
+      echo "Sourcing:$FOLDER/set-env.sh"
+      source "$FOLDER/set-env.sh"
+    fi
     set +e
     echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
     MVNW="./mvnw"
