@@ -11,8 +11,8 @@ fi
 export BUILD_VERSION=$(cat $SCDIR/version/RELEASE_VERSION)
 
 IS_SNAPSHOT=$(echo $BUILD_VERSION | grep -E "^.*-SNAPSHOT$")
-IS_MILESTONE=$(echo $BUILD_VERSION | grep -E "^.*-(M|RC)\d+$")
-IS_GA=$(echo $BUILD_VERSION | grep -E "^.*\.\d+$")
+IS_MILESTONE=$(echo $BUILD_VERSION | grep -E "^.*-(M|RC)[0-9]+$")
+IS_GA=$(echo $BUILD_VERSION | grep -E "^.*\.[0-9]+$")
 
 if [ -n "$IS_MILESTONE" ]; then
   export BUILD_VERSION_TYPE="milestone"

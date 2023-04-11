@@ -51,8 +51,8 @@ if [ -n "$IS_DEPLOY" ]; then
   fi
   echo "Project Version:$VERSION"
   IS_SNAPSHOT=$(echo $VERSION | grep -E "^.*-SNAPSHOT$")
-  IS_MILESTONE=$(echo $VERSION | grep -E "^.*-(M|RC)\d+$")
-  IS_GA=$(echo $VERSION | grep -E "^.*\.\d+$")
+  IS_MILESTONE=$(echo $VERSION | grep -E "^.*-(M|RC)[0-9]+$")
+  IS_GA=$(echo $VERSION | grep -E "^.*\.[0-9]+$")
   if [ -n "$IS_MILESTONE" ]; then
     MAVEN_DEPLOY_PROFILE="-Pmilestone"
   elif [ -n "$IS_SNAPSHOT" ]; then
