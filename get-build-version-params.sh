@@ -6,7 +6,6 @@ if (( sourced == 0 )); then
   echo "This script must be invoked using: source $0 $*"
   exit 1
 fi
-grep --version
 # get the target release version and type
 export BUILD_VERSION=$(cat $SCDIR/version/RELEASE_VERSION)
 echo "BUILD_VERSION: $BUILD_VERSION"

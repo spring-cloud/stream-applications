@@ -50,6 +50,7 @@ if [ -n "$IS_DEPLOY" ]; then
     VERSION=$($SCDIR/mvn-get-version.sh)
   fi
   echo "Project Version:$VERSION"
+  set +e
   IS_SNAPSHOT=$(echo $VERSION | grep -E "^.*-SNAPSHOT$")
   IS_MILESTONE=$(echo $VERSION | grep -E "^.*-(M|RC)[0-9]+$")
   IS_GA=$(echo $VERSION | grep -E "^.*\.[0-9]+$")
@@ -105,7 +106,7 @@ if [ "$SKIP_RESOLVE" = "" ]; then
   SKIP_RESOLVE=true
 fi
 
-if [ "$SKIP_RESOLVE" = "false" ]; then
+if [ "$SKIP_RESOLVE" = "true" ]; then
   RETRIES=-1
   RESULT=0
 else
