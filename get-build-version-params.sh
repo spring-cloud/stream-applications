@@ -7,17 +7,16 @@ if (( sourced == 0 )); then
   exit 1
 fi
 
-FOO=$(ls $SCDIR/version/RELEASE_VERSION)
-echo "** FOO = $FOO"
-BAR=$(cat $SCDIR/version/RELEASE_VERSION)
-echo "** BAR = $BAR"
-
 # get the target release version and type
 export BUILD_VERSION=$(cat $SCDIR/version/RELEASE_VERSION)
+
+echo "**** BV=$BUILD_VERSION"
 
 IS_SNAPSHOT=$(echo $BUILD_VERSION | grep -E "^.*-SNAPSHOT$")
 IS_MILESTONE=$(echo $BUILD_VERSION | grep -E "^.*-(M|RC)\d+$")
 IS_GA=$(echo $BUILD_VERSION | grep -E "^.*\.\d+$")
+
+echo "**** HERE 1"
 
 if [ -n "$IS_MILESTONE" ]; then
   export BUILD_VERSION_TYPE="milestone"
@@ -29,6 +28,8 @@ else
   echo "Bad version format: $BUILD_VERSION"
   exit 1
 fi
+echo "**** HERE 2"
+
 echo "BUILD_VERSION: $BUILD_VERSION"
 echo "BUILD_VERSION_TYPE: $BUILD_VERSION_TYPE"
 
