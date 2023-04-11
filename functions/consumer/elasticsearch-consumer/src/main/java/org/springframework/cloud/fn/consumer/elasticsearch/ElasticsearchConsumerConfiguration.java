@@ -47,7 +47,6 @@ import org.springframework.integration.aggregator.MessageCountReleaseStrategy;
 import org.springframework.integration.config.AggregatorFactoryBean;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlowBuilder;
-import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.store.MessageGroup;
 import org.springframework.integration.store.MessageGroupStore;
@@ -126,7 +125,7 @@ public class ElasticsearchConsumerConfiguration {
 	) {
 
 		final IntegrationFlowBuilder builder =
-			IntegrationFlows.from(Consumer.class, gateway -> gateway.beanName("elasticsearchConsumer"));
+			IntegrationFlow.from(MessageConsumer.class, gateway -> gateway.beanName("elasticsearchConsumer"));
 		if (properties.getBatchSize() > 1) {
 			builder.handle(aggregator);
 		}
@@ -297,4 +296,9 @@ public class ElasticsearchConsumerConfiguration {
 			return message;
 		}
 	}
+
+	private interface MessageConsumer extends Consumer<Message<?>> {
+
+	}
+
 }
