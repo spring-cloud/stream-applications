@@ -63,60 +63,37 @@ if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
   check_env ARTIFACTORY_PASSWORD
 fi
 
-RETRIES=3
-while ((RETRIES >= 0)); do
-  echo -e "Resolving dependencies for ${bold}$FOLDER_FOLDER_NAMES${end}"
+ENV_SET=false
+for FOLDER in $FOLDERS; do
   set +e
-  if [ "$MAVEN_THREADS" = "true" ]; then
-    MVN_THR="-T 0.75C"
-  else
-    MVN_THR=
-  fi
-  $SCDIR/mvnw -U -pl "$FOLDER_NAMES" $MAVEN_OPTS $MVN_THR dependency:resolve
-  RESULT=$?
-  set -e
-  if ((RESULT == 0)); then
-    break
-  fi
-  RETRIES=$((RETRIES - 1))
-  if ((RETRIES >= 0)); then
-    echo -e "RETRY:Resolving dependencies for ${bold}$FOLDER${end}"
+  if [ -f "$FOLDER/set-env.sh" ]; then
+    echo "Sourcing:$FOLDER/set-env.sh"
+    source "$FOLDER/set-env.sh"
+    ENV_SET=true
   fi
 done
-
-
-if ((RESULT == 0)); then
-  ENV_SET=false
-  for FOLDER in $FOLDERS; do
-    set +e
-    if [ -f "$FOLDER/set-env.sh" ]; then
-      echo "Sourcing:$FOLDER/set-env.sh"
-      source "$FOLDER/set-env.sh"
-      ENV_SET=true
-    fi
-  done
-  if [ "$MAVEN_THREADS" = "true" ]; then
-    MVN_THR="-T 0.3C"
-  else
-    MVN_THR=
-  fi
-  for FOLDER in $FOLDERS; do
-    set +e
-    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
-    MVNW="./mvnw"
-    if [ ! -f $MVNW ]; then
-      MVNW="$SCDIR/mvnw"
-    fi
-    $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
-    RESULT=$?
-    set -e
-    if ((RESULT != 0)); then
-      echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:FAILED"
-      break
-    fi
-    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:SUCCESS"
-  done
+if [ "$MAVEN_THREADS" = "true" ]; then
+  MVN_THR="-T 0.3C"
+else
+  MVN_THR=
 fi
+for FOLDER in $FOLDERS; do
+  set +e
+  echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
+  MVNW="./mvnw"
+  if [ ! -f $MVNW ]; then
+    MVNW="$SCDIR/mvnw"
+  fi
+  $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
+  RESULT=$?
+  set -e
+  if ((RESULT != 0)); then
+    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:FAILED"
+    break
+  fi
+  echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:SUCCESS"
+done
+
 END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
 echo "Build of $FOLDER_NAMES $MAVEN_GOAL completed with result:$RESULT in $DURATION seconds"
