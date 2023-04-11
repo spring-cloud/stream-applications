@@ -55,7 +55,7 @@ jobs:
         shell: bash
         run: |
           ROOT_DIR=$(realpath $PWD)
-          echo "::info ::checking stream-applications for apps"
+          echo "::info ::creating streams applications matrix"
           pushd stream-applications > /dev/null
             $ROOT_DIR/create-matrices.sh
             if [ ! -f matrix.json ]; then
@@ -77,13 +77,14 @@ jobs:
             echo "PROCESSORS=$PROCESSORS" >> $GITHUB_ENV
             echo "SINKS=$SINKS" >> $GITHUB_ENV
             echo "SOURCES=$SOURCES" >> $GITHUB_ENV
-            if [ "${{ inputs.verbose }}" == "true" ]; then
-              echo "::debug ::MAX_PARALLEL=$MAX_PARALLEL"
-              echo "::debug ::MATRIX=$MATRIX"
-              echo "::debug ::PROCESSORS=$PROCESSORS"
-              echo "::debug ::SINKS=$SINKS"
-              echo "::debug ::SOURCES=$SOURCES"
-            fi
+          popd
+          echo "::info ::getting build version params"
+          pushd stream-applications > /dev/null
+            $ROOT_DIR/get-build-version-params.sh
+            echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_ENV
+            echo "BUILD_VERSION_TYPE=$BUILD_VERSION_TYPE" >> $GITHUB_ENV
+            echo "CUR_VERSION=$CUR_VERSION" >> $GITHUB_ENV
+            echo "IS_VERSION_CHANGE=$IS_VERSION_CHANGE" >> $GITHUB_ENV
           popd
           if [ "${{ inputs.branch }}" == "main" ]; then
             echo "JDK_BUILD=17" >> $GITHUB_ENV
@@ -91,6 +92,19 @@ jobs:
           else
             echo "JDK_BUILD=8" >> $GITHUB_ENV
             echo "JRE_DEFAULT=11" >> $GITHUB_ENV
+          fi   
+          if [ "${{ inputs.verbose }}" == "true" ]; then
+            echo "::debug ::MAX_PARALLEL=$MAX_PARALLEL"
+            echo "::debug ::MATRIX=$MATRIX"
+            echo "::debug ::PROCESSORS=$PROCESSORS"
+            echo "::debug ::SINKS=$SINKS"
+            echo "::debug ::SOURCES=$SOURCES"
+            echo "::debug ::BUILD_VERSION=$BUILD_VERSION"
+            echo "::debug ::BUILD_VERSION_TYPE=$BUILD_VERSION_TYPE"
+            echo "::debug ::CUR_VERSION=$CUR_VERSION"
+            echo "::debug ::IS_VERSION_CHANGE=$IS_VERSION_CHANGE"
+            echo "::debug ::JDK_BUILD=$JDK_BUILD"
+            echo "::debug ::JRE_DEFAULT=$JRE_DEFAULT"
           fi
     outputs:
       max_parallel: ${{ env.MAX_PARALLEL }}
@@ -98,6 +112,9 @@ jobs:
       sinks: ${{ env.SINKS }}
       processors: ${{ env.PROCESSORS }}
       matrix: ${{ env.matrix }}
+      build_version: ${{ env.BUILD_VERSION }}
+      build_version_type: ${{ env.BUILD_VERSION_TYPE }}
+      is_version_change: ${{ env.IS_VERSION_CHANGE }}
       jdk_build: ${{ env.JDK_BUILD }}
       jre_version: ${{ env.JRE_DEFAULT }}
   core:
@@ -143,6 +160,21 @@ jobs:
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install gh cli'
         uses: ./.github/actions/install-gh
+      - name: 'Action: update version'
+        if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
+        shell: bash
+        env:
+          VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
+        run: |
+          pushd stream-applications >/dev/null
+          ./mvnw versions:set \
+            -DnewVersion='${{ needs.parameters.outputs.build_version }}'
+            -s .settings.xml \
+            -DprocessAllModules=true \
+            -DgenerateBackupPoms=false \
+            -Dartifactory.publish.artifacts=false \
+            -B $VERBOSE
+          popd >/dev/null
       - name: 'Action: build initial dependencies'
         shell: bash
         timeout-minutes: 30
@@ -246,6 +278,21 @@ jobs:
             echo "Expected DOCKERHUB_TOKEN"
             exit 2
           fi
+      - name: 'Action: update version'
+        if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
+        shell: bash
+        env:
+          VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
+        run: |
+          pushd stream-applications >/dev/null
+          ./mvnw versions:set \
+            -DnewVersion='${{ needs.parameters.outputs.build_version }}'
+            -s .settings.xml \
+            -DprocessAllModules=true \
+            -DgenerateBackupPoms=false \
+            -Dartifactory.publish.artifacts=false \
+            -B $VERBOSE
+          popd >/dev/null
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -325,6 +372,21 @@ jobs:
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
+      - name: 'Action: update version'
+        if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
+        shell: bash
+        env:
+          VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
+        run: |
+          pushd stream-applications >/dev/null
+          ./mvnw versions:set \
+            -DnewVersion='${{ needs.parameters.outputs.build_version }}'
+            -s .settings.xml \
+            -DprocessAllModules=true \
+            -DgenerateBackupPoms=false \
+            -Dartifactory.publish.artifacts=false \
+            -B $VERBOSE
+          popd >/dev/null
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -406,6 +468,21 @@ jobs:
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
+      - name: 'Action: update version'
+        if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
+        shell: bash
+        env:
+          VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
+        run: |
+          pushd stream-applications >/dev/null
+          ./mvnw versions:set \
+            -DnewVersion='${{ needs.parameters.outputs.build_version }}'
+            -s .settings.xml \
+            -DprocessAllModules=true \
+            -DgenerateBackupPoms=false \
+            -Dartifactory.publish.artifacts=false \
+            -B $VERBOSE
+          popd >/dev/null
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -481,6 +558,21 @@ jobs:
             maven-repo-${{ inputs.branch }}
       - name: 'Configure: Install Pack'
         uses: ./.github/actions/install-pack
+      - name: 'Action: update version'
+        if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
+        shell: bash
+        env:
+          VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
+        run: |
+          pushd stream-applications >/dev/null
+          ./mvnw versions:set \
+            -DnewVersion='${{ needs.parameters.outputs.build_version }}'
+            -s .settings.xml \
+            -DprocessAllModules=true \
+            -DgenerateBackupPoms=false \
+            -Dartifactory.publish.artifacts=false \
+            -B $VERBOSE
+          popd >/dev/null
       - name: 'Build: stream-applications-release-train'
         shell: bash
         timeout-minutes: 30
@@ -499,6 +591,13 @@ jobs:
             set +e
             echo "::notice ::stream-applications-release-train build completed"
           popd > /dev/null
+      - name: Tag Release
+        if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
+        uses: jvalkeal/build-zoo-handler@v0.0.4
+        with:
+          tag-release-branch: ${{ needs.parameters.outputs.build_version }}
+          tag-release-tag: ${{ needs.parameters.outputs.build_version }}
+          tag-release-tag-prefix: v
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
