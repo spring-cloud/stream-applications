@@ -41,6 +41,32 @@ if [ "$MAVEN_GOAL" == "" ]; then
   echo -e "Using default goal ${bold}install${end}"
   MAVEN_GOAL="install"
 fi
+
+# if goal includes 'deploy' add the proper profile based on version num
+IS_DEPLOY=$(echo $MAVEN_GOAL | grep -E "\bdeploy\b")
+if [ -n "$IS_DEPLOY" ]; then
+  echo -e "Determining profile to use for deploy goal"
+  if [ "$VERSION" == "" ]; then
+    VERSION=$($SCDIR/mvn-get-version.sh)
+  fi
+  echo "Project Version:$VERSION"
+  IS_SNAPSHOT=$(echo $VERSION | grep -E "^.*-SNAPSHOT$")
+  IS_MILESTONE=$(echo $VERSION | grep -E "^.*-(M|RC)\d+$")
+  IS_GA=$(echo $VERSION | grep -E "^.*\.\d+$")
+  if [ -n "$IS_MILESTONE" ]; then
+    MAVEN_DEPLOY_PROFILE="-Pmilestone"
+  elif [ -n "$IS_SNAPSHOT" ]; then
+    MAVEN_DEPLOY_PROFILE=""
+  elif [ -n "$IS_GA" ]; then
+    MAVEN_DEPLOY_PROFILE="-Pcentral"
+  else
+    echo "Bad version format: $VERSION"
+    exit 1
+  fi
+  echo "Using deploy profile: $MAVEN_DEPLOY_PROFILE"
+  MAVEN_GOAL="$MAVEN_GOAL $MAVEN_DEPLOY_PROFILE"
+fi
+
 SAVED_IFS=$IFS
 IFS=,
 FOLDERS=
@@ -63,7 +89,11 @@ if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
   check_env ARTIFACTORY_PASSWORD
 fi
 
-RETRIES=3
+if [ "$SKIP_RESOLVE" = "true" ]; then
+  RETRIES=-1
+else
+  RETRIES=3
+fi
 while ((RETRIES >= 0)); do
   echo -e "Resolving dependencies for ${bold}$FOLDER_FOLDER_NAMES${end}"
   set +e
