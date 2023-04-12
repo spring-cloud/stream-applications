@@ -52,7 +52,6 @@
                     </dependency>
                 </dependencies>
                 <executions>
-					<!--
                     <execution>
                         <id>add-boot3</id>
                         <phase>process-resources</phase>
@@ -65,11 +64,10 @@
                             </properties>
                             <bindPropertiesToSeparateVariables>false</bindPropertiesToSeparateVariables>
                             <scripts>
-                                <script>file:src/main/groovy/add-boot3.groovy</script>
+                                <script>file:${project.basedir}/src/main/groovy/add-boot3.groovy</script>
                             </scripts>
                         </configuration>
                     </execution>
-                    -->
                     <execution>
                         <id>validate-repo</id>
                         <phase>validate</phase>
