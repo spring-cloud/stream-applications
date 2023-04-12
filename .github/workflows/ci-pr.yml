@@ -12,6 +12,7 @@ env:
   MAVEN_THREADS: 'true'
 jobs:
   check:
+    if: github.repository == 'spring-cloud/stream-applications'
     runs-on: ubuntu-latest
     steps:
       - name: 'Configure: checkout stream-applications@${{ github.ref_name }}'

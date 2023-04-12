@@ -52,6 +52,7 @@
                     </dependency>
                 </dependencies>
                 <executions>
+					<!--
                     <execution>
                         <id>add-boot3</id>
                         <phase>process-resources</phase>
@@ -68,6 +69,7 @@
                             </scripts>
                         </configuration>
                     </execution>
+                    -->
                     <execution>
                         <id>validate-repo</id>
                         <phase>validate</phase>

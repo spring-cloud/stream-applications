@@ -37,6 +37,7 @@ env:
 
 jobs:
   parameters:
+    if: github.repository == 'spring-cloud/stream-applications'
     runs-on: ubuntu-latest
     steps:
       - name: 'Configure: checkout'
