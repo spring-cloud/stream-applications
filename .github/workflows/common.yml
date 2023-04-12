@@ -174,7 +174,7 @@ jobs:
           pushd stream-applications >/dev/null
             echo "::notice ::updating versions"
             ./mvnw versions:set \
-              -DnewVersion='${{ needs.parameters.outputs.build_version }}'
+              -DnewVersion='${{ needs.parameters.outputs.build_version }}' \
               -s .settings.xml \
               -DprocessAllModules=true \
               -DgenerateBackupPoms=false \
@@ -296,7 +296,7 @@ jobs:
           pushd stream-applications >/dev/null
             echo "::notice ::updating versions"
             ./mvnw versions:set \
-              -DnewVersion='${{ needs.parameters.outputs.build_version }}'
+              -DnewVersion='${{ needs.parameters.outputs.build_version }}' \
               -s .settings.xml \
               -DprocessAllModules=true \
               -DgenerateBackupPoms=false \
@@ -394,7 +394,7 @@ jobs:
           pushd stream-applications >/dev/null
             echo "::notice ::updating versions"
             ./mvnw versions:set \
-              -DnewVersion='${{ needs.parameters.outputs.build_version }}'
+              -DnewVersion='${{ needs.parameters.outputs.build_version }}' \
               -s .settings.xml \
               -DprocessAllModules=true \
               -DgenerateBackupPoms=false \
@@ -494,7 +494,7 @@ jobs:
           pushd stream-applications >/dev/null
             echo "::notice ::updating versions"
             ./mvnw versions:set \
-              -DnewVersion='${{ needs.parameters.outputs.build_version }}'
+              -DnewVersion='${{ needs.parameters.outputs.build_version }}' \
               -s .settings.xml \
               -DprocessAllModules=true \
               -DgenerateBackupPoms=false \
@@ -588,7 +588,7 @@ jobs:
           pushd stream-applications >/dev/null
             echo "::notice ::updating versions"
             ./mvnw versions:set \
-              -DnewVersion='${{ needs.parameters.outputs.build_version }}'
+              -DnewVersion='${{ needs.parameters.outputs.build_version }}' \
               -s .settings.xml \
               -DprocessAllModules=true \
               -DgenerateBackupPoms=false \
