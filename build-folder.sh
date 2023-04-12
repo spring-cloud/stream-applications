@@ -57,9 +57,9 @@ if [ -n "$IS_DEPLOY" ]; then
   if [ -n "$IS_MILESTONE" ]; then
     MAVEN_DEPLOY_PROFILE="-Pmilestone"
   elif [ -n "$IS_SNAPSHOT" ]; then
-    MAVEN_DEPLOY_PROFILE=""
+    MAVEN_DEPLOY_PROFILE="-Psnapshot"
   elif [ -n "$IS_GA" ]; then
-    MAVEN_DEPLOY_PROFILE="-Pcentral"
+    MAVEN_DEPLOY_PROFILE="-Prelease"
   else
     echo "Bad version format: $VERSION"
     exit 1

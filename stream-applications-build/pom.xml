@@ -363,6 +363,44 @@
             </distributionManagement>
         </profile>
         <profile>
+            <id>snapshot</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>repo.spring.io</id>
+                    <name>Spring Snapshot Repository</name>
+                    <url>https://repo.spring.io/libs-snapshot-local</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>release</id>
+            <distributionManagement>
+                <repository>
+                    <id>repo.spring.io</id>
+                    <name>Spring Release Repository</name>
+                    <url>https://repo.spring.io/libs-release-local</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>central</id>
             <build>
                 <plugins>

@@ -605,7 +605,7 @@ jobs:
               exit $RC
             else
               echo "::info ::$MESSAGE"
-            fi
+            fi          
           popd > /dev/null
       - name: 'Build: stream-applications-release-train'
         shell: bash
@@ -625,13 +625,27 @@ jobs:
             set +e
             echo "::notice ::stream-applications-release-train build completed"
           popd > /dev/null
+      - name: 'Upload: Test Reports'
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ matrix.app }}-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
       - name: Tag Release
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
-        uses: jvalkeal/build-zoo-handler@v0.0.4
-        with:
-          tag-release-branch: ${{ needs.parameters.outputs.build_version }}
-          tag-release-tag: ${{ needs.parameters.outputs.build_version }}
-          tag-release-tag-prefix: v
+        shell: bash
+        run: |
+          pushd stream-applications > /dev/null
+            # consider removing for milestone
+            git checkout -b ${{ needs.parameters.outputs.build_version }}
+            git commit -a -m "Release ${{ needs.parameters.outputs.build_version }}"
+            git tag "v${{ needs.parameters.outputs.build_version }}"
+            git push --tags origin
+          popd > /dev/null
+      # add jfrog download
+      # nexus-sync
       - name: 'Action: update next dev version'
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         shell: bash
@@ -648,14 +662,6 @@ jobs:
             git push origin main
           popd > /dev/null
 
-      - name: 'Upload: Test Reports'
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: '${{ matrix.app }}-surefire-reports'
-          path: '**/target/surefire-reports'
-          retention-days: 7
-          if-no-files-found: ignore
   rerun-jobs:
     if: ${{ failure() && github.run_attempt == '1' }}
     runs-on: ubuntu-latest
