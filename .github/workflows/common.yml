@@ -173,31 +173,7 @@ jobs:
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
             echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }}"
-            ./mvnw versions:set \
-              -DnewVersion="${{ needs.parameters.outputs.build_version }}" \
-              -s .settings.xml \
-              -DprocessAllModules=true \
-              -DgenerateBackupPoms=false \
-              -Dartifactory.publish.artifacts=false \
-              -B $VERBOSE
-            ./mvnw versions:set-property -f stream-applications-release-train \
-              -s .settings.xml \
-              -DgenerateBackupPoms=false \
-              -Dproperty=apps.version \
-              -DnewVersion="${{ needs.parameters.outputs.build_version }}" \
-              -B $VERBOSE
-            ./mvnw versions:set-property -f applications/stream-applications-core \
-              -s .settings.xml \
-              -DgenerateBackupPoms=false \
-              -Dproperty=stream-apps-core.version \
-              -DnewVersion="${{ needs.parameters.outputs.build_version }}" \
-              -B $VERBOSE
-            ./mvnw versions:set-property -f applications/stream-applications-core \
-              -s .settings.xml \
-              -DgenerateBackupPoms=false \
-              -Dproperty=java-functions.version \
-              -DnewVersion="${{ needs.parameters.outputs.build_version }}" \
-              -B $VERBOSE            
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}"                        
             echo "::notice ::checking updated versions"
             set +e
             MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
@@ -320,17 +296,19 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
-            echo "::notice ::updating versions"
-            ./mvnw versions:set \
-              -DnewVersion='${{ needs.parameters.outputs.build_version }}' \
-              -s .settings.xml \
-              -DprocessAllModules=true \
-              -DgenerateBackupPoms=false \
-              -Dartifactory.publish.artifacts=false \
-              -B $VERBOSE
+            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }}"
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}"                        
             echo "::notice ::checking updated versions"
-            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} 
-          popd >/dev/null
+            set +e
+            MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
+            RC=$?
+            if ((RC!=0)); then
+              echo "::error ::$MESSAGE"
+              exit $RC
+            else
+              echo "::info ::$MESSAGE"
+            fi
+          popd > /dev/null
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -418,17 +396,19 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
-            echo "::notice ::updating versions"
-            ./mvnw versions:set \
-              -DnewVersion='${{ needs.parameters.outputs.build_version }}' \
-              -s .settings.xml \
-              -DprocessAllModules=true \
-              -DgenerateBackupPoms=false \
-              -Dartifactory.publish.artifacts=false \
-              -B $VERBOSE
+            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }}"
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}"                        
             echo "::notice ::checking updated versions"
-            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} 
-          popd >/dev/null
+            set +e
+            MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
+            RC=$?
+            if ((RC!=0)); then
+              echo "::error ::$MESSAGE"
+              exit $RC
+            else
+              echo "::info ::$MESSAGE"
+            fi
+          popd > /dev/null
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -518,17 +498,19 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
-            echo "::notice ::updating versions"
-            ./mvnw versions:set \
-              -DnewVersion='${{ needs.parameters.outputs.build_version }}' \
-              -s .settings.xml \
-              -DprocessAllModules=true \
-              -DgenerateBackupPoms=false \
-              -Dartifactory.publish.artifacts=false \
-              -B $VERBOSE
+            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }}"
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}"                        
             echo "::notice ::checking updated versions"
-            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} 
-          popd >/dev/null
+            set +e
+            MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
+            RC=$?
+            if ((RC!=0)); then
+              echo "::error ::$MESSAGE"
+              exit $RC
+            else
+              echo "::info ::$MESSAGE"
+            fi
+          popd > /dev/null
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -612,17 +594,19 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
-            echo "::notice ::updating versions"
-            ./mvnw versions:set \
-              -DnewVersion='${{ needs.parameters.outputs.build_version }}' \
-              -s .settings.xml \
-              -DprocessAllModules=true \
-              -DgenerateBackupPoms=false \
-              -Dartifactory.publish.artifacts=false \
-              -B $VERBOSE
+            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }}"
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}"                        
             echo "::notice ::checking updated versions"
-            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} 
-          popd >/dev/null
+            set +e
+            MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
+            RC=$?
+            if ((RC!=0)); then
+              echo "::error ::$MESSAGE"
+              exit $RC
+            else
+              echo "::info ::$MESSAGE"
+            fi
+          popd > /dev/null
       - name: 'Build: stream-applications-release-train'
         shell: bash
         timeout-minutes: 30
@@ -657,31 +641,7 @@ jobs:
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
             echo "::notice ::updating next dev versions to ${{ needs.parameters.outputs.next_dev_version }}"
-            ./mvnw versions:set \
-              -DnewVersion="${{ needs.parameters.outputs.next_dev_version }}" \
-              -s .settings.xml \
-              -DprocessAllModules=true \
-              -DgenerateBackupPoms=false \
-              -Dartifactory.publish.artifacts=false \
-              -B $VERBOSE
-            ./mvnw versions:set-property -f stream-applications-release-train \
-              -s .settings.xml \
-              -DgenerateBackupPoms=false \
-              -Dproperty=apps.version \
-              -DnewVersion="${{ needs.parameters.outputs.next_dev_version }}" \
-              -B $VERBOSE
-            ./mvnw versions:set-property -f applications/stream-applications-core \
-              -s .settings.xml \
-              -DgenerateBackupPoms=false \
-              -Dproperty=stream-apps-core.version \
-              -DnewVersion="${{ needs.parameters.outputs.next_dev_version }}" \
-              -B $VERBOSE
-            ./mvnw versions:set-property -f applications/stream-applications-core \
-              -s .settings.xml \
-              -DgenerateBackupPoms=false \
-              -Dproperty=java-functions.version \
-              -DnewVersion="${{ needs.parameters.outputs.next_dev_version }}" \
-              -B $VERBOSE
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.next_dev_version }}" 
             echo "::notice ::setting released version to next dev version"
             $ROOT_DIR/next-dev-version.sh
           popd > /dev/null
