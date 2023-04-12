@@ -181,7 +181,7 @@ jobs:
               -Dartifactory.publish.artifacts=false \
               -B $VERBOSE
             echo "::notice ::checking updated versions"
-            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} ${{ (github.debug || inputs.verbose) }}
+            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} 
           popd >/dev/null
       - name: 'Action: build initial dependencies'
         shell: bash
@@ -303,7 +303,7 @@ jobs:
               -Dartifactory.publish.artifacts=false \
               -B $VERBOSE
             echo "::notice ::checking updated versions"
-            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} ${{ (github.debug || inputs.verbose) }}
+            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} 
           popd >/dev/null
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
@@ -401,7 +401,7 @@ jobs:
               -Dartifactory.publish.artifacts=false \
               -B $VERBOSE
             echo "::notice ::checking updated versions"
-            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} ${{ (github.debug || inputs.verbose) }}
+            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} 
           popd >/dev/null
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
@@ -501,7 +501,7 @@ jobs:
               -Dartifactory.publish.artifacts=false \
               -B $VERBOSE
             echo "::notice ::checking updated versions"
-            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} ${{ (github.debug || inputs.verbose) }}
+            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} 
           popd >/dev/null
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
@@ -595,7 +595,7 @@ jobs:
               -Dartifactory.publish.artifacts=false \
               -B $VERBOSE
             echo "::notice ::checking updated versions"
-            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} ${{ (github.debug || inputs.verbose) }}
+            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} 
           popd >/dev/null
       - name: 'Build: stream-applications-release-train'
         shell: bash
