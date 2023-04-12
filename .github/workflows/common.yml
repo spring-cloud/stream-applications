@@ -172,17 +172,43 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
-            echo "::notice ::updating versions"
+            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }}"
             ./mvnw versions:set \
-              -DnewVersion='${{ needs.parameters.outputs.build_version }}' \
+              -DnewVersion="${{ needs.parameters.outputs.build_version }}" \
               -s .settings.xml \
               -DprocessAllModules=true \
               -DgenerateBackupPoms=false \
               -Dartifactory.publish.artifacts=false \
               -B $VERBOSE
+            ./mvnw versions:set-property -f stream-applications-release-train \
+              -s .settings.xml \
+              -DgenerateBackupPoms=false \
+              -Dproperty=apps.version \
+              -DnewVersion="${{ needs.parameters.outputs.build_version }}" \
+              -B $VERBOSE
+            ./mvnw versions:set-property -f applications/stream-applications-core \
+              -s .settings.xml \
+              -DgenerateBackupPoms=false \
+              -Dproperty=stream-apps-core.version \
+              -DnewVersion="${{ needs.parameters.outputs.build_version }}" \
+              -B $VERBOSE
+            ./mvnw versions:set-property -f applications/stream-applications-core \
+              -s .settings.xml \
+              -DgenerateBackupPoms=false \
+              -Dproperty=java-functions.version \
+              -DnewVersion="${{ needs.parameters.outputs.build_version }}" \
+              -B $VERBOSE            
             echo "::notice ::checking updated versions"
-            $ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }} 
-          popd >/dev/null
+            set +e
+            MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
+            RC=$?
+            if ((RC!=0)); then
+              echo "::error ::$MESSAGE"
+              exit $RC
+            else
+              echo "::info ::$MESSAGE"
+            fi
+          popd > /dev/null
       - name: 'Action: build initial dependencies'
         shell: bash
         timeout-minutes: 30
@@ -630,17 +656,35 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
-            echo "::notice ::updating next dev versions"
+            echo "::notice ::updating next dev versions to ${{ needs.parameters.outputs.next_dev_version }}"
             ./mvnw versions:set \
-              -DnewVersion='${{ needs.parameters.outputs.next_dev_version }}'
+              -DnewVersion="${{ needs.parameters.outputs.next_dev_version }}" \
               -s .settings.xml \
               -DprocessAllModules=true \
               -DgenerateBackupPoms=false \
               -Dartifactory.publish.artifacts=false \
               -B $VERBOSE
+            ./mvnw versions:set-property -f stream-applications-release-train \
+              -s .settings.xml \
+              -DgenerateBackupPoms=false \
+              -Dproperty=apps.version \
+              -DnewVersion="${{ needs.parameters.outputs.next_dev_version }}" \
+              -B $VERBOSE
+            ./mvnw versions:set-property -f applications/stream-applications-core \
+              -s .settings.xml \
+              -DgenerateBackupPoms=false \
+              -Dproperty=stream-apps-core.version \
+              -DnewVersion="${{ needs.parameters.outputs.next_dev_version }}" \
+              -B $VERBOSE
+            ./mvnw versions:set-property -f applications/stream-applications-core \
+              -s .settings.xml \
+              -DgenerateBackupPoms=false \
+              -Dproperty=java-functions.version \
+              -DnewVersion="${{ needs.parameters.outputs.next_dev_version }}" \
+              -B $VERBOSE
             echo "::notice ::setting released version to next dev version"
             $ROOT_DIR/next-dev-version.sh
-          popd >/dev/null
+          popd > /dev/null
       - name: Commit Next Dev Changes
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         uses: jvalkeal/build-zoo-handler@v0.0.4
