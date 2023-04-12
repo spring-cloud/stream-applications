@@ -642,15 +642,11 @@ jobs:
           pushd stream-applications >/dev/null
             echo "::notice ::updating next dev versions to ${{ needs.parameters.outputs.next_dev_version }}"
             $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.next_dev_version }}" 
-            echo "::notice ::setting released version to next dev version"
+            echo "::notice ::setting released version to next dev version ${{ needs.parameters.outputs.next_dev_version }}"
             $ROOT_DIR/next-dev-version.sh
+            git commit -a -m "Next development version ${{ needs.parameters.outputs.next_dev_version }}"
+            git push origin main
           popd > /dev/null
-      - name: Commit Next Dev Changes
-        if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
-        uses: jvalkeal/build-zoo-handler@v0.0.4
-        with:
-          commit-changes-branch: main
-          commit-changes-message: Next development version
 
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
