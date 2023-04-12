@@ -13,7 +13,7 @@ if [ "$RELEASE_TYPE" = "milestone" ]; then
   echo "Checking versions for $RELEASE_TYPE release"
   lines=$(find . -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v regex | wc -l)
   if [ $lines -ne 0 ]; then
-    echo "Snapshots found ($lines)check-versions-for-release.sh. Exiting the release build."
+    echo "Snapshots version found ($lines). Exiting build"
     if [ "$VERBOSE" = "true" ]; then
         echo $(find . -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v regex)
     fi
