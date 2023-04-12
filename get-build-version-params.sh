@@ -38,3 +38,7 @@ else
     export IS_VERSION_CHANGE="true"
 fi
 echo "IS_VERSION_CHANGE: $IS_VERSION_CHANGE"
+
+# get the next dev version
+export NEXT_DEV_VERSION=$(cat $SCDIR/version/NEXT_DEV_VERSION)
+echo "NEXT_DEV_VERSION: $NEXT_DEV_VERSION"
