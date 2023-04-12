@@ -5,6 +5,7 @@ if [ "$1" == "" ]; then
   exit 1
 fi
 RELEASE_TYPE="$1"
+VERBOSE="$2"
 
 set +e
 
@@ -13,6 +14,9 @@ if [ "$RELEASE_TYPE" = "milestone" ]; then
   lines=$(find . -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v regex | wc -l)
   if [ $lines -ne 0 ]; then
     echo "Snapshots found ($lines)check-versions-for-release.sh. Exiting the release build."
+    if [ "$VERBOSE" = "true" ]; then
+        echo $(find . -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v regex)
+    fi
     exit 1
   fi
 elif [ "$RELEASE_TYPE" = "ga" ]; then
@@ -20,6 +24,9 @@ elif [ "$RELEASE_TYPE" = "ga" ]; then
   lines=$(find . -type f -name pom.xml | xargs egrep "SNAPSHOT|M[0-9]|RC[0-9]" | grep -v ".contains(" | grep -v regex | wc -l)
   if [ $lines -ne 0 ]; then
     echo "Non release versions found ($lines). Exiting build"
+    if [ "$VERBOSE" = "true" ]; then
+        echo $(find . -type f -name pom.xml | xargs egrep "SNAPSHOT|M[0-9]|RC[0-9]" | grep -v ".contains(" | grep -v regex)
+    fi
     exit 1
   fi
 else
