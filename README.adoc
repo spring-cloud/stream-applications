@@ -27,7 +27,7 @@ The following are the various components of this repository.
 |===
 | `java.util.Supplier` | `java.util.Function` | `java.util.Consumer`
 
-|link:functions/supplier/cdc-debezium-supplier/README.adoc[CDC Debezium]
+|link:functions/supplier/debezium-supplier/README.adoc[Debezium supplier]
 |link:functions/function/aggregator-function/README.adoc[Aggregator]
 |link:functions/consumer/analytics-consumer/README.adoc[Analytics]
 
@@ -113,7 +113,7 @@ The following are the various components of this repository.
 
 |===
 | Source | Processor | Sink
-|link:applications/source/cdc-debezium-source/README.adoc[CDC Debezium]
+|link:applications/source/debezium-source/README.adoc[Debezium supplier]
 |link:applications/processor/aggregator-processor/README.adoc[Aggregator]
 |link:applications/sink/analytics-sink/README.adoc[Analytics]
 |link:applications/source/file-source/README.adoc[File]

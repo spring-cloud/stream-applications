@@ -29,7 +29,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
-                <artifactId>cdc-debezium-supplier</artifactId>
+                <artifactId>debezium-supplier</artifactId>
                <version>${project.version}</version>
             </dependency>
             <dependency>
