@@ -1,10 +1,10 @@
 //tag::ref-doc[]
-= CDC Source (ver.2)
+= Debezium Source
 
-https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) `Source`.
-Build upon the https://debezium.io/documentation/reference/2.1/development/engine.html[Debezium Engine], the `CDC Source` allows *capturing* database change events and *streaming* those over different message binders such `Apache Kafka`, `RabbitMQ` and all Spring Cloud Stream supporter brokers.
+https://debezium.io/documentation/reference/2.1/development/engine.html[Debezium Engine] based https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) source.
+The `Debezium Source` allows *capturing* database change events and *streaming* those over different message binders such `Apache Kafka`, `RabbitMQ` and all Spring Cloud Stream supporter brokers.
 
-NOTE: `CDC Source` can be used with *any* Spring Cloud  Stream message binder.
+NOTE: This source can be used with *any* Spring Cloud  Stream message binder.
 It is not restricted nor depended on the Kafka Connect framework. Though this approach is flexible it comes with certain https://debezium.io/documentation/reference/2.1/development/engine.html#_handling_failures[limitations].
 
 All Debezium configuration properties are supported.
@@ -13,7 +13,7 @@ For example to set the Debezium's `connector.class` property use the `cdc.debezi
 
 == Database Support
 
-The `CDC Source` currently supports CDC for multiple datastores: https://debezium.io/documentation/reference/2.1/connectors/mysql.html[MySQL], https://debezium.io/documentation/reference/2.1/connectors/postgresql.html[PostgreSQL], https://debezium.io/documentation/reference/2.1/connectors/mongodb.html[MongoDB], https://debezium.io/documentation/reference/2.1/connectors/oracle.html[Oracle], https://debezium.io/documentation/reference/2.1/connectors/sqlserver.html[SQL Server], https://debezium.io/documentation/reference/2.1/connectors/db2.html[Db2], https://debezium.io/documentation/reference/2.1/connectors/cassandra.html[Cassandra], https://debezium.io/documentation/reference/2.1/connectors/vitess.html[Vitess] and https://debezium.io/documentation/reference/2.1/connectors/spanner.html[Spanner] databases.
+The `Debezium Source` currently supports CDC for multiple datastores: https://debezium.io/documentation/reference/2.1/connectors/mysql.html[MySQL], https://debezium.io/documentation/reference/2.1/connectors/postgresql.html[PostgreSQL], https://debezium.io/documentation/reference/2.1/connectors/mongodb.html[MongoDB], https://debezium.io/documentation/reference/2.1/connectors/oracle.html[Oracle], https://debezium.io/documentation/reference/2.1/connectors/sqlserver.html[SQL Server], https://debezium.io/documentation/reference/2.1/connectors/db2.html[Db2], https://debezium.io/documentation/reference/2.1/connectors/cassandra.html[Cassandra], https://debezium.io/documentation/reference/2.1/connectors/vitess.html[Vitess] and https://debezium.io/documentation/reference/2.1/connectors/spanner.html[Spanner] databases.
 
 == Options
 
@@ -109,7 +109,7 @@ mysql> GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIE
 ----
 ====
 
-Use following properties to connect the CDC Source to MySQL DB:
+Use following properties to connect the Debezium Source to MySQL DB:
 
 [source,properties]
 ----
@@ -141,7 +141,7 @@ cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBacking
 
 ----
 
-<1> Configures the CDC Source to use https://debezium.io/docs/connectors/mysql/[MySqlConnector].
+<1> Configures the Debezium Source to use https://debezium.io/docs/connectors/mysql/[MySqlConnector].
 <2> Metadata used to identify and dispatch the incoming events.
 <3> Connection to the MySQL server running on `localhost:3306` as `debezium` user.
 <4> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `ChangeEvent` message.
@@ -164,7 +164,7 @@ You can connect to this server like this:
 psql -U postgres -h localhost -p 5432
 ----
 
-Use following properties to connect the CDC Source to PostgreSQL:
+Use following properties to connect the Debezium Source to PostgreSQL:
 
 [source,properties]
 ----
@@ -196,7 +196,7 @@ cdc.debezium.transforms.unwrap.delete.handling.mode=none # <6>
 cdc.debezium.transforms.unwrap.drop.tombstones=true # <6>
 ----
 
-<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/postgresql/[PostgresConnector].
+<1> Configures `Debezium Source` to use https://debezium.io/docs/connectors/postgresql/[PostgresConnector].
 <2> Configures the Debezium engine to use `memory` stores.
 <3> Metadata used to identify and dispatch the incoming events.
 <4> Connection to the PostgreSQL server running on `localhost:5432` as `postgres` user.
@@ -227,7 +227,7 @@ In the `mongodb` terminal output, search for a log entry like `host: "3f95a8a651
 
 Add `127.0.0.1    3f95a8a6516e` entry to your `/etc/hosts`
 
-Use following properties to connect the CDC Source to MongoDB:
+Use following properties to connect the Debezium Source to MongoDB:
 
 [source,properties]
 ----
@@ -261,7 +261,7 @@ cdc.debezium.transforms.unwrap.delete.handling.mode=none # <6>
 cdc.debezium.transforms.unwrap.drop.tombstones=true # <6>
 ----
 
-<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/mongodb/[MongoDB Connector].
+<1> Configures `Debezium Source` to use https://debezium.io/docs/connectors/mongodb/[MongoDB Connector].
 <2> Configures the Debezium engine to use `memory`.
 <3> Connection to the MongoDB running on `localhost:27017` as `debezium` user.
 <4> https://debezium.io/docs/connectors/mongodb/#tasks
@@ -285,7 +285,7 @@ wget https://raw.githubusercontent.com/debezium/debezium-examples/master/tutoria
 cat ./inventory.sql | docker exec -i sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
 ----
 
-Use following properties to connect the CDC Source to SQLServer:
+Use following properties to connect the Debezium Source to SQLServer:
 
 [source,properties]
 ----
@@ -307,7 +307,7 @@ cdc.debezium.database.hostname=localhost # <4>
 cdc.debezium.database.port=1433 # <4>
 ----
 
-<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/sqlserver/[SqlServerConnector].
+<1> Configures `Debezium Source` to use https://debezium.io/docs/connectors/sqlserver/[SqlServerConnector].
 <2> Configures the Debezium engine to use `memory` state stores.
 <3> Metadata used to identify and dispatch the incoming events.
 <4> Connection to the SQL Server running on `localhost:1433` as `sa` user.
@@ -336,7 +336,7 @@ samples coming soon ...
 
 [source,shell]
 ----
-java -jar cdc-debezium-source2.jar --cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector --cdc.debezium.topic.prefix=my-topic --cdc.debezium.name=my-connector --cdc.debezium.database.server.id=85744 --cdc.debezium.database.server.name=my-app-connector  --cdc.debezium.database.server.id=85744 --cdc.debezium.database.server.name=my-app-connector --cdc.debezium.database.user=debezium --cdc.debezium.database.password=dbz --cdc.debezium.database.hostname=localhost --cdc.debezium.database.port=3306 --cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory --cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory --cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
+java -jar debezium-source2.jar --cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector --cdc.debezium.topic.prefix=my-topic --cdc.debezium.name=my-connector --cdc.debezium.database.server.id=85744 --cdc.debezium.database.server.name=my-app-connector  --cdc.debezium.database.server.id=85744 --cdc.debezium.database.server.name=my-app-connector --cdc.debezium.database.user=debezium --cdc.debezium.database.password=dbz --cdc.debezium.database.hostname=localhost --cdc.debezium.database.port=3306 --cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory --cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory --cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
 ----
 
 

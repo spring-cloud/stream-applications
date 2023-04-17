@@ -10,8 +10,8 @@
         <relativePath>../../spring-functions-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>cdc-debezium-supplier</artifactId>
-    <name>cdc-debezium-supplier</name>
+    <artifactId>debezium-supplier</artifactId>
+    <name>debezium-supplier</name>
     <description>CDC Debezium Supplier</description>
 
     <properties>

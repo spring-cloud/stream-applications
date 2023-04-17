@@ -15,15 +15,15 @@
 		<mysql-connector-java.version>8.0.13</mysql-connector-java.version>
 	</properties>
 
-	<artifactId>cdc-debezium-source</artifactId>
-	<name>cdc-debezium-source</name>
-	<description>CDC Debezium source apps</description>
+	<artifactId>debezium-source</artifactId>
+	<name>debezium-source</name>
+	<description>Debezium source apps</description>
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-		<artifactId>cdc-debezium-supplier</artifactId>
+			<artifactId>debezium-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
 		<dependency>
@@ -111,7 +111,7 @@
 				<artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
 				<configuration>
 					<application>
-						<name>cdc-debezium</name>
+						<name>debezium</name>
 						<type>source</type>
 						<version>${project.version}</version>
 						<configClass>org.springframework.cloud.fn.supplier.cdc.CdcConfiguration.class
@@ -126,7 +126,7 @@
 							<dependencies>
 								<dependency>
 									<groupId>org.springframework.cloud.fn</groupId>
-									<artifactId>cdc-debezium-supplier</artifactId>
+									<artifactId>debezium-supplier</artifactId>
 								</dependency>
 							</dependencies>
 						</maven>
