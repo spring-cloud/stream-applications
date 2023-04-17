@@ -15,10 +15,7 @@
     <description>CDC Debezium Supplier</description>
 
     <properties>
-        <java.version>17</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.debezium>2.1.4.Final</version.debezium>
-        <spring-cloud.version>2022.0.2</spring-cloud.version>
         <apicurio.version>2.4.2.Final</apicurio.version>
     </properties>
 
