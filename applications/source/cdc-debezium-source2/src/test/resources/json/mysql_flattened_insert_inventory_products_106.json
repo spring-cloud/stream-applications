@@ -1,0 +1,9 @@
+{
+  "__db" : "inventory",
+  "__name" : "my-topic",
+  "__op" : "r",
+  "id": 106,
+  "name": "hammer",
+  "description": "16oz carpenter's hammer",
+  "weight": 1.0
+}

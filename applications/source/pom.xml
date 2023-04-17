@@ -11,6 +11,7 @@
 
     <modules>
         <module>cdc-debezium-source</module>
+        <module>cdc-debezium-source2</module>
         <module>file-source</module>
         <module>ftp-source</module>
         <module>jdbc-source</module>

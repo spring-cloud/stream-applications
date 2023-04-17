@@ -27,6 +27,7 @@
         <module>s3-supplier</module>
         <module>twitter-supplier</module>
         <module>cdc-debezium-supplier</module>
+        <module>cdc-debezium-supplier2</module>
         <module>syslog-supplier</module>
         <module>xmpp-supplier</module>
         <module>zeromq-supplier</module>
