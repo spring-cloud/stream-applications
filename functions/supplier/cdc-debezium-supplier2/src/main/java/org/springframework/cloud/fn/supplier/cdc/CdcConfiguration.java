@@ -20,9 +20,6 @@ import java.lang.reflect.Field;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
 import org.apache.commons.logging.Log;
@@ -39,7 +36,6 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.util.StringUtils;
 
 /**
  *
@@ -106,20 +102,7 @@ public class CdcConfiguration implements BeanClassLoaderAware {
 
 	@Bean
 	public EmbeddedEngineExecutorService embeddedEngine(DebeziumEngine<?> debeziumEngine) {
-
-		return new EmbeddedEngineExecutorService(debeziumEngine) {
-			@PostConstruct
-			@Override
-			public void start() {
-				super.start();
-			}
-
-			@PreDestroy
-			@Override
-			public void close() {
-				super.close();
-			}
-		};
+		return new EmbeddedEngineExecutorService(debeziumEngine);
 	}
 
 	@Bean
@@ -190,36 +173,4 @@ public class CdcConfiguration implements BeanClassLoaderAware {
 			streamBridge.send(bindingName, messageBuilder.build());
 		}
 	}
-
-	/**
-	 * Computes the binding name. If the 'overrideBindingName' property is not empty it is used as binding name.
-	 * Otherwise the binding name is computed from the function definition name and the '-out-0' suffix. If the function
-	 * definition name is empty, then the binding name defaults to 'cdcSupplier-out-0'.
-	 */
-	public static class BindingNameStrategy {
-
-		private static final String DEFAULT_FUNCTION_DEFINITION_NAME = "cdcSupplier";
-		private static final String DEFAULT_SUFFIX = "-out-0";
-
-		private CdcProperties cdcProperties;
-		private FunctionProperties functionProperties;
-
-		public BindingNameStrategy(CdcProperties cdcProperties, FunctionProperties functionProperties) {
-			this.cdcProperties = cdcProperties;
-			this.functionProperties = functionProperties;
-		}
-
-		public String bindingName() {
-
-			if (StringUtils.hasText(cdcProperties.getOverrideBindingName())) {
-				return cdcProperties.getOverrideBindingName();
-			}
-			else if (StringUtils.hasText(functionProperties.getDefinition())) {
-				return functionProperties.getDefinition() + DEFAULT_SUFFIX;
-			}
-
-			return DEFAULT_FUNCTION_DEFINITION_NAME + DEFAULT_SUFFIX;
-		}
-	}
-
 }
