@@ -1,131 +1,86 @@
 //tag::ref-doc[]
-= CDC Source
+= CDC Source (ver.2)
 
-https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) `source` that captures and streams change events from various databases.
-Currently, it supports `MySQL`, `PostgreSQL`, `MongoDB`, `Oracle` and `SQL Server` databases.
+https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) `Source`.
+Build upon the https://debezium.io/documentation/reference/2.1/development/engine.html[Debezium Engine], the `CDC Source` allows *capturing* database change events and *streaming* those over different message binders such `Apache Kafka`, `RabbitMQ` and all Spring Cloud Stream supporter brokers.
 
-Build upon https://debezium.io/docs/embedded/[Debezium Embedded Connector], the `CDC Source` allows capturing and streaming database changes over different message binders such Apache Kafka, RabbitMQ and all Spring Cloud Stream supporter brokers.
+NOTE: `CDC Source` can be used with *any* Spring Cloud  Stream message binder.
+It is not restricted nor depended on the Kafka Connect framework. Though this approach is flexible it comes with certain https://debezium.io/documentation/reference/2.1/development/engine.html#_handling_failures[limitations].
 
-It supports all Debezium configuration properties. Just add the `cdc.config.` prefix to the existing Debezium properties. For example to set the Debezium's `connector.class` property use the `cdc.config.connector.class` source property instead.
+All Debezium configuration properties are supported.
+Just precede any Debezium properties with the `cdc.debezium.` prefix.
+For example to set the Debezium's `connector.class` property use the `cdc.debezium.connector.class` source property instead.
 
-We provide convenient shortcuts for the most frequently used Debezium properties. For example instead of the long `cdc.config.connector.class=io.debezium.connector.mysql.MySqlConnector` Debezium property you can use our `cdc.connector=mysql` shortcut. The table below lists all available shortcuts along with the Debezium properties they represent.
-The Debezium properties (e.g. `cdc.config.XXX`) always have precedence over the shortcuts!
+== Database Support
 
-The CDC Source introduces a new default `BackingOffsetStore` configuration, based on the https://github.com/spring-cloud/stream-applications/blob/main/functions/common/metadata-store-common/README.adoc[MetadataStore] service. Later provides various microservices friendly ways for storing the offset metadata.
-
+The `CDC Source` currently supports CDC for multiple datastores: https://debezium.io/documentation/reference/2.1/connectors/mysql.html[MySQL], https://debezium.io/documentation/reference/2.1/connectors/postgresql.html[PostgreSQL], https://debezium.io/documentation/reference/2.1/connectors/mongodb.html[MongoDB], https://debezium.io/documentation/reference/2.1/connectors/oracle.html[Oracle], https://debezium.io/documentation/reference/2.1/connectors/sqlserver.html[SQL Server], https://debezium.io/documentation/reference/2.1/connectors/db2.html[Db2], https://debezium.io/documentation/reference/2.1/connectors/cassandra.html[Cassandra], https://debezium.io/documentation/reference/2.1/connectors/vitess.html[Vitess] and https://debezium.io/documentation/reference/2.1/connectors/spanner.html[Spanner] databases.
 
 == Options
 
 //tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== cdc
-
-$$config$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a 'cdc.config.' prefix are native Debezium properties. The prefix is removed, converting them into Debezium io.debezium.config.Configuration.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
-$$connector$$:: $$Shortcut for the cdc.config.connector.class property. Either of those can be used as long as they do not contradict with each other.$$ *($$ConnectorType$$, default: `$$<none>$$`, possible values: `mysql`,`postgres`,`mongodb`,`oracle`,`sqlserver`)*
-$$name$$:: $$Unique name for this sourceConnector instance.$$ *($$String$$, default: `$$<none>$$`)*
-$$schema$$:: $$Include the schema's as part of the outbound message.$$ *($$Boolean$$, default: `$$false$$`)*
-
-=== cdc.flattening
-
-$$add-fields$$:: $$Comma separated list of metadata fields to add to the flattened message. The fields will be prefixed with "__" or "__[<]struct]__", depending on the specification of the struct.$$ *($$String$$, default: `$$<none>$$`)*
-$$add-headers$$:: $$Comma separated list specify a list of metadata fields to add to the header of the flattened message. The fields will be prefixed with "__" or "__[struct]__".$$ *($$String$$, default: `$$<none>$$`)*
-$$delete-handling-mode$$:: $$Options for handling deleted records: (1) none - pass the records through, (2) drop - remove the records and (3) rewrite - add a '__deleted' field to the records.$$ *($$DeleteHandlingMode$$, default: `$$<none>$$`, possible values: `drop`,`rewrite`,`none`)*
-$$drop-tombstones$$:: $$By default Debezium generates tombstone records to enable Kafka compaction on deleted records. The dropTombstones can suppress the tombstone records.$$ *($$Boolean$$, default: `$$true$$`)*
-$$enabled$$:: $$Enable flattening the source record events (https://debezium.io/docs/configuration/event-flattening).$$ *($$Boolean$$, default: `$$true$$`)*
-
-=== cdc.offset
-
-$$commit-timeout$$:: $$Maximum number of milliseconds to wait for records to flush and partition offset data to be committed to offset storage before cancelling the process and restoring the offset data to be committed in a future attempt.$$ *($$Duration$$, default: `$$5000ms$$`)*
-$$flush-interval$$:: $$Interval at which to try committing offsets. The default is 1 minute.$$ *($$Duration$$, default: `$$60000ms$$`)*
-$$policy$$:: $$Offset storage commit policy.$$ *($$OffsetPolicy$$, default: `$$<none>$$`)*
-$$storage$$:: $$Kafka connector tracks the number processed records and regularly stores the count (as "offsets") in a preconfigured metadata storage. On restart the connector resumes the reading from the last recorded source offset.$$ *($$OffsetStorageType$$, default: `$$<none>$$`, possible values: `memory`,`file`,`kafka`,`metadata`)*
-
-=== cdc.stream.header
-
-$$convert-connect-headers$$:: $$When true the {@link org.apache.kafka.connect.header.Header} are converted into message headers with the {@link org.apache.kafka.connect.header.Header#key()} as name and {@link org.apache.kafka.connect.header.Header#value()}.$$ *($$Boolean$$, default: `$$true$$`)*
-$$offset$$:: $$Serializes the source record's offset metadata into the outbound message header under cdc.offset.$$ *($$Boolean$$, default: `$$false$$`)*
-
-=== metadata.store.dynamo-db
-
-$$create-delay$$:: $$Delay between create table retries.$$ *($$Integer$$, default: `$$1$$`)*
-$$create-retries$$:: $$Retry number for create table request.$$ *($$Integer$$, default: `$$25$$`)*
-$$read-capacity$$:: $$Read capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
-$$table$$:: $$Table name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
-$$time-to-live$$:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
-
-=== metadata.store.jdbc
-
-$$region$$:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$DEFAULT$$`)*
-$$table-prefix$$:: $$Prefix for the custom table name.$$ *($$String$$, default: `$$<none>$$`)*
-
-=== metadata.store.mongo-db
-
-$$collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$metadataStore$$`)*
-
-=== metadata.store.redis
-
-$$key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$<none>$$`)*
-
-=== metadata.store
-
-$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
-
-=== metadata.store.zookeeper
-
-$$connect-string$$:: $$Zookeeper connect string in form HOST:PORT.$$ *($$String$$, default: `$$127.0.0.1:2181$$`)*
-$$encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$, default: `$$UTF-8$$`)*
-$$retry-interval$$:: $$Retry interval for Zookeeper operations in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
-$$root$$:: $$Root node - store entries are children of this node.$$ *($$String$$, default: `$$/SpringIntegration-MetadataStore$$`)*
+$$cdc.debezium$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a 'cdc.debezium.' prefix are native Debezium properties. The prefix is removed, converting them into Debezium io.debezium.config.Configuration.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+$$cdc.disable-default-consumer$$:: $$When set to 'true', it allows replace the default Consumer or ChangeEvent implementation. Do not change unless you know what you are doing.$$ *($$Boolean$$, default: `$$false$$`)*
+$$cdc.format$$:: $$(Experimental) Debezium message format. Defaults to 'json'.$$ *($$DebeziumFormat$$, default: `$$<none>$$`, possible values: `json`,`avro`)*
+$$cdc.override-binding-name$$:: $$If set overrides the default message binding name. If not set the binding name is computed from the function definition name and the '-out-0' suffix. If the function definition name is empty, the binding name defaults to 'cdcSupplier-out-0'.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
-==== Debezium property Shortcut mapping
+==== Event flattening configuration
 
-The table below lists all available shortcuts along with the Debezium properties they represent.
+Debezium provides a comprehensive message format, that accurately details information about changes that happen in the system.
+Sometime this format, though,  might not be suitable for the downstream consumers, that might require messages that are formatted so that field names and values are presented in a simplified, `flattened` structure.
 
-.Table Shortcut Properties Mapping
+To simplify the format of the event records that the Debezium connectors produce, you can use the https://debezium.io/documentation/reference/stable/transformations/event-flattening.html[Debezium event flattening] message transformation.
+Using the https://debezium.io/documentation/reference/stable/transformations/event-flattening.html#_configuration[flattering configuration] you can configure simple messages format like this:
+
+[source, bash]
+----
+--cdc.debezium.transforms=unwrap
+--cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState
+--cdc.debezium.transforms.unwrap.drop.tombstones=false
+--cdc.debezium.transforms.unwrap.delete.handling.mode=rewrite
+--cdc.debezium.transforms.unwrap.add.fields=name,db
+----
+
+NOTE: The `add.headers` and `add.headers.prefix` are not supported.
+
+
+==== Connectors properties
+
+The table below lists all available Debezium properties for each connecter.
+Those properties can be used by prefixing them by the `cdc.debezium.` prefix.
+
+.Table of the configuration properties for every Debezium connector.
 |===
-| Shortcut | Original | Description
+| Connector | Connector properties
 
-|cdc.connector
-|cdc.config.connector.class
-|`mysql` : MySqlConnector, `postgres` : PostgresConnector, `mongodb` : MongodbSourceConnector, `oracle` : OracleConnector, `sqlserver` : SqlServerConnector
+|https://debezium.io/documentation/reference/2.1/connectors/mysql.html[MySQL]
+|https://debezium.io/documentation/reference/2.1/connectors/mysql.html#mysql-connector-properties
 
-|cdc.name
-|cdc.config.name
-|
+|https://debezium.io/documentation/reference/2.1/connectors/mongodb.html[MongoDB]
+|https://debezium.io/documentation/reference/2.1/connectors/mongodb.html#mongodb-connector-properties
 
-|cdc.offset.flush-interval
-|cdc.config.offset.flush.interval.ms
-|
+|https://debezium.io/documentation/reference/2.1/connectors/postgresql.html[PostgreSQL]
+|https://debezium.io/documentation/reference/2.1/connectors/postgresql.html#postgresql-connector-properties
 
-|cdc.offset.commit-timeout
-|cdc.config.offset.flush.timeout.ms
-|
+|https://debezium.io/documentation/reference/2.1/connectors/oracle.html[Oracle]
+|https://debezium.io/documentation/reference/2.1/connectors/oracle.html#oracle-connector-properties
 
-|cdc.offset.policy
-|cdc.config.offset.commit.policy
-|`periodic` : PeriodicCommitOffsetPolicy, `always` : AlwaysCommitOffsetPolicy
+|https://debezium.io/documentation/reference/2.1/connectors/sqlserver.html[SQL Server]
+|https://debezium.io/documentation/reference/2.1/connectors/sqlserver.html#sqlserver-connector-properties
 
-|cdc.offset.storage
-|cdc.config.offset.storage
-|`metadata` : MetadataStoreOffsetBackingStore, `file` : FileOffsetBackingStore, `kafka` : KafkaOffsetBackingStore, `memory` : MemoryOffsetBackingStore
+|https://debezium.io/documentation/reference/2.1/connectors/db2.html[DB2]
+|https://debezium.io/documentation/reference/2.1/connectors/db2.html#db2-connector-properties
 
-|cdc.flattening.drop-tombstones
-|cdc.config.drop.tombstones
-|
+|https://debezium.io/documentation/reference/2.1/connectors/cassandra.html[Cassandra]
+|https://debezium.io/documentation/reference/2.1/connectors/cassandra.html#cassandra-connector-properties
 
-|cdc.flattening.delete-handling-mode
-|cdc.config.delete.handling.mode
-|`none` : none, `drop` : drop, `rewrite` : rewrite
+|https://debezium.io/documentation/reference/2.1/connectors/vitess.html[Vitess]
+|https://debezium.io/documentation/reference/2.1/connectors/vitess.html#vitess-connector-properties
+
+|https://debezium.io/documentation/reference/2.1/connectors/spanner.html[Spanner]
+|https://debezium.io/documentation/reference/2.1/connectors/spanner.html#spanner-connector-properties
 
 |===
-
-== Database Support
-
-The `CDC Source` uses the Debezium utilities, and currently supports CDC for five datastores: `MySQL`, `PostgreSQL`, `MongoDB`, `Oracle` and `SQL Server` databases.
 
 == Examples and Testing
 
@@ -141,7 +96,7 @@ Instructions below explains how to run pre-configured test databases form Docker
 Start the `debezium/example-mysql` in a docker:
 [source, bash]
 ----
-docker run -it --rm --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql:1.0
+docker run -it --rm --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql:2.1.4.Final
 ----
 
 [TIP]
@@ -158,26 +113,40 @@ Use following properties to connect the CDC Source to MySQL DB:
 
 [source,properties]
 ----
-cdc.connector=mysql # <1>
+cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector # <1>
 
-cdc.name=my-sql-connector # <2>
-cdc.config.database.server.id=85744 # <2>
-cdc.config.database.server.name=my-app-connector # <2>
+cdc.debezium.topic.prefix=my-topic # <2>
+cdc.debezium.name=my-connector # <2>
+cdc.debezium.database.server.id=85744 # <2>
+cdc.debezium.database.server.name=my-app-connector # <2>
 
-cdc.config.database.user=debezium  # <3>
-cdc.config.database.password=dbz # <3>
-cdc.config.database.hostname=localhost # <3>
-cdc.config.database.port=3306 # <3>
+cdc.debezium.database.user=debezium # <3>
+cdc.debezium.database.password=dbz # <3>
+cdc.debezium.database.hostname=localhost # <3>
+cdc.debezium.database.port=3306 # <3>
 
-cdc.schema=true # <4>
-cdc.flattening.enabled=true # <5>
+cdc.debezium.schema=true # <4>
+cdc.debezium.key.converter.schemas.enable=true # <4>
+cdc.debezium.value.converter.schemas.enable=true # <4>
+
+cdc.debezium.transforms=unwrap # <5>
+cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <5>
+cdc.debezium.transforms.unwrap.add.fields=name,db # <5>
+cdc.debezium.transforms.unwrap.delete.handling.mode=none # <5>
+cdc.debezium.transforms.unwrap.drop.tombstones=true # <5>
+
+cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <6>
+cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <6>
+cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <6>
+
 ----
 
-<1> Configures the CDC Source to use https://debezium.io/docs/connectors/mysql/[MySqlConnector]. (equivalent to setting `cdc.config.connector.class=io.debezium.connector.mysql.MySqlConnector`).
+<1> Configures the CDC Source to use https://debezium.io/docs/connectors/mysql/[MySqlConnector].
 <2> Metadata used to identify and dispatch the incoming events.
 <3> Connection to the MySQL server running on `localhost:3306` as `debezium` user.
-<4> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `SourceRecord` events.
-<5> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattening].
+<4> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `ChangeEvent` message.
+<5> Enables the https://debezium.io/documentation/reference/2.1/transformations/event-flattening.html[CDC Event Flattening].
+<6> Source state to preserver between multiple starts.
 
 You can run also the `CdcSourceIntegrationTests#CdcMysqlTests` using this mysql configuration.
 
@@ -186,7 +155,7 @@ You can run also the `CdcSourceIntegrationTests#CdcMysqlTests` using this mysql 
 Start a pre-configured postgres server from the `debezium/example-postgres:1.0` Docker image:
 [source, bash]
 ----
-docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:1.0
+docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:2.1.4.Final
 ----
 
 You can connect to this server like this:
@@ -199,38 +168,49 @@ Use following properties to connect the CDC Source to PostgreSQL:
 
 [source,properties]
 ----
-cdc.connector=postgres # <1>
-cdc.offset.storage=memory #<2>
+cdc.debezium.connector.class=io.debezium.connector.postgresql.PostgresConnector # <1>
 
-cdc.name=my-sql-connector # <3>
-cdc.config.database.server.id=85744 # <3>
-cdc.config.database.server.name=my-app-connector # <3>
+cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
+cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
+cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
 
-cdc.config.database.user=postgres  # <4>
-cdc.config.database.password=postgres # <4>
-cdc.config.database..dbname=postgres # <4>
-cdc.config.database.hostname=localhost # <4>
-cdc.config.database.port=5432 # <4>
+cdc.debezium.topic.prefix=my-topic # <3>
+cdc.debezium.name=my-connector # <3>
+cdc.debezium.database.server.id=85744 # <3>
+cdc.debezium.database.server.name=my-app-connector # <3>
 
-cdc.schema=true # <5>
-cdc.flattening.enabled=true # <6>
+cdc.debezium.database.user=postgres  # <4>
+cdc.debezium.database.password=postgres # <4>
+cdc.debezium.database..dbname=postgres # <4>
+cdc.debezium.database.hostname=localhost # <4>
+cdc.debezium.database.port=5432 # <4>
+
+cdc.debezium.schema=true # <5>
+cdc.debezium.key.converter.schemas.enable=true # <5>
+cdc.debezium.value.converter.schemas.enable=true # <5>
+
+cdc.debezium.transforms=unwrap # <6>
+cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <6>
+cdc.debezium.transforms.unwrap.add.fields=name,db # <6>
+cdc.debezium.transforms.unwrap.delete.handling.mode=none # <6>
+cdc.debezium.transforms.unwrap.drop.tombstones=true # <6>
 ----
 
-<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/postgresql/[PostgresConnector]. Equivalent for setting `cdc.config.connector.class=io.debezium.connector.postgresql.PostgresConnector`.
-<2> Configures the Debezium engine to use `memory` (e.g. `cdc.config.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore) backing offset store.
+<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/postgresql/[PostgresConnector].
+<2> Configures the Debezium engine to use `memory` stores.
 <3> Metadata used to identify and dispatch the incoming events.
 <4> Connection to the PostgreSQL server running on `localhost:5432` as `postgres` user.
-<5> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `SourceRecord` events.
+<5> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the message.
 <6> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattening].
 
 You can run also the `CdcSourceIntegrationTests#CdcPostgresTests` using this mysql configuration.
 
 ==== MongoDB
 
-Start a pre-configured mongodb from the `debezium/example-mongodb:0.10` Docker image:
+Start a pre-configured mongodb from the `debezium/example-mongodb:2.1.4.Final` container image:
 [source, bash]
 ----
-docker run -it --rm --name mongodb -p 27017:27017 -e MONGODB_USER=debezium -e MONGODB_PASSWORD=dbz  debezium/example-mongodb:0.10
+docker run -it --rm --name mongodb -p 27017:27017 -e MONGODB_USER=debezium -e MONGODB_PASSWORD=dbz  debezium/example-mongodb:2.1.4.Final
 ----
 
 Initialize the inventory collections
@@ -247,28 +227,42 @@ In the `mongodb` terminal output, search for a log entry like `host: "3f95a8a651
 
 Add `127.0.0.1    3f95a8a6516e` entry to your `/etc/hosts`
 
-
 Use following properties to connect the CDC Source to MongoDB:
 
 [source,properties]
 ----
-cdc.connector=mongodb # <1>
-cdc.offset.storage=memory #<2>
+cdc.debezium.connector.class=io.debezium.connector.mongodb.MongodbSourceConnector # <1>
 
-cdc.config.mongodb.hosts=rs0/localhost:27017 # <3>
-cdc.config.mongodb.name=dbserver1 # <3>
-cdc.config.mongodb.user=debezium # <3>
-cdc.config.mongodb.password=dbz # <3>
-cdc.config.database.whitelist=inventory # <3>
+cdc.debezium.topic.prefix=my-topic
+cdc.debezium.name=my-connector
+cdc.debezium.database.server.id=85744
+cdc.debezium.database.server.name=my-app-connector
 
-cdc.config.tasks.max=1 # <4>
+cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
+cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
+cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
 
-cdc.schema=true # <5>
-cdc.flattening.enabled=true # <6>
+cdc.debezium.mongodb.hosts=rs0/localhost:27017 # <3>
+cdc.debezium.mongodb.name=dbserver1 # <3>
+cdc.debezium.mongodb.user=debezium # <3>
+cdc.debezium.mongodb.password=dbz # <3>
+cdc.debezium.database.whitelist=inventory # <3>
+
+cdc.debezium.tasks.max=1 # <4>
+
+cdc.debezium.schema=true # <5>
+cdc.debezium.key.converter.schemas.enable=true # <5>
+cdc.debezium.value.converter.schemas.enable=true # <5>
+
+cdc.debezium.transforms=unwrap # <6>
+cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <6>
+cdc.debezium.transforms.unwrap.add.fields=name,db # <6>
+cdc.debezium.transforms.unwrap.delete.handling.mode=none # <6>
+cdc.debezium.transforms.unwrap.drop.tombstones=true # <6>
 ----
 
-<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/mongodb/[MongoDB Connector]. This maps into `cdc.config.connector.class=io.debezium.connector.mongodb.MongodbSourceConnector`.
-<2> Configures the Debezium engine to use `memory` (e.g. `cdc.config.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore) backing offset store.
+<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/mongodb/[MongoDB Connector].
+<2> Configures the Debezium engine to use `memory`.
 <3> Connection to the MongoDB running on `localhost:27017` as `debezium` user.
 <4> https://debezium.io/docs/connectors/mongodb/#tasks
 <5> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `SourceRecord` events.
@@ -284,7 +278,7 @@ Start a `sqlserver` from the `debezium/example-postgres:1.0` Docker image:
 docker run -it --rm --name sqlserver -p 1433:1433 -e ACCEPT_EULA=Y -e MSSQL_PID=Standard -e SA_PASSWORD=Password! -e MSSQL_AGENT_ENABLED=true microsoft/mssql-server-linux:2017-CU9-GDR2
 ----
 
-Populate with sample data form  debezium's sqlserver tutorial:
+Populate with sample data form  debezium SqlServer tutorial:
 [source, bash]
 ----
 wget https://raw.githubusercontent.com/debezium/debezium-examples/master/tutorial/debezium-sqlserver-init/inventory.sql
@@ -295,22 +289,26 @@ Use following properties to connect the CDC Source to SQLServer:
 
 [source,properties]
 ----
-cdc.connector=sqlserver # <1>
-cdc.offset.storage=memory #<2>
+cdc.debezium.connector.class=io.debezium.connector.sqlserver.SqlServerConnector # <1>
 
-cdc.name=my-sql-connector # <3>
-cdc.config.database.server.id=85744 # <3>
-cdc.config.database.server.name=my-app-connector # <3>
+cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
+cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
+cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
 
-cdc.config.database.user=sa  # <4>
-cdc.config.database.password=Password! # <4>
-cdc.config.database..dbname=testDB # <4>
-cdc.config.database.hostname=localhost # <4>
-cdc.config.database.port=1433 # <4>
+cdc.debezium.topic.prefix=my-topic # <3>
+cdc.debezium.name=my-connector # <3>
+cdc.debezium.database.server.id=85744 # <3>
+cdc.debezium.database.server.name=my-app-connector # <3>
+
+cdc.debezium.database.user=sa  # <4>
+cdc.debezium.database.password=Password! # <4>
+cdc.debezium.database..dbname=testDB # <4>
+cdc.debezium.database.hostname=localhost # <4>
+cdc.debezium.database.port=1433 # <4>
 ----
 
-<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/sqlserver/[SqlServerConnector]. Equivalent for setting `cdc.config.connector.class=io.debezium.connector.sqlserver.SqlServerConnector`.
-<2> Configures the Debezium engine to use `memory` (e.g. `cdc.config.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore) backing offset store.
+<1> Configures `CDC Source` to use https://debezium.io/docs/connectors/sqlserver/[SqlServerConnector].
+<2> Configures the Debezium engine to use `memory` state stores.
 <3> Metadata used to identify and dispatch the incoming events.
 <4> Connection to the SQL Server running on `localhost:1433` as `sa` user.
 
@@ -320,12 +318,16 @@ You can run also the `CdcSourceIntegrationTests#CdcSqlServerTests` using this my
 
 Start Oracle reachable from localhost and set up with the configuration, users and grants described in the https://github.com/debezium/oracle-vagrant-box[Debezium Vagrant set-up]
 
-Populate with sample data form Debezium's Oracle tutorial:
+Populate with sample data form Debezium Oracle tutorial:
 [source, bash]
 ----
 wget https://raw.githubusercontent.com/debezium/debezium-examples/master/tutorial/debezium-with-oracle-jdbc/init/inventory.sql
 cat ./inventory.sql | docker exec -i dbz_oracle sqlplus debezium/dbz@//localhost:1521/ORCLPDB1
 ----
+
+==== DB2, Cassandra, Vitess, Spanner
+
+samples coming soon ...
 
 //end::ref-doc[]
 
@@ -334,6 +336,7 @@ cat ./inventory.sql | docker exec -i dbz_oracle sqlplus debezium/dbz@//localhost
 
 [source,shell]
 ----
-java -jar cdc-debezium-source.jar --cdc.connector=mysql --cdc.name=my-sql-connector --cdc.config.database.server.id=85744 --cdc.config.database.server.name=my-app-connector --cdc.config.database.user=debezium --cdc.config.database.password=dbz --cdc.config.database.hostname=localhost --cdc.config.database.port=3306 --cdc.schema=true --cdc.flattening.enabled=true
+java -jar cdc-debezium-source2.jar --cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector --cdc.debezium.topic.prefix=my-topic --cdc.debezium.name=my-connector --cdc.debezium.database.server.id=85744 --cdc.debezium.database.server.name=my-app-connector  --cdc.debezium.database.server.id=85744 --cdc.debezium.database.server.name=my-app-connector --cdc.debezium.database.user=debezium --cdc.debezium.database.password=dbz --cdc.debezium.database.hostname=localhost --cdc.debezium.database.port=3306 --cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory --cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory --cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
 ----
+
 

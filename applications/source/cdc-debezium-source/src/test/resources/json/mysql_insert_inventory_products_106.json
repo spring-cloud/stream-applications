@@ -9,8 +9,8 @@
   "source": {
     "version": "${json-unit.ignore}",
     "connector": "mysql",
-    "name": "my-app-connector",
-    "ts_ms": 0,
+    "name": "my-topic",
+    "ts_ms": 1681663084000,
     "snapshot": "true",
     "db": "inventory",
     "table": "products",

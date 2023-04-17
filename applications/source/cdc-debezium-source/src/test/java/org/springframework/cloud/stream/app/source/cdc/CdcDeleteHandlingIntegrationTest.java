@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
-import org.springframework.cloud.fn.common.cdc.CdcCommonProperties;
+import org.springframework.cloud.fn.supplier.cdc.CdcConfiguration;
+import org.springframework.cloud.fn.supplier.cdc.CdcProperties;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -36,9 +37,6 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.util.ClassUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.cloud.fn.supplier.cdc.CdcSupplierConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL;
-import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.CDC_SUPPLIER_OUT_0;
-import static org.springframework.cloud.stream.app.source.cdc.CdcTestUtils.receiveAll;
 
 /**
  * @author Christian Tzolov
@@ -53,27 +51,40 @@ public class CdcDeleteHandlingIntegrationTest extends CdcMySqlTestSupport {
 					TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
 			.withPropertyValues(
 					"spring.cloud.function.definition=cdcSupplier",
-					"cdc.name=my-sql-connector",
-					"cdc.schema=false",
-					"cdc.flattening.enabled=true",
-					"cdc.stream.header.offset=true",
-					"cdc.connector=mysql",
-					"cdc.config.database.user=debezium",
-					"cdc.config.database.password=dbz",
-					"cdc.config.database.hostname=localhost",
-					"cdc.config.database.port=" + MAPPED_PORT,
-					// "cdc.config.database.server.id=85744",
-					"cdc.config.database.server.name=my-app-connector",
-					"cdc.config.database.history=io.debezium.relational.history.MemoryDatabaseHistory");
+
+					"cdc.debezium.schema=false",
+
+					"cdc.debezium.key.converter.schemas.enable=false",
+					"cdc.debezium.value.converter.schemas.enable=false",
+
+					"cdc.debezium.topic.prefix=my-topic", // new
+
+					// enable flattering
+					"cdc.debezium.transforms=unwrap",
+					"cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+					"cdc.debezium.transforms.unwrap.add.fields=name,db",
+
+					"cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory", // new
+					"cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
+
+					"cdc.debezium.name=my-connector",
+					"cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
+					"cdc.debezium.database.user=debezium",
+					"cdc.debezium.database.password=dbz",
+					"cdc.debezium.database.hostname=localhost",
+					"cdc.debezium.database.port=" + MAPPED_PORT,
+					"cdc.debezium.database.server.id=85744",
+					"cdc.debezium.database.server.name=my-app-connector",
+					"cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory");
 
 	@ParameterizedTest
 	@ValueSource(strings = {
-			"cdc.flattening.deleteHandlingMode=none,cdc.flattening.dropTombstones=true",
-			"cdc.flattening.deleteHandlingMode=none,cdc.flattening.dropTombstones=false",
-			"cdc.flattening.deleteHandlingMode=drop,cdc.flattening.dropTombstones=true",
-			"cdc.flattening.deleteHandlingMode=drop,cdc.flattening.dropTombstones=false",
-			"cdc.flattening.deleteHandlingMode=rewrite,cdc.flattening.dropTombstones=true",
-			"cdc.flattening.deleteHandlingMode=rewrite,cdc.flattening.dropTombstones=false"
+			"cdc.debezium.transforms.unwrap.delete.handling.mode=none,cdc.debezium.transforms.unwrap.drop.tombstones=true",
+			"cdc.debezium.transforms.unwrap.delete.handling.mode=none,cdc.debezium.transforms.unwrap.drop.tombstones=false",
+			"cdc.debezium.transforms.unwrap.delete.handling.mode=drop,cdc.debezium.transforms.unwrap.drop.tombstones=true",
+			"cdc.debezium.transforms.unwrap.delete.handling.mode=drop,cdc.debezium.transforms.unwrap.drop.tombstones=false",
+			"cdc.debezium.transforms.unwrap.delete.handling.mode=rewrite,cdc.debezium.transforms.unwrap.drop.tombstones=true",
+			"cdc.debezium.transforms.unwrap.delete.handling.mode=rewrite,cdc.debezium.transforms.unwrap.drop.tombstones=false"
 	})
 	public void handleRecordDeletions(String properties) {
 		contextRunner.withPropertyValues(properties.split(","))
@@ -91,52 +102,54 @@ public class CdcDeleteHandlingIntegrationTest extends CdcMySqlTestSupport {
 	final ContextConsumer<? super ApplicationContext> consumer = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
 
-		CdcCommonProperties props = context.getBean(CdcCommonProperties.class);
-		boolean isKafkaPresent = ClassUtils.isPresent(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+		CdcProperties props = context.getBean(CdcProperties.class);
+		boolean isKafkaPresent = ClassUtils.isPresent(CdcConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
-		CdcCommonProperties.DeleteHandlingMode deleteHandlingMode = props.getFlattening().getDeleteHandlingMode();
-		boolean isDropTombstones = props.getFlattening().isDropTombstones();
+		String deleteHandlingMode = props.getDebezium().get("transforms.unwrap.delete.handling.mode");
+		String isDropTombstones = props.getDebezium().get("transforms.unwrap.drop.tombstones");
 
 		jdbcTemplate.update(
 				"insert into `customers`(`first_name`,`last_name`,`email`) VALUES('Test666', 'Test666', 'Test666@spring.org')");
 		String newRecordId = jdbcTemplate.query("select * from `customers` where `first_name` = ?",
 				(rs, rowNum) -> rs.getString("id"), "Test666").iterator().next();
 
-		List<Message<?>> messages = receiveAll(outputDestination);
+		List<Message<?>> messages = CdcTestUtils.receiveAll(outputDestination);
 		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
 		JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 
 		Message<?> received;
 
-		if (deleteHandlingMode == CdcCommonProperties.DeleteHandlingMode.drop) {
+		if (deleteHandlingMode.equals("drop")) {
 			// Do nothing
 		}
-		else if (deleteHandlingMode == CdcCommonProperties.DeleteHandlingMode.none) {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), CDC_SUPPLIER_OUT_0);
+		else if (deleteHandlingMode.equals("none")) {
+			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), CdcTestUtils.CDC_SUPPLIER_OUT_0);
 			assertThat(received).isNotNull();
 			assertThat(received.getPayload()).isEqualTo("null".getBytes());
 		}
-		else if (deleteHandlingMode == CdcCommonProperties.DeleteHandlingMode.rewrite) {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), CDC_SUPPLIER_OUT_0);
+		else if (deleteHandlingMode.equals("rewrite")) {
+			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), CdcTestUtils.CDC_SUPPLIER_OUT_0);
 			assertThat(received).isNotNull();
 			assertThat(toString(received.getPayload()).contains("\"__deleted\":\"true\""));
 		}
 
-		if (!isDropTombstones && isKafkaPresent) {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), CDC_SUPPLIER_OUT_0);
+		if (!(isDropTombstones.equals("true")) && isKafkaPresent) {
+			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), CdcTestUtils.CDC_SUPPLIER_OUT_0);
 			assertThat(received).isNotNull();
 			// Tombstones event should have KafkaNull payload
 			assertThat(received.getPayload().getClass().getCanonicalName())
-					.isEqualTo(ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL);
+					.isEqualTo(CdcConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL);
 
-			String key = new String((byte[]) received.getHeaders().get("cdc_key"));
+			Object keyRaw = received.getHeaders().get("cdc_key");
+			String key = (keyRaw instanceof byte[]) ? new String((byte[]) keyRaw) : "" + keyRaw;
+
 			// Tombstones event should carry the deleted record id in the cdc_key header
 			assertThat(key).isEqualTo("{\"id\":" + newRecordId + "}");
 		}
 
-		received = outputDestination.receive(Duration.ofSeconds(1).toMillis(), CDC_SUPPLIER_OUT_0);
+		received = outputDestination.receive(Duration.ofSeconds(1).toMillis(), CdcTestUtils.CDC_SUPPLIER_OUT_0);
 		assertThat(received).isNull();
 	};
 }

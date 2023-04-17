@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.springframework.cloud.stream.app.source.cdc;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.cloud.fn.supplier.cdc.CdcSupplierConfiguration;
+import org.springframework.cloud.fn.supplier.cdc.CdcConfiguration;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -27,6 +27,6 @@ import org.springframework.context.annotation.Import;
  */
 @SpringBootConfiguration
 @EnableAutoConfiguration(exclude = MongoAutoConfiguration.class)
-@Import(CdcSupplierConfiguration.class)
+@Import(CdcConfiguration.class)
 public class TestCdcSourceApplication {
 }

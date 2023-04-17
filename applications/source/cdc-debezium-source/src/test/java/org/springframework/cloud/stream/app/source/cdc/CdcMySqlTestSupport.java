@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * @author David Turanski
+ * @author Christian Tzolov
  */
 
 @Tag("integration")
@@ -35,7 +36,7 @@ public abstract class CdcMySqlTestSupport {
 
 	static String MAPPED_PORT;
 
-	static GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:1.9.6.Final")
+	static GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:2.1.4.Final")
 		.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 		.withEnv("MYSQL_USER", "mysqluser")
 		.withEnv("MYSQL_PASSWORD", "mysqlpw")

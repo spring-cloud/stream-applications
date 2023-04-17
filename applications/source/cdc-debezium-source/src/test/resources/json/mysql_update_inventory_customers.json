@@ -14,7 +14,7 @@
   "source": {
     "version": "${json-unit.ignore}",
     "connector": "mysql",
-    "name": "my-app-connector",
+    "name": "my-topic",
     "ts_ms": "${json-unit.ignore}",
     "snapshot": "false",
     "db": "inventory",
