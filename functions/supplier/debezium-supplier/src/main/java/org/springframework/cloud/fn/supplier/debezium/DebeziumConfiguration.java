@@ -116,14 +116,15 @@ public class DebeziumConfiguration implements BeanClassLoaderAware {
 	@ConditionalOnExpression("${cdc.consumer.override:false}.equals(false) && '${cdc.format:JSON}'.equals('JSON')")
 	public Consumer<ChangeEvent<String, String>> stringSourceRecordConsumer(StreamBridge streamBridge,
 			BindingNameStrategy bindingNameStrategy) {
-		return new ChangeEventConsumer<String>(streamBridge, bindingNameStrategy.bindingName());
+		return new ChangeEventConsumer<String>(streamBridge, bindingNameStrategy.bindingName(),
+				MimeTypeUtils.APPLICATION_JSON_VALUE);
 	}
 
 	@Bean
 	@ConditionalOnExpression("${cdc.consumer.override:false}.equals(false) && '${cdc.format:JSON}'.equals('AVRO')")
 	public Consumer<ChangeEvent<byte[], byte[]>> byteSourceRecordConsumer(StreamBridge streamBridge,
 			BindingNameStrategy bindingNameStrategy) {
-		return new ChangeEventConsumer<byte[]>(streamBridge, bindingNameStrategy.bindingName());
+		return new ChangeEventConsumer<byte[]>(streamBridge, bindingNameStrategy.bindingName(), "application/avro");
 	}
 
 	/**
@@ -135,9 +136,12 @@ public class DebeziumConfiguration implements BeanClassLoaderAware {
 
 		private final String bindingName;
 
-		private ChangeEventConsumer(StreamBridge streamBridge, String bindingName) {
+		private final String contentType;
+
+		private ChangeEventConsumer(StreamBridge streamBridge, String bindingName, String contentType) {
 			this.streamBridge = streamBridge;
 			this.bindingName = bindingName;
+			this.contentType = contentType;
 		}
 
 		@Override
@@ -170,7 +174,7 @@ public class DebeziumConfiguration implements BeanClassLoaderAware {
 					.setHeader(MessageHeaders.CONTENT_TYPE,
 							(payload.equals(DebeziumConfiguration.this.kafkaNull))
 									? MimeTypeUtils.TEXT_PLAIN_VALUE
-									: MimeTypeUtils.APPLICATION_JSON_VALUE);
+									: this.contentType);
 
 			this.streamBridge.send(this.bindingName, messageBuilder.build());
 		}

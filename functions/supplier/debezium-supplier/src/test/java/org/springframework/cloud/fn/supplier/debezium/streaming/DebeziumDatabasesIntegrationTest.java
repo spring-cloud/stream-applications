@@ -58,7 +58,7 @@ public class DebeziumDatabasesIntegrationTest {
 							"cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
 							"cdc.debezium.transforms.unwrap.drop.tombstones=false",
 							"cdc.debezium.transforms.unwrap.delete.handling.mode=rewrite",
-							"cdc.debezium.transforms.unwrap.add.fields=name,db",
+							"cdc.debezium.transforms.unwrap.add.fields=name,db,op,table",
 
 							"cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
 							"cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
@@ -81,21 +81,19 @@ public class DebeziumDatabasesIntegrationTest {
 				.withStartupAttempts(3);
 		debeziumMySQL.start();
 
-		String MAPPED_PORT = String.valueOf(debeziumMySQL.getMappedPort(3306));
-
 		try (ConfigurableApplicationContext context = applicationBuilder
 				.run("--cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
 						"--cdc.debezium.database.user=debezium",
 						"--cdc.debezium.database.password=dbz",
 						"--cdc.debezium.database.hostname=localhost",
-						"--cdc.debezium.database.port=" + MAPPED_PORT)) {
+						"--cdc.debezium.database.port=" + debeziumMySQL.getMappedPort(3306))) {
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
 			// Using local region here
-			List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
+			List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination,
+					bindingNameStrategy.bindingName());
 			assertThat(messages).isNotNull();
-			// Message size should correspond to the number of insert statements in the sample inventor DB configured in
-			// the debezium/example-mysql:2.1.4.Final:
+			// Message size should correspond to the number of insert statements in:
 			// https://github.com/debezium/container-images/blob/main/examples/mysql/2.1/inventory.sql
 			assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 		}
@@ -126,7 +124,8 @@ public class DebeziumDatabasesIntegrationTest {
 
 			List<Message<?>> allMessages = new ArrayList<>();
 			Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
-				List<Message<?>> messageChunk = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
+				List<Message<?>> messageChunk = DebeziumTestUtils.receiveAll(outputDestination,
+						bindingNameStrategy.bindingName());
 				if (!CollectionUtils.isEmpty(messageChunk)) {
 					logger.info("Chunk size: " + messageChunk.size());
 					allMessages.addAll(messageChunk);

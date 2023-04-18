@@ -17,7 +17,6 @@
 package org.springframework.cloud.fn.supplier.debezium.streaming;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -25,6 +24,8 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -40,9 +41,17 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Christian Tzolov
  */
 @Tag("integration")
+@Testcontainers
 public class DebeziumSupplierBindingNameTest {
 
-	private static final Log logger = LogFactory.getLog(DebeziumSupplierBindingNameTest.class);
+	@Container
+	static GenericContainer mySQL = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
+			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
+			.withEnv("MYSQL_USER", "mysqluser")
+			.withEnv("MYSQL_PASSWORD", "mysqlpw")
+			.withExposedPorts(3306)
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
 			TestChannelBinderConfiguration.getCompleteConfiguration(TestDebeziumSupplierApplication.class))
@@ -65,49 +74,40 @@ public class DebeziumSupplierBindingNameTest {
 
 	@Test
 	public void defaultBindingName() {
-		innerTest(new String[0], "debezium-out-0");
+		innerTest(new String[] { "--cdc.debezium.database.port=" + String.valueOf(mySQL.getMappedPort(3306)) },
+				"debezium-out-0");
 	}
 
 	@Test
 	public void customFunctionDefinition() {
-		innerTest(new String[] { "--spring.cloud.function.definition=mySupplier" }, "mySupplier-out-0");
+		innerTest(
+				new String[] { "--spring.cloud.function.definition=mySupplier",
+						"--cdc.debezium.database.port=" + String.valueOf(mySQL.getMappedPort(3306)) },
+				"mySupplier-out-0");
 	}
 
 	@Test
 	public void overrideBindingName() {
-		innerTest(new String[] { "--cdc.bindingName=customBindingName" }, "customBindingName");
+		innerTest(
+				new String[] { "--cdc.bindingName=customBindingName",
+						"--cdc.debezium.database.port=" + String.valueOf(mySQL.getMappedPort(3306)) },
+				"customBindingName");
 	}
 
 	private void innerTest(String[] testProperties, String expectedBindingName) {
-		try (
-				GenericContainer debeziumMySQL = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
-						.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
-						.withEnv("MYSQL_USER", "mysqluser")
-						.withEnv("MYSQL_PASSWORD", "mysqlpw")
-						.withExposedPorts(3306)
-						.withStartupTimeout(Duration.ofSeconds(120))
-						.withStartupAttempts(3)) {
 
-			debeziumMySQL.start();
+		try (ConfigurableApplicationContext context = applicationBuilder.run(testProperties)) {
 
-			String MYSQL_MAPPED_PORT = String.valueOf(debeziumMySQL.getMappedPort(3306));
+			// Test binding name
+			BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
+			String bindingName = bindingNameStrategy.bindingName();
+			assertThat(bindingName).isEqualTo(expectedBindingName);
 
-			String[] result = Arrays.copyOf(testProperties, testProperties.length + 1);
-			result[result.length - 1] = "--cdc.debezium.database.port=" + MYSQL_MAPPED_PORT;
-
-			try (ConfigurableApplicationContext context = applicationBuilder.run(result)) {
-
-				// Test binding name
-				BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
-				String bindingName = bindingNameStrategy.bindingName();
-				assertThat(bindingName).isEqualTo(expectedBindingName);
-
-				// Test debezium
-				OutputDestination outputDestination = context.getBean(OutputDestination.class);
-				List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingName);
-				assertThat(messages).isNotNull();
-				assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
-			}
+			// Test debezium
+			OutputDestination outputDestination = context.getBean(OutputDestination.class);
+			List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingName);
+			assertThat(messages).isNotNull();
+			assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 		}
 	}
 }

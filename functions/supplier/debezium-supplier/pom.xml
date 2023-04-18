@@ -15,7 +15,7 @@
     <description>CDC Debezium Supplier</description>
 
     <properties>
-        <version.debezium>2.1.4.Final</version.debezium>
+        <version.debezium>2.2.0.CR1</version.debezium>
         <apicurio.version>2.4.2.Final</apicurio.version>
     </properties>
 
@@ -171,6 +171,11 @@
         </dependency>
 
         <!-- TEST -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
