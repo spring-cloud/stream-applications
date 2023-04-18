@@ -22,15 +22,22 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
+import javax.sql.DataSource;
+
+import com.zaxxer.hikari.HikariDataSource;
 import io.debezium.engine.ChangeEvent;
 
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.fn.supplier.debezium.DebeziumConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  *
@@ -42,22 +49,42 @@ import org.springframework.context.annotation.Import;
 public class DebeziumCustomConsumerApplication {
 
 	@Bean
+	public JdbcTemplate myJdbcTemplate(DataSource dataSource) {
+		return new JdbcTemplate(dataSource);
+	}
+
+	@Bean
+	@Primary
+	@ConfigurationProperties("app.datasource")
+	public DataSourceProperties dataSourceProperties() {
+		return new DataSourceProperties();
+	}
+
+	@Bean
+	public HikariDataSource dataSource(DataSourceProperties dataSourceProperties) {
+		return dataSourceProperties.initializeDataSourceBuilder()
+				.type(HikariDataSource.class)
+				.driverClassName("com.mysql.cj.jdbc.Driver")
+				.build();
+	}
+
+	@Bean
 	@ConditionalOnProperty(name = "cdc.consumer.override", havingValue = "true")
-	public Consumer<ChangeEvent<String, String>> mySourceRecordConsumer2() {
+	public Consumer<ChangeEvent<byte[], byte[]>> customConsumer() {
 		return new TestDebeziumConsumer();
 	}
 
-	public static class TestDebeziumConsumer implements Consumer<ChangeEvent<String, String>> {
+	public static class TestDebeziumConsumer implements Consumer<ChangeEvent<byte[], byte[]>> {
 
 		public Map<Object, Object> keyValue = new HashMap<>();
 
-		public List<ChangeEvent<String, String>> recordList = new CopyOnWriteArrayList<>();
+		public List<ChangeEvent<byte[], byte[]>> recordList = new CopyOnWriteArrayList<>();
 
 		public TestDebeziumConsumer() {
 		}
 
 		@Override
-		public void accept(ChangeEvent<String, String> changeEvent) {
+		public void accept(ChangeEvent<byte[], byte[]> changeEvent) {
 			if (changeEvent != null) { // ignore null records
 				recordList.add(changeEvent);
 				keyValue.put(changeEvent.key(), changeEvent.value());

@@ -19,10 +19,8 @@ package org.springframework.cloud.fn.supplier.debezium.consumer;
 import java.io.File;
 import java.time.Duration;
 
-import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -48,29 +46,15 @@ public class DebeziumCustomConsumerTest {
 
 	private static final String DATABASE_NAME = "inventory";
 
-	private static String MAPPED_PORT;
-
 	@TempDir
 	static File anotherTempDir;
 
 	@Container
-	static GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:2.1.4.Final")
+	static GenericContainer<?> debeziumMySQL = new GenericContainer<>("debezium/example-mysql:2.1.4.Final")
 			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 			.withEnv("MYSQL_USER", "mysqluser")
 			.withEnv("MYSQL_PASSWORD", "mysqlpw")
 			.withExposedPorts(3306);
-
-	private static JdbcTemplate jdbcTemplate;
-
-	@BeforeAll
-	static void setup() {
-		MAPPED_PORT = String.valueOf(debeziumMySQL.getMappedPort(3306));
-		jdbcTemplate = jdbcTemplate(
-				"com.mysql.cj.jdbc.Driver",
-				"jdbc:mysql://localhost:" + MAPPED_PORT + "/" + DATABASE_NAME + "?enabledTLSProtocols=TLSv1.2",
-				"root",
-				"debezium");
-	}
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(DebeziumCustomConsumerApplication.class)
@@ -94,10 +78,18 @@ public class DebeziumCustomConsumerTest {
 					"cdc.debezium.database.user=debezium",
 					"cdc.debezium.database.password=dbz",
 					"cdc.debezium.database.hostname=localhost",
-					"cdc.debezium.database.port=" + MAPPED_PORT,
+					"cdc.debezium.database.port=" + debeziumMySQL.getMappedPort(3306),
 					"cdc.debezium.database.server.id=85744",
 					"cdc.debezium.database.server.name=my-app-connector",
-					"cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory");
+					"cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
+
+					// JdbcTemplate configuration
+					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
+							debeziumMySQL.getMappedPort(3306), DATABASE_NAME),
+					"app.datasource.username=root",
+					"app.datasource.password=debezium",
+					"app.datasource.driver-class-name=com.mysql.cj.jdbc.Driver",
+					"app.datasource.type=com.zaxxer.hikari.HikariDataSource");
 
 	@Test
 	public void consumerTest() {
@@ -114,6 +106,8 @@ public class DebeziumCustomConsumerTest {
 						"cdc.debezium.transforms.unwrap.delete.handling.mode=rewrite",
 						"cdc.debezium.transforms.unwrap.add.fields=name,db")
 				.run(context -> {
+					JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
+
 					DebeziumCustomConsumerApplication.TestDebeziumConsumer testConsumer = context
 							.getBean(DebeziumCustomConsumerApplication.TestDebeziumConsumer.class);
 					jdbcTemplate.update(
@@ -125,14 +119,4 @@ public class DebeziumCustomConsumerTest {
 							.untilAsserted(() -> assertThat(testConsumer.recordList).hasSizeGreaterThanOrEqualTo(52));
 				});
 	}
-
-	public static JdbcTemplate jdbcTemplate(String jdbcDriver, String jdbcUrl, String user, String password) {
-		HikariDataSource dataSource = new HikariDataSource();
-		dataSource.setDriverClassName(jdbcDriver);
-		dataSource.setJdbcUrl(jdbcUrl);
-		dataSource.setUsername(user);
-		dataSource.setPassword(password);
-		return new JdbcTemplate(dataSource);
-	}
-
 }

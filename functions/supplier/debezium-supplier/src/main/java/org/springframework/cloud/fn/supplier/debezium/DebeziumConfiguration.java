@@ -17,16 +17,18 @@
 package org.springframework.cloud.fn.supplier.debezium;
 
 import java.lang.reflect.Field;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
 
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
+import io.debezium.engine.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.function.context.FunctionProperties;
@@ -47,7 +49,6 @@ import org.springframework.util.MimeTypeUtils;
 public class DebeziumConfiguration implements BeanClassLoaderAware {
 
 	private static final Log logger = LogFactory.getLog(DebeziumConfiguration.class);
-
 	/**
 	 * ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL.
 	 */
@@ -74,26 +75,14 @@ public class DebeziumConfiguration implements BeanClassLoaderAware {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "cdc.format", havingValue = "JSON", matchIfMissing = true)
-	public DebeziumEngine<?> debeziumEngineJson(Consumer<ChangeEvent<String, String>> changeEventConsumer,
-			java.util.Properties debeziumConfiguration) {
+	public DebeziumEngine<?> debeziumEngine(Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
+			DebeziumProperties properties) {
 
-		DebeziumEngine<ChangeEvent<String, String>> debeziumEngine = DebeziumEngine
-				.create(io.debezium.engine.format.Json.class)
-				.using(debeziumConfiguration)
-				.notifying(changeEventConsumer)
-				.build();
-
-		return debeziumEngine;
-	}
-
-	@Bean
-	@ConditionalOnProperty(name = "cdc.format", havingValue = "AVRO")
-	public DebeziumEngine<?> debeziumEngineAvro(Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
-			java.util.Properties debeziumConfiguration) {
+		Properties debeziumConfiguration = new java.util.Properties();
+		debeziumConfiguration.putAll(properties.getDebezium());
 
 		DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine = DebeziumEngine
-				.create(io.debezium.engine.format.Avro.class)
+				.create(properties.getFormat().serializationFormat())
 				.using(debeziumConfiguration)
 				.notifying(changeEventConsumer)
 				.build();
@@ -113,18 +102,12 @@ public class DebeziumConfiguration implements BeanClassLoaderAware {
 	}
 
 	@Bean
-	@ConditionalOnExpression("${cdc.consumer.override:false}.equals(false) && '${cdc.format:JSON}'.equals('JSON')")
-	public Consumer<ChangeEvent<String, String>> stringSourceRecordConsumer(StreamBridge streamBridge,
-			BindingNameStrategy bindingNameStrategy) {
-		return new ChangeEventConsumer<String>(streamBridge, bindingNameStrategy.bindingName(),
-				MimeTypeUtils.APPLICATION_JSON_VALUE);
-	}
+	@ConditionalOnProperty(name = "cdc.consumer.override", havingValue = "false", matchIfMissing = true)
+	public Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer(StreamBridge streamBridge,
+			BindingNameStrategy bindingNameStrategy, DebeziumProperties properties) {
 
-	@Bean
-	@ConditionalOnExpression("${cdc.consumer.override:false}.equals(false) && '${cdc.format:JSON}'.equals('AVRO')")
-	public Consumer<ChangeEvent<byte[], byte[]>> byteSourceRecordConsumer(StreamBridge streamBridge,
-			BindingNameStrategy bindingNameStrategy) {
-		return new ChangeEventConsumer<byte[]>(streamBridge, bindingNameStrategy.bindingName(), "application/avro");
+		return new ChangeEventConsumer<byte[]>(streamBridge, bindingNameStrategy.bindingName(),
+				properties.getFormat().contentType(), properties.isConvertHeaders());
 	}
 
 	/**
@@ -133,15 +116,16 @@ public class DebeziumConfiguration implements BeanClassLoaderAware {
 	private final class ChangeEventConsumer<T> implements Consumer<ChangeEvent<T, T>> {
 
 		private final StreamBridge streamBridge;
-
 		private final String bindingName;
-
 		private final String contentType;
+		private final boolean convertHeaders;
 
-		private ChangeEventConsumer(StreamBridge streamBridge, String bindingName, String contentType) {
+		private ChangeEventConsumer(StreamBridge streamBridge, String bindingName, String contentType,
+				boolean convertHeaders) {
 			this.streamBridge = streamBridge;
 			this.bindingName = bindingName;
 			this.contentType = contentType;
+			this.convertHeaders = convertHeaders;
 		}
 
 		@Override
@@ -175,6 +159,17 @@ public class DebeziumConfiguration implements BeanClassLoaderAware {
 							(payload.equals(DebeziumConfiguration.this.kafkaNull))
 									? MimeTypeUtils.TEXT_PLAIN_VALUE
 									: this.contentType);
+
+			if (this.convertHeaders) {
+				List<Header<T>> headers = changeEvent.headers();
+				if (headers != null && !headers.isEmpty()) {
+					Iterator<Header<T>> itr = headers.iterator();
+					while (itr.hasNext()) {
+						Header<T> header = itr.next();
+						messageBuilder.setHeader(header.getKey(), header.getValue());
+					}
+				}
+			}
 
 			this.streamBridge.send(this.bindingName, messageBuilder.build());
 		}

@@ -55,7 +55,7 @@ public class DebeziumFlatteningIntegrationTest {
 	static final String DATABASE_NAME = "inventory";
 
 	@Container
-	static GenericContainer mySqlContainer = new GenericContainer<>("debezium/example-mysql:2.1.4.Final")
+	static GenericContainer<?> mySqlContainer = new GenericContainer<>("debezium/example-mysql:2.1.4.Final")
 			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 			.withEnv("MYSQL_USER", "mysqluser")
 			.withEnv("MYSQL_PASSWORD", "mysqlpw")

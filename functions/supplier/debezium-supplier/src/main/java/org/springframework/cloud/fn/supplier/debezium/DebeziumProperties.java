@@ -19,6 +19,8 @@ package org.springframework.cloud.fn.supplier.debezium;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.debezium.engine.format.SerializationFormat;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -31,11 +33,31 @@ public class DebeziumProperties {
 		/**
 		 * JSON change event format.
 		 */
-		JSON,
+		JSON(io.debezium.engine.format.JsonByteArray.class, "application/json"),
 		/**
 		 * AVRO change event format.
 		 */
-		AVRO
+		AVRO(io.debezium.engine.format.Avro.class, "application/avro"),
+		/**
+		 * ProtoBuf change event format.
+		 */
+		PROTOBUF(io.debezium.engine.format.Protobuf.class, "application/x-protobuf"),;
+
+		private final Class<? extends SerializationFormat<byte[]>> serializationFormat;
+		private final String contentType;
+
+		DebeziumFormat(Class<? extends SerializationFormat<byte[]>> serializationFormat, String contentType) {
+			this.serializationFormat = serializationFormat;
+			this.contentType = contentType;
+		}
+
+		public Class<? extends SerializationFormat<byte[]>> serializationFormat() {
+			return serializationFormat;
+		}
+
+		public final String contentType() {
+			return contentType;
+		}
 	};
 
 	/**
@@ -61,6 +83,11 @@ public class DebeziumProperties {
 	 * 'debezium-out-0'.
 	 */
 	private String bindingName = null;
+
+	/**
+	 * Copy Change Event headers into Message headers.
+	 */
+	private boolean convertHeaders = true;
 
 	public Consumer getConsumer() {
 		return consumer;
@@ -89,6 +116,14 @@ public class DebeziumProperties {
 
 	public void setBindingName(String overrideBindingName) {
 		this.bindingName = overrideBindingName;
+	}
+
+	public boolean isConvertHeaders() {
+		return convertHeaders;
+	}
+
+	public void setConvertHeaders(boolean convertHeaders) {
+		this.convertHeaders = convertHeaders;
 	}
 
 	public static class Consumer {
