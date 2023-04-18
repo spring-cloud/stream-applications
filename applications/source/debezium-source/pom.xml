@@ -84,7 +84,24 @@
 			<artifactId>mysql</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>4.0.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>11.0.14</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.0.0</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream-test-binder</artifactId>
@@ -114,9 +131,9 @@
 						<name>debezium</name>
 						<type>source</type>
 						<version>${project.version}</version>
-						<configClass>org.springframework.cloud.fn.supplier.cdc.CdcConfiguration.class
+						<configClass>org.springframework.cloud.fn.supplier.debezium.DebeziumConfiguration.class
 						</configClass>
-						<functionDefinition>cdcSupplier</functionDefinition>
+						<functionDefinition>debezium</functionDefinition>
 
 						<properties>
 							<spring.autoconfigure.exclude>org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration</spring.autoconfigure.exclude>

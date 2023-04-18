@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.cdc.streaming;
+package org.springframework.cloud.stream.app.source.debezium;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,9 +30,9 @@ import org.springframework.util.StreamUtils;
 /**
  * @author Christian Tzolov
  */
-public final class CdcTestUtils {
+public final class DebeziumTestUtils {
 
-	private CdcTestUtils() {
+	private DebeziumTestUtils() {
 
 	}
 

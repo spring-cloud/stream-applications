@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.cdc;
+package org.springframework.cloud.fn.supplier.debezium;
 
 import java.lang.reflect.Field;
 import java.util.Properties;
@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.function.context.FunctionProperties;
@@ -42,10 +43,10 @@ import org.springframework.util.MimeTypeUtils;
  * @author Christian Tzolov
  */
 @Configuration
-@EnableConfigurationProperties(CdcProperties.class)
-public class CdcConfiguration implements BeanClassLoaderAware {
+@EnableConfigurationProperties(DebeziumProperties.class)
+public class DebeziumConfiguration implements BeanClassLoaderAware {
 
-	private static final Log logger = LogFactory.getLog(CdcConfiguration.class);
+	private static final Log logger = LogFactory.getLog(DebeziumConfiguration.class);
 
 	/**
 	 * ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL.
@@ -66,20 +67,20 @@ public class CdcConfiguration implements BeanClassLoaderAware {
 	}
 
 	@Bean
-	public Properties cdcConfiguration(CdcProperties properties) {
+	public Properties debeziumConfiguration(DebeziumProperties properties) {
 		Properties outProps = new java.util.Properties();
 		outProps.putAll(properties.getDebezium());
 		return outProps;
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "cdc.format", havingValue = "json", matchIfMissing = true)
+	@ConditionalOnProperty(name = "cdc.format", havingValue = "JSON", matchIfMissing = true)
 	public DebeziumEngine<?> debeziumEngineJson(Consumer<ChangeEvent<String, String>> changeEventConsumer,
-			java.util.Properties cdcConfiguration) {
+			java.util.Properties debeziumConfiguration) {
 
 		DebeziumEngine<ChangeEvent<String, String>> debeziumEngine = DebeziumEngine
 				.create(io.debezium.engine.format.Json.class)
-				.using(cdcConfiguration)
+				.using(debeziumConfiguration)
 				.notifying(changeEventConsumer)
 				.build();
 
@@ -87,13 +88,13 @@ public class CdcConfiguration implements BeanClassLoaderAware {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "cdc.format", havingValue = "avro")
+	@ConditionalOnProperty(name = "cdc.format", havingValue = "AVRO")
 	public DebeziumEngine<?> debeziumEngineAvro(Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
-			java.util.Properties cdcConfiguration) {
+			java.util.Properties debeziumConfiguration) {
 
 		DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine = DebeziumEngine
 				.create(io.debezium.engine.format.Avro.class)
-				.using(cdcConfiguration)
+				.using(debeziumConfiguration)
 				.notifying(changeEventConsumer)
 				.build();
 
@@ -106,19 +107,20 @@ public class CdcConfiguration implements BeanClassLoaderAware {
 	}
 
 	@Bean
-	public BindingNameStrategy bindingNameStrategy(CdcProperties cdcProperties, FunctionProperties functionProperties) {
+	public BindingNameStrategy bindingNameStrategy(DebeziumProperties cdcProperties,
+			FunctionProperties functionProperties) {
 		return new BindingNameStrategy(cdcProperties, functionProperties);
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "cdc.disableDefaultConsumer", havingValue = "false", matchIfMissing = true)
+	@ConditionalOnExpression("${cdc.consumer.override:false}.equals(false) && '${cdc.format:JSON}'.equals('JSON')")
 	public Consumer<ChangeEvent<String, String>> stringSourceRecordConsumer(StreamBridge streamBridge,
 			BindingNameStrategy bindingNameStrategy) {
 		return new ChangeEventConsumer<String>(streamBridge, bindingNameStrategy.bindingName());
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "cdc.disableDefaultConsumer", havingValue = "false", matchIfMissing = true)
+	@ConditionalOnExpression("${cdc.consumer.override:false}.equals(false) && '${cdc.format:JSON}'.equals('AVRO')")
 	public Consumer<ChangeEvent<byte[], byte[]>> byteSourceRecordConsumer(StreamBridge streamBridge,
 			BindingNameStrategy bindingNameStrategy) {
 		return new ChangeEventConsumer<byte[]>(streamBridge, bindingNameStrategy.bindingName());
@@ -141,36 +143,36 @@ public class CdcConfiguration implements BeanClassLoaderAware {
 		@Override
 		public void accept(ChangeEvent<T, T> changeEvent) {
 
-			logger.debug("[CDC Event]: " + changeEvent.key());
+			logger.debug("[Debezium Event]: " + changeEvent.key());
 
 			Object key = changeEvent.key();
-			Object cdcJsonPayload = changeEvent.value();
+			Object payload = changeEvent.value();
 			String destination = changeEvent.destination();
 
 			// When the tombstone event is enabled, Debezium serializes the payload to null (e.g. empty payload)
 			// while the metadata information is carried through the headers (cdc_key).
-			// Note: Event for none flattened responses, when the cdc.config.tombstones.on.delete=true
+			// Note: Event for none flattened responses, when the cdc.debezium.tombstones.on.delete=true
 			// (default), tombstones are generate by Debezium and handled by the code below.
-			if (cdcJsonPayload == null) {
-				cdcJsonPayload = CdcConfiguration.this.kafkaNull;
+			if (payload == null) {
+				payload = DebeziumConfiguration.this.kafkaNull;
 			}
 
 			// If payload is still null ignore the message.
-			if (cdcJsonPayload == null) {
-				logger.info("dropped null payload message");
+			if (payload == null) {
+				logger.info("Dropped null payload message");
 				return;
 			}
 
 			MessageBuilder<?> messageBuilder = MessageBuilder
-					.withPayload(cdcJsonPayload)
+					.withPayload(payload)
 					.setHeader("cdc_key", key)
 					.setHeader("cdc_destination", destination)
 					.setHeader(MessageHeaders.CONTENT_TYPE,
-							(cdcJsonPayload.equals(CdcConfiguration.this.kafkaNull))
+							(payload.equals(DebeziumConfiguration.this.kafkaNull))
 									? MimeTypeUtils.TEXT_PLAIN_VALUE
 									: MimeTypeUtils.APPLICATION_JSON_VALUE);
 
-			streamBridge.send(bindingName, messageBuilder.build());
+			this.streamBridge.send(this.bindingName, messageBuilder.build());
 		}
 	}
 }

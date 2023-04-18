@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.cdc.consumer;
+package org.springframework.cloud.fn.supplier.debezium.consumer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +28,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.cloud.fn.supplier.cdc.CdcConfiguration;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
@@ -38,22 +38,22 @@ import org.springframework.context.annotation.Import;
  */
 @SpringBootConfiguration
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
-@Import(CdcConfiguration.class)
-public class TestCdcApplication {
+@Import(DebeziumConfiguration.class)
+public class DebeziumCustomConsumerApplication {
 
 	@Bean
-	@ConditionalOnProperty(name = "cdc.disableDefaultConsumer", havingValue = "true")
+	@ConditionalOnProperty(name = "cdc.consumer.override", havingValue = "true")
 	public Consumer<ChangeEvent<String, String>> mySourceRecordConsumer2() {
-		return new TestSourceRecordConsumer();
+		return new TestDebeziumConsumer();
 	}
 
-	public static class TestSourceRecordConsumer implements Consumer<ChangeEvent<String, String>> {
+	public static class TestDebeziumConsumer implements Consumer<ChangeEvent<String, String>> {
 
 		public Map<Object, Object> keyValue = new HashMap<>();
 
 		public List<ChangeEvent<String, String>> recordList = new CopyOnWriteArrayList<>();
 
-		public TestSourceRecordConsumer() {
+		public TestDebeziumConsumer() {
 		}
 
 		@Override

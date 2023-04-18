@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.cdc.streaming;
+package org.springframework.cloud.fn.supplier.debezium.streaming;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.supplier.cdc.BindingNameStrategy;
+import org.springframework.cloud.fn.supplier.debezium.BindingNameStrategy;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -40,16 +40,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Christian Tzolov
  */
 @Tag("integration")
-public class CdcSourceBindingNameTest {
+public class DebeziumSupplierBindingNameTest {
 
-	private static final String DEBEZIUM_EXAMPLE_POSTGRES_IMAGE = "debezium/example-postgres:2.1.4.Final";
-
-	private static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:2.1.4.Final";
-
-	private static final Log logger = LogFactory.getLog(CdcSourceBindingNameTest.class);
+	private static final Log logger = LogFactory.getLog(DebeziumSupplierBindingNameTest.class);
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
-			TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
+			TestChannelBinderConfiguration.getCompleteConfiguration(TestDebeziumSupplierApplication.class))
 					.web(WebApplicationType.NONE)
 					.properties(
 							"cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
@@ -68,23 +64,23 @@ public class CdcSourceBindingNameTest {
 							"cdc.debezium.database.hostname=localhost");
 
 	@Test
-	public void mysqlWithDefaultBindingName() {
-		innerTest(new String[0], "cdcSupplier-out-0");
+	public void defaultBindingName() {
+		innerTest(new String[0], "debezium-out-0");
 	}
 
 	@Test
-	public void mysqlWithCustomFunctionDefinition() {
-		innerTest(new String[]{"--spring.cloud.function.definition=mySupplier"}, "mySupplier-out-0");
+	public void customFunctionDefinition() {
+		innerTest(new String[] { "--spring.cloud.function.definition=mySupplier" }, "mySupplier-out-0");
 	}
 
 	@Test
-	public void mysqlWithOverrideBindingName() {
-		innerTest(new String[]{"--cdc.overrideBindingName=customBindingName"}, "customBindingName");
+	public void overrideBindingName() {
+		innerTest(new String[] { "--cdc.bindingName=customBindingName" }, "customBindingName");
 	}
 
 	private void innerTest(String[] testProperties, String expectedBindingName) {
 		try (
-				GenericContainer debeziumMySQL = new GenericContainer<>(DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
+				GenericContainer debeziumMySQL = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
 						.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 						.withEnv("MYSQL_USER", "mysqluser")
 						.withEnv("MYSQL_PASSWORD", "mysqlpw")
@@ -101,14 +97,14 @@ public class CdcSourceBindingNameTest {
 
 			try (ConfigurableApplicationContext context = applicationBuilder.run(result)) {
 
-				OutputDestination outputDestination = context.getBean(OutputDestination.class);
+				// Test binding name
 				BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
 				String bindingName = bindingNameStrategy.bindingName();
 				assertThat(bindingName).isEqualTo(expectedBindingName);
 
-				// Using local region here
-				List<Message<?>> messages = CdcTestUtils.receiveAll(outputDestination,
-						bindingNameStrategy.bindingName());
+				// Test debezium
+				OutputDestination outputDestination = context.getBean(OutputDestination.class);
+				List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingName);
 				assertThat(messages).isNotNull();
 				assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 			}

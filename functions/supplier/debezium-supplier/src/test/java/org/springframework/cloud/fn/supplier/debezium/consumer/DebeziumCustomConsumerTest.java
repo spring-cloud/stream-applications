@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.cdc.consumer;
+package org.springframework.cloud.fn.supplier.debezium.consumer;
 
 import java.io.File;
 import java.time.Duration;
@@ -29,10 +29,9 @@ import org.junit.jupiter.api.io.TempDir;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.fn.supplier.cdc.EmbeddedEngineExecutorService;
+import org.springframework.cloud.fn.supplier.debezium.EmbeddedEngineExecutorService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
@@ -44,7 +43,7 @@ import static org.awaitility.Awaitility.await;
  */
 @Tag("integration")
 @Testcontainers
-public class CdcBootStarterIntegrationTest {
+public class DebeziumCustomConsumerTest {
 	private static final Log logger = LogFactory.getLog(EmbeddedEngineExecutorService.class);
 
 	private static final String DATABASE_NAME = "inventory";
@@ -55,13 +54,11 @@ public class CdcBootStarterIntegrationTest {
 	static File anotherTempDir;
 
 	@Container
-	static GenericContainer debeziumMySQL = new GenericContainer<>(
-			DockerImageName.parse("debezium/example-mysql:2.1.4.Final"))
-					.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
-					.withEnv("MYSQL_USER", "mysqluser")
-					.withEnv("MYSQL_PASSWORD", "mysqlpw")
-					// .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("mysql")))
-					.withExposedPorts(3306);
+	static GenericContainer debeziumMySQL = new GenericContainer<>("debezium/example-mysql:2.1.4.Final")
+			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
+			.withEnv("MYSQL_USER", "mysqluser")
+			.withEnv("MYSQL_PASSWORD", "mysqlpw")
+			.withExposedPorts(3306);
 
 	private static JdbcTemplate jdbcTemplate;
 
@@ -76,9 +73,9 @@ public class CdcBootStarterIntegrationTest {
 	}
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withUserConfiguration(TestCdcApplication.class)
+			.withUserConfiguration(DebeziumCustomConsumerApplication.class)
 			.withPropertyValues(
-					"cdc.disableDefaultConsumer=true",
+					"cdc.consumer.override=true",
 					"spring.datasource.type=com.zaxxer.hikari.HikariDataSource",
 
 					"cdc.debezium.offset.storage=org.apache.kafka.connect.storage.FileOffsetBackingStore",
@@ -117,8 +114,8 @@ public class CdcBootStarterIntegrationTest {
 						"cdc.debezium.transforms.unwrap.delete.handling.mode=rewrite",
 						"cdc.debezium.transforms.unwrap.add.fields=name,db")
 				.run(context -> {
-					TestCdcApplication.TestSourceRecordConsumer testConsumer = context
-							.getBean(TestCdcApplication.TestSourceRecordConsumer.class);
+					DebeziumCustomConsumerApplication.TestDebeziumConsumer testConsumer = context
+							.getBean(DebeziumCustomConsumerApplication.TestDebeziumConsumer.class);
 					jdbcTemplate.update(
 							"insert into `customers`(`first_name`,`last_name`,`email`) " +
 									"VALUES('Test666', 'Test666', 'Test666@spring.org')");

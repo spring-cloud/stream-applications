@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.cdc;
+package org.springframework.cloud.fn.supplier.debezium;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
 
 /**
- *
  * @author Christian Tzolov
  */
 @ConfigurationProperties("cdc")
-@Validated
-public class CdcProperties {
+public class DebeziumProperties {
 
-	enum DebeziumFormat {
-		json, avro
+	public enum DebeziumFormat {
+		/**
+		 * JSON change event format.
+		 */
+		JSON,
+		/**
+		 * AVRO change event format.
+		 */
+		AVRO
 	};
 
 	/**
@@ -42,29 +46,24 @@ public class CdcProperties {
 	private Map<String, String> debezium = defaultConfig();
 
 	/**
-	 * When set to 'true', it allows replace the default Consumer or ChangeEvent implementation. Do not change unless
-	 * you know what you are doing.
+	 * Even Change Consumer configurations.
 	 */
-	private boolean disableDefaultConsumer = false;
+	private Consumer consumer = new Consumer();
 
 	/**
 	 * (Experimental) Debezium message format. Defaults to 'json'.
 	 */
-	private DebeziumFormat format = DebeziumFormat.json;
+	private DebeziumFormat format = DebeziumFormat.JSON;
 
 	/**
 	 * If set overrides the default message binding name. If not set the binding name is computed from the function
 	 * definition name and the '-out-0' suffix. If the function definition name is empty, the binding name defaults to
-	 * 'cdcSupplier-out-0'.
+	 * 'debezium-out-0'.
 	 */
-	private String overrideBindingName = null;
+	private String bindingName = null;
 
-	public boolean isDisableDefaultConsumer() {
-		return disableDefaultConsumer;
-	}
-
-	public void setDisableDefaultConsumer(boolean disableDefaultConsumer) {
-		this.disableDefaultConsumer = disableDefaultConsumer;
+	public Consumer getConsumer() {
+		return consumer;
 	}
 
 	public Map<String, String> getDebezium() {
@@ -84,11 +83,28 @@ public class CdcProperties {
 		this.format = format;
 	}
 
-	public String getOverrideBindingName() {
-		return overrideBindingName;
+	public String getBindingName() {
+		return bindingName;
 	}
 
-	public void setOverrideBindingName(String overrideBindingName) {
-		this.overrideBindingName = overrideBindingName;
+	public void setBindingName(String overrideBindingName) {
+		this.bindingName = overrideBindingName;
+	}
+
+	public static class Consumer {
+
+		/**
+		 * When set to 'true', enables overriding the default Consumer. Do not change unless you know what you are
+		 * doing.
+		 */
+		private boolean override = false;
+
+		public boolean isOverride() {
+			return override;
+		}
+
+		public void setOverride(boolean enabled) {
+			this.override = enabled;
+		}
 	}
 }

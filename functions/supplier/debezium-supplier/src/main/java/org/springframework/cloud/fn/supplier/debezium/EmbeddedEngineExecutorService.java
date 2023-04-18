@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.cdc;
+package org.springframework.cloud.fn.supplier.debezium;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;

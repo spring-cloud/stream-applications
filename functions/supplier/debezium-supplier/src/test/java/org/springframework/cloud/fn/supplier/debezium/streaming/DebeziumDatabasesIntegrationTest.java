@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.cdc.streaming;
+package org.springframework.cloud.fn.supplier.debezium.streaming;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.supplier.cdc.BindingNameStrategy;
+import org.springframework.cloud.fn.supplier.debezium.BindingNameStrategy;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -44,16 +44,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Artem Bilan
  */
 @Tag("integration")
-public class CdcSourceDatabasesIntegrationTest {
+public class DebeziumDatabasesIntegrationTest {
 
-	private static final String DEBEZIUM_EXAMPLE_POSTGRES_IMAGE = "debezium/example-postgres:2.1.4.Final";
-
-	private static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:2.1.4.Final";
-
-	private static final Log logger = LogFactory.getLog(CdcSourceDatabasesIntegrationTest.class);
+	private static final Log logger = LogFactory.getLog(DebeziumDatabasesIntegrationTest.class);
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
-			TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
+			TestChannelBinderConfiguration.getCompleteConfiguration(TestDebeziumSupplierApplication.class))
 					.web(WebApplicationType.NONE)
 					.properties(
 							// Flattering:
@@ -76,7 +72,7 @@ public class CdcSourceDatabasesIntegrationTest {
 
 	@Test
 	public void mysql() {
-		GenericContainer debeziumMySQL = new GenericContainer<>(DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
+		GenericContainer debeziumMySQL = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
 				.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 				.withEnv("MYSQL_USER", "mysqluser")
 				.withEnv("MYSQL_PASSWORD", "mysqlpw")
@@ -96,7 +92,7 @@ public class CdcSourceDatabasesIntegrationTest {
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
 			// Using local region here
-			List<Message<?>> messages = CdcTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
+			List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
 			assertThat(messages).isNotNull();
 			// Message size should correspond to the number of insert statements in the sample inventor DB configured in
 			// the debezium/example-mysql:2.1.4.Final:
@@ -107,7 +103,7 @@ public class CdcSourceDatabasesIntegrationTest {
 
 	@Test
 	public void postgres() {
-		GenericContainer postgres = new GenericContainer(DEBEZIUM_EXAMPLE_POSTGRES_IMAGE)
+		GenericContainer postgres = new GenericContainer(DebeziumTestUtils.DEBEZIUM_EXAMPLE_POSTGRES_IMAGE)
 				.withEnv("POSTGRES_USER", "postgres")
 				.withEnv("POSTGRES_PASSWORD", "postgres")
 				.withExposedPorts(5432)
@@ -130,7 +126,7 @@ public class CdcSourceDatabasesIntegrationTest {
 
 			List<Message<?>> allMessages = new ArrayList<>();
 			Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
-				List<Message<?>> messageChunk = CdcTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
+				List<Message<?>> messageChunk = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
 				if (!CollectionUtils.isEmpty(messageChunk)) {
 					logger.info("Chunk size: " + messageChunk.size());
 					allMessages.addAll(messageChunk);

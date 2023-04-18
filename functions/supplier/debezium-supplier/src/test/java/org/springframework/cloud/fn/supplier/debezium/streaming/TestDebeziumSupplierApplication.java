@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 the original author or authors.
+ * Copyright 2022-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.source.cdc;
+package org.springframework.cloud.fn.supplier.debezium.streaming;
 
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.cloud.fn.supplier.cdc.CdcConfiguration;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumConfiguration;
 import org.springframework.context.annotation.Import;
 
 /**
  * @author Christian Tzolov
  */
 @SpringBootConfiguration
-@EnableAutoConfiguration(exclude = MongoAutoConfiguration.class)
-@Import(CdcConfiguration.class)
-public class TestCdcSourceApplication {
+@EnableAutoConfiguration(exclude = { MongoAutoConfiguration.class, DataSourceAutoConfiguration.class })
+@Import(DebeziumConfiguration.class)
+public class TestDebeziumSupplierApplication {
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 the original author or authors.
+ * Copyright 2020-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.source.cdc;
+package org.springframework.cloud.fn.supplier.debezium.streaming;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -24,38 +24,19 @@ import java.util.List;
 
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.messaging.Message;
 import org.springframework.util.StreamUtils;
 
 /**
  * @author Christian Tzolov
  */
-public final class CdcTestUtils {
+public final class DebeziumTestUtils {
 
-	/**
-	 * derived from the spring.cloud.function.definition value
-	 */
-	public static final String CDC_SUPPLIER_OUT_0 = "cdcSupplier-out-0";
+	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:2.1.4.Final";
+	public static final String DEBEZIUM_EXAMPLE_POSTGRES_IMAGE = "debezium/example-postgres:2.1.4.Final";
 
-	private CdcTestUtils() {
+	private DebeziumTestUtils() {
 
-	}
-
-	public static JdbcTemplate jdbcTemplate(String jdbcDriver, String jdbcUrl, String user, String password) {
-
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(jdbcDriver);
-		dataSource.setUrl(jdbcUrl);
-		dataSource.setUsername(user);
-		dataSource.setPassword(password);
-
-		return new JdbcTemplate(dataSource);
-	}
-
-	public static List<Message<?>> receiveAll(OutputDestination outputDestination) {
-		return receiveAll(outputDestination, CDC_SUPPLIER_OUT_0);
 	}
 
 	public static List<Message<?>> receiveAll(OutputDestination outputDestination, String bindingName) {
@@ -66,7 +47,8 @@ public final class CdcTestUtils {
 			if (received != null) {
 				list.add(received);
 			}
-		} while (received != null);
+		}
+		while (received != null);
 		return list;
 	}
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.cdc.streaming;
+package org.springframework.cloud.fn.supplier.debezium.streaming;
 
 import java.time.Duration;
 import java.util.List;
@@ -27,7 +27,7 @@ import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.supplier.cdc.BindingNameStrategy;
+import org.springframework.cloud.fn.supplier.debezium.BindingNameStrategy;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -39,17 +39,16 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Christian Tzolov
  */
 @Tag("integration")
-public class CdcSourceAvroFormatTest {
+public class DebeziumSupplierAvroFormatTest {
 
-	private static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:2.1.4.Final";
-
-	private static final Log logger = LogFactory.getLog(CdcSourceBindingNameTest.class);
+	private static final Log logger = LogFactory.getLog(DebeziumSupplierAvroFormatTest.class);
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
-			TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
+			TestChannelBinderConfiguration.getCompleteConfiguration(TestDebeziumSupplierApplication.class))
 					.web(WebApplicationType.NONE)
 					.properties(
-							"cdc.format=avro",
+							"cdc.format=AVRO",
+
 							"cdc.debezium.key.converter=io.apicurio.registry.utils.converter.AvroConverter",
 							"cdc.debezium.key.converter.apicurio.registry.auto-register=true",
 							"cdc.debezium.key.converter.apicurio.registry.find-latest=true",
@@ -66,7 +65,12 @@ public class CdcSourceAvroFormatTest {
 							"cdc.debezium.topic.prefix=my-topic",
 							"cdc.debezium.name=my-connector",
 							"cdc.debezium.database.server.id=85744",
-							"cdc.debezium.database.server.name=my-app-connector");
+							"cdc.debezium.database.server.name=my-app-connector",
+
+							"cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
+							"cdc.debezium.database.user=debezium",
+							"cdc.debezium.database.password=dbz",
+							"cdc.debezium.database.hostname=localhost");
 
 	@Test
 	public void mysqlWithAvroContentFormat() {
@@ -77,7 +81,7 @@ public class CdcSourceAvroFormatTest {
 						.withStartupTimeout(Duration.ofSeconds(120))
 						.withStartupAttempts(3);
 
-				GenericContainer debeziumMySQL = new GenericContainer<>(DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
+				GenericContainer debeziumMySQL = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
 						.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 						.withEnv("MYSQL_USER", "mysqluser")
 						.withEnv("MYSQL_PASSWORD", "mysqlpw")
@@ -97,16 +101,11 @@ public class CdcSourceAvroFormatTest {
 									+ APICURIO_MAPPED_PORT + "/apis/registry/v2",
 							"--cdc.debezium.value.converter.apicurio.registry.url=http://localhost:"
 									+ APICURIO_MAPPED_PORT + "/apis/registry/v2",
-
-							"--cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
-							"--cdc.debezium.database.user=debezium",
-							"--cdc.debezium.database.password=dbz",
-							"--cdc.debezium.database.hostname=localhost",
 							"--cdc.debezium.database.port=" + MYSQL_MAPPED_PORT)) {
 				OutputDestination outputDestination = context.getBean(OutputDestination.class);
 				BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
 				// Using local region here
-				List<Message<?>> messages = CdcTestUtils.receiveAll(outputDestination,
+				List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination,
 						bindingNameStrategy.bindingName());
 				assertThat(messages).isNotNull();
 				// Message size should correspond to the number of insert statements in the sample inventor DB

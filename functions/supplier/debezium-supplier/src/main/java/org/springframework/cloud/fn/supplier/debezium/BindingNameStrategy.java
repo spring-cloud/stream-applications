@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.cdc;
+package org.springframework.cloud.fn.supplier.debezium;
 
 import org.springframework.cloud.function.context.FunctionProperties;
 import org.springframework.util.StringUtils;
@@ -22,25 +22,25 @@ import org.springframework.util.StringUtils;
 /**
  * Computes the binding name. If the 'overrideBindingName' property is not empty it is used as binding name. Otherwise
  * the binding name is computed from the function definition name and the '-out-0' suffix. If the function definition
- * name is empty, then the binding name defaults to 'cdcSupplier-out-0'.
+ * name is empty, then the binding name defaults to 'debezium-out-0'.
  */
 public class BindingNameStrategy {
 
-	private static final String DEFAULT_FUNCTION_DEFINITION_NAME = "cdcSupplier";
+	private static final String DEFAULT_FUNCTION_DEFINITION_NAME = "debezium";
 	private static final String DEFAULT_SUFFIX = "-out-0";
 
-	private CdcProperties cdcProperties;
+	private DebeziumProperties cdcProperties;
 	private FunctionProperties functionProperties;
 
-	public BindingNameStrategy(CdcProperties cdcProperties, FunctionProperties functionProperties) {
+	public BindingNameStrategy(DebeziumProperties cdcProperties, FunctionProperties functionProperties) {
 		this.cdcProperties = cdcProperties;
 		this.functionProperties = functionProperties;
 	}
 
 	public String bindingName() {
 
-		if (StringUtils.hasText(cdcProperties.getOverrideBindingName())) {
-			return cdcProperties.getOverrideBindingName();
+		if (StringUtils.hasText(cdcProperties.getBindingName())) {
+			return cdcProperties.getBindingName();
 		}
 		else if (StringUtils.hasText(functionProperties.getDefinition())) {
 			return functionProperties.getDefinition() + DEFAULT_SUFFIX;

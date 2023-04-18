@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.source.cdc;
+package org.springframework.cloud.stream.app.source.debezium;
 
+import java.time.Duration;
 import java.util.List;
 
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
-import org.springframework.cloud.fn.supplier.cdc.CdcConfiguration;
-import org.springframework.cloud.fn.supplier.cdc.CdcProperties;
+import org.springframework.cloud.fn.supplier.debezium.BindingNameStrategy;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumConfiguration;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.kafka.support.KafkaNull;
 import org.springframework.messaging.Message;
 import org.springframework.test.jdbc.JdbcTestUtils;
@@ -43,13 +49,25 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author David Turanski
  * @author Artem Bilan
  */
-public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
+@Testcontainers
+public class DebeziumFlatteningIntegrationTest {
+
+	static final String DATABASE_NAME = "inventory";
+
+	@Container
+	static GenericContainer mySqlContainer = new GenericContainer<>("debezium/example-mysql:2.1.4.Final")
+			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
+			.withEnv("MYSQL_USER", "mysqluser")
+			.withEnv("MYSQL_PASSWORD", "mysqlpw")
+			.withExposedPorts(3306)
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(
 					TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
 			.withPropertyValues(
-					"spring.cloud.function.definition=cdcSupplier",
+					"spring.cloud.function.definition=debezium",
 
 					"cdc.debezium.schema=false",
 
@@ -67,10 +85,18 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 					"cdc.debezium.database.user=debezium",
 					"cdc.debezium.database.password=dbz",
 					"cdc.debezium.database.hostname=localhost",
-					"cdc.debezium.database.port=" + MAPPED_PORT,
+					"cdc.debezium.database.port=" + mySqlContainer.getMappedPort(3306),
 					"cdc.debezium.database.server.id=85744",
 					"cdc.debezium.database.server.name=my-app-connector",
-					"cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory");
+					"cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
+
+					// JdbcTemplate configuration
+					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
+							mySqlContainer.getMappedPort(3306), DATABASE_NAME),
+					"app.datasource.username=root",
+					"app.datasource.password=debezium",
+					"app.datasource.driver-class-name=com.mysql.cj.jdbc.Driver",
+					"app.datasource.type=com.zaxxer.hikari.HikariDataSource");
 
 	@Test
 	public void noFlattenedResponseNoKafka() {
@@ -86,13 +112,16 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 	final ContextConsumer<? super ApplicationContext> noFlatteningTest = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
-		boolean isKafkaPresent = ClassUtils.isPresent(CdcConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+		JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
+		BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
+		boolean isKafkaPresent = ClassUtils.isPresent(
+				DebeziumConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
-		List<Message<?>> messages = CdcTestUtils.receiveAll(outputDestination);
+		List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
 		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
-		JsonAssert.assertJsonEquals(CdcTestUtils.resourceToString(
+		JsonAssert.assertJsonEquals(DebeziumTestUtils.resourceToString(
 				"classpath:/json/mysql_ddl_drop_inventory_address_table.json"),
 				toString(messages.get(1).getPayload()),
 				Configuration.empty().whenIgnoringPaths("schemaName", "tableChanges", "source.sequence",
@@ -102,7 +131,7 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 				toString(messages.get(1).getHeaders().get("cdc_key")));
 
 		JsonAssert.assertJsonEquals(
-				CdcTestUtils.resourceToString("classpath:/json/mysql_insert_inventory_products_106.json"),
+				DebeziumTestUtils.resourceToString("classpath:/json/mysql_insert_inventory_products_106.json"),
 				toString(messages.get(39).getPayload()),
 				Configuration.empty().whenIgnoringPaths("source.sequence", "source.ts_ms"));
 		assertThat(messages.get(39).getHeaders().get("cdc_destination")).isEqualTo("my-topic.inventory.products");
@@ -115,19 +144,19 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 		jdbcTemplate.update("UPDATE `customers` SET `last_name`='Test999' WHERE first_name = 'Test666'");
 		JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 
-		messages = CdcTestUtils.receiveAll(outputDestination);
+		messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
 
 		assertThat(messages).hasSize(isKafkaPresent ? 4 : 3);
 
 		JsonAssert.assertJsonEquals(
-				CdcTestUtils.resourceToString("classpath:/json/mysql_update_inventory_customers.json"),
+				DebeziumTestUtils.resourceToString("classpath:/json/mysql_update_inventory_customers.json"),
 				toString(messages.get(1).getPayload()), Configuration.empty().whenIgnoringPaths("source.sequence"));
 		assertThat(messages.get(1).getHeaders().get("cdc_destination")).isEqualTo("my-topic.inventory.customers");
 		JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}",
 				toString(messages.get(1).getHeaders().get("cdc_key")));
 
 		JsonAssert.assertJsonEquals(
-				CdcTestUtils.resourceToString("classpath:/json/mysql_delete_inventory_customers.json"),
+				DebeziumTestUtils.resourceToString("classpath:/json/mysql_delete_inventory_customers.json"),
 				toString(messages.get(2).getPayload()), Configuration.empty().whenIgnoringPaths("source.sequence"));
 		assertThat(messages.get(1).getHeaders().get("cdc_destination")).isEqualTo("my-topic.inventory.customers");
 
@@ -136,7 +165,7 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 		if (isKafkaPresent) {
 			assertThat(messages.get(3).getPayload().getClass().getCanonicalName())
-					.isEqualTo(CdcConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+					.isEqualTo(DebeziumConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 							"Tombstones event should have KafkaNull payload");
 			assertThat(messages.get(3).getHeaders().get("cdc_destination"))
 					.isEqualTo("my-topic.inventory.customers");
@@ -181,18 +210,21 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 	final ContextConsumer<? super ApplicationContext> flatteningTest = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
-		boolean isKafkaPresent = ClassUtils.isPresent(CdcConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+		JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
+		BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
+		boolean isKafkaPresent = ClassUtils.isPresent(
+				DebeziumConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
-		List<Message<?>> messages = CdcTestUtils.receiveAll(outputDestination);
+		List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
 		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
-		CdcProperties props = context.getBean(CdcProperties.class);
+		DebeziumProperties props = context.getBean(DebeziumProperties.class);
 
 		String deleteHandlingMode = props.getDebezium().get("transforms.unwrap.delete.handling.mode");
 		String isDropTombstones = props.getDebezium().get("transforms.unwrap.drop.tombstones");
 
-		JsonAssert.assertJsonEquals(CdcTestUtils.resourceToString(
+		JsonAssert.assertJsonEquals(DebeziumTestUtils.resourceToString(
 				"classpath:/json/mysql_ddl_drop_inventory_address_table.json"),
 				toString(messages.get(1).getPayload()),
 				Configuration.empty().whenIgnoringPaths("schemaName", "tableChanges", "source.sequence",
@@ -203,12 +235,13 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 		if (isFlatteningEnabled(props)) {
 			JsonAssert.assertJsonEquals(
-					CdcTestUtils.resourceToString("classpath:/json/mysql_flattened_insert_inventory_products_106.json"),
+					DebeziumTestUtils
+							.resourceToString("classpath:/json/mysql_flattened_insert_inventory_products_106.json"),
 					toString(messages.get(39).getPayload()));
 		}
 		else {
 			JsonAssert.assertJsonEquals(
-					CdcTestUtils.resourceToString("classpath:/json/mysql_insert_inventory_products_106.json"),
+					DebeziumTestUtils.resourceToString("classpath:/json/mysql_insert_inventory_products_106.json"),
 					toString(messages.get(39).getPayload()));
 		}
 		assertThat(messages.get(39).getHeaders().get("cdc_destination")).isEqualTo("my-topic.inventory.products");
@@ -221,12 +254,12 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 		jdbcTemplate.update("UPDATE `customers` SET `last_name`='Test999' WHERE first_name = 'Test666'");
 		JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 
-		messages = CdcTestUtils.receiveAll(outputDestination);
+		messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
 
 		assertThat(messages).hasSize((isDropTombstones.equals("false") && isKafkaPresent) ? 4 : 3);
 
 		JsonAssert.assertJsonEquals(
-				CdcTestUtils.resourceToString("classpath:/json/mysql_flattened_update_inventory_customers.json"),
+				DebeziumTestUtils.resourceToString("classpath:/json/mysql_flattened_update_inventory_customers.json"),
 				toString(messages.get(1).getPayload()));
 
 		assertThat(messages.get(1).getHeaders().get("cdc_destination")).isEqualTo("my-topic.inventory.customers");
@@ -242,7 +275,7 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 
 		if (isDropTombstones.equals("false") && isKafkaPresent) {
 			assertThat(messages.get(3).getPayload().getClass().getCanonicalName())
-					.isEqualTo(CdcConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+					.isEqualTo(DebeziumConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 							"Tombstones event should have KafkaNull payload");
 			assertThat(messages.get(3).getHeaders().get("cdc_destination"))
 					.isEqualTo("my-topic.inventory.customers");
@@ -251,7 +284,7 @@ public class CdcFlatteningIntegrationTest extends CdcMySqlTestSupport {
 		}
 	};
 
-	private static boolean isFlatteningEnabled(CdcProperties props) {
+	private static boolean isFlatteningEnabled(DebeziumProperties props) {
 		String unwrapType = props.getDebezium().get("transforms.unwrap.type");
 		return StringUtils.hasText(unwrapType) && unwrapType.equals("io.debezium.transforms.ExtractNewRecordState");
 	}
