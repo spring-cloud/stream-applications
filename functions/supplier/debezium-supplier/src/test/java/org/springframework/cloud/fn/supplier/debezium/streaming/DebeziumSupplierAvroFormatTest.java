@@ -19,8 +19,6 @@ package org.springframework.cloud.fn.supplier.debezium.streaming;
 import java.time.Duration;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
@@ -43,8 +41,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Tag("integration")
 @Testcontainers
 public class DebeziumSupplierAvroFormatTest {
-
-	private static final Log logger = LogFactory.getLog(DebeziumSupplierAvroFormatTest.class);
 
 	// E.g. docker run -it --rm --name apicurio -p 8080:8080 apicurio/apicurio-registry-mem:2.4.1.Final
 	@Container
@@ -79,8 +75,6 @@ public class DebeziumSupplierAvroFormatTest {
 							"cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
 							"cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
 
-							"cdc.debezium.schema=false",
-
 							"cdc.debezium.topic.prefix=my-topic",
 							"cdc.debezium.name=my-connector",
 							"cdc.debezium.database.server.id=85744",
@@ -94,28 +88,28 @@ public class DebeziumSupplierAvroFormatTest {
 	@Test
 	public void mysqlWithAvroContentFormat() {
 
-		String APICURIO_MAPPED_PORT = String.valueOf(apicurio.getMappedPort(8080));
 		String MYSQL_MAPPED_PORT = String.valueOf(debeziumMySQL.getMappedPort(3306));
+		String APICURIO_URL = "http://localhost:" + String.valueOf(apicurio.getMappedPort(8080)) + "/apis/registry/v2";
 
-		try (ConfigurableApplicationContext context = applicationBuilder
-				.run(
-						"--cdc.debezium.key.converter.apicurio.registry.url=http://localhost:"
-								+ APICURIO_MAPPED_PORT + "/apis/registry/v2",
-						"--cdc.debezium.value.converter.apicurio.registry.url=http://localhost:"
-								+ APICURIO_MAPPED_PORT + "/apis/registry/v2",
-						"--cdc.debezium.database.port=" + MYSQL_MAPPED_PORT)) {
+		try (ConfigurableApplicationContext context = applicationBuilder.run(
+				"--cdc.debezium.key.converter.apicurio.registry.url=" + APICURIO_URL,
+				"--cdc.debezium.value.converter.apicurio.registry.url=" + APICURIO_URL,
+				"--cdc.debezium.database.port=" + MYSQL_MAPPED_PORT)) {
+
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
+
 			// Using local region here
 			List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination,
 					bindingNameStrategy.bindingName());
+
 			assertThat(messages).isNotNull();
 			// Message size should correspond to the number of insert statements in the sample inventor DB
 			// configured by:
 			// https://github.com/debezium/container-images/blob/main/examples/mysql/2.1/inventory.sql
 			assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
-			// assertThat(messages).map(message -> message.getHeaders().get("contentType")).isEqualTo("application/avro"); // TEST utils bug.
+			// assertThat(messages).map(message ->
+			// message.getHeaders().get("contentType")).isEqualTo("application/avro"); // TEST utils bug.
 		}
-
 	}
 }

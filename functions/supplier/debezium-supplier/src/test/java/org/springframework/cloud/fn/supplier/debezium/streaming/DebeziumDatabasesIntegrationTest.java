@@ -81,17 +81,19 @@ public class DebeziumDatabasesIntegrationTest {
 				.withStartupAttempts(3);
 		debeziumMySQL.start();
 
-		try (ConfigurableApplicationContext context = applicationBuilder
-				.run("--cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
-						"--cdc.debezium.database.user=debezium",
-						"--cdc.debezium.database.password=dbz",
-						"--cdc.debezium.database.hostname=localhost",
-						"--cdc.debezium.database.port=" + debeziumMySQL.getMappedPort(3306))) {
+		try (ConfigurableApplicationContext context = applicationBuilder.run(
+				"--cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
+				"--cdc.debezium.database.user=debezium",
+				"--cdc.debezium.database.password=dbz",
+				"--cdc.debezium.database.hostname=localhost",
+				"--cdc.debezium.database.port=" + debeziumMySQL.getMappedPort(3306))) {
+
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
-			// Using local region here
+
 			List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination,
 					bindingNameStrategy.bindingName());
+
 			assertThat(messages).isNotNull();
 			// Message size should correspond to the number of insert statements in:
 			// https://github.com/debezium/container-images/blob/main/examples/mysql/2.1/inventory.sql
@@ -109,18 +111,17 @@ public class DebeziumDatabasesIntegrationTest {
 				.withStartupAttempts(3);
 		postgres.start();
 
-		try (ConfigurableApplicationContext context = applicationBuilder
-				.run("--cdc.debezium.connector.class=io.debezium.connector.postgresql.PostgresConnector",
-						"--cdc.debezium.database.user=postgres",
-						"--cdc.debezium.database.password=postgres",
-						"--cdc.debezium.slot.name=debezium",
-						"--cdc.debezium.database.dbname=postgres",
-						"--cdc.debezium.database.hostname=localhost",
-						// "--cdc.debezium.table.include.list=inventory.*",
-						"--cdc.debezium.database.port=" + postgres.getMappedPort(5432))) {
+		try (ConfigurableApplicationContext context = applicationBuilder.run(
+				"--cdc.debezium.connector.class=io.debezium.connector.postgresql.PostgresConnector",
+				"--cdc.debezium.database.user=postgres",
+				"--cdc.debezium.database.password=postgres",
+				"--cdc.debezium.slot.name=debezium",
+				"--cdc.debezium.database.dbname=postgres",
+				"--cdc.debezium.database.hostname=localhost",
+				"--cdc.debezium.database.port=" + postgres.getMappedPort(5432))) {
+
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
-			// Using local region here
 
 			List<Message<?>> allMessages = new ArrayList<>();
 			Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {

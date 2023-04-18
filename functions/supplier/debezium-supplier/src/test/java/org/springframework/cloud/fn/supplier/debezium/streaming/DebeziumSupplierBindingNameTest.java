@@ -19,8 +19,6 @@ package org.springframework.cloud.fn.supplier.debezium.streaming;
 import java.time.Duration;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
@@ -81,7 +79,8 @@ public class DebeziumSupplierBindingNameTest {
 	@Test
 	public void customFunctionDefinition() {
 		innerTest(
-				new String[] { "--spring.cloud.function.definition=mySupplier",
+				new String[] {
+						"--spring.cloud.function.definition=mySupplier",
 						"--cdc.debezium.database.port=" + String.valueOf(mySQL.getMappedPort(3306)) },
 				"mySupplier-out-0");
 	}
@@ -89,7 +88,8 @@ public class DebeziumSupplierBindingNameTest {
 	@Test
 	public void overrideBindingName() {
 		innerTest(
-				new String[] { "--cdc.bindingName=customBindingName",
+				new String[] {
+						"--cdc.bindingName=customBindingName",
 						"--cdc.debezium.database.port=" + String.valueOf(mySQL.getMappedPort(3306)) },
 				"customBindingName");
 	}
