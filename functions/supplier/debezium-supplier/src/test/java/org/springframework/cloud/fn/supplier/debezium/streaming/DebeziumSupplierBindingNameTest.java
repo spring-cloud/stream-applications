@@ -27,7 +27,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.supplier.debezium.BindingNameStrategy;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration.BindingNameStrategy;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumTestUtils;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;

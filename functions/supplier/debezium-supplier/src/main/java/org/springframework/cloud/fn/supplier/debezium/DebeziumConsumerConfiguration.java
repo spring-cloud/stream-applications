@@ -19,17 +19,15 @@ package org.springframework.cloud.fn.supplier.debezium;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.function.Consumer;
 
 import io.debezium.engine.ChangeEvent;
-import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.function.context.FunctionProperties;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -39,6 +37,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.util.StringUtils;
 
 /**
  *
@@ -46,9 +45,9 @@ import org.springframework.util.MimeTypeUtils;
  */
 @Configuration
 @EnableConfigurationProperties(DebeziumProperties.class)
-public class DebeziumConfiguration implements BeanClassLoaderAware {
+public class DebeziumConsumerConfiguration implements BeanClassLoaderAware {
 
-	private static final Log logger = LogFactory.getLog(DebeziumConfiguration.class);
+	private static final Log logger = LogFactory.getLog(DebeziumConsumerConfiguration.class);
 	/**
 	 * ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL.
 	 */
@@ -68,41 +67,13 @@ public class DebeziumConfiguration implements BeanClassLoaderAware {
 	}
 
 	@Bean
-	public Properties debeziumConfiguration(DebeziumProperties properties) {
-		Properties outProps = new java.util.Properties();
-		outProps.putAll(properties.getDebezium());
-		return outProps;
-	}
-
-	@Bean
-	public DebeziumEngine<?> debeziumEngine(Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
-			DebeziumProperties properties) {
-
-		Properties debeziumConfiguration = new java.util.Properties();
-		debeziumConfiguration.putAll(properties.getDebezium());
-
-		DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine = DebeziumEngine
-				.create(properties.getFormat().serializationFormat())
-				.using(debeziumConfiguration)
-				.notifying(changeEventConsumer)
-				.build();
-
-		return debeziumEngine;
-	}
-
-	@Bean
-	public EmbeddedEngineExecutorService embeddedEngine(DebeziumEngine<?> debeziumEngine) {
-		return new EmbeddedEngineExecutorService(debeziumEngine);
-	}
-
-	@Bean
 	public BindingNameStrategy bindingNameStrategy(DebeziumProperties cdcProperties,
 			FunctionProperties functionProperties) {
 		return new BindingNameStrategy(cdcProperties, functionProperties);
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "cdc.consumer.override", havingValue = "false", matchIfMissing = true)
+	@ConditionalOnMissingBean
 	public Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer(StreamBridge streamBridge,
 			BindingNameStrategy bindingNameStrategy, DebeziumProperties properties) {
 
@@ -142,7 +113,7 @@ public class DebeziumConfiguration implements BeanClassLoaderAware {
 			// Note: Event for none flattened responses, when the cdc.debezium.tombstones.on.delete=true
 			// (default), tombstones are generate by Debezium and handled by the code below.
 			if (payload == null) {
-				payload = DebeziumConfiguration.this.kafkaNull;
+				payload = DebeziumConsumerConfiguration.this.kafkaNull;
 			}
 
 			// If payload is still null ignore the message.
@@ -156,7 +127,7 @@ public class DebeziumConfiguration implements BeanClassLoaderAware {
 					.setHeader("cdc_key", key)
 					.setHeader("cdc_destination", destination)
 					.setHeader(MessageHeaders.CONTENT_TYPE,
-							(payload.equals(DebeziumConfiguration.this.kafkaNull))
+							(payload.equals(DebeziumConsumerConfiguration.this.kafkaNull))
 									? MimeTypeUtils.TEXT_PLAIN_VALUE
 									: this.contentType);
 
@@ -172,6 +143,37 @@ public class DebeziumConfiguration implements BeanClassLoaderAware {
 			}
 
 			this.streamBridge.send(this.bindingName, messageBuilder.build());
+		}
+	}
+
+	/**
+	 * Computes the binding name. If the 'overrideBindingName' property is not empty it is used as binding name.
+	 * Otherwise the binding name is computed from the function definition name and the '-out-0' suffix. If the function
+	 * definition name is empty, then the binding name defaults to 'debezium-out-0'.
+	 */
+	public static class BindingNameStrategy {
+
+		private static final String DEFAULT_FUNCTION_DEFINITION_NAME = "debezium";
+		private static final String DEFAULT_SUFFIX = "-out-0";
+
+		private DebeziumProperties cdcProperties;
+		private FunctionProperties functionProperties;
+
+		public BindingNameStrategy(DebeziumProperties cdcProperties, FunctionProperties functionProperties) {
+			this.cdcProperties = cdcProperties;
+			this.functionProperties = functionProperties;
+		}
+
+		public String bindingName() {
+
+			if (StringUtils.hasText(cdcProperties.getBindingName())) {
+				return cdcProperties.getBindingName();
+			}
+			else if (StringUtils.hasText(functionProperties.getDefinition())) {
+				return functionProperties.getDefinition() + DEFAULT_SUFFIX;
+			}
+
+			return DEFAULT_FUNCTION_DEFINITION_NAME + DEFAULT_SUFFIX;
 		}
 	}
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.streaming;
+package org.springframework.cloud.fn.supplier.debezium;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -32,8 +32,9 @@ import org.springframework.util.StreamUtils;
  */
 public final class DebeziumTestUtils {
 
-	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:2.1.4.Final";
-	public static final String DEBEZIUM_EXAMPLE_POSTGRES_IMAGE = "debezium/example-postgres:2.1.4.Final";
+	public static final String IMAGE_TAG = "2.2.0.CR1";
+	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:" + IMAGE_TAG;
+	public static final String DEBEZIUM_EXAMPLE_POSTGRES_IMAGE = "debezium/example-postgres:" + IMAGE_TAG;
 
 	private DebeziumTestUtils() {
 

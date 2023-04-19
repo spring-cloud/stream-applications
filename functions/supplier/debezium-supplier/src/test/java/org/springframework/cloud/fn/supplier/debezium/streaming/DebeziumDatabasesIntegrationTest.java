@@ -29,7 +29,8 @@ import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.supplier.debezium.BindingNameStrategy;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration.BindingNameStrategy;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumTestUtils;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -72,72 +73,78 @@ public class DebeziumDatabasesIntegrationTest {
 
 	@Test
 	public void mysql() {
-		GenericContainer debeziumMySQL = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
+
+		try (GenericContainer<?> mySQL = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
 				.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 				.withEnv("MYSQL_USER", "mysqluser")
 				.withEnv("MYSQL_PASSWORD", "mysqlpw")
 				.withExposedPorts(3306)
 				.withStartupTimeout(Duration.ofSeconds(120))
-				.withStartupAttempts(3);
-		debeziumMySQL.start();
+				.withStartupAttempts(3)) {
+			mySQL.start();
 
-		try (ConfigurableApplicationContext context = applicationBuilder.run(
-				"--cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
-				"--cdc.debezium.database.user=debezium",
-				"--cdc.debezium.database.password=dbz",
-				"--cdc.debezium.database.hostname=localhost",
-				"--cdc.debezium.database.port=" + debeziumMySQL.getMappedPort(3306))) {
+			try (ConfigurableApplicationContext context = applicationBuilder.run(
+					"--cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
+					"--cdc.debezium.database.user=debezium",
+					"--cdc.debezium.database.password=dbz",
+					"--cdc.debezium.database.hostname=localhost",
+					"--cdc.debezium.database.port=" + mySQL.getMappedPort(3306))) {
 
-			OutputDestination outputDestination = context.getBean(OutputDestination.class);
-			BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
+				OutputDestination outputDestination = context.getBean(OutputDestination.class);
+				BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
 
-			List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination,
-					bindingNameStrategy.bindingName());
+				List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination,
+						bindingNameStrategy.bindingName());
 
-			assertThat(messages).isNotNull();
-			// Message size should correspond to the number of insert statements in:
-			// https://github.com/debezium/container-images/blob/main/examples/mysql/2.1/inventory.sql
-			assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
+				assertThat(messages).isNotNull();
+				// Message size should correspond to the number of insert statements in:
+				// https://github.com/debezium/container-images/blob/main/examples/mysql/2.1/inventory.sql
+				assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
+			}
+			mySQL.stop();
 		}
 	}
 
 	@Test
 	public void postgres() {
-		GenericContainer postgres = new GenericContainer(DebeziumTestUtils.DEBEZIUM_EXAMPLE_POSTGRES_IMAGE)
+		try (GenericContainer<?> postgres = new GenericContainer(DebeziumTestUtils.DEBEZIUM_EXAMPLE_POSTGRES_IMAGE)
 				.withEnv("POSTGRES_USER", "postgres")
 				.withEnv("POSTGRES_PASSWORD", "postgres")
 				.withExposedPorts(5432)
 				.withStartupTimeout(Duration.ofSeconds(120))
-				.withStartupAttempts(3);
-		postgres.start();
+				.withStartupAttempts(3)) {
 
-		try (ConfigurableApplicationContext context = applicationBuilder.run(
-				"--cdc.debezium.connector.class=io.debezium.connector.postgresql.PostgresConnector",
-				"--cdc.debezium.database.user=postgres",
-				"--cdc.debezium.database.password=postgres",
-				"--cdc.debezium.slot.name=debezium",
-				"--cdc.debezium.database.dbname=postgres",
-				"--cdc.debezium.database.hostname=localhost",
-				"--cdc.debezium.database.port=" + postgres.getMappedPort(5432))) {
+			postgres.start();
 
-			OutputDestination outputDestination = context.getBean(OutputDestination.class);
-			BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
+			try (ConfigurableApplicationContext context = applicationBuilder.run(
+					"--cdc.debezium.connector.class=io.debezium.connector.postgresql.PostgresConnector",
+					"--cdc.debezium.database.user=postgres",
+					"--cdc.debezium.database.password=postgres",
+					"--cdc.debezium.slot.name=debezium",
+					"--cdc.debezium.database.dbname=postgres",
+					"--cdc.debezium.database.hostname=localhost",
+					"--cdc.debezium.database.port=" + postgres.getMappedPort(5432))) {
 
-			List<Message<?>> allMessages = new ArrayList<>();
-			Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
-				List<Message<?>> messageChunk = DebeziumTestUtils.receiveAll(outputDestination,
-						bindingNameStrategy.bindingName());
-				if (!CollectionUtils.isEmpty(messageChunk)) {
-					logger.info("Chunk size: " + messageChunk.size());
-					allMessages.addAll(messageChunk);
-				}
-				// Message size should correspond to the number of insert statements in the sample inventor DB
-				// configured in the debezium/example-postgres:2.1.4.Final:
-				// https://github.com/debezium/container-images/blob/main/examples/postgres/2.1/inventory.sql
-				return allMessages.size() == 29; // Inventory DB entries
-			});
+				OutputDestination outputDestination = context.getBean(OutputDestination.class);
+				BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
+
+				List<Message<?>> allMessages = new ArrayList<>();
+				Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
+					List<Message<?>> messageChunk = DebeziumTestUtils.receiveAll(outputDestination,
+							bindingNameStrategy.bindingName());
+					if (!CollectionUtils.isEmpty(messageChunk)) {
+						logger.info("Chunk size: " + messageChunk.size());
+						allMessages.addAll(messageChunk);
+					}
+					// Message size should correspond to the number of insert statements in the sample inventor DB
+					// configured in:
+					// https://github.com/debezium/container-images/blob/main/examples/postgres/2.1/inventory.sql
+					return allMessages.size() == 29; // Inventory DB entries
+				});
+			}
+
+			postgres.stop();
 		}
-		postgres.stop();
 	}
 
 }

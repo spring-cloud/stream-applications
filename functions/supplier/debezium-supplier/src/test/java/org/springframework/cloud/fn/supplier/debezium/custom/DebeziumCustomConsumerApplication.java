@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.consumer;
+package org.springframework.cloud.fn.supplier.debezium.custom;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,13 +29,10 @@ import io.debezium.engine.ChangeEvent;
 
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -45,7 +42,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 @SpringBootConfiguration
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
-@Import(DebeziumConfiguration.class)
 public class DebeziumCustomConsumerApplication {
 
 	@Bean
@@ -69,7 +65,6 @@ public class DebeziumCustomConsumerApplication {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "cdc.consumer.override", havingValue = "true")
 	public Consumer<ChangeEvent<byte[], byte[]>> customConsumer() {
 		return new TestDebeziumConsumer();
 	}

@@ -21,6 +21,7 @@ import java.util.List;
 
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.core.Configuration;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -29,8 +30,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
-import org.springframework.cloud.fn.supplier.debezium.BindingNameStrategy;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumConfiguration;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration.BindingNameStrategy;
 import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
@@ -50,6 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Artem Bilan
  */
 @Testcontainers
+@Tag("integration")
 public class DebeziumFlatteningIntegrationTest {
 
 	static final String DATABASE_NAME = "inventory";
@@ -115,7 +117,7 @@ public class DebeziumFlatteningIntegrationTest {
 		JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
 		BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
 		boolean isKafkaPresent = ClassUtils.isPresent(
-				DebeziumConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+				DebeziumConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
 		List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
@@ -165,7 +167,7 @@ public class DebeziumFlatteningIntegrationTest {
 
 		if (isKafkaPresent) {
 			assertThat(messages.get(3).getPayload().getClass().getCanonicalName())
-					.isEqualTo(DebeziumConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+					.isEqualTo(DebeziumConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 							"Tombstones event should have KafkaNull payload");
 			assertThat(messages.get(3).getHeaders().get("cdc_destination"))
 					.isEqualTo("my-topic.inventory.customers");
@@ -213,7 +215,7 @@ public class DebeziumFlatteningIntegrationTest {
 		JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
 		BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
 		boolean isKafkaPresent = ClassUtils.isPresent(
-				DebeziumConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+				DebeziumConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
 		List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
@@ -275,7 +277,7 @@ public class DebeziumFlatteningIntegrationTest {
 
 		if (isDropTombstones.equals("false") && isKafkaPresent) {
 			assertThat(messages.get(3).getPayload().getClass().getCanonicalName())
-					.isEqualTo(DebeziumConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+					.isEqualTo(DebeziumConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 							"Tombstones event should have KafkaNull payload");
 			assertThat(messages.get(3).getHeaders().get("cdc_destination"))
 					.isEqualTo("my-topic.inventory.customers");

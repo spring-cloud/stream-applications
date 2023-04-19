@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.consumer;
+package org.springframework.cloud.fn.supplier.debezium.custom;
 
 import java.io.File;
 import java.time.Duration;
@@ -29,6 +29,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumTestUtils;
 import org.springframework.cloud.fn.supplier.debezium.EmbeddedEngineExecutorService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
@@ -50,7 +51,7 @@ public class DebeziumCustomConsumerTest {
 	static File anotherTempDir;
 
 	@Container
-	static GenericContainer<?> debeziumMySQL = new GenericContainer<>("debezium/example-mysql:2.1.4.Final")
+	static GenericContainer<?> debeziumMySQL = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
 			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 			.withEnv("MYSQL_USER", "mysqluser")
 			.withEnv("MYSQL_PASSWORD", "mysqlpw")
@@ -59,7 +60,6 @@ public class DebeziumCustomConsumerTest {
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(DebeziumCustomConsumerApplication.class)
 			.withPropertyValues(
-					"cdc.consumer.override=true",
 					"spring.datasource.type=com.zaxxer.hikari.HikariDataSource",
 
 					"cdc.debezium.offset.storage=org.apache.kafka.connect.storage.FileOffsetBackingStore",

@@ -25,7 +25,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumConfiguration;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
@@ -36,7 +36,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 @SpringBootConfiguration
 @EnableAutoConfiguration(exclude = MongoAutoConfiguration.class)
-@Import(DebeziumConfiguration.class)
+@Import(DebeziumConsumerConfiguration.class)
 public class TestCdcSourceApplication {
 
 	@Bean

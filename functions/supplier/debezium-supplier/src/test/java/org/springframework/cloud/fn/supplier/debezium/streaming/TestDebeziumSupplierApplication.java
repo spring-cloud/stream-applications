@@ -20,7 +20,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumConfiguration;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -28,6 +28,6 @@ import org.springframework.context.annotation.Import;
  */
 @SpringBootConfiguration
 @EnableAutoConfiguration(exclude = { MongoAutoConfiguration.class, DataSourceAutoConfiguration.class })
-@Import(DebeziumConfiguration.class)
+@Import(DebeziumConsumerConfiguration.class)
 public class TestDebeziumSupplierApplication {
 }

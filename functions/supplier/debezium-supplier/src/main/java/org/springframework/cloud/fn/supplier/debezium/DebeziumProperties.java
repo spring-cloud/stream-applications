@@ -68,11 +68,6 @@ public class DebeziumProperties {
 	private Map<String, String> debezium = defaultConfig();
 
 	/**
-	 * Even Change Consumer configurations.
-	 */
-	private Consumer consumer = new Consumer();
-
-	/**
 	 * (Experimental) Debezium message format. Defaults to 'json'.
 	 */
 	private DebeziumFormat format = DebeziumFormat.JSON;
@@ -89,8 +84,13 @@ public class DebeziumProperties {
 	 */
 	private boolean convertHeaders = true;
 
-	public Consumer getConsumer() {
-		return consumer;
+	/**
+	 * DebeziumEngine specific configurations.
+	 */
+	private DebeziumEngineConfiguration engine = new DebeziumEngineConfiguration();
+
+	public DebeziumEngineConfiguration getEngine() {
+		return engine;
 	}
 
 	public Map<String, String> getDebezium() {
@@ -126,20 +126,37 @@ public class DebeziumProperties {
 		this.convertHeaders = convertHeaders;
 	}
 
-	public static class Consumer {
+	public static class DebeziumEngineConfiguration {
 
 		/**
-		 * When set to 'true', enables overriding the default Consumer. Do not change unless you know what you are
-		 * doing.
+		 * The policy that defines when the offsets should be committed to offset storage.
 		 */
-		private boolean override = false;
-
-		public boolean isOverride() {
-			return override;
+		public enum DebeziumOffsetCommitPolicy {
+			/**
+			 * Commits offsets as frequently as possible. This may result in reduced performance, but it has the least
+			 * potential for seeing source records more than once upon restart.
+			 */
+			ALWAYS,
+			/**
+			 * Commits offsets no more than the specified time period. If the specified time is less than {@code 0} then
+			 * the policy will behave as ALWAYS policy. Requires the 'cdc.debezium.offset.flush.interval.ms' native
+			 * property to be set.
+			 */
+			PERIODIC,
+			/**
+			 * Uses the default Debezium engine policy (PERIODIC).
+			 */
+			DEFAULT;
 		}
 
-		public void setOverride(boolean enabled) {
-			this.override = enabled;
+		private DebeziumOffsetCommitPolicy offsetCommitPolicy = DebeziumOffsetCommitPolicy.DEFAULT;
+
+		public DebeziumOffsetCommitPolicy getOffsetCommitPolicy() {
+			return offsetCommitPolicy;
+		}
+
+		public void setOffsetCommitPolicy(DebeziumOffsetCommitPolicy offsetCommitPolicy) {
+			this.offsetCommitPolicy = offsetCommitPolicy;
 		}
 	}
 }
