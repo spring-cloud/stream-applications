@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.custom;
+package org.springframework.cloud.stream.app.source.debezium.custom;
 
 import java.io.File;
 import java.time.Duration;
@@ -29,8 +29,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumTestUtils;
-import org.springframework.cloud.fn.supplier.debezium.EmbeddedEngineExecutorService;
+import org.springframework.cloud.stream.app.source.debezium.DebeziumTestUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
@@ -43,7 +42,7 @@ import static org.awaitility.Awaitility.await;
 @Tag("integration")
 @Testcontainers
 public class DebeziumCustomConsumerTest {
-	private static final Log logger = LogFactory.getLog(EmbeddedEngineExecutorService.class);
+	private static final Log logger = LogFactory.getLog(DebeziumCustomConsumerTest.class);
 
 	private static final String DATABASE_NAME = "inventory";
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium;
+package org.springframework.cloud.stream.app.source.debezium.streambridge;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;

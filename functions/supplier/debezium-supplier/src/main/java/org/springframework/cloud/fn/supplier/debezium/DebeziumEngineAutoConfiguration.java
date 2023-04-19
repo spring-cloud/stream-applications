@@ -32,7 +32,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- *
  * @author Christian Tzolov
  */
 @AutoConfiguration
@@ -51,7 +50,6 @@ public class DebeziumEngineAutoConfiguration {
 	private static final OffsetCommitPolicy NULL_OFFSET_COMMIT_POLICY = new OffsetCommitPolicy() {
 		@Override
 		public boolean performCommit(long numberOfMessagesSinceLastCommit, Duration timeSinceLastCommit) {
-			// TODO Auto-generated method stub
 			throw new UnsupportedOperationException("Unimplemented method 'performCommit'");
 		}
 	};
@@ -91,10 +89,5 @@ public class DebeziumEngineAutoConfiguration {
 		logger.debug("Debezium Engine created!");
 
 		return debeziumEngine;
-	}
-
-	@Bean
-	public EmbeddedEngineExecutorService embeddedEngine(DebeziumEngine<?> debeziumEngine) {
-		return new EmbeddedEngineExecutorService(debeziumEngine);
 	}
 }

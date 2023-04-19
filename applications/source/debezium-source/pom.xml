@@ -131,9 +131,9 @@
 						<name>debezium</name>
 						<type>source</type>
 						<version>${project.version}</version>
-						<configClass>org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration.class
+						<configClass>org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration.class
 						</configClass>
-						<functionDefinition>debezium</functionDefinition>
+						<functionDefinition>debeziumSupplier</functionDefinition>
 
 						<properties>
 							<spring.autoconfigure.exclude>org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration</spring.autoconfigure.exclude>

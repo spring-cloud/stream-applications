@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.streaming;
+package org.springframework.cloud.stream.app.source.debezium;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -29,8 +29,6 @@ import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration.BindingNameStrategy;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumTestUtils;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -50,9 +48,10 @@ public class DebeziumDatabasesIntegrationTest {
 	private static final Log logger = LogFactory.getLog(DebeziumDatabasesIntegrationTest.class);
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
-			TestChannelBinderConfiguration.getCompleteConfiguration(TestDebeziumSupplierApplication.class))
+			TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
 					.web(WebApplicationType.NONE)
 					.properties(
+							"spring.cloud.function.definition=debeziumSupplier",
 							// Flattering:
 							// https://debezium.io/documentation/reference/stable/transformations/event-flattening.html
 							"cdc.debezium.transforms=unwrap",
@@ -88,13 +87,17 @@ public class DebeziumDatabasesIntegrationTest {
 					"--cdc.debezium.database.user=debezium",
 					"--cdc.debezium.database.password=dbz",
 					"--cdc.debezium.database.hostname=localhost",
-					"--cdc.debezium.database.port=" + mySQL.getMappedPort(3306))) {
+					"--cdc.debezium.database.port=" + mySQL.getMappedPort(3306),
+
+					// JdbcTemplate configuration
+					String.format("--app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
+							mySQL.getMappedPort(3306), DebeziumTestUtils.DATABASE_NAME),
+					"--app.datasource.username=root",
+					"--app.datasource.password=debezium")) {
 
 				OutputDestination outputDestination = context.getBean(OutputDestination.class);
-				BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
 
-				List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination,
-						bindingNameStrategy.bindingName());
+				List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination);
 
 				assertThat(messages).isNotNull();
 				// Message size should correspond to the number of insert statements in:
@@ -123,15 +126,18 @@ public class DebeziumDatabasesIntegrationTest {
 					"--cdc.debezium.slot.name=debezium",
 					"--cdc.debezium.database.dbname=postgres",
 					"--cdc.debezium.database.hostname=localhost",
-					"--cdc.debezium.database.port=" + postgres.getMappedPort(5432))) {
+					"--cdc.debezium.database.port=" + postgres.getMappedPort(5432),
+					// JdbcTemplate configuration
+					String.format("--app.datasource.url=jdbc:postgresql://localhost:%d/%s",
+							postgres.getMappedPort(5432), DebeziumTestUtils.DATABASE_NAME),
+					"--app.datasource.username=postgres",
+					"--app.datasource.password=postgres")) {
 
 				OutputDestination outputDestination = context.getBean(OutputDestination.class);
-				BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
 
 				List<Message<?>> allMessages = new ArrayList<>();
 				Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
-					List<Message<?>> messageChunk = DebeziumTestUtils.receiveAll(outputDestination,
-							bindingNameStrategy.bindingName());
+					List<Message<?>> messageChunk = DebeziumTestUtils.receiveAll(outputDestination);
 					if (!CollectionUtils.isEmpty(messageChunk)) {
 						logger.info("Chunk size: " + messageChunk.size());
 						allMessages.addAll(messageChunk);

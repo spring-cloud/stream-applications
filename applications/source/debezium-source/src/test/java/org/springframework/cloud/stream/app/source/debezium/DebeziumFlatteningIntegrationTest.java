@@ -30,9 +30,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration.BindingNameStrategy;
 import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -54,10 +53,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Tag("integration")
 public class DebeziumFlatteningIntegrationTest {
 
-	static final String DATABASE_NAME = "inventory";
-
 	@Container
-	static GenericContainer<?> mySqlContainer = new GenericContainer<>("debezium/example-mysql:2.1.4.Final")
+	static GenericContainer<?> mySqlContainer = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
 			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 			.withEnv("MYSQL_USER", "mysqluser")
 			.withEnv("MYSQL_PASSWORD", "mysqlpw")
@@ -69,7 +66,7 @@ public class DebeziumFlatteningIntegrationTest {
 			.withUserConfiguration(
 					TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
 			.withPropertyValues(
-					"spring.cloud.function.definition=debezium",
+					"spring.cloud.function.definition=debeziumSupplier",
 
 					"cdc.debezium.schema=false",
 
@@ -94,7 +91,7 @@ public class DebeziumFlatteningIntegrationTest {
 
 					// JdbcTemplate configuration
 					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
-							mySqlContainer.getMappedPort(3306), DATABASE_NAME),
+							mySqlContainer.getMappedPort(3306), DebeziumTestUtils.DATABASE_NAME),
 					"app.datasource.username=root",
 					"app.datasource.password=debezium",
 					"app.datasource.driver-class-name=com.mysql.cj.jdbc.Driver",
@@ -115,12 +112,12 @@ public class DebeziumFlatteningIntegrationTest {
 	final ContextConsumer<? super ApplicationContext> noFlatteningTest = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
 		JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
-		BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
+
 		boolean isKafkaPresent = ClassUtils.isPresent(
-				DebeziumConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+				DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
-		List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
+		List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination);
 		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
 		JsonAssert.assertJsonEquals(DebeziumTestUtils.resourceToString(
@@ -146,7 +143,7 @@ public class DebeziumFlatteningIntegrationTest {
 		jdbcTemplate.update("UPDATE `customers` SET `last_name`='Test999' WHERE first_name = 'Test666'");
 		JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 
-		messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
+		messages = DebeziumTestUtils.receiveAll(outputDestination);
 
 		assertThat(messages).hasSize(isKafkaPresent ? 4 : 3);
 
@@ -167,7 +164,7 @@ public class DebeziumFlatteningIntegrationTest {
 
 		if (isKafkaPresent) {
 			assertThat(messages.get(3).getPayload().getClass().getCanonicalName())
-					.isEqualTo(DebeziumConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+					.isEqualTo(DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 							"Tombstones event should have KafkaNull payload");
 			assertThat(messages.get(3).getHeaders().get("cdc_destination"))
 					.isEqualTo("my-topic.inventory.customers");
@@ -213,12 +210,12 @@ public class DebeziumFlatteningIntegrationTest {
 	final ContextConsumer<? super ApplicationContext> flatteningTest = context -> {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
 		JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
-		BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
+
 		boolean isKafkaPresent = ClassUtils.isPresent(
-				DebeziumConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+				DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
-		List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
+		List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination);
 		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
 		DebeziumProperties props = context.getBean(DebeziumProperties.class);
@@ -256,7 +253,7 @@ public class DebeziumFlatteningIntegrationTest {
 		jdbcTemplate.update("UPDATE `customers` SET `last_name`='Test999' WHERE first_name = 'Test666'");
 		JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 
-		messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
+		messages = DebeziumTestUtils.receiveAll(outputDestination);
 
 		assertThat(messages).hasSize((isDropTombstones.equals("false") && isKafkaPresent) ? 4 : 3);
 
@@ -277,7 +274,7 @@ public class DebeziumFlatteningIntegrationTest {
 
 		if (isDropTombstones.equals("false") && isKafkaPresent) {
 			assertThat(messages.get(3).getPayload().getClass().getCanonicalName())
-					.isEqualTo(DebeziumConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+					.isEqualTo(DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 							"Tombstones event should have KafkaNull payload");
 			assertThat(messages.get(3).getHeaders().get("cdc_destination"))
 					.isEqualTo("my-topic.inventory.customers");

@@ -29,9 +29,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration.BindingNameStrategy;
 import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -51,8 +50,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Tag("integration")
 public class DebeziumDeleteHandlingIntegrationTest {
 
-	static final String DATABASE_NAME = "inventory";
-
 	@Container
 	static GenericContainer mySqlContainer = new GenericContainer<>("debezium/example-mysql:2.1.4.Final")
 			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
@@ -66,7 +63,7 @@ public class DebeziumDeleteHandlingIntegrationTest {
 			.withUserConfiguration(
 					TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
 			.withPropertyValues(
-					"spring.cloud.function.definition=debezium",
+					"spring.cloud.function.definition=debeziumSupplier",
 
 					"cdc.debezium.schema=false",
 
@@ -95,7 +92,7 @@ public class DebeziumDeleteHandlingIntegrationTest {
 
 					// JdbcTemplate configuration
 					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
-							mySqlContainer.getMappedPort(3306), DATABASE_NAME),
+							mySqlContainer.getMappedPort(3306), DebeziumTestUtils.DATABASE_NAME),
 					"app.datasource.username=root",
 					"app.datasource.password=debezium",
 					"app.datasource.driver-class-name=com.mysql.cj.jdbc.Driver",
@@ -127,9 +124,9 @@ public class DebeziumDeleteHandlingIntegrationTest {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
 		JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
 		DebeziumProperties props = context.getBean(DebeziumProperties.class);
-		BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
+
 		boolean isKafkaPresent = ClassUtils.isPresent(
-				DebeziumConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
+				DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
 		String deleteHandlingMode = props.getDebezium().get("transforms.unwrap.delete.handling.mode");
@@ -140,7 +137,7 @@ public class DebeziumDeleteHandlingIntegrationTest {
 		String newRecordId = jdbcTemplate.query("select * from `customers` where `first_name` = ?",
 				(rs, rowNum) -> rs.getString("id"), "Test666").iterator().next();
 
-		List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination, bindingNameStrategy.bindingName());
+		List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination);
 		assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 
 		JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
@@ -151,25 +148,22 @@ public class DebeziumDeleteHandlingIntegrationTest {
 			// Do nothing
 		}
 		else if (deleteHandlingMode.equals("none")) {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(),
-					bindingNameStrategy.bindingName());
+			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), DebeziumTestUtils.BINDING_NAME);
 			assertThat(received).isNotNull();
 			assertThat(received.getPayload()).isEqualTo("null".getBytes());
 		}
 		else if (deleteHandlingMode.equals("rewrite")) {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(),
-					bindingNameStrategy.bindingName());
+			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), DebeziumTestUtils.BINDING_NAME);
 			assertThat(received).isNotNull();
 			assertThat(toString(received.getPayload()).contains("\"__deleted\":\"true\""));
 		}
 
 		if (!(isDropTombstones.equals("true")) && isKafkaPresent) {
-			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(),
-					bindingNameStrategy.bindingName());
+			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), DebeziumTestUtils.BINDING_NAME);
 			assertThat(received).isNotNull();
 			// Tombstones event should have KafkaNull payload
 			assertThat(received.getPayload().getClass().getCanonicalName())
-					.isEqualTo(DebeziumConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL);
+					.isEqualTo(DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL);
 
 			Object keyRaw = received.getHeaders().get("cdc_key");
 			String key = (keyRaw instanceof byte[]) ? new String((byte[]) keyRaw) : "" + keyRaw;
@@ -178,7 +172,7 @@ public class DebeziumDeleteHandlingIntegrationTest {
 			assertThat(key).isEqualTo("{\"id\":" + newRecordId + "}");
 		}
 
-		received = outputDestination.receive(Duration.ofSeconds(1).toMillis(), bindingNameStrategy.bindingName());
+		received = outputDestination.receive(Duration.ofSeconds(1).toMillis(), DebeziumTestUtils.BINDING_NAME);
 		assertThat(received).isNull();
 	};
 }

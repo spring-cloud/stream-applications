@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium;
+package org.springframework.cloud.stream.app.source.debezium.streambridge;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import io.debezium.engine.ChangeEvent;
+import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties;
 import org.springframework.cloud.function.context.FunctionProperties;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
@@ -79,6 +81,11 @@ public class DebeziumConsumerConfiguration implements BeanClassLoaderAware {
 
 		return new ChangeEventConsumer<byte[]>(streamBridge, bindingNameStrategy.bindingName(),
 				properties.getFormat().contentType(), properties.isConvertHeaders());
+	}
+
+	@Bean
+	public EmbeddedEngineExecutorService embeddedEngine(DebeziumEngine<?> debeziumEngine) {
+		return new EmbeddedEngineExecutorService(debeziumEngine);
 	}
 
 	/**

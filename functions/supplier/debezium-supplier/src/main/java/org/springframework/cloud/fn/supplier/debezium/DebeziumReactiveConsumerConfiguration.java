@@ -46,6 +46,7 @@ import org.springframework.util.MimeTypeUtils;
 /**
  *
  * @author Christian Tzolov
+ * @author Artem Bilan
  */
 @Configuration
 @EnableConfigurationProperties(DebeziumProperties.class)
@@ -106,7 +107,9 @@ public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAwa
 
 		@Override
 		public void accept(ChangeEvent<T, T> changeEvent) {
-			logger.debug("[Debezium Event]: " + changeEvent.key());
+			if (logger.isDebugEnabled()) {
+				logger.debug("[Debezium Event]: " + changeEvent.key());
+			}
 
 			Object key = changeEvent.key();
 			Object payload = changeEvent.value();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.streaming;
+package org.springframework.cloud.stream.app.source.debezium;
 
 import java.time.Duration;
 import java.util.List;
@@ -27,8 +27,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration.BindingNameStrategy;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumTestUtils;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -60,9 +58,11 @@ public class DebeziumSupplierAvroFormatTest {
 			.withStartupAttempts(3);
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
-			TestChannelBinderConfiguration.getCompleteConfiguration(TestDebeziumSupplierApplication.class))
+			TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
 					.web(WebApplicationType.NONE)
 					.properties(
+							"spring.cloud.function.definition=debeziumSupplier",
+
 							"cdc.format=AVRO",
 
 							"cdc.debezium.key.converter=io.apicurio.registry.utils.converter.AvroConverter",
@@ -84,7 +84,15 @@ public class DebeziumSupplierAvroFormatTest {
 							"cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
 							"cdc.debezium.database.user=debezium",
 							"cdc.debezium.database.password=dbz",
-							"cdc.debezium.database.hostname=localhost");
+							"cdc.debezium.database.hostname=localhost",
+
+							// JdbcTemplate configuration
+							String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
+									debeziumMySQL.getMappedPort(3306), DebeziumTestUtils.DATABASE_NAME),
+							"app.datasource.username=root",
+							"app.datasource.password=debezium",
+							"app.datasource.driver-class-name=com.mysql.cj.jdbc.Driver",
+							"app.datasource.type=com.zaxxer.hikari.HikariDataSource");
 
 	@Test
 	public void mysqlWithAvroContentFormat() {
@@ -98,11 +106,9 @@ public class DebeziumSupplierAvroFormatTest {
 				"--cdc.debezium.database.port=" + MYSQL_MAPPED_PORT)) {
 
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
-			BindingNameStrategy bindingNameStrategy = context.getBean(BindingNameStrategy.class);
 
 			// Using local region here
-			List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination,
-					bindingNameStrategy.bindingName());
+			List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination);
 
 			assertThat(messages).isNotNull();
 			// Message size should correspond to the number of insert statements in the sample inventor DB
