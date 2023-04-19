@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.supplier.debezium;
 
+import java.time.Duration;
 import java.util.Properties;
 import java.util.function.Consumer;
 
@@ -28,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties.DebeziumEngineConfiguration.DebeziumOffsetCommitPolicy;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -39,7 +39,7 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(DebeziumProperties.class)
 public class DebeziumEngineAutoConfiguration {
 
-	private static final Log logger = LogFactory.getLog(DebeziumConsumerConfiguration.class);
+	private static final Log logger = LogFactory.getLog(DebeziumEngineAutoConfiguration.class);
 
 	@Bean
 	public Properties debeziumConfiguration(DebeziumProperties properties) {
@@ -48,43 +48,47 @@ public class DebeziumEngineAutoConfiguration {
 		return outProps;
 	}
 
+	private static final OffsetCommitPolicy NULL_OFFSET_COMMIT_POLICY = new OffsetCommitPolicy() {
+		@Override
+		public boolean performCommit(long numberOfMessagesSinceLastCommit, Duration timeSinceLastCommit) {
+			// TODO Auto-generated method stub
+			throw new UnsupportedOperationException("Unimplemented method 'performCommit'");
+		}
+	};
+
 	/**
 	 * The fully-qualified class name of the commit policy type. The default is a periodic commit policy based upon time
 	 * intervals.
-	 * @param properties 'offset.commit.policy.*' configuration properties.
+	 * @param properties The 'cdc.debezium.offset.flush.interval.ms' configuration is compulsory for the Periodic policy
+	 * type. The ALWAYS and DEFAULT doesn't require properties.
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	public OffsetCommitPolicy offsetCommitPolicy(DebeziumProperties properties) {
+	public OffsetCommitPolicy offsetCommitPolicy(DebeziumProperties properties, Properties debeziumConfiguration) {
 
-		final DebeziumOffsetCommitPolicy offsetCommitPolicy = properties.getEngine().getOffsetCommitPolicy();
-		switch (offsetCommitPolicy) {
+		switch (properties.getEngine().getOffsetCommitPolicy()) {
 		case PERIODIC:
-			Properties debeziumConfiguration = new java.util.Properties();
-			debeziumConfiguration.putAll(properties.getDebezium());
 			return OffsetCommitPolicy.periodic(debeziumConfiguration);
 		case ALWAYS:
 			return OffsetCommitPolicy.always();
 		case DEFAULT:
 		default:
-			return null;
+			return NULL_OFFSET_COMMIT_POLICY;
 		}
 	}
 
 	@Bean
 	public DebeziumEngine<?> debeziumEngine(Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
-			OffsetCommitPolicy offsetCommitPolicy,
-			DebeziumProperties properties) {
-
-		Properties debeziumConfiguration = new java.util.Properties();
-		debeziumConfiguration.putAll(properties.getDebezium());
+			OffsetCommitPolicy offsetCommitPolicy, DebeziumProperties properties, Properties debeziumConfiguration) {
 
 		DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine = DebeziumEngine
 				.create(properties.getFormat().serializationFormat())
 				.using(debeziumConfiguration)
-				.using(offsetCommitPolicy)
+				.using((offsetCommitPolicy != NULL_OFFSET_COMMIT_POLICY) ? offsetCommitPolicy : null)
 				.notifying(changeEventConsumer)
 				.build();
+
+		logger.debug("Debezium Engine created!");
 
 		return debeziumEngine;
 	}

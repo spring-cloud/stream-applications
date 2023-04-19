@@ -131,7 +131,7 @@
 						<name>debezium</name>
 						<type>source</type>
 						<version>${project.version}</version>
-						<configClass>org.springframework.cloud.fn.supplier.debezium.DebeziumConfiguration.class
+						<configClass>org.springframework.cloud.fn.supplier.debezium.DebeziumConsumerConfiguration.class
 						</configClass>
 						<functionDefinition>debezium</functionDefinition>
 
