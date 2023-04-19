@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.source.debezium;
+package org.springframework.cloud.stream.app.source.debezium.integration;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -101,7 +101,7 @@ public class DebeziumDatabasesIntegrationTest {
 
 				assertThat(messages).isNotNull();
 				// Message size should correspond to the number of insert statements in:
-				// https://github.com/debezium/container-images/blob/main/examples/mysql/2.1/inventory.sql
+				// https://github.com/debezium/container-images/blob/main/examples/mysql/2.2/inventory.sql
 				assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 			}
 			mySQL.stop();
@@ -144,7 +144,7 @@ public class DebeziumDatabasesIntegrationTest {
 					}
 					// Message size should correspond to the number of insert statements in the sample inventor DB
 					// configured in:
-					// https://github.com/debezium/container-images/blob/main/examples/postgres/2.1/inventory.sql
+					// https://github.com/debezium/container-images/blob/main/examples/postgres/2.2/inventory.sql
 					return allMessages.size() == 29; // Inventory DB entries
 				});
 			}

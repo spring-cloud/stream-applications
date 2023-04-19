@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.source.debezium;
+package org.springframework.cloud.stream.app.source.debezium.integration;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

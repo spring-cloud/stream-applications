@@ -47,9 +47,9 @@ import org.springframework.util.StringUtils;
  */
 @Configuration
 @EnableConfigurationProperties(DebeziumProperties.class)
-public class DebeziumConsumerConfiguration implements BeanClassLoaderAware {
+public class StreamBridgeDebeziumConsumerConfiguration implements BeanClassLoaderAware {
 
-	private static final Log logger = LogFactory.getLog(DebeziumConsumerConfiguration.class);
+	private static final Log logger = LogFactory.getLog(StreamBridgeDebeziumConsumerConfiguration.class);
 	/**
 	 * ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL.
 	 */
@@ -120,7 +120,7 @@ public class DebeziumConsumerConfiguration implements BeanClassLoaderAware {
 			// Note: Event for none flattened responses, when the cdc.debezium.tombstones.on.delete=true
 			// (default), tombstones are generate by Debezium and handled by the code below.
 			if (payload == null) {
-				payload = DebeziumConsumerConfiguration.this.kafkaNull;
+				payload = StreamBridgeDebeziumConsumerConfiguration.this.kafkaNull;
 			}
 
 			// If payload is still null ignore the message.
@@ -134,7 +134,7 @@ public class DebeziumConsumerConfiguration implements BeanClassLoaderAware {
 					.setHeader("cdc_key", key)
 					.setHeader("cdc_destination", destination)
 					.setHeader(MessageHeaders.CONTENT_TYPE,
-							(payload.equals(DebeziumConsumerConfiguration.this.kafkaNull))
+							(payload.equals(StreamBridgeDebeziumConsumerConfiguration.this.kafkaNull))
 									? MimeTypeUtils.TEXT_PLAIN_VALUE
 									: this.contentType);
 
