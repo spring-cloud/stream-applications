@@ -15,8 +15,8 @@ on:
         description: 'Increase verbosity of script outputs'
         required: false
         default: 'false'
-  schedule:
-    - cron: '*/30 * * * *'
+#  schedule:
+#    - cron: '*/30 * * * *'
 
 jobs:
   housekeeping:
