@@ -55,7 +55,7 @@ public class TestCdcSourceApplication {
 	public HikariDataSource dataSource(DataSourceProperties dataSourceProperties) {
 		return dataSourceProperties.initializeDataSourceBuilder()
 				.type(HikariDataSource.class)
-				.driverClassName("com.mysql.cj.jdbc.Driver")
+				//.driverClassName("com.mysql.cj.jdbc.Driver")
 				.build();
 	}
 

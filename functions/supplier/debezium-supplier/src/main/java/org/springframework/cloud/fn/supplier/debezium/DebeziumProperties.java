@@ -68,23 +68,19 @@ public class DebeziumProperties {
 	private Map<String, String> debezium = defaultConfig();
 
 	/**
-	 * (Experimental) Debezium message format. Defaults to 'json'.
+	 * Change Event message content format. Defaults to 'JSON'.
 	 */
 	private DebeziumFormat format = DebeziumFormat.JSON;
 
 	/**
 	 * Copy Change Event headers into Message headers.
 	 */
-	private boolean convertHeaders = true;
+	private boolean copyHeaders = true;
 
 	/**
-	 * DebeziumEngine specific configurations.
+	 * The policy that defines when the offsets should be committed to offset storage.
 	 */
-	private EngineConfiguration engine = new EngineConfiguration();
-
-	public EngineConfiguration getEngine() {
-		return engine;
-	}
+	private DebeziumOffsetCommitPolicy offsetCommitPolicy = DebeziumOffsetCommitPolicy.DEFAULT;
 
 	public Map<String, String> getDebezium() {
 		return debezium;
@@ -103,48 +99,37 @@ public class DebeziumProperties {
 		this.format = format;
 	}
 
-	public boolean isConvertHeaders() {
-		return convertHeaders;
+	public boolean isCopyHeaders() {
+		return copyHeaders;
 	}
 
-	public void setConvertHeaders(boolean convertHeaders) {
-		this.convertHeaders = convertHeaders;
+	public void setCopyHeaders(boolean copyHeaders) {
+		this.copyHeaders = copyHeaders;
 	}
 
-	public class EngineConfiguration {
-
+	public enum DebeziumOffsetCommitPolicy {
 		/**
-		 * The policy that defines when the offsets should be committed to offset storage.
+		 * Commits offsets as frequently as possible. This may result in reduced performance, but it has the least
+		 * potential for seeing source records more than once upon restart.
 		 */
-		public enum DebeziumOffsetCommitPolicy {
-			/**
-			 * Commits offsets as frequently as possible. This may result in reduced performance, but it has the least
-			 * potential for seeing source records more than once upon restart.
-			 */
-			ALWAYS,
-			/**
-			 * Commits offsets no more than the specified time period. If the specified time is less than {@code 0} then
-			 * the policy will behave as ALWAYS policy. Requires the 'cdc.debezium.offset.flush.interval.ms' native
-			 * property to be set.
-			 */
-			PERIODIC,
-			/**
-			 * Uses the default Debezium engine policy (PERIODIC).
-			 */
-			DEFAULT;
-		}
-
+		ALWAYS,
 		/**
-		 * The policy that defines when the offsets should be committed to offset storage.
+		 * Commits offsets no more than the specified time period. If the specified time is less than {@code 0} then the
+		 * policy will behave as ALWAYS policy. Requires the 'cdc.debezium.offset.flush.interval.ms' native property to
+		 * be set.
 		 */
-		private DebeziumOffsetCommitPolicy offsetCommitPolicy = DebeziumOffsetCommitPolicy.DEFAULT;
+		PERIODIC,
+		/**
+		 * Uses the default Debezium engine policy (PERIODIC).
+		 */
+		DEFAULT;
+	}
 
-		public DebeziumOffsetCommitPolicy getOffsetCommitPolicy() {
-			return offsetCommitPolicy;
-		}
+	public DebeziumOffsetCommitPolicy getOffsetCommitPolicy() {
+		return offsetCommitPolicy;
+	}
 
-		public void setOffsetCommitPolicy(DebeziumOffsetCommitPolicy offsetCommitPolicy) {
-			this.offsetCommitPolicy = offsetCommitPolicy;
-		}
+	public void setOffsetCommitPolicy(DebeziumOffsetCommitPolicy offsetCommitPolicy) {
+		this.offsetCommitPolicy = offsetCommitPolicy;
 	}
 }

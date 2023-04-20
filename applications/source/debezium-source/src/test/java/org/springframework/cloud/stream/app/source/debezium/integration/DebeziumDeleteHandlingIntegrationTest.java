@@ -46,12 +46,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Christian Tzolov
  * @author David Turanski
  */
-@Testcontainers
 @Tag("integration")
+@Testcontainers
 public class DebeziumDeleteHandlingIntegrationTest {
 
 	@Container
-	static GenericContainer mySqlContainer = new GenericContainer<>("debezium/example-mysql:2.1.4.Final")
+	static GenericContainer<?> mySqlContainer = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
 			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 			.withEnv("MYSQL_USER", "mysqluser")
 			.withEnv("MYSQL_PASSWORD", "mysqlpw")

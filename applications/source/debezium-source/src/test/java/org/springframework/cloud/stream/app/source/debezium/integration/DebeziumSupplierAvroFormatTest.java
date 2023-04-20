@@ -43,13 +43,13 @@ public class DebeziumSupplierAvroFormatTest {
 
 	// E.g. docker run -it --rm --name apicurio -p 8080:8080 apicurio/apicurio-registry-mem:2.4.1.Final
 	@Container
-	static GenericContainer apicurio = new GenericContainer<>("apicurio/apicurio-registry-mem:2.4.1.Final")
+	static GenericContainer<?> apicurio = new GenericContainer<>("apicurio/apicurio-registry-mem:2.4.1.Final")
 			.withExposedPorts(8080)
 			.withStartupTimeout(Duration.ofSeconds(120))
 			.withStartupAttempts(3);
 
 	@Container
-	static GenericContainer debeziumMySQL = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
+	static GenericContainer<?> debeziumMySQL = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
 			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 			.withEnv("MYSQL_USER", "mysqluser")
 			.withEnv("MYSQL_PASSWORD", "mysqlpw")

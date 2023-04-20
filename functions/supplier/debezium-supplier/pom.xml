@@ -21,17 +21,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.apicurio</groupId>
-            <artifactId>apicurio-registry-utils-converter</artifactId>
-            <version>${apicurio.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.apicurio</groupId>
-            <artifactId>apicurio-registry-client</artifactId>
-            <version>${apicurio.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-embedded</artifactId>
             <version>${version.debezium}</version>
@@ -47,6 +36,7 @@
             </exclusions>
         </dependency>
 
+        <!-- Debezium Connectors (optional dependeciees)-->
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-mysql</artifactId>
@@ -132,6 +122,10 @@
                     <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>hibernate-validator</artifactId>
+                    <groupId>org.hibernate</groupId>
+                </exclusion>
             </exclusions>
             <version>1.8.1.Final</version>
         </dependency>
@@ -146,5 +140,43 @@
             </exclusions>
             <version>${version.debezium}</version>
         </dependency>
+
+        <!-- APICURIO Schema Registry (Option for AVRO format)-->
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-utils-converter</artifactId>
+            <version>${apicurio.version}</version>
+            <scope>optional</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-client</artifactId>
+            <version>${apicurio.version}</version>
+            <scope>optional</scope>
+        </dependency>
+
+        <!-- TEST -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <groups>integration</groups>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

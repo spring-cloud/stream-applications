@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.app.source.debezium.custom;
+package org.springframework.cloud.fn.supplier.debezium.custom;
 
 import java.io.File;
 import java.time.Duration;
@@ -29,7 +29,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.stream.app.source.debezium.integration.DebeziumTestUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
@@ -41,16 +40,19 @@ import static org.awaitility.Awaitility.await;
  */
 @Tag("integration")
 @Testcontainers
-public class DebeziumCustomConsumerTest {
-	private static final Log logger = LogFactory.getLog(DebeziumCustomConsumerTest.class);
+public class DebeziumCustomConsumerIntegrationTest {
+	private static final Log logger = LogFactory.getLog(DebeziumCustomConsumerIntegrationTest.class);
 
 	private static final String DATABASE_NAME = "inventory";
+
+	public static final String IMAGE_TAG = "2.2.0.CR1";
+	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:" + IMAGE_TAG;
 
 	@TempDir
 	static File anotherTempDir;
 
 	@Container
-	static GenericContainer<?> debeziumMySQL = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
+	static GenericContainer<?> debeziumMySQL = new GenericContainer<>(DEBEZIUM_EXAMPLE_MYSQL_IMAGE)
 			.withEnv("MYSQL_ROOT_PASSWORD", "debezium")
 			.withEnv("MYSQL_USER", "mysqluser")
 			.withEnv("MYSQL_PASSWORD", "mysqlpw")

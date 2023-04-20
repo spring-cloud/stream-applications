@@ -71,8 +71,17 @@ public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAwa
 		}
 	}
 
+	/**
+	 * Reactive Streams, single subscriber, sink used to push down the change event signals received from the Debezium
+	 * Engine.
+	 */
 	private final Sinks.Many<Message<?>> eventSink = Sinks.many().unicast().onBackpressureError();
 
+	/**
+	 * Debezium Engine is designed to be submitted to an {@link ExecutorService} for execution by a single thread, and a
+	 * running connector can be stopped either by calling {@link #stop()} from another thread or by interrupting the
+	 * running thread (e.g., as is the case with {@link ExecutorService#shutdownNow()}).
+	 */
 	private final ExecutorService debeziumExecutor = Executors.newSingleThreadExecutor();
 
 	@Bean
@@ -86,7 +95,7 @@ public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAwa
 	@ConditionalOnMissingBean
 	public Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer(DebeziumProperties properties) {
 
-		return new ChangeEventConsumer<byte[]>(properties.getFormat().contentType(), properties.isConvertHeaders(),
+		return new ChangeEventConsumer<byte[]>(properties.getFormat().contentType(), properties.isCopyHeaders(),
 				this.eventSink);
 	}
 
@@ -96,12 +105,12 @@ public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAwa
 	private final class ChangeEventConsumer<T> implements Consumer<ChangeEvent<T, T>> {
 
 		private final String contentType;
-		private final boolean convertHeaders;
+		private final boolean copyHeaders;
 		private final Sinks.Many<Message<?>> eventSink;
 
-		private ChangeEventConsumer(String contentType, boolean convertHeaders, Sinks.Many<Message<?>> eventSink) {
+		private ChangeEventConsumer(String contentType, boolean copyHeaders, Sinks.Many<Message<?>> eventSink) {
 			this.contentType = contentType;
-			this.convertHeaders = convertHeaders;
+			this.copyHeaders = copyHeaders;
 			this.eventSink = eventSink;
 		}
 
@@ -138,7 +147,7 @@ public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAwa
 									? MimeTypeUtils.TEXT_PLAIN_VALUE
 									: this.contentType);
 
-			if (this.convertHeaders) {
+			if (this.copyHeaders) {
 				List<Header<T>> headers = changeEvent.headers();
 				if (headers != null && !headers.isEmpty()) {
 					Iterator<Header<T>> itr = headers.iterator();

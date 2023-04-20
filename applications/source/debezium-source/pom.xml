@@ -12,7 +12,7 @@
 
 	<properties>
 		<json-unit.version>1.25.1</json-unit.version>
-		<mysql-connector-java.version>8.0.13</mysql-connector-java.version>
+		<!-- <mysql-connector-java.version>8.0.13</mysql-connector-java.version> -->
 	</properties>
 
 	<artifactId>debezium-source</artifactId>
@@ -105,6 +105,12 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream-test-binder</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

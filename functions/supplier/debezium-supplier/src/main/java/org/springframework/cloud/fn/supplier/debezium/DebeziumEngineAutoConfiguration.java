@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.supplier.debezium;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
 import io.debezium.engine.ChangeEvent;
@@ -75,7 +76,7 @@ public class DebeziumEngineAutoConfiguration {
 	@ConditionalOnMissingBean
 	public OffsetCommitPolicy offsetCommitPolicy(DebeziumProperties properties, Properties debeziumConfiguration) {
 
-		switch (properties.getEngine().getOffsetCommitPolicy()) {
+		switch (properties.getOffsetCommitPolicy()) {
 		case PERIODIC:
 			return OffsetCommitPolicy.periodic(debeziumConfiguration);
 		case ALWAYS:

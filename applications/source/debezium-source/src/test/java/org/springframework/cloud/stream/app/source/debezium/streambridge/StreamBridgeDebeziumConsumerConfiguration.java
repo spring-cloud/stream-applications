@@ -80,7 +80,7 @@ public class StreamBridgeDebeziumConsumerConfiguration implements BeanClassLoade
 			BindingNameStrategy bindingNameStrategy, DebeziumProperties properties) {
 
 		return new ChangeEventConsumer<byte[]>(streamBridge, bindingNameStrategy.bindingName(),
-				properties.getFormat().contentType(), properties.isConvertHeaders());
+				properties.getFormat().contentType(), properties.isCopyHeaders());
 	}
 
 	@Bean
