@@ -18,7 +18,6 @@ The `Debezium Source` currently supports CDC for multiple datastores: https://de
 == Options
 
 //tag::configuration-properties[]
-$$cdc.binding-name$$:: $$If set overrides the default message binding name. If not set the binding name is computed from the function definition name and the '-out-0' suffix. If the function definition name is empty, the binding name defaults to 'debezium-out-0'.$$ *($$String$$, default: `$$<none>$$`)*
 $$cdc.convert-headers$$:: $$Copy Change Event headers into Message headers.$$ *($$Boolean$$, default: `$$true$$`)*
 $$cdc.debezium$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a 'cdc.debezium.' prefix are native Debezium properties. The prefix is removed, converting them into Debezium io.debezium.config.Configuration.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
 $$cdc.format$$:: $$(Experimental) Debezium message format. Defaults to 'json'.$$ *($$DebeziumFormat$$, default: `$$<none>$$`, possible values: `JSON`,`AVRO`,`PROTOBUF`)*

@@ -73,13 +73,6 @@ public class DebeziumProperties {
 	private DebeziumFormat format = DebeziumFormat.JSON;
 
 	/**
-	 * If set overrides the default message binding name. If not set the binding name is computed from the function
-	 * definition name and the '-out-0' suffix. If the function definition name is empty, the binding name defaults to
-	 * 'debezium-out-0'.
-	 */
-	private String bindingName = null;
-
-	/**
 	 * Copy Change Event headers into Message headers.
 	 */
 	private boolean convertHeaders = true;
@@ -87,9 +80,9 @@ public class DebeziumProperties {
 	/**
 	 * DebeziumEngine specific configurations.
 	 */
-	private DebeziumEngineConfiguration engine = new DebeziumEngineConfiguration();
+	private EngineConfiguration engine = new EngineConfiguration();
 
-	public DebeziumEngineConfiguration getEngine() {
+	public EngineConfiguration getEngine() {
 		return engine;
 	}
 
@@ -110,14 +103,6 @@ public class DebeziumProperties {
 		this.format = format;
 	}
 
-	public String getBindingName() {
-		return bindingName;
-	}
-
-	public void setBindingName(String overrideBindingName) {
-		this.bindingName = overrideBindingName;
-	}
-
 	public boolean isConvertHeaders() {
 		return convertHeaders;
 	}
@@ -126,7 +111,7 @@ public class DebeziumProperties {
 		this.convertHeaders = convertHeaders;
 	}
 
-	public static class DebeziumEngineConfiguration {
+	public class EngineConfiguration {
 
 		/**
 		 * The policy that defines when the offsets should be committed to offset storage.
@@ -149,6 +134,9 @@ public class DebeziumProperties {
 			DEFAULT;
 		}
 
+		/**
+		 * The policy that defines when the offsets should be committed to offset storage.
+		 */
 		private DebeziumOffsetCommitPolicy offsetCommitPolicy = DebeziumOffsetCommitPolicy.DEFAULT;
 
 		public DebeziumOffsetCommitPolicy getOffsetCommitPolicy() {

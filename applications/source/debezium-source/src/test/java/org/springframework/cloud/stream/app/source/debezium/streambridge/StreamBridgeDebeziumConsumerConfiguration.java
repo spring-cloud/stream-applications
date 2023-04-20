@@ -71,7 +71,7 @@ public class StreamBridgeDebeziumConsumerConfiguration implements BeanClassLoade
 	@Bean
 	public BindingNameStrategy bindingNameStrategy(DebeziumProperties cdcProperties,
 			FunctionProperties functionProperties) {
-		return new BindingNameStrategy(cdcProperties, functionProperties);
+		return new BindingNameStrategy(functionProperties);
 	}
 
 	@Bean
@@ -163,20 +163,15 @@ public class StreamBridgeDebeziumConsumerConfiguration implements BeanClassLoade
 		private static final String DEFAULT_FUNCTION_DEFINITION_NAME = "debezium";
 		private static final String DEFAULT_SUFFIX = "-out-0";
 
-		private DebeziumProperties cdcProperties;
 		private FunctionProperties functionProperties;
 
-		public BindingNameStrategy(DebeziumProperties cdcProperties, FunctionProperties functionProperties) {
-			this.cdcProperties = cdcProperties;
+		public BindingNameStrategy(FunctionProperties functionProperties) {
 			this.functionProperties = functionProperties;
 		}
 
 		public String bindingName() {
 
-			if (StringUtils.hasText(cdcProperties.getBindingName())) {
-				return cdcProperties.getBindingName();
-			}
-			else if (StringUtils.hasText(functionProperties.getDefinition())) {
+			if (StringUtils.hasText(functionProperties.getDefinition())) {
 				return functionProperties.getDefinition() + DEFAULT_SUFFIX;
 			}
 
