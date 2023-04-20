@@ -73,7 +73,7 @@ jobs:
           else
             MVN_THR=
           fi
-          MAVEN_OPTS="-s $BUILD_DIR/.settings.xml -B -U -X $MVN_THR"
+          MAVEN_OPTS="-s $BUILD_DIR/.settings.xml -B -U $MVN_THR"
           echo "VERBOSE=$VERBOSE"
           if [ "$VERBOSE" = "true" ]; then
             MAVEN_OPTS="-X $MAVEN_OPTS"
