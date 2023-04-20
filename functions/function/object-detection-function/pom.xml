@@ -18,14 +18,14 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>tensorflow-common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
 			<version>${protobuf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>tensorflow-common</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
