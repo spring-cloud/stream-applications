@@ -36,7 +36,7 @@
             </exclusions>
         </dependency>
 
-        <!-- Debezium Connectors (optional dependeciees)-->
+        <!-- Debezium Connectors -->
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-mysql</artifactId>
@@ -141,7 +141,7 @@
             <version>${version.debezium}</version>
         </dependency>
 
-        <!-- APICURIO Schema Registry (Option for AVRO format)-->
+        <!-- APICURIO Schema Registry (for AVRO format)-->
         <dependency>
             <groupId>io.apicurio</groupId>
             <artifactId>apicurio-registry-utils-converter</artifactId>

@@ -58,33 +58,33 @@ public class DebeziumSupplierAvroFormatTest {
 			.withStartupAttempts(3);
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
-			TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
+			TestChannelBinderConfiguration.getCompleteConfiguration(TestDebeziumSourceApplication.class))
 					.web(WebApplicationType.NONE)
 					.properties(
 							"spring.cloud.function.definition=debeziumSupplier",
 
-							"cdc.format=AVRO",
+							"debezium.format=AVRO",
 
-							"cdc.debezium.key.converter=io.apicurio.registry.utils.converter.AvroConverter",
-							"cdc.debezium.key.converter.apicurio.registry.auto-register=true",
-							"cdc.debezium.key.converter.apicurio.registry.find-latest=true",
-							"cdc.debezium.value.converter=io.apicurio.registry.utils.converter.AvroConverter",
-							"cdc.debezium.value.converter.apicurio.registry.auto-register=true",
-							"cdc.debezium.value.converter.apicurio.registry.find-latest=true",
-							"cdc.debezium.schema.name.adjustment.mode=avro",
+							"debezium.inner.key.converter=io.apicurio.registry.utils.converter.AvroConverter",
+							"debezium.inner.key.converter.apicurio.registry.auto-register=true",
+							"debezium.inner.key.converter.apicurio.registry.find-latest=true",
+							"debezium.inner.value.converter=io.apicurio.registry.utils.converter.AvroConverter",
+							"debezium.inner.value.converter.apicurio.registry.auto-register=true",
+							"debezium.inner.value.converter.apicurio.registry.find-latest=true",
+							"debezium.inner.schema.name.adjustment.mode=avro",
 
-							"cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
-							"cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
+							"debezium.inner.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
+							"debezium.inner.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
 
-							"cdc.debezium.topic.prefix=my-topic",
-							"cdc.debezium.name=my-connector",
-							"cdc.debezium.database.server.id=85744",
-							"cdc.debezium.database.server.name=my-app-connector",
+							"debezium.inner.topic.prefix=my-topic",
+							"debezium.inner.name=my-connector",
+							"debezium.inner.database.server.id=85744",
+							"debezium.inner.database.server.name=my-app-connector",
 
-							"cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
-							"cdc.debezium.database.user=debezium",
-							"cdc.debezium.database.password=dbz",
-							"cdc.debezium.database.hostname=localhost",
+							"debezium.inner.connector.class=io.debezium.connector.mysql.MySqlConnector",
+							"debezium.inner.database.user=debezium",
+							"debezium.inner.database.password=dbz",
+							"debezium.inner.database.hostname=localhost",
 
 							// JdbcTemplate configuration
 							String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
@@ -101,9 +101,9 @@ public class DebeziumSupplierAvroFormatTest {
 		String APICURIO_URL = "http://localhost:" + String.valueOf(apicurio.getMappedPort(8080)) + "/apis/registry/v2";
 
 		try (ConfigurableApplicationContext context = applicationBuilder.run(
-				"--cdc.debezium.key.converter.apicurio.registry.url=" + APICURIO_URL,
-				"--cdc.debezium.value.converter.apicurio.registry.url=" + APICURIO_URL,
-				"--cdc.debezium.database.port=" + MYSQL_MAPPED_PORT)) {
+				"--debezium.inner.key.converter.apicurio.registry.url=" + APICURIO_URL,
+				"--debezium.inner.value.converter.apicurio.registry.url=" + APICURIO_URL,
+				"--debezium.inner.database.port=" + MYSQL_MAPPED_PORT)) {
 
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 

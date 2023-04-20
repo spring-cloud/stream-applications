@@ -62,14 +62,14 @@ public class DebeziumEngineAutoConfiguration {
 	@Bean
 	public Properties debeziumConfiguration(DebeziumProperties properties) {
 		Properties outProps = new java.util.Properties();
-		outProps.putAll(properties.getDebezium());
+		outProps.putAll(properties.getInner());
 		return outProps;
 	}
 
 	/**
 	 * The fully-qualified class name of the commit policy type. The default is a periodic commit policy based upon time
 	 * intervals.
-	 * @param properties The 'cdc.debezium.offset.flush.interval.ms' configuration is compulsory for the Periodic policy
+	 * @param properties The 'debezium.inner.offset.flush.interval.ms' configuration is compulsory for the Periodic policy
 	 * type. The ALWAYS and DEFAULT doesn't require properties.
 	 */
 	@Bean

@@ -37,7 +37,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @SpringBootConfiguration
 @EnableAutoConfiguration(exclude = MongoAutoConfiguration.class)
 @Import(DebeziumReactiveConsumerConfiguration.class)
-public class TestCdcSourceApplication {
+public class TestDebeziumSourceApplication {
 
 	@Bean
 	public JdbcTemplate myJdbcTemplate(DataSource dataSource) {

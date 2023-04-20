@@ -64,30 +64,30 @@ public class DebeziumFlatteningIntegrationTest {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(
-					TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
+					TestChannelBinderConfiguration.getCompleteConfiguration(TestDebeziumSourceApplication.class))
 			.withPropertyValues(
 					"spring.cloud.function.definition=debeziumSupplier",
 
-					"cdc.debezium.schema=false",
+					"debezium.inner.schema=false",
 
-					"cdc.debezium.key.converter.schemas.enable=false",
-					"cdc.debezium.value.converter.schemas.enable=false",
+					"debezium.inner.key.converter.schemas.enable=false",
+					"debezium.inner.value.converter.schemas.enable=false",
 
-					"cdc.debezium.topic.prefix=my-topic", // new
+					"debezium.inner.topic.prefix=my-topic", // new
 
-					"cdc.debezium.name=my-sql-connector",
+					"debezium.inner.name=my-sql-connector",
 
-					"cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory", // new
-					"cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
+					"debezium.inner.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory", // new
+					"debezium.inner.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
 
-					"cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
-					"cdc.debezium.database.user=debezium",
-					"cdc.debezium.database.password=dbz",
-					"cdc.debezium.database.hostname=localhost",
-					"cdc.debezium.database.port=" + mySqlContainer.getMappedPort(3306),
-					"cdc.debezium.database.server.id=85744",
-					"cdc.debezium.database.server.name=my-app-connector",
-					"cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
+					"debezium.inner.connector.class=io.debezium.connector.mysql.MySqlConnector",
+					"debezium.inner.database.user=debezium",
+					"debezium.inner.database.password=dbz",
+					"debezium.inner.database.hostname=localhost",
+					"debezium.inner.database.port=" + mySqlContainer.getMappedPort(3306),
+					"debezium.inner.database.server.id=85744",
+					"debezium.inner.database.server.name=my-app-connector",
+					"debezium.inner.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
 
 					// JdbcTemplate configuration
 					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
@@ -125,16 +125,16 @@ public class DebeziumFlatteningIntegrationTest {
 				toString(messages.get(1).getPayload()),
 				Configuration.empty().whenIgnoringPaths("schemaName", "tableChanges", "source.sequence",
 						"source.ts_ms", "ts_ms"));
-		assertThat(messages.get(1).getHeaders().get("cdc_destination")).isEqualTo("my-topic");
+		assertThat(messages.get(1).getHeaders().get("debezium_destination")).isEqualTo("my-topic");
 		JsonAssert.assertJsonEquals("{\"databaseName\":\"inventory\"}",
-				toString(messages.get(1).getHeaders().get("cdc_key")));
+				toString(messages.get(1).getHeaders().get("debezium_key")));
 
 		JsonAssert.assertJsonEquals(
 				DebeziumTestUtils.resourceToString("classpath:/json/mysql_insert_inventory_products_106.json"),
 				toString(messages.get(39).getPayload()),
 				Configuration.empty().whenIgnoringPaths("source.sequence", "source.ts_ms"));
-		assertThat(messages.get(39).getHeaders().get("cdc_destination")).isEqualTo("my-topic.inventory.products");
-		JsonAssert.assertJsonEquals("{\"id\":106}", toString(messages.get(39).getHeaders().get("cdc_key")));
+		assertThat(messages.get(39).getHeaders().get("debezium_destination")).isEqualTo("my-topic.inventory.products");
+		JsonAssert.assertJsonEquals("{\"id\":106}", toString(messages.get(39).getHeaders().get("debezium_key")));
 
 		jdbcTemplate.update(
 				"insert into `customers`(`first_name`,`last_name`,`email`) VALUES('Test666', 'Test666', 'Test666@spring.org')");
@@ -150,37 +150,38 @@ public class DebeziumFlatteningIntegrationTest {
 		JsonAssert.assertJsonEquals(
 				DebeziumTestUtils.resourceToString("classpath:/json/mysql_update_inventory_customers.json"),
 				toString(messages.get(1).getPayload()), Configuration.empty().whenIgnoringPaths("source.sequence"));
-		assertThat(messages.get(1).getHeaders().get("cdc_destination")).isEqualTo("my-topic.inventory.customers");
+		assertThat(messages.get(1).getHeaders().get("debezium_destination")).isEqualTo("my-topic.inventory.customers");
 		JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}",
-				toString(messages.get(1).getHeaders().get("cdc_key")));
+				toString(messages.get(1).getHeaders().get("debezium_key")));
 
 		JsonAssert.assertJsonEquals(
 				DebeziumTestUtils.resourceToString("classpath:/json/mysql_delete_inventory_customers.json"),
 				toString(messages.get(2).getPayload()), Configuration.empty().whenIgnoringPaths("source.sequence"));
-		assertThat(messages.get(1).getHeaders().get("cdc_destination")).isEqualTo("my-topic.inventory.customers");
+		assertThat(messages.get(1).getHeaders().get("debezium_destination")).isEqualTo("my-topic.inventory.customers");
 
 		JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}",
-				toString(messages.get(1).getHeaders().get("cdc_key")));
+				toString(messages.get(1).getHeaders().get("debezium_key")));
 
 		if (isKafkaPresent) {
 			assertThat(messages.get(3).getPayload().getClass().getCanonicalName())
 					.isEqualTo(DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 							"Tombstones event should have KafkaNull payload");
-			assertThat(messages.get(3).getHeaders().get("cdc_destination"))
+			assertThat(messages.get(3).getHeaders().get("debezium_destination"))
 					.isEqualTo("my-topic.inventory.customers");
 			JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}",
-					toString(messages.get(3).getHeaders().get("cdc_key")));
+					toString(messages.get(3).getHeaders().get("debezium_key")));
 		}
 	};
 
 	@Test
 	public void flattenedResponseNoKafka() {
 		contextRunner
-				.withPropertyValues("cdc.debezium.transforms=unwrap",
-						"cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
-						"cdc.debezium.transforms.unwrap.add.fields=name,db,op",
-						"cdc.debezium.transforms.unwrap.delete.handling.mode=none",
-						"cdc.debezium.transforms.unwrap.drop.tombstones=false")
+				.withPropertyValues("debezium.inner.transforms=unwrap",
+						"debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+						"debezium.inner.transforms.unwrap.add.fields=name,db,op",
+						"debezium.inner.transforms.unwrap.add.headers=name,op",
+						"debezium.inner.transforms.unwrap.delete.handling.mode=none",
+						"debezium.inner.transforms.unwrap.drop.tombstones=false")
 				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the classpath
 				.run(flatteningTest);
 	}
@@ -188,22 +189,24 @@ public class DebeziumFlatteningIntegrationTest {
 	@Test
 	public void flattenedResponseWithKafka() {
 		contextRunner
-				.withPropertyValues("cdc.debezium.transforms=unwrap",
-						"cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
-						"cdc.debezium.transforms.unwrap.add.fields=name,db,op",
-						"cdc.debezium.transforms.unwrap.delete.handling.mode=none",
-						"cdc.debezium.transforms.unwrap.drop.tombstones=false")
+				.withPropertyValues("debezium.inner.transforms=unwrap",
+						"debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+						"debezium.inner.transforms.unwrap.add.fields=name,db,op",
+						"debezium.inner.transforms.unwrap.add.headers=name,op",
+						"debezium.inner.transforms.unwrap.delete.handling.mode=none",
+						"debezium.inner.transforms.unwrap.drop.tombstones=false")
 				.run(flatteningTest);
 	}
 
 	@Test
 	public void flattenedResponseWithKafkaDropTombstone() {
 		contextRunner
-				.withPropertyValues("cdc.debezium.transforms=unwrap",
-						"cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
-						"cdc.debezium.transforms.unwrap.add.fields=name,db,op",
-						"cdc.debezium.transforms.unwrap.delete.handling.mode=none",
-						"cdc.debezium.transforms.unwrap.drop.tombstones=true")
+				.withPropertyValues("debezium.inner.transforms=unwrap",
+						"debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+						"debezium.inner.transforms.unwrap.add.fields=name,db,op",
+						"debezium.inner.transforms.unwrap.add.headers=name,op",
+						"debezium.inner.transforms.unwrap.delete.handling.mode=none",
+						"debezium.inner.transforms.unwrap.drop.tombstones=true")
 				.run(flatteningTest);
 	}
 
@@ -220,17 +223,17 @@ public class DebeziumFlatteningIntegrationTest {
 
 		DebeziumProperties props = context.getBean(DebeziumProperties.class);
 
-		String deleteHandlingMode = props.getDebezium().get("transforms.unwrap.delete.handling.mode");
-		String isDropTombstones = props.getDebezium().get("transforms.unwrap.drop.tombstones");
+		String deleteHandlingMode = props.getInner().get("transforms.unwrap.delete.handling.mode");
+		String isDropTombstones = props.getInner().get("transforms.unwrap.drop.tombstones");
 
 		JsonAssert.assertJsonEquals(DebeziumTestUtils.resourceToString(
 				"classpath:/json/mysql_ddl_drop_inventory_address_table.json"),
 				toString(messages.get(1).getPayload()),
 				Configuration.empty().whenIgnoringPaths("schemaName", "tableChanges", "source.sequence",
 						"source.ts_ms", "ts_ms"));
-		assertThat(messages.get(1).getHeaders().get("cdc_destination")).isEqualTo("my-topic");
+		assertThat(messages.get(1).getHeaders().get("debezium_destination")).isEqualTo("my-topic");
 		JsonAssert.assertJsonEquals("{\"databaseName\":\"inventory\"}",
-				toString(messages.get(1).getHeaders().get("cdc_key")));
+				toString(messages.get(1).getHeaders().get("debezium_key")));
 
 		if (isFlatteningEnabled(props)) {
 			JsonAssert.assertJsonEquals(
@@ -243,8 +246,8 @@ public class DebeziumFlatteningIntegrationTest {
 					DebeziumTestUtils.resourceToString("classpath:/json/mysql_insert_inventory_products_106.json"),
 					toString(messages.get(39).getPayload()));
 		}
-		assertThat(messages.get(39).getHeaders().get("cdc_destination")).isEqualTo("my-topic.inventory.products");
-		JsonAssert.assertJsonEquals("{\"id\":106}", toString(messages.get(39).getHeaders().get("cdc_key")));
+		assertThat(messages.get(39).getHeaders().get("debezium_destination")).isEqualTo("my-topic.inventory.products");
+		JsonAssert.assertJsonEquals("{\"id\":106}", toString(messages.get(39).getHeaders().get("debezium_key")));
 
 		jdbcTemplate.update(
 				"insert into `customers`(`first_name`,`last_name`,`email`) VALUES('Test666', 'Test666', 'Test666@spring.org')");
@@ -261,30 +264,30 @@ public class DebeziumFlatteningIntegrationTest {
 				DebeziumTestUtils.resourceToString("classpath:/json/mysql_flattened_update_inventory_customers.json"),
 				toString(messages.get(1).getPayload()));
 
-		assertThat(messages.get(1).getHeaders().get("cdc_destination")).isEqualTo("my-topic.inventory.customers");
+		assertThat(messages.get(1).getHeaders().get("debezium_destination")).isEqualTo("my-topic.inventory.customers");
 		JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}",
-				toString(messages.get(1).getHeaders().get("cdc_key")));
+				toString(messages.get(1).getHeaders().get("debezium_key")));
 
 		if (deleteHandlingMode.equals("none")) {
 			assertThat(toString(messages.get(2).getPayload())).isEqualTo("null");
-			assertThat(messages.get(1).getHeaders().get("cdc_destination")).isEqualTo("my-topic.inventory.customers");
+			assertThat(messages.get(1).getHeaders().get("debezium_destination")).isEqualTo("my-topic.inventory.customers");
 			JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}",
-					toString(messages.get(1).getHeaders().get("cdc_key")));
+					toString(messages.get(1).getHeaders().get("debezium_key")));
 		}
 
 		if (isDropTombstones.equals("false") && isKafkaPresent) {
 			assertThat(messages.get(3).getPayload().getClass().getCanonicalName())
 					.isEqualTo(DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 							"Tombstones event should have KafkaNull payload");
-			assertThat(messages.get(3).getHeaders().get("cdc_destination"))
+			assertThat(messages.get(3).getHeaders().get("debezium_destination"))
 					.isEqualTo("my-topic.inventory.customers");
 			JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}",
-					toString(messages.get(3).getHeaders().get("cdc_key")));
+					toString(messages.get(3).getHeaders().get("debezium_key")));
 		}
 	};
 
 	private static boolean isFlatteningEnabled(DebeziumProperties props) {
-		String unwrapType = props.getDebezium().get("transforms.unwrap.type");
+		String unwrapType = props.getInner().get("transforms.unwrap.type");
 		return StringUtils.hasText(unwrapType) && unwrapType.equals("io.debezium.transforms.ExtractNewRecordState");
 	}
 

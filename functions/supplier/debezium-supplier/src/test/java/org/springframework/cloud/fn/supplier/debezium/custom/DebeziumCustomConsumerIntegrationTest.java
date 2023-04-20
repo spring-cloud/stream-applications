@@ -44,7 +44,6 @@ public class DebeziumCustomConsumerIntegrationTest {
 	private static final Log logger = LogFactory.getLog(DebeziumCustomConsumerIntegrationTest.class);
 
 	private static final String DATABASE_NAME = "inventory";
-
 	public static final String IMAGE_TAG = "2.2.0.CR1";
 	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:" + IMAGE_TAG;
 
@@ -63,26 +62,26 @@ public class DebeziumCustomConsumerIntegrationTest {
 			.withPropertyValues(
 					"spring.datasource.type=com.zaxxer.hikari.HikariDataSource",
 
-					"cdc.debezium.offset.storage=org.apache.kafka.connect.storage.FileOffsetBackingStore",
-					"cdc.debezium.offset.storage.file.filename=" + anotherTempDir.getAbsolutePath() + "offsets.dat",
-					"cdc.debezium.offset.flush.interval.ms=60000",
+					"debezium.inner.offset.storage=org.apache.kafka.connect.storage.FileOffsetBackingStore",
+					"debezium.inner.offset.storage.file.filename=" + anotherTempDir.getAbsolutePath() + "offsets.dat",
+					"debezium.inner.offset.flush.interval.ms=60000",
 
-					"cdc.debezium.schema.history.internal=io.debezium.storage.file.history.FileSchemaHistory", // new
-					"cdc.debezium.schema.history.internal.file.filename=" + anotherTempDir.getAbsolutePath()
+					"debezium.inner.schema.history.internal=io.debezium.storage.file.history.FileSchemaHistory", // new
+					"debezium.inner.schema.history.internal.file.filename=" + anotherTempDir.getAbsolutePath()
 							+ "schemahistory.dat", // new
 
-					"cdc.debezium.topic.prefix=my-topic", // new
+					"debezium.inner.topic.prefix=my-topic", // new
 
-					"cdc.debezium.name=my-sql-connector",
-					"cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
+					"debezium.inner.name=my-sql-connector",
+					"debezium.inner.connector.class=io.debezium.connector.mysql.MySqlConnector",
 
-					"cdc.debezium.database.user=debezium",
-					"cdc.debezium.database.password=dbz",
-					"cdc.debezium.database.hostname=localhost",
-					"cdc.debezium.database.port=" + debeziumMySQL.getMappedPort(3306),
-					"cdc.debezium.database.server.id=85744",
-					"cdc.debezium.database.server.name=my-app-connector",
-					"cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
+					"debezium.inner.database.user=debezium",
+					"debezium.inner.database.password=dbz",
+					"debezium.inner.database.hostname=localhost",
+					"debezium.inner.database.port=" + debeziumMySQL.getMappedPort(3306),
+					"debezium.inner.database.server.id=85744",
+					"debezium.inner.database.server.name=my-app-connector",
+					"debezium.inner.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
 
 					// JdbcTemplate configuration
 					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
@@ -101,11 +100,11 @@ public class DebeziumCustomConsumerIntegrationTest {
 				.withPropertyValues(
 						// Flattering:
 						// https://debezium.io/documentation/reference/stable/transformations/event-flattening.html
-						"cdc.debezium.transforms=unwrap",
-						"cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
-						"cdc.debezium.transforms.unwrap.drop.tombstones=false",
-						"cdc.debezium.transforms.unwrap.delete.handling.mode=rewrite",
-						"cdc.debezium.transforms.unwrap.add.fields=name,db")
+						"debezium.inner.transforms=unwrap",
+						"debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+						"debezium.inner.transforms.unwrap.drop.tombstones=false",
+						"debezium.inner.transforms.unwrap.delete.handling.mode=rewrite",
+						"debezium.inner.transforms.unwrap.add.fields=name,db")
 				.run(context -> {
 					JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
 

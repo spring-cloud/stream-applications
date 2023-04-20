@@ -48,27 +48,27 @@ public class DebeziumDatabasesIntegrationTest {
 	private static final Log logger = LogFactory.getLog(DebeziumDatabasesIntegrationTest.class);
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
-			TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
+			TestChannelBinderConfiguration.getCompleteConfiguration(TestDebeziumSourceApplication.class))
 					.web(WebApplicationType.NONE)
 					.properties(
 							"spring.cloud.function.definition=debeziumSupplier",
 							// Flattering:
 							// https://debezium.io/documentation/reference/stable/transformations/event-flattening.html
-							"cdc.debezium.transforms=unwrap",
-							"cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
-							"cdc.debezium.transforms.unwrap.drop.tombstones=false",
-							"cdc.debezium.transforms.unwrap.delete.handling.mode=rewrite",
-							"cdc.debezium.transforms.unwrap.add.fields=name,db,op,table",
+							"debezium.inner.transforms=unwrap",
+							"debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+							"debezium.inner.transforms.unwrap.drop.tombstones=false",
+							"debezium.inner.transforms.unwrap.delete.handling.mode=rewrite",
+							"debezium.inner.transforms.unwrap.add.fields=name,db,op,table",
 
-							"cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
-							"cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
+							"debezium.inner.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
+							"debezium.inner.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
 
-							"cdc.debezium.schema=false",
+							"debezium.inner.schema=false",
 
-							"cdc.debezium.topic.prefix=my-topic",
-							"cdc.debezium.name=my-connector",
-							"cdc.debezium.database.server.id=85744",
-							"cdc.debezium.database.server.name=my-app-connector");
+							"debezium.inner.topic.prefix=my-topic",
+							"debezium.inner.name=my-connector",
+							"debezium.inner.database.server.id=85744",
+							"debezium.inner.database.server.name=my-app-connector");
 
 	@Test
 	public void mysql() {
@@ -83,11 +83,11 @@ public class DebeziumDatabasesIntegrationTest {
 			mySQL.start();
 
 			try (ConfigurableApplicationContext context = applicationBuilder.run(
-					"--cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
-					"--cdc.debezium.database.user=debezium",
-					"--cdc.debezium.database.password=dbz",
-					"--cdc.debezium.database.hostname=localhost",
-					"--cdc.debezium.database.port=" + mySQL.getMappedPort(3306),
+					"--debezium.inner.connector.class=io.debezium.connector.mysql.MySqlConnector",
+					"--debezium.inner.database.user=debezium",
+					"--debezium.inner.database.password=dbz",
+					"--debezium.inner.database.hostname=localhost",
+					"--debezium.inner.database.port=" + mySQL.getMappedPort(3306),
 
 					// JdbcTemplate configuration
 					String.format("--app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
@@ -120,13 +120,13 @@ public class DebeziumDatabasesIntegrationTest {
 			postgres.start();
 
 			try (ConfigurableApplicationContext context = applicationBuilder.run(
-					"--cdc.debezium.connector.class=io.debezium.connector.postgresql.PostgresConnector",
-					"--cdc.debezium.database.user=postgres",
-					"--cdc.debezium.database.password=postgres",
-					"--cdc.debezium.slot.name=debezium",
-					"--cdc.debezium.database.dbname=postgres",
-					"--cdc.debezium.database.hostname=localhost",
-					"--cdc.debezium.database.port=" + postgres.getMappedPort(5432),
+					"--debezium.inner.connector.class=io.debezium.connector.postgresql.PostgresConnector",
+					"--debezium.inner.database.user=postgres",
+					"--debezium.inner.database.password=postgres",
+					"--debezium.inner.slot.name=debezium",
+					"--debezium.inner.database.dbname=postgres",
+					"--debezium.inner.database.hostname=localhost",
+					"--debezium.inner.database.port=" + postgres.getMappedPort(5432),
 					// JdbcTemplate configuration
 					String.format("--app.datasource.url=jdbc:postgresql://localhost:%d/%s",
 							postgres.getMappedPort(5432), DebeziumTestUtils.DATABASE_NAME),

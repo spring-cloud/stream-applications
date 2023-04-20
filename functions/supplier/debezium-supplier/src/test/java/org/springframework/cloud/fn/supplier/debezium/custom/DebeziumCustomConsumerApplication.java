@@ -90,7 +90,7 @@ public class DebeziumCustomConsumerApplication {
 				recordList.add(changeEvent);
 				keyValue.put(changeEvent.key(), changeEvent.value());
 				System.out.println("SIZE=" + recordList.size());
-				System.out.println("[CDC Event]: " + changeEvent.toString());
+				System.out.println("[Debezium Event]: " + changeEvent.toString());
 			}
 		}
 	}

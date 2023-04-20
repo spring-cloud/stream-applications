@@ -61,34 +61,34 @@ public class DebeziumDeleteHandlingIntegrationTest {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(
-					TestChannelBinderConfiguration.getCompleteConfiguration(TestCdcSourceApplication.class))
+					TestChannelBinderConfiguration.getCompleteConfiguration(TestDebeziumSourceApplication.class))
 			.withPropertyValues(
 					"spring.cloud.function.definition=debeziumSupplier",
 
-					"cdc.debezium.schema=false",
+					"debezium.inner.schema=false",
 
-					"cdc.debezium.key.converter.schemas.enable=false",
-					"cdc.debezium.value.converter.schemas.enable=false",
+					"debezium.inner.key.converter.schemas.enable=false",
+					"debezium.inner.value.converter.schemas.enable=false",
 
-					"cdc.debezium.topic.prefix=my-topic", // new
+					"debezium.inner.topic.prefix=my-topic", // new
 
 					// enable flattering
-					"cdc.debezium.transforms=unwrap",
-					"cdc.debezium.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
-					"cdc.debezium.transforms.unwrap.add.fields=name,db",
+					"debezium.inner.transforms=unwrap",
+					"debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+					"debezium.inner.transforms.unwrap.add.fields=name,db",
 
-					"cdc.debezium.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory", // new
-					"cdc.debezium.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
+					"debezium.inner.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory", // new
+					"debezium.inner.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
 
-					"cdc.debezium.name=my-connector",
-					"cdc.debezium.connector.class=io.debezium.connector.mysql.MySqlConnector",
-					"cdc.debezium.database.user=debezium",
-					"cdc.debezium.database.password=dbz",
-					"cdc.debezium.database.hostname=localhost",
-					"cdc.debezium.database.port=" + mySqlContainer.getMappedPort(3306),
-					"cdc.debezium.database.server.id=85744",
-					"cdc.debezium.database.server.name=my-app-connector",
-					"cdc.debezium.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
+					"debezium.inner.name=my-connector",
+					"debezium.inner.connector.class=io.debezium.connector.mysql.MySqlConnector",
+					"debezium.inner.database.user=debezium",
+					"debezium.inner.database.password=dbz",
+					"debezium.inner.database.hostname=localhost",
+					"debezium.inner.database.port=" + mySqlContainer.getMappedPort(3306),
+					"debezium.inner.database.server.id=85744",
+					"debezium.inner.database.server.name=my-app-connector",
+					"debezium.inner.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
 
 					// JdbcTemplate configuration
 					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
@@ -100,12 +100,12 @@ public class DebeziumDeleteHandlingIntegrationTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = {
-			"cdc.debezium.transforms.unwrap.delete.handling.mode=none,cdc.debezium.transforms.unwrap.drop.tombstones=true",
-			"cdc.debezium.transforms.unwrap.delete.handling.mode=none,cdc.debezium.transforms.unwrap.drop.tombstones=false",
-			"cdc.debezium.transforms.unwrap.delete.handling.mode=drop,cdc.debezium.transforms.unwrap.drop.tombstones=true",
-			"cdc.debezium.transforms.unwrap.delete.handling.mode=drop,cdc.debezium.transforms.unwrap.drop.tombstones=false",
-			"cdc.debezium.transforms.unwrap.delete.handling.mode=rewrite,cdc.debezium.transforms.unwrap.drop.tombstones=true",
-			"cdc.debezium.transforms.unwrap.delete.handling.mode=rewrite,cdc.debezium.transforms.unwrap.drop.tombstones=false"
+			"debezium.inner.transforms.unwrap.delete.handling.mode=none,debezium.inner.transforms.unwrap.drop.tombstones=true",
+			"debezium.inner.transforms.unwrap.delete.handling.mode=none,debezium.inner.transforms.unwrap.drop.tombstones=false",
+			"debezium.inner.transforms.unwrap.delete.handling.mode=drop,debezium.inner.transforms.unwrap.drop.tombstones=true",
+			"debezium.inner.transforms.unwrap.delete.handling.mode=drop,debezium.inner.transforms.unwrap.drop.tombstones=false",
+			"debezium.inner.transforms.unwrap.delete.handling.mode=rewrite,debezium.inner.transforms.unwrap.drop.tombstones=true",
+			"debezium.inner.transforms.unwrap.delete.handling.mode=rewrite,debezium.inner.transforms.unwrap.drop.tombstones=false"
 	})
 	public void handleRecordDeletions(String properties) {
 		contextRunner.withPropertyValues(properties.split(","))
@@ -129,8 +129,8 @@ public class DebeziumDeleteHandlingIntegrationTest {
 				DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
 				context.getClassLoader());
 
-		String deleteHandlingMode = props.getDebezium().get("transforms.unwrap.delete.handling.mode");
-		String isDropTombstones = props.getDebezium().get("transforms.unwrap.drop.tombstones");
+		String deleteHandlingMode = props.getInner().get("transforms.unwrap.delete.handling.mode");
+		String isDropTombstones = props.getInner().get("transforms.unwrap.drop.tombstones");
 
 		jdbcTemplate.update(
 				"insert into `customers`(`first_name`,`last_name`,`email`) VALUES('Test666', 'Test666', 'Test666@spring.org')");
@@ -165,10 +165,10 @@ public class DebeziumDeleteHandlingIntegrationTest {
 			assertThat(received.getPayload().getClass().getCanonicalName())
 					.isEqualTo(DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL);
 
-			Object keyRaw = received.getHeaders().get("cdc_key");
+			Object keyRaw = received.getHeaders().get("debezium_key");
 			String key = (keyRaw instanceof byte[]) ? new String((byte[]) keyRaw) : "" + keyRaw;
 
-			// Tombstones event should carry the deleted record id in the cdc_key header
+			// Tombstones event should carry the deleted record id in the debezium_key header
 			assertThat(key).isEqualTo("{\"id\":" + newRecordId + "}");
 		}
 

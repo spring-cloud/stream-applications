@@ -26,7 +26,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * @author Christian Tzolov
  */
-@ConfigurationProperties("cdc")
+@ConfigurationProperties("debezium")
 public class DebeziumProperties {
 
 	public enum DebeziumFormat {
@@ -61,11 +61,10 @@ public class DebeziumProperties {
 	};
 
 	/**
-	 * Spring pass-trough wrapper for debezium configuration properties. All properties with a 'cdc.debezium.' prefix
-	 * are native Debezium properties. The prefix is removed, converting them into Debezium
-	 * io.debezium.config.Configuration.
+	 * Spring pass-trough wrapper for debezium configuration properties. All properties with a 'debezium.inner.*' prefix
+	 * are native Debezium properties.
 	 */
-	private Map<String, String> debezium = defaultConfig();
+	private Map<String, String> inner = defaultConfig();
 
 	/**
 	 * Change Event message content format. Defaults to 'JSON'.
@@ -82,8 +81,8 @@ public class DebeziumProperties {
 	 */
 	private DebeziumOffsetCommitPolicy offsetCommitPolicy = DebeziumOffsetCommitPolicy.DEFAULT;
 
-	public Map<String, String> getDebezium() {
-		return debezium;
+	public Map<String, String> getInner() {
+		return inner;
 	}
 
 	private Map<String, String> defaultConfig() {
@@ -115,7 +114,7 @@ public class DebeziumProperties {
 		ALWAYS,
 		/**
 		 * Commits offsets no more than the specified time period. If the specified time is less than {@code 0} then the
-		 * policy will behave as ALWAYS policy. Requires the 'cdc.debezium.offset.flush.interval.ms' native property to
+		 * policy will behave as ALWAYS policy. Requires the 'debezium.inner.offset.flush.interval.ms' native property to
 		 * be set.
 		 */
 		PERIODIC,
