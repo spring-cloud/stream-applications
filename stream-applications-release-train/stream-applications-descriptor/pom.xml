@@ -11,6 +11,9 @@
     <artifactId>stream-applications-descriptor</artifactId>
     <name>stream-applications-descriptor</name>
     <packaging>jar</packaging>
+    <properties>
+        <uniqueVersion>false</uniqueVersion>
+    </properties>
     <build>
         <resources>
             <resource>
