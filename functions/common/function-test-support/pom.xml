@@ -15,7 +15,7 @@
 
     <properties>
         <sshd-sftp.version>2.7.0</sshd-sftp.version>
-        <apache-ftpserver.version>1.1.1</apache-ftpserver.version>
+        <apache-ftpserver.version>1.2.0</apache-ftpserver.version>
     </properties>
 
     <dependencies>
