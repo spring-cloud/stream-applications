@@ -36,8 +36,28 @@ env:
   MAVEN_THREADS: ${{ inputs.useMavenThreads }}
 
 jobs:
+  scan:
+    if: ${{ github.repository == 'spring-cloud/stream-applications' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+      - name: 'Scanned'
+        shell: bash
+        run: echo "::info ::Scanned"
   parameters:
-    if: github.repository == 'spring-cloud/stream-applications'
+    if: ${{ github.repository == 'spring-cloud/stream-applications' }}
     runs-on: ubuntu-latest
     steps:
       - name: 'Configure: checkout'
@@ -122,6 +142,7 @@ jobs:
       jdk_build: ${{ env.JDK_BUILD }}
       jre_version: ${{ env.JRE_DEFAULT }}
   core:
+    if: ${{ github.repository == 'spring-cloud/stream-applications' }}
     runs-on: ubuntu-latest
     needs:
       - parameters
@@ -229,7 +250,7 @@ jobs:
             done
           fi
   processors:
-    if: ${{ needs.parameters.outputs.processors != '' && needs.parameters.outputs.processors != null }}
+    if: ${{ github.repository == 'spring-cloud/stream-applications' && needs.parameters.outputs.processors != '' && needs.parameters.outputs.processors != null }}
     needs:
       - core
       - parameters
@@ -340,7 +361,7 @@ jobs:
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./publish-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
   sinks:
-    if: ${{ needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
+    if: ${{ github.repository == 'spring-cloud/stream-applications' && needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
     needs:
       - core
       - parameters
@@ -441,7 +462,7 @@ jobs:
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./publish-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
   sources:
-    if: ${{ needs.parameters.outputs.sources != '' && needs.parameters.outputs.sources != null }}
+    if: ${{ github.repository == 'spring-cloud/stream-applications' && needs.parameters.outputs.sources != '' && needs.parameters.outputs.sources != null }}
     runs-on: ubuntu-latest
     needs:
       - core
@@ -542,6 +563,7 @@ jobs:
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
         run: ./publish-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
   release-train:
+    if: ${{ github.repository == 'spring-cloud/stream-applications' }}
     needs:
       - core
       - sinks
@@ -661,25 +683,6 @@ jobs:
             git commit -a -m "Next development version ${{ needs.parameters.outputs.next_dev_version }}"
             git push origin main
           popd > /dev/null
-  scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          ignore-unfixed: true
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
-      - name: 'Scanned'
-        shell: bash
-        run: echo "::info ::Scanned"
   rerun-jobs:
     if: ${{ failure() && github.run_attempt == '1' }}
     runs-on: ubuntu-latest
