@@ -35,7 +35,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @author Christian Tzolov
  */
 @SpringBootConfiguration
-@EnableAutoConfiguration(exclude = MongoAutoConfiguration.class)
+@EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class})
 @Import(DebeziumReactiveConsumerConfiguration.class)
 public class TestDebeziumSourceApplication {
 

@@ -18,6 +18,7 @@ package org.springframework.cloud.fn.supplier.debezium;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import io.debezium.engine.format.SerializationFormat;
 
@@ -114,8 +115,8 @@ public class DebeziumProperties {
 		ALWAYS,
 		/**
 		 * Commits offsets no more than the specified time period. If the specified time is less than {@code 0} then the
-		 * policy will behave as ALWAYS policy. Requires the 'debezium.inner.offset.flush.interval.ms' native property to
-		 * be set.
+		 * policy will behave as ALWAYS policy. Requires the 'debezium.inner.offset.flush.interval.ms' native property
+		 * to be set.
 		 */
 		PERIODIC,
 		/**
@@ -130,5 +131,14 @@ public class DebeziumProperties {
 
 	public void setOffsetCommitPolicy(DebeziumOffsetCommitPolicy offsetCommitPolicy) {
 		this.offsetCommitPolicy = offsetCommitPolicy;
+	}
+
+	/**
+	 * Converts the Spring Framework "debezium.inner.*" properties into native Debezium configuration.
+	 */
+	public Properties getDebeziumNativeConfiguration() {
+		Properties outProps = new java.util.Properties();
+		outProps.putAll(this.getInner());
+		return outProps;
 	}
 }

@@ -18,8 +18,6 @@ package org.springframework.cloud.fn.supplier.debezium;
 
 import java.time.Clock;
 import java.time.Duration;
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
 import io.debezium.engine.ChangeEvent;
@@ -46,10 +44,6 @@ import org.springframework.context.annotation.Bean;
  * and durability. Additionally, applications must specify how the engine can store its relational database schema
  * history and offsets. By default, this information will be stored in memory and will thus be lost upon application
  * restart.
- * <p>
- * Engine Is designed to be submitted to an {@link Executor} or {@link ExecutorService} for execution by a single
- * thread, and a running connector can be stopped either by calling {@link #stop()} from another thread or by
- * interrupting the running thread (e.g., as is the case with {@link ExecutorService#shutdownNow()}).
  *
  * @author Christian Tzolov
  */
@@ -59,26 +53,19 @@ public class DebeziumEngineAutoConfiguration {
 
 	private static final Log logger = LogFactory.getLog(DebeziumEngineAutoConfiguration.class);
 
-	@Bean
-	public Properties debeziumConfiguration(DebeziumProperties properties) {
-		Properties outProps = new java.util.Properties();
-		outProps.putAll(properties.getInner());
-		return outProps;
-	}
-
 	/**
 	 * The fully-qualified class name of the commit policy type. The default is a periodic commit policy based upon time
 	 * intervals.
-	 * @param properties The 'debezium.inner.offset.flush.interval.ms' configuration is compulsory for the Periodic policy
-	 * type. The ALWAYS and DEFAULT doesn't require properties.
+	 * @param properties The 'debezium.inner.offset.flush.interval.ms' configuration is compulsory for the Periodic
+	 * policy type. The ALWAYS and DEFAULT doesn't require properties.
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	public OffsetCommitPolicy offsetCommitPolicy(DebeziumProperties properties, Properties debeziumConfiguration) {
+	public OffsetCommitPolicy offsetCommitPolicy(DebeziumProperties properties) {
 
 		switch (properties.getOffsetCommitPolicy()) {
 		case PERIODIC:
-			return OffsetCommitPolicy.periodic(debeziumConfiguration);
+			return OffsetCommitPolicy.periodic(properties.getDebeziumNativeConfiguration());
 		case ALWAYS:
 			return OffsetCommitPolicy.always();
 		case DEFAULT:
@@ -122,12 +109,11 @@ public class DebeziumEngineAutoConfiguration {
 	@Bean
 	public DebeziumEngine<?> debeziumEngine(Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
 			OffsetCommitPolicy offsetCommitPolicy, CompletionCallback completionCallback,
-			ConnectorCallback connectorCallback, DebeziumProperties properties, Properties debeziumConfiguration,
-			Clock debeziumClock) {
+			ConnectorCallback connectorCallback, DebeziumProperties properties, Clock debeziumClock) {
 
 		DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine = DebeziumEngine
 				.create(properties.getFormat().serializationFormat())
-				.using(debeziumConfiguration)
+				.using(properties.getDebeziumNativeConfiguration())
 				.using(debeziumClock)
 				.using(completionCallback)
 				.using(connectorCallback)

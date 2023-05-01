@@ -15,7 +15,7 @@
     <description>Debezium Supplier</description>
 
     <properties>
-        <version.debezium>2.2.0.CR1</version.debezium>
+        <version.debezium>2.2.0.Final</version.debezium>
         <apicurio.version>2.4.2.Final</apicurio.version>
     </properties>
 
@@ -40,81 +40,81 @@
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-mysql</artifactId>
+            <version>${version.debezium}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-            <version>${version.debezium}</version>
         </dependency>
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-mongodb</artifactId>
+            <version>${version.debezium}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-            <version>${version.debezium}</version>
         </dependency>
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-postgres</artifactId>
+            <version>${version.debezium}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-            <version>${version.debezium}</version>
         </dependency>
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-oracle</artifactId>
+            <version>${version.debezium}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-            <version>${version.debezium}</version>
         </dependency>
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-sqlserver</artifactId>
+            <version>${version.debezium}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-            <version>${version.debezium}</version>
         </dependency>
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-db2</artifactId>
+            <version>${version.debezium}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-            <version>${version.debezium}</version>
         </dependency>
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-vitess</artifactId>
+            <version>${version.debezium}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-            <version>${version.debezium}</version>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-cassandra</artifactId>
             <exclusions>
@@ -127,18 +127,19 @@
                     <groupId>org.hibernate</groupId>
                 </exclusion>
             </exclusions>
-            <version>1.8.1.Final</version>
-        </dependency>
+            <optional>true</optional>
+        </dependency> -->
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-spanner</artifactId>
+            <version>${version.debezium}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-            <version>${version.debezium}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- APICURIO Schema Registry (for AVRO format)-->
@@ -146,13 +147,11 @@
             <groupId>io.apicurio</groupId>
             <artifactId>apicurio-registry-utils-converter</artifactId>
             <version>${apicurio.version}</version>
-            <scope>optional</scope>
         </dependency>
         <dependency>
             <groupId>io.apicurio</groupId>
             <artifactId>apicurio-registry-client</artifactId>
             <version>${apicurio.version}</version>
-            <scope>optional</scope>
         </dependency>
 
         <!-- TEST -->
@@ -165,6 +164,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -26,6 +26,8 @@
 			<artifactId>debezium-supplier</artifactId>
 			<version>${java-functions.version}</version>
 		</dependency>
+
+		<!-- TEST -->
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>function-test-support</artifactId>
@@ -112,6 +114,11 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.33</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-testing-testcontainers</artifactId>
+			<version>2.2.0.Final</version>
 		</dependency>
 	</dependencies>
 
