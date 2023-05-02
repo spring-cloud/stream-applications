@@ -68,26 +68,26 @@ public class DebeziumFlatteningIntegrationTest {
 			.withPropertyValues(
 					"spring.cloud.function.definition=debeziumSupplier",
 
-					"debezium.inner.schema=false",
+					"debezium.properties.schema=false",
 
-					"debezium.inner.key.converter.schemas.enable=false",
-					"debezium.inner.value.converter.schemas.enable=false",
+					"debezium.properties.key.converter.schemas.enable=false",
+					"debezium.properties.value.converter.schemas.enable=false",
 
-					"debezium.inner.topic.prefix=my-topic", // new
+					"debezium.properties.topic.prefix=my-topic", // new
 
-					"debezium.inner.name=my-sql-connector",
+					"debezium.properties.name=my-sql-connector",
 
-					"debezium.inner.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory", // new
-					"debezium.inner.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
+					"debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory", // new
+					"debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
 
-					"debezium.inner.connector.class=io.debezium.connector.mysql.MySqlConnector",
-					"debezium.inner.database.user=debezium",
-					"debezium.inner.database.password=dbz",
-					"debezium.inner.database.hostname=localhost",
-					"debezium.inner.database.port=" + mySqlContainer.getMappedPort(3306),
-					"debezium.inner.database.server.id=85744",
-					"debezium.inner.database.server.name=my-app-connector",
-					"debezium.inner.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
+					"debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector",
+					"debezium.properties.database.user=debezium",
+					"debezium.properties.database.password=dbz",
+					"debezium.properties.database.hostname=localhost",
+					"debezium.properties.database.port=" + mySqlContainer.getMappedPort(3306),
+					"debezium.properties.database.server.id=85744",
+					"debezium.properties.database.server.name=my-app-connector",
+					"debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
 
 					// JdbcTemplate configuration
 					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
@@ -176,12 +176,12 @@ public class DebeziumFlatteningIntegrationTest {
 	@Test
 	public void flattenedResponseNoKafka() {
 		contextRunner
-				.withPropertyValues("debezium.inner.transforms=unwrap",
-						"debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
-						"debezium.inner.transforms.unwrap.add.fields=name,db,op",
-						"debezium.inner.transforms.unwrap.add.headers=name,op",
-						"debezium.inner.transforms.unwrap.delete.handling.mode=none",
-						"debezium.inner.transforms.unwrap.drop.tombstones=false")
+				.withPropertyValues("debezium.properties.transforms=unwrap",
+						"debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+						"debezium.properties.transforms.unwrap.add.fields=name,db,op",
+						"debezium.properties.transforms.unwrap.add.headers=name,op",
+						"debezium.properties.transforms.unwrap.delete.handling.mode=none",
+						"debezium.properties.transforms.unwrap.drop.tombstones=false")
 				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the classpath
 				.run(flatteningTest);
 	}
@@ -189,24 +189,24 @@ public class DebeziumFlatteningIntegrationTest {
 	@Test
 	public void flattenedResponseWithKafka() {
 		contextRunner
-				.withPropertyValues("debezium.inner.transforms=unwrap",
-						"debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
-						"debezium.inner.transforms.unwrap.add.fields=name,db,op",
-						"debezium.inner.transforms.unwrap.add.headers=name,op",
-						"debezium.inner.transforms.unwrap.delete.handling.mode=none",
-						"debezium.inner.transforms.unwrap.drop.tombstones=false")
+				.withPropertyValues("debezium.properties.transforms=unwrap",
+						"debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+						"debezium.properties.transforms.unwrap.add.fields=name,db,op",
+						"debezium.properties.transforms.unwrap.add.headers=name,op",
+						"debezium.properties.transforms.unwrap.delete.handling.mode=none",
+						"debezium.properties.transforms.unwrap.drop.tombstones=false")
 				.run(flatteningTest);
 	}
 
 	@Test
 	public void flattenedResponseWithKafkaDropTombstone() {
 		contextRunner
-				.withPropertyValues("debezium.inner.transforms=unwrap",
-						"debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
-						"debezium.inner.transforms.unwrap.add.fields=name,db,op",
-						"debezium.inner.transforms.unwrap.add.headers=name,op",
-						"debezium.inner.transforms.unwrap.delete.handling.mode=none",
-						"debezium.inner.transforms.unwrap.drop.tombstones=true")
+				.withPropertyValues("debezium.properties.transforms=unwrap",
+						"debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+						"debezium.properties.transforms.unwrap.add.fields=name,db,op",
+						"debezium.properties.transforms.unwrap.add.headers=name,op",
+						"debezium.properties.transforms.unwrap.delete.handling.mode=none",
+						"debezium.properties.transforms.unwrap.drop.tombstones=true")
 				.run(flatteningTest);
 	}
 
@@ -223,8 +223,8 @@ public class DebeziumFlatteningIntegrationTest {
 
 		DebeziumProperties props = context.getBean(DebeziumProperties.class);
 
-		String deleteHandlingMode = props.getInner().get("transforms.unwrap.delete.handling.mode");
-		String isDropTombstones = props.getInner().get("transforms.unwrap.drop.tombstones");
+		String deleteHandlingMode = props.getProperties().get("transforms.unwrap.delete.handling.mode");
+		String isDropTombstones = props.getProperties().get("transforms.unwrap.drop.tombstones");
 
 		JsonAssert.assertJsonEquals(DebeziumTestUtils.resourceToString(
 				"classpath:/json/mysql_ddl_drop_inventory_address_table.json"),
@@ -287,7 +287,7 @@ public class DebeziumFlatteningIntegrationTest {
 	};
 
 	private static boolean isFlatteningEnabled(DebeziumProperties props) {
-		String unwrapType = props.getInner().get("transforms.unwrap.type");
+		String unwrapType = props.getProperties().get("transforms.unwrap.type");
 		return StringUtils.hasText(unwrapType) && unwrapType.equals("io.debezium.transforms.ExtractNewRecordState");
 	}
 

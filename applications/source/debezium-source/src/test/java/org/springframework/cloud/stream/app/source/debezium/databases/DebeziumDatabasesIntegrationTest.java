@@ -68,21 +68,21 @@ public class DebeziumDatabasesIntegrationTest {
 									"spring.cloud.function.definition=debeziumSupplier",
 									// Flattening:
 									// https://debezium.io/documentation/reference/stable/transformations/event-flattening.html
-									"debezium.inner.transforms=unwrap",
-									"debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
-									"debezium.inner.transforms.unwrap.drop.tombstones=false",
-									"debezium.inner.transforms.unwrap.delete.handling.mode=rewrite",
-									"debezium.inner.transforms.unwrap.add.fields=name,db,op,table",
+									"debezium.properties.transforms=unwrap",
+									"debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+									"debezium.properties.transforms.unwrap.drop.tombstones=false",
+									"debezium.properties.transforms.unwrap.delete.handling.mode=rewrite",
+									"debezium.properties.transforms.unwrap.add.fields=name,db,op,table",
 
-									"debezium.inner.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
-									"debezium.inner.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
+									"debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
+									"debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
 
-									"debezium.inner.schema=false",
+									"debezium.properties.schema=false",
 
-									"debezium.inner.topic.prefix=my-topic",
-									"debezium.inner.name=my-connector",
-									"debezium.inner.database.server.id=85744",
-									"debezium.inner.database.server.name=my-app-connector");
+									"debezium.properties.topic.prefix=my-topic",
+									"debezium.properties.name=my-connector",
+									"debezium.properties.database.server.id=85744",
+									"debezium.properties.database.server.name=my-app-connector");
 
 	@Test
 	public void mysql() {
@@ -97,11 +97,11 @@ public class DebeziumDatabasesIntegrationTest {
 			mySQL.start();
 
 			try (ConfigurableApplicationContext context = applicationBuilder.run(
-					"--debezium.inner.connector.class=io.debezium.connector.mysql.MySqlConnector",
-					"--debezium.inner.database.user=debezium",
-					"--debezium.inner.database.password=dbz",
-					"--debezium.inner.database.hostname=localhost",
-					"--debezium.inner.database.port=" + mySQL.getMappedPort(3306))) {
+					"--debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector",
+					"--debezium.properties.database.user=debezium",
+					"--debezium.properties.database.password=dbz",
+					"--debezium.properties.database.hostname=localhost",
+					"--debezium.properties.database.port=" + mySQL.getMappedPort(3306))) {
 
 				OutputDestination outputDestination = context.getBean(OutputDestination.class);
 
@@ -128,13 +128,13 @@ public class DebeziumDatabasesIntegrationTest {
 			postgres.start();
 
 			try (ConfigurableApplicationContext context = applicationBuilder.run(
-					"--debezium.inner.connector.class=io.debezium.connector.postgresql.PostgresConnector",
-					"--debezium.inner.database.user=postgres",
-					"--debezium.inner.database.password=postgres",
-					"--debezium.inner.slot.name=debezium",
-					"--debezium.inner.database.dbname=postgres",
-					"--debezium.inner.database.hostname=localhost",
-					"--debezium.inner.database.port=" + postgres.getMappedPort(5432))) {
+					"--debezium.properties.connector.class=io.debezium.connector.postgresql.PostgresConnector",
+					"--debezium.properties.database.user=postgres",
+					"--debezium.properties.database.password=postgres",
+					"--debezium.properties.slot.name=debezium",
+					"--debezium.properties.database.dbname=postgres",
+					"--debezium.properties.database.hostname=localhost",
+					"--debezium.properties.database.port=" + postgres.getMappedPort(5432))) {
 
 				OutputDestination outputDestination = context.getBean(OutputDestination.class);
 
@@ -181,18 +181,18 @@ public class DebeziumDatabasesIntegrationTest {
 		String host = mongodb.getHost();
 		String port = "" + mongodb.getMappedPort(27017);
 		try (ConfigurableApplicationContext context = applicationBuilder
-				.run("--debezium.inner.connector.class=io.debezium.connector.mongodb.MongoDbConnector",
-						"--debezium.inner.topic.prefix=fullfillment",
-						"--debezium.inner.tasks.max=1",
-						"--debezium.inner.mongodb.connection.string=mongodb://" + host + ":" + port
+				.run("--debezium.properties.connector.class=io.debezium.connector.mongodb.MongoDbConnector",
+						"--debezium.properties.topic.prefix=fullfillment",
+						"--debezium.properties.tasks.max=1",
+						"--debezium.properties.mongodb.connection.string=mongodb://" + host + ":" + port
 								+ "/?replicaSet=rs0",
-						// "--debezium.inner.mongodb.connection.string=mongodb://" + host + ":"
+						// "--debezium.properties.mongodb.connection.string=mongodb://" + host + ":"
 						// + "27017"
 						// + "/?replicaSet=rs0",
-						"--debezium.inner.mongodb.name=dbserver1",
-						"--debezium.inner.mongodb.user=debezium",
-						"--debezium.inner.mongodb.password=dbz",
-						"--debezium.inner.collection.include.list=inventory[.]*")) {
+						"--debezium.properties.mongodb.name=dbserver1",
+						"--debezium.properties.mongodb.user=debezium",
+						"--debezium.properties.mongodb.password=dbz",
+						"--debezium.properties.collection.include.list=inventory[.]*")) {
 
 			OutputDestination outputDestination = context.getBean(OutputDestination.class);
 			// Using local region here

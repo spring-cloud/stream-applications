@@ -56,7 +56,7 @@ public class DebeziumEngineAutoConfiguration {
 	/**
 	 * The fully-qualified class name of the commit policy type. The default is a periodic commit policy based upon time
 	 * intervals.
-	 * @param properties The 'debezium.inner.offset.flush.interval.ms' configuration is compulsory for the Periodic
+	 * @param properties The 'debezium.properties.offset.flush.interval.ms' configuration is compulsory for the Periodic
 	 * policy type. The ALWAYS and DEFAULT doesn't require properties.
 	 */
 	@Bean
@@ -121,7 +121,6 @@ public class DebeziumEngineAutoConfiguration {
 				.notifying(changeEventConsumer)
 				.build();
 
-		logger.debug("Debezium Engine created!");
 
 		return debeziumEngine;
 	}

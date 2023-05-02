@@ -8,8 +8,8 @@ NOTE: This source can be used with *any* Spring Cloud  Stream message binder.
 It is not restricted nor depended on the Kafka Connect framework. Though this approach is flexible it comes with certain https://debezium.io/documentation/reference/2.1/development/engine.html#_handling_failures[limitations].
 
 All Debezium configuration properties are supported.
-Just precede any Debezium properties with the `debezium.inner.` prefix.
-For example to set the Debezium's `connector.class` property use the `debezium.inner.connector.class` source property instead.
+Just precede any Debezium properties with the `debezium.properties.` prefix.
+For example to set the Debezium's `connector.class` property use the `debezium.properties.connector.class` source property instead.
 
 == Database Support
 
@@ -21,8 +21,8 @@ The `Debezium Source` currently supports CDC for multiple datastores: https://de
 $$debezium.copy-headers$$:: $$Copy Change Event headers into Message headers.$$ *($$Boolean$$, default: `$$true$$`)*
 $$debezium.debezium-native-configuration$$:: $$<documentation missing>$$ *($$Properties$$, default: `$$<none>$$`)*
 $$debezium.format$$:: $$Change Event message content format. Defaults to 'JSON'.$$ *($$DebeziumFormat$$, default: `$$<none>$$`, possible values: `JSON`,`AVRO`,`PROTOBUF`)*
-$$debezium.inner$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a 'debezium.inner.*' prefix are native Debezium properties.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
 $$debezium.offset-commit-policy$$:: $$The policy that defines when the offsets should be committed to offset storage.$$ *($$DebeziumOffsetCommitPolicy$$, default: `$$<none>$$`, possible values: `ALWAYS`,`PERIODIC`,`DEFAULT`)*
+$$debezium.properties$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a 'debezium.properties.*' prefix are native Debezium properties.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 ==== Event flattening configuration
@@ -35,11 +35,11 @@ Using the https://debezium.io/documentation/reference/stable/transformations/eve
 
 [source, bash]
 ----
---debezium.inner.transforms=unwrap
---debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState
---debezium.inner.transforms.unwrap.drop.tombstones=false
---debezium.inner.transforms.unwrap.delete.handling.mode=rewrite
---debezium.inner.transforms.unwrap.add.fields=name,db
+--debezium.properties.transforms=unwrap
+--debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState
+--debezium.properties.transforms.unwrap.drop.tombstones=false
+--debezium.properties.transforms.unwrap.delete.handling.mode=rewrite
+--debezium.properties.transforms.unwrap.add.fields=name,db
 ----
 
 NOTE: The `add.headers` and `add.headers.prefix` are not supported.
@@ -48,7 +48,7 @@ NOTE: The `add.headers` and `add.headers.prefix` are not supported.
 ==== Connectors properties
 
 The table below lists all available Debezium properties for each connecter.
-Those properties can be used by prefixing them by the `debezium.inner.` prefix.
+Those properties can be used by prefixing them by the `debezium.properties.` prefix.
 
 .Table of the configuration properties for every Debezium connector.
 |===
@@ -114,31 +114,31 @@ Use following properties to connect the Debezium Source to MySQL DB:
 
 [source,properties]
 ----
-debezium.inner.connector.class=io.debezium.connector.mysql.MySqlConnector # <1>
+debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector # <1>
 
-debezium.inner.topic.prefix=my-topic # <2>
-debezium.inner.name=my-connector # <2>
-debezium.inner.database.server.id=85744 # <2>
-debezium.inner.database.server.name=my-app-connector # <2>
+debezium.properties.topic.prefix=my-topic # <2>
+debezium.properties.name=my-connector # <2>
+debezium.properties.database.server.id=85744 # <2>
+debezium.properties.database.server.name=my-app-connector # <2>
 
-debezium.inner.database.user=debezium # <3>
-debezium.inner.database.password=dbz # <3>
-debezium.inner.database.hostname=localhost # <3>
-debezium.inner.database.port=3306 # <3>
+debezium.properties.database.user=debezium # <3>
+debezium.properties.database.password=dbz # <3>
+debezium.properties.database.hostname=localhost # <3>
+debezium.properties.database.port=3306 # <3>
 
-debezium.inner.schema=true # <4>
-debezium.inner.key.converter.schemas.enable=true # <4>
-debezium.inner.value.converter.schemas.enable=true # <4>
+debezium.properties.schema=true # <4>
+debezium.properties.key.converter.schemas.enable=true # <4>
+debezium.properties.value.converter.schemas.enable=true # <4>
 
-debezium.inner.transforms=unwrap # <5>
-debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <5>
-debezium.inner.transforms.unwrap.add.fields=name,db # <5>
-debezium.inner.transforms.unwrap.delete.handling.mode=none # <5>
-debezium.inner.transforms.unwrap.drop.tombstones=true # <5>
+debezium.properties.transforms=unwrap # <5>
+debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <5>
+debezium.properties.transforms.unwrap.add.fields=name,db # <5>
+debezium.properties.transforms.unwrap.delete.handling.mode=none # <5>
+debezium.properties.transforms.unwrap.drop.tombstones=true # <5>
 
-debezium.inner.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <6>
-debezium.inner.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <6>
-debezium.inner.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <6>
+debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <6>
+debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <6>
+debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <6>
 
 ----
 
@@ -169,32 +169,32 @@ Use following properties to connect the Debezium Source to PostgreSQL:
 
 [source,properties]
 ----
-debezium.inner.connector.class=io.debezium.connector.postgresql.PostgresConnector # <1>
+debezium.properties.connector.class=io.debezium.connector.postgresql.PostgresConnector # <1>
 
-debezium.inner.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
-debezium.inner.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
-debezium.inner.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
+debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
+debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
+debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
 
-debezium.inner.topic.prefix=my-topic # <3>
-debezium.inner.name=my-connector # <3>
-debezium.inner.database.server.id=85744 # <3>
-debezium.inner.database.server.name=my-app-connector # <3>
+debezium.properties.topic.prefix=my-topic # <3>
+debezium.properties.name=my-connector # <3>
+debezium.properties.database.server.id=85744 # <3>
+debezium.properties.database.server.name=my-app-connector # <3>
 
-debezium.inner.database.user=postgres  # <4>
-debezium.inner.database.password=postgres # <4>
-debezium.inner.database..dbname=postgres # <4>
-debezium.inner.database.hostname=localhost # <4>
-debezium.inner.database.port=5432 # <4>
+debezium.properties.database.user=postgres  # <4>
+debezium.properties.database.password=postgres # <4>
+debezium.properties.database..dbname=postgres # <4>
+debezium.properties.database.hostname=localhost # <4>
+debezium.properties.database.port=5432 # <4>
 
-debezium.inner.schema=true # <5>
-debezium.inner.key.converter.schemas.enable=true # <5>
-debezium.inner.value.converter.schemas.enable=true # <5>
+debezium.properties.schema=true # <5>
+debezium.properties.key.converter.schemas.enable=true # <5>
+debezium.properties.value.converter.schemas.enable=true # <5>
 
-debezium.inner.transforms=unwrap # <6>
-debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <6>
-debezium.inner.transforms.unwrap.add.fields=name,db # <6>
-debezium.inner.transforms.unwrap.delete.handling.mode=none # <6>
-debezium.inner.transforms.unwrap.drop.tombstones=true # <6>
+debezium.properties.transforms=unwrap # <6>
+debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <6>
+debezium.properties.transforms.unwrap.add.fields=name,db # <6>
+debezium.properties.transforms.unwrap.delete.handling.mode=none # <6>
+debezium.properties.transforms.unwrap.drop.tombstones=true # <6>
 ----
 
 <1> Configures `Debezium Source` to use https://debezium.io/docs/connectors/postgresql/[PostgresConnector].
@@ -232,34 +232,34 @@ Use following properties to connect the Debezium Source to MongoDB:
 
 [source,properties]
 ----
-debezium.inner.connector.class=io.debezium.connector.mongodb.MongodbSourceConnector # <1>
+debezium.properties.connector.class=io.debezium.connector.mongodb.MongodbSourceConnector # <1>
 
-debezium.inner.topic.prefix=my-topic
-debezium.inner.name=my-connector
-debezium.inner.database.server.id=85744
-debezium.inner.database.server.name=my-app-connector
+debezium.properties.topic.prefix=my-topic
+debezium.properties.name=my-connector
+debezium.properties.database.server.id=85744
+debezium.properties.database.server.name=my-app-connector
 
-debezium.inner.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
-debezium.inner.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
-debezium.inner.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
+debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
+debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
+debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
 
-debezium.inner.mongodb.hosts=rs0/localhost:27017 # <3>
-debezium.inner.mongodb.name=dbserver1 # <3>
-debezium.inner.mongodb.user=debezium # <3>
-debezium.inner.mongodb.password=dbz # <3>
-debezium.inner.database.whitelist=inventory # <3>
+debezium.properties.mongodb.hosts=rs0/localhost:27017 # <3>
+debezium.properties.mongodb.name=dbserver1 # <3>
+debezium.properties.mongodb.user=debezium # <3>
+debezium.properties.mongodb.password=dbz # <3>
+debezium.properties.database.whitelist=inventory # <3>
 
-debezium.inner.tasks.max=1 # <4>
+debezium.properties.tasks.max=1 # <4>
 
-debezium.inner.schema=true # <5>
-debezium.inner.key.converter.schemas.enable=true # <5>
-debezium.inner.value.converter.schemas.enable=true # <5>
+debezium.properties.schema=true # <5>
+debezium.properties.key.converter.schemas.enable=true # <5>
+debezium.properties.value.converter.schemas.enable=true # <5>
 
-debezium.inner.transforms=unwrap # <6>
-debezium.inner.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <6>
-debezium.inner.transforms.unwrap.add.fields=name,db # <6>
-debezium.inner.transforms.unwrap.delete.handling.mode=none # <6>
-debezium.inner.transforms.unwrap.drop.tombstones=true # <6>
+debezium.properties.transforms=unwrap # <6>
+debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <6>
+debezium.properties.transforms.unwrap.add.fields=name,db # <6>
+debezium.properties.transforms.unwrap.delete.handling.mode=none # <6>
+debezium.properties.transforms.unwrap.drop.tombstones=true # <6>
 ----
 
 <1> Configures `Debezium Source` to use https://debezium.io/docs/connectors/mongodb/[MongoDB Connector].
@@ -290,22 +290,22 @@ Use following properties to connect the Debezium Source to SQLServer:
 
 [source,properties]
 ----
-debezium.inner.connector.class=io.debezium.connector.sqlserver.SqlServerConnector # <1>
+debezium.properties.connector.class=io.debezium.connector.sqlserver.SqlServerConnector # <1>
 
-debezium.inner.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
-debezium.inner.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
-debezium.inner.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
+debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
+debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
+debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
 
-debezium.inner.topic.prefix=my-topic # <3>
-debezium.inner.name=my-connector # <3>
-debezium.inner.database.server.id=85744 # <3>
-debezium.inner.database.server.name=my-app-connector # <3>
+debezium.properties.topic.prefix=my-topic # <3>
+debezium.properties.name=my-connector # <3>
+debezium.properties.database.server.id=85744 # <3>
+debezium.properties.database.server.name=my-app-connector # <3>
 
-debezium.inner.database.user=sa  # <4>
-debezium.inner.database.password=Password! # <4>
-debezium.inner.database..dbname=testDB # <4>
-debezium.inner.database.hostname=localhost # <4>
-debezium.inner.database.port=1433 # <4>
+debezium.properties.database.user=sa  # <4>
+debezium.properties.database.password=Password! # <4>
+debezium.properties.database..dbname=testDB # <4>
+debezium.properties.database.hostname=localhost # <4>
+debezium.properties.database.port=1433 # <4>
 ----
 
 <1> Configures `Debezium Source` to use https://debezium.io/docs/connectors/sqlserver/[SqlServerConnector].
@@ -337,7 +337,7 @@ samples coming soon ...
 
 [source,shell]
 ----
-java -jar debezium-source2.jar --debezium.inner.connector.class=io.debezium.connector.mysql.MySqlConnector --debezium.inner.topic.prefix=my-topic --debezium.inner.name=my-connector --debezium.inner.database.server.id=85744 --debezium.inner.database.server.name=my-app-connector  --debezium.inner.database.server.id=85744 --debezium.inner.database.server.name=my-app-connector --debezium.inner.database.user=debezium --debezium.inner.database.password=dbz --debezium.inner.database.hostname=localhost --debezium.inner.database.port=3306 --debezium.inner.database.history=io.debezium.relational.history.MemoryDatabaseHistory --debezium.inner.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory --debezium.inner.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
+java -jar debezium-source2.jar --debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector --debezium.properties.topic.prefix=my-topic --debezium.properties.name=my-connector --debezium.properties.database.server.id=85744 --debezium.properties.database.server.name=my-app-connector  --debezium.properties.database.server.id=85744 --debezium.properties.database.server.name=my-app-connector --debezium.properties.database.user=debezium --debezium.properties.database.password=dbz --debezium.properties.database.hostname=localhost --debezium.properties.database.port=3306 --debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory --debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory --debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
 ----
 
 

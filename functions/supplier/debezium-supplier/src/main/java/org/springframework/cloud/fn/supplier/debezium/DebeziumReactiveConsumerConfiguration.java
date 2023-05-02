@@ -126,7 +126,7 @@ public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAwa
 
 			// When the tombstone event is enabled, Debezium serializes the payload to null (e.g. empty payload)
 			// while the metadata information is carried through the headers (debezium_key).
-			// Note: Event for none flattened responses, when the debezium.inner.tombstones.on.delete=true
+			// Note: Event for none flattened responses, when the debezium.properties.tombstones.on.delete=true
 			// (default), tombstones are generate by Debezium and handled by the code below.
 			if (payload == null) {
 				payload = DebeziumReactiveConsumerConfiguration.this.kafkaNull;

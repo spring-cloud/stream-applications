@@ -22,20 +22,15 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
-import javax.sql.DataSource;
-
-import com.zaxxer.hikari.HikariDataSource;
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
 
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.fn.supplier.debezium.TestJdbcTemplateConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.context.annotation.Import;
 
 /**
  *
@@ -43,27 +38,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 @SpringBootConfiguration
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
+@Import(TestJdbcTemplateConfiguration.class)
 public class DebeziumCustomConsumerApplication {
-
-	@Bean
-	public JdbcTemplate myJdbcTemplate(DataSource dataSource) {
-		return new JdbcTemplate(dataSource);
-	}
-
-	@Bean
-	@Primary
-	@ConfigurationProperties("app.datasource")
-	public DataSourceProperties dataSourceProperties() {
-		return new DataSourceProperties();
-	}
-
-	@Bean
-	public HikariDataSource dataSource(DataSourceProperties dataSourceProperties) {
-		return dataSourceProperties.initializeDataSourceBuilder()
-				.type(HikariDataSource.class)
-				.driverClassName("com.mysql.cj.jdbc.Driver")
-				.build();
-	}
 
 	@Bean
 	public EmbeddedEngineExecutorService embeddedEngine(DebeziumEngine<?> debeziumEngine) {

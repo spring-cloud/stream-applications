@@ -62,10 +62,10 @@ public class DebeziumProperties {
 	};
 
 	/**
-	 * Spring pass-trough wrapper for debezium configuration properties. All properties with a 'debezium.inner.*' prefix
-	 * are native Debezium properties.
+	 * Spring pass-trough wrapper for debezium configuration properties. All properties with a 'debezium.properties.*'
+	 * prefix are native Debezium properties.
 	 */
-	private Map<String, String> inner = defaultConfig();
+	private Map<String, String> properties = new HashMap<>();
 
 	/**
 	 * Change Event message content format. Defaults to 'JSON'.
@@ -82,13 +82,8 @@ public class DebeziumProperties {
 	 */
 	private DebeziumOffsetCommitPolicy offsetCommitPolicy = DebeziumOffsetCommitPolicy.DEFAULT;
 
-	public Map<String, String> getInner() {
-		return inner;
-	}
-
-	private Map<String, String> defaultConfig() {
-		Map<String, String> defaultConfig = new HashMap<>();
-		return defaultConfig;
+	public Map<String, String> getProperties() {
+		return properties;
 	}
 
 	public DebeziumFormat getFormat() {
@@ -115,7 +110,7 @@ public class DebeziumProperties {
 		ALWAYS,
 		/**
 		 * Commits offsets no more than the specified time period. If the specified time is less than {@code 0} then the
-		 * policy will behave as ALWAYS policy. Requires the 'debezium.inner.offset.flush.interval.ms' native property
+		 * policy will behave as ALWAYS policy. Requires the 'debezium.properties.offset.flush.interval.ms' native property
 		 * to be set.
 		 */
 		PERIODIC,
@@ -134,11 +129,11 @@ public class DebeziumProperties {
 	}
 
 	/**
-	 * Converts the Spring Framework "debezium.inner.*" properties into native Debezium configuration.
+	 * Converts the Spring Framework "debezium.properties.*" properties into native Debezium configuration.
 	 */
 	public Properties getDebeziumNativeConfiguration() {
 		Properties outProps = new java.util.Properties();
-		outProps.putAll(this.getInner());
+		outProps.putAll(this.getProperties());
 		return outProps;
 	}
 }
