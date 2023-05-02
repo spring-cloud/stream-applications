@@ -326,9 +326,6 @@ wget https://raw.githubusercontent.com/debezium/debezium-examples/master/tutoria
 cat ./inventory.sql | docker exec -i dbz_oracle sqlplus debezium/dbz@//localhost:1521/ORCLPDB1
 ----
 
-==== DB2, Vitess, Spanner
-
-samples coming soon ...
 
 //end::ref-doc[]
 

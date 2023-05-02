@@ -38,6 +38,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.fn.supplier.debezium.TestJdbcTemplateConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -56,8 +57,8 @@ import static org.awaitility.Awaitility.await;
  */
 @Tag("integration")
 @Testcontainers
-public class DebeziumEngineAutoConfigurationTestTest {
-	private static final Log logger = LogFactory.getLog(DebeziumEngineAutoConfigurationTestTest.class);
+public class DebeziumEngineAutoConfigurationTest {
+	private static final Log logger = LogFactory.getLog(DebeziumEngineAutoConfigurationTest.class);
 
 	private static final String DATABASE_NAME = "inventory";
 	public static final String IMAGE_TAG = "2.2.0.Final";
@@ -138,7 +139,7 @@ public class DebeziumEngineAutoConfigurationTestTest {
 	}
 
 	@SpringBootConfiguration
-	@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
+	@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, MongoAutoConfiguration.class })
 	@Import(TestJdbcTemplateConfiguration.class)
 	public static class DebeziumCustomConsumerApplication {
 
