@@ -49,12 +49,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 /**
+ * This test illustrate how to leverage the DebeziumEngineAutoConfiguration to build a supplier function with a custom
+ * change event Consumer.
+ *
  * @author Christian Tzolov
  */
 @Tag("integration")
 @Testcontainers
-public class DebeziumCustomConsumerTest {
-	private static final Log logger = LogFactory.getLog(DebeziumCustomConsumerTest.class);
+public class DebeziumEngineAutoConfigurationTestTest {
+	private static final Log logger = LogFactory.getLog(DebeziumEngineAutoConfigurationTestTest.class);
 
 	private static final String DATABASE_NAME = "inventory";
 	public static final String IMAGE_TAG = "2.2.0.Final";
@@ -149,6 +152,9 @@ public class DebeziumCustomConsumerTest {
 			return new TestDebeziumConsumer();
 		}
 
+		/**
+		 * Custom, test, change event Consumer.
+		 */
 		public static class TestDebeziumConsumer implements Consumer<ChangeEvent<byte[], byte[]>> {
 
 			public Map<Object, Object> keyValue = new HashMap<>();
