@@ -1,11 +1,11 @@
 //tag::ref-doc[]
 = Debezium Source
 
-https://debezium.io/documentation/reference/2.1/development/engine.html[Debezium Engine] based https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) source.
+https://debezium.io/documentation/reference/2.2/development/engine.html[Debezium Engine] based https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) source.
 The `Debezium Source` allows *capturing* database change events and *streaming* those over different message binders such `Apache Kafka`, `RabbitMQ` and all Spring Cloud Stream supporter brokers.
 
 NOTE: This source can be used with *any* Spring Cloud  Stream message binder.
-It is not restricted nor depended on the Kafka Connect framework. Though this approach is flexible it comes with certain https://debezium.io/documentation/reference/2.1/development/engine.html#_handling_failures[limitations].
+It is not restricted nor depended on the Kafka Connect framework. Though this approach is flexible it comes with certain https://debezium.io/documentation/reference/2.2/development/engine.html#_handling_failures[limitations].
 
 All Debezium configuration properties are supported.
 Just precede any Debezium properties with the `debezium.properties.` prefix.
@@ -13,7 +13,7 @@ For example to set the Debezium's `connector.class` property use the `debezium.p
 
 == Database Support
 
-The `Debezium Source` currently supports CDC for multiple datastores: https://debezium.io/documentation/reference/2.1/connectors/mysql.html[MySQL], https://debezium.io/documentation/reference/2.1/connectors/postgresql.html[PostgreSQL], https://debezium.io/documentation/reference/2.1/connectors/mongodb.html[MongoDB], https://debezium.io/documentation/reference/2.1/connectors/oracle.html[Oracle], https://debezium.io/documentation/reference/2.1/connectors/sqlserver.html[SQL Server], https://debezium.io/documentation/reference/2.1/connectors/db2.html[Db2], https://debezium.io/documentation/reference/2.1/connectors/cassandra.html[Cassandra], https://debezium.io/documentation/reference/2.1/connectors/vitess.html[Vitess] and https://debezium.io/documentation/reference/2.1/connectors/spanner.html[Spanner] databases.
+The `Debezium Source` currently supports CDC for multiple datastores: https://debezium.io/documentation/reference/2.2/connectors/mysql.html[MySQL], https://debezium.io/documentation/reference/2.2/connectors/postgresql.html[PostgreSQL], https://debezium.io/documentation/reference/2.2/connectors/mongodb.html[MongoDB], https://debezium.io/documentation/reference/2.2/connectors/oracle.html[Oracle], https://debezium.io/documentation/reference/2.2/connectors/sqlserver.html[SQL Server], https://debezium.io/documentation/reference/2.2/connectors/db2.html[Db2], https://debezium.io/documentation/reference/2.2/connectors/vitess.html[Vitess] and https://debezium.io/documentation/reference/2.2/connectors/spanner.html[Spanner] databases.
 
 == Options
 
@@ -42,9 +42,6 @@ Using the https://debezium.io/documentation/reference/stable/transformations/eve
 --debezium.properties.transforms.unwrap.add.fields=name,db
 ----
 
-NOTE: The `add.headers` and `add.headers.prefix` are not supported.
-
-
 ==== Connectors properties
 
 The table below lists all available Debezium properties for each connecter.
@@ -54,40 +51,38 @@ Those properties can be used by prefixing them by the `debezium.properties.` pre
 |===
 | Connector | Connector properties
 
-|https://debezium.io/documentation/reference/2.1/connectors/mysql.html[MySQL]
-|https://debezium.io/documentation/reference/2.1/connectors/mysql.html#mysql-connector-properties
+|https://debezium.io/documentation/reference/2.2/connectors/mysql.html[MySQL]
+|https://debezium.io/documentation/reference/2.2/connectors/mysql.html#mysql-connector-properties
 
-|https://debezium.io/documentation/reference/2.1/connectors/mongodb.html[MongoDB]
-|https://debezium.io/documentation/reference/2.1/connectors/mongodb.html#mongodb-connector-properties
+|https://debezium.io/documentation/reference/2.2/connectors/mongodb.html[MongoDB]
+|https://debezium.io/documentation/reference/2.2/connectors/mongodb.html#mongodb-connector-properties
 
-|https://debezium.io/documentation/reference/2.1/connectors/postgresql.html[PostgreSQL]
-|https://debezium.io/documentation/reference/2.1/connectors/postgresql.html#postgresql-connector-properties
+|https://debezium.io/documentation/reference/2.2/connectors/postgresql.html[PostgreSQL]
+|https://debezium.io/documentation/reference/2.2/connectors/postgresql.html#postgresql-connector-properties
 
-|https://debezium.io/documentation/reference/2.1/connectors/oracle.html[Oracle]
-|https://debezium.io/documentation/reference/2.1/connectors/oracle.html#oracle-connector-properties
+|https://debezium.io/documentation/reference/2.2/connectors/oracle.html[Oracle]
+|https://debezium.io/documentation/reference/2.2/connectors/oracle.html#oracle-connector-properties
 
-|https://debezium.io/documentation/reference/2.1/connectors/sqlserver.html[SQL Server]
-|https://debezium.io/documentation/reference/2.1/connectors/sqlserver.html#sqlserver-connector-properties
+|https://debezium.io/documentation/reference/2.2/connectors/sqlserver.html[SQL Server]
+|https://debezium.io/documentation/reference/2.2/connectors/sqlserver.html#sqlserver-connector-properties
 
-|https://debezium.io/documentation/reference/2.1/connectors/db2.html[DB2]
-|https://debezium.io/documentation/reference/2.1/connectors/db2.html#db2-connector-properties
+|https://debezium.io/documentation/reference/2.2/connectors/db2.html[DB2]
+|https://debezium.io/documentation/reference/2.2/connectors/db2.html#db2-connector-properties
 
-|https://debezium.io/documentation/reference/2.1/connectors/cassandra.html[Cassandra]
-|https://debezium.io/documentation/reference/2.1/connectors/cassandra.html#cassandra-connector-properties
+// |https://debezium.io/documentation/reference/2.2/connectors/cassandra.html[Cassandra]
+// |https://debezium.io/documentation/reference/2.2/connectors/cassandra.html#cassandra-connector-properties
 
-|https://debezium.io/documentation/reference/2.1/connectors/vitess.html[Vitess]
-|https://debezium.io/documentation/reference/2.1/connectors/vitess.html#vitess-connector-properties
+|https://debezium.io/documentation/reference/2.2/connectors/vitess.html[Vitess]
+|https://debezium.io/documentation/reference/2.2/connectors/vitess.html#vitess-connector-properties
 
-|https://debezium.io/documentation/reference/2.1/connectors/spanner.html[Spanner]
-|https://debezium.io/documentation/reference/2.1/connectors/spanner.html#spanner-connector-properties
+|https://debezium.io/documentation/reference/2.2/connectors/spanner.html[Spanner]
+|https://debezium.io/documentation/reference/2.2/connectors/spanner.html#spanner-connector-properties
 
 |===
 
 == Examples and Testing
 
-The [CdcSourceIntegrationTest](), [CdcDeleteHandlingIntegrationTest]() and [CdcFlatteningIntegrationTest]() integration tests use test databases fixtures, running on the local machine.
-We use pre-build debezium docker database images.
-The Maven builds create the test databases fixtures with the help of the  `docker-maven-plugin`.
+The debezium integration tests use databases fixtures, running on the local machine. Pre-build debezium docker database images with the help of Testcontainers are leveraged.
 
 To run and debug the tests from your IDE you need to deploy the required database images from the command line.
 Instructions below explains how to run pre-configured test databases form Docker images.
@@ -97,7 +92,7 @@ Instructions below explains how to run pre-configured test databases form Docker
 Start the `debezium/example-mysql` in a docker:
 [source, bash]
 ----
-docker run -it --rm --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql:2.1.4.Final
+docker run -it --rm --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql:2.2.0.Final
 ----
 
 [TIP]
@@ -146,17 +141,20 @@ debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffset
 <2> Metadata used to identify and dispatch the incoming events.
 <3> Connection to the MySQL server running on `localhost:3306` as `debezium` user.
 <4> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `ChangeEvent` message.
-<5> Enables the https://debezium.io/documentation/reference/2.1/transformations/event-flattening.html[CDC Event Flattening].
+<5> Enables the https://debezium.io/documentation/reference/2.2/transformations/event-flattening.html[Change Event Flattening].
 <6> Source state to preserver between multiple starts.
 
-You can run also the `CdcSourceIntegrationTests#CdcMysqlTests` using this mysql configuration.
+You can run also the `DebeziumDatabasesIntegrationTest#mysql()` using this mysql configuration.
+
+NOTE: Disable the mysql GenericContainer test initialization code.
+
 
 ==== PostgreSQL
 
 Start a pre-configured postgres server from the `debezium/example-postgres:1.0` Docker image:
 [source, bash]
 ----
-docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:2.1.4.Final
+docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:2.2.0.Final
 ----
 
 You can connect to this server like this:
@@ -202,16 +200,18 @@ debezium.properties.transforms.unwrap.drop.tombstones=true # <6>
 <3> Metadata used to identify and dispatch the incoming events.
 <4> Connection to the PostgreSQL server running on `localhost:5432` as `postgres` user.
 <5> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the message.
-<6> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattening].
+<6> Enables the https://debezium.io/docs/configuration/event-flattening/[Chage Event Flattening].
 
-You can run also the `CdcSourceIntegrationTests#CdcPostgresTests` using this mysql configuration.
+You can run also the `DebeziumDatabasesIntegrationTest#postgres()` using this postgres configuration.
+
+NOTE: Disable the postgres GenericContainer test initialization code.
 
 ==== MongoDB
 
-Start a pre-configured mongodb from the `debezium/example-mongodb:2.1.4.Final` container image:
+Start a pre-configured mongodb from the `debezium/example-mongodb:2.2.0.Final` container image:
 [source, bash]
 ----
-docker run -it --rm --name mongodb -p 27017:27017 -e MONGODB_USER=debezium -e MONGODB_PASSWORD=dbz  debezium/example-mongodb:2.1.4.Final
+docker run -it --rm --name mongodb -p 27017:27017 -e MONGODB_USER=debezium -e MONGODB_PASSWORD=dbz  debezium/example-mongodb:2.2.0.Final
 ----
 
 Initialize the inventory collections
@@ -267,9 +267,9 @@ debezium.properties.transforms.unwrap.drop.tombstones=true # <6>
 <3> Connection to the MongoDB running on `localhost:27017` as `debezium` user.
 <4> https://debezium.io/docs/connectors/mongodb/#tasks
 <5> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `SourceRecord` events.
-<6> Enables the https://debezium.io/docs/configuration/event-flattening/[CDC Event Flattening].
+<6> Enables the https://debezium.io/docs/configuration/event-flattening/[Chnage Event Flattening].
 
-You can run also the `CdcSourceIntegrationTests#CdcPostgresTests` using this mysql configuration.
+You can run also the `DebeziumDatabasesIntegrationTest#mongodb()` using this mongodb configuration.
 
 ==== SQL Server
 
@@ -313,7 +313,7 @@ debezium.properties.database.port=1433 # <4>
 <3> Metadata used to identify and dispatch the incoming events.
 <4> Connection to the SQL Server running on `localhost:1433` as `sa` user.
 
-You can run also the `CdcSourceIntegrationTests#CdcSqlServerTests` using this mysql configuration.
+You can run also the `DebeziumDatabasesIntegrationTest#sqlServer()` using this SqlServer configuration.
 
 ==== Oracle
 
@@ -326,7 +326,7 @@ wget https://raw.githubusercontent.com/debezium/debezium-examples/master/tutoria
 cat ./inventory.sql | docker exec -i dbz_oracle sqlplus debezium/dbz@//localhost:1521/ORCLPDB1
 ----
 
-==== DB2, Cassandra, Vitess, Spanner
+==== DB2, Vitess, Spanner
 
 samples coming soon ...
 
@@ -337,7 +337,7 @@ samples coming soon ...
 
 [source,shell]
 ----
-java -jar debezium-source2.jar --debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector --debezium.properties.topic.prefix=my-topic --debezium.properties.name=my-connector --debezium.properties.database.server.id=85744 --debezium.properties.database.server.name=my-app-connector  --debezium.properties.database.server.id=85744 --debezium.properties.database.server.name=my-app-connector --debezium.properties.database.user=debezium --debezium.properties.database.password=dbz --debezium.properties.database.hostname=localhost --debezium.properties.database.port=3306 --debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory --debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory --debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
+java -jar debezium-source.jar --debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector --debezium.properties.topic.prefix=my-topic --debezium.properties.name=my-connector --debezium.properties.database.server.id=85744 --debezium.properties.database.server.name=my-app-connector  --debezium.properties.database.server.id=85744 --debezium.properties.database.server.name=my-app-connector --debezium.properties.database.user=debezium --debezium.properties.database.password=dbz --debezium.properties.database.hostname=localhost --debezium.properties.database.port=3306 --debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory --debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory --debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
 ----
 
 

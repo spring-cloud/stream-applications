@@ -18,7 +18,14 @@ package org.springframework.cloud.fn.supplier.debezium.custom;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
+import io.debezium.engine.ChangeEvent;
+import io.debezium.engine.DebeziumEngine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Tag;
@@ -28,7 +35,13 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.cloud.fn.supplier.debezium.TestJdbcTemplateConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
@@ -40,8 +53,8 @@ import static org.awaitility.Awaitility.await;
  */
 @Tag("integration")
 @Testcontainers
-public class DebeziumCustomConsumerIntegrationTest {
-	private static final Log logger = LogFactory.getLog(DebeziumCustomConsumerIntegrationTest.class);
+public class DebeziumCustomConsumerTest {
+	private static final Log logger = LogFactory.getLog(DebeziumCustomConsumerTest.class);
 
 	private static final String DATABASE_NAME = "inventory";
 	public static final String IMAGE_TAG = "2.2.0.Final";
@@ -63,7 +76,8 @@ public class DebeziumCustomConsumerIntegrationTest {
 					"spring.datasource.type=com.zaxxer.hikari.HikariDataSource",
 
 					"debezium.properties.offset.storage=org.apache.kafka.connect.storage.FileOffsetBackingStore",
-					"debezium.properties.offset.storage.file.filename=" + anotherTempDir.getAbsolutePath() + "offsets.dat",
+					"debezium.properties.offset.storage.file.filename=" + anotherTempDir.getAbsolutePath()
+							+ "offsets.dat",
 					"debezium.properties.offset.flush.interval.ms=60000",
 
 					"debezium.properties.schema.history.internal=io.debezium.storage.file.history.FileSchemaHistory", // new
@@ -119,4 +133,41 @@ public class DebeziumCustomConsumerIntegrationTest {
 							.untilAsserted(() -> assertThat(testConsumer.recordList).hasSizeGreaterThanOrEqualTo(52));
 				});
 	}
+
+	@SpringBootConfiguration
+	@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
+	@Import(TestJdbcTemplateConfiguration.class)
+	public static class DebeziumCustomConsumerApplication {
+
+		@Bean
+		public EmbeddedEngineExecutorService embeddedEngine(DebeziumEngine<?> debeziumEngine) {
+			return new EmbeddedEngineExecutorService(debeziumEngine);
+		}
+
+		@Bean
+		public Consumer<ChangeEvent<byte[], byte[]>> customConsumer() {
+			return new TestDebeziumConsumer();
+		}
+
+		public static class TestDebeziumConsumer implements Consumer<ChangeEvent<byte[], byte[]>> {
+
+			public Map<Object, Object> keyValue = new HashMap<>();
+
+			public List<ChangeEvent<byte[], byte[]>> recordList = new CopyOnWriteArrayList<>();
+
+			public TestDebeziumConsumer() {
+			}
+
+			@Override
+			public void accept(ChangeEvent<byte[], byte[]> changeEvent) {
+				if (changeEvent != null) { // ignore null records
+					recordList.add(changeEvent);
+					keyValue.put(changeEvent.key(), changeEvent.value());
+					System.out.println("SIZE=" + recordList.size());
+					System.out.println("[Debezium Event]: " + changeEvent.toString());
+				}
+			}
+		}
+	}
+
 }
