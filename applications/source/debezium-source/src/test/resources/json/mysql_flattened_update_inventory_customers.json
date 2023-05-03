@@ -1,0 +1,9 @@
+{
+  "id": "${json-unit.ignore}",
+  "first_name": "Test666",
+  "last_name": "Test999",
+  "email": "Test666@spring.org",
+  "__name": "my-topic",
+  "__db": "inventory",
+  "__op": "u"
+}

@@ -1,0 +1,340 @@
+//tag::ref-doc[]
+= Debezium Source
+
+https://debezium.io/documentation/reference/2.2/development/engine.html[Debezium Engine] based https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) source.
+The `Debezium Source` allows *capturing* database change events and *streaming* those over different message binders such `Apache Kafka`, `RabbitMQ` and all Spring Cloud Stream supporter brokers.
+
+NOTE: This source can be used with *any* Spring Cloud  Stream message binder.
+It is not restricted nor depended on the Kafka Connect framework. Though this approach is flexible it comes with certain https://debezium.io/documentation/reference/2.2/development/engine.html#_handling_failures[limitations].
+
+All Debezium configuration properties are supported.
+Just precede any Debezium properties with the `debezium.properties.` prefix.
+For example to set the Debezium's `connector.class` property use the `debezium.properties.connector.class` source property instead.
+
+== Database Support
+
+The `Debezium Source` currently supports CDC for multiple datastores: https://debezium.io/documentation/reference/2.2/connectors/mysql.html[MySQL], https://debezium.io/documentation/reference/2.2/connectors/postgresql.html[PostgreSQL], https://debezium.io/documentation/reference/2.2/connectors/mongodb.html[MongoDB], https://debezium.io/documentation/reference/2.2/connectors/oracle.html[Oracle], https://debezium.io/documentation/reference/2.2/connectors/sqlserver.html[SQL Server], https://debezium.io/documentation/reference/2.2/connectors/db2.html[Db2], https://debezium.io/documentation/reference/2.2/connectors/vitess.html[Vitess] and https://debezium.io/documentation/reference/2.2/connectors/spanner.html[Spanner] databases.
+
+== Options
+
+//tag::configuration-properties[]
+$$debezium.copy-headers$$:: $$Copy Change Event headers into Message headers.$$ *($$Boolean$$, default: `$$true$$`)*
+$$debezium.debezium-native-configuration$$:: $$<documentation missing>$$ *($$Properties$$, default: `$$<none>$$`)*
+$$debezium.format$$:: $$Change Event message content format. Defaults to 'JSON'.$$ *($$DebeziumFormat$$, default: `$$<none>$$`, possible values: `JSON`,`AVRO`,`PROTOBUF`)*
+$$debezium.offset-commit-policy$$:: $$The policy that defines when the offsets should be committed to offset storage.$$ *($$DebeziumOffsetCommitPolicy$$, default: `$$<none>$$`, possible values: `ALWAYS`,`PERIODIC`,`DEFAULT`)*
+$$debezium.properties$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a 'debezium.properties.*' prefix are native Debezium properties.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+==== Event flattening configuration
+
+Debezium provides a comprehensive message format, that accurately details information about changes that happen in the system.
+Sometime this format, though,  might not be suitable for the downstream consumers, that might require messages that are formatted so that field names and values are presented in a simplified, `flattened` structure.
+
+To simplify the format of the event records that the Debezium connectors produce, you can use the https://debezium.io/documentation/reference/stable/transformations/event-flattening.html[Debezium event flattening] message transformation.
+Using the https://debezium.io/documentation/reference/stable/transformations/event-flattening.html#_configuration[flattering configuration] you can configure simple messages format like this:
+
+[source, bash]
+----
+--debezium.properties.transforms=unwrap
+--debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState
+--debezium.properties.transforms.unwrap.drop.tombstones=false
+--debezium.properties.transforms.unwrap.delete.handling.mode=rewrite
+--debezium.properties.transforms.unwrap.add.fields=name,db
+----
+
+==== Connectors properties
+
+The table below lists all available Debezium properties for each connecter.
+Those properties can be used by prefixing them by the `debezium.properties.` prefix.
+
+.Table of the configuration properties for every Debezium connector.
+|===
+| Connector | Connector properties
+
+|https://debezium.io/documentation/reference/2.2/connectors/mysql.html[MySQL]
+|https://debezium.io/documentation/reference/2.2/connectors/mysql.html#mysql-connector-properties
+
+|https://debezium.io/documentation/reference/2.2/connectors/mongodb.html[MongoDB]
+|https://debezium.io/documentation/reference/2.2/connectors/mongodb.html#mongodb-connector-properties
+
+|https://debezium.io/documentation/reference/2.2/connectors/postgresql.html[PostgreSQL]
+|https://debezium.io/documentation/reference/2.2/connectors/postgresql.html#postgresql-connector-properties
+
+|https://debezium.io/documentation/reference/2.2/connectors/oracle.html[Oracle]
+|https://debezium.io/documentation/reference/2.2/connectors/oracle.html#oracle-connector-properties
+
+|https://debezium.io/documentation/reference/2.2/connectors/sqlserver.html[SQL Server]
+|https://debezium.io/documentation/reference/2.2/connectors/sqlserver.html#sqlserver-connector-properties
+
+|https://debezium.io/documentation/reference/2.2/connectors/db2.html[DB2]
+|https://debezium.io/documentation/reference/2.2/connectors/db2.html#db2-connector-properties
+
+// |https://debezium.io/documentation/reference/2.2/connectors/cassandra.html[Cassandra]
+// |https://debezium.io/documentation/reference/2.2/connectors/cassandra.html#cassandra-connector-properties
+
+|https://debezium.io/documentation/reference/2.2/connectors/vitess.html[Vitess]
+|https://debezium.io/documentation/reference/2.2/connectors/vitess.html#vitess-connector-properties
+
+|https://debezium.io/documentation/reference/2.2/connectors/spanner.html[Spanner]
+|https://debezium.io/documentation/reference/2.2/connectors/spanner.html#spanner-connector-properties
+
+|===
+
+== Examples and Testing
+
+The debezium integration tests use databases fixtures, running on the local machine. Pre-build debezium docker database images with the help of Testcontainers are leveraged.
+
+To run and debug the tests from your IDE you need to deploy the required database images from the command line.
+Instructions below explains how to run pre-configured test databases form Docker images.
+
+==== MySQL
+
+Start the `debezium/example-mysql` in a docker:
+[source, bash]
+----
+docker run -it --rm --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql:2.2.0.Final
+----
+
+[TIP]
+====
+(optional) Use `mysql` client to connected to the database and to create a `debezium` user with required credentials:
+[source, bash]
+----
+docker run -it --rm --name mysqlterm --link mysql --rm mysql:5.7 sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+mysql> GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'debezium' IDENTIFIED BY 'dbz';
+----
+====
+
+Use following properties to connect the Debezium Source to MySQL DB:
+
+[source,properties]
+----
+debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector # <1>
+
+debezium.properties.topic.prefix=my-topic # <2>
+debezium.properties.name=my-connector # <2>
+debezium.properties.database.server.id=85744 # <2>
+debezium.properties.database.server.name=my-app-connector # <2>
+
+debezium.properties.database.user=debezium # <3>
+debezium.properties.database.password=dbz # <3>
+debezium.properties.database.hostname=localhost # <3>
+debezium.properties.database.port=3306 # <3>
+
+debezium.properties.schema=true # <4>
+debezium.properties.key.converter.schemas.enable=true # <4>
+debezium.properties.value.converter.schemas.enable=true # <4>
+
+debezium.properties.transforms=unwrap # <5>
+debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <5>
+debezium.properties.transforms.unwrap.add.fields=name,db # <5>
+debezium.properties.transforms.unwrap.delete.handling.mode=none # <5>
+debezium.properties.transforms.unwrap.drop.tombstones=true # <5>
+
+debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <6>
+debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <6>
+debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <6>
+
+----
+
+<1> Configures the Debezium Source to use https://debezium.io/docs/connectors/mysql/[MySqlConnector].
+<2> Metadata used to identify and dispatch the incoming events.
+<3> Connection to the MySQL server running on `localhost:3306` as `debezium` user.
+<4> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `ChangeEvent` message.
+<5> Enables the https://debezium.io/documentation/reference/2.2/transformations/event-flattening.html[Change Event Flattening].
+<6> Source state to preserver between multiple starts.
+
+You can run also the `DebeziumDatabasesIntegrationTest#mysql()` using this mysql configuration.
+
+NOTE: Disable the mysql GenericContainer test initialization code.
+
+
+==== PostgreSQL
+
+Start a pre-configured postgres server from the `debezium/example-postgres:1.0` Docker image:
+[source, bash]
+----
+docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:2.2.0.Final
+----
+
+You can connect to this server like this:
+[source, bash]
+----
+psql -U postgres -h localhost -p 5432
+----
+
+Use following properties to connect the Debezium Source to PostgreSQL:
+
+[source,properties]
+----
+debezium.properties.connector.class=io.debezium.connector.postgresql.PostgresConnector # <1>
+
+debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
+debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
+debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
+
+debezium.properties.topic.prefix=my-topic # <3>
+debezium.properties.name=my-connector # <3>
+debezium.properties.database.server.id=85744 # <3>
+debezium.properties.database.server.name=my-app-connector # <3>
+
+debezium.properties.database.user=postgres  # <4>
+debezium.properties.database.password=postgres # <4>
+debezium.properties.database..dbname=postgres # <4>
+debezium.properties.database.hostname=localhost # <4>
+debezium.properties.database.port=5432 # <4>
+
+debezium.properties.schema=true # <5>
+debezium.properties.key.converter.schemas.enable=true # <5>
+debezium.properties.value.converter.schemas.enable=true # <5>
+
+debezium.properties.transforms=unwrap # <6>
+debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <6>
+debezium.properties.transforms.unwrap.add.fields=name,db # <6>
+debezium.properties.transforms.unwrap.delete.handling.mode=none # <6>
+debezium.properties.transforms.unwrap.drop.tombstones=true # <6>
+----
+
+<1> Configures `Debezium Source` to use https://debezium.io/docs/connectors/postgresql/[PostgresConnector].
+<2> Configures the Debezium engine to use `memory` stores.
+<3> Metadata used to identify and dispatch the incoming events.
+<4> Connection to the PostgreSQL server running on `localhost:5432` as `postgres` user.
+<5> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the message.
+<6> Enables the https://debezium.io/docs/configuration/event-flattening/[Chage Event Flattening].
+
+You can run also the `DebeziumDatabasesIntegrationTest#postgres()` using this postgres configuration.
+
+NOTE: Disable the postgres GenericContainer test initialization code.
+
+==== MongoDB
+
+Start a pre-configured mongodb from the `debezium/example-mongodb:2.2.0.Final` container image:
+[source, bash]
+----
+docker run -it --rm --name mongodb -p 27017:27017 -e MONGODB_USER=debezium -e MONGODB_PASSWORD=dbz  debezium/example-mongodb:2.2.0.Final
+----
+
+Initialize the inventory collections
+[source, bash]
+----
+docker exec -it mongodb sh -c 'bash -c /usr/local/bin/init-inventory.sh'
+----
+
+In the `mongodb` terminal output, search for a log entry like `host: "3f95a8a6516e:27017"` :
+[source, bash]
+----
+2019-01-10T13:46:10.004+0000 I COMMAND  [conn1] command local.oplog.rs appName: "MongoDB Shell" command: replSetInitiate { replSetInitiate: { _id: "rs0", members: [ { _id: 0.0, host: "3f95a8a6516e:27017" } ] }, lsid: { id: UUID("5f477a16-d80d-41f2-9ab4-4ebecea46773") }, $db: "admin" } numYields:0 reslen:22 locks:{ Global: { acquireCount: { r: 36, w: 20, W: 2 }, acquireWaitCount: { W: 1 }, timeAcquiringMicros: { W: 312 } }, Database: { acquireCount: { r: 6, w: 4, W: 16 } }, Collection: { acquireCount: { r: 4, w: 2 } }, oplog: { acquireCount: { r: 2, w: 3 } } } protocol:op_msg 988ms
+----
+
+Add `127.0.0.1    3f95a8a6516e` entry to your `/etc/hosts`
+
+Use following properties to connect the Debezium Source to MongoDB:
+
+[source,properties]
+----
+debezium.properties.connector.class=io.debezium.connector.mongodb.MongodbSourceConnector # <1>
+
+debezium.properties.topic.prefix=my-topic
+debezium.properties.name=my-connector
+debezium.properties.database.server.id=85744
+debezium.properties.database.server.name=my-app-connector
+
+debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
+debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
+debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
+
+debezium.properties.mongodb.hosts=rs0/localhost:27017 # <3>
+debezium.properties.mongodb.name=dbserver1 # <3>
+debezium.properties.mongodb.user=debezium # <3>
+debezium.properties.mongodb.password=dbz # <3>
+debezium.properties.database.whitelist=inventory # <3>
+
+debezium.properties.tasks.max=1 # <4>
+
+debezium.properties.schema=true # <5>
+debezium.properties.key.converter.schemas.enable=true # <5>
+debezium.properties.value.converter.schemas.enable=true # <5>
+
+debezium.properties.transforms=unwrap # <6>
+debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState # <6>
+debezium.properties.transforms.unwrap.add.fields=name,db # <6>
+debezium.properties.transforms.unwrap.delete.handling.mode=none # <6>
+debezium.properties.transforms.unwrap.drop.tombstones=true # <6>
+----
+
+<1> Configures `Debezium Source` to use https://debezium.io/docs/connectors/mongodb/[MongoDB Connector].
+<2> Configures the Debezium engine to use `memory`.
+<3> Connection to the MongoDB running on `localhost:27017` as `debezium` user.
+<4> https://debezium.io/docs/connectors/mongodb/#tasks
+<5> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `SourceRecord` events.
+<6> Enables the https://debezium.io/docs/configuration/event-flattening/[Chnage Event Flattening].
+
+You can run also the `DebeziumDatabasesIntegrationTest#mongodb()` using this mongodb configuration.
+
+==== SQL Server
+
+Start a `sqlserver` from the `debezium/example-postgres:1.0` Docker image:
+[source, bash]
+----
+docker run -it --rm --name sqlserver -p 1433:1433 -e ACCEPT_EULA=Y -e MSSQL_PID=Standard -e SA_PASSWORD=Password! -e MSSQL_AGENT_ENABLED=true microsoft/mssql-server-linux:2017-CU9-GDR2
+----
+
+Populate with sample data form  debezium SqlServer tutorial:
+[source, bash]
+----
+wget https://raw.githubusercontent.com/debezium/debezium-examples/master/tutorial/debezium-sqlserver-init/inventory.sql
+cat ./inventory.sql | docker exec -i sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
+----
+
+Use following properties to connect the Debezium Source to SQLServer:
+
+[source,properties]
+----
+debezium.properties.connector.class=io.debezium.connector.sqlserver.SqlServerConnector # <1>
+
+debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
+debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
+debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <2>
+
+debezium.properties.topic.prefix=my-topic # <3>
+debezium.properties.name=my-connector # <3>
+debezium.properties.database.server.id=85744 # <3>
+debezium.properties.database.server.name=my-app-connector # <3>
+
+debezium.properties.database.user=sa  # <4>
+debezium.properties.database.password=Password! # <4>
+debezium.properties.database..dbname=testDB # <4>
+debezium.properties.database.hostname=localhost # <4>
+debezium.properties.database.port=1433 # <4>
+----
+
+<1> Configures `Debezium Source` to use https://debezium.io/docs/connectors/sqlserver/[SqlServerConnector].
+<2> Configures the Debezium engine to use `memory` state stores.
+<3> Metadata used to identify and dispatch the incoming events.
+<4> Connection to the SQL Server running on `localhost:1433` as `sa` user.
+
+You can run also the `DebeziumDatabasesIntegrationTest#sqlServer()` using this SqlServer configuration.
+
+==== Oracle
+
+Start Oracle reachable from localhost and set up with the configuration, users and grants described in the https://github.com/debezium/oracle-vagrant-box[Debezium Vagrant set-up]
+
+Populate with sample data form Debezium Oracle tutorial:
+[source, bash]
+----
+wget https://raw.githubusercontent.com/debezium/debezium-examples/master/tutorial/debezium-with-oracle-jdbc/init/inventory.sql
+cat ./inventory.sql | docker exec -i dbz_oracle sqlplus debezium/dbz@//localhost:1521/ORCLPDB1
+----
+
+
+//end::ref-doc[]
+
+
+== Run standalone
+
+[source,shell]
+----
+java -jar debezium-source.jar --debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector --debezium.properties.topic.prefix=my-topic --debezium.properties.name=my-connector --debezium.properties.database.server.id=85744 --debezium.properties.database.server.name=my-app-connector  --debezium.properties.database.server.id=85744 --debezium.properties.database.server.name=my-app-connector --debezium.properties.database.user=debezium --debezium.properties.database.password=dbz --debezium.properties.database.hostname=localhost --debezium.properties.database.port=3306 --debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory --debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory --debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
+----
+
+

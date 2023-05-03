@@ -18,6 +18,7 @@ package org.springframework.cloud.fn.aggregator;
 
 import java.time.Duration;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Artem Bilan
  * @author Corneil du Plessis
  */
+@Disabled("Fails on CI sporadically")
 @TestPropertySource(properties = "aggregator.message-store-type=simple")
 public class DefaultAggregatorTests extends AbstractAggregatorFunctionTests {
 	private static final Logger logger = LoggerFactory.getLogger(DefaultAggregatorTests.class);

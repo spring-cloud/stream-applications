@@ -76,7 +76,7 @@ jobs:
             MAVEN_OPTS="-X $MAVEN_OPTS"
           fi
           for module in $MODULES; do
-            if [[ "$module" == *"/"* ]]; then            
+            if [[ "$module" == *"/"* ]]; then
               if [ "$FOLDERS" = "" ]; then
                 FOLDERS="$module"
               else

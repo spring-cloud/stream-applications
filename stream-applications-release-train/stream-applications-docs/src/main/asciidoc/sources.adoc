@@ -3,8 +3,8 @@
 
 :leveloffset: +2
 
-[[spring-cloud-stream-modules-cdc-debezium-source]]
-include::{stream-apps-root}/{branch}/applications/source/cdc-debezium-source/README.adoc[tags=ref-doc]
+[[spring-cloud-stream-modules-debezium-source]]
+include::{stream-apps-root}/{branch}/applications/source/debezium-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-file-source]]
 include::{stream-apps-root}/{branch}/applications/source/file-source/README.adoc[tags=ref-doc]
