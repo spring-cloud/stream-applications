@@ -29,7 +29,7 @@ def processFile(String fileName) {
                 pw.println(line)
                 String key = line.takeBefore('=')
                 if (requiresBoot3.contains(key)) {
-                    String newLine = "${key}.bootVersion=boot3"
+                    String newLine = "${key}.bootVersion=3"
                     pw.println(newLine)
                     println("Adding $newLine")
                 }
