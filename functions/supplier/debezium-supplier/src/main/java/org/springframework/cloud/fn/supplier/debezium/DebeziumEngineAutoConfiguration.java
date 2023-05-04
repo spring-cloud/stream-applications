@@ -18,12 +18,15 @@ package org.springframework.cloud.fn.supplier.debezium;
 
 import java.time.Clock;
 import java.time.Duration;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.DebeziumEngine.CompletionCallback;
 import io.debezium.engine.DebeziumEngine.ConnectorCallback;
+import io.debezium.engine.format.SerializationFormat;
 import io.debezium.engine.spi.OffsetCommitPolicy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +35,8 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+
+import static org.springframework.cloud.fn.supplier.debezium.DebeziumProperties.DebeziumFormat;
 
 /**
  * DebeziumEngine auto-configuration.
@@ -46,6 +51,7 @@ import org.springframework.context.annotation.Bean;
  * restart.
  *
  * @author Christian Tzolov
+ * @author Corneil du Plessis
  */
 @AutoConfiguration
 @EnableConfigurationProperties(DebeziumProperties.class)
@@ -105,14 +111,19 @@ public class DebeziumEngineAutoConfiguration {
 	public ConnectorCallback connectorCallback() {
 		return DEFAULT_CONNECTOR_CALLBACK;
 	}
-
+	private static final Map<DebeziumFormat, Class<? extends SerializationFormat<byte[]>>> serialFormats = Map.of(
+		DebeziumFormat.JSON, io.debezium.engine.format.JsonByteArray.class,
+		DebeziumFormat.AVRO, io.debezium.engine.format.Avro.class,
+		DebeziumFormat.PROTOBUF, io.debezium.engine.format.Protobuf.class
+	);
 	@Bean
 	public DebeziumEngine<?> debeziumEngine(Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
 			OffsetCommitPolicy offsetCommitPolicy, CompletionCallback completionCallback,
 			ConnectorCallback connectorCallback, DebeziumProperties properties, Clock debeziumClock) {
 
+		Class<? extends SerializationFormat<byte[]>> format = Objects.requireNonNull(serialFormats.get(properties.getFormat()), "Cannot find format for " + properties.getProperties());
 		DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine = DebeziumEngine
-				.create(properties.getFormat().serializationFormat())
+				.create(format)
 				.using(properties.getDebeziumNativeConfiguration())
 				.using(debeziumClock)
 				.using(completionCallback)
