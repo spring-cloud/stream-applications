@@ -112,7 +112,7 @@ public class DebeziumEngineAutoConfiguration {
 			ConnectorCallback connectorCallback, DebeziumProperties properties, Clock debeziumClock) {
 
 		DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine = DebeziumEngine
-				.create(properties.getFormat().serializationFormat())
+				.create(properties.serializationFormat())
 				.using(properties.getDebeziumNativeConfiguration())
 				.using(debeziumClock)
 				.using(completionCallback)

@@ -34,31 +34,15 @@ public class DebeziumProperties {
 		/**
 		 * JSON change event format.
 		 */
-		JSON(io.debezium.engine.format.JsonByteArray.class, "application/json"),
+		JSON,
 		/**
 		 * AVRO change event format.
 		 */
-		AVRO(io.debezium.engine.format.Avro.class, "application/avro"),
+		AVRO,
 		/**
 		 * ProtoBuf change event format.
 		 */
-		PROTOBUF(io.debezium.engine.format.Protobuf.class, "application/x-protobuf"),;
-
-		private final Class<? extends SerializationFormat<byte[]>> serializationFormat;
-		private final String contentType;
-
-		DebeziumFormat(Class<? extends SerializationFormat<byte[]>> serializationFormat, String contentType) {
-			this.serializationFormat = serializationFormat;
-			this.contentType = contentType;
-		}
-
-		public Class<? extends SerializationFormat<byte[]>> serializationFormat() {
-			return serializationFormat;
-		}
-
-		public final String contentType() {
-			return contentType;
-		}
+		PROTOBUF;
 	};
 
 	/**
@@ -110,8 +94,8 @@ public class DebeziumProperties {
 		ALWAYS,
 		/**
 		 * Commits offsets no more than the specified time period. If the specified time is less than {@code 0} then the
-		 * policy will behave as ALWAYS policy. Requires the 'debezium.properties.offset.flush.interval.ms' native property
-		 * to be set.
+		 * policy will behave as ALWAYS policy. Requires the 'debezium.properties.offset.flush.interval.ms' native
+		 * property to be set.
 		 */
 		PERIODIC,
 		/**
@@ -136,4 +120,31 @@ public class DebeziumProperties {
 		outProps.putAll(this.getProperties());
 		return outProps;
 	}
+
+	public Class<? extends SerializationFormat<byte[]>> serializationFormat() {
+		switch (this.format) {
+		case JSON:
+			return io.debezium.engine.format.JsonByteArray.class;
+		case AVRO:
+			return io.debezium.engine.format.Avro.class;
+		case PROTOBUF:
+			return io.debezium.engine.format.Protobuf.class;
+		default:
+			throw new IllegalStateException("Unknown Debezium Format: " + format);
+		}
+	}
+
+	public String contentType() {
+		switch (this.format) {
+		case JSON:
+			return "application/json";
+		case AVRO:
+			return "application/avro";
+		case PROTOBUF:
+			return "application/x-protobuf";
+		default:
+			throw new IllegalStateException("Unknown Debezium Format: " + format);
+		}
+	}
+
 }

@@ -95,7 +95,7 @@ public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAwa
 	@ConditionalOnMissingBean
 	public Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer(DebeziumProperties properties) {
 
-		return new ChangeEventConsumer<byte[]>(properties.getFormat().contentType(), properties.isCopyHeaders(),
+		return new ChangeEventConsumer<byte[]>(properties.contentType(), properties.isCopyHeaders(),
 				this.eventSink);
 	}
 
