@@ -73,8 +73,8 @@
                             <scripts>
                                 <script>
                                     <![CDATA[
-                                def repoSpring = "${apps.version}".contains('SNAPSHOT') ? 'repo.spring.io/libs-snapshot' :
-                                                "${apps.version}".contains('-') ? 'repo.spring.io/libs-milestone' : 'repo.maven.apache.org/maven2'
+                                def repoSpring = "${apps.version}".contains('SNAPSHOT') ? 'repo.spring.io/snapshot' :
+                                                "${apps.version}".contains('-') ? 'repo.spring.io/milestone' : 'repo.maven.apache.org/maven2'
                                 project.properties.setProperty('repo-spring-io', repoSpring)
                                 println('repo-spring-io=$repoSpring')
                                 ]]>
