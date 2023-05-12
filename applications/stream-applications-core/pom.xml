@@ -151,15 +151,6 @@
                                     <wavefront.application.name>"${spring.cloud.dataflow.stream.name:unknown}</wavefront.application.name>
                                     <wavefront.application.service>${spring.cloud.dataflow.stream.app.label:unknown}-${spring.cloud.dataflow.stream.app.type:unknown}"</wavefront.application.service>
 
-                                    <!-- Zipkin Server Tracing -->
-                                    <spring.zipkin.enabled>false</spring.zipkin.enabled>
-
-                                    <!-- Enforce Spring Integration tracing instrumentation even for SCF apps -->
-                                    <spring.sleuth.integration.enabled>false</spring.sleuth.integration.enabled>
-
-									<!-- Temporarily disable Spring Cloud Sleuth function instrumentation -->
-									<spring.sleuth.function.enabled>false</spring.sleuth.function.enabled>
-
                                 </properties>
                                 <metadata>
                                     <mavenPluginVersion>${spring-cloud-dataflow-apps-metadata-plugin.version}</mavenPluginVersion>
