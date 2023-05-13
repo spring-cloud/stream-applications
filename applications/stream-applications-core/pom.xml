@@ -19,6 +19,7 @@
         <stream-apps-core.version>4.0.0-SNAPSHOT</stream-apps-core.version>
         <java-functions.version>4.0.0-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.3</apps.base-image>
+		<prometheus-rsocket.version>1.5.0</prometheus-rsocket.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.7</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.7</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.7</spring-cloud-dataflow-apps-metadata-plugin.version>
@@ -134,13 +135,14 @@
                                 </containerImage>
                                 <properties>
                                     <!-- Disable all meter repositories by default.  -->
-                                    <management.metrics.export.wavefront.enabled>false</management.metrics.export.wavefront.enabled>
-                                    <management.metrics.export.influx.enabled>false</management.metrics.export.influx.enabled>
-                                    <management.metrics.export.prometheus.enabled>false</management.metrics.export.prometheus.enabled>
-                                    <management.metrics.export.prometheus.rsocket.enabled>false</management.metrics.export.prometheus.rsocket.enabled>
-                                    <management.metrics.export.datadog.enabled>false</management.metrics.export.datadog.enabled>
+                                    <management.wavefront.metrics.export.enabled>false</management.wavefront.metrics.export.enabled>
+                                    <management.influx.metrics.export.enabled>false</management.influx.metrics.export.enabled>
+									<management.datadog.metrics.export.enabled>false</management.datadog.metrics.export.enabled>
+									<management.prometheus.metrics.export.enabled>false</management.prometheus.metrics.export.enabled>
+									<!-- rsocket proxy still on SB2.7.x naming convention -->
+									<management.metrics.export.prometheus.rsocket.enabled>false</management.metrics.export.prometheus.rsocket.enabled>
 
-                                    <!-- Add SCDF stream metrics tags. -->
+									<!-- Add SCDF stream metrics tags. -->
                                     <management.metrics.tags.stream.name>"${spring.cloud.dataflow.stream.name:unknown}"</management.metrics.tags.stream.name>
                                     <management.metrics.tags.application.name>"${spring.cloud.dataflow.stream.app.label:unknown}"</management.metrics.tags.application.name>
                                     <management.metrics.tags.application.type>"${spring.cloud.dataflow.stream.app.type:unknown}"</management.metrics.tags.application.type>
@@ -205,6 +207,15 @@
                                             <groupId>io.micrometer</groupId>
                                             <artifactId>micrometer-registry-prometheus</artifactId>
                                         </dependency>
+										<dependency>
+											<groupId>io.micrometer</groupId>
+											<artifactId>micrometer-registry-prometheus</artifactId>
+										</dependency>
+										<dependency>
+											<groupId>io.micrometer.prometheus</groupId>
+											<artifactId>prometheus-rsocket-spring</artifactId>
+											<version>${prometheus-rsocket.version}</version>
+										</dependency>
                                         <dependency>
                                             <groupId>io.micrometer</groupId>
                                             <artifactId>micrometer-registry-wavefront</artifactId>
