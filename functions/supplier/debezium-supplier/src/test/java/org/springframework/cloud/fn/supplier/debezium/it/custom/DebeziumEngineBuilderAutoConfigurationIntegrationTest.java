@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.custom;
+package org.springframework.cloud.fn.supplier.debezium.it.custom;
 
 import java.io.File;
 import java.time.Duration;
@@ -40,7 +40,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.fn.supplier.debezium.TestJdbcTemplateConfiguration;
+import org.springframework.cloud.fn.supplier.debezium.it.TestJdbcTemplateConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -57,8 +57,8 @@ import static org.awaitility.Awaitility.await;
  */
 @Tag("integration")
 @Testcontainers
-public class DebeziumEngineBuilderAutoConfigurationTest {
-	private static final Log logger = LogFactory.getLog(DebeziumEngineBuilderAutoConfigurationTest.class);
+public class DebeziumEngineBuilderAutoConfigurationIntegrationTest {
+	private static final Log logger = LogFactory.getLog(DebeziumEngineBuilderAutoConfigurationIntegrationTest.class);
 
 	private static final String DATABASE_NAME = "inventory";
 	public static final String IMAGE_TAG = "2.2.0.Final";

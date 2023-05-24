@@ -45,16 +45,18 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
 /**
- * {@link EnableAutoConfiguration Auto-configuration} for Debezium Engine Builder.
+ * {@link EnableAutoConfiguration Auto-configuration} for {@link DebeziumEngine.Builder}.
  * <p>
- * Builder provides is a standalone engine configuration that talks only with the source data system;
+ * The builder provides a standalone engine configuration that talks with the source data system.
  * <p>
- * With the engine, the application that runs the connector assumes all responsibility for fault tolerance, scalability,
- * and durability. Additionally, applications must specify how the engine can store its relational database schema
- * history and offsets. By default, this information will be stored in memory and will thus be lost upon application
- * restart.
- *
- * All properties with prefix <code>debezium.properties</code> are passed through as native Debezium properties.
+ * The application that runs the debezium engine assumes all responsibility for fault tolerance, scalability, and
+ * durability. Additionally, applications must specify how the engine can store its relational database schema history
+ * and offsets. By default, this information will be stored in memory and will thus be lost upon application restart.
+ * <p>
+ * The {@link DebeziumEngine.Builder} auto-configuration is activated only if a Debezium Connector is available on the
+ * classpath and the <code>debezium.properties.connector.class</code> property is set.
+ * <p>
+ * Properties prefixed with <code>debezium.properties</code> are passed through as native Debezium properties.
  *
  * @author Christian Tzolov
  * @author Corneil du Plessis
@@ -71,7 +73,7 @@ public class DebeziumEngineBuilderAutoConfiguration {
 	 * The fully-qualified class name of the commit policy type. The default is a periodic commit policy based upon time
 	 * intervals.
 	 * @param properties The 'debezium.properties.offset.flush.interval.ms' configuration is compulsory for the Periodic
-	 * policy type. The ALWAYS and DEFAULT doesn't require properties.
+	 * policy type. The ALWAYS and DEFAULT doesn't require additional configuration.
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -142,6 +144,10 @@ public class DebeziumEngineBuilderAutoConfiguration {
 				.using((offsetCommitPolicy != NULL_OFFSET_COMMIT_POLICY) ? offsetCommitPolicy : null);
 	}
 
+	/**
+	 * Converts the {@link DebeziumFormat} enum into Debezium {@link SerializationFormat} class.
+	 * @param debeziumFormat debezium format property.
+	 */
 	private Class<? extends SerializationFormat<byte[]>> serializationFormatClass(DebeziumFormat debeziumFormat) {
 		switch (debeziumFormat) {
 		case JSON:

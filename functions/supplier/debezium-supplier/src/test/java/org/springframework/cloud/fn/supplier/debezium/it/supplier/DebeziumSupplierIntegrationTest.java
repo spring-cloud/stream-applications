@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.supplier;
+package org.springframework.cloud.fn.supplier.debezium.it.supplier;
 
 import java.util.function.Supplier;
 
@@ -32,7 +32,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration;
-import org.springframework.cloud.fn.supplier.debezium.TestJdbcTemplateConfiguration;
+import org.springframework.cloud.fn.supplier.debezium.it.TestJdbcTemplateConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.Message;
@@ -76,7 +76,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"app.datasource.type=com.zaxxer.hikari.HikariDataSource"
 })
 @Testcontainers
-public class DebeziumSupplierTest {
+public class DebeziumSupplierIntegrationTest {
 
 	public static final String IMAGE_TAG = "2.2.0.Final";
 	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:" + IMAGE_TAG;
