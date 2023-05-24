@@ -133,18 +133,13 @@ public class DebeziumEngineBuilderAutoConfiguration {
 				serializationFormatClass(properties.getHeaderFormat()),
 				"Cannot find header format for " + properties.getProperties());
 
-		KeyValueHeaderChangeEventFormat<? extends SerializationFormat<byte[]>, ? extends SerializationFormat<byte[]>, ? extends SerializationFormat<byte[]>> format = KeyValueHeaderChangeEventFormat
-				.of(payloadFormat, payloadFormat, headerFormat);
-
-		Builder<ChangeEvent<byte[], byte[]>> debeziumEngineBuilder = DebeziumEngine
-				.create(format)
+		return DebeziumEngine
+				.create(KeyValueHeaderChangeEventFormat.of(payloadFormat, payloadFormat, headerFormat))
 				.using(properties.getDebeziumNativeConfiguration())
 				.using(debeziumClock)
 				.using(completionCallback)
 				.using(connectorCallback)
 				.using((offsetCommitPolicy != NULL_OFFSET_COMMIT_POLICY) ? offsetCommitPolicy : null);
-
-		return debeziumEngineBuilder;
 	}
 
 	private Class<? extends SerializationFormat<byte[]>> serializationFormatClass(DebeziumFormat debeziumFormat) {
