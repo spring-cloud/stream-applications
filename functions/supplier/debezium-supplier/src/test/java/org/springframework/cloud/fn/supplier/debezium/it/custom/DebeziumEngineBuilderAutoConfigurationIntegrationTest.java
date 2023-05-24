@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.custom;
+package org.springframework.cloud.fn.supplier.debezium.it.custom;
 
 import java.io.File;
 import java.time.Duration;
@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 import io.debezium.engine.ChangeEvent;
-import io.debezium.engine.DebeziumEngine;
+import io.debezium.engine.DebeziumEngine.Builder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Tag;
@@ -40,7 +40,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.fn.supplier.debezium.TestJdbcTemplateConfiguration;
+import org.springframework.cloud.fn.supplier.debezium.it.TestJdbcTemplateConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -57,8 +57,8 @@ import static org.awaitility.Awaitility.await;
  */
 @Tag("integration")
 @Testcontainers
-public class DebeziumEngineAutoConfigurationTest {
-	private static final Log logger = LogFactory.getLog(DebeziumEngineAutoConfigurationTest.class);
+public class DebeziumEngineBuilderAutoConfigurationIntegrationTest {
+	private static final Log logger = LogFactory.getLog(DebeziumEngineBuilderAutoConfigurationIntegrationTest.class);
 
 	private static final String DATABASE_NAME = "inventory";
 	public static final String IMAGE_TAG = "2.2.0.Final";
@@ -144,8 +144,9 @@ public class DebeziumEngineAutoConfigurationTest {
 	public static class DebeziumCustomConsumerApplication {
 
 		@Bean
-		public EmbeddedEngineExecutorService embeddedEngine(DebeziumEngine<?> debeziumEngine) {
-			return new EmbeddedEngineExecutorService(debeziumEngine);
+		public EmbeddedEngineExecutorService embeddedEngine(Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
+				Builder<ChangeEvent<byte[], byte[]>> debeziumEngineBuilder) {
+			return new EmbeddedEngineExecutorService(debeziumEngineBuilder.notifying(changeEventConsumer).build());
 		}
 
 		@Bean

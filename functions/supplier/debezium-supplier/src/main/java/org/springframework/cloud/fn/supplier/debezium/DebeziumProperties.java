@@ -42,13 +42,11 @@ public class DebeziumProperties {
 		 */
 		PROTOBUF("application/x-protobuf"),;
 
-
 		private final String contentType;
 
 		DebeziumFormat(String contentType) {
 			this.contentType = contentType;
 		}
-
 
 		public final String contentType() {
 			return contentType;
@@ -62,9 +60,14 @@ public class DebeziumProperties {
 	private Map<String, String> properties = new HashMap<>();
 
 	/**
-	 * Change Event message content format. Defaults to 'JSON'.
+	 * {@link ChangeEvent} Key and Payload formats. Defaults to 'JSON'.
 	 */
-	private DebeziumFormat format = DebeziumFormat.JSON;
+	private DebeziumFormat payloadFormat = DebeziumFormat.JSON;
+
+	/**
+	 * {@link ChangeEvent} header format. Defaults to 'JSON'.
+	 */
+	private DebeziumFormat headerFormat = DebeziumFormat.JSON;
 
 	/**
 	 * Copy Change Event headers into Message headers.
@@ -80,12 +83,20 @@ public class DebeziumProperties {
 		return properties;
 	}
 
-	public DebeziumFormat getFormat() {
-		return format;
+	public DebeziumFormat getPayloadFormat() {
+		return payloadFormat;
 	}
 
-	public void setFormat(DebeziumFormat format) {
-		this.format = format;
+	public void setPayloadFormat(DebeziumFormat format) {
+		this.payloadFormat = format;
+	}
+
+	public DebeziumFormat getHeaderFormat() {
+		return headerFormat;
+	}
+
+	public void setHeaderFormat(DebeziumFormat headerFormat) {
+		this.headerFormat = headerFormat;
 	}
 
 	public boolean isCopyHeaders() {
@@ -104,8 +115,8 @@ public class DebeziumProperties {
 		ALWAYS,
 		/**
 		 * Commits offsets no more than the specified time period. If the specified time is less than {@code 0} then the
-		 * policy will behave as ALWAYS policy. Requires the 'debezium.properties.offset.flush.interval.ms' native property
-		 * to be set.
+		 * policy will behave as ALWAYS policy. Requires the 'debezium.properties.offset.flush.interval.ms' native
+		 * property to be set.
 		 */
 		PERIODIC,
 		/**

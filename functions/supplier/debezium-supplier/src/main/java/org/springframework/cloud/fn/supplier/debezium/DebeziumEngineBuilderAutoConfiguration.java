@@ -18,52 +18,62 @@ package org.springframework.cloud.fn.supplier.debezium;
 
 import java.time.Clock;
 import java.time.Duration;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
+import io.debezium.engine.DebeziumEngine.Builder;
 import io.debezium.engine.DebeziumEngine.CompletionCallback;
 import io.debezium.engine.DebeziumEngine.ConnectorCallback;
+import io.debezium.engine.format.KeyValueHeaderChangeEventFormat;
 import io.debezium.engine.format.SerializationFormat;
 import io.debezium.engine.spi.OffsetCommitPolicy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.AnyNestedCondition;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties.DebeziumFormat;
 import org.springframework.context.annotation.Bean;
-
-import static org.springframework.cloud.fn.supplier.debezium.DebeziumProperties.DebeziumFormat;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 /**
- * DebeziumEngine auto-configuration.
- *
- * The engine configuration is entirely standalone and only talks with the source system; Applications using the engine
- * auto-configuration simply provides a {@link Consumer consumer function} implementation to which the engine will pass
- * all records containing database change events.
+ * {@link EnableAutoConfiguration Auto-configuration} for {@link DebeziumEngine.Builder}.
  * <p>
- * With the engine, the application that runs the connector assumes all responsibility for fault tolerance, scalability,
- * and durability. Additionally, applications must specify how the engine can store its relational database schema
- * history and offsets. By default, this information will be stored in memory and will thus be lost upon application
- * restart.
+ * The builder provides a standalone engine configuration that talks with the source data system.
+ * <p>
+ * The application that runs the debezium engine assumes all responsibility for fault tolerance, scalability, and
+ * durability. Additionally, applications must specify how the engine can store its relational database schema history
+ * and offsets. By default, this information will be stored in memory and will thus be lost upon application restart.
+ * <p>
+ * The {@link DebeziumEngine.Builder} auto-configuration is activated only if a Debezium Connector is available on the
+ * classpath and the <code>debezium.properties.connector.class</code> property is set.
+ * <p>
+ * Properties prefixed with <code>debezium.properties</code> are passed through as native Debezium properties.
  *
  * @author Christian Tzolov
  * @author Corneil du Plessis
  */
 @AutoConfiguration
 @EnableConfigurationProperties(DebeziumProperties.class)
-public class DebeziumEngineAutoConfiguration {
+@Conditional(DebeziumEngineBuilderAutoConfiguration.OnDebeziumConnectorCondition.class)
+@ConditionalOnProperty(prefix = "debezium", name = "properties.connector.class")
+public class DebeziumEngineBuilderAutoConfiguration {
 
-	private static final Log logger = LogFactory.getLog(DebeziumEngineAutoConfiguration.class);
+	private static final Log logger = LogFactory.getLog(DebeziumEngineBuilderAutoConfiguration.class);
 
 	/**
 	 * The fully-qualified class name of the commit policy type. The default is a periodic commit policy based upon time
 	 * intervals.
 	 * @param properties The 'debezium.properties.offset.flush.interval.ms' configuration is compulsory for the Periodic
-	 * policy type. The ALWAYS and DEFAULT doesn't require properties.
+	 * policy type. The ALWAYS and DEFAULT doesn't require additional configuration.
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -111,29 +121,44 @@ public class DebeziumEngineAutoConfiguration {
 	public ConnectorCallback connectorCallback() {
 		return DEFAULT_CONNECTOR_CALLBACK;
 	}
-	private static final Map<DebeziumFormat, Class<? extends SerializationFormat<byte[]>>> serialFormats = Map.of(
-		DebeziumFormat.JSON, io.debezium.engine.format.JsonByteArray.class,
-		DebeziumFormat.AVRO, io.debezium.engine.format.Avro.class,
-		DebeziumFormat.PROTOBUF, io.debezium.engine.format.Protobuf.class
-	);
+
 	@Bean
-	public DebeziumEngine<?> debeziumEngine(Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
+	public Builder<ChangeEvent<byte[], byte[]>> debeziumEngineBuilder(
 			OffsetCommitPolicy offsetCommitPolicy, CompletionCallback completionCallback,
 			ConnectorCallback connectorCallback, DebeziumProperties properties, Clock debeziumClock) {
 
-		Class<? extends SerializationFormat<byte[]>> format = Objects.requireNonNull(serialFormats.get(properties.getFormat()), "Cannot find format for " + properties.getProperties());
-		DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine = DebeziumEngine
-				.create(format)
+		Class<? extends SerializationFormat<byte[]>> payloadFormat = Objects.requireNonNull(
+				serializationFormatClass(properties.getPayloadFormat()),
+				"Cannot find payload format for " + properties.getProperties());
+
+		Class<? extends SerializationFormat<byte[]>> headerFormat = Objects.requireNonNull(
+				serializationFormatClass(properties.getHeaderFormat()),
+				"Cannot find header format for " + properties.getProperties());
+
+		return DebeziumEngine
+				.create(KeyValueHeaderChangeEventFormat.of(payloadFormat, payloadFormat, headerFormat))
 				.using(properties.getDebeziumNativeConfiguration())
 				.using(debeziumClock)
 				.using(completionCallback)
 				.using(connectorCallback)
-				.using((offsetCommitPolicy != NULL_OFFSET_COMMIT_POLICY) ? offsetCommitPolicy : null)
-				.notifying(changeEventConsumer)
-				.build();
+				.using((offsetCommitPolicy != NULL_OFFSET_COMMIT_POLICY) ? offsetCommitPolicy : null);
+	}
 
-
-		return debeziumEngine;
+	/**
+	 * Converts the {@link DebeziumFormat} enum into Debezium {@link SerializationFormat} class.
+	 * @param debeziumFormat debezium format property.
+	 */
+	private Class<? extends SerializationFormat<byte[]>> serializationFormatClass(DebeziumFormat debeziumFormat) {
+		switch (debeziumFormat) {
+		case JSON:
+			return io.debezium.engine.format.JsonByteArray.class;
+		case AVRO:
+			return io.debezium.engine.format.Avro.class;
+		case PROTOBUF:
+			return io.debezium.engine.format.Protobuf.class;
+		default:
+			throw new IllegalArgumentException("Unknown debezium format: " + debeziumFormat);
+		}
 	}
 
 	/**
@@ -191,4 +216,57 @@ public class DebeziumEngineAutoConfiguration {
 			throw new UnsupportedOperationException("Unimplemented method 'performCommit'");
 		}
 	};
+
+	/**
+	 * Determine if Debezium connector is available. This either kicks in if any debezium connector is available.
+	 */
+	@Order(Ordered.LOWEST_PRECEDENCE)
+	static class OnDebeziumConnectorCondition extends AnyNestedCondition {
+
+		OnDebeziumConnectorCondition() {
+			super(ConfigurationPhase.REGISTER_BEAN);
+		}
+
+		@ConditionalOnClass(name = { "io.debezium.connector.mysql.MySqlConnector" })
+		static class HasMySqlConnector {
+
+		}
+
+		@ConditionalOnClass(name = "io.debezium.connector.postgresql.PostgresConnector")
+		static class HasPostgreSqlConnector {
+
+		}
+
+		@ConditionalOnClass(name = "io.debezium.connector.db2.Db2Connector")
+		static class HasDb2Connector {
+
+		}
+
+		@ConditionalOnClass(name = "io.debezium.connector.oracle.OracleConnector")
+		static class HasOracleConnector {
+
+		}
+
+		@ConditionalOnClass(name = "io.debezium.connector.sqlserver.SqlServerConnector")
+		static class HasSqlServerConnector {
+
+		}
+
+		@ConditionalOnClass(name = "io.debezium.connector.mongodb.MongoDbConnector")
+		static class HasMongoDbConnector {
+
+		}
+
+		@ConditionalOnClass(name = "io.debezium.connector.vitess.VitessConnector")
+		static class HasVitessConnector {
+
+		}
+
+		@ConditionalOnClass(name = "io.debezium.connector.spanner.SpannerConnector")
+		static class HasSpannerConnector {
+
+		}
+
+	}
+
 }
