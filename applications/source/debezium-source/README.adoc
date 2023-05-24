@@ -46,7 +46,7 @@ Using the https://debezium.io/documentation/reference/stable/transformations/eve
 
 When a Debezium source runs, it reads information from the source and periodically records `offsets` that define how much of that information it has processed.
 Should the source be restarted, it will use the last recorded offset to know where in the source information it should resume reading.
-Out of the box, the Debezium Engine provides few https://debezium.io/documentation/reference/2.2/development/engine.html#engine-properties[offset storage configuration] options.
+Out of the box, the following https://debezium.io/documentation/reference/2.2/development/engine.html#engine-properties[offset storage configuration] options are provided:
 
 - In-Memory
 
@@ -83,6 +83,8 @@ Out of the box, the Debezium Engine provides few https://debezium.io/documentati
 <2> The number of partitions used when creating the offset storage topic.
 <3> Replication factor used when creating the offset storage topic.
 <4> Interval at which to try committing offsets. The default is 1 minute.
+
+One can implement the `org.apache.kafka.connect.storage.OffsetBackingStore` interface in to provide a offset storage bound to a custom backend key-value store.
 
 ==== Connectors properties
 
