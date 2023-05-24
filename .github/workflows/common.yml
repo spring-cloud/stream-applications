@@ -658,8 +658,10 @@ jobs:
       - name: Tag Release
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         shell: bash
-        run: |
+        run: |          
           pushd stream-applications > /dev/null
+            git config user.name "GitHub Actions Bot"
+            git config user.email "<>"
             # consider removing for milestone
             git checkout -b ${{ needs.parameters.outputs.build_version }}
             git commit -a -m "Release ${{ needs.parameters.outputs.build_version }}"
