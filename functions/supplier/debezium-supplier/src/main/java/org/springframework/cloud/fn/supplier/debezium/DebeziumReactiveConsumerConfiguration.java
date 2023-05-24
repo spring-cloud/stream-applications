@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
+import io.debezium.engine.DebeziumEngine.Builder;
 import io.debezium.engine.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -85,7 +86,16 @@ public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAwa
 	private final ExecutorService debeziumExecutor = Executors.newSingleThreadExecutor();
 
 	@Bean
-	public Supplier<Flux<Message<?>>> debeziumSupplier(DebeziumEngine<?> debeziumEngine) {
+	public DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine(
+			Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
+			Builder<ChangeEvent<byte[], byte[]>> debeziumEngineBuilder) {
+
+		return debeziumEngineBuilder.notifying(changeEventConsumer).build();
+	}
+
+	@Bean
+	public Supplier<Flux<Message<?>>> debeziumSupplier(DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine) {
+
 		return () -> this.eventSink.asFlux()
 				.doOnRequest(r -> debeziumExecutor.execute(debeziumEngine))
 				.doOnTerminate(debeziumExecutor::shutdownNow);
@@ -95,7 +105,7 @@ public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAwa
 	@ConditionalOnMissingBean
 	public Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer(DebeziumProperties properties) {
 
-		return new ChangeEventConsumer<byte[]>(properties.getFormat().contentType(), properties.isCopyHeaders(),
+		return new ChangeEventConsumer<byte[]>(properties.getPayloadFormat().contentType(), properties.isCopyHeaders(),
 				this.eventSink);
 	}
 

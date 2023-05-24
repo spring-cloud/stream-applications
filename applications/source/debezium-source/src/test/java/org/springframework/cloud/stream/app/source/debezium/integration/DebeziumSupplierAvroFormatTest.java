@@ -63,7 +63,7 @@ public class DebeziumSupplierAvroFormatTest {
 					.properties(
 							"spring.cloud.function.definition=debeziumSupplier",
 
-							"debezium.format=AVRO",
+							"debezium.payloadFormat=AVRO",
 
 							"debezium.properties.key.converter=io.apicurio.registry.utils.converter.AvroConverter",
 							"debezium.properties.key.converter.apicurio.registry.auto-register=true",

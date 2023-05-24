@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 import io.debezium.engine.ChangeEvent;
-import io.debezium.engine.DebeziumEngine;
+import io.debezium.engine.DebeziumEngine.Builder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Tag;
@@ -57,8 +57,8 @@ import static org.awaitility.Awaitility.await;
  */
 @Tag("integration")
 @Testcontainers
-public class DebeziumEngineAutoConfigurationTest {
-	private static final Log logger = LogFactory.getLog(DebeziumEngineAutoConfigurationTest.class);
+public class DebeziumEngineBuilderAutoConfigurationTest {
+	private static final Log logger = LogFactory.getLog(DebeziumEngineBuilderAutoConfigurationTest.class);
 
 	private static final String DATABASE_NAME = "inventory";
 	public static final String IMAGE_TAG = "2.2.0.Final";
@@ -144,8 +144,9 @@ public class DebeziumEngineAutoConfigurationTest {
 	public static class DebeziumCustomConsumerApplication {
 
 		@Bean
-		public EmbeddedEngineExecutorService embeddedEngine(DebeziumEngine<?> debeziumEngine) {
-			return new EmbeddedEngineExecutorService(debeziumEngine);
+		public EmbeddedEngineExecutorService embeddedEngine(Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
+				Builder<ChangeEvent<byte[], byte[]>> debeziumEngineBuilder) {
+			return new EmbeddedEngineExecutorService(debeziumEngineBuilder.notifying(changeEventConsumer).build());
 		}
 
 		@Bean

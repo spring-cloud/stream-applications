@@ -20,8 +20,9 @@ The `Debezium Source` currently supports CDC for multiple datastores: https://de
 //tag::configuration-properties[]
 $$debezium.copy-headers$$:: $$Copy Change Event headers into Message headers.$$ *($$Boolean$$, default: `$$true$$`)*
 $$debezium.debezium-native-configuration$$:: $$<documentation missing>$$ *($$Properties$$, default: `$$<none>$$`)*
-$$debezium.format$$:: $$Change Event message content format. Defaults to 'JSON'.$$ *($$DebeziumFormat$$, default: `$$<none>$$`, possible values: `JSON`,`AVRO`,`PROTOBUF`)*
+$$debezium.header-format$$:: $${@link ChangeEvent} header format. Defaults to 'JSON'.$$ *($$DebeziumFormat$$, default: `$$<none>$$`, possible values: `JSON`,`AVRO`,`PROTOBUF`)*
 $$debezium.offset-commit-policy$$:: $$The policy that defines when the offsets should be committed to offset storage.$$ *($$DebeziumOffsetCommitPolicy$$, default: `$$<none>$$`, possible values: `ALWAYS`,`PERIODIC`,`DEFAULT`)*
+$$debezium.payload-format$$:: $${@link ChangeEvent} Key and Payload formats. Defaults to 'JSON'.$$ *($$DebeziumFormat$$, default: `$$<none>$$`, possible values: `JSON`,`AVRO`,`PROTOBUF`)*
 $$debezium.properties$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a 'debezium.properties.*' prefix are native Debezium properties.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
