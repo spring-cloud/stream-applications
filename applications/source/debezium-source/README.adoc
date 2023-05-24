@@ -42,6 +42,50 @@ Using the https://debezium.io/documentation/reference/stable/transformations/eve
 --debezium.properties.transforms.unwrap.add.fields=name,db
 ----
 
+==== Debezium Offset Storage
+
+When a Debezium source runs, it reads information from the source and periodically records `offsets` that define how much of that information it has processed.
+Should the source be restarted, it will use the last recorded offset to know where in the source information it should resume reading.
+Out of the box, the following https://debezium.io/documentation/reference/2.2/development/engine.html#engine-properties[offset storage configuration] options are provided:
+
+- In-Memory
+
+   Doesn't persist the offset data but keeps it in memory. Therefore all offsets are lost on debezium source restart.
+[source, bash]
+----
+--debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
+----
+
+- Local Filesystem
+
+  Store the offsets in a file on the local file system (the file can be named anything and stored anywhere). Additionally, although the connector records the offsets with every source record it produces, the engine flushes the offsets to the backing store periodically (in the example below, once each minute).
+[source, bash]
+----
+--debezium.properties.offset.storage=org.apache.kafka.connect.storage.FileOffsetBackingStore
+--debezium.properties.offset.storage.file.filename=/tmp/offsets.dat # <1>
+--debezium.properties.offset.flush.interval.ms=60000 # <2>
+----
+<1> Path to file where offsets are to be stored. Required when `offset.storage`` is set to the `FileOffsetBackingStore`.
+<2> Interval at which to try committing offsets. The default is 1 minute.
+
+- Kafka topic
+
+  Uses a Kafka topic to store offset data.
+[source, bash]
+----
+--debezium.properties.offset.storage=org.apache.kafka.connect.storage.KafkaOffsetBackingStore
+--debezium.properties.offset.storage.topic=my-kafka-offset-topic # <1>
+--debezium.properties.offset.storage.partitions=2 # <2>
+--debezium.properties.offset.storage.replication.factor=1 # <3>
+--debezium.properties.offset.flush.interval.ms=60000 # <4>
+----
+<1> The name of the Kafka topic where offsets are to be stored. Required when `offset.storage` is set to the `KafkaOffsetBackingStore`.
+<2> The number of partitions used when creating the offset storage topic.
+<3> Replication factor used when creating the offset storage topic.
+<4> Interval at which to try committing offsets. The default is 1 minute.
+
+One can implement the `org.apache.kafka.connect.storage.OffsetBackingStore` interface in to provide a offset storage bound to a custom backend key-value store.
+
 ==== Connectors properties
 
 The table below lists all available Debezium properties for each connecter.
