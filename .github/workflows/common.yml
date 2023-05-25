@@ -662,11 +662,9 @@ jobs:
           pushd stream-applications > /dev/null
             git config user.name "GitHub Actions Bot"
             git config user.email "<>"
-            # consider removing for milestone
-            git checkout -b ${{ needs.parameters.outputs.build_version }}
             git commit -a -m "Release ${{ needs.parameters.outputs.build_version }}"
             git tag "v${{ needs.parameters.outputs.build_version }}"
-            git push --tags origin
+            git push --tags -v origin
           popd > /dev/null
       # add jfrog download
       # nexus-sync
@@ -678,12 +676,14 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
+            git config user.name "GitHub Actions Bot"
+            git config user.email "<>"
             echo "::notice ::updating next dev versions to ${{ needs.parameters.outputs.next_dev_version }}"
             $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.next_dev_version }}" 
             echo "::notice ::setting released version to next dev version ${{ needs.parameters.outputs.next_dev_version }}"
             $ROOT_DIR/next-dev-version.sh
             git commit -a -m "Next development version ${{ needs.parameters.outputs.next_dev_version }}"
-            git push origin main
+            git push -v origin 
           popd > /dev/null
   rerun-jobs:
     if: ${{ failure() && github.run_attempt == '1' }}
@@ -706,13 +706,13 @@ jobs:
         run: |
           set +e
           FAILURES=$(gh run view ${{ github.run_id }} -v | grep "^X")
+          for msg in $FAILURES; do
+            echo "$msg"
+          done
           COUNT_TESTS=$(echo "$FAILURES" | grep -c -F "tests ")
           if((COUNT_TESTS > 0)); then
-            echo "Re-run ${{ github.workflow }} run ${{ github.run_id }}"
+            echo "::warn ::${COUNT_TESTS} modules failed. Re-run ${{ github.workflow }} run ${{ github.run_id }}"
             gh run rerun ${{ github.run_id }} --failed --debug
           else
             echo "Checked ${{ github.workflow }} run ${{ github.run_id }}. No failures in tests jobs:"
-            for msg in $FAILURES; do
-              echo "$msg"
-            done
           fi
