@@ -32,7 +32,7 @@
                         <type>processor</type>
                         <version>${project.version}</version>
                         <configClass>org.springframework.cloud.fn.aggregator.AggregatorFunctionConfiguration.class</configClass>
-                        <functionDefinition>aggregatorFunction</functionDefinition>
+                        <functionDefinition>jsonBytesToMap|aggregatorFunction</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
