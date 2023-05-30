@@ -17,7 +17,6 @@
 package functions;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -34,7 +33,6 @@ import org.springframework.util.MimeTypeUtils;
  * Otherwise, the message is returned as is.
  *
  * @author Artem Bilan
- *
  * @since 4.0
  */
 public class JsonBytesToMap implements Function<Message<?>, Message<?>> {
