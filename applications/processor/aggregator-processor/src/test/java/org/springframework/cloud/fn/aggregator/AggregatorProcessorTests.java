@@ -44,7 +44,8 @@ public class AggregatorProcessorTests {
 				TestChannelBinderConfiguration.getCompleteConfiguration(AggregatorProcessorTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=jsonBytesToMap|aggregatorFunction",
-						"--aggregator.message-store-type=jdbc")) {
+						"--aggregator.message-store-type=jdbc",
+						"--aggregator.release=size()==2 or one.payload instanceof T(java.util.Map)")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
@@ -62,11 +63,8 @@ public class AggregatorProcessorTests {
 
 			ObjectMapper objectMapper = context.getBean(ObjectMapper.class);
 
-			Person person1 = new Person("First1 Last1", "St. #1");
-			processorInput.send(createMessage(objectMapper.writeValueAsBytes(person1), 2, 2));
-
-			Person person2 = new Person("First2 Last2", "St. #2");
-			processorInput.send(createMessage(objectMapper.writeValueAsBytes(person2), 1, 2));
+			Person person = new Person("First1 Last1", "St. #1");
+			processorInput.send(createMessage(objectMapper.writeValueAsBytes(person), 2, 2));
 
 			receive = processorOutput.receive(10_000, "jsonBytesToMapaggregatorFunction-out-0");
 
@@ -75,7 +73,7 @@ public class AggregatorProcessorTests {
 					objectMapper.readValue(receive.getPayload(),
 							objectMapper.constructType(new TypeReference<List<Person>>() { }));
 
-			assertThat(result).containsExactly(person1, person2);
+			assertThat(result).containsOnly(person);
 		}
 	}
 
