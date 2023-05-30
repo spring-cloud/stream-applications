@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,11 @@
 
 package org.springframework.cloud.fn.aggregator;
 
+import java.io.IOException;
+import java.util.List;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -34,41 +39,60 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AggregatorProcessorTests {
 
 	@Test
-	public void testWithJdbcMessageStore() {
+	public void testWithJdbcMessageStore() throws IOException {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(AggregatorProcessorTestApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=aggregatorFunction",
+				.run("--spring.cloud.function.definition=jsonBytesToMap|aggregatorFunction",
 						"--aggregator.message-store-type=jdbc")) {
 
 			InputDestination processorInput = context.getBean(InputDestination.class);
 			OutputDestination processorOutput = context.getBean(OutputDestination.class);
 
-			processorInput.send(
-					MessageBuilder.withPayload("2")
-							.setHeader(IntegrationMessageHeaderAccessor.CORRELATION_ID, "my_correlation")
-							.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_NUMBER, 2)
-							.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_SIZE, 2)
-							.build());
-			processorInput.send(
-					MessageBuilder.withPayload("1")
-							.setHeader(IntegrationMessageHeaderAccessor.CORRELATION_ID, "my_correlation")
-							.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_NUMBER, 1)
-							.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_SIZE, 2)
-							.build());
+			processorInput.send(createMessage("2", 2, 2));
 
-			Message<byte[]> receive = processorOutput.receive(10_000, "aggregatorFunction-out-0");
+			processorInput.send(createMessage("1", 1, 2));
 
-			assertThat(receive).isNotNull()
+			Message<byte[]> receive = processorOutput.receive(10_000, "jsonBytesToMapaggregatorFunction-out-0");
+
+			assertThat(receive)
 					.extracting(Message::getPayload)
 					.extracting(String::new)
 					.isEqualTo("[\"2\",\"1\"]");
+
+			ObjectMapper objectMapper = context.getBean(ObjectMapper.class);
+
+			Person person1 = new Person("First1 Last1", "St. #1");
+			processorInput.send(createMessage(objectMapper.writeValueAsBytes(person1), 2, 2));
+
+			Person person2 = new Person("First2 Last2", "St. #2");
+			processorInput.send(createMessage(objectMapper.writeValueAsBytes(person2), 1, 2));
+
+			receive = processorOutput.receive(10_000, "jsonBytesToMapaggregatorFunction-out-0");
+
+			assertThat(receive).isNotNull();
+			List<Person> result =
+					objectMapper.readValue(receive.getPayload(),
+							objectMapper.constructType(new TypeReference<List<Person>>() { }));
+
+			assertThat(result).hasSize(2).contains(person1, person2);
 		}
+	}
+
+	private static Message<?> createMessage(Object payload, int sequenceNumber, int sequenceSize) {
+		return MessageBuilder.withPayload(payload)
+				.setHeader(IntegrationMessageHeaderAccessor.CORRELATION_ID, "my_correlation")
+				.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_NUMBER, sequenceNumber)
+				.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_SIZE, sequenceSize)
+				.build();
 	}
 
 	@SpringBootApplication
 	public static class AggregatorProcessorTestApplication {
 
+	}
+
+	private record Person(String name, String address) {
 	}
 
 }
