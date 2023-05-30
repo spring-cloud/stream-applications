@@ -189,8 +189,6 @@ public class DebeziumDatabasesIntegrationTest {
 						logger.info("Chunk size: " + messageChunk.size());
 						allMessages.addAll(messageChunk);
 					}
-
-					System.out.println("SIZE: " + allMessages.size());
 					// Message size should correspond to the number of insert statements in the sample inventor DB:
 					// src/test/resources/docker/mssql/init-with-signalling.sql
 					return allMessages.size() == 31; // Inventory DB entries
