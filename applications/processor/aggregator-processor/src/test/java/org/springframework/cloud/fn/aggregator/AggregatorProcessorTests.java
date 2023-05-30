@@ -75,7 +75,7 @@ public class AggregatorProcessorTests {
 					objectMapper.readValue(receive.getPayload(),
 							objectMapper.constructType(new TypeReference<List<Person>>() { }));
 
-			assertThat(result).hasSize(2).contains(person1, person2);
+			assertThat(result).containsExactly(person1, person2);
 		}
 	}
 
