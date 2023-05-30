@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.core.log.LogAccessor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
@@ -33,9 +34,12 @@ import org.springframework.util.MimeTypeUtils;
  * Otherwise, the message is returned as is.
  *
  * @author Artem Bilan
+ *
  * @since 4.0
  */
 public class JsonBytesToMap implements Function<Message<?>, Message<?>> {
+
+	private static final LogAccessor logger = new LogAccessor(JsonBytesToMap.class);
 
 	private final ObjectMapper objectMapper;
 
@@ -67,6 +71,7 @@ public class JsonBytesToMap implements Function<Message<?>, Message<?>> {
 			return this.objectMapper.readValue(payload, Map.class);
 		}
 		catch (IOException ex) {
+			logger.trace(ex, "Cannot deserialize to Map");
 			// Was not able to construct the map from byte[] -- returning as is
 			return payload;
 		}
