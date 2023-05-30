@@ -28,6 +28,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.utility.DockerImageName;
 
 import org.springframework.boot.SpringBootConfiguration;
@@ -152,6 +154,49 @@ public class DebeziumDatabasesIntegrationTest {
 			}
 
 			postgres.stop();
+		}
+	}
+
+	@Test
+	public void mssql() {
+		try (GenericContainer<?> mssql = new GenericContainer<>(
+				new ImageFromDockerfile()
+						.withFileFromClasspath("init-with-signalling.sql", "/docker/mssql/init-with-signalling.sql")
+						.withFileFromClasspath("entrypoint.sh", "/docker/mssql/entrypoint.sh")
+						.withFileFromClasspath("Dockerfile", "/docker/mssql/Dockerfile"))
+								.waitingFor(new LogMessageWaitStrategy().withRegEx(".*Wait indefinitely ...*."))
+								.withStartupTimeout(Duration.ofSeconds(120))
+								.withStartupAttempts(3)
+								.withExposedPorts(1433)) {
+			mssql.start();
+
+			try (ConfigurableApplicationContext context = applicationBuilder.run(
+					"--debezium.properties.connector.class=io.debezium.connector.sqlserver.SqlServerConnector",
+					"--debezium.properties.database.user=sa",
+					"--debezium.properties.database.password=MyFancyPassword123",
+					// "--debezium.properties.slot.name=debezium",
+					"--debezium.properties.database.encrypt=false",
+					"--debezium.properties.database.names=testDB",
+					"--debezium.properties.database.hostname=localhost",
+					"--debezium.properties.database.port=" + mssql.getMappedPort(1433))) {
+
+				OutputDestination outputDestination = context.getBean(OutputDestination.class);
+
+				List<Message<?>> allMessages = new ArrayList<>();
+				Awaitility.await().atMost(Duration.ofMinutes(5)).until(() -> {
+					List<Message<?>> messageChunk = DebeziumTestUtils.receiveAll(outputDestination);
+					if (!CollectionUtils.isEmpty(messageChunk)) {
+						logger.info("Chunk size: " + messageChunk.size());
+						allMessages.addAll(messageChunk);
+					}
+
+					System.out.println("SIZE: " + allMessages.size());
+					// Message size should correspond to the number of insert statements in the sample inventor DB:
+					// src/test/resources/docker/mssql/init-with-signalling.sql
+					return allMessages.size() == 31; // Inventory DB entries
+				});
+			}
+			mssql.stop();
 		}
 	}
 
