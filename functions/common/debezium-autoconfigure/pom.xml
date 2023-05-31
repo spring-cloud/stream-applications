@@ -10,8 +10,8 @@
         <relativePath>../../spring-functions-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>debezium-auto-configuration</artifactId>
-    <name>debezium-auto-configuration</name>
+    <artifactId>debezium-autoconfigure</artifactId>
+    <name>debezium-autoconfigure</name>
     <description>Debezium Spring Boot auto-configuration</description>
 
     <properties>

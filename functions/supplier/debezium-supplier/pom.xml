@@ -22,39 +22,9 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>debezium-auto-configuration</artifactId>
+            <artifactId>debezium-autoconfigure</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- <dependency>
-            <groupId>io.debezium</groupId>
-            <artifactId>debezium-api</artifactId>
-            <version>${version.debezium}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-reload4j</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-log4j12</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.debezium</groupId>
-            <artifactId>debezium-embedded</artifactId>
-            <version>${version.debezium}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-reload4j</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-log4j12</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency> -->
 
         <!-- Debezium Connectors -->
         <dependency>

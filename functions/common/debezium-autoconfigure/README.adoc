@@ -8,7 +8,7 @@ The `Debezium Engine` is a https://en.wikipedia.org/wiki/Change_data_capture[Cha
 
 The `DebeziumEngine.Builder` auto-configuration is activated only if a Debezium Connector is found on the classpath and the `debezium.properties.connector.class` property is set.
 
-To process the incoming database change events you just need to add the `debezium-auto-configuration` dependency to your application POM along with the debezium connector dependency for this database.
+To process the incoming database change events you just need to add the `debezium-autoconfigure` dependency to your application POM along with the debezium connector dependency for this database.
 Then implement your own `Consumer<ChangeEvent>` (or `ChangeConsumer<ChangeEvent>`) handler bean and wire it into a DebeziumEngine instance. For example:
 
 [source, java]
