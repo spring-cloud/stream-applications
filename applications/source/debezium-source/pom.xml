@@ -127,7 +127,7 @@
 			<version>1.18.2</version>
 			<scope>test</scope>
 		</dependency>
- </dependencies>
+ 	</dependencies>
 
 	<build>
 		<plugins>
