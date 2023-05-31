@@ -1,6 +1,5 @@
 -- Create the test database
 CREATE DATABASE testDB;
-GO
 USE testDB;
 EXEC sys.sp_cdc_enable_db;
 
@@ -81,4 +80,11 @@ INSERT INTO orders(order_date,purchaser,quantity,product_id)
 INSERT INTO orders(order_date,purchaser,quantity,product_id)
   VALUES ('21-FEB-2016', 1003, 1, 107);
 EXEC sys.sp_cdc_enable_table @source_schema = 'dbo', @source_name = 'orders', @role_name = NULL, @supports_net_changes = 0;
-GO
+
+-- Create a signalling table
+CREATE TABLE dbz_signal (
+  id VARCHAR(64),
+  type VARCHAR(32),
+  data VARCHAR(2048)
+);
+EXEC sys.sp_cdc_enable_table @source_schema = 'dbo', @source_name = 'dbz_signal', @role_name = NULL, @supports_net_changes = 0;
