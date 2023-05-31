@@ -36,7 +36,6 @@ public class DebeziumPropertiesTests {
 	public void defaultPropertiesTest() {
 		assertThat(this.properties.getPayloadFormat()).isEqualTo(DebeziumFormat.JSON);
 		assertThat(this.properties.getHeaderFormat()).isEqualTo(DebeziumFormat.JSON);
-		assertThat(this.properties.isCopyHeaders()).isEqualTo(true);
 		assertThat(this.properties.getOffsetCommitPolicy()).isEqualTo(DebeziumOffsetCommitPolicy.DEFAULT);
 		assertThat(this.properties.getProperties()).isNotNull();
 		assertThat(this.properties.getProperties()).isEmpty();

@@ -123,7 +123,7 @@ public class DebeziumEngineBuilderAutoConfiguration {
 	}
 
 	@Bean
-	public Builder<ChangeEvent<byte[], byte[]>> debeziumEngineBuilder(
+	public DebeziumEngine.Builder<ChangeEvent<byte[], byte[]>> debeziumEngineBuilder(
 			OffsetCommitPolicy offsetCommitPolicy, CompletionCallback completionCallback,
 			ConnectorCallback connectorCallback, DebeziumProperties properties, Clock debeziumClock) {
 

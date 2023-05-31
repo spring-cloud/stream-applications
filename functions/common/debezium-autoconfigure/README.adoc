@@ -8,8 +8,48 @@ The `Debezium Engine` is a https://en.wikipedia.org/wiki/Change_data_capture[Cha
 
 The `DebeziumEngine.Builder` auto-configuration is activated only if a Debezium Connector is found on the classpath and the `debezium.properties.connector.class` property is set.
 
-To process the incoming database change events you just need to add the `debezium-autoconfigure` dependency to your application POM along with the debezium connector dependency for this database.
-Then implement your own `Consumer<ChangeEvent>` (or `ChangeConsumer<ChangeEvent>`) handler bean and wire it into a DebeziumEngine instance. For example:
+To process the incoming database change events you need to include the Debezium `auto-configuration` dependency to your project:
+
+====
+[source, xml, subs="normal", role="primary"]
+.Maven
+----
+<dependency>
+    <groupId>org.springframework.cloud.fn</groupId>
+    <artifactId>debezium-autoconfigure</artifactId>
+    <version>{project-version}</version>
+</dependency>
+----
+[source, groovy, subs="normal", role="secondary"]
+.Gradle
+----
+compile "org.springframework.cloud.fn:debezium-autoconfigure:{project-version}"
+----
+====
+
+As well as the https://debezium.io/documentation/reference/2.2/connectors/index.html[debezium connector] dependency for the Database the data is received from.
+For example for PostgreSQL the postgres debezium connector dependency is:
+
+====
+[source, xml, subs="normal", role="primary"]
+.Maven
+----
+<dependency>
+    <groupId>io.debezium</groupId>
+    <artifactId>debezium-connector-postgres</artifactId>
+    <version>${debezium-version}</version>
+</dependency>
+
+----
+[source, groovy, subs="normal", role="secondary"]
+.Gradle
+----
+compile "io.debezium:debezium-connector-postgres:{debezium-version}"
+----
+====
+
+
+Then implement your own `java.util.Consumer<ChangeEvent>` (or `ChangeConsumer<ChangeEvent>`) handler bean and wire it into a DebeziumEngine instance. For example:
 
 [source, java]
 ----
@@ -50,7 +90,6 @@ For example the `DebeziumReactiveConsumerConfiguration` embeds an ExecutorServic
 
 ## Configuration Options
 
-$$debezium.copy-headers$$:: Copy the `ChangeEvent` headers into Message headers. *($$Boolean$$, default: `$$true$$`)*
 $$debezium.header-format$$:: `ChangeEvent` header format. *($$DebeziumFormat$$, default: `JSON`, possible values: `JSON`,`AVRO`,`PROTOBUF`)*
 $$debezium.payload-format$$:: `ChangeEvent` Key and Payload formats. *($$DebeziumFormat$$, default: `JSON`, possible values: `JSON`,`AVRO`,`PROTOBUF`)*
 $$debezium.offset-commit-policy$$:: The policy that defines when the offsets should be committed to offset storage. *($$DebeziumOffsetCommitPolicy$$, default: `PERIODIC`, possible values: `ALWAYS`,`PERIODIC`,`DEFAULT`)*
@@ -88,8 +127,9 @@ debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffset
 <4> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `ChangeEvent` message.
 <5> Metadata stores to preserver the debezium state between multiple starts.
 
+### Connectors properties
+
 The table below lists all available Debezium properties for each connecter.
-Those properties can be used by prefixing them by the `debezium.properties.` prefix.
 
 .Table of the native Debezium configuration properties for every connector.
 |===
@@ -121,7 +161,14 @@ Those properties can be used by prefixing them by the `debezium.properties.` pre
 
 |===
 
-Additionally the DebeziumEngine auto-configuration provides an opinionated implementation for the following configurable components:
+### Streaming vs Batching
+
+If you register a `java.util.Consumer<ChangeEvent>` with the `DebeziumEngine.Builder` then the incoming events will processed element-wise, one by one in the order of their occurrence.
+If you opt for the `io.debezium.engineChangeConsumer<ChangeEvent>` you will be allowed to process batch of events in one go, acknowledging their processing once that's done.
+
+### Additional Configuration Components
+
+The Debezium builder auto-configuration provides an opinionated implementation for the following configurable components:
 
  - `OffsetCommitPolicy` - Commit policy type. The default is a periodic commit policy based upon time intervals.
  - `Clock` - Clock needing to determine the current time.
@@ -130,6 +177,69 @@ Additionally the DebeziumEngine auto-configuration provides an opinionated imple
 By default logs the completion status.
 - `ConnectorCallback` - During the engine run, provides feedback about the the completion state of each component running within the engine (connectors, tasks etc).
 By default logs the connector state.
+
+You can override any of the above components. Just provide your `@Bean` implementation to the application context.
+
+### Event Flattening
+
+Debezium provides a comprehensive message format, that accurately details information about changes that happen in the system.
+Sometime this format, though,  might not be suitable for the downstream consumers, that might require messages that are formatted so that field names and values are presented in a simplified, `flattened` structure.
+
+To simplify the format of the event records that the Debezium connectors produce, you can use the https://debezium.io/documentation/reference/stable/transformations/event-flattening.html[Debezium event flattening] message transformation.
+Using the https://debezium.io/documentation/reference/stable/transformations/event-flattening.html#_configuration[flattering configuration] you can configure simple messages format like this:
+
+[source, bash]
+----
+--debezium.properties.transforms=unwrap
+--debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState
+--debezium.properties.transforms.unwrap.drop.tombstones=false
+--debezium.properties.transforms.unwrap.delete.handling.mode=rewrite
+--debezium.properties.transforms.unwrap.add.fields=name,db
+----
+
+### Offset Storages
+
+When a Debezium source runs, it reads information from the source and periodically records `offsets` that define how much of that information it has processed.
+Should the source be restarted, it will use the last recorded offset to know where in the source information it should resume reading.
+Out of the box, the following https://debezium.io/documentation/reference/2.2/development/engine.html#engine-properties[offset storage configuration] options are provided:
+
+- In-Memory
+
+   Doesn't persist the offset data but keeps it in memory. Therefore all offsets are lost on debezium source restart.
+[source, bash]
+----
+--debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
+----
+
+- Local Filesystem
+
+  Store the offsets in a file on the local file system (the file can be named anything and stored anywhere). Additionally, although the connector records the offsets with every source record it produces, the engine flushes the offsets to the backing store periodically (in the example below, once each minute).
+[source, bash]
+----
+--debezium.properties.offset.storage=org.apache.kafka.connect.storage.FileOffsetBackingStore
+--debezium.properties.offset.storage.file.filename=/tmp/offsets.dat # <1>
+--debezium.properties.offset.flush.interval.ms=60000 # <2>
+----
+<1> Path to file where offsets are to be stored. Required when `offset.storage`` is set to the `FileOffsetBackingStore`.
+<2> Interval at which to try committing offsets. The default is 1 minute.
+
+- Kafka topic
+
+  Uses a Kafka topic to store offset data.
+[source, bash]
+----
+--debezium.properties.offset.storage=org.apache.kafka.connect.storage.KafkaOffsetBackingStore
+--debezium.properties.offset.storage.topic=my-kafka-offset-topic # <1>
+--debezium.properties.offset.storage.partitions=2 # <2>
+--debezium.properties.offset.storage.replication.factor=1 # <3>
+--debezium.properties.offset.flush.interval.ms=60000 # <4>
+----
+<1> The name of the Kafka topic where offsets are to be stored. Required when `offset.storage` is set to the `KafkaOffsetBackingStore`.
+<2> The number of partitions used when creating the offset storage topic.
+<3> Replication factor used when creating the offset storage topic.
+<4> Interval at which to try committing offsets. The default is 1 minute.
+
+One can implement the `org.apache.kafka.connect.storage.OffsetBackingStore` interface in to provide a offset storage bound to a custom backend key-value store.
 
 ## Tests
 

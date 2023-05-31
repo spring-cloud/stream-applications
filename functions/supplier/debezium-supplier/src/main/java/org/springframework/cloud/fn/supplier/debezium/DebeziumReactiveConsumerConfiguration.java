@@ -51,7 +51,7 @@ import org.springframework.util.MimeTypeUtils;
  * @author Artem Bilan
  */
 @Configuration
-@EnableConfigurationProperties(DebeziumProperties.class)
+@EnableConfigurationProperties({ DebeziumProperties.class, DebeziumSupplierProperties.class })
 public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAware {
 
 	private static final Log logger = LogFactory.getLog(DebeziumReactiveConsumerConfiguration.class);
@@ -104,9 +104,11 @@ public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAwa
 
 	@Bean
 	@ConditionalOnMissingBean
-	public Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer(DebeziumProperties properties) {
+	public Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer(DebeziumProperties engineProperties,
+			DebeziumSupplierProperties supplierProperties) {
 
-		return new ChangeEventConsumer<byte[]>(properties.getPayloadFormat().contentType(), properties.isCopyHeaders(),
+		return new ChangeEventConsumer<byte[]>(engineProperties.getPayloadFormat().contentType(),
+				supplierProperties.isCopyHeaders(),
 				this.eventSink);
 	}
 
