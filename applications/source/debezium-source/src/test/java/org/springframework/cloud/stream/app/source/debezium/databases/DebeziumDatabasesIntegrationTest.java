@@ -28,8 +28,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
-import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.containers.MSSQLServerContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import org.springframework.boot.SpringBootConfiguration;
@@ -159,22 +158,21 @@ public class DebeziumDatabasesIntegrationTest {
 
 	@Test
 	public void mssql() {
-		try (GenericContainer<?> mssql = new GenericContainer<>(
-				new ImageFromDockerfile()
-						.withFileFromClasspath("init-with-signalling.sql", "/docker/mssql/init-with-signalling.sql")
-						.withFileFromClasspath("entrypoint.sh", "/docker/mssql/entrypoint.sh")
-						.withFileFromClasspath("Dockerfile", "/docker/mssql/Dockerfile"))
-								.waitingFor(new LogMessageWaitStrategy().withRegEx(".*Wait indefinitely ...*."))
-								.withStartupTimeout(Duration.ofSeconds(120))
-								.withStartupAttempts(3)
-								.withExposedPorts(1433)) {
+		try (GenericContainer<?> mssql = new MSSQLServerContainer("mcr.microsoft.com/mssql/server:2022-latest")
+				.acceptLicense()
+				.withInitScript("docker/mssql/init.sql")
+				.withEnv("MSSQL_AGENT_ENABLED", "true")
+				.withEnv("MSSQL_PID", "Standard")
+				.withStartupTimeout(Duration.ofSeconds(120))
+				.withStartupAttempts(3)
+				.withExposedPorts(1433)) {
+
 			mssql.start();
 
 			try (ConfigurableApplicationContext context = applicationBuilder.run(
 					"--debezium.properties.connector.class=io.debezium.connector.sqlserver.SqlServerConnector",
-					"--debezium.properties.database.user=sa",
-					"--debezium.properties.database.password=MyFancyPassword123",
-					// "--debezium.properties.slot.name=debezium",
+					"--debezium.properties.database.user=" + ((MSSQLServerContainer<?>) mssql).getUsername(),
+					"--debezium.properties.database.password=" + ((MSSQLServerContainer<?>) mssql).getPassword(),
 					"--debezium.properties.database.encrypt=false",
 					"--debezium.properties.database.names=testDB",
 					"--debezium.properties.database.hostname=localhost",
@@ -190,7 +188,7 @@ public class DebeziumDatabasesIntegrationTest {
 						allMessages.addAll(messageChunk);
 					}
 					// Message size should correspond to the number of insert statements in the sample inventor DB:
-					// src/test/resources/docker/mssql/init-with-signalling.sql
+					// src/test/resources/docker/mssql/init.sql
 					return allMessages.size() == 31; // Inventory DB entries
 				});
 			}

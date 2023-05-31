@@ -119,8 +119,15 @@
 			<groupId>io.debezium</groupId>
 			<artifactId>debezium-testing-testcontainers</artifactId>
 			<version>2.2.0.Final</version>
+			<scope>test</scope>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mssqlserver</artifactId>
+			<version>1.18.2</version>
+			<scope>test</scope>
+		</dependency>
+ </dependencies>
 
 	<build>
 		<plugins>
