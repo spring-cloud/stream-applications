@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium;
+package org.springframework.cloud.fn.common.debezium;
 
 import io.debezium.engine.DebeziumEngine;
 import org.junit.jupiter.api.Test;

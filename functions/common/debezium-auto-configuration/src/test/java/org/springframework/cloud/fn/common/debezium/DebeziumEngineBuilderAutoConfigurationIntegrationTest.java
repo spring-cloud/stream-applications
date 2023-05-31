@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.it.custom;
+package org.springframework.cloud.fn.common.debezium;
 
 import java.io.File;
 import java.time.Duration;
@@ -24,7 +24,11 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
+import javax.sql.DataSource;
+
+import com.zaxxer.hikari.HikariDataSource;
 import io.debezium.engine.ChangeEvent;
+import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.DebeziumEngine.Builder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,11 +42,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.fn.supplier.debezium.it.TestJdbcTemplateConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
@@ -50,7 +55,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 /**
- * This test illustrate how to leverage the DebeziumEngineAutoConfiguration to build a supplier function with a custom
+ * This test illustrate how to leverage the DebeziumEngineAutoConfiguration to build a consumer function with a custom
  * change event Consumer.
  *
  * @author Christian Tzolov
@@ -140,12 +145,32 @@ public class DebeziumEngineBuilderAutoConfigurationIntegrationTest {
 
 	@SpringBootConfiguration
 	@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, MongoAutoConfiguration.class })
-	@Import(TestJdbcTemplateConfiguration.class)
 	public static class DebeziumCustomConsumerApplication {
+
+		@Bean
+		public JdbcTemplate myJdbcTemplate(DataSource dataSource) {
+			return new JdbcTemplate(dataSource);
+		}
+
+		@Bean
+		@Primary
+		@ConfigurationProperties("app.datasource")
+		public DataSourceProperties dataSourceProperties() {
+			return new DataSourceProperties();
+		}
+
+		@Bean
+		public HikariDataSource dataSource(DataSourceProperties dataSourceProperties) {
+			return dataSourceProperties.initializeDataSourceBuilder()
+					.type(HikariDataSource.class)
+					.build();
+		}
 
 		@Bean
 		public EmbeddedEngineExecutorService embeddedEngine(Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer,
 				Builder<ChangeEvent<byte[], byte[]>> debeziumEngineBuilder) {
+			DebeziumEngine<ChangeEvent<byte[], byte[]>> b = debeziumEngineBuilder.notifying(changeEventConsumer)
+					.build();
 			return new EmbeddedEngineExecutorService(debeziumEngineBuilder.notifying(changeEventConsumer).build());
 		}
 
@@ -171,7 +196,7 @@ public class DebeziumEngineBuilderAutoConfigurationIntegrationTest {
 				if (changeEvent != null) { // ignore null records
 					recordList.add(changeEvent);
 					keyValue.put(changeEvent.key(), changeEvent.value());
-					System.out.println("SIZE=" + recordList.size());
+					System.out.println("Key: " + recordList.size());
 					System.out.println("[Debezium Event]: " + changeEvent.toString());
 				}
 			}

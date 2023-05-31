@@ -30,7 +30,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties;
+import org.springframework.cloud.fn.common.debezium.DebeziumProperties;
 import org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;

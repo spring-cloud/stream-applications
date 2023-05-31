@@ -12,6 +12,7 @@
 
 	<modules>
         <module>config-common</module>
+		<module>debezium-auto-configuration</module>
         <module>aws-s3-common</module>
 		<module>file-common</module>
 		<module>ftp-common</module>

@@ -21,6 +21,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.cloud.fn</groupId>
+            <artifactId>debezium-auto-configuration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-api</artifactId>
             <version>${version.debezium}</version>
@@ -49,7 +54,7 @@
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency> -->
 
         <!-- Debezium Connectors -->
         <dependency>

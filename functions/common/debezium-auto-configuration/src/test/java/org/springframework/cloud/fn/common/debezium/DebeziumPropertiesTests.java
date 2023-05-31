@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium;
+package org.springframework.cloud.fn.common.debezium;
 
 import org.junit.jupiter.api.Test;
 
-import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties.DebeziumFormat;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties.DebeziumOffsetCommitPolicy;
+import org.springframework.cloud.fn.common.debezium.DebeziumProperties.DebeziumFormat;
+import org.springframework.cloud.fn.common.debezium.DebeziumProperties.DebeziumOffsetCommitPolicy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

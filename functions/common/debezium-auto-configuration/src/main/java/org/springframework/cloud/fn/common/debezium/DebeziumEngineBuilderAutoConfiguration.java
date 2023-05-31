@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium;
+package org.springframework.cloud.fn.common.debezium;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -38,7 +38,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties.DebeziumFormat;
+import org.springframework.cloud.fn.common.debezium.DebeziumProperties.DebeziumFormat;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.core.Ordered;

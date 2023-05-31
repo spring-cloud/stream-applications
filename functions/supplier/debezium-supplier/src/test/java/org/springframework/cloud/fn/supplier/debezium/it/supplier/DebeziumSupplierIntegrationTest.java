@@ -32,7 +32,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration;
-import org.springframework.cloud.fn.supplier.debezium.it.TestJdbcTemplateConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.Message;
