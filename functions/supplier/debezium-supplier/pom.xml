@@ -16,7 +16,6 @@
 
     <properties>
         <version.debezium>2.2.1.Final</version.debezium>
-        <apicurio.version>2.4.2.Final</apicurio.version>
     </properties>
 
     <dependencies>
