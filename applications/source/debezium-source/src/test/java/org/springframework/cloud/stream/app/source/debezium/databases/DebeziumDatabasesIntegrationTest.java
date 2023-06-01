@@ -82,8 +82,7 @@ public class DebeziumDatabasesIntegrationTest {
 
 									"debezium.properties.topic.prefix=my-topic",
 									"debezium.properties.name=my-connector",
-									"debezium.properties.database.server.id=85744",
-									"debezium.properties.database.server.name=my-app-connector");
+									"debezium.properties.database.server.id=85744");
 
 	@Test
 	public void mysql() {

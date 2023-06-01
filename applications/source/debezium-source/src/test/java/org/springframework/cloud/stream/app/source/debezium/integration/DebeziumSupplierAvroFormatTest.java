@@ -79,7 +79,6 @@ public class DebeziumSupplierAvroFormatTest {
 							"debezium.properties.topic.prefix=my-topic",
 							"debezium.properties.name=my-connector",
 							"debezium.properties.database.server.id=85744",
-							"debezium.properties.database.server.name=my-app-connector",
 
 							"debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector",
 							"debezium.properties.database.user=debezium",

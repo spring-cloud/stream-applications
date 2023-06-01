@@ -86,7 +86,6 @@ public class DebeziumFlatteningIntegrationTest {
 					"debezium.properties.database.hostname=localhost",
 					"debezium.properties.database.port=" + mySqlContainer.getMappedPort(3306),
 					"debezium.properties.database.server.id=85744",
-					"debezium.properties.database.server.name=my-app-connector",
 					"debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
 
 					// JdbcTemplate configuration

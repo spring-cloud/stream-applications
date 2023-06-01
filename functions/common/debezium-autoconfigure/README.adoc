@@ -136,7 +136,6 @@ debezium.properties.database.hostname=localhost # <2>
 debezium.properties.database.port=3306 # <2>
 
 debezium.properties.database.server.id=85744 # <3>
-debezium.properties.database.server.name=my-app-connector # <3>
 debezium.properties.topic.prefix=my-topic # <3>
 debezium.properties.name=my-sql-connector # <3>
 

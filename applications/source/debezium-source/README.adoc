@@ -164,10 +164,10 @@ Use following properties to connect the Debezium Source to MySQL DB:
 ----
 debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector # <1>
 
-debezium.properties.topic.prefix=my-topic # <2>
 debezium.properties.name=my-connector # <2>
+debezium.properties.topic.prefix=my-topic # <2>
 debezium.properties.database.server.id=85744 # <2>
-debezium.properties.database.server.name=my-app-connector # <2>
+
 
 debezium.properties.database.user=debezium # <3>
 debezium.properties.database.password=dbz # <3>
@@ -229,7 +229,6 @@ debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffset
 debezium.properties.topic.prefix=my-topic # <3>
 debezium.properties.name=my-connector # <3>
 debezium.properties.database.server.id=85744 # <3>
-debezium.properties.database.server.name=my-app-connector # <3>
 
 debezium.properties.database.user=postgres  # <4>
 debezium.properties.database.password=postgres # <4>
@@ -290,7 +289,6 @@ debezium.properties.connector.class=io.debezium.connector.mongodb.MongodbSourceC
 debezium.properties.topic.prefix=my-topic
 debezium.properties.name=my-connector
 debezium.properties.database.server.id=85744
-debezium.properties.database.server.name=my-app-connector
 
 debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <2>
 debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <2>
@@ -352,7 +350,6 @@ debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffset
 debezium.properties.topic.prefix=my-topic # <3>
 debezium.properties.name=my-connector # <3>
 debezium.properties.database.server.id=85744 # <3>
-debezium.properties.database.server.name=my-app-connector # <3>
 
 debezium.properties.database.user=sa  # <4>
 debezium.properties.database.password=Password! # <4>
@@ -387,7 +384,7 @@ cat ./inventory.sql | docker exec -i dbz_oracle sqlplus debezium/dbz@//localhost
 
 [source,shell]
 ----
-java -jar debezium-source.jar --debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector --debezium.properties.topic.prefix=my-topic --debezium.properties.name=my-connector --debezium.properties.database.server.id=85744 --debezium.properties.database.server.name=my-app-connector  --debezium.properties.database.server.id=85744 --debezium.properties.database.server.name=my-app-connector --debezium.properties.database.user=debezium --debezium.properties.database.password=dbz --debezium.properties.database.hostname=localhost --debezium.properties.database.port=3306 --debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory --debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory --debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
+java -jar debezium-source.jar --debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector --debezium.properties.topic.prefix=my-topic --debezium.properties.name=my-connector --debezium.properties.database.server.id=85744  --debezium.properties.database.server.id=85744 --debezium.properties.database.user=debezium --debezium.properties.database.password=dbz --debezium.properties.database.hostname=localhost --debezium.properties.database.port=3306 --debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory --debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory --debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
 ----
 
 
