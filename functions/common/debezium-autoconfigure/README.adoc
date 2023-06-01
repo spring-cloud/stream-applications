@@ -10,8 +10,9 @@ The `DebeziumEngine.Builder` auto-configuration is activated only if a https://d
 
 ## Quick Start
 
-To make use of the `DebeziumEngine` one need to (1) add the `org.springframework.cloud.fn:debezium-autoconfiguration` and a database `io.debezium:debezium-connector-xxx` dependencies to their project, (2) provide the necessary debezium configuration (e.g. `debezium.properties.*`) properties, (3) implement and register it with the engine a `ChangeEvent` handler  and (4) submit the DebeziumEngine to an `Executor` or `ExecutorService` for execution.
+To use of the `DebeziumEngine` one need to (1) add required <<dependencies>> to the project, (2) provide the necessary Debezium <<configuration-options>>, (3) implement custom <<changeEvent-handlers>> and register it with the engine and (4) build and submit the DebeziumEngine to an `Executor` or `ExecutorService` for execution.
 
+[[dependencies]]
 ### Dependencies
 
 To process the incoming database change events you need to include the Debezium `auto-configuration` dependency to your project:
@@ -53,7 +54,7 @@ For example the postgres debezium connector dependency looks like this:
 compile "io.debezium:debezium-connector-postgres:{debezium-version}"
 ----
 ====
-
+[[changeEvent-handlers]]
 ### ChangeEvent Handlers
 
 Then implement your own `java.util.Consumer<ChangeEvent>` (or `ChangeConsumer<ChangeEvent>`) handler and wire it into a DebeziumEngine instance.
@@ -116,6 +117,7 @@ For example the `DebeziumReactiveConsumerConfiguration` embeds an ExecutorServic
 
 NOTE: Neither the `Consumer`/`ChangeConsumer` nor the `DebeziumEngine` need to be implemented as `@Bean`! It is just enough to have a `DebeziumEngine.Builder`, set some consumer into it, build an engine and run it from within some `@Service` implementation.
 
+[[configuration-options]]
 ## Configuration Options
 
 $$debezium.header-format$$:: `ChangeEvent` header format. *(default and only option at the moment: `JSON`)*
@@ -218,11 +220,11 @@ Using the https://debezium.io/documentation/reference/stable/transformations/eve
 
 [source, bash]
 ----
---debezium.properties.transforms=unwrap
---debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState
---debezium.properties.transforms.unwrap.drop.tombstones=false
---debezium.properties.transforms.unwrap.delete.handling.mode=rewrite
---debezium.properties.transforms.unwrap.add.fields=name,db
+debezium.properties.transforms=unwrap
+debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState
+debezium.properties.transforms.unwrap.drop.tombstones=false
+debezium.properties.transforms.unwrap.delete.handling.mode=rewrite
+debezium.properties.transforms.unwrap.add.fields=name,db
 ----
 
 ### Offset Storages
@@ -236,7 +238,7 @@ Out of the box, the following https://debezium.io/documentation/reference/2.2/de
    Doesn't persist the offset data but keeps it in memory. Therefore all offsets are lost on debezium source restart.
 [source, bash]
 ----
---debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
+debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
 ----
 
 - Local Filesystem
@@ -244,9 +246,9 @@ Out of the box, the following https://debezium.io/documentation/reference/2.2/de
   Store the offsets in a file on the local file system (the file can be named anything and stored anywhere). Additionally, although the connector records the offsets with every source record it produces, the engine flushes the offsets to the backing store periodically (in the example below, once each minute).
 [source, bash]
 ----
---debezium.properties.offset.storage=org.apache.kafka.connect.storage.FileOffsetBackingStore
---debezium.properties.offset.storage.file.filename=/tmp/offsets.dat # <1>
---debezium.properties.offset.flush.interval.ms=60000 # <2>
+debezium.properties.offset.storage=org.apache.kafka.connect.storage.FileOffsetBackingStore
+debezium.properties.offset.storage.file.filename=/tmp/offsets.dat # <1>
+debezium.properties.offset.flush.interval.ms=60000 # <2>
 ----
 <1> Path to file where offsets are to be stored. Required when `offset.storage`` is set to the `FileOffsetBackingStore`.
 <2> Interval at which to try committing offsets. The default is 1 minute.
@@ -256,11 +258,11 @@ Out of the box, the following https://debezium.io/documentation/reference/2.2/de
   Uses a Kafka topic to store offset data.
 [source, bash]
 ----
---debezium.properties.offset.storage=org.apache.kafka.connect.storage.KafkaOffsetBackingStore
---debezium.properties.offset.storage.topic=my-kafka-offset-topic # <1>
---debezium.properties.offset.storage.partitions=2 # <2>
---debezium.properties.offset.storage.replication.factor=1 # <3>
---debezium.properties.offset.flush.interval.ms=60000 # <4>
+debezium.properties.offset.storage=org.apache.kafka.connect.storage.KafkaOffsetBackingStore
+debezium.properties.offset.storage.topic=my-kafka-offset-topic # <1>
+debezium.properties.offset.storage.partitions=2 # <2>
+debezium.properties.offset.storage.replication.factor=1 # <3>
+debezium.properties.offset.flush.interval.ms=60000 # <4>
 ----
 <1> The name of the Kafka topic where offsets are to be stored. Required when `offset.storage` is set to the `KafkaOffsetBackingStore`.
 <2> The number of partitions used when creating the offset storage topic.
