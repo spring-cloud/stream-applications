@@ -2,11 +2,17 @@
 
 This module provides a generic https://debezium.io/documentation/reference/2.2/development/engine.html[DebeziumEngine.Builder] auto-configuration that can be reused and composed in other applications.
 
-NOTE: `DebeziumEngine` doesn't not required Kafka or Kafka Connect as it runs embedded inside your application. This approach though comes with some delivery guarantee limitations as explained https://debezium.io/documentation/reference/2.2/development/engine.html#_handling_failures[here].
+NOTE: The `DebeziumEngine` doesn't not required Kafka or Kafka Connect as it runs embedded inside your application. This approach though comes with some delivery guarantee limitations as explained https://debezium.io/documentation/reference/2.2/development/engine.html#_handling_failures[here].
 
-The `Debezium Engine` is a https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) utility, that allows *capturing* database change events and process them with custom `java.util.Consumer` or `io.debezium.engine.ChangeConsumer` event handler implementations. The `java.util.Consumer` allow element-wise change event processing while the `ChangeConsumer` permits batch event processing.
+The `Debezium Engine` is a https://en.wikipedia.org/wiki/Change_data_capture[Change Data Capture] (CDC) utility, that allows *capturing* database change events and process them with custom `java.util.Consumer` or `io.debezium.engine.ChangeConsumer` event handler implementations.
 
-The `DebeziumEngine.Builder` auto-configuration is activated only if a Debezium Connector is found on the classpath and the `debezium.properties.connector.class` property is set.
+The `DebeziumEngine.Builder` auto-configuration is activated only if a https://debezium.io/documentation/reference/stable/connectors/index.html[Debezium Connector] is found on the classpath and the `debezium.properties.connector.class` property is set to point to that connector class.
+
+## Quick Start
+
+To make use of the `DebeziumEngine` one need to (1) add the `org.springframework.cloud.fn:debezium-autoconfiguration` and a database `io.debezium:debezium-connector-xxx` dependencies to their project, to (2) implement a `ChangeEvent` handler and register it with the engine and (3) submit the DebeziumEngine to an `Executor` or `ExecutorService` for execution.
+
+### Dependencies
 
 To process the incoming database change events you need to include the Debezium `auto-configuration` dependency to your project:
 
@@ -27,8 +33,8 @@ compile "org.springframework.cloud.fn:debezium-autoconfigure:{project-version}"
 ----
 ====
 
-As well as the https://debezium.io/documentation/reference/2.2/connectors/index.html[debezium connector] dependency for the Database the data is received from.
-For example for PostgreSQL the postgres debezium connector dependency is:
+and include the https://debezium.io/documentation/reference/2.2/connectors/index.html[debezium connector] dependency for the selected Database.
+For example the postgres debezium connector dependency looks like this:
 
 ====
 [source, xml, subs="normal", role="primary"]
@@ -48,8 +54,9 @@ compile "io.debezium:debezium-connector-postgres:{debezium-version}"
 ----
 ====
 
+### ChangeEvent Handlers
 
-Then implement your own `java.util.Consumer<ChangeEvent>` (or `ChangeConsumer<ChangeEvent>`) handler bean and wire it into a DebeziumEngine instance. For example:
+Then implement your own `java.util.Consumer<ChangeEvent>` (or `ChangeConsumer<ChangeEvent>`) handler and wire it into a DebeziumEngine instance. For example:
 
 [source, java]
 ----
@@ -83,17 +90,33 @@ Then implement your own `java.util.Consumer<ChangeEvent>` (or `ChangeConsumer<Ch
 <2> Use the debezium builder provided from the auto-configuration and the custom consumer to create new DebeziumEngin instance.
 <3> The DebeziumEngine is designed to be submitted to an `Executor` or `ExecutorService` for execution.
 The `EmbeddedEngineExecutorService` is handy `ExecutorService` implementation that aligns with the Spring lifecycle.
-But the `EmbeddedEngineExecutorService` is optional.
-Usually the debezium auto-configuration client would provide its own executors better aligned with their implementation lifecycles.
+
+NOTE: The `EmbeddedEngineExecutorService` is optional and usually users would implement their own executors better aligned with their implementation lifecycles.
 For example the `DebeziumReactiveConsumerConfiguration` embeds an ExecutorService as part of the
 `Supplier<Flux<Message<?>>>` configuration.
 
+[TIP]
+====
+Neither the `Consumer`/`ChangeConsumer` nor the `DebeziumEngine` need to be implemented as `@Bean`! It is just enough to have a `DebeziumEngine.Builder`, set some consumer into it, build an engine and run it from within some `@Service` implementation. Here are is an oversimplified implementation:
+[source, java]
+----
+public void oversimplified(Builder<ChangeEvent<byte[], byte[]>> debeziumBuilder) {
+	Executors.newSingleThreadExecutor().execute(debeziumBuilder
+			.notifying(changeEvent -> {
+				System.out.println(changeEvent.value());
+			}).build());
+}
+----
+For real life applications you have to handle the lifecycles of the Debezium Engine and its Executor.
+The Spring `Lifecycle` and `SmartLifecycle` interfaces can help manage this.
+====
+
 ## Configuration Options
 
-$$debezium.header-format$$:: `ChangeEvent` header format. *($$DebeziumFormat$$, default: `JSON`, possible values: `JSON`,`AVRO`,`PROTOBUF`)*
+$$debezium.header-format$$:: `ChangeEvent` header format. *(default and only option at the moment: `JSON`)*
 $$debezium.payload-format$$:: `ChangeEvent` Key and Payload formats. *($$DebeziumFormat$$, default: `JSON`, possible values: `JSON`,`AVRO`,`PROTOBUF`)*
 $$debezium.offset-commit-policy$$:: The policy that defines when the offsets should be committed to offset storage. *($$DebeziumOffsetCommitPolicy$$, default: `PERIODIC`, possible values: `ALWAYS`,`PERIODIC`,`DEFAULT`)*
-$$debezium.properties$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a `debezium.properties.*` prefix are native Debezium properties.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+$$debezium.properties$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a `debezium.properties.*` prefix are native Debezium properties.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*.
 For example the `debezium.properties.connector.class` property is converted into `connector.class` before provided to the DebeziumEngine.
 
 Here is a sample configuration for the sample snipped above:
@@ -163,8 +186,8 @@ The table below lists all available Debezium properties for each connecter.
 
 ### Streaming vs Batching
 
-If you register a `java.util.Consumer<ChangeEvent>` with the `DebeziumEngine.Builder` then the incoming events will processed element-wise, one by one in the order of their occurrence.
-If you opt for the `io.debezium.engineChangeConsumer<ChangeEvent>` you will be allowed to process batch of events in one go, acknowledging their processing once that's done.
+If you register a `java.util.Consumer<ChangeEvent>` with the `DebeziumEngine.Builder` then the incoming events are processed element-wise, one by one in the order of their occurrence in the source database.
+Opting for the `io.debezium.engineChangeConsumer<ChangeEvent>` provides an https://debezium.io/documentation/reference/stable/development/engine.html#advanced-consuming[advanced event consumption] that can process batch of events in one go, acknowledging their processing once that's done.
 
 ### Additional Configuration Components
 
