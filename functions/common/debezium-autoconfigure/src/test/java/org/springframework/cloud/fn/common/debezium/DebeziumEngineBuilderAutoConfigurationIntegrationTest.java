@@ -103,7 +103,6 @@ public class DebeziumEngineBuilderAutoConfigurationIntegrationTest {
 					"debezium.properties.database.hostname=localhost",
 					"debezium.properties.database.port=" + debeziumMySQL.getMappedPort(3306),
 					"debezium.properties.database.server.id=85744",
-					"debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
 
 					// JdbcTemplate configuration
 					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",

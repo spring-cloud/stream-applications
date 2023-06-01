@@ -77,7 +77,7 @@ public class DebeziumDeleteHandlingIntegrationTest {
 					"debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
 					"debezium.properties.transforms.unwrap.add.fields=name,db",
 
-					"debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory", // new
+					"debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
 					"debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
 
 					"debezium.properties.name=my-connector",
@@ -87,7 +87,6 @@ public class DebeziumDeleteHandlingIntegrationTest {
 					"debezium.properties.database.hostname=localhost",
 					"debezium.properties.database.port=" + mySqlContainer.getMappedPort(3306),
 					"debezium.properties.database.server.id=85744",
-					"debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
 
 					// JdbcTemplate configuration
 					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",

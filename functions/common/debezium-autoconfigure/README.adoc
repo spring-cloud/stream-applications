@@ -144,7 +144,6 @@ debezium.properties.value.converter.schemas.enable=true # <4>
 
 debezium.properties.offset.flush.interval.ms=60000
 
-debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory # <5>
 debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <5>
 debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <5>
 

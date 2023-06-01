@@ -229,7 +229,7 @@ public class DebeziumDatabasesIntegrationTest {
 						// "--debezium.properties.mongodb.connection.string=mongodb://" + host + ":"
 						// + "27017"
 						// + "/?replicaSet=rs0",
-						"--debezium.properties.mongodb.name=dbserver1",
+						"--debezium.properties.topic.prefix=dbserver1",
 						"--debezium.properties.mongodb.user=debezium",
 						"--debezium.properties.mongodb.password=dbz",
 						"--debezium.properties.collection.include.list=inventory[.]*")) {
