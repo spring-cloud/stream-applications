@@ -63,20 +63,19 @@ It is just enough to have a `DebeziumEngine.Builder`, set your consumer implemen
 Here are is an oversimplified example:
 [source, java]
 ----
-public void oversimplified(Builder<ChangeEvent<byte[], byte[]>> debeziumBuilder) {
-	Executors.newSingleThreadExecutor()
-			.execute(debeziumBuilder // <3>
-					.notifying(changeEvent -> System.out.println(changeEvent.value())) // <1>
-					.build()); // <2>
+public void simple(DebeziumEngine.Builder<ChangeEvent<byte[], byte[]>> builder) {
+	Executors.newSingleThreadExecutor().execute(builder // <3>
+			.notifying(changeEvent -> System.out.println(changeEvent.value())) // <1>
+			.build()); // <2>
 }
 ----
 <1> Implement and register a change events consumer.
 <2> Build the Debezium engine.
 <3> Submit the engine to a single thread executor.
 
-For a real life applications you must handle the lifecycles of the Debezium Engine and its Executor.
+For a real life applications you must handle the lifecycles of the engine and its executor.
 Usually the Spring `Lifecycle` and `SmartLifecycle` interfaces are used for.
-Here is another a bit more realistic example:
+A bit more realistic example might look like this:
 
 [source, java]
 ----
@@ -115,7 +114,7 @@ NOTE: The `EmbeddedEngineExecutorService` is optional and usually users would im
 For example the `DebeziumReactiveConsumerConfiguration` embeds an ExecutorService as part of the
 `Supplier<Flux<Message<?>>>` configuration.
 
-NOTE: Neither the `Consumer`/`ChangeConsumer` nor the `DebeziumEngine` need to be implemented as `@Bean`! It is just enough to have a `DebeziumEngine.Builder`, set some consumer into it, build an engine and run it from within some `@Service` implementation.
+NOTE: Neither the `Consumer`/`ChangeConsumer` nor the `DebeziumEngine` need to be `@Bean`! It is enough to set some consumer into it the `DebeziumEngine.Builder`, build an engine and run it from within some `@Service` implementation.
 
 [[configuration-options]]
 ## Configuration Options
