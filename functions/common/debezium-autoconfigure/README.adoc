@@ -114,10 +114,7 @@ NOTE: The `EmbeddedEngineExecutorService` is optional and usually users would im
 For example the `DebeziumReactiveConsumerConfiguration` embeds an ExecutorService as part of the
 `Supplier<Flux<Message<?>>>` configuration.
 
-[TIP]
-====
-Neither the `Consumer`/`ChangeConsumer` nor the `DebeziumEngine` need to be implemented as `@Bean`! It is just enough to have a `DebeziumEngine.Builder`, set some consumer into it, build an engine and run it from within some `@Service` implementation.
-====
+NOTE: Neither the `Consumer`/`ChangeConsumer` nor the `DebeziumEngine` need to be implemented as `@Bean`! It is just enough to have a `DebeziumEngine.Builder`, set some consumer into it, build an engine and run it from within some `@Service` implementation.
 
 ## Configuration Options
 
