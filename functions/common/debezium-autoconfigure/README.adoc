@@ -64,13 +64,13 @@ Here are is an oversimplified example:
 [source, java]
 ----
 public void oversimplified(Builder<ChangeEvent<byte[], byte[]>> debeziumBuilder) {
-	Executors.newSingleThreadExecutor().execute(debeziumBuilder // <3>
-			.notifying(changeEvent -> {
-				System.out.println(changeEvent.value()); // <1>
-			}).build()); // <2>
+	Executors.newSingleThreadExecutor()
+			.execute(debeziumBuilder // <3>
+					.notifying(changeEvent -> System.out.println(changeEvent.value())) // <1>
+					.build()); // <2>
 }
 ----
-<1> Implement a ChangeEvent consumer.
+<1> Implement and register a change events consumer.
 <2> Build the Debezium engine.
 <3> Submit the engine to a single thread executor.
 
