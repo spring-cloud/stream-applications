@@ -51,7 +51,7 @@ import org.springframework.util.MimeTypeUtils;
  * @author Christian Tzolov
  * @author Artem Bilan
  */
-@AutoConfiguration(after = DebeziumEngineBuilderAutoConfiguration.class )
+@AutoConfiguration(after = DebeziumEngineBuilderAutoConfiguration.class)
 @EnableConfigurationProperties({ DebeziumSupplierProperties.class })
 public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAware {
 
