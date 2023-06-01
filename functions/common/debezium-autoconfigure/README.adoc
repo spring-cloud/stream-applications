@@ -10,7 +10,7 @@ The `DebeziumEngine.Builder` auto-configuration is activated only if a https://d
 
 ## Quick Start
 
-To make use of the `DebeziumEngine` one need to (1) add the `org.springframework.cloud.fn:debezium-autoconfiguration` and a database `io.debezium:debezium-connector-xxx` dependencies to their project, to (2) implement a `ChangeEvent` handler and register it with the engine and (3) submit the DebeziumEngine to an `Executor` or `ExecutorService` for execution.
+To make use of the `DebeziumEngine` one need to (1) add the `org.springframework.cloud.fn:debezium-autoconfiguration` and a database `io.debezium:debezium-connector-xxx` dependencies to their project, (2) provide the necessary debezium configuration (e.g. `debezium.properties.*`) properties, (3) implement and register it with the engine a `ChangeEvent` handler  and (4) submit the DebeziumEngine to an `Executor` or `ExecutorService` for execution.
 
 ### Dependencies
 
@@ -56,7 +56,26 @@ compile "io.debezium:debezium-connector-postgres:{debezium-version}"
 
 ### ChangeEvent Handlers
 
-Then implement your own `java.util.Consumer<ChangeEvent>` (or `ChangeConsumer<ChangeEvent>`) handler and wire it into a DebeziumEngine instance. For example:
+Then implement your own `java.util.Consumer<ChangeEvent>` (or `ChangeConsumer<ChangeEvent>`) handler and wire it into a DebeziumEngine instance.
+
+It is just enough to have a `DebeziumEngine.Builder`, set your consumer implementation into it, build an engine and run it from within some `@Service` or alike implementation.
+Here are is an oversimplified example:
+[source, java]
+----
+public void oversimplified(Builder<ChangeEvent<byte[], byte[]>> debeziumBuilder) {
+	Executors.newSingleThreadExecutor().execute(debeziumBuilder // <3>
+			.notifying(changeEvent -> {
+				System.out.println(changeEvent.value()); // <1>
+			}).build()); // <2>
+}
+----
+<1> Implement a ChangeEvent consumer.
+<2> Build the Debezium engine.
+<3> Submit the engine to a single thread executor.
+
+For a real life applications you must handle the lifecycles of the Debezium Engine and its Executor.
+Usually the Spring `Lifecycle` and `SmartLifecycle` interfaces are used for.
+Here is another a bit more realistic example:
 
 [source, java]
 ----
@@ -97,18 +116,7 @@ For example the `DebeziumReactiveConsumerConfiguration` embeds an ExecutorServic
 
 [TIP]
 ====
-Neither the `Consumer`/`ChangeConsumer` nor the `DebeziumEngine` need to be implemented as `@Bean`! It is just enough to have a `DebeziumEngine.Builder`, set some consumer into it, build an engine and run it from within some `@Service` implementation. Here are is an oversimplified implementation:
-[source, java]
-----
-public void oversimplified(Builder<ChangeEvent<byte[], byte[]>> debeziumBuilder) {
-	Executors.newSingleThreadExecutor().execute(debeziumBuilder
-			.notifying(changeEvent -> {
-				System.out.println(changeEvent.value());
-			}).build());
-}
-----
-For real life applications you have to handle the lifecycles of the Debezium Engine and its Executor.
-The Spring `Lifecycle` and `SmartLifecycle` interfaces can help manage this.
+Neither the `Consumer`/`ChangeConsumer` nor the `DebeziumEngine` need to be implemented as `@Bean`! It is just enough to have a `DebeziumEngine.Builder`, set some consumer into it, build an engine and run it from within some `@Service` implementation.
 ====
 
 ## Configuration Options
