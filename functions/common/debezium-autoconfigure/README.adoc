@@ -249,7 +249,8 @@ Out of the box, the following https://debezium.io/documentation/reference/2.2/de
 
 - In-Memory
 
-   Doesn't persist the offset data but keeps it in memory. Therefore all offsets are lost on debezium source restart.
+ Doesn$$'$$t persist the offset data but keeps it in memory. Therefore all offsets are lost on debezium source restart.
+
 [source, bash]
 ----
 debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
