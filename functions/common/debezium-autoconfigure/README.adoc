@@ -220,17 +220,26 @@ You can override any of the above components. Just provide your `@Bean` implemen
 Debezium provides a comprehensive message format, that accurately details information about changes that happen in the system.
 Sometime this format, though,  might not be suitable for the downstream consumers, that might require messages that are formatted so that field names and values are presented in a simplified, `flattened` structure.
 
-To simplify the format of the event records that the Debezium connectors produce, you can use the https://debezium.io/documentation/reference/stable/transformations/event-flattening.html[Debezium event flattening] message transformation.
-Using the https://debezium.io/documentation/reference/stable/transformations/event-flattening.html#_configuration[flattering configuration] you can configure simple messages format like this:
+To simplify the format of the event records that the Debezium connectors produce, you can use the https://debezium.io/documentation/reference/stable/transformations/event-flattening.html[Debezium event flattening] message transformation:
 
 [source, bash]
 ----
-debezium.properties.transforms=unwrap
-debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState
-debezium.properties.transforms.unwrap.drop.tombstones=false
-debezium.properties.transforms.unwrap.delete.handling.mode=rewrite
-debezium.properties.transforms.unwrap.add.fields=name,db
+debezium.properties.transforms=flattening # <1>
+debezium.properties.transforms.flattening.type=io.debezium.transforms.ExtractNewRecordState # <2>
+debezium.properties.transforms.flattening.drop.tombstones=false # <3>
+debezium.properties.transforms.flattening.delete.handling.mode=rewrite # <4>
+debezium.properties.transforms.flattening.add.headers=op # <5>
+debezium.properties.transforms.flattening.add.fields=name,db # <5>
 ----
+<1> flattening transformation name.
+<2> Class that implements the flatting transformation.
+<3> Debezium generates a tombstone record for each DELETE operation.
+The default behavior is that event flattening removes tombstone records from the stream.
+To keep tombstone records in the stream, specify drop.tombstones=false.
+<4> Debezium generates a change event event for each DELETE operation. The `rewrite` mode keeps those events, which a dropped otherwise.
+<5> Comma-separated list of metadata fields to add to the header and the value of the simplified event value.
+
+Follow the https://debezium.io/documentation/reference/stable/transformations/event-flattening.html#_configuration[configuration documentation] for further details.
 
 ### Offset Storages
 
