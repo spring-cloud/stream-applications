@@ -1,4 +1,4 @@
-# Debezium Auto-Configuration
+= Debezium Auto-Configuration
 
 This module provides a generic https://debezium.io/documentation/reference/2.2/development/engine.html[DebeziumEngine.Builder] auto-configuration that can be reused and composed in other applications.
 
@@ -9,13 +9,13 @@ The `Debezium Engine` is a https://en.wikipedia.org/wiki/Change_data_capture[Cha
 
 The `DebeziumEngine.Builder` auto-configuration is activated only if a https://debezium.io/documentation/reference/stable/connectors/index.html[Debezium Connector] is found on the classpath and the `debezium.properties.connector.class` property is set to point to that connector class.
 
-## Quick Start
+== Quick Start
 
 To use the `DebeziumEngine`, set the required <<dependencies>> and <<configuration-options>>, register a custom <<changeEvent-handler>> with the engine and submit later for execution.
  Those simple steps are illustrated in the following sections.
 
 [[dependencies]]
-### Dependencies
+=== Dependencies
 
 To process the incoming database change events you need to include the Debezium `auto-configuration` dependency to your project:
 
@@ -119,7 +119,7 @@ NOTE: Neither the `Consumer`/`ChangeConsumer` nor the `DebeziumEngine` need to b
 It is enough to set some consumer into it the `DebeziumEngine.Builder`, build an engine and run it from within some `@Service` implementation.
 
 [[configuration-options]]
-## Configuration Options
+== Configuration Options
 
 $$debezium.header-format$$:: `ChangeEvent` header format.
 *(default and only option at the moment: `JSON`)*
@@ -170,7 +170,7 @@ Only alphanumeric characters, hyphens, dots and underscores must be used.
 <6> Sets, explicitly, the ChangeEvent header and payload (e.g. key and value) serialization formats.
 Defaults to JSON with binary encoding.
 
-### Connectors properties
+=== Connectors properties
 
 The table below lists all available Debezium properties for each connecter.
 
@@ -204,12 +204,12 @@ The table below lists all available Debezium properties for each connecter.
 
 |===
 
-### Streaming vs Batching
+=== Streaming vs Batching
 
 If you register a `java.util.Consumer<ChangeEvent>` with the `DebeziumEngine.Builder` then the incoming events are processed element-wise, one by one in the order of their occurrence in the source database.
 Opting for the `io.debezium.engineChangeConsumer<ChangeEvent>` provides an https://debezium.io/documentation/reference/stable/development/engine.html#advanced-consuming[advanced event consumption] that can process batch of events in one go, acknowledging their processing once that's done.
 
-### Additional Configuration Components
+=== Additional Configuration Components
 
 The Debezium builder auto-configuration provides an opinionated implementation for the following configurable components:
 
@@ -225,7 +225,7 @@ By default logs the connector state.
 You can override any of the above components.
 Just provide your `@Bean` implementation to the application context.
 
-### Event Flattening
+=== Event Flattening
 
 Debezium provides a comprehensive message format, that accurately details information about changes that happen in the system.
 Sometime this format, though,  might not be suitable for the downstream consumers, that might require messages that are formatted so that field names and values are presented in a simplified, `flattened` structure.
@@ -252,13 +252,13 @@ The `rewrite` mode keeps those events, which a dropped otherwise.
 
 Follow the https://debezium.io/documentation/reference/stable/transformations/event-flattening.html#_configuration[configuration documentation] for further details.
 
-### Offset Storages
+=== Offset Storages
 
 When a Debezium source runs, it reads information from the source and periodically records `offsets` that define how much of that information it has processed.
 Should the source be restarted, it will use the last recorded offset to know where in the source information it should resume reading.
 Out of the box, the following https://debezium.io/documentation/reference/2.2/development/engine.html#engine-properties[offset storage configuration] options are provided:
 
-#### In-Memory
+==== In-Memory
 
 Doesn't persist the offset data but keeps it in memory.
 Therefore all offsets are lost on debezium source restart.
@@ -270,7 +270,7 @@ debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffset
 ----
 =====
 
-#### Local Filesystem
+==== Local Filesystem
 
 Store the offsets in a file on the local file system (the file can be named anything and stored anywhere).
 Additionally, although the connector records the offsets with every source record it produces, the engine flushes the offsets to the backing store periodically (in the example below, once each minute).
@@ -288,7 +288,7 @@ Required when `offset.storage`` is set to the `FileOffsetBackingStore`.
 The default is 1 minute.
 =====
 
-#### Kafka topic
+==== Kafka topic
 
 Uses a Kafka topic to store offset data.
 
@@ -311,11 +311,11 @@ The default is 1 minute.
 
 One can implement the `org.apache.kafka.connect.storage.OffsetBackingStore` interface in to provide a offset storage bound to a custom backend key-value store.
 
-## Tests
+== Tests
 
 See this link:org/springframework/cloud/fn/common/debezium/DebeziumEngineBuilderAutoConfigurationIntegrationTest.java[test suite] for how to use the auto-configuration with custom Consumer.
 
-## Other usage
+== Other usage
 
 - See the https://github.com/spring-cloud/stream-applications/blob/master/functions/supplier/debezium-source/debezium-supplier[debezium-supplier] implementation about how to implement reactive consumer on top of the debezium auto-configuration.
 - See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/debezium-source/README.adoc[debezium-source] about how the debezium auto-configuration and supplier are used to create a Spring Cloud Stream applications.
