@@ -107,11 +107,12 @@ A bit more realistic example might look like this:
 	}
 ----
 <1> Create a custom change event consumer.
-<2> Use the debezium builder provided from the auto-configuration and the custom consumer to create new DebeziumEngin instance.
+<2> Use the consumer from step 1. and the debezium builder provided from the auto-configuration to create a new DebeziumEngine instance.
 <3> The DebeziumEngine is designed to be submitted to an `Executor` or `ExecutorService` for execution.
-The `EmbeddedEngineExecutorService` is handy `ExecutorService` implementation that aligns with the Spring lifecycle.
+The `EmbeddedEngineExecutorService` is a convenient `ExecutorService` implementation, aligned with the Spring lifecycle.
 
-NOTE: The `EmbeddedEngineExecutorService` is optional and usually users would implement their own executors better aligned with their implementation lifecycles.
+NOTE: The `EmbeddedEngineExecutorService` is optional.
+You can implement executor strategies tailored for your use-cases.
 For example the `DebeziumReactiveConsumerConfiguration` embeds an ExecutorService as part of the
 `Supplier<Flux<Message<?>>>` configuration.
 
