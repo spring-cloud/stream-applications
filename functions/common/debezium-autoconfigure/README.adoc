@@ -10,7 +10,7 @@ The `DebeziumEngine.Builder` auto-configuration is activated only if a https://d
 
 ## Quick Start
 
-To use the `DebeziumEngine`, set the required <<dependencies>> and <<configuration-options>>, register a custom <<changeEvent-handlers>> with the engine and submit later for execution.
+To use the `DebeziumEngine`, set the required <<dependencies>> and <<configuration-options>>, register a custom <<changeEvent-handler>> with the engine and submit later for execution.
  Those simple steps are illustrated in the following sections.
 
 [[dependencies]]
@@ -55,13 +55,12 @@ For example the postgres debezium connector dependency looks like this:
 compile "io.debezium:debezium-connector-postgres:{debezium-version}"
 ----
 ====
-[[changeEvent-handlers]]
-### ChangeEvent Handlers
+[[changeEvent-handler]]
+### ChangeEvent Handler
 
-Then implement your own `java.util.Consumer<ChangeEvent>` (or `ChangeConsumer<ChangeEvent>`) handler and wire it into a DebeziumEngine instance.
+To process the incoming change events, implement a `java.util.Consumer<ChangeEvent>` (or `ChangeConsumer<ChangeEvent>`) handler and wire it into the `DebeziumEngine.Builder`.
+Then build an engine from the builder and run it from within an Executor service:
 
-It is just enough to have a `DebeziumEngine.Builder`, set your consumer implementation into it, build an engine and run it from within some `@Service` or alike implementation.
-Here is an oversimplified example:
 [source, java]
 ----
 public void simple(DebeziumEngine.Builder<ChangeEvent<byte[], byte[]>> builder) {
@@ -74,9 +73,9 @@ public void simple(DebeziumEngine.Builder<ChangeEvent<byte[], byte[]>> builder) 
 <2> Build the Debezium engine.
 <3> Submit the engine to a single thread executor.
 
-For a real life applications you must handle the lifecycles of the engine and its executor.
-Usually the Spring `Lifecycle` and `SmartLifecycle` interfaces are used for.
-A bit more realistic example might look like this:
+For a real life applications you should manage the lifecycles of the engine and its executor.
+The Spring `Lifecycle` and `SmartLifecycle` interfaces can help you to manage this.
+Here is a more realistic example snipped:
 
 [source, java]
 ----
@@ -112,8 +111,7 @@ A bit more realistic example might look like this:
 The `EmbeddedEngineExecutorService` is a convenient `ExecutorService` implementation, aligned with the Spring lifecycle.
 
 NOTE: The `EmbeddedEngineExecutorService` is optional.
-You can implement executor strategies tailored for your use-cases.
-For example the `DebeziumReactiveConsumerConfiguration` embeds an ExecutorService as part of the
+Some application such as `DebeziumReactiveConsumerConfiguration` implement the ExecutorService as part of their
 `Supplier<Flux<Message<?>>>` configuration.
 
 NOTE: Neither the `Consumer`/`ChangeConsumer` nor the `DebeziumEngine` need to be `@Bean`!
@@ -128,19 +126,20 @@ $$debezium.offset-commit-policy$$:: The policy that defines when the offsets sho
 $$debezium.properties$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a `debezium.properties.*` prefix are native Debezium properties.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*.
 For example the `debezium.properties.connector.class` property is converted into `connector.class` before provided to the DebeziumEngine.
 
-Here is a sample configuration for the sample snipped above:
+Here is an example configuration for the sample snipped above:
 
 [source, bash]
 ----
 debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector # <1>
+
 debezium.properties.database.user=debezium # <2>
 debezium.properties.database.password=dbz # <2>
 debezium.properties.database.hostname=localhost # <2>
 debezium.properties.database.port=3306 # <2>
 
+debezium.properties.name=my-sql-connector # <3>
 debezium.properties.database.server.id=85744 # <3>
 debezium.properties.topic.prefix=my-topic # <3>
-debezium.properties.name=my-sql-connector # <3>
 
 debezium.properties.key.converter.schemas.enable=true # <4>
 debezium.properties.value.converter.schemas.enable=true # <4>
@@ -150,12 +149,18 @@ debezium.properties.offset.flush.interval.ms=60000
 debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory # <5>
 debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore # <5>
 
+debezium.header-format=JSON # <6>
+debezium.payload-format=JSON # <6>
+
 ----
 <1> Configures the Debezium Engine to use https://debezium.io/docs/connectors/mysql/[MySqlConnector].
-<2> Connection to the MySQL server running on `localhost:3306` as `debezium` user.
+<2> Configure the connection to a MySQL server running on `localhost:3306` as `debezium` user.
 <3> Metadata used to identify and dispatch the incoming events.
+* `debezium.properties.topic.prefix` - provides a namespace for the particular database server/cluster in which Debezium is capturing changes. The topic prefix **should be unique** across all other connectors. Only alphanumeric characters, hyphens, dots and underscores must be used.
+* `debezium.properties.database.server.id` - a numeric identifier of this database client, which **must be unique across all currently-running database processes**.
 <4> Includes the https://debezium.io/docs/connectors/mysql/#change-events-value[Change Event Value] schema in the `ChangeEvent` message.
 <5> Metadata stores to preserver the debezium state between multiple starts.
+<6> Sets, explicitly, the ChangeEvent header and payload (e.g. key and value) serialization formats. Defaults to JSON with binary encoding.
 
 ### Connectors properties
 

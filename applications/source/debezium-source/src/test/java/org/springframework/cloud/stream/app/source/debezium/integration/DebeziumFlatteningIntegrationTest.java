@@ -73,7 +73,7 @@ public class DebeziumFlatteningIntegrationTest {
 					"debezium.properties.key.converter.schemas.enable=false",
 					"debezium.properties.value.converter.schemas.enable=false",
 
-					"debezium.properties.topic.prefix=my-topic", // new
+					"debezium.properties.topic.prefix=my-topic",
 
 					"debezium.properties.name=my-sql-connector",
 

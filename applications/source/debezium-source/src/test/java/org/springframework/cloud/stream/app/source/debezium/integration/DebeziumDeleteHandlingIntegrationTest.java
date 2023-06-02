@@ -70,7 +70,7 @@ public class DebeziumDeleteHandlingIntegrationTest {
 					"debezium.properties.key.converter.schemas.enable=false",
 					"debezium.properties.value.converter.schemas.enable=false",
 
-					"debezium.properties.topic.prefix=my-topic", // new
+					"debezium.properties.topic.prefix=my-topic",
 
 					// enable flattering
 					"debezium.properties.transforms=unwrap",

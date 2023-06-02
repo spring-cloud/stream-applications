@@ -91,9 +91,9 @@ public class DebeziumEngineBuilderAutoConfigurationIntegrationTest {
 
 					"debezium.properties.schema.history.internal=io.debezium.storage.file.history.FileSchemaHistory", // new
 					"debezium.properties.schema.history.internal.file.filename=" + anotherTempDir.getAbsolutePath()
-							+ "schemahistory.dat", // new
+							+ "schemahistory.dat",
 
-					"debezium.properties.topic.prefix=my-topic", // new
+					"debezium.properties.topic.prefix=my-topic",
 
 					"debezium.properties.name=my-sql-connector",
 					"debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector",
