@@ -249,7 +249,7 @@ Out of the box, the following https://debezium.io/documentation/reference/2.2/de
 
 - In-Memory
 
- Doesn$$'$$t persist the offset data but keeps it in memory. Therefore all offsets are lost on debezium source restart.
+Doesn't persist the offset data but keeps it in memory. Therefore all offsets are lost on debezium source restart.
 
 [source, bash]
 ----
@@ -258,7 +258,8 @@ debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffset
 
 - Local Filesystem
 
-  Store the offsets in a file on the local file system (the file can be named anything and stored anywhere). Additionally, although the connector records the offsets with every source record it produces, the engine flushes the offsets to the backing store periodically (in the example below, once each minute).
+Store the offsets in a file on the local file system (the file can be named anything and stored anywhere). Additionally, although the connector records the offsets with every source record it produces, the engine flushes the offsets to the backing store periodically (in the example below, once each minute).
+
 [source, bash]
 ----
 debezium.properties.offset.storage=org.apache.kafka.connect.storage.FileOffsetBackingStore
@@ -270,7 +271,8 @@ debezium.properties.offset.flush.interval.ms=60000 # <2>
 
 - Kafka topic
 
-  Uses a Kafka topic to store offset data.
+Uses a Kafka topic to store offset data.
+
 [source, bash]
 ----
 debezium.properties.offset.storage=org.apache.kafka.connect.storage.KafkaOffsetBackingStore
