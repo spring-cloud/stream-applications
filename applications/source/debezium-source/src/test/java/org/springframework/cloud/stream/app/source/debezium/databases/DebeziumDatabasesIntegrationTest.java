@@ -226,9 +226,6 @@ public class DebeziumDatabasesIntegrationTest {
 						"--debezium.properties.tasks.max=1",
 						"--debezium.properties.mongodb.connection.string=mongodb://" + host + ":" + port
 								+ "/?replicaSet=rs0",
-						// "--debezium.properties.mongodb.connection.string=mongodb://" + host + ":"
-						// + "27017"
-						// + "/?replicaSet=rs0",
 						"--debezium.properties.topic.prefix=dbserver1",
 						"--debezium.properties.mongodb.user=debezium",
 						"--debezium.properties.mongodb.password=dbz",

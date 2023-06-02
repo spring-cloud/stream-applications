@@ -35,6 +35,7 @@ import reactor.core.publisher.Sinks;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.fn.common.debezium.DebeziumEngineBuilderAutoConfiguration;
@@ -53,6 +54,7 @@ import org.springframework.util.MimeTypeUtils;
  */
 @AutoConfiguration(after = DebeziumEngineBuilderAutoConfiguration.class)
 @EnableConfigurationProperties({ DebeziumSupplierProperties.class })
+@ConditionalOnBean(DebeziumEngine.Builder.class)
 public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAware {
 
 	private static final Log logger = LogFactory.getLog(DebeziumReactiveConsumerConfiguration.class);
