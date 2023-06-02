@@ -247,7 +247,7 @@ When a Debezium source runs, it reads information from the source and periodical
 Should the source be restarted, it will use the last recorded offset to know where in the source information it should resume reading.
 Out of the box, the following https://debezium.io/documentation/reference/2.2/development/engine.html#engine-properties[offset storage configuration] options are provided:
 
-- In-Memory
+#### In-Memory
 
 Doesn't persist the offset data but keeps it in memory. Therefore all offsets are lost on debezium source restart.
 
@@ -258,7 +258,7 @@ debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffset
 ----
 =====
 
-- Local Filesystem
+#### Local Filesystem
 
 Store the offsets in a file on the local file system (the file can be named anything and stored anywhere). Additionally, although the connector records the offsets with every source record it produces, the engine flushes the offsets to the backing store periodically (in the example below, once each minute).
 
@@ -273,7 +273,7 @@ debezium.properties.offset.flush.interval.ms=60000 # <2>
 <2> Interval at which to try committing offsets. The default is 1 minute.
 =====
 
-- Kafka topic
+#### Kafka topic
 
 Uses a Kafka topic to store offset data.
 
