@@ -208,7 +208,7 @@ The table below lists all available Debezium properties for each connecter.
 
 If you register a `java.util.Consumer<ChangeEvent>` with the `DebeziumEngine.Builder` then the incoming events are processed element-wise, one by one in the order of their occurrence in the source database.
 Opting for the `io.debezium.engineChangeConsumer<ChangeEvent>` provides an https://debezium.io/documentation/reference/stable/development/engine.html#advanced-consuming[advanced event consumption] that can process batch of events in one go, acknowledging their processing once that's done.
-Following snipped illustrates how you can implement a change event batch handler:
+This snippet illustrates how to implement a batch handler:
 
 [source, java]
 ----
