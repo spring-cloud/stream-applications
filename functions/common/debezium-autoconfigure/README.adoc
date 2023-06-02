@@ -251,15 +251,18 @@ Out of the box, the following https://debezium.io/documentation/reference/2.2/de
 
 Doesn't persist the offset data but keeps it in memory. Therefore all offsets are lost on debezium source restart.
 
+=====
 [source, bash]
 ----
 debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
 ----
+=====
 
 - Local Filesystem
 
 Store the offsets in a file on the local file system (the file can be named anything and stored anywhere). Additionally, although the connector records the offsets with every source record it produces, the engine flushes the offsets to the backing store periodically (in the example below, once each minute).
 
+=====
 [source, bash]
 ----
 debezium.properties.offset.storage=org.apache.kafka.connect.storage.FileOffsetBackingStore
@@ -268,11 +271,13 @@ debezium.properties.offset.flush.interval.ms=60000 # <2>
 ----
 <1> Path to file where offsets are to be stored. Required when `offset.storage`` is set to the `FileOffsetBackingStore`.
 <2> Interval at which to try committing offsets. The default is 1 minute.
+=====
 
 - Kafka topic
 
 Uses a Kafka topic to store offset data.
 
+=====
 [source, bash]
 ----
 debezium.properties.offset.storage=org.apache.kafka.connect.storage.KafkaOffsetBackingStore
@@ -285,6 +290,7 @@ debezium.properties.offset.flush.interval.ms=60000 # <4>
 <2> The number of partitions used when creating the offset storage topic.
 <3> Replication factor used when creating the offset storage topic.
 <4> Interval at which to try committing offsets. The default is 1 minute.
+=====
 
 One can implement the `org.apache.kafka.connect.storage.OffsetBackingStore` interface in to provide a offset storage bound to a custom backend key-value store.
 
