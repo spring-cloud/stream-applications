@@ -216,19 +216,22 @@ This snippet illustrates how to implement a batch handler:
 public EmbeddedEngineExecutorService batch(DebeziumEngine.Builder<ChangeEvent<byte[], byte[]>> builder) {
 
 	return new EmbeddedEngineExecutorService( // <3>
-			builder.notifying(new ChangeConsumer<>() { // <1>
-				@Override
-				public void handleBatch(
-						List<ChangeEvent<byte[], byte[]>> changeEventBatch,
-						RecordCommitter<ChangeEvent<byte[], byte[]>> committer)
-						throws InterruptedException {
-					for (ChangeEvent<byte[], byte[]> event : changeEventBatch) {
-						System.out.println(event.value());
-						committer.markProcessed(event);
-					}
-					committer.markBatchFinished();
+
+		builder.notifying(new ChangeConsumer<>() { // <1>
+
+			@Override
+			public void handleBatch(
+					List<ChangeEvent<byte[], byte[]>> changeEventBatch,
+					RecordCommitter<ChangeEvent<byte[], byte[]>> committer)
+					throws InterruptedException {
+				for (ChangeEvent<byte[], byte[]> event : changeEventBatch) {
+					System.out.println(event.value());
+					committer.markProcessed(event);
 				}
-			}).build()); // <2>
+				committer.markBatchFinished();
+			}
+
+		}).build()); // <2>
 }
 ----
 <1> Implement and register a `ChangeConsumer` batch handler.
