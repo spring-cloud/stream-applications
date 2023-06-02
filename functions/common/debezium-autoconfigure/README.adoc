@@ -80,31 +80,31 @@ Here is a more realistic example snipped:
 
 [source, java]
 ----
-	@Bean
-	public Consumer<ChangeEvent<byte[], byte[]>> customConsumer() { // <1>
-		return new Consumer<ChangeEvent<byte[], byte[]>>() {
-			@Override
-			public void accept(ChangeEvent<byte[], byte[]> changeEvent) {
-				if (changeEvent != null) { // ignore null records
-					System.out.println("Key:" + changeEvent.key() + ", Value: " changeEvent.value());
-				}
+@Bean
+public Consumer<ChangeEvent<byte[], byte[]>> customConsumer() { // <1>
+	return new Consumer<ChangeEvent<byte[], byte[]>>() {
+		@Override
+		public void accept(ChangeEvent<byte[], byte[]> changeEvent) {
+			if (changeEvent != null) { // ignore null records
+				System.out.println("Key:" + changeEvent.key() + ", Value: " changeEvent.value());
 			}
 		}
 	}
+}
 
-	@Bean
-	public DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine( // <2>
-			Consumer<ChangeEvent<byte[], byte[]>> consumer,
-			DebeziumEngine.Builder<ChangeEvent<byte[], byte[]>> builder) {
+@Bean
+public DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine( // <2>
+		Consumer<ChangeEvent<byte[], byte[]>> consumer,
+		DebeziumEngine.Builder<ChangeEvent<byte[], byte[]>> builder) {
 
-		return new builder.notifying(consumer).build();
-	}
+	return new builder.notifying(consumer).build();
+}
 
-	@Bean
-	public EmbeddedEngineExecutorService embeddedEngine( // <3>
-			DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine) {
-		return new EmbeddedEngineExecutorService(debeziumEngine);
-	}
+@Bean
+public EmbeddedEngineExecutorService embeddedEngine( // <3>
+		DebeziumEngine<ChangeEvent<byte[], byte[]>> debeziumEngine) {
+	return new EmbeddedEngineExecutorService(debeziumEngine);
+}
 ----
 <1> Create a custom change event consumer.
 <2> Use the consumer from step (1) and the debezium builder provided from the auto-configuration to create a new DebeziumEngine instance.
@@ -224,6 +224,7 @@ public EmbeddedEngineExecutorService batch(DebeziumEngine.Builder<ChangeEvent<by
 					List<ChangeEvent<byte[], byte[]>> changeEventBatch,
 					RecordCommitter<ChangeEvent<byte[], byte[]>> committer)
 					throws InterruptedException {
+
 				for (ChangeEvent<byte[], byte[]> event : changeEventBatch) {
 					System.out.println(event.value());
 					committer.markProcessed(event);
