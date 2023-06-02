@@ -208,6 +208,33 @@ The table below lists all available Debezium properties for each connecter.
 
 If you register a `java.util.Consumer<ChangeEvent>` with the `DebeziumEngine.Builder` then the incoming events are processed element-wise, one by one in the order of their occurrence in the source database.
 Opting for the `io.debezium.engineChangeConsumer<ChangeEvent>` provides an https://debezium.io/documentation/reference/stable/development/engine.html#advanced-consuming[advanced event consumption] that can process batch of events in one go, acknowledging their processing once that's done.
+Following snipped illustrates how you can implement a change event batch handler:
+
+[source, java]
+----
+@Bean
+public EmbeddedEngineExecutorService batch(DebeziumEngine.Builder<ChangeEvent<byte[], byte[]>> builder) {
+
+	return new EmbeddedEngineExecutorService( // <3>
+			builder.notifying(new ChangeConsumer<>() { // <1>
+				@Override
+				public void handleBatch(
+						List<ChangeEvent<byte[], byte[]>> changeEventBatch,
+						RecordCommitter<ChangeEvent<byte[], byte[]>> committer)
+						throws InterruptedException {
+					for (ChangeEvent<byte[], byte[]> event : changeEventBatch) {
+						System.out.println(event.value());
+						committer.markProcessed(event);
+					}
+					committer.markBatchFinished();
+				}
+			}).build()); // <2>
+}
+----
+<1> Implement and register a `ChangeConsumer` batch handler.
+The `committer.markProcessed(event)` and `committer.markBatchFinished()` are used to mark the event and batch completion.
+<2> Build the engine.
+<3> Crate and return an `EmbeddedEngineExecutorService` - a Spring lifecycle manageable `ExecutorService`.
 
 === Additional Configuration Components
 
