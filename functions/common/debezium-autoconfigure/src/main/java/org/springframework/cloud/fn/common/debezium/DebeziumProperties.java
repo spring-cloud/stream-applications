@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium;
+package org.springframework.cloud.fn.common.debezium;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,11 +70,6 @@ public class DebeziumProperties {
 	private DebeziumFormat headerFormat = DebeziumFormat.JSON;
 
 	/**
-	 * Copy Change Event headers into Message headers.
-	 */
-	private boolean copyHeaders = true;
-
-	/**
 	 * The policy that defines when the offsets should be committed to offset storage.
 	 */
 	private DebeziumOffsetCommitPolicy offsetCommitPolicy = DebeziumOffsetCommitPolicy.DEFAULT;
@@ -97,14 +92,6 @@ public class DebeziumProperties {
 
 	public void setHeaderFormat(DebeziumFormat headerFormat) {
 		this.headerFormat = headerFormat;
-	}
-
-	public boolean isCopyHeaders() {
-		return copyHeaders;
-	}
-
-	public void setCopyHeaders(boolean copyHeaders) {
-		this.copyHeaders = copyHeaders;
 	}
 
 	public enum DebeziumOffsetCommitPolicy {

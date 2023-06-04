@@ -34,10 +34,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.fn.common.debezium.DebeziumEngineBuilderAutoConfiguration;
+import org.springframework.cloud.fn.common.debezium.DebeziumProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
@@ -49,8 +52,9 @@ import org.springframework.util.MimeTypeUtils;
  * @author Christian Tzolov
  * @author Artem Bilan
  */
-@Configuration
-@EnableConfigurationProperties(DebeziumProperties.class)
+@AutoConfiguration(after = DebeziumEngineBuilderAutoConfiguration.class)
+@EnableConfigurationProperties({ DebeziumSupplierProperties.class })
+@ConditionalOnBean(DebeziumEngine.Builder.class)
 public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAware {
 
 	private static final Log logger = LogFactory.getLog(DebeziumReactiveConsumerConfiguration.class);
@@ -103,9 +107,11 @@ public class DebeziumReactiveConsumerConfiguration implements BeanClassLoaderAwa
 
 	@Bean
 	@ConditionalOnMissingBean
-	public Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer(DebeziumProperties properties) {
+	public Consumer<ChangeEvent<byte[], byte[]>> changeEventConsumer(DebeziumProperties engineProperties,
+			DebeziumSupplierProperties supplierProperties) {
 
-		return new ChangeEventConsumer<byte[]>(properties.getPayloadFormat().contentType(), properties.isCopyHeaders(),
+		return new ChangeEventConsumer<byte[]>(engineProperties.getPayloadFormat().contentType(),
+				supplierProperties.isCopyHeaders(),
 				this.eventSink);
 	}
 

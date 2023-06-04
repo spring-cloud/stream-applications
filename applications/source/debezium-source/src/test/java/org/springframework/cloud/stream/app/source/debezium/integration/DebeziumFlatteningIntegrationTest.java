@@ -30,7 +30,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties;
+import org.springframework.cloud.fn.common.debezium.DebeziumProperties;
 import org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
@@ -73,11 +73,11 @@ public class DebeziumFlatteningIntegrationTest {
 					"debezium.properties.key.converter.schemas.enable=false",
 					"debezium.properties.value.converter.schemas.enable=false",
 
-					"debezium.properties.topic.prefix=my-topic", // new
+					"debezium.properties.topic.prefix=my-topic",
 
 					"debezium.properties.name=my-sql-connector",
 
-					"debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory", // new
+					"debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
 					"debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
 
 					"debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector",
@@ -86,8 +86,6 @@ public class DebeziumFlatteningIntegrationTest {
 					"debezium.properties.database.hostname=localhost",
 					"debezium.properties.database.port=" + mySqlContainer.getMappedPort(3306),
 					"debezium.properties.database.server.id=85744",
-					"debezium.properties.database.server.name=my-app-connector",
-					"debezium.properties.database.history=io.debezium.relational.history.MemoryDatabaseHistory",
 
 					// JdbcTemplate configuration
 					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",

@@ -12,7 +12,6 @@
 
 	<properties>
 		<json-unit.version>1.25.1</json-unit.version>
-		<!-- <mysql-connector-java.version>8.0.13</mysql-connector-java.version> -->
 	</properties>
 
 	<artifactId>debezium-source</artifactId>

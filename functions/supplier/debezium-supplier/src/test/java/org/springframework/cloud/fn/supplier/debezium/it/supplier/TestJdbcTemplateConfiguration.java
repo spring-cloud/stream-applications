@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.it;
+package org.springframework.cloud.fn.supplier.debezium.it.supplier;
 
 import javax.sql.DataSource;
 

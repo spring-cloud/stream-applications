@@ -1,1 +1,1 @@
-org.springframework.cloud.fn.supplier.debezium.DebeziumEngineBuilderAutoConfiguration
+org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration

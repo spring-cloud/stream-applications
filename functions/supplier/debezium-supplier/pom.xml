@@ -16,39 +16,13 @@
 
     <properties>
         <version.debezium>2.2.1.Final</version.debezium>
-        <apicurio.version>2.4.2.Final</apicurio.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>io.debezium</groupId>
-            <artifactId>debezium-api</artifactId>
-            <version>${version.debezium}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-reload4j</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-log4j12</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.debezium</groupId>
-            <artifactId>debezium-embedded</artifactId>
-            <version>${version.debezium}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-reload4j</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-log4j12</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.springframework.cloud.fn</groupId>
+            <artifactId>debezium-autoconfigure</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Debezium Connectors -->
@@ -129,21 +103,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- <dependency>
-            <groupId>io.debezium</groupId>
-            <artifactId>debezium-connector-cassandra</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-log4j12</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>hibernate-validator</artifactId>
-                    <groupId>org.hibernate</groupId>
-                </exclusion>
-            </exclusions>
-            <optional>true</optional>
-        </dependency> -->
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-spanner</artifactId>
@@ -155,18 +114,6 @@
                 </exclusion>
             </exclusions>
             <optional>true</optional>
-        </dependency>
-
-        <!-- APICURIO Schema Registry (for AVRO format)-->
-        <dependency>
-            <groupId>io.apicurio</groupId>
-            <artifactId>apicurio-registry-utils-converter</artifactId>
-            <version>${apicurio.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.apicurio</groupId>
-            <artifactId>apicurio-registry-client</artifactId>
-            <version>${apicurio.version}</version>
         </dependency>
 
         <!-- TEST -->

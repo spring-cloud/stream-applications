@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium.it.custom;
+package org.springframework.cloud.fn.common.debezium;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;

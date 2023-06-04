@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.fn.supplier.debezium;
+package org.springframework.cloud.fn.common.debezium;
 
 import org.junit.jupiter.api.Test;
 
-import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties.DebeziumFormat;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumProperties.DebeziumOffsetCommitPolicy;
+import org.springframework.cloud.fn.common.debezium.DebeziumProperties.DebeziumFormat;
+import org.springframework.cloud.fn.common.debezium.DebeziumProperties.DebeziumOffsetCommitPolicy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +36,6 @@ public class DebeziumPropertiesTests {
 	public void defaultPropertiesTest() {
 		assertThat(this.properties.getPayloadFormat()).isEqualTo(DebeziumFormat.JSON);
 		assertThat(this.properties.getHeaderFormat()).isEqualTo(DebeziumFormat.JSON);
-		assertThat(this.properties.isCopyHeaders()).isEqualTo(true);
 		assertThat(this.properties.getOffsetCommitPolicy()).isEqualTo(DebeziumOffsetCommitPolicy.DEFAULT);
 		assertThat(this.properties.getProperties()).isNotNull();
 		assertThat(this.properties.getProperties()).isEmpty();

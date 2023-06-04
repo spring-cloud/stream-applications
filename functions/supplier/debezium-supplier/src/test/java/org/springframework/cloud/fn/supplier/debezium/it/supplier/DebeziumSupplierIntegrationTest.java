@@ -18,7 +18,6 @@ package org.springframework.cloud.fn.supplier.debezium.it.supplier;
 
 import java.util.function.Supplier;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -27,12 +26,9 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration;
-import org.springframework.cloud.fn.supplier.debezium.it.TestJdbcTemplateConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.Message;
@@ -61,7 +57,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"debezium.properties.topic.prefix=my-topic",
 		"debezium.properties.name=my-connector",
 		"debezium.properties.database.server.id=85744",
-		"debezium.properties.database.server.name=my-app-connector",
 		"debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector",
 		"debezium.properties.database.user=debezium",
 		"debezium.properties.database.password=dbz",
@@ -96,8 +91,6 @@ public class DebeziumSupplierIntegrationTest {
 						debeziumMySQL.getMappedPort(3306), "inventory")); // JdbcTemplate config.
 	}
 
-	private ObjectMapper objectMapper = new ObjectMapper();
-
 	@Autowired
 	private Supplier<Flux<Message<?>>> debeziumSupplier;
 
@@ -109,7 +102,6 @@ public class DebeziumSupplierIntegrationTest {
 
 		jdbcTemplate.update(
 				"INSERT INTO `customers`(`first_name`,`last_name`,`email`) VALUES('Test666', 'Test666', 'Test666@spring.org')");
-		// jdbcTemplate.update("DELETE FROM `customers` WHERE `first_name` = ?", "Test666");
 
 		Flux<Message<?>> messageFlux = this.debeziumSupplier.get();
 
@@ -169,9 +161,8 @@ public class DebeziumSupplierIntegrationTest {
 		return new String((byte[]) message.getPayload());
 	}
 
-	@SpringBootApplication
-	@EnableAutoConfiguration(exclude = { MongoAutoConfiguration.class })
-	@Import({DebeziumReactiveConsumerConfiguration.class, TestJdbcTemplateConfiguration.class})
+	@SpringBootApplication(exclude = { MongoAutoConfiguration.class })
+	@Import({TestJdbcTemplateConfiguration.class})
 	static class DebeziumSupplierTestApplication {
 	}
 
