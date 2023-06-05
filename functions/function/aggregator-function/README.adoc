@@ -16,6 +16,8 @@ Once injected, you can use the `apply` method of the `Function` to invoke it and
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/aggregator/AggregatorFunctionProperties.java[AggregatorFunctionProperties.java]
 
+A `ComponentCustomizer<AggregatorFactoryBean>` bean can be added in the target project to provide any custom options for the `AggregatorFactoryBean` configuration used by the `aggregatorFunction` definition.
+
 ## Tests
 
 See this link:src/test/java/org/springframework/cloud/fn/aggregator/AggregatorFunctionApplicationTests.java[test suite] for examples of how this function is used.

@@ -26,6 +26,8 @@ There are also properties that need to be used with the prefix `file.consumer`.
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/file/FileSupplierProperties.java[FileSupplierProperties].
 See link:src/main/java/org/springframework/cloud/fn/supplier/file/FileConsumerProperties.java[this] also.
 
+A `ComponentCustomizer<FileInboundChannelAdapterSpec>` bean can be added in the target project to provide any custom options for the `FileInboundChannelAdapterSpec` configuration used by the `fileSupplier`.
+
 ## Tests
 
 See this link:src/test/java/org/springframework/cloud/fn/supplier/file[test suite] for the various ways, this supplier is used.

@@ -25,6 +25,8 @@ All configuration properties are prefixed with `jdbc.supplier`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/jdbc/JdbcSupplierProperties.java[JdbcSupplierProperties]
 
+A `ComponentCustomizer<JdbcPollingChannelAdapter>` bean can be added in the target project to provide any custom options for the `JdbcPollingChannelAdapter` configuration used by the `jdbcSupplier`.
+
 ## Tests
 
 See this link:src/test/java/org/springframework/cloud/fn/supplier/jdbc[test suite] for the various ways, this supplier is used.

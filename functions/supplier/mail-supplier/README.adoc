@@ -25,6 +25,8 @@ All configuration properties are prefixed with `mail.supplier`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/mail/MailSupplierProperties.java[MailSupplierProperties].
 
+A `ComponentCustomizer<MailInboundChannelAdapterSpec<?, ?>>` (or `ComponentCustomizer<ImapIdleChannelAdapterSpec>` when `mail.supplier.idle-imap = true`) bean can be added in the target project to provide any custom options for the `MailInboundChannelAdapterSpec` (or `ImapIdleChannelAdapterSpec`, respectively) configuration used by the `mailSupplier`.
+
 ## Tests
 
 See this link:src/test/java/org/springframework/cloud/fn/supplier/mail[test suite] for the various ways, this supplier is used.
