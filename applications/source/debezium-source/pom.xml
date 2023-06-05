@@ -150,8 +150,7 @@
 						<name>debezium</name>
 						<type>source</type>
 						<version>${project.version}</version>
-						<configClass>org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration.class
-						</configClass>
+						<configClass>AUTOCONFIGURATION</configClass>
 						<functionDefinition>debeziumSupplier</functionDefinition>
 
 						<properties>
