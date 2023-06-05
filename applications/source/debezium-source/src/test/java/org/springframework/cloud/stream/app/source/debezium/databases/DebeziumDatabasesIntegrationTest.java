@@ -37,12 +37,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration;
 import org.springframework.cloud.stream.app.source.debezium.integration.DebeziumTestUtils;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 import org.springframework.util.CollectionUtils;
 
@@ -244,7 +242,6 @@ public class DebeziumDatabasesIntegrationTest {
 
 	@SpringBootConfiguration
 	@EnableAutoConfiguration(exclude = { MongoAutoConfiguration.class, DataSourceAutoConfiguration.class })
-	@Import(DebeziumReactiveConsumerConfiguration.class)
 	public static class TestApplication {
 	}
 
