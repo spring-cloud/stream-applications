@@ -24,6 +24,8 @@ All configuration properties are prefixed with `jms`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/jms/JmsSupplierProperties.java[JmsSupplierProperties].
 
+A `ComponentCustomizer<JmsMessageDrivenChannelAdapterSpec<?>>` bean can be added in the target project to provide any custom options for the `JmsMessageDrivenChannelAdapterSpec` configuration used by the `jmsSupplier`.
+
 ## Examples
 
 See this link:src/test/java/org/springframework/cloud/fn/supplier/jms/[test suite] for the various ways, this supplier is used.

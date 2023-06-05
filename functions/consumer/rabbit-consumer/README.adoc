@@ -16,6 +16,8 @@ All configuration properties are prefixed with `rabbit`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/rabbit/RabbitConsumerProperties.java[RabbitConsumerProperties].
 
+A `ComponentCustomizer<AmqpOutboundChannelAdapterSpec>` bean can be added in the target project to provide any custom options for the `AmqpOutboundChannelAdapterSpec` configuration used by the `rabbitConsumer`.
+
 ## Tests
 
 

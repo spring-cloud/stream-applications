@@ -17,6 +17,8 @@ All configuration properties are prefixed with `file.consumer`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/file/FileConsumerProperties.java[FileConsumerProperties].
 
+A `ComponentCustomizer<FileWritingMessageHandler>` bean can be added in the target project to provide any custom options for the `FileWritingMessageHandler` configuration used by the `fileConsumer`.
+
 ## Tests
 
 See this link:src/test/java/org/springframework/cloud/fn/consumer/file[test suite] for the various ways, this consumer is used.

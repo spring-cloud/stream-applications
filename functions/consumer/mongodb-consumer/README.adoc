@@ -20,6 +20,8 @@ All configuration properties are prefixed with `mongodb.consumer`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/mongo/MongoDBConsumerProperties.java[MongoDBConsumerProperties].
 
+A `ComponentCustomizer<ReactiveMongoDbStoringMessageHandler>` bean can be added in the target project to provide any custom options for the `ReactiveMongoDbStoringMessageHandler` configuration used by the `mongodbConsumer`.
+
 ## Examples
 
 See this link:src/test/java/org/springframework/cloud/fn/consumer/mongo/MongoDBConsumerApplicationTests.java[test suite] for the various ways, this consumer is used.

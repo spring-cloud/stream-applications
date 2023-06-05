@@ -27,6 +27,8 @@ For more information on the various options available, please see link:src/main/
 link:../../common/file-common/src/main/java/org/springframework/cloud/fn/common/file/FileConsumerProperties.java[FileConsumerProperties], and
 link:../../common/aws-s3-common/src/main/java/org/springframework/cloud/fn/common/aws/s3/AmazonS3Properties.java[AmazonS3Properties].
 
+A `ComponentCustomizer<S3InboundFileSynchronizingMessageSource>` bean can be added in the target project to provide any custom options for the `S3InboundFileSynchronizingMessageSource` configuration used by the `s3Supplier`.
+
 ## Tests
 
 See this link:src/test/java/org/springframework/cloud/fn/supplier/s3[test suite] for the various ways, this supplier is used.

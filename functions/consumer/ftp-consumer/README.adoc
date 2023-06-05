@@ -17,6 +17,8 @@ All configuration properties are prefixed with `ftp.consumer`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/ftp/FtpConsumerProperties.java[FtpConsumerProperties].
 
+A `ComponentCustomizer<FtpMessageHandlerSpec>` bean can be added in the target project to provide any custom options for the `FtpMessageHandlerSpec` configuration used by the `ftpConsumer`.
+
 ## Tests
 
 See this link:src/test/java/org/springframework/cloud/fn/consumer/ftp[test suite] for the various ways, this consumer is used.

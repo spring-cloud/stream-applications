@@ -24,6 +24,8 @@ All configuration properties are prefixed with `mqtt.supplier` and `mqtt`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/mqtt/MqttSupplierProperties.java[MqttSupplierProperties].
 
+A `ComponentCustomizer<MqttPahoMessageDrivenChannelAdapter>` bean can be added in the target project to provide any custom options for the `MqttPahoMessageDrivenChannelAdapter` configuration used by the `mqttSupplier`.
+
 ## SSL Configuration
 
 The MQTT Paho client can accept an SSL configuration via `MqttConnectOptions.setSSLProperties()`.

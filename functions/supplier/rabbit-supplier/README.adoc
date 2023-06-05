@@ -1,0 +1,34 @@
+# RabbitMQ Supplier
+
+This module provides an RabbitMQ supplier that can be reused and composed in other applications.
+The `Supplier` uses the RabbitMQ support provided by Spring Integration.
+The `rabbitSupplier` is implemented as a `java.util.function.Supplier`.
+This supplier gives you a reactive stream of files from the provided directory as the supplier has a signature of `Supplier<Flux<Message<?>>>`.
+Users have to subscribe to this `Flux` and receive the data.
+
+## Beans for injection
+
+You can import the `RabbitSupplierConfiguration` in the application and then inject the following bean.
+
+`rabbitSupplier`
+
+You need to inject this as `Supplier<Flux<Message<?>>>`.
+
+You can use `rabbitSupplier` as a qualifier when injecting.
+
+Once injected, you can use the `get` method of the `Supplier` to invoke it and then subscribe to the returned `Flux`.
+
+## Configuration Options
+
+All configuration properties are prefixed with `rabbit.supplier`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/rabbit/RabbitSupplierProperties.java[RabbitSupplierProperties].
+Also see an auto-configuration for RabbitMQ connection and listener container options.
+
+A `ComponentCustomizer<AmqpInboundChannelAdapterSMLCSpec>` bean can be added in the target project to provide any custom options for the `AmqpInboundChannelAdapterSMLCSpec` configuration used by the `rabbitSupplier`.
+
+## Tests
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/rabbit-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application where it makes a RabbitMQ Source.
