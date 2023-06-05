@@ -22,7 +22,9 @@ import org.springframework.context.annotation.Import;
 
 
 @SpringBootApplication
+{{^app.autoconfiguration}}
 @Import({ {{app.configClass}} })
+{{/app.autoconfiguration}}
 public class {{app-class-name}} {
 
 	public static void main(String[] args) {

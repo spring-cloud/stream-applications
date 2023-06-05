@@ -28,6 +28,12 @@ import java.util.List;
 public class AppDefinition {
 
 	/**
+	 * Marker 'configClass' value that indicates that this is an autoconfiguration and the @Import statement should be
+	 * dropped.
+	 */
+	public static final String AUTOCONFIGURATION_MARKER = "AUTOCONFIGURATION";
+
+	/**
 	 * Application name.
 	 */
 	private String name;
@@ -156,6 +162,10 @@ public class AppDefinition {
 		return type == AppType.processor;
 	}
 
+	public boolean isAutoconfiguration() {
+		return AUTOCONFIGURATION_MARKER.equalsIgnoreCase(configClass.trim());
+	}
+
 	public String getConfigClass() {
 		return configClass;
 	}
@@ -213,8 +223,7 @@ public class AppDefinition {
 		private ContainerImageFormat format = ContainerImageFormat.Docker;
 
 		/**
-		 * True will attempt to inline the (white) filtered Spring Boot metadata as Base64 encoded
-		 * property.
+		 * True will attempt to inline the (white) filtered Spring Boot metadata as Base64 encoded property.
 		 */
 		private boolean enableMetadata = false;
 
