@@ -28,7 +28,7 @@ For more information on the various options available, please see link:src/main/
 The `queryExpression` and `updateExpression` options may use Spring Data MongoDB query DSL from the `org.springframework.data.mongodb.core.query`, such as `Query` and `Update` factories respectively.
 The `updateExpression` is optional and ca use an item from query result as a root evaluation object to extract some values to update from just fetched data.
 
-A `ComponentCustomizer<MqttPahoMessageHandler>` bean can be added in the target project to provide any custom options for the `MqttPahoMessageHandler` configuration used by the `mqttConsumer`.
+A `ComponentCustomizer<MongoDbMessageSource>` bean can be added in the target project to provide any custom options for the `MongoDbMessageSource` configuration used by the `mongodbSupplier`.
 
 ## Tests
 
