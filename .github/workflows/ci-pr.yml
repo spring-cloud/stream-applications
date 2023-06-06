@@ -95,7 +95,7 @@ jobs:
               # Module with no / are probably a root module that contains other modules and will trigger a lot of dependant builds without real value
               echo "::info ::building $ROOT_MODULES"
               echo "::debug ::MAVEN:./mvnw $MAVEN_OPTS -pl $ROOT_MODULES install"
-              ./mvnw $MAVEN_OPTS -pl $ROOT_MODULES install
+              ./mvnw $MAVEN_OPTS -pl $ROOT_MODULES install -Pintegration
               RC=$?
               if ((RC!=0)); then
                 exit $RC
@@ -104,7 +104,7 @@ jobs:
           if [ "$FOLDERS" != "" ]; then
             echo "::info ::verify $FOLDERS and dependents"
             echo "::debug ::MAVEN:./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install"
-            ./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install
+            ./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install -Pintegration
             RC=$?
             if ((RC!=0)); then
               exit $RC
