@@ -16,7 +16,7 @@ All configuration properties are prefixed with `mqtt.consumer`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/consumer/mqtt/MqttConsumerProperties.java[MqttConsumerProperties].
 
-A `ComponentCustomizer<MongoDbMessageSource>` bean can be added in the target project to provide any custom options for the `MongoDbMessageSource` configuration used by the `mongodbSupplier`.
+A `ComponentCustomizer<MqttPahoMessageHandler>` bean can be added in the target project to provide any custom options for the `MqttPahoMessageHandler` configuration used by the `mqttConsumer`.
 
 ## SSL Configuration
 
