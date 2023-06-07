@@ -43,8 +43,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 4.0
  */
 @SpringBootTest(properties = {
-		"kafka.consumer.topic=" + KafkaSinkTests.TEST_TOPIC,
-		"kafka.consumer.mappedHeaders=mapped"
+		"kafka.publisher.topic=" + KafkaSinkTests.TEST_TOPIC,
+		"kafka.publisher.mappedHeaders=mapped"
 })
 @EmbeddedKafka(bootstrapServersProperty = "spring.kafka.bootstrap-servers")
 @DirtiesContext

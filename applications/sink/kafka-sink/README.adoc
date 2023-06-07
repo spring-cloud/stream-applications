@@ -13,7 +13,7 @@ The **$$kafka$$** $$sink$$ has the following options:
 Properties grouped by prefix:
 
 
-=== kafka.consumer
+=== kafka.publisher
 
 $$key$$:: $$Kafka record key - overridden by keyExpression, if supplied.$$ *($$String$$, default: `$$<none>$$`)*
 $$key-expression$$:: $$A SpEL expression that evaluates to a Kafka record key.$$ *($$Expression$$, default: `$$<none>$$`)*

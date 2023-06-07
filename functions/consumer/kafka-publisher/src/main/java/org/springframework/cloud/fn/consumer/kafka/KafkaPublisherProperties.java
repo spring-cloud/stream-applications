@@ -22,14 +22,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.expression.Expression;
 
 /**
- * Properties for the Kafka Consumer function.
+ * Properties for the Kafka Publisher (Consumer function).
  *
  * @author Artem Bilan
  *
  * @since 4.0
  */
-@ConfigurationProperties("kafka.consumer")
-public class KafkaConsumerProperties {
+@ConfigurationProperties("kafka.publisher")
+public class KafkaPublisherProperties {
 
 	/**
 	 * Kafka topic - overridden by topicExpression, if supplied. Defaults to KafkaTemplate.getDefaultTopic()

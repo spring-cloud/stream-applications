@@ -37,7 +37,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 
 /**
- * A configuration for Apache Kafka Consumer function.
+ * A configuration for Apache Kafka Publisher (Consumer function).
  * Uses a {@link KafkaProducerMessageHandlerSpec} to publish a message to Kafka topic.
  *
  * @author Artem Bilan
@@ -45,48 +45,47 @@ import org.springframework.messaging.MessageChannel;
  * @since 4.0
  */
 @AutoConfiguration(after = KafkaAutoConfiguration.class)
-@EnableConfigurationProperties(KafkaConsumerProperties.class)
-public class KafkaConsumerConfiguration {
+@EnableConfigurationProperties(KafkaPublisherProperties.class)
+public class KafkaPublisherConfiguration {
 
 	/**
 	 * The function to produce messages to the Kafka topic.
-	 * Don't mix with the {@link org.apache.kafka.clients.consumer.KafkaConsumer}.
 	 * @param kafkaProducerMessageHandler the handler to publish messages to Kafka.
 	 * @return the consumer for accepting message for producing to Kafka.
 	 */
 	@Bean
-	public Consumer<Message<?>> kafkaConsumer(KafkaProducerMessageHandler<?, ?> kafkaProducerMessageHandler) {
+	public Consumer<Message<?>> kafkaPublisher(KafkaProducerMessageHandler<?, ?> kafkaProducerMessageHandler) {
 		return kafkaProducerMessageHandler::handleMessage;
 	}
 
 	@Bean
 	public KafkaProducerMessageHandler<?, ?> kafkaProducerMessageHandlerSpec(KafkaTemplate<?, ?> kafkaTemplate,
-			KafkaConsumerProperties kafkaConsumerProperties,
-			PublishSubscribeChannel kafkaConsumerSuccessChannel,
-			PublishSubscribeChannel kafkaConsumerFailureChannel,
-			PublishSubscribeChannel kafkaConsumerFuturesChannel,
+			KafkaPublisherProperties kafkaPublisherProperties,
+			PublishSubscribeChannel kafkaPublisherSuccessChannel,
+			PublishSubscribeChannel kafkaPublisherFailureChannel,
+			PublishSubscribeChannel kafkaPublisherFuturesChannel,
 			@Nullable ComponentCustomizer<KafkaProducerMessageHandlerSpec<?, ?, ?>> kafkaProducerSpecComponentCustomizer) {
 
 		var kafkaProducerMessageHandlerSpec = Kafka.outboundChannelAdapter(kafkaTemplate);
 
 		PropertyMapper mapper = PropertyMapper.get().alwaysApplyingWhenNonNull();
 
-		mapper.from(kafkaConsumerProperties.getTopic()).to(kafkaProducerMessageHandlerSpec::topic);
-		mapper.from(kafkaConsumerProperties.getTopicExpression()).to(kafkaProducerMessageHandlerSpec::topicExpression);
-		mapper.from(kafkaConsumerProperties.getKey()).to(kafkaProducerMessageHandlerSpec::messageKey);
-		mapper.from(kafkaConsumerProperties.getKeyExpression()).to(kafkaProducerMessageHandlerSpec::messageKeyExpression);
-		mapper.from(kafkaConsumerProperties.getPartition()).to(kafkaProducerMessageHandlerSpec::partitionId);
-		mapper.from(kafkaConsumerProperties.getPartitionExpression()).to(kafkaProducerMessageHandlerSpec::partitionIdExpression);
-		mapper.from(kafkaConsumerProperties.getTimestamp()).as(ValueExpression::new).to(kafkaProducerMessageHandlerSpec::timestampExpression);
-		mapper.from(kafkaConsumerProperties.getTimestampExpression()).to(kafkaProducerMessageHandlerSpec::timestampExpression);
-		mapper.from(kafkaConsumerProperties.getSendTimeout()).as(Duration::toMillis).to(kafkaProducerMessageHandlerSpec::sendTimeout);
-		mapper.from(kafkaConsumerProperties.isUseTemplateConverter()).to(kafkaProducerMessageHandlerSpec::useTemplateConverter);
+		mapper.from(kafkaPublisherProperties.getTopic()).to(kafkaProducerMessageHandlerSpec::topic);
+		mapper.from(kafkaPublisherProperties.getTopicExpression()).to(kafkaProducerMessageHandlerSpec::topicExpression);
+		mapper.from(kafkaPublisherProperties.getKey()).to(kafkaProducerMessageHandlerSpec::messageKey);
+		mapper.from(kafkaPublisherProperties.getKeyExpression()).to(kafkaProducerMessageHandlerSpec::messageKeyExpression);
+		mapper.from(kafkaPublisherProperties.getPartition()).to(kafkaProducerMessageHandlerSpec::partitionId);
+		mapper.from(kafkaPublisherProperties.getPartitionExpression()).to(kafkaProducerMessageHandlerSpec::partitionIdExpression);
+		mapper.from(kafkaPublisherProperties.getTimestamp()).as(ValueExpression::new).to(kafkaProducerMessageHandlerSpec::timestampExpression);
+		mapper.from(kafkaPublisherProperties.getTimestampExpression()).to(kafkaProducerMessageHandlerSpec::timestampExpression);
+		mapper.from(kafkaPublisherProperties.getSendTimeout()).as(Duration::toMillis).to(kafkaProducerMessageHandlerSpec::sendTimeout);
+		mapper.from(kafkaPublisherProperties.isUseTemplateConverter()).to(kafkaProducerMessageHandlerSpec::useTemplateConverter);
 
-		kafkaProducerMessageHandlerSpec.headerMapper(new DefaultKafkaHeaderMapper(kafkaConsumerProperties.getMappedHeaders()));
+		kafkaProducerMessageHandlerSpec.headerMapper(new DefaultKafkaHeaderMapper(kafkaPublisherProperties.getMappedHeaders()));
 
-		kafkaProducerMessageHandlerSpec.sendSuccessChannel(kafkaConsumerSuccessChannel);
-		kafkaProducerMessageHandlerSpec.sendFailureChannel(kafkaConsumerFailureChannel);
-		kafkaProducerMessageHandlerSpec.futuresChannel(kafkaConsumerFuturesChannel);
+		kafkaProducerMessageHandlerSpec.sendSuccessChannel(kafkaPublisherSuccessChannel);
+		kafkaProducerMessageHandlerSpec.sendFailureChannel(kafkaPublisherFailureChannel);
+		kafkaProducerMessageHandlerSpec.futuresChannel(kafkaPublisherFuturesChannel);
 
 		if (kafkaProducerSpecComponentCustomizer != null) {
 			kafkaProducerSpecComponentCustomizer.customize(kafkaProducerMessageHandlerSpec);
@@ -99,7 +98,7 @@ public class KafkaConsumerConfiguration {
 	 * @see KafkaProducerMessageHandler#setSendSuccessChannel(MessageChannel)
 	 */
 	@Bean
-	public PublishSubscribeChannel kafkaConsumerSuccessChannel() {
+	public PublishSubscribeChannel kafkaPublisherSuccessChannel() {
 		return new PublishSubscribeChannel();
 	}
 
@@ -107,7 +106,7 @@ public class KafkaConsumerConfiguration {
 	 * @see KafkaProducerMessageHandler#setSendFailureChannel(MessageChannel)
 	 */
 	@Bean
-	public PublishSubscribeChannel kafkaConsumerFailureChannel() {
+	public PublishSubscribeChannel kafkaPublisherFailureChannel() {
 		return new PublishSubscribeChannel();
 	}
 
@@ -115,7 +114,7 @@ public class KafkaConsumerConfiguration {
 	 * @see KafkaProducerMessageHandler#setFuturesChannel(MessageChannel)
 	 */
 	@Bean
-	public PublishSubscribeChannel kafkaConsumerFuturesChannel() {
+	public PublishSubscribeChannel kafkaPublisherFuturesChannel() {
 		return new PublishSubscribeChannel();
 	}
 

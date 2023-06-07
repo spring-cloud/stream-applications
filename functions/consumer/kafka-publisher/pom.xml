@@ -9,9 +9,9 @@
 		<relativePath>../../spring-functions-parent/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>kafka-consumer</artifactId>
-	<name>kafka-consumer</name>
-	<description>Apache Kafka Consumer Function</description>
+	<artifactId>kafka-publisher</artifactId>
+	<name>kafka-publisher</name>
+	<description>Apache Kafka Publisher(Consumer Function)</description>
 
 	<dependencies>
 		<dependency>

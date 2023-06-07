@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>kafka-consumer</artifactId>
+			<artifactId>kafka-publisher</artifactId>
 		</dependency>
 
 		<dependency>
@@ -52,13 +52,13 @@
 						<type>sink</type>
 						<version>${project.version}</version>
 						<configClass>AUTOCONFIGURATION</configClass>
-						<functionDefinition>kafkaConsumer</functionDefinition>
+						<functionDefinition>kafkaPublisher</functionDefinition>
 
 						<maven>
 							<dependencies>
 								<dependency>
 									<groupId>org.springframework.cloud.fn</groupId>
-									<artifactId>kafka-consumer</artifactId>
+									<artifactId>kafka-publisher</artifactId>
 								</dependency>
 							</dependencies>
 						</maven>

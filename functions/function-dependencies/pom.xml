@@ -149,7 +149,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
-                <artifactId>kafka-consumer</artifactId>
+                <artifactId>kafka-publisher</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

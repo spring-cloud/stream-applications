@@ -55,7 +55,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  *
  * @since 4.0
  */
-public class KafkaConsumerConfigurationTests {
+public class KafkaPublisherConfigurationTests {
 
 	static final EmbeddedKafkaBroker EMBEDDED_KAFKA =
 			new EmbeddedKafkaBroker(1, true, 1)
@@ -64,7 +64,7 @@ public class KafkaConsumerConfigurationTests {
 	final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(
 					KafkaAutoConfiguration.class,
-					KafkaConsumerConfiguration.class,
+					KafkaPublisherConfiguration.class,
 					SpelExpressionConverterConfiguration.class));
 
 	@BeforeAll
@@ -78,9 +78,9 @@ public class KafkaConsumerConfigurationTests {
 		this.contextRunner.withPropertyValues("spring.kafka.template.defaultTopic=" + defaultTopic)
 				.run((context) -> {
 					KafkaTemplate<?, ?> kafkaTemplate = obtainKafkaTemplate(context);
-					Consumer<Message<?>> kafkaConsumer = getKafkaConsumer(context);
+					Consumer<Message<?>> kafkaPublisher = getKafkaPublisher(context);
 					String testData = "test data";
-					kafkaConsumer.accept(new GenericMessage<>(testData));
+					kafkaPublisher.accept(new GenericMessage<>(testData));
 					ConsumerRecord<?, ?> receive = kafkaTemplate.receive(defaultTopic, 0, 0, Duration.ofSeconds(10));
 					assertThat(receive).extracting(ConsumerRecord::value).isEqualTo(testData);
 				});
@@ -90,11 +90,11 @@ public class KafkaConsumerConfigurationTests {
 	void wrongPartitionViaProperties() {
 		this.contextRunner.withPropertyValues(
 						"spring.kafka.producer.properties[max.block.ms]=1000",
-						"kafka.consumer.topic=topic1",
-						"kafka.consumer.partition=1", // Our broker allows only one partition for auto-created topic
-						"kafka.consumer.sync=true")
+						"kafka.publisher.topic=topic1",
+						"kafka.publisher.partition=1", // Our broker allows only one partition for auto-created topic
+						"kafka.publisher.sync=true")
 				.run((context) -> {
-					Consumer<Message<?>> kafkaConsumer = getKafkaConsumer(context);
+					Consumer<Message<?>> kafkaConsumer = getKafkaPublisher(context);
 					assertThatExceptionOfType(MessageHandlingException.class)
 							.isThrownBy(() -> kafkaConsumer.accept(new GenericMessage<>("test data")))
 							.withCauseInstanceOf(KafkaException.class)
@@ -104,14 +104,14 @@ public class KafkaConsumerConfigurationTests {
 
 	@Test
 	void successChannelInteractionAndMappedHeaders() {
-		this.contextRunner.withPropertyValues("kafka.consumer.topicExpression=headers.topic",
-						"kafka.consumer.mappedHeaders=mapped")
+		this.contextRunner.withPropertyValues("kafka.publisher.topicExpression=headers.topic",
+						"kafka.publisher.mappedHeaders=mapped")
 				.run((context) -> {
 					KafkaTemplate<?, ?> kafkaTemplate = obtainKafkaTemplate(context);
-					Consumer<Message<?>> kafkaConsumer = getKafkaConsumer(context);
+					Consumer<Message<?>> kafkaConsumer = getKafkaPublisher(context);
 
 					PublishSubscribeChannel kafkaConsumerSuccessChannel =
-							context.getBean("kafkaConsumerSuccessChannel", PublishSubscribeChannel.class);
+							context.getBean("kafkaPublisherSuccessChannel", PublishSubscribeChannel.class);
 
 					Sinks.One<Message<?>> successSend = Sinks.one();
 
@@ -161,8 +161,8 @@ public class KafkaConsumerConfigurationTests {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Consumer<Message<?>> getKafkaConsumer(ApplicationContext applicationContext) {
-		return (Consumer<Message<?>>) applicationContext.getBean("kafkaConsumer");
+	private static Consumer<Message<?>> getKafkaPublisher(ApplicationContext applicationContext) {
+		return (Consumer<Message<?>>) applicationContext.getBean("kafkaPublisher");
 	}
 
 }
