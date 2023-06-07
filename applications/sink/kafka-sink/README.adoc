@@ -1,0 +1,38 @@
+//tag::ref-doc[]
+= Apache Kafka Sink
+
+This module publishes messages to Apache Kafka.
+
+== Options
+
+The **$$kafka$$** $$sink$$ has the following options:
+
+(See the Spring Boot documentation for Spring for Apache Kafka configuration properties)
+
+//tag::configuration-properties[]
+Properties grouped by prefix:
+
+
+=== kafka.consumer
+
+$$key$$:: $$Kafka record key - overridden by keyExpression, if supplied.$$ *($$String$$, default: `$$<none>$$`)*
+$$key-expression$$:: $$A SpEL expression that evaluates to a Kafka record key.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$mapped-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$[*]$$`)*
+$$partition$$:: $$Kafka topic partition - overridden by partitionExpression, if supplied.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$partition-expression$$:: $$A SpEL expression that evaluates to a Kafka topic partition.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$send-timeout$$:: $$How long Kafka producer handler should wait for send operation results. Defaults to 10 seconds.$$ *($$Duration$$, default: `$$10s$$`)*
+$$sync$$:: $$True if Kafka producer handler should operation in a sync mode.$$ *($$Boolean$$, default: `$$false$$`)*
+$$timestamp$$:: $$Kafka record timestamp - overridden by timestampExpression, if supplied.$$ *($$Long$$, default: `$$<none>$$`)*
+$$timestamp-expression$$:: $$A SpEL expression that evaluates to a Kafka record timestamp.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$topic$$:: $$Kafka topic - overridden by topicExpression, if supplied. Defaults to KafkaTemplate.getDefaultTopic()$$ *($$String$$, default: `$$<none>$$`)*
+$$topic-expression$$:: $$A SpEL expression that evaluates to a Kafka topic.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$use-template-converter$$:: $$Whether to use the template's message converter to create a Kafka record.$$ *($$Boolean$$, default: `$$false$$`)*
+
+=== spring.kafka
+
+$$bootstrap-servers$$:: $$Comma-delimited list of host:port pairs to use for establishing the initial connections to the Kafka cluster. Applies to all components unless overridden.$$ *($$List<String>$$, default: `$$<none>$$`)*
+$$client-id$$:: $$ID to pass to the server when making requests. Used for server-side logging.$$ *($$String$$, default: `$$<none>$$`)*
+$$properties$$:: $$Additional properties, common to producers and consumers, used to configure the client.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]
