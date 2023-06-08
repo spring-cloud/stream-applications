@@ -35,7 +35,7 @@
         <nohttp-checkstyle.version>0.0.10</nohttp-checkstyle.version>
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.35</spring-javaformat-checkstyle.version>
-        <spring-boot.version>3.0.7</spring-boot.version>
+        <spring-boot.version>3.1.0</spring-boot.version>
         <spring-kafka.version>3.0.7</spring-kafka.version>
         <spring-rabbit.version>3.0.4</spring-rabbit.version>
         <spring.version>6.0.9</spring.version>

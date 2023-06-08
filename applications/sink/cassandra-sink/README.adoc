@@ -23,7 +23,6 @@ $$spring.cassandra.password$$:: $$Login password of the server.$$ *($$String$$, 
 $$spring.cassandra.port$$:: $$Port to use if a contact point does not specify one.$$ *($$Integer$$, default: `$$9042$$`)*
 $$spring.cassandra.schema-action$$:: $$Schema action to take at startup.$$ *($$String$$, default: `$$none$$`)*
 $$spring.cassandra.session-name$$:: $$Name of the Cassandra session.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.cassandra.ssl$$:: $$Enable SSL support.$$ *($$Boolean$$, default: `$$false$$`)*
 $$spring.cassandra.username$$:: $$Login user of the server.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
