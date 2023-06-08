@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+ * Copyright 2019-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.fn.supplier.mongo;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -54,7 +53,7 @@ class MongodbSupplierApplicationTests implements MongoDbTestContainerSupport {
 		registry.add("spring.data.mongodb.database", () -> "test");
 	}
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Autowired
 	private Supplier<Flux<Message<?>>> mongodbSupplier;
@@ -68,23 +67,26 @@ class MongodbSupplierApplicationTests implements MongoDbTestContainerSupport {
 		database.createCollection("testing");
 		MongoCollection<Document> collection = database.getCollection("testing");
 		collection.insertOne(
-				new Document("greeting", "hello")
-						.append("name", "foo"));
+			new Document("greeting", "hello")
+				.append("name", "foo"));
 		collection.insertOne(
-				new Document("greeting", "hola")
-						.append("name", "bar"));
+			new Document("greeting", "hola")
+				.append("name", "bar"));
 	}
 
 	@Test
 	void testMongodbSupplier() {
+		// given
 		Flux<Message<?>> messageFlux = this.mongodbSupplier.get();
+		// when
 		StepVerifier.create(messageFlux)
+		// then
 				.assertNext((message) ->
-						assertThat(payload(message)).contains(
+						assertThat(toMap(message)).contains(
 								entry("greeting", "hello"),
 								entry("name", "foo")))
 				.assertNext((message) ->
-						assertThat(payload(message)).contains(
+						assertThat(toMap(message)).contains(
 								entry("greeting", "hola"),
 								entry("name", "bar")))
 				.thenCancel()
@@ -93,10 +95,10 @@ class MongodbSupplierApplicationTests implements MongoDbTestContainerSupport {
 		assertThat(this.mongodbSupplier.get().collectList().block()).isEmpty();
 	}
 
-	private Map<String, Object> payload(Message<?> message) {
+	private Map<String, Object> toMap(Message<?> message) {
 		Map<String, Object> map = null;
 		try {
-			map = objectMapper.readValue(message.getPayload().toString(), HashMap.class);
+			map = objectMapper.readValue(message.getPayload().toString(), Map.class);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
