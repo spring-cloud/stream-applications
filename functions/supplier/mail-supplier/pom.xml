@@ -13,19 +13,10 @@
     <name>mail-supplier</name>
     <description>Mail Supplier</description>
 
-    <properties>
-        <jakarta-mail.version>2.1.0</jakarta-mail.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-mail</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.mail</groupId>
-            <artifactId>jakarta.mail-api</artifactId>
-            <version>${jakarta-mail.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.angus</groupId>
@@ -34,19 +25,9 @@
         </dependency>
         <dependency>
             <groupId>com.icegreen</groupId>
-            <artifactId>greenmail-junit5</artifactId>
-            <version>2.0.0-alpha-3</version>
+            <artifactId>greenmail</artifactId>
+            <version>2.0.0</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sun.mail</groupId>
-                    <artifactId>jakarta.mail</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>jakarta.activation</groupId>
-                    <artifactId>jakarta.activation-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 </project>

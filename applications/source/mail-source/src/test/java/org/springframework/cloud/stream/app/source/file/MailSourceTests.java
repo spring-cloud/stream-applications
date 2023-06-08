@@ -34,6 +34,8 @@ import org.springframework.cloud.stream.binder.test.TestChannelBinderConfigurati
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,6 +60,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MailSourceTests {
 	private static GreenMail mailServer;
 	private static GreenMailUser mailUser;
+
 	@BeforeAll
 	public static void setup() {
 		ServerSetup imap = ServerSetupTest.IMAP.dynamicPort();
@@ -65,8 +68,11 @@ class MailSourceTests {
 		mailServer = new GreenMail(imap);
 		mailUser = mailServer.setUser("user", "pw");
 		mailServer.start();
-		String imapPort = Integer.toString(mailServer.getImap().getServerSetup().getPort());
-		System.setProperty("test.mail.server.port", imapPort);
+	}
+
+	@DynamicPropertySource
+	static void mongoDbProperties(DynamicPropertyRegistry registry) {
+		registry.add("test.mail.server.port", mailServer.getImap().getServerSetup()::getPort);
 	}
 
 	@AfterAll

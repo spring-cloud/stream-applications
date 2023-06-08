@@ -23,36 +23,36 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.icegreen.greenmail.util.ServerSetupTest;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.dsl.StandardIntegrationFlow;
-import org.springframework.integration.test.context.SpringIntegrationTest;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
-@SpringIntegrationTest(noAutoStartup = "*")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {
-	"mail.supplier.mark-as-read=true",
-	"mail.supplier.delete=false",
-	"mail.supplier.user-flag=testSIUserFlag",
-	"mail.supplier.java-mail-properties=mail.imap.socketFactory.fallback=true\\n mail.store.protocol=imap\\n mail.debug=true"})
+		"mail.supplier.mark-as-read=true",
+		"mail.supplier.delete=false",
+		"mail.supplier.user-flag=testSIUserFlag",
+		"mail.supplier.java-mail-properties=mail.imap.socketFactory.fallback=true\\n mail.store.protocol=imap\\n mail.debug=true"})
 @DirtiesContext
 public abstract class AbstractMailSupplierTests {
+
 	protected static GreenMail mailServer;
 
 	protected static GreenMailUser mailUser;
 
 	@Autowired
 	protected Supplier<Flux<Message<?>>> mailSupplier;
+
 	@Autowired
 	protected StandardIntegrationFlow integrationFlow;
+
 	protected void sendMessage(String subject, String body) {
 		mailUser.deliver(GreenMailUtil.createTextEmail("bar@bax", "test@test", subject, body, mailServer.getSmtp().getServerSetup()));
 	}
@@ -66,34 +66,21 @@ public abstract class AbstractMailSupplierTests {
 		ServerSetup smtp = ServerSetupTest.SMTP.dynamicPort();
 		smtp.setServerStartupTimeout(10000);
 
-		mailServer = new GreenMail(new ServerSetup[]{imap, pop3, smtp});
+		mailServer = new GreenMail(new ServerSetup[] {imap, pop3, smtp});
 		mailUser = mailServer.setUser("user", "pw");
 		mailServer.start();
-		String imapPort = Integer.toString(mailServer.getImap().getServerSetup().getPort());
-		String pop3Port = Integer.toString(mailServer.getPop3().getServerSetup().getPort());
-		String smtpPort = Integer.toString(mailServer.getPop3().getServerSetup().getPort());
-		System.setProperty("test.mail.server.imap.port", imapPort);
-		System.setProperty("test.mail.server.pop3.port", pop3Port);
-		System.setProperty("test.mail.server.smtp.port", smtpPort);
 	}
 
-	@BeforeEach
-	void start() {
-		integrationFlow.start();
-	}
-
-	@AfterEach
-	void stop() {
-		integrationFlow.stop();
-	}
-
-	@AfterAll
-	public static void cleanup() {
-		System.clearProperty("test.mail.server.port");
+	@DynamicPropertySource
+	static void mongoDbProperties(DynamicPropertyRegistry registry) {
+		registry.add("test.mail.server.imap.port", mailServer.getImap().getServerSetup()::getPort);
+		registry.add("test.mail.server.pop3.port", mailServer.getPop3().getServerSetup()::getPort);
+		registry.add("test.mail.server.smtp.port", mailServer.getSmtp().getServerSetup()::getPort);
 	}
 
 	@SpringBootApplication
 	public static class MailSupplierTestApplication {
 
 	}
+
 }

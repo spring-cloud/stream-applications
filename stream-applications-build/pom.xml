@@ -40,7 +40,6 @@
         <spring-kafka.version>3.0.7</spring-kafka.version>
         <spring-rabbit.version>3.0.4</spring-rabbit.version>
         <spring.version>6.0.9</spring.version>
-        <spring-integration.version>6.0.5</spring-integration.version>
 
         <spring-cloud.version>2022.0.3</spring-cloud.version>
         <spring-cloud-starters.version>4.0.3</spring-cloud-starters.version>
