@@ -13,11 +13,11 @@ on:
         required: false
         default: false
         description: 'Verbose output'
-      useMavenThreads:
-        type: boolean
+      mavenThreads:
+        type: string
         required: false
-        default: false
-        description: 'Enable Maven Threads'
+        default: '1'
+        description: 'Maven Thread Option. Examples 0.5C, 2'
     secrets:
       DOCKERHUB_USERNAME:
       DOCKERHUB_TOKEN:
@@ -33,7 +33,7 @@ on:
 env:
   VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
   BRANCH: ${{ inputs.branch }}
-  MAVEN_THREADS: ${{ inputs.useMavenThreads }}
+  MAVEN_THREADS: ${{ inputs.mavenThreads }}
 
 jobs:
   scan:
@@ -57,6 +57,7 @@ jobs:
         shell: bash
         run: echo "::info ::Scanned"
   parameters:
+    name: 'parameters - ${{ inputs.branch }}'
     if: ${{ github.repository == 'spring-cloud/stream-applications' }}
     runs-on: ubuntu-latest
     steps:
@@ -108,12 +109,12 @@ jobs:
             echo "SOURCES=$SOURCES" >> $GITHUB_ENV
           popd
           
-          if [ "${{ inputs.branch }}" == "main" ]; then
+          if [[ "${{ inputs.branch }}" == *"2021"* ]]; then
+            echo "JDK_BUILD=8" >> $GITHUB_ENV
+            echo "JRE_DEFAULT=11" >> $GITHUB_ENV            
+          else
             echo "JDK_BUILD=17" >> $GITHUB_ENV
             echo "JRE_DEFAULT=17" >> $GITHUB_ENV
-          else
-            echo "JDK_BUILD=8" >> $GITHUB_ENV
-            echo "JRE_DEFAULT=11" >> $GITHUB_ENV
           fi   
           if [ "${{ inputs.verbose }}" == "true" ]; then
             echo "::debug ::MAX_PARALLEL=$MAX_PARALLEL"
@@ -142,6 +143,7 @@ jobs:
       jdk_build: ${{ env.JDK_BUILD }}
       jre_version: ${{ env.JRE_DEFAULT }}
   core:
+    name: 'core - ${{ inputs.branch }}'
     if: ${{ github.repository == 'spring-cloud/stream-applications' }}
     runs-on: ubuntu-latest
     needs:
@@ -213,13 +215,13 @@ jobs:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
-          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
+          MAVEN_THREADS: ${{ inputs.mavenThreads }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
           echo "::notice ::building - stream-applications-build,functions,applications/stream-applications-core"
           set -e
-          $ROOT_DIR/build-folder.sh stream-applications-build,functions,applications/stream-applications-core "install verify deploy"
+          $ROOT_DIR/build-core.sh "install verify deploy"
           set +e
           echo "::notice ::core build completed"
           popd > /dev/null
@@ -343,7 +345,7 @@ jobs:
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
-          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
+          MAVEN_THREADS: ${{ inputs.mavenThreads }}
         run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
@@ -444,7 +446,7 @@ jobs:
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
-          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
+          MAVEN_THREADS: ${{ inputs.mavenThreads }}
         run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
@@ -545,7 +547,7 @@ jobs:
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
-          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
+          MAVEN_THREADS: ${{ inputs.mavenThreads }}
         run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
@@ -637,7 +639,7 @@ jobs:
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
-          MAVEN_THREADS: ${{ inputs.useMavenThreads }}
+          MAVEN_THREADS: ${{ inputs.mavenThreads }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null

@@ -89,34 +89,36 @@ if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
   check_env ARTIFACTORY_USERNAME
   check_env ARTIFACTORY_PASSWORD
 fi
+MAVEN_THREADS_OPT=1
+if [ "$MAVEN_THREADS" != "" ]; then
+  case $MAVEN_THREADS in
+  "true")
+    MAVEN_THREADS_OPT="0.5C"
+    ;;
+  "false")
+    MAVEN_THREADS_OPT="1"
 
-case $MAVEN_THREADS in
-"true")
-  MVN_THR="-T 0.5C"
-  ;;
-"false")
-  MVN_THR=
-  ;;
-*)
-  MVN_THR="-T 0.5C"
-  ;;
-esac
-
+    ;;
+  *)
+    MAVEN_THREADS_OPT="$MAVEN_THREADS"
+    ;;
+  esac
+fi
+MVN_THR="-T $MAVEN_THREADS_OPT"
 if [ "$SKIP_RESOLVE" = "" ]; then
   SKIP_RESOLVE=true
 fi
 
 if [ "$SKIP_RESOLVE" = "true" ]; then
-  RETRIES=-1
+  RETRIES=0
   RESULT=0
 else
   RETRIES=3
 fi
-while ((RETRIES >= 0)); do
+while ((RETRIES > 0)); do
   echo -e "Resolving dependencies for ${bold}$FOLDER_FOLDER_NAMES${end}"
   set +e
-
-  $SCDIR/mvnw -U -pl "$FOLDER_NAMES" $MAVEN_OPTS $MVN_THR dependency:resolve
+  $SCDIR/mvnw -U -pl "$FOLDER_NAMES" $MAVEN_OPTS -T 0.5C dependency:resolve
   RESULT=$?
   set -e
   if ((RESULT == 0)); then
@@ -139,12 +141,12 @@ if ((RESULT == 0)); then
       source "$FOLDER/set-env.sh"
     fi
     set +e
-    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
+    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR "-DmavenThreads=$MAVEN_THREADS_OPT" $MAVEN_GOAL${end}"
     MVNW="./mvnw"
     if [ ! -f $MVNW ]; then
       MVNW="$SCDIR/mvnw"
     fi
-    $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
+    $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR "-DmavenThreads=$MAVEN_THREADS_OPT" $MAVEN_GOAL
     RESULT=$?
     set -e
     if ((RESULT != 0)); then
