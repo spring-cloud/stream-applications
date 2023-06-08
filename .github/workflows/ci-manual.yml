@@ -1,4 +1,4 @@
-name: 'CI - Main'
+name: 'CI - Manual'
 
 on:
   workflow_dispatch:
@@ -7,11 +7,13 @@ on:
         default: 'false'
         description: 'Verbose output'
         required: false
-  push:
-    paths-ignore:
-      - '.github/**'
-    branches:
-      - 'main'
+      branch:
+        description: 'Enter branch name'
+        required: true
+      maven_threads:
+        description: 'Maven Threads'
+        default: '1'
+        required: true
 
 jobs:
   build:
@@ -24,6 +26,6 @@ jobs:
       ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
       ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
     with:
-      branch: 'main'
+      branch: ${{ inputs.branch }}
       verbose: ${{ inputs.verbose == 'true' }}
-      maven_threads: '0.5C'
+      mavenThreads: ${{ inputs.maven_threads }}
