@@ -23,6 +23,7 @@ if [ "$2" == "" ]; then
 fi
 PROJECT_FOLDER=$(realpath "$1")
 APP_FOLDER=$2
+SKIP_DEPLOY=$3
 
 set -e
 check_env ARTIFACTORY_USERNAME
@@ -34,7 +35,7 @@ pushd "$PROJECT_FOLDER" >/dev/null
   fi
 
   echo "Project Version:$VERSION"
-  if [ "$LOCAL" == "true" ]; then
+  if [ "$LOCAL" == "true" ] || [ "$SKIP_DEPLOY" == "true" ]; then
     MAVEN_GOAL="install verify"
   else
     MAVEN_GOAL="install verify deploy"
@@ -83,25 +84,27 @@ pushd "$PROJECT_FOLDER" >/dev/null
           FOLDER=$(pwd)
           echo "Building:$FOLDER"
           $SCDIR/build-folder.sh "." "$MAVEN_GOAL -Pintegration"
-          for v in $JDKS; do
-            echo "Pack:$app:$VERSION-jdk$v"
-            pack build \
-              --path "target/$app-$VERSION.jar" \
-              --builder gcr.io/paketo-buildpacks/builder:base \
-              --env BP_JVM_VERSION=$v \
-              --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
-              --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
-              --env BPE_LC_ALL=en_US.utf8 \
-              --env BPE_LANG=en_US.utf8 \
-              "springcloudstream/$app:$VERSION-jdk$v"
-            echo "Created:springcloudstream/$app:$VERSION-jdk$v"
-          done
-          if [ "$DEFAULT_JDK" != "" ]; then
-            docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$VERSION"
-            echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$VERSION"
-            if [ "$BRANCH" != "" ]; then
-              docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$BRANCH"
-              echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$BRANCH"
+          if [ "$SKIP_DEPLOY" == "" ] || [ "$SKIP_DEPLOY" == "false" ]; then
+            for v in $JDKS; do
+              echo "Pack:$app:$VERSION-jdk$v"
+              pack build \
+                --path "target/$app-$VERSION.jar" \
+                --builder gcr.io/paketo-buildpacks/builder:base \
+                --env BP_JVM_VERSION=$v \
+                --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
+                --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
+                --env BPE_LC_ALL=en_US.utf8 \
+                --env BPE_LANG=en_US.utf8 \
+                "springcloudstream/$app:$VERSION-jdk$v"
+              echo "Created:springcloudstream/$app:$VERSION-jdk$v"
+            done
+            if [ "$DEFAULT_JDK" != "" ]; then
+              docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$VERSION"
+              echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$VERSION"
+              if [ "$BRANCH" != "" ]; then
+                docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$BRANCH"
+                echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$BRANCH"
+              fi
             fi
           fi
         popd >/dev/null

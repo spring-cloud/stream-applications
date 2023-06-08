@@ -6,7 +6,7 @@ on:
 env:
   MAIN_PATH: 'build-dir'
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  MAVEN_THREADS: 'false'
+  MAVEN_THREADS: 'true'
 jobs:
   build:
     if: github.repository == 'spring-cloud/stream-applications'
@@ -66,7 +66,7 @@ jobs:
           FOLDERS=
           ROOT_MODULES=
           if [ "$MAVEN_THREADS" = "true" ]; then
-            MVN_THR="-T 0.3C"
+            MVN_THR="-T 0.5C"
           else
             MVN_THR=
           fi
@@ -95,7 +95,7 @@ jobs:
               # Module with no / are probably a root module that contains other modules and will trigger a lot of dependant builds without real value
               echo "::info ::building $ROOT_MODULES"
               echo "::debug ::MAVEN:./mvnw $MAVEN_OPTS -pl $ROOT_MODULES install"
-              ./mvnw $MAVEN_OPTS -pl $ROOT_MODULES install -Pintegration
+              ./mvnw $MAVEN_OPTS -pl $ROOT_MODULES install
               RC=$?
               if ((RC!=0)); then
                 exit $RC
@@ -104,12 +104,26 @@ jobs:
           if [ "$FOLDERS" != "" ]; then
             echo "::info ::verify $FOLDERS and dependents"
             echo "::debug ::MAVEN:./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install"
-            ./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install -Pintegration
+            ./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install
             RC=$?
             if ((RC!=0)); then
               exit $RC
             fi
           fi
+          # Build any applications that was compiled but don't deploy to artifactory.          
+          PROCESSORS=$(find ./applications/processor -name target -exec ./parent-dir '{}' \;)
+          SINKS=$(find ./applications/sink -name target -exec ./parent-dir '{}' \;)
+          SOURCES=$(find ./applications/source -name target -exec ./parent-dir '{}' \;)
+          # true as 3rd argument ensures that jars aren't deployed and containers aren't built.
+          for appdir in $PROCESSORS; do
+            ./build-app.sh . "./$appdir" true
+          done          
+          for appdir in $SOURCES; do
+            ./build-app.sh . "./$appdir" true
+          done          
+          for appdir in $SINKS; do
+            ./build-app.sh . "./$appdir" true
+          done
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
