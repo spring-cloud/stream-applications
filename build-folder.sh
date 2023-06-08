@@ -92,7 +92,7 @@ fi
 
 case $MAVEN_THREADS in
 "true")
-  MVN_THR="-T 0.75C"
+  MVN_THR="-T 0.5C"
   ;;
 "false")
   MVN_THR=
