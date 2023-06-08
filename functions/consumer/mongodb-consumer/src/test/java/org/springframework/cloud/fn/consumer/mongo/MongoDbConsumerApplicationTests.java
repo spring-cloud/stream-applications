@@ -51,7 +51,7 @@ class MongoDbConsumerApplicationTests implements MongoDbTestContainerSupport {
 
 	@DynamicPropertySource
 	static void mongoDbProperties(DynamicPropertyRegistry registry) {
-		registry.add("spring.data.mongodb.uri", MongoDbTestContainerSupport::mongoDbUri);
+		registry.add("spring.data.mongodb.port", MONGO_CONTAINER::getFirstMappedPort);
 		registry.add("spring.data.mongodb.database", () -> "test");
 	}
 
