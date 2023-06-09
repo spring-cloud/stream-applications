@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.cloud.fn</groupId>
+		<artifactId>spring-functions-parent</artifactId>
+		<version>4.0.0-SNAPSHOT</version>
+		<relativePath>../../spring-functions-parent/pom.xml</relativePath>
+	</parent>
+
+
+	<artifactId>kafka-supplier</artifactId>
+	<name>kafka-supplier</name>
+	<description>Apache Kafka Supplier based on Apache Kafka Consumer</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-kafka</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+</project>

@@ -16,6 +16,7 @@
         <module>http-supplier</module>
         <module>jdbc-supplier</module>
         <module>jms-supplier</module>
+        <module>kafka-supplier</module>
         <module>mail-supplier</module>
         <module>mongodb-supplier</module>
         <module>mqtt-supplier</module>

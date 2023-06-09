@@ -1,0 +1,29 @@
+//tag::ref-doc[]
+= Apache Kafka Source
+
+This module consumes messages from Apache Kafka.
+
+== Options
+
+The **$$kafka$$** $$source$$ has the following options:
+
+(See the Spring Boot documentation for Spring for Apache Kafka configuration properties)
+
+//tag::configuration-properties[]
+Properties grouped by prefix:
+
+
+=== kafka.supplier
+
+$$ack-discarded$$:: $$Whether to acknowledge discarded records after 'RecordFilterStrategy'.$$ *($$Boolean$$, default: `$$false$$`)*
+$$topic-pattern$$:: $$Apache Kafka topics pattern to subscribe.$$ *($$Pattern$$, default: `$$<none>$$`)*
+$$topics$$:: $$Apache Kafka topics to subscribe.$$ *($$String[]$$, default: `$$<none>$$`)*
+
+=== spring.kafka
+
+$$bootstrap-servers$$:: $$Comma-delimited list of host:port pairs to use for establishing the initial connections to the Kafka cluster. Applies to all components unless overridden.$$ *($$List<String>$$, default: `$$<none>$$`)*
+$$client-id$$:: $$ID to pass to the server when making requests. Used for server-side logging.$$ *($$String$$, default: `$$<none>$$`)*
+$$properties$$:: $$Additional properties, common to producers and consumers, used to configure the client.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+//end::configuration-properties[]
+
+//end::ref-doc[]
