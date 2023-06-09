@@ -7,7 +7,7 @@ if (( sourced == 0 )); then
   exit 1
 fi
 # get the target release version and type
-export BUILD_VERSION=$(cat $SCDIR/version/RELEASE_VERSION)
+export BUILD_VERSION=$(cat ./version/RELEASE_VERSION)
 echo "BUILD_VERSION: $BUILD_VERSION"
 set +e
 IS_SNAPSHOT=$(echo $BUILD_VERSION | grep -E "^.*-SNAPSHOT$")
@@ -40,5 +40,5 @@ fi
 echo "IS_VERSION_CHANGE: $IS_VERSION_CHANGE"
 
 # get the next dev version
-export NEXT_DEV_VERSION=$(cat $SCDIR/version/NEXT_DEV_VERSION)
+export NEXT_DEV_VERSION=$(cat ./version/NEXT_DEV_VERSION)
 echo "NEXT_DEV_VERSION: $NEXT_DEV_VERSION"
