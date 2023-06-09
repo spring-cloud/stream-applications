@@ -26,8 +26,7 @@ APP_FOLDER=$2
 SKIP_DEPLOY=$3
 
 set -e
-check_env ARTIFACTORY_USERNAME
-check_env ARTIFACTORY_PASSWORD
+
 
 pushd "$PROJECT_FOLDER" >/dev/null
   if [ "$VERSION" == "" ]; then
@@ -40,7 +39,10 @@ pushd "$PROJECT_FOLDER" >/dev/null
   else
     MAVEN_GOAL="install verify deploy"
   fi
-
+  if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
+    check_env ARTIFACTORY_USERNAME
+    check_env ARTIFACTORY_PASSWORD
+  fi
   if [[ "$VERSION" == "4."* ]]; then
     JDKS="17"
     if [ "$DEFAULT_JDK" == "" ]; then

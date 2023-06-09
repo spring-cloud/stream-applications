@@ -141,12 +141,12 @@ if ((RESULT == 0)); then
       source "$FOLDER/set-env.sh"
     fi
     set +e
-    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR "-DmavenThreads=$MAVEN_THREADS_OPT" $MAVEN_GOAL${end}"
+    echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
     MVNW="./mvnw"
     if [ ! -f $MVNW ]; then
       MVNW="$SCDIR/mvnw"
     fi
-    $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR "-DmavenThreads=$MAVEN_THREADS_OPT" $MAVEN_GOAL
+    $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
     RESULT=$?
     set -e
     if ((RESULT != 0)); then
