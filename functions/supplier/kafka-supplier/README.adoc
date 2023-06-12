@@ -1,13 +1,13 @@
-# Apache Kafka Consumer Supplier
+# Apache Kafka (Consumer) Supplier
 
-A `Consumer<Message<?>>` that allows to publish messages to Apache Kafka topic.
+A `Supplier` that allows to consume messages from Apache Kafka topic.
 
 
 ## Beans for injection
 
 The `KafkaSupplierConfiguration` is an auto-configuration, so no need to import anything.
 
-The `Supplier<Flux<Message<?>>> kafkaSupplier` bean can be injection into target service for consuming data from Kafka topics.
+The `Supplier<Flux<Message<?>>> kafkaSupplier` bean can be injected into the target service for consuming data from Kafka topics.
 
 ## Configuration Options
 

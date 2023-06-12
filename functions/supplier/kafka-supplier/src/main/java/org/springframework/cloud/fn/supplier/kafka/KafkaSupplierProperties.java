@@ -19,6 +19,7 @@ package org.springframework.cloud.fn.supplier.kafka;
 import java.util.regex.Pattern;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.expression.Expression;
 
 /**
  * Auto-configuration properties for the Kafka Supplier.
@@ -45,6 +46,11 @@ public class KafkaSupplierProperties {
 	 */
 	private boolean ackDiscarded;
 
+	/**
+	 * SpEL expression for 'RecordFilterStrategy' with a 'ConsumerRecord' as a root object.
+	 */
+	Expression recordFilter;
+
 	public String[] getTopics() {
 		return this.topics;
 	}
@@ -67,6 +73,14 @@ public class KafkaSupplierProperties {
 
 	public void setAckDiscarded(boolean ackDiscarded) {
 		this.ackDiscarded = ackDiscarded;
+	}
+
+	public Expression getRecordFilter() {
+		return this.recordFilter;
+	}
+
+	public void setRecordFilter(Expression recordFilter) {
+		this.recordFilter = recordFilter;
 	}
 
 }

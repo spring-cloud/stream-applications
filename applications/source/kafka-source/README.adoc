@@ -15,7 +15,8 @@ Properties grouped by prefix:
 
 === kafka.supplier
 
-$$ack-discarded$$:: $$Whether to acknowledge discarded records after 'RecordFilterStrategy'.$$ *($$Boolean$$, default: `$$false$$`)*
+$$ack-discarded$$:: $$Whether to acknowledge discarded records after 'RecordFilterStrategy'.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$record-filter$$:: $$SpEL expression for 'RecordFilterStrategy' with a 'ConsumerRecord' as a root object.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$topic-pattern$$:: $$Apache Kafka topics pattern to subscribe.$$ *($$Pattern$$, default: `$$<none>$$`)*
 $$topics$$:: $$Apache Kafka topics to subscribe.$$ *($$String[]$$, default: `$$<none>$$`)*
 
@@ -24,6 +25,43 @@ $$topics$$:: $$Apache Kafka topics to subscribe.$$ *($$String[]$$, default: `$$<
 $$bootstrap-servers$$:: $$Comma-delimited list of host:port pairs to use for establishing the initial connections to the Kafka cluster. Applies to all components unless overridden.$$ *($$List<String>$$, default: `$$<none>$$`)*
 $$client-id$$:: $$ID to pass to the server when making requests. Used for server-side logging.$$ *($$String$$, default: `$$<none>$$`)*
 $$properties$$:: $$Additional properties, common to producers and consumers, used to configure the client.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+
+=== spring.kafka.consumer
+
+$$auto-commit-interval$$:: $$Frequency with which the consumer offsets are auto-committed to Kafka if 'enable.auto.commit' is set to true.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$auto-offset-reset$$:: $$What to do when there is no initial offset in Kafka or if the current offset no longer exists on the server.$$ *($$String$$, default: `$$<none>$$`)*
+$$bootstrap-servers$$:: $$Comma-delimited list of host:port pairs to use for establishing the initial connections to the Kafka cluster. Overrides the global property, for consumers.$$ *($$List<String>$$, default: `$$<none>$$`)*
+$$client-id$$:: $$ID to pass to the server when making requests. Used for server-side logging.$$ *($$String$$, default: `$$<none>$$`)*
+$$enable-auto-commit$$:: $$Whether the consumer's offset is periodically committed in the background.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$fetch-max-wait$$:: $$Maximum amount of time the server blocks before answering the fetch request if there isn't sufficient data to immediately satisfy the requirement given by "fetch-min-size".$$ *($$Duration$$, default: `$$<none>$$`)*
+$$fetch-min-size$$:: $$Minimum amount of data the server should return for a fetch request.$$ *($$DataSize$$, default: `$$<none>$$`)*
+$$group-id$$:: $$Unique string that identifies the consumer group to which this consumer belongs.$$ *($$String$$, default: `$$<none>$$`)*
+$$heartbeat-interval$$:: $$Expected time between heartbeats to the consumer coordinator.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$isolation-level$$:: $$Isolation level for reading messages that have been written transactionally.$$ *($$IsolationLevel$$, default: `$$read-uncommitted$$`, possible values: `READ_UNCOMMITTED`,`READ_COMMITTED`)*
+$$key-deserializer$$:: $$Deserializer class for keys.$$ *($$Class<?>$$, default: `$$<none>$$`)*
+$$max-poll-records$$:: $$Maximum number of records returned in a single call to poll().$$ *($$Integer$$, default: `$$<none>$$`)*
+$$properties$$:: $$Additional consumer-specific properties used to configure the client.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+$$value-deserializer$$:: $$Deserializer class for values.$$ *($$Class<?>$$, default: `$$<none>$$`)*
+
+=== spring.kafka.listener
+
+$$ack-count$$:: $$Number of records between offset commits when ackMode is "COUNT" or "COUNT_TIME".$$ *($$Integer$$, default: `$$<none>$$`)*
+$$ack-mode$$:: $$Listener AckMode. See the spring-kafka documentation.$$ *($$AckMode$$, default: `$$<none>$$`, possible values: `RECORD`,`BATCH`,`TIME`,`COUNT`,`COUNT_TIME`,`MANUAL`,`MANUAL_IMMEDIATE`)*
+$$ack-time$$:: $$Time between offset commits when ackMode is "TIME" or "COUNT_TIME".$$ *($$Duration$$, default: `$$<none>$$`)*
+$$async-acks$$:: $$Support for asynchronous record acknowledgements. Only applies when spring.kafka.listener.ack-mode is manual or manual-immediate.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$auto-startup$$:: $$Whether to auto start the container.$$ *($$Boolean$$, default: `$$true$$`)*
+$$client-id$$:: $$Prefix for the listener's consumer client.id property.$$ *($$String$$, default: `$$<none>$$`)*
+$$concurrency$$:: $$Number of threads to run in the listener containers.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$idle-between-polls$$:: $$Sleep interval between Consumer.poll(Duration) calls.$$ *($$Duration$$, default: `$$0$$`)*
+$$idle-event-interval$$:: $$Time between publishing idle consumer events (no data received).$$ *($$Duration$$, default: `$$<none>$$`)*
+$$idle-partition-event-interval$$:: $$Time between publishing idle partition consumer events (no data received for partition).$$ *($$Duration$$, default: `$$<none>$$`)*
+$$immediate-stop$$:: $$Whether the container stops after the current record is processed or after all the records from the previous poll are processed.$$ *($$Boolean$$, default: `$$false$$`)*
+$$log-container-config$$:: $$Whether to log the container configuration during initialization (INFO level).$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$missing-topics-fatal$$:: $$Whether the container should fail to start if at least one of the configured topics are not present on the broker.$$ *($$Boolean$$, default: `$$false$$`)*
+$$monitor-interval$$:: $$Time between checks for non-responsive consumers. If a duration suffix is not specified, seconds will be used.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$no-poll-threshold$$:: $$Multiplier applied to "pollTimeout" to determine if a consumer is non-responsive.$$ *($$Float$$, default: `$$<none>$$`)*
+$$poll-timeout$$:: $$Timeout to use when polling the consumer.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$type$$:: $$Listener type.$$ *($$Type$$, default: `$$single$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

@@ -26,8 +26,10 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.autoconfigure.integration.IntegrationAutoConfiguration;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.cloud.fn.common.config.SpelExpressionConverterConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
@@ -46,8 +48,10 @@ public class KafkaSupplierTests {
 
 	final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(
+					IntegrationAutoConfiguration.class,
 					KafkaAutoConfiguration.class,
-					KafkaSupplierConfiguration.class));
+					KafkaSupplierConfiguration.class,
+					SpelExpressionConverterConfiguration.class));
 
 	@BeforeAll
 	static void initializeEmbeddedKafka() {
@@ -87,7 +91,8 @@ public class KafkaSupplierTests {
 						"spring.kafka.consumer.group-id=test-group2",
 						"spring.kafka.consumer.auto-offset-reset=earliest",
 						"spring.kafka.listener.type=BATCH",
-						"kafka.supplier.topics=testTopic1,testTopic2")
+						"kafka.supplier.topics=testTopic1,testTopic2",
+						"kafka.supplier.recordFilter=value() == 'test data #2'")
 				.run((context) -> {
 					String testPayload1 = "test data #1";
 					String testPayload2 = "test data #2";
@@ -97,7 +102,7 @@ public class KafkaSupplierTests {
 									kafkaSupplier.get()
 											.map(Message::getPayload)
 											.cast(List.class))
-							.expectNext(List.of(testPayload1, testPayload2))
+							.expectNext(List.of(testPayload1))
 							.thenCancel()
 							.verifyLater();
 

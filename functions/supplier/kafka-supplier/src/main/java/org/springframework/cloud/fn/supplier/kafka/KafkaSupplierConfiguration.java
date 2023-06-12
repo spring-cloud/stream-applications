@@ -22,12 +22,17 @@ import java.util.regex.Pattern;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.fn.common.config.ComponentCustomizer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.kafka.dsl.Kafka;
 import org.springframework.integration.kafka.dsl.KafkaMessageDrivenChannelAdapterSpec;
@@ -115,6 +120,20 @@ public class KafkaSupplierConfiguration {
 		}
 
 		return kafkaMessageDrivenChannelAdapterSpec;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnProperty("kafka.supplier.recordFilter")
+	RecordFilterStrategy<Object, Object> recordFilterStrategy(KafkaSupplierProperties kafkaSupplierProperties,
+			BeanFactory beanFactory) {
+
+		StandardEvaluationContext evaluationContext = IntegrationContextUtils.getEvaluationContext(beanFactory);
+
+		return consumerRecord ->
+				Boolean.TRUE.equals(
+						kafkaSupplierProperties.getRecordFilter()
+								.getValue(evaluationContext, consumerRecord, Boolean.class));
 	}
 
 }
