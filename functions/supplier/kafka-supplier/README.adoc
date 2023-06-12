@@ -1,0 +1,28 @@
+# Apache Kafka (Consumer) Supplier
+
+A `Supplier` that allows to consume messages from Apache Kafka topic.
+
+
+## Beans for injection
+
+The `KafkaSupplierConfiguration` is an auto-configuration, so no need to import anything.
+
+The `Supplier<Flux<Message<?>>> kafkaSupplier` bean can be injected into the target service for consuming data from Kafka topics.
+
+## Configuration Options
+
+All configuration properties are prefixed with `kafka.supplier`.
+
+For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/kafka/KafkaSupplierProperties.java[KafkaSupplierProperties].
+Also, this artifact fully depends on Spring for Apache Kafka auto-configuration and injects a `ConcurrentKafkaListenerContainerFactory` from there.
+
+A `ComponentCustomizer<KafkaMessageDrivenChannelAdapterSpec<?, ?, ?>>` bean can be added in the target project to provide any custom options for the `KafkaMessageDrivenChannelAdapterSpec` configuration used by the `kafkaSupplier`.
+
+See more information about `KafkaMessageDrivenChannelAdapter` configuration and behavior in Spring Integration https://docs.spring.io/spring-integration/docs/current/reference/html/kafka.html#kafka-inbound[documentation].
+
+## Tests
+
+
+## Other usage
+
+See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/kafka-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application where it makes an Apache Kafka source.

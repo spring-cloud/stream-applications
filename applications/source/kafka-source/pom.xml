@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>stream-applications-core</artifactId>
+		<groupId>org.springframework.cloud.stream.app</groupId>
+		<version>4.0.0-SNAPSHOT</version>
+		<relativePath>../../stream-applications-core/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>kafka-source</artifactId>
+	<name>kafka-source</name>
+	<description>Apache Kafka Source Apps</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud.fn</groupId>
+			<artifactId>kafka-supplier</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dataflow-apps-docs-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
+				<configuration>
+					<application>
+						<name>kafka</name>
+						<type>source</type>
+						<version>${project.version}</version>
+						<configClass>AUTOCONFIGURATION</configClass>
+						<functionDefinition>kafkaSupplier</functionDefinition>
+
+						<maven>
+							<dependencies>
+								<dependency>
+									<groupId>org.springframework.cloud.fn</groupId>
+									<artifactId>kafka-supplier</artifactId>
+								</dependency>
+							</dependencies>
+						</maven>
+					</application>
+
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>

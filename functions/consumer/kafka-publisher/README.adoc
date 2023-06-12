@@ -7,7 +7,7 @@ A `Consumer<Message<?>>` that allows to publish messages to Apache Kafka topic.
 
 The `KafkaPublisherConfiguration` is an auto-configuration, so no need to import anything.
 
-The `Consumer<Message<?>> kafkaPublisher` bean can be injection into target service for producing data into Kafka topic.
+The `Consumer<Message<?>> kafkaPublisher` bean can be injected into the target service for producing data into Kafka topic.
 
 ## Configuration Options
 

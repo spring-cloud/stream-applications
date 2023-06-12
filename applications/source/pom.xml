@@ -16,6 +16,7 @@
         <module>jdbc-source</module>
         <module>jms-source</module>
         <module>http-source</module>
+        <module>kafka-source</module>
         <module>load-generator-source</module>
         <module>mail-source</module>
         <module>mongodb-source</module>
