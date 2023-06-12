@@ -15,7 +15,7 @@ Properties grouped by prefix:
 
 === kafka.supplier
 
-$$ack-discarded$$:: $$Whether to acknowledge discarded records after 'RecordFilterStrategy'.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$ack-discarded$$:: $$Whether to acknowledge discarded records after 'RecordFilterStrategy'.$$ *($$Boolean$$, default: `$$false$$`)*
 $$record-filter$$:: $$SpEL expression for 'RecordFilterStrategy' with a 'ConsumerRecord' as a root object.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$topic-pattern$$:: $$Apache Kafka topics pattern to subscribe.$$ *($$Pattern$$, default: `$$<none>$$`)*
 $$topics$$:: $$Apache Kafka topics to subscribe.$$ *($$String[]$$, default: `$$<none>$$`)*

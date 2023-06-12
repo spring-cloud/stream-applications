@@ -40,6 +40,16 @@ $$replica-set-name$$:: $$Required replica set name for the cluster. Cannot be se
 $$uri$$:: $$Mongo database URI. Overrides host, port, username, password, and database.$$ *($$String$$, default: `$$mongodb://localhost/test$$`)*
 $$username$$:: $$Login user of the mongo server. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
 $$uuid-representation$$:: $$Representation to use when converting a UUID to a BSON binary value.$$ *($$UuidRepresentation$$, default: `$$java-legacy$$`, possible values: `UNSPECIFIED`,`STANDARD`,`C_SHARP_LEGACY`,`JAVA_LEGACY`,`PYTHON_LEGACY`)*
+
+=== spring.data.mongodb.gridfs
+
+$$bucket$$:: $$GridFS bucket name.$$ *($$String$$, default: `$$<none>$$`)*
+$$database$$:: $$GridFS database name.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== spring.data.mongodb.ssl
+
+$$bundle$$:: $$SSL bundle name.$$ *($$String$$, default: `$$<none>$$`)*
+$$enabled$$:: $$Whether to enable SSL support. Enabled automatically if "bundle" is provided unless specified otherwise.$$ *($$Boolean$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

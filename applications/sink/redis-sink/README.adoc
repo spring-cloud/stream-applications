@@ -33,6 +33,11 @@ $$timeout$$:: $$Read timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$url$$:: $$Connection URL. Overrides host, port, and password. User is ignored. Example: redis://user:password@example.com:6379$$ *($$String$$, default: `$$<none>$$`)*
 $$username$$:: $$Login username of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
 
+=== spring.data.redis.cluster
+
+$$max-redirects$$:: $$Maximum number of redirects to follow when executing commands across the cluster.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$nodes$$:: $$Comma-separated list of "host:port" pairs to bootstrap from. This represents an "initial" list of cluster nodes and is required to have at least one entry.$$ *($$List<String>$$, default: `$$<none>$$`)*
+
 === spring.data.redis.jedis.pool
 
 $$enabled$$:: $$Whether to enable the pool. Enabled automatically if "commons-pool2" is available. With Jedis, pooling is implicitly enabled in sentinel mode and this setting only applies to single node setup.$$ *($$Boolean$$, default: `$$<none>$$`)*
@@ -51,12 +56,21 @@ $$max-wait$$:: $$Maximum amount of time a connection allocation should block bef
 $$min-idle$$:: $$Target for the minimum number of idle connections to maintain in the pool. This setting only has an effect if both it and time between eviction runs are positive.$$ *($$Integer$$, default: `$$0$$`)*
 $$time-between-eviction-runs$$:: $$Time between runs of the idle object evictor thread. When positive, the idle object evictor thread starts, otherwise no idle object eviction is performed.$$ *($$Duration$$, default: `$$<none>$$`)*
 
+=== spring.data.redis.lettuce
+
+$$shutdown-timeout$$:: $$Shutdown timeout.$$ *($$Duration$$, default: `$$100ms$$`)*
+
 === spring.data.redis.sentinel
 
 $$master$$:: $$Name of the Redis server.$$ *($$String$$, default: `$$<none>$$`)*
 $$nodes$$:: $$Comma-separated list of "host:port" pairs.$$ *($$List<String>$$, default: `$$<none>$$`)*
 $$password$$:: $$Password for authenticating with sentinel(s).$$ *($$String$$, default: `$$<none>$$`)*
 $$username$$:: $$Login username for authenticating with sentinel(s).$$ *($$String$$, default: `$$<none>$$`)*
+
+=== spring.data.redis.ssl
+
+$$bundle$$:: $$SSL bundle name.$$ *($$String$$, default: `$$<none>$$`)*
+$$enabled$$:: $$Whether to enable SSL support. Enabled automatically if "bundle" is provided unless specified otherwise.$$ *($$Boolean$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

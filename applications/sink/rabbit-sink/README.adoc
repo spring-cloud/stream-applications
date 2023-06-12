@@ -40,6 +40,15 @@ $$requested-channel-max$$:: $$Number of channels per connection requested by the
 $$requested-heartbeat$$:: $$Requested heartbeat timeout; zero for none. If a duration suffix is not specified, seconds will be used.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$username$$:: $$Login user to authenticate to the broker.$$ *($$String$$, default: `$$guest$$`)*
 $$virtual-host$$:: $$Virtual host to use when connecting to the broker.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== spring.rabbitmq.template
+
+$$default-receive-queue$$:: $$Name of the default queue to receive messages from when none is specified explicitly.$$ *($$String$$, default: `$$<none>$$`)*
+$$exchange$$:: $$Name of the default exchange to use for send operations.$$ *($$String$$, default: `$$<empty string>$$`)*
+$$mandatory$$:: $$Whether to enable mandatory messages.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$receive-timeout$$:: $$Timeout for receive() operations.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$reply-timeout$$:: $$Timeout for sendAndReceive() operations.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$routing-key$$:: $$Value of a default routing key to use for send operations.$$ *($$String$$, default: `$$<empty string>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
