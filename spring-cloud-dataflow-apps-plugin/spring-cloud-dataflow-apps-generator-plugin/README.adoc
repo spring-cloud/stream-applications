@@ -1,0 +1,302 @@
+= spring-cloud-dataflow-apps-generator-plugin
+
+Maven plugin for generating spring cloud stream applications: https://github.com/spring-cloud/stream-applications
+It generates a separate maven project for every configured binder.
+
+Plugin `Application` section helps to configure the application project independently form the Binders that
+can be used. The `Binders` section helps to define the Binder specific configurations, that are merged to
+the `Application` configurations to generate the binder specific maven projects.
+
+The `Global` section (e.g. `global.application` and `global.binders`) helps to define configurations sharable
+between many Applications and Binders.
+
+As the following diagram illustrates, both the `Application` and the
+`Binder` allow configuring various application and maven properties:
+
+image::src/main/resources/doc/MojoConfiguration.jpg[]
+
+== Build
+
+mvn clean package [Requires JDK 8]
+
+== Sample Configuration for generating spring cloud stream apps
+
+In the parent POM define the `Application` and `Binder` configurations common for all applications to be generated.
+Do this under the `pluginManagement` pom section and use the plugin's `global` configuration:
+
+[source, xml]
+----
+<pluginManagement>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <executions>
+                <execution>
+                    <id>app-gen</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>generate-app</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <generatedProjectHome>${basedir}/apps</generatedProjectHome>
+
+                <global>
+                    <application>
+
+                        <bootVersion>${spring-boot.version}</bootVersion>
+
+                        <containerImage>
+                            <enableMetadata>true</enableMetadata>
+                        </containerImage>
+
+                        <metadata>
+                            <mavenPluginVersion>2.0.2.BUILD-SNAPSHOT</mavenPluginVersion>
+                        </metadata>
+
+                        <maven>
+                            <dependencyManagement>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.fn</groupId>
+                                    <artifactId>function-dependencies</artifactId>
+                                    <version>${java-functions.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud</groupId>
+                                    <artifactId>spring-cloud-stream-dependencies</artifactId>
+                                    <version>${spring-cloud-stream-dependencies.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud</groupId>
+                                    <artifactId>spring-cloud-function-dependencies</artifactId>
+                                    <version>${spring-cloud-function-dependencies.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud</groupId>
+                                    <artifactId>spring-cloud-dependencies</artifactId>
+                                    <version>${spring-cloud-dependencies.version}</version>
+                                </dependency>
+                            </dependencyManagement>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.stream.app</groupId>
+                                    <artifactId>stream-applications-security-common</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.stream.app</groupId>
+                                    <artifactId>stream-applications-micrometer-common</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.cloud.stream.app</groupId>
+                                    <artifactId>stream-applications-postprocessor-common</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>io.micrometer</groupId>
+                                    <artifactId>micrometer-registry-prometheus</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>io.micrometer.prometheus</groupId>
+                                    <artifactId>prometheus-rsocket-spring</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>io.micrometer</groupId>
+                                    <artifactId>micrometer-registry-wavefront</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>io.pivotal.cfenv</groupId>
+                                    <artifactId>java-cfenv-boot</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.boot</groupId>
+                                    <artifactId>spring-boot-configuration-processor</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.boot</groupId>
+                                    <artifactId>spring-boot-starter-actuator</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.boot</groupId>
+                                    <artifactId>spring-boot-starter-web</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.boot</groupId>
+                                    <artifactId>spring-boot-starter-logging</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework.boot</groupId>
+                                    <artifactId>spring-boot-starter-security</artifactId>
+                                </dependency>
+                            </dependencies>
+                        </maven>
+                    </application>
+                    <binders>
+                        <kafka>
+                            <maven>
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>org.springframework.cloud</groupId>
+                                        <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+                                    </dependency>
+                                </dependencies>
+                            </maven>
+                        </kafka>
+                        <rabbit>
+                            <maven>
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>org.springframework.cloud</groupId>
+                                        <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+                                    </dependency>
+                                </dependencies>
+                            </maven>
+                        </rabbit>
+                    </binders>
+                </global>
+            </configuration>
+        </plugin>
+    </plugins>
+</pluginManagement>
+----
+
+Above global configurations will be reused by all children applications.
+
+In addition, the child application can add application specific configurations, contributed to the inherited from
+to the global:
+
+[source, xml]
+----
+<plugins>
+  <plugin>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <configuration>
+          <application>
+              <name>syslog</name>
+              <type>source</type>
+              <version>${project.version}</version>
+              <configClass>org.springframework.cloud.fn.supplier.syslog.SyslogSupplierConfiguration.class</configClass>
+
+              <maven>
+                  <dependencies>
+                      <dependency>
+                          <groupId>org.springframework.cloud.fn</groupId>
+                          <artifactId>syslog-supplier</artifactId>
+                      </dependency>
+                      <dependency>
+                          <groupId>org.springframework.cloud.stream.app</groupId>
+                          <artifactId>stream-applications-composite-function-support</artifactId>
+                          <version>${stream-apps-core.version}</version>
+                      </dependency>
+                  </dependencies>
+              </maven>
+          </application>
+      </configuration>
+  </plugin>
+  ...
+</plugins>
+----
+
+
+== Configure Solace and Pubsub binders support
+
+To generate applications for https://github.com/SolaceProducts/spring-cloud-stream-binder-solace[Solace] binders, extend your `binders` section with following configuration:
+
+[source, xml]
+----
+    <binders>
+        ....
+        <solace>
+            <maven>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.solace.spring.cloud</groupId>
+                        <artifactId>spring-cloud-starter-stream-solace</artifactId>
+                        <version>1.2.1</version>
+                    </dependency>
+                </dependencies>
+            </maven>
+        </solace>
+        ....
+    </binders>
+----
+
+You can add it either to your application's POM or to the parent's `global` POM sections.
+
+Similar to generate application for the https://github.com/spring-cloud/spring-cloud-gcp/tree/master/spring-cloud-gcp-pubsub-stream-binder[PubSub]
+binders and to your binders section configuration like this:
+
+[source, xml]
+----
+<binders>
+...
+    <pubsub>
+        <maven>
+            <dependencyManagement>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-gcp-dependencies</artifactId>
+                    <version>1.2.4.RELEASE</version>
+                </dependency>
+            </dependencyManagement>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-gcp-pubsub-stream-binder</artifactId>
+                </dependency>
+            </dependencies>
+        </maven>
+    </pubsub>
+...
+</binders>
+----
+
+== Custom Spring Boot Maven Plugin Configuration
+
+Spring Boot Maven plugin offers a number of customization options by specifying a configuration section in the plugin definition.
+For example, using the custom configuration, you can instruct the plugin to unpack a particular dependency.
+You would do that using Spring Boot Maven plugin as below.
+```
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+        <requiresUnpack>
+                    <dependency>
+                        <groupId>org.python</groupId>
+                        <artifactId>jython-standalone</artifactId>
+                    </dependency>
+                </requiresUnpack>
+    </configuration>
+</plugin>
+```
+
+When using the app generator plugin, you can ask the plugin to include this information when it generates the necessary XML snippets for adding the Spring Boot Maven plugin.
+Below is an example of doing so.
+```
+<plugin>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
+    <configuration>
+        <application>
+            ...
+            <bootPluginConfiguration>
+                <![CDATA[
+                <requiresUnpack>
+                    <dependency>
+                        <groupId>org.python</groupId>
+                        <artifactId>jython-standalone</artifactId>
+                    </dependency>
+                </requiresUnpack>
+                ]]>
+            </bootPluginConfiguration>
+            ...
+        </application>
+    </configuration>
+```
+
+Pay attention to how the Spring Boot plugin configuration is wrapped inside a `CDATA` element.
+This is necessary for the app generator to properly parse this information.

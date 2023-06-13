@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+		"-//Puppy Crawl//DTD Suppressions 1.1//EN"
+		"https://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+<suppressions>
+	<suppress files="(.*EmbeddedEngine\.java)" checks="[a-zA-Z0-9]*"/>
+	<suppress files="(.*Class\.java)" checks="[a-zA-Z0-9]*"/>
+	<suppress files="[\\/]src[\\/]main[\\/](protos)[\\/]"
+			  checks="(Javadoc*|HideUtility*)"/>
+	<suppress files=".*sample.*" checks="(Javadoc*|HideUtility*)"/>
+	<suppress files=".*example.*" checks="(Javadoc*|HideUtility*)"/>
+	<suppress files=".*integration-tests.*" checks="(Javadoc*|HideUtility*)"/>
+	<suppress files="(.*MavenXmlWriter\.java)" checks="Javadoc*"/>
+	<suppress files="(.*Tests\.java|.*Tests\.groovy)" checks="Javadoc*"/>
+	<suppress files=".*src.test.java.*" checks="Javadoc*"/>
+	<suppress files="generated-sources" checks="[a-zA-Z0-9]*"/>
+	<suppress files=".*target.*" checks="[a-zA-Z0-9]*"/>
+	<suppress files=".*build.*" checks="[a-zA-Z0-9]*"/>
+	<suppress files=".*protos" checks="[a-zA-Z0-9]*"/>
+</suppressions>

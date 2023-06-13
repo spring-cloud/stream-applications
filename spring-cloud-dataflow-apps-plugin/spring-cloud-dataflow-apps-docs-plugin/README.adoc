@@ -1,0 +1,44 @@
+= Spring Cloud Stream & Task Maven Documentation Plugin
+
+Maven plugin for generating documentation for Spring Cloud stream and task app starters.
+
+Assuming a Spring Cloud Stream / Task app (or app starter) has
+specified selected configuration properties to be visible (i.e., providing src/main/resources/META-INF/dataflow-configuration-metadata.properties),
+this plugin will help automate the documentation of such properties.
+https://docs.spring.io/spring-cloud-dataflow/docs/1.1.0.M2/reference/html/spring-cloud-dataflow-register-apps.html#spring-cloud-dataflow-stream-app-whitelisting[whitelisted]
+some configuration properties, this plugin will help automate the documentation of such properties.
+
+== Usage
+
+To use this plugin, simply add the following markers to your project `README.adoc` file:
+
+```
+//tag::configuration-properties[]
+//end::configuration-properties[]
+```
+
+
+Then, configure this plugin for your app project (either directly or through a parent POM):
+```
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.cloud.stream.app.plugin</groupId>
+				<artifactId>spring-cloud-stream-app-documentation-maven-plugin</artifactId>
+				<version>1.0.0.BUILD-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>generate-documentation</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>generate-documentation</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+```
+
+Documentation for the visible properties shall appear on next build, which should be committed under VCS.
+

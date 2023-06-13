@@ -1,0 +1,1 @@
+= Spring Cloud Stream {{#camelCase}}{{app.name}}{{/camelCase}} {{#capitalize}}{{app.type}}{{/capitalize}} {{#capitalize}}{{app-binder.name}}{{/capitalize}} Binder Application

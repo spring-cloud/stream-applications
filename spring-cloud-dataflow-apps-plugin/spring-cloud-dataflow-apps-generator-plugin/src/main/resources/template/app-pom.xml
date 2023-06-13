@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>{{app.springBootVersion}}</version>
+		<relativePath></relativePath>
+	</parent>
+	<groupId>{{app.groupId}}</groupId>
+	<artifactId>{{app.name}}-{{app.type}}-{{app-binder.name}}</artifactId>
+	<version>{{app.version}}</version>
+	<name>{{app.name}}-{{app.type}}-{{app-binder.name}}</name>
+	<description>Spring Cloud Stream {{#camelCase}}{{app.name}}{{/camelCase}} {{#capitalize}}{{app.type}}{{/capitalize}} {{#capitalize}}{{app-binder.name}}{{/capitalize}} Binder Application
+	</description>
+
+	<distributionManagement>
+		<repository>
+			<id>repo.spring.io</id>
+			<name>Spring Release Repository</name>
+			<url>https://repo.spring.io/libs-release-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>repo.spring.io</id>
+			<name>Spring Snapshot Repository</name>
+			<url>https://repo.spring.io/libs-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<properties>
+		<skipTests>true</skipTests>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- (begin) maven properties -->
+		{{#app.maven.properties}}
+		{{this}}
+		{{/app.maven.properties}}
+
+		{{#app-binder.maven.properties}}
+		{{this}}
+		{{/app-binder.maven.properties}}
+		<!-- (end) maven properties -->
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- (begin) managed dependencies -->
+			{{#app-binder.maven.dependencyManagement}}
+			{{this}}
+			{{/app-binder.maven.dependencyManagement}}
+
+			{{#app.maven.dependencyManagement}}
+			{{this}}
+			{{/app.maven.dependencyManagement}}
+			<!-- (end) managed dependencies -->
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!-- (begin) additional dependencies -->
+		{{#app.maven.dependencies}}
+		{{this}}
+		{{/app.maven.dependencies}}
+
+		{{#app-binder.maven.dependencies}}
+		{{this}}
+		{{/app-binder.maven.dependencies}}
+		<!-- (end) additional dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<!-- (begin) additional repositories -->
+		{{#app.maven.repositories}}
+		{{this}}
+		{{/app.maven.repositories}}
+
+		{{#app-binder.maven.repositories}}
+		{{this}}
+		{{/app-binder.maven.repositories}}
+		<!-- (end) additional repositories -->
+
+		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+		</pluginRepository>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<build>
+		<plugins>
+			<!-- (begin) additional plugins -->
+			{{#app.maven.plugins}}
+			{{this}}
+			{{/app.maven.plugins}}
+
+			{{#app-binder.maven.plugins}}
+			{{this}}
+			{{/app-binder.maven.plugins}}
+			<!-- (end) additional plugins -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				{{#app.bootPluginConfiguration}}
+				<configuration>
+					{{this}}
+				</configuration>
+				{{/app.bootPluginConfiguration}}
+			</plugin>
+
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<from>
+						<image>{{app.containerImage.baseImage}}</image>
+					</from>
+					<to>
+						<image>{{app.containerImage.orgName}}/${project.artifactId}:{{app.containerImage.tag}}</image>
+					</to>
+					<container>
+						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+						<format>{{app.containerImage.format}}</format>
+						{{#app.containerImage.enableMetadata}}
+						<labels>
+							<org.springframework.cloud.dataflow.spring-configuration-metadata.json>
+								${org.springframework.cloud.dataflow.spring.configuration.metadata.json}
+							</org.springframework.cloud.dataflow.spring-configuration-metadata.json>
+							<application.name>${project.artifactId}</application.name>
+							<application.version>${project.version}</application.version>
+						</labels>
+						{{/app.containerImage.enableMetadata}}
+					</container>
+				</configuration>
+			</plugin>
+
+			{{#app.containerImage.enableMetadata}}
+			<!--
+			 Use of properties-maven-plugin to load the encoded metadata properties created by the jib-maven-plugin
+			 Use: Use: ./mvnw clean install jib:dockerBuild or ./mvnw clean install jib:build
+			-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>read-project-properties</goal>
+						</goals>
+						<configuration>
+							<files>
+								<file>
+									${project.build.outputDirectory}/META-INF/spring-configuration-metadata-encoded.properties
+								</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			{{/app.containerImage.enableMetadata}}
+
+			<plugin>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dataflow-apps-metadata-plugin</artifactId>
+				<version>{{app.metadata.mavenPluginVersion}}</version>
+				<configuration>
+					{{#app.containerImage.enableMetadata}}
+					<storeFilteredMetadata>true</storeFilteredMetadata>
+					<metadataFilter>
+						<names>
+							{{#app.metadataNameFilters}}
+							<filter>{{this}}</filter>
+							{{/app.metadataNameFilters}}
+						</names>
+						<sourceTypes>
+							{{#app.metadata.sourceTypeFilters}}
+							<filter>{{this}}</filter>
+							{{/app.metadata.sourceTypeFilters}}
+						</sourceTypes>
+					</metadataFilter>
+					{{/app.containerImage.enableMetadata}}
+				</configuration>
+				<executions>
+					<execution>
+						<id>aggregate-metadata</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>aggregate-metadata</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.21.0</version>
+				<configuration>
+					<skipTests>${skipTests}</skipTests>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>javadoc</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<quiet>true</quiet>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>milestone</id>
+			<distributionManagement>
+				<repository>
+					<id>repo.spring.io</id>
+					<name>Spring Milestone Repository</name>
+					<url>https://repo.spring.io/libs-milestone-local</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+		<profile>
+			<id>central</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<distributionManagement>
+				<repository>
+					<id>sonatype-nexus-staging</id>
+					<name>Nexus Release Repository</name>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+				<snapshotRepository>
+					<id>sonatype-nexus-snapshots</id>
+					<name>Sonatype Nexus Snapshots</name>
+					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+	</profiles>
+</project>
