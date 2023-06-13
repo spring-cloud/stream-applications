@@ -16,7 +16,7 @@
 		<maven.version>3.6.3</maven.version>
 		<junit.version>4.12</junit.version>
 		<assertj.version>3.11.1</assertj.version>
-		<commons-text.version>1.8</commons-text.version>
+		<commons-text.version>1.10.0</commons-text.version>
 		<spring.version>5.2.8.RELEASE</spring.version>
 		<snakeyaml.version>1.26</snakeyaml.version>
 	</properties>
