@@ -37,6 +37,15 @@ $$socket-keep-alive$$:: $$Whether to enable socket keep alive between client and
 $$socket-timeout$$:: $$Socket timeout used when communicating with Elasticsearch.$$ *($$Duration$$, default: `$$30s$$`)*
 $$uris$$:: $$Comma-separated list of the Elasticsearch instances to use.$$ *($$List<String>$$, default: `$$[http://localhost:9200]$$`)*
 $$username$$:: $$Username for authentication with Elasticsearch.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== spring.elasticsearch.restclient.sniffer
+
+$$delay-after-failure$$:: $$Delay of a sniff execution scheduled after a failure.$$ *($$Duration$$, default: `$$1m$$`)*
+$$interval$$:: $$Interval between consecutive ordinary sniff executions.$$ *($$Duration$$, default: `$$5m$$`)*
+
+=== spring.elasticsearch.restclient.ssl
+
+$$bundle$$:: $$SSL bundle name.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 == Examples of running this sink

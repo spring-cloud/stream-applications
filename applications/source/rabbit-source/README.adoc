@@ -52,6 +52,24 @@ $$requested-channel-max$$:: $$Number of channels per connection requested by the
 $$requested-heartbeat$$:: $$Requested heartbeat timeout; zero for none. If a duration suffix is not specified, seconds will be used.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$username$$:: $$Login user to authenticate to the broker.$$ *($$String$$, default: `$$guest$$`)*
 $$virtual-host$$:: $$Virtual host to use when connecting to the broker.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== spring.rabbitmq.listener.simple
+
+$$acknowledge-mode$$:: $$Acknowledge mode of container.$$ *($$AcknowledgeMode$$, default: `$$<none>$$`, possible values: `NONE`,`MANUAL`,`AUTO`)*
+$$auto-startup$$:: $$Whether to start the container automatically on startup.$$ *($$Boolean$$, default: `$$true$$`)*
+$$batch-size$$:: $$Batch size, expressed as the number of physical messages, to be used by the container.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$concurrency$$:: $$Minimum number of listener invoker threads.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$consumer-batch-enabled$$:: $$Whether the container creates a batch of messages based on the 'receive-timeout' and 'batch-size'. Coerces 'de-batching-enabled' to true to include the contents of a producer created batch in the batch as discrete records.$$ *($$Boolean$$, default: `$$false$$`)*
+$$de-batching-enabled$$:: $$Whether the container should present batched messages as discrete messages or call the listener with the batch.$$ *($$Boolean$$, default: `$$true$$`)*
+$$default-requeue-rejected$$:: $$Whether rejected deliveries are re-queued by default.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$idle-event-interval$$:: $$How often idle container events should be published.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$max-concurrency$$:: $$Maximum number of listener invoker threads.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$missing-queues-fatal$$:: $$Whether to fail if the queues declared by the container are not available on the broker and/or whether to stop the container if one or more queues are deleted at runtime.$$ *($$Boolean$$, default: `$$true$$`)*
+$$prefetch$$:: $$Maximum number of unacknowledged messages that can be outstanding at each consumer.$$ *($$Integer$$, default: `$$<none>$$`)*
+
+=== spring.rabbitmq.listener
+
+$$type$$:: $$Listener container type.$$ *($$ContainerType$$, default: `$$simple$$`, possible values: `SIMPLE`,`DIRECT`,`STREAM`)*
 //end::configuration-properties[]
 
 Also see the https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[Spring Boot Documentation]

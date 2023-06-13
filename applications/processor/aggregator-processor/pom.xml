@@ -25,6 +25,10 @@
         <plugins>
             <plugin>
                 <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dataflow-apps-docs-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
                 <configuration>
                     <application>

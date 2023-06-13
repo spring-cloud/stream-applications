@@ -47,6 +47,11 @@ $$properties$$:: $$Additional producer-specific properties used to configure the
 $$retries$$:: $$When greater than zero, enables retrying of failed sends.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$transaction-id-prefix$$:: $$When non empty, enables transaction support for producer.$$ *($$String$$, default: `$$<none>$$`)*
 $$value-serializer$$:: $$Serializer class for values.$$ *($$Class<?>$$, default: `$$<none>$$`)*
+
+=== spring.kafka.template
+
+$$default-topic$$:: $$Default topic to which messages are sent.$$ *($$String$$, default: `$$<none>$$`)*
+$$transaction-id-prefix$$:: $$Transaction id prefix, override the transaction id prefix in the producer factory.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
