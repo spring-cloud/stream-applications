@@ -1,0 +1,72 @@
+name: 'CI - Integration Tests'
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: false
+        description: 'Branch to use for Integration Tests'
+
+env:
+  MAIN_PATH: 'build-dir'
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MAVEN_THREADS: 'true'
+jobs:
+  build:
+    if: github.repository == 'spring-cloud/stream-applications'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Configure: checkout stream-applications@main'
+        id: checkout-main
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+      - name: 'Configure: Install gh cli'
+        uses: ./.github/actions/install-gh
+      - name: 'Configure: Ensure scripts are executable'
+        shell: bash
+        run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
+      - name: 'Configure: Install Java'
+        if: ${{ github.base_ref != 'main' }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+      - name: 'Configure: Install GraalVM'
+        if: ${{ github.base_ref == 'main' }}
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: '17'
+          components: 'js'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Configure: cache for maven dependencies'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-repo-${{ hashFiles('**/pom.xml') }}-it-${{ github.base_ref }}
+          restore-keys: |
+            maven-repo-${{ hashFiles('**/pom.xml') }}-it-${{ github.base_ref }}
+            maven-repo-${{ hashFiles('**/pom.xml') }}
+            maven-repo-
+      - name: 'Configure: Install xsltproc'
+        uses: ./.github/actions/install-xsltproc
+      - name: 'Action: verify changed modules'
+        shell: bash
+        env:
+          VERBOSE: ${{ github.debug && 'true' || '' }}
+        run: |
+          VERSION=${{ inputs.version }}
+          VERBOSE=${{ inputs.verbose }}
+          if [ "$VERBOSE" == "" ] || [ "$VERBOSE" == "false" ]; then
+            VERBOSE=${{ github.debug }}
+          fi
+          export VERBOSE
+          ./run-ITs.sh $VERSION
+      - name: 'Upload: Error logs'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'modified-surefire-reports'
+          path: '**/target/surefire-reports'
+          retention-days: 7
+          if-no-files-found: ignore
