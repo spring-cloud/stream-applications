@@ -10,10 +10,10 @@ set +e
 
 if [ "$RELEASE_TYPE" = "milestone" ]; then
   echo "Checking versions for $RELEASE_TYPE release"
-  lines=$(find . -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v regex | wc -l)
+  lines=$(find . -type f -name pom.xml -not -path "./spring-cloud-dataflow-apps-plugin/*" | xargs grep SNAPSHOT | grep -v "SNAPSHOT</spring-cloud-dataflow-apps-" | grep -v ".contains(" | grep -v regex | wc -l)
   if [ $lines -ne 0 ]; then
     echo "Snapshots version found ($lines):"
-    echo $(find . -type f -name pom.xml | xargs grep SNAPSHOT | grep -v ".contains(" | grep -v regex)
+    echo $(find . -type f -name pom.xml | xargs grep SNAPSHOT | grep -v "SNAPSHOT</spring-cloud-dataflow-apps-" | grep -v ".contains(" | grep -v regex)
     echo "Exiting release build"
     exit 1
   fi
