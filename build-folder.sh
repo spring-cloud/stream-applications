@@ -89,7 +89,7 @@ if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
   check_env ARTIFACTORY_USERNAME
   check_env ARTIFACTORY_PASSWORD
 fi
-MAVEN_THREADS_OPT=1
+MAVEN_THREADS_OPT="1"
 if [ "$MAVEN_THREADS" != "" ]; then
   case $MAVEN_THREADS in
   "true")

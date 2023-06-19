@@ -221,7 +221,9 @@ jobs:
           pushd stream-applications > /dev/null
           echo "::notice ::building - stream-applications-build,functions,applications/stream-applications-core"
           set -e
-          $ROOT_DIR/build-core.sh "install verify deploy"
+          $ROOT_DIR/build-core.sh "install -DskipTests"
+          export MAVEN_THREADS=false
+          $ROOT_DIR/build-core.sh "verify deploy"
           set +e
           echo "::notice ::core build completed"
           popd > /dev/null
