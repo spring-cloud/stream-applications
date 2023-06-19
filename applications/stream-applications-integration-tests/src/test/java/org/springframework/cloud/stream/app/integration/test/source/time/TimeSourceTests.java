@@ -74,26 +74,26 @@ abstract class TimeSourceTests {
 	void testActuator() {
 		WebClient webClient = WebClient.create();
 		webClient.get()
-				.uri("http://localhost:" + source.getMappedPort(8080) + "/actuator/health")
+				.uri("http://" + source.getHost() + ":" + source.getMappedPort(8080) + "/actuator/health")
 				.headers(h -> h.setBasicAuth("user", "password"))
 				.exchangeToMono(response -> {
 					assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
 					return response.toBodilessEntity();
 				}).block();
 		webClient.get()
-				.uri("http://localhost:" + source.getMappedPort(8080) + "/actuator/info")
+				.uri("http://" + source.getHost() + ":" + source.getMappedPort(8080) + "/actuator/info")
 				.exchangeToMono(response -> {
 					assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
 					return response.toBodilessEntity();
 				}).block();
 		webClient.get()
-				.uri("http://localhost:" + source.getMappedPort(8080) + "/actuator/bindings")
+				.uri("http://" + source.getHost() + ":" + source.getMappedPort(8080) + "/actuator/bindings")
 				.exchangeToMono(response -> {
 					assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
 					return response.toBodilessEntity();
 				}).block();
 		webClient.get()
-				.uri("http://localhost:" + source.getMappedPort(8080) + "/actuator/env")
+				.uri("http://" + source.getHost() + ":" + source.getMappedPort(8080) + "/actuator/env")
 				.exchangeToMono(response -> {
 					assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 					return response.toBodilessEntity();

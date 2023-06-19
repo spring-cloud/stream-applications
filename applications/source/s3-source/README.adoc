@@ -18,9 +18,9 @@ The payload of these 2 additional marker messages is of type `FileSplitter.FileM
 See also link:../../../functions/common/metadata-store-common/README.adoc[MetadataStore] options for possible shared persistent store configuration used to prevent duplicate messages on restart.
 
 
-=== mode = lines
+== mode = lines
 
-==== Headers:
+=== Headers:
 
 * `Content-Type: text/plain`
 * `file_orginalFile: <java.io.File>`
@@ -29,7 +29,7 @@ See also link:../../../functions/common/metadata-store-common/README.adoc[Metada
 * `sequenceNumber: <n>`
 * `sequenceSize: 0` (number of lines is not know until the file is read)
 
-==== Payload:
+=== Payload:
 
 A `String` for each line.
 
@@ -38,13 +38,13 @@ The last line is optionally followed by a message with an `END` marker payload.
 
 Marker presence and format are determined by the `with-markers` and `markers-json` properties.
 
-=== mode = ref
+== mode = ref
 
-==== Headers:
+=== Headers:
 
 None.
 
-==== Payload:
+=== Payload:
 
 A `java.io.File` object.
 

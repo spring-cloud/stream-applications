@@ -12,11 +12,11 @@ NOTE: By default Spring Integration will use `o.s.i.file.DefaultFileNameGenerato
 based on the value of the `file_name` header (if it exists) in the `MessageHeaders`, or if the payload of the `Message` is already a `java.io.File`, then it will
 use the original name of that file.
 
-=== Headers
+== Headers
 
 * `file_name` (See note above)
 
-=== Payload
+== Payload
 
 * `java.io.File`
 * `java.io.InputStream`

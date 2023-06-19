@@ -1,69 +1,70 @@
+:stream-apps-folder: ../../../../..
 [[sources]]
 == Sources
 
 :leveloffset: +2
 
 [[spring-cloud-stream-modules-debezium-source]]
-include::{stream-apps-root}/{branch}/applications/source/debezium-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/debezium-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-file-source]]
-include::{stream-apps-root}/{branch}/applications/source/file-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/file-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-ftp-source]]
-include::{stream-apps-root}/{branch}/applications/source/ftp-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/ftp-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-http-source]]
-include::{stream-apps-root}/{branch}/applications/source/http-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/http-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-jdbc-source]]
-include::{stream-apps-root}/{branch}/applications/source/jdbc-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/jdbc-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-jms-source]]
-include::{stream-apps-root}/{branch}/applications/source/jms-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/jms-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-load-generator-source]]
-include::{stream-apps-root}/{branch}/applications/source/load-generator-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/load-generator-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-mail-source]]
-include::{stream-apps-root}/{branch}/applications/source/mail-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/mail-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-mongodb-source]]
-include::{stream-apps-root}/{branch}/applications/source/mongodb-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/mongodb-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-mqtt-source]]
-include::{stream-apps-root}/{branch}/applications/source/mqtt-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/mqtt-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-rabbit-source]]
-include::{stream-apps-root}/{branch}/applications/source/rabbit-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/rabbit-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-s3-source]]
-include::{stream-apps-root}/{branch}/applications/source/s3-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/s3-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-sftp-source]]
-include::{stream-apps-root}/{branch}/applications/source/sftp-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/sftp-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-syslog-source]]
-include::{stream-apps-root}/{branch}/applications/source/syslog-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/syslog-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-tcp-source]]
-include::{stream-apps-root}/{branch}/applications/source/tcp-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/tcp-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-time-source]]
-include::{stream-apps-root}/{branch}/applications/source/time-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/time-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-twitter-message-source]]
-include::{stream-apps-root}/{branch}/applications/source/twitter-message-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/twitter-message-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-twitter-search-source]]
-include::{stream-apps-root}/{branch}/applications/source/twitter-search-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/twitter-search-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-twitter-stream-source]]
-include::{stream-apps-root}/{branch}/applications/source/twitter-stream-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/twitter-stream-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-websocket-source]]
-include::{stream-apps-root}/{branch}/applications/source/websocket-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/websocket-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-zeromq-source]]
-include::{stream-apps-root}/{branch}/applications/source/zeromq-source/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/source/zeromq-source/README.adoc[tags=ref-doc]
 
 :leveloffset: -2

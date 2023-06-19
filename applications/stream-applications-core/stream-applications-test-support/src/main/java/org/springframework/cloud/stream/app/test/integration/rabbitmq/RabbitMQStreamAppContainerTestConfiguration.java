@@ -133,7 +133,7 @@ public abstract class RabbitMQStreamAppContainerTestConfiguration {
 	public Client rabbitClient() {
 		Client client;
 		try {
-			client = new Client("http://guest:guest@localhost:" + rabbitmq.getMappedPort(15672) + "/api");
+			client = new Client("http://guest:guest@" + rabbitmq.getHost() + ":" + rabbitmq.getMappedPort(15672) + "/api");
 		}
 		catch (Exception e) {
 			throw new BeanCreationException(e.getMessage(), e);

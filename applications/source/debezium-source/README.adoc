@@ -140,7 +140,7 @@ The debezium integration tests use databases fixtures, running on the local mach
 To run and debug the tests from your IDE you need to deploy the required database images from the command line.
 Instructions below explains how to run pre-configured test databases form Docker images.
 
-==== MySQL
+=== MySQL
 
 Start the `debezium/example-mysql` in a docker:
 [source, bash]
@@ -149,14 +149,13 @@ docker run -it --rm --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e
 ----
 
 [TIP]
-====
 (optional) Use `mysql` client to connected to the database and to create a `debezium` user with required credentials:
 [source, bash]
 ----
 docker run -it --rm --name mysqlterm --link mysql --rm mysql:5.7 sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
 mysql> GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'debezium' IDENTIFIED BY 'dbz';
 ----
-====
+
 
 Use following properties to connect the Debezium Source to MySQL DB:
 
@@ -201,7 +200,7 @@ You can run also the `DebeziumDatabasesIntegrationTest#mysql()` using this mysql
 NOTE: Disable the mysql GenericContainer test initialization code.
 
 
-==== PostgreSQL
+=== PostgreSQL
 
 Start a pre-configured postgres server from the `debezium/example-postgres:1.0` Docker image:
 [source, bash]
@@ -256,7 +255,7 @@ You can run also the `DebeziumDatabasesIntegrationTest#postgres()` using this po
 
 NOTE: Disable the postgres GenericContainer test initialization code.
 
-==== MongoDB
+=== MongoDB
 
 Start a pre-configured mongodb from the `debezium/example-mongodb:2.2.0.Final` container image:
 [source, bash]
@@ -319,7 +318,7 @@ debezium.properties.transforms.unwrap.drop.tombstones=true # <6>
 
 You can run also the `DebeziumDatabasesIntegrationTest#mongodb()` using this mongodb configuration.
 
-==== SQL Server
+=== SQL Server
 
 Start a `sqlserver` from the `debezium/example-postgres:1.0` Docker image:
 [source, bash]
@@ -361,7 +360,7 @@ debezium.properties.database.port=1433 # <4>
 
 You can run also the `DebeziumDatabasesIntegrationTest#sqlServer()` using this SqlServer configuration.
 
-==== Oracle
+=== Oracle
 
 Start Oracle reachable from localhost and set up with the configuration, users and grants described in the https://github.com/debezium/oracle-vagrant-box[Debezium Vagrant set-up]
 

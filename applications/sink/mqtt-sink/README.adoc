@@ -3,7 +3,7 @@
 
 This module sends messages to MQTT.
 
-==== Payload:
+== Payload:
 
 * `byte[]`
 * `String`

@@ -30,7 +30,7 @@ if [ "$MAVEN_OPTS" == "" ]; then
 else
   MAVEN_OPTS="$MAVEN_OPTS -s $SCDIR/.settings.xml -B"
 fi
-
+MAVEN_OPTS="$MAVEN_OPTS -Pfull"
 if [ "$1" == "" ]; then
   echo -e "Options: ${bold} <comma-separated-folders> [<maven-goals>]*${end}"
 fi

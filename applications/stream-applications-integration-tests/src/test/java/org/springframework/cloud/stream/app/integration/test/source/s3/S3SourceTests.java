@@ -36,6 +36,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
@@ -55,7 +57,7 @@ import static org.springframework.cloud.stream.app.test.integration.StreamAppCon
 @Tag("integration")
 @ExtendWith(BaseContainerExtension.class)
 abstract class S3SourceTests {
-
+	private static final Logger logger = LoggerFactory.getLogger(S3SourceTests.class);
 	private static AmazonS3 s3Client;
 
 	private StreamAppContainer source;
@@ -65,8 +67,9 @@ abstract class S3SourceTests {
 
 	@Container
 	private static final GenericContainer minio = new GenericContainer(
-			DockerImageName.parse("minio/minio:RELEASE.2020-10-18T21-54-12Z"))
+			DockerImageName.parse("minio/minio:latest"))
 				.withExposedPorts(9000)
+				.withNetworkAliases("minio-host")
 				.withEnv("MINIO_ACCESS_KEY", "minio")
 				.withEnv("MINIO_SECRET_KEY", "minio123")
 				.waitingFor(Wait.forHttp("/minio/health/live"))
@@ -82,11 +85,11 @@ abstract class S3SourceTests {
 	static void initS3() {
 		AWSCredentials credentials = new BasicAWSCredentials("minio", "minio123");
 		ClientConfiguration clientConfiguration = new ClientConfiguration();
+		String minioAddress = "http://" + minio.getHost() + ":" + minio.getMappedPort(9000);
+		logger.info("minio:address={}", minioAddress);
 		s3Client = AmazonS3ClientBuilder
 				.standard()
-				.withEndpointConfiguration(
-						new AwsClientBuilder.EndpointConfiguration("http://localhost:" + minio.getMappedPort(9000),
-								Regions.US_EAST_1.name()))
+				.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(minioAddress, Regions.US_EAST_1.name()))
 				.withPathStyleAccessEnabled(true)
 				.withClientConfiguration(clientConfiguration)
 				.withCredentials(new AWSStaticCredentialsProvider(credentials))
@@ -97,7 +100,7 @@ abstract class S3SourceTests {
 	@BeforeEach
 	void configureSource() {
 		source = BaseContainerExtension.containerInstance()
-				.withEnv("S3_COMMON_ENDPOINT_URL", "http://" + localHostAddress() + ":" + minio.getMappedPort(9000))
+				.withEnv("S3_COMMON_ENDPOINT_URL", "http://minio-host:" + minio.getMappedPort(9000))
 				.withEnv("S3_COMMON_PATH_STYLE_ACCESS", "true")
 				.withEnv("CLOUD_AWS_STACK_AUTO", "false")
 				.withEnv("CLOUD_AWS_CREDENTIALS_ACCESS_KEY", "minio")

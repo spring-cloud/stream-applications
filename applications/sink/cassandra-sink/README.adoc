@@ -5,7 +5,7 @@ This sink application writes the content of each message it receives into Cassan
 
 It expects a payload of JSON String and uses it’s properties to map to table columns.
 
-=== Payload
+== Payload
 A JSON String or byte array representing the entity (or a list of entities) to be persisted.
 
 == Options

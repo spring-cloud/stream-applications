@@ -35,6 +35,7 @@ public abstract class Configuration {
 
 	static {
 		VERSION = System.getProperty(SPRING_CLOUD_STREAM_APPLICATIONS_VERSION, "latest");
+		System.out.println("VERSION=" + VERSION);
 	}
 
 	public static class VersionSupplier implements Supplier<String> {

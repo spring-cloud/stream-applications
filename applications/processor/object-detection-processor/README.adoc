@@ -19,7 +19,8 @@ image::{image-root}/scdf-tensorflow-object-detection-arch.png[]
 
 Processor's input is an image byte array, and the output is an augmented image, and a header, called `detected_objects`, that provides textual description of the detected objects:
 
-```json
+[source,json]
+....
 {
   "labels" : [
      {"name":"person", "confidence":0.9996774,"x1":0.0,"y1":0.3940161,"x2":0.9465165,"y2":0.5592592,"cid":1},
@@ -28,7 +29,7 @@ Processor's input is an image byte array, and the output is an augmented image, 
      {"name":"backpack", "confidence":0.963343,"x1":0.1273736,"y1":0.57658505,"x2":0.47765,"y2":0.6986431,"cid":23}
   ]
 }
-```
+....
 
 The `detected_objects` header format is:
 
@@ -36,7 +37,7 @@ The `detected_objects` header format is:
 * *x1*, *y1*, *x2*, *y2* - Response also provides the bounding box of the detected objects represented as `(x1, y1, x2, y2)`. The coordinates are relative to the size of the image size.
 * *cid*  - Classification identifier as defined in the provided https://github.com/tensorflow/models/tree/865c14c/research/object_detection/data[labels] configuration file.
 
-=== Payload
+== Payload
 
 The incoming type is `byte[]`, and the content type is `application/octet-stream`. The processor processes the input `byte[]` image and outputs an augmented `byte[]` image payload and a JSON header (`detected_objects`).
 

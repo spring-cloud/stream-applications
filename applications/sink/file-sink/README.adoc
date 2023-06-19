@@ -3,7 +3,7 @@
 
 The file sink app writes each message it receives to a file.
 
-=== Payload
+== Payload
 
 * `java.io.File`
 * `java.io.InputStream`

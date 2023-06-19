@@ -8,7 +8,7 @@ For example, if the incoming payload is of type `String` and you want to filter 
 
 Change kafka to rabbit if you want to run it against RabbitMQ.
 
-=== Payload
+== Payload
 
 You can pass any type as payload and then apply SpEL expressions against it to filter.
 If the incoming type is `byte[]` and the content type is set to `text/plain` or `application/json`, then the application converts the `byte[]` into `String`.

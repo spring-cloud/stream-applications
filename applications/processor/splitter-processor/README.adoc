@@ -5,7 +5,7 @@ The splitter app builds upon the concept of the same name in Spring Integration 
 The processor uses a function that takes a `Message<?>` as input and then produces a `List<Message<?>` as output based on various properties (see below).
 You can use a SpEL expression or a delimiter to specify how you want to split the incoming message.
 
-=== Payload
+== Payload
 
 * Incoming payload - `Message<?`>
 

@@ -37,6 +37,7 @@ import org.springframework.cloud.stream.app.test.integration.junit.jupiter.BaseC
 
 import static org.awaitility.Awaitility.await;
 import static org.springframework.cloud.stream.app.integration.test.common.Configuration.DEFAULT_DURATION;
+
 @Tag("integration")
 @ExtendWith(BaseContainerExtension.class)
 abstract class SftpSourceTests {
@@ -45,21 +46,22 @@ abstract class SftpSourceTests {
 
 	@Container
 	private static final GenericContainer sftp = new GenericContainer(DockerImageName.parse("atmoz/sftp"))
-			.withExposedPorts(22)
-			.withCommand("user:pass:::remote")
-			.withClasspathResourceMapping("sftp", "/home/user/remote", BindMode.READ_ONLY)
-			.withStartupTimeout(DEFAULT_DURATION);
+		.withExposedPorts(22)
+		.withNetworkAliases("sftp-host")
+		.withCommand("user:pass:::remote")
+		.withClasspathResourceMapping("sftp", "/home/user/remote", BindMode.READ_ONLY)
+		.withStartupTimeout(DEFAULT_DURATION);
 
 	@BeforeEach
 	void configureSource() {
-		await().atMost(DEFAULT_DURATION).until(() -> sftp.isRunning());
+		await().atMost(DEFAULT_DURATION).until(sftp::isRunning);
 		source = BaseContainerExtension.containerInstance()
-				.withEnv("SFTP_SUPPLIER_FACTORY_ALLOW_UNKNOWN_KEYS", "true")
-				.withEnv("SFTP_SUPPLIER_REMOTE_DIR", "/remote")
-				.withEnv("SFTP_SUPPLIER_FACTORY_USERNAME", "user")
-				.withEnv("SFTP_SUPPLIER_FACTORY_PASSWORD", "pass")
-				.withEnv("SFTP_SUPPLIER_FACTORY_PORT", String.valueOf(sftp.getMappedPort(22)))
-				.withEnv("SFTP_SUPPLIER_FACTORY_HOST", StreamAppContainerTestUtils.localHostAddress());
+			.withEnv("SFTP_SUPPLIER_FACTORY_ALLOW_UNKNOWN_KEYS", "true")
+			.withEnv("SFTP_SUPPLIER_REMOTE_DIR", "/remote")
+			.withEnv("SFTP_SUPPLIER_FACTORY_USERNAME", "user")
+			.withEnv("SFTP_SUPPLIER_FACTORY_PASSWORD", "pass")
+			.withEnv("SFTP_SUPPLIER_FACTORY_PORT", String.valueOf(sftp.getMappedPort(22)))
+			.withEnv("SFTP_SUPPLIER_FACTORY_HOST", "sftp-host");
 	}
 
 	@Autowired
@@ -71,7 +73,7 @@ abstract class SftpSourceTests {
 		startContainer(Collections.singletonMap("FILE_CONSUMER_MODE", "ref"));
 
 		await().atMost(DEFAULT_DURATION)
-				.until(outputMatcher.payloadMatches((String s) -> s.equals("\"/tmp/sftp-supplier/data.txt\"")));
+			.until(outputMatcher.payloadMatches((String s) -> s.equals("\"/tmp/sftp-supplier/data.txt\"")));
 	}
 
 	private void startContainer(Map<String, String> environment) {

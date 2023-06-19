@@ -13,18 +13,21 @@ The input of the model is an image as binary array.
 
 The output is a JSON message in this format:
 
-```json
+[source,json]
+....
 {
   "labels" : [
      {"giant panda":0.98649305}
   ]
 }
-```
+....
+
 Result contains the name of the recognized category (e.g. label) along with the confidence (e.g. confidence) that the image represents this category.
 
 If the `response-seize` is set to value higher then 1, then the result will include the top `response-seize` probable labels. For example `response-size=3` would return:
 
-```json
+[source,json]
+....
 {
   "labels": [
     {"giant panda":0.98649305},
@@ -32,9 +35,9 @@ If the `response-seize` is set to value higher then 1, then the result will incl
     {"ice bear":0.001130851}
   ]
 }
-```
+....
 
-=== Payload
+== Payload
 
 If the incoming type is `byte[]` and the content type is set to `application/octet-stream` , then the application process the input `byte[]` image into and outputs augmented `byte[]` image payload and json header.
 

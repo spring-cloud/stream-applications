@@ -1,75 +1,76 @@
+:stream-apps-folder: ../../../../..
 [[sinks]]
 == Sinks
 
 :leveloffset: +2
 
 [[spring-cloud-stream-modules-cassandra-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/cassandra-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/cassandra-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-analytics-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/analytics-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/analytics-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-elasticsearch-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/elasticsearch-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/elasticsearch-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-file-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/file-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/file-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-ftp-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/ftp-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/ftp-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-jdbc-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/jdbc-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/jdbc-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-log-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/log-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/log-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-mongodb-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/mongodb-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/mongodb-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-mqtt-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/mqtt-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/mqtt-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-pgcopy-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/pgcopy-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/pgcopy-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-rabbit-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/rabbit-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/rabbit-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-redis-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/redis-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/redis-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-router-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/router-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/router-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-rsocket-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/rsocket-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/rsocket-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-s3-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/s3-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/s3-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-sftp-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/sftp-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/sftp-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-tcp-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/tcp-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/tcp-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-throughput-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/throughput-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/throughput-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-twitter-message-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/twitter-message-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/twitter-message-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-twitter-update-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/twitter-update-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/twitter-update-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-wavefront-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/wavefront-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/wavefront-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-websocket-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/websocket-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/websocket-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-zeromq-sink]]
-include::{stream-apps-root}/{branch}/applications/sink/zeromq-sink/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/sink/zeromq-sink/README.adoc[tags=ref-doc]
 
 :leveloffset: -2

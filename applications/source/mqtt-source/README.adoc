@@ -3,7 +3,7 @@
 
 Source that enables receiving messages from MQTT.
 
-==== Payload:
+== Payload:
 
 * `String` if binary setting is `false` (default)
 * `byte[]` if binary setting is `true`

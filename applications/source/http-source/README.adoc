@@ -5,7 +5,7 @@ A source application that listens for HTTP requests and emits the body as a mess
 If the Content-Type matches `text/*` or `application/json`, the payload will be a String,
 otherwise the payload will be a byte array.
 
-==== Payload:
+== Payload:
 
 If content type matches `text/*` or `application/json`
 

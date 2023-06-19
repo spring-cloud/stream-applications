@@ -1,46 +1,47 @@
+:stream-apps-folder: ../../../../..
 [[processors]]
 == Processors
 
 :leveloffset: +2
 
 [[spring-cloud-stream-modules-aggregator-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/aggregator-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/aggregator-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-bridge-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/bridge-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/bridge-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-filter-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/filter-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/filter-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-groovy-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/groovy-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/groovy-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-header-enricher-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/header-enricher-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/header-enricher-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-http-request-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/http-request-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/http-request-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-image-recognition-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/image-recognition-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/image-recognition-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-object-detection-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/object-detection-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/object-detection-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-semantic-segmentation-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/semantic-segmentation-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/semantic-segmentation-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-script-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/script-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/script-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-splitter-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/splitter-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/splitter-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-transform-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/transform-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/transform-processor/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-twitter-trend-processor]]
-include::{stream-apps-root}/{branch}/applications/processor/twitter-trend-processor/README.adoc[tags=ref-doc]
+include::{stream-apps-folder}/applications/processor/twitter-trend-processor/README.adoc[tags=ref-doc]
 
 :leveloffset: -2
 

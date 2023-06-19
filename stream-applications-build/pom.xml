@@ -12,7 +12,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -53,7 +53,10 @@
 
         <groovy.version>4.0.5</groovy.version>
         <jakarta-jms.version>3.1.0</jakarta-jms.version>
-
+        <aws-java-sdk.version>1.12.322</aws-java-sdk.version>
+        <spring-integration-aws.version>2.5.2</spring-integration-aws.version>
+        <spring-integration-hazelcast.version>3.0.0</spring-integration-hazelcast.version>
+        <curator.version>5.3.0</curator.version>
         <mavenThreads>1</mavenThreads>
     </properties>
 

@@ -28,26 +28,31 @@ You can add support for additional monitoring systems by just adding their micro
 Please visit the https://dataflow.spring.io/docs/2.6.0.SNAPSHOT/feature-guides/streams/monitoring/[Spring Cloud Data Flow Stream Monitoring] for detailed instructions for configuring the Monitoring Systems. The following quick snippets can help you start.
 
 * To enable the Prometheus meter registry, set the following properties.
-```
+
+[source,properties]
+....
 management.metrics.export.prometheus.enabled=true
 management.metrics.export.prometheus.rsocket.enabled=true
 management.metrics.export.prometheus.rsocket.host=<YOUR PROMETHEUS-RSOKET PROXI URI
 management.metrics.export.prometheus.rsocket.port=7001
-```
+....
 
 * To enable Wavefront meter registry, set the following properties.
-```
+
+[source,properties]
+....
 management.metrics.export.wavefront.enabled=true
 management.metrics.export.wavefront.api-token=YOUR WAVEFRONT KEY
 management.metrics.export.wavefront.uri=YOUR WAVEFRONT URI
 management.metrics.export.wavefront.source=UNIQUE NAME TO IDENTIFY YOUR APP
-```
+....
 
 * To enable InfluxDB meter registry, set the following property.
-```
+[source,properties]
+....
 management.metrics.export.influx.enabled=true
 management.metrics.export.influx.uri={influxdb-server-url}
-```
+....
 
 NOTE: If the https://dataflow.spring.io/docs/2.6.0.SNAPSHOT/feature-guides/streams/monitoring/[Data Flow Server Monitoring] is enabled then the `Analytics Sink` will reuse the provided metrics configurations.
 
@@ -55,7 +60,7 @@ Following diagram illustrates how the `Analytics Sink` helps to collection busin
 
 image::{images-asciidoc}/AnalyticsSinkArchitecture.png[Analytics Architecture, scaledwidth="70%"]
 
-=== Payload
+== Payload
 
 The incoming message can contain any type of payload.
 

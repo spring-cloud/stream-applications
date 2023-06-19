@@ -10,20 +10,21 @@ For implementing `Instance Segmentation` consult the https://github.com/spring-c
 
 The `Semantic Segmentation Processor` uses the https://github.com/spring-cloud/stream-applications/tree/master/functions/function/semantic-segmentation-function[Semantic Segmentation Function] library and the https://github.com/spring-cloud/stream-applications/tree/master/functions/common/tensorflow-common[TensorFlow Service].
 
-=== Payload
+== Payload
 
 The incoming type is `byte[]`, and the content type is `application/octet-stream`. The processor processes the input `byte[]` image and outputs augmented `byte[]` image payload and json header.
 
 Processor's input is an image byte array, and the output is an augmented image byte array, and a JSON header `semantic_segmentation` in this format:
 
-```json
+[source,json]
+....
 [
     [ 0, 0, 0 ],
     [ 127, 127, 127 ],
-    [ 255, 255, 255 ]
+    [ 255, 255, 255 ],
     ...
 ]
-```
+....
 
 The output header json format represents the color pixel map computed from the input image.
 

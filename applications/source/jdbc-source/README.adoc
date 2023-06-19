@@ -4,7 +4,7 @@
 This source polls data from an RDBMS.
 This source is fully based on the `DataSourceAutoConfiguration`, so refer to the https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html[Spring Boot JDBC Support] for more information.
 
-=== Payload
+== Payload
 
 * `Map<String, Object>` when `jdbc.split == true` (default) and `List<Map<String, Object>>` otherwise
 

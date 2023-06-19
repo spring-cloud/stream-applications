@@ -37,6 +37,7 @@ public abstract class RabbitMQConfig {
 	static {
 		rabbitmq = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3.8-management"))
 			.withNetwork(network)
+			.withNetworkAliases("rabbitmq")
 			.withExposedPorts(5672, 15672)
 			.withStartupTimeout(Duration.ofSeconds(120))
 			.withStartupAttempts(3);
