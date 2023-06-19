@@ -10,7 +10,7 @@
 
 	<properties>
 		<java.version>17</java.version>
-		<maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -121,6 +121,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
+					<threadCount>1</threadCount>
+					<forkCount>1</forkCount>
 					<includes>
 						<include>**/*Tests.java</include>
 						<include>**/*Test.java</include>
