@@ -7,7 +7,7 @@ if (( sourced == 0 )); then
   exit 1
 fi
 # get the target release version and type
-export BUILD_VERSION=$(cat ./version/RELEASE_VERSION)
+BUILD_VERSION=$(jq -r '.release_version' ./versions.json)
 echo "BUILD_VERSION: $BUILD_VERSION"
 set +e
 IS_SNAPSHOT=$(echo $BUILD_VERSION | grep -E "^.*-SNAPSHOT$")
@@ -28,17 +28,32 @@ fi
 echo "BUILD_VERSION_TYPE: $BUILD_VERSION_TYPE"
 
 # get the current version from pom.xml
-export CUR_VERSION=$($SCDIR/mvn-get-version.sh)
+CUR_VERSION=$($SCDIR/mvn-get-version.sh)
 echo "CUR_VERSION: $CUR_VERSION"
 
 # is build a version change?
 if [ "$CUR_VERSION" = "$BUILD_VERSION" ]; then
-    export IS_VERSION_CHANGE="false"
+    IS_VERSION_CHANGE="false"
 else
-    export IS_VERSION_CHANGE="true"
+    IS_VERSION_CHANGE="true"
 fi
 echo "IS_VERSION_CHANGE: $IS_VERSION_CHANGE"
 
 # get the next dev version
-export NEXT_DEV_VERSION=$(cat ./version/NEXT_DEV_VERSION)
+NEXT_DEV_VERSION=$(jq -r '.next_dev_version' ./versions.json)
 echo "NEXT_DEV_VERSION: $NEXT_DEV_VERSION"
+
+RELEASE_TRAIN_VERSION=$(jq -r '.release_train.release_version' ./versions.json)
+echo "RELEASE_TRAIN_VERSION=$RELEASE_TRAIN_VERSION"
+RELEASE_TRAIN_NEXT_DEV_VERSION=$(jq -r '.release_train.next_dev_version' ./versions.json)
+echo "RELEASE_TRAIN_NEXT_DEV_VERSION=$RELEASE_TRAIN_NEXT_DEV_VERSION"
+
+export BUILD_VERSION
+export BUILD_VERSION_TYPE
+export IS_GA
+export IS_MILESTONE
+export IS_SNAPSHOT
+export IS_VERSION_CHANGE
+export CUR_VERSION
+export RELEASE_TRAIN_VERSION
+export RELEASE_TRAIN_NEXT_DEV_VERSION
