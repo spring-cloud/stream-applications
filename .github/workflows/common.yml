@@ -125,10 +125,12 @@ jobs:
             echo "::debug ::SINKS=$SINKS"
             echo "::debug ::SOURCES=$SOURCES"
             echo "::debug ::BUILD_VERSION=$BUILD_VERSION"
+            echo "::debug ::RELEASE_TRAIN_VERSION=$RELEASE_TRAIN_VERSION"            
             echo "::debug ::BUILD_VERSION_TYPE=$BUILD_VERSION_TYPE"
             echo "::debug ::CUR_VERSION=$CUR_VERSION"
             echo "::debug ::IS_VERSION_CHANGE=$IS_VERSION_CHANGE"
             echo "::debug ::NEXT_DEV_VERSION=$NEXT_DEV_VERSION"
+            echo "::debug ::RELEASE_TRAIN_NEXT_DEV_VERSION=$RELEASE_TRAIN_NEXT_DEV_VERSION"
             echo "::debug ::JDK_BUILD=$JDK_BUILD"
             echo "::debug ::JRE_DEFAULT=$JRE_DEFAULT"
           fi
