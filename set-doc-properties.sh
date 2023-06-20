@@ -6,13 +6,13 @@ fi
 VERSION=$1
 REL_TYPE=libs_release_local
 if [[ "$VERSION" = *"-SNAPSHOT"* ]]; then
-  REL_TYPE=libs_release_local
+  REL_TYPE=libs-snapshot-local
 elif [[ "$VERSION" = *"-M"* ]]; then
-  REL_TYPE=libs_milestone_local
+  REL_TYPE=libs-milestone-local
 elif [[ "$VERSION" = *"-R"* ]]; then
-  REL_TYPE=libs_milestone_local
+  REL_TYPE=libs-milestone-local
 else
-  REL_TYPE=libs_release_local
+  REL_TYPE=libs-release-local
 fi
 if [[ "$VERSION" = *"-SNAPSHOT"* ]]; then
   META_DATA="https://repo.spring.io/snapshot/org/springframework/cloud/stream/app/stream-applications-docs/${VERSION}/maven-metadata.xml"
@@ -25,5 +25,5 @@ else
   PATH=${REL_TYPE}/org/springframework/cloud/stream/app/stream-applications-docs/${VERSION}/stream-applications-docs-${VERSION}.zip
 fi
 PROPS="zip.deployed=false;zip.type=docs;zip.name=stream-applications;zip.displayname=Stream Applications"
-echo "Setting $PROPS on $PATH"
-jfrog rt set-props --server-id repo.spring.io "$PATH" "$PROPS"
+export PATH
+export PROPS

@@ -197,8 +197,8 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
-            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_build_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_build_version }}"                         
+            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                         
             echo "::notice ::checking updated versions"
             set +e
             MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
@@ -323,8 +323,8 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
-            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_build_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_build_version }}"                        
+            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
             echo "::notice ::checking updated versions"
             set +e
             MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
@@ -423,8 +423,8 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
-            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_build_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_build_version }}"                        
+            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
             echo "::notice ::checking updated versions"
             set +e
             MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
@@ -525,8 +525,8 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
-            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_build_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_build_version }}"                        
+            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
             echo "::notice ::checking updated versions"
             set +e
             MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
@@ -622,8 +622,8 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications >/dev/null
-            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_build_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_build_version }}"                        
+            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
             echo "::notice ::checking updated versions"
             set +e
             MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
@@ -695,8 +695,9 @@ jobs:
           echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
       - name: Set Stream Applications Docs Properties
         run: |
-          set -e
-          ./set-doc-properties.sh ${{ needs.parameters.outputs.release_train_version }}
+          source ./set-doc-properties.sh ${{ needs.parameters.outputs.release_train_version }}          
+          jfrog rt set-props --server-id repo.spring.io "$PATH" "$PROPS"
+          echo "Setting [$PROPS] on [$PATH]"
           echo "::notice ::stream-applications-release-train build completed"
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
@@ -713,9 +714,9 @@ jobs:
           pushd stream-applications > /dev/null
             git config user.name "GitHub Actions Bot"
             git config user.email "<>"
-            git commit -a -m "Release ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_build_version }}"
+            git commit -a -m "Release ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
             git tag "v${{ needs.parameters.outputs.build_version }}"
-            git tag "v${{ needs.parameters.outputs.release_train_build_version }}"
+            git tag "v${{ needs.parameters.outputs.release_train_version }}"
             git push --tags -v origin
           popd > /dev/null
       # add jfrog download
