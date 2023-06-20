@@ -20,10 +20,10 @@ if [[ "$VERSION" = *"-SNAPSHOT"* ]]; then
   curl -o maven-metadata.xml -s $META_DATA
   DL_TS=$(xmllint --xpath "/metadata/versioning/snapshot/timestamp/text()" maven-metadata.xml | sed 's/\.//')
   DL_VERSION=$(xmllint --xpath "/metadata/versioning/snapshotVersions/snapshotVersion[extension/text() = 'pom' and updated/text() = '$DL_TS']/value/text()" maven-metadata.xml)
-  PATH=${REL_TYPE}/org/springframework/cloud/stream/app/stream-applications-docs/${VERSION}/stream-applications-docs-${DL_VERSION}.zip
+  PROP_PATH=${REL_TYPE}/org/springframework/cloud/stream/app/stream-applications-docs/${VERSION}/stream-applications-docs-${DL_VERSION}.zip
 else
-  PATH=${REL_TYPE}/org/springframework/cloud/stream/app/stream-applications-docs/${VERSION}/stream-applications-docs-${VERSION}.zip
+  PROP_PATH=${REL_TYPE}/org/springframework/cloud/stream/app/stream-applications-docs/${VERSION}/stream-applications-docs-${VERSION}.zip
 fi
 PROPS="zip.deployed=false;zip.type=docs;zip.name=stream-applications;zip.displayname=Stream Applications"
-export PATH
-export PROPS
+echo "Setting $PROPS on $PROP_PATH"
+jfrog rt set-props --server-id repo.spring.io "$PROP_PATH" "$PROPS"
