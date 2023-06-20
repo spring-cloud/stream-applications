@@ -1,0 +1,11 @@
+name: 'Install libxml2-utils'
+description: 'Install libxml2-utils'
+
+runs:
+  using: composite
+  steps:
+    - name: 'Install libxml2-utils'
+      shell: bash
+      run: |
+        sudo apt-get update -q -y
+        sudo apt-get install -q -y libxml2-utils
