@@ -86,6 +86,8 @@ jobs:
             echo "CUR_VERSION=$CUR_VERSION" >> $GITHUB_ENV
             echo "IS_VERSION_CHANGE=$IS_VERSION_CHANGE" >> $GITHUB_ENV
             echo "NEXT_DEV_VERSION=$NEXT_DEV_VERSION" >> $GITHUB_ENV
+            echo "RELEASE_TRAIN_VERSION=$RELEASE_TRAIN_VERSION" >> $GITHUB_ENV
+            echo "RELEASE_TRAIN_NEXT_DEV_VERSION=$RELEASE_TRAIN_NEXT_DEV_VERSION" >> $GITHUB_ENV
             echo "::info ::creating streams applications matrix"
             $ROOT_DIR/create-matrices.sh
             if [ ! -f matrix.json ]; then
@@ -693,9 +695,9 @@ jobs:
             --repo-deploy-snapshots=libs-snapshot-local
           echo JFROG_CLI_BUILD_NAME=stream-application-docs >> $GITHUB_ENV
           echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
-      - name: Set Stream Applications Docs Properties
+      - name: Set Stream Applications Docs Properties for ${{ needs.parameters.outputs.release_train_version }}
         run: |
-          source ./set-doc-properties.sh ${{ needs.parameters.outputs.release_train_version }}          
+          source ./set-doc-properties.sh "${{ needs.parameters.outputs.release_train_version }}"          
           jfrog rt set-props --server-id repo.spring.io "$PATH" "$PROPS"
           echo "Setting [$PROPS] on [$PATH]"
           echo "::notice ::stream-applications-release-train build completed"
