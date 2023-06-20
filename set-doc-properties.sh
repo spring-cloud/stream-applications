@@ -26,4 +26,4 @@ else
 fi
 PROPS="zip.deployed=false;zip.type=docs;zip.name=stream-applications;zip.displayname=Stream Applications"
 echo "Setting $PROPS on $PROP_PATH"
-jfrog rt set-props --server-id repo.spring.io "$PROP_PATH" "$PROPS"
+jfrog rt set-props "$PROP_PATH" "$PROPS"

@@ -664,7 +664,7 @@ jobs:
       - name: Configure JFrog Cli for Snapshot
         if: ${{ needs.parameters.outputs.build_version_type == 'snapshot' }}
         run: |
-          jfrog rt mvnc \
+          jfrog mvnc \
             --server-id-resolve=repo.spring.io \
             --server-id-deploy=repo.spring.io \
             --repo-resolve-releases=libs-milestone \
@@ -676,7 +676,7 @@ jobs:
       - name: Configure JFrog Cli for Milestone
         if: ${{ needs.parameters.outputs.build_version_type == 'milestone' }}
         run: |
-          jfrog rt mvnc \
+          jfrog mvnc \
             --server-id-resolve=repo.spring.io \
             --server-id-deploy=repo.spring.io \
             --repo-resolve-releases=libs-milestone \
@@ -688,7 +688,7 @@ jobs:
       - name: Configure JFrog Cli for Milestone
         if: ${{ needs.parameters.outputs.build_version_type == 'ga' }}
         run: |
-          jfrog rt mvnc \
+          jfrog mvnc \
             --server-id-resolve=repo.spring.io \
             --server-id-deploy=repo.spring.io \
             --repo-resolve-releases=libs-milestone \
