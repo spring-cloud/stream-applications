@@ -603,11 +603,6 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
           components: 'js'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: jfrog/setup-jfrog-cli@v3
-        env:
-          JF_URL: 'https://repo.spring.io'
-          JF_USER: ${{ secrets.ARTIFACTORY_USERNAME }}
-          JF_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
       - name: 'Configure: cache for maven dependencies'
         uses: actions/cache@v3
         with:
@@ -656,6 +651,11 @@ jobs:
             set -e
             $ROOT_DIR/build-folder.sh stream-applications-release-train "install deploy"                                     
           popd > /dev/null
+      - uses: jfrog/setup-jfrog-cli@v3
+        env:
+          JF_URL: 'https://repo.spring.io'
+          JF_USER: ${{ secrets.ARTIFACTORY_USERNAME }}
+          JF_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
       - name: Configure JFrog Cli for Snapshot
         if: ${{ needs.parameters.outputs.build_version_type == 'snapshot' }}
         run: |
