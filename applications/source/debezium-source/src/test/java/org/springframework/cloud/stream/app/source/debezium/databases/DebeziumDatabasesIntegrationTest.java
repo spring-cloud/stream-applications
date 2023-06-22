@@ -107,7 +107,7 @@ public class DebeziumDatabasesIntegrationTest {
 
 				assertThat(messages).isNotNull();
 				// Message size should correspond to the number of insert statements in:
-				// https://github.com/debezium/container-images/blob/main/examples/mysql/2.2/inventory.sql
+				// https://github.com/debezium/container-images/blob/main/examples/mysql/2.3/inventory.sql
 				assertThat(messages).hasSizeGreaterThanOrEqualTo(52);
 			}
 			mySQL.stop();
@@ -144,7 +144,7 @@ public class DebeziumDatabasesIntegrationTest {
 						allMessages.addAll(messageChunk);
 					}
 					// Message size should correspond to the number of insert statements in the sample inventor DB:
-					// https://github.com/debezium/container-images/blob/main/examples/postgres/2.2/inventory.sql
+					// https://github.com/debezium/container-images/blob/main/examples/postgres/2.3/inventory.sql
 					return allMessages.size() == 29; // Inventory DB entries
 				});
 			}
@@ -234,7 +234,7 @@ public class DebeziumDatabasesIntegrationTest {
 			List<Message<?>> messages = DebeziumTestUtils.receiveAll(outputDestination);
 			assertThat(messages).isNotNull();
 			// Number of entries should match the entries inserted by:
-			// https://github.com/debezium/container-images/blob/main/examples/mongodb/2.2/init-inventory.sh
+			// https://github.com/debezium/container-images/blob/main/examples/mongodb/2.3/init-inventory.sh
 			assertThat(messages).hasSize(666);
 		}
 		mongodb.stop();

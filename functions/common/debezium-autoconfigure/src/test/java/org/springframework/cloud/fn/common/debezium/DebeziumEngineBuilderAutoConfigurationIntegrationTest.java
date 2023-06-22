@@ -66,7 +66,7 @@ public class DebeziumEngineBuilderAutoConfigurationIntegrationTest {
 	private static final Log logger = LogFactory.getLog(DebeziumEngineBuilderAutoConfigurationIntegrationTest.class);
 
 	private static final String DATABASE_NAME = "inventory";
-	public static final String IMAGE_TAG = "2.2.0.Final";
+	public static final String IMAGE_TAG = "2.3.0.Final";
 	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:" + IMAGE_TAG;
 
 	@TempDir

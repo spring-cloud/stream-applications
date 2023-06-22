@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
-import io.debezium.engine.DebeziumEngine.Builder;
 import io.debezium.engine.DebeziumEngine.CompletionCallback;
 import io.debezium.engine.DebeziumEngine.ConnectorCallback;
 import io.debezium.engine.format.KeyValueHeaderChangeEventFormat;
@@ -123,6 +122,7 @@ public class DebeziumEngineBuilderAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean
 	public DebeziumEngine.Builder<ChangeEvent<byte[], byte[]>> debeziumEngineBuilder(
 			OffsetCommitPolicy offsetCommitPolicy, CompletionCallback completionCallback,
 			ConnectorCallback connectorCallback, DebeziumProperties properties, Clock debeziumClock) {
