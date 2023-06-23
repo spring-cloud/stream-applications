@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {
 		"spring.cloud.function.definition=debeziumSupplier",
 
-		// https://debezium.io/documentation/reference/2.3/transformations/event-flattening.html
+		// https://debezium.io/documentation/reference/transformations/event-flattening.html
 		"debezium.properties.transforms=unwrap",
 		"debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
 		"debezium.properties.transforms.unwrap.drop.tombstones=true",

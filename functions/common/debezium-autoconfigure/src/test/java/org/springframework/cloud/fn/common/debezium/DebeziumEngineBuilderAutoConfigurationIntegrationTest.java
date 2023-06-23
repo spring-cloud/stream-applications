@@ -51,7 +51,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 /**
@@ -136,8 +135,7 @@ public class DebeziumEngineBuilderAutoConfigurationIntegrationTest {
 									"VALUES('Test666', 'Test666', 'Test666@spring.org')");
 					JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 
-					await().atMost(Duration.ofSeconds(30))
-							.untilAsserted(() -> assertThat(testConsumer.recordList).hasSizeGreaterThanOrEqualTo(52));
+					await().atMost(Duration.ofSeconds(30)).until(() -> (testConsumer.recordList.size() >= 52));
 				});
 	}
 
