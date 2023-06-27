@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {
 		"spring.cloud.function.definition=debeziumSupplier",
 
-		// https://debezium.io/documentation/reference/2.2/transformations/event-flattening.html
+		// https://debezium.io/documentation/reference/transformations/event-flattening.html
 		"debezium.properties.transforms=unwrap",
 		"debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
 		"debezium.properties.transforms.unwrap.drop.tombstones=true",
@@ -73,7 +73,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 public class DebeziumSupplierIntegrationTest {
 
-	public static final String IMAGE_TAG = "2.2.0.Final";
+	public static final String IMAGE_TAG = "2.3.0.Final";
 	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:" + IMAGE_TAG;
 
 	@Container
@@ -106,7 +106,7 @@ public class DebeziumSupplierIntegrationTest {
 		Flux<Message<?>> messageFlux = this.debeziumSupplier.get();
 
 		// Message size should correspond to the number of insert statements in:
-		// https://github.com/debezium/container-images/blob/main/examples/mysql/2.2/inventory.sql
+		// https://github.com/debezium/container-images/blob/main/examples/mysql/2.3/inventory.sql
 		// filtered by Customers and Addresses table.
 		StepVerifier.create(messageFlux)
 				.expectNextCount(16) // Skip the DDL transaction logs.

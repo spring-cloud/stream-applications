@@ -51,7 +51,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 /**
@@ -66,7 +65,7 @@ public class DebeziumEngineBuilderAutoConfigurationIntegrationTest {
 	private static final Log logger = LogFactory.getLog(DebeziumEngineBuilderAutoConfigurationIntegrationTest.class);
 
 	private static final String DATABASE_NAME = "inventory";
-	public static final String IMAGE_TAG = "2.2.0.Final";
+	public static final String IMAGE_TAG = "2.3.0.Final";
 	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:" + IMAGE_TAG;
 
 	@TempDir
@@ -136,8 +135,7 @@ public class DebeziumEngineBuilderAutoConfigurationIntegrationTest {
 									"VALUES('Test666', 'Test666', 'Test666@spring.org')");
 					JdbcTestUtils.deleteFromTableWhere(jdbcTemplate, "customers", "first_name = ?", "Test666");
 
-					await().atMost(Duration.ofSeconds(30))
-							.untilAsserted(() -> assertThat(testConsumer.recordList).hasSizeGreaterThanOrEqualTo(52));
+					await().atMost(Duration.ofSeconds(30)).until(() -> (testConsumer.recordList.size() >= 52));
 				});
 	}
 
