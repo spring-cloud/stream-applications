@@ -14,7 +14,7 @@
     <description>file consumer</description>
 
     <properties>
-        <sshd-sftp.version>2.7.0</sshd-sftp.version>
+        <sshd-sftp.version>2.10.0</sshd-sftp.version>
         <apache-ftpserver.version>1.2.0</apache-ftpserver.version>
     </properties>
 
