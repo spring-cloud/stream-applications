@@ -22,6 +22,9 @@ include::{stream-apps-folder}/applications/source/jdbc-source/README.adoc[tags=r
 [[spring-cloud-stream-modules-jms-source]]
 include::{stream-apps-folder}/applications/source/jms-source/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-kafka-source]]
+include::{stream-apps-folder}/applications/source/kafka-source/README.adoc[tags=ref-doc]
+
 [[spring-cloud-stream-modules-load-generator-source]]
 include::{stream-apps-folder}/applications/source/load-generator-source/README.adoc[tags=ref-doc]
 
@@ -63,6 +66,9 @@ include::{stream-apps-folder}/applications/source/twitter-stream-source/README.a
 
 [[spring-cloud-stream-modules-websocket-source]]
 include::{stream-apps-folder}/applications/source/websocket-source/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-xmpp-source]]
+include::{stream-apps-folder}/applications/source/xmpp-source/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-zeromq-source]]
 include::{stream-apps-folder}/applications/source/zeromq-source/README.adoc[tags=ref-doc]

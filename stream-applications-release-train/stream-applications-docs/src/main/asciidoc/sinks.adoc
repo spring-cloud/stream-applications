@@ -22,6 +22,9 @@ include::{stream-apps-folder}/applications/sink/ftp-sink/README.adoc[tags=ref-do
 [[spring-cloud-stream-modules-jdbc-sink]]
 include::{stream-apps-folder}/applications/sink/jdbc-sink/README.adoc[tags=ref-doc]
 
+[[spring-cloud-stream-modules-kafka-sink]]
+include::{stream-apps-folder}/applications/sink/kafka-sink/README.adoc[tags=ref-doc]
+
 [[spring-cloud-stream-modules-log-sink]]
 include::{stream-apps-folder}/applications/sink/log-sink/README.adoc[tags=ref-doc]
 
@@ -69,6 +72,9 @@ include::{stream-apps-folder}/applications/sink/wavefront-sink/README.adoc[tags=
 
 [[spring-cloud-stream-modules-websocket-sink]]
 include::{stream-apps-folder}/applications/sink/websocket-sink/README.adoc[tags=ref-doc]
+
+[[spring-cloud-stream-modules-xmpp-sink]]
+include::{stream-apps-folder}/applications/sink/xmpp-sink/README.adoc[tags=ref-doc]
 
 [[spring-cloud-stream-modules-zeromq-sink]]
 include::{stream-apps-folder}/applications/sink/zeromq-sink/README.adoc[tags=ref-doc]

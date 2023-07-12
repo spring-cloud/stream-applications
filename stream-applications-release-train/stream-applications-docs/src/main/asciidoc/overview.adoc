@@ -240,7 +240,7 @@ For example, if we have to update Spring Cloud Stream to `3.2.4-SNAPSHOT`, this 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream-dependencies</artifactId>
-            <version>3.2.4-SNAPSHOT</version>
+            <version>4.0.3</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
