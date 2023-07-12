@@ -16,7 +16,7 @@
     <properties>
         <aws-java-sdk.version>1.12.322</aws-java-sdk.version>
         <spring-integration-aws.version>2.5.2</spring-integration-aws.version>
-        <spring-integration-hazelcast.version>3.0.0</spring-integration-hazelcast.version>
+        <spring-integration-hazelcast.version>6.1.1</spring-integration-hazelcast.version>
         <curator.version>5.3.0</curator.version>
     </properties>
 
