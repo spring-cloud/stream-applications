@@ -50,7 +50,6 @@ import org.springframework.integration.redis.metadata.RedisMetadataStore;
 import org.springframework.integration.zookeeper.metadata.ZookeeperMetadataStore;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.mock;
 
