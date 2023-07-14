@@ -19,22 +19,25 @@ package org.springframework.cloud.fn.supplier.s3;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.time.Instant;
+import java.time.Period;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ListObjectsRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.Region;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.io.TempDir;
 import reactor.core.publisher.Flux;
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
+import software.amazon.awssdk.services.s3.model.ListObjectsResponse;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -49,16 +52,14 @@ import org.springframework.util.FileCopyUtils;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willAnswer;
-import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.mock;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
 		properties = {
-				"cloud.aws.stack.auto=false",
-				"cloud.aws.credentials.accessKey=" + AbstractAwsS3SupplierMockTests.AWS_ACCESS_KEY,
-				"cloud.aws.credentials.secretKey=" + AbstractAwsS3SupplierMockTests.AWS_SECRET_KEY,
-				"cloud.aws.region.static=" + AbstractAwsS3SupplierMockTests.AWS_REGION,
-				"s3.common.endpointUrl=foo",
+				"spring.cloud.aws.credentials.accessKey=" + AbstractAwsS3SupplierMockTests.AWS_ACCESS_KEY,
+				"spring.cloud.aws.credentials.secretKey=" + AbstractAwsS3SupplierMockTests.AWS_SECRET_KEY,
+				"spring.cloud.aws.region.static=" + AbstractAwsS3SupplierMockTests.AWS_REGION,
+				"spring.cloud.aws.s3.endpoint=s3://foo",
 				"s3.supplier.remoteDir=" + AbstractAwsS3SupplierMockTests.S3_BUCKET
 		})
 @DirtiesContext
@@ -76,7 +77,7 @@ public abstract class AbstractAwsS3SupplierMockTests {
 
 	protected static final String S3_BUCKET = "S3_BUCKET";
 
-	protected static List<S3Object> S3_OBJECTS;
+	protected static Map<S3Object, InputStream> S3_OBJECTS;
 
 	@Autowired
 	Supplier<Flux<Message<?>>> s3Supplier;
@@ -99,14 +100,18 @@ public abstract class AbstractAwsS3SupplierMockTests {
 		File otherFile = new File(f, "otherFile");
 		FileCopyUtils.copy("Other\nOther2".getBytes(), otherFile);
 
-		S3_OBJECTS = new ArrayList<>();
+		S3_OBJECTS = new HashMap<>();
+
+		Instant instant = Instant.now().plus(Period.ofDays(1));
 
 		for (File file : f.listFiles()) {
-			S3Object s3Object = new S3Object();
-			s3Object.setBucketName(S3_BUCKET);
-			s3Object.setKey("subdir/" + file.getName());
-			s3Object.setObjectContent(new FileInputStream(file));
-			S3_OBJECTS.add(s3Object);
+			S3Object s3Object =
+					S3Object.builder()
+							.key("subdir/" + file.getName())
+							.lastModified(instant)
+							.build();
+
+			S3_OBJECTS.put(s3Object, new FileInputStream(file));
 		}
 
 		final String local = temporaryRemoteFolder.toAbsolutePath() + "/local";
@@ -118,8 +123,7 @@ public abstract class AbstractAwsS3SupplierMockTests {
 	@AfterAll
 	public static void tearDown() {
 		System.clearProperty("s3.supplier.localDir");
-		S3_OBJECTS.stream()
-				.map(S3Object::getObjectContent)
+		S3_OBJECTS.values()
 				.forEach(stream -> {
 					try {
 						stream.close();
@@ -135,27 +139,24 @@ public abstract class AbstractAwsS3SupplierMockTests {
 
 		@Bean
 		@Primary
-		public AmazonS3 amazonS3Mock() {
-			AmazonS3 amazonS3 = mock(AmazonS3.class);
-			willReturn(Region.US_West).given(amazonS3).getRegion();
+		public S3Client amazonS3Mock() {
+			S3Client amazonS3 = mock(S3Client.class);
 
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.DATE, 1);
+			ListObjectsResponse listObjectsResponse =
+					ListObjectsResponse.builder().contents(S3_OBJECTS.keySet()).isTruncated(false).build();
 
-			ObjectListing objectListing = new ObjectListing();
-			List<S3ObjectSummary> objectSummaries = objectListing.getObjectSummaries();
-			for (S3Object s3Object : S3_OBJECTS) {
-				S3ObjectSummary s3ObjectSummary = new S3ObjectSummary();
-				s3ObjectSummary.setBucketName(S3_BUCKET);
-				s3ObjectSummary.setKey(s3Object.getKey());
-				s3ObjectSummary.setLastModified(calendar.getTime());
-				objectSummaries.add(s3ObjectSummary);
-			}
+			willAnswer(invocation -> listObjectsResponse)
+					.given(amazonS3)
+					.listObjects(any(ListObjectsRequest.class));
 
-			willAnswer(invocation -> objectListing).given(amazonS3).listObjects(any(ListObjectsRequest.class));
-
-			for (final S3Object s3Object : S3_OBJECTS) {
-				willAnswer(invocation -> s3Object).given(amazonS3).getObject(S3_BUCKET, s3Object.getKey());
+			for (Map.Entry<S3Object, InputStream> s3Object : S3_OBJECTS.entrySet()) {
+				willAnswer(invocation ->
+						new ResponseInputStream<>(GetObjectResponse.builder().build(), s3Object.getValue()))
+						.given(amazonS3)
+						.getObject(GetObjectRequest.builder()
+								.bucket(S3_BUCKET)
+								.key(s3Object.getKey().key())
+								.build());
 			}
 			return amazonS3;
 		}

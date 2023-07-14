@@ -29,7 +29,12 @@
             <artifactId>spring-web</artifactId>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
     <build>
         <plugins>

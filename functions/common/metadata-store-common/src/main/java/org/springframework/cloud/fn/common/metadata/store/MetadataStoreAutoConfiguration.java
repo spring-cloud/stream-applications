@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 the original author or authors.
+ * Copyright 2018-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,12 @@
 
 package org.springframework.cloud.fn.common.metadata.store;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsync;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsyncClientBuilder;
 import com.hazelcast.core.HazelcastInstance;
-import io.awspring.cloud.core.region.RegionProvider;
+import io.awspring.cloud.autoconfigure.core.AwsClientBuilderConfigurer;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryForever;
+import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -49,6 +47,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @author Artem Bilan
  * @author David Turanski
  * @author Corneil du Plessis
+ *
  * @since 2.0.2
  */
 @AutoConfiguration
@@ -142,20 +141,13 @@ public class MetadataStoreAutoConfiguration {
 
 		@Bean
 		@ConditionalOnMissingBean
-		public AmazonDynamoDBAsync dynamoDB(AWSCredentialsProvider awsCredentialsProvider,
-				RegionProvider regionProvider) {
-
-			return AmazonDynamoDBAsyncClientBuilder.standard()
-					.withCredentials(awsCredentialsProvider)
-					.withRegion(
-							regionProvider.getRegion()
-									.getName())
-					.build();
+		public DynamoDbAsyncClient dynamoDB(AwsClientBuilderConfigurer awsClientBuilderConfigurer) {
+			return awsClientBuilderConfigurer.configure(DynamoDbAsyncClient.builder()).build();
 		}
 
 		@Bean
 		@ConditionalOnMissingBean
-		public ConcurrentMetadataStore dynamoDbMetadataStore(AmazonDynamoDBAsync dynamoDB,
+		public ConcurrentMetadataStore dynamoDbMetadataStore(DynamoDbAsyncClient dynamoDB,
 				MetadataStoreProperties metadataStoreProperties) {
 
 			MetadataStoreProperties.DynamoDb dynamoDbProperties = metadataStoreProperties.getDynamoDb();

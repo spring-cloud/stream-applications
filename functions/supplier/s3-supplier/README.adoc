@@ -1,4 +1,4 @@
-# AWS S3 Supplier
+= AWS S3 Supplier
 
 This module provides an S3 supplier that can be reused and composed in other applications.
 The `Supplier` uses the AWS S3 support provided by Spring Integration and spring cloud aws project
@@ -6,7 +6,7 @@ The `Supplier` uses the AWS S3 support provided by Spring Integration and spring
 This supplier gives you a reactive stream of files from the provided directory as the supplier has a signature of `Supplier<Flux<Message<?>>>`.
 Users have to subscribe to this `Flux` and receive the data.
 
-## Beans for injection
+== Beans for injection
 
 You can import the `AwsS3SupplierConfiguration` in the application and then inject the following bean.
 
@@ -18,21 +18,21 @@ You can use `s3Supplier` as a qualifier when injecting.
 
 Once injected, you can use the `get` method of the `Supplier` to invoke it and then subscribe to the returned `Flux`.
 
-## Configuration Options
+== Configuration Options
 
 All configuration properties are prefixed with `s3.supplier`.
 There are also properties that need to be used with the prefix `s3.common` and `file.consumer`.
 
 For more information on the various options available, please see link:src/main/java/org/springframework/cloud/fn/supplier/s3/AwsS3SupplierProperties.java[AwsS3SupplierProperties],
 link:../../common/file-common/src/main/java/org/springframework/cloud/fn/common/file/FileConsumerProperties.java[FileConsumerProperties], and
-link:../../common/aws-s3-common/src/main/java/org/springframework/cloud/fn/common/aws/s3/AmazonS3Properties.java[AmazonS3Properties].
+`io.awspring.cloud.autoconfigure.s3.properties.S3Properties` from Spring Cloud AWS auto-configuration..
 
 A `ComponentCustomizer<S3InboundFileSynchronizingMessageSource>` bean can be added in the target project to provide any custom options for the `S3InboundFileSynchronizingMessageSource` configuration used by the `s3Supplier`.
 
-## Tests
+== Tests
 
 See this link:src/test/java/org/springframework/cloud/fn/supplier/s3[test suite] for the various ways, this supplier is used.
 
-## Other usage
+== Other usage
 
 See this https://github.com/spring-cloud/stream-applications/blob/master/applications/source/s3-source/README.adoc[README] where this supplier is used to create a Spring Cloud Stream application where it makes an AWS S3 Source.

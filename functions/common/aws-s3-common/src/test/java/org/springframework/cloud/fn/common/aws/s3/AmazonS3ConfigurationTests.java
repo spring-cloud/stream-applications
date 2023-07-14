@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,24 @@
 
 package org.springframework.cloud.fn.common.aws.s3;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import io.awspring.cloud.core.region.RegionProvider;
+import io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration;
+import io.awspring.cloud.autoconfigure.s3.S3CrtAsyncClientAutoConfiguration;
 import io.awspring.cloud.core.region.StaticRegionProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.regions.providers.AwsRegionProvider;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Utilities;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.integration.test.util.TestUtils;
 
 /**
  * @author Timo Salm
@@ -39,7 +44,8 @@ public class AmazonS3ConfigurationTests {
 	private final ApplicationContextRunner runner = new ApplicationContextRunner()
 			.withConfiguration(
 					AutoConfigurations.of(
-							CompatibleStorageAmazonS3Configuration.class,
+							S3AutoConfiguration.class,
+							S3CrtAsyncClientAutoConfiguration.class,
 							AmazonS3Configuration.class))
 			.withUserConfiguration(TestConfiguration.class);
 
@@ -48,22 +54,26 @@ public class AmazonS3ConfigurationTests {
 	@Test
 	public void testAmazonS3Configuration() {
 		runner.withPropertyValues().run(context -> {
-			final AmazonS3Client amazonS3 = (AmazonS3Client) context.getBean(AmazonS3.class);
+			S3Client amazonS3 = context.getBean(S3Client.class);
 			Assertions.assertNotNull(amazonS3);
-			Assertions.assertEquals(TEST_REGION_NAME, amazonS3.getRegionName());
-			Assertions.assertTrue(amazonS3.getResourceUrl("b", "k")
-					.startsWith("https://s3.eu-central-1.amazonaws.com"));
+			S3Utilities utilities = amazonS3.utilities();
+			Assertions.assertEquals(TEST_REGION_NAME,
+					TestUtils.getPropertyValue(utilities, "region", Region.class).id());
+			Assertions.assertTrue(
+					utilities.getUrl(GetUrlRequest.builder().bucket("b").key("k").build()).toString()
+							.startsWith("https://s3.eu-central-1.amazonaws.com"));
 		});
 	}
 
 	@Test
 	public void testAmazonS3ConfigurationForS3CompatibleStorage() {
 		runner.withPropertyValues(
-				"s3.common.endpoint-url=http://localhost:8080"
+				"spring.cloud.aws.s3.endpoint=http://localhost:8080"
 		).run(context -> {
-			final AmazonS3Client amazonS3 = (AmazonS3Client) context.getBean(AmazonS3.class);
+			S3Client amazonS3 = context.getBean(S3Client.class);
 			Assertions.assertNotNull(amazonS3);
-			Assertions.assertTrue(amazonS3.getResourceUrl("b", "k")
+			S3Utilities utilities = amazonS3.utilities();
+			Assertions.assertTrue(utilities.getUrl(GetUrlRequest.builder().bucket("b").key("k").build()).toString()
 					.startsWith("http://localhost:8080"));
 		});
 	}
@@ -71,13 +81,13 @@ public class AmazonS3ConfigurationTests {
 	private static class TestConfiguration {
 
 		@Bean
-		RegionProvider regionProvider() {
+		AwsRegionProvider regionProvider() {
 			return new StaticRegionProvider(TEST_REGION_NAME);
 		}
 
 		@Bean
-		AWSCredentialsProvider awsCredentialsProvider() {
-			return new AWSStaticCredentialsProvider(new BasicAWSCredentials("accessKey", "secretKey"));
+		AwsCredentialsProvider awsCredentialsProvider() {
+			return StaticCredentialsProvider.create(AwsBasicCredentials.create("accessKey", "secretKey"));
 		}
 
 	}

@@ -13,13 +13,6 @@
     <name>metadata-store-common</name>
     <description>metadata-store common</description>
 
-    <properties>
-        <aws-java-sdk.version>1.12.322</aws-java-sdk.version>
-        <spring-integration-aws.version>2.5.2</spring-integration-aws.version>
-        <spring-integration-hazelcast.version>6.1.1</spring-integration-hazelcast.version>
-        <curator.version>5.3.0</curator.version>
-    </properties>
-
     <dependencies>
 
         <!--Redis-->
@@ -43,6 +36,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.awspring.cloud</groupId>
+            <artifactId>spring-cloud-aws-starter</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -103,9 +102,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-dynamodb</artifactId>
-            <version>${aws-java-sdk.version}</version>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>dynamodb</artifactId>
             <optional>true</optional>
         </dependency>
 

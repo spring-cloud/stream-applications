@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 the original author or authors.
+ * Copyright 2016-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,19 @@ package org.springframework.cloud.fn.consumer.s3;
 
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import com.amazonaws.event.ProgressEvent;
-import com.amazonaws.event.ProgressEventType;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
-import com.amazonaws.services.s3.model.SetObjectAclRequest;
-import com.amazonaws.services.s3.transfer.PersistableTransfer;
-import com.amazonaws.services.s3.transfer.internal.S3ProgressListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;
+import software.amazon.awssdk.core.async.AsyncRequestBody;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.transfer.s3.S3TransferManager;
+import software.amazon.awssdk.transfer.s3.progress.TransferListener;
 
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,18 +44,17 @@ import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.willAnswer;
+import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.spy;
 
 @DirtiesContext
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
 		properties = {
-				"cloud.aws.stack.auto=false",
-				"cloud.aws.credentials.accessKey=" + AbstractAwsS3ConsumerMockTests.AWS_ACCESS_KEY,
-				"cloud.aws.credentials.secretKey=" + AbstractAwsS3ConsumerMockTests.AWS_SECRET_KEY,
-				"cloud.aws.region.static=" + AbstractAwsS3ConsumerMockTests.AWS_REGION,
-				"s3.common.endpointUrl=foo",
-				"s3.consumer.bucket=" + AbstractAwsS3ConsumerMockTests.S3_BUCKET })
+				"spring.cloud.aws.credentials.accessKey=" + AbstractAwsS3ConsumerMockTests.AWS_ACCESS_KEY,
+				"spring.cloud.aws.credentials.secretKey=" + AbstractAwsS3ConsumerMockTests.AWS_SECRET_KEY,
+				"spring.cloud.aws.region.static=" + AbstractAwsS3ConsumerMockTests.AWS_REGION,
+				"spring.cloud.aws.s3.endpoint=s3://foo",
+				"s3.consumer.bucket=" + AbstractAwsS3ConsumerMockTests.S3_BUCKET})
 public abstract class AbstractAwsS3ConsumerMockTests {
 
 	protected static final String AWS_ACCESS_KEY = "test.accessKey";
@@ -71,13 +69,10 @@ public abstract class AbstractAwsS3ConsumerMockTests {
 	protected static Path temporaryRemoteFolder;
 
 	@Autowired
-	private AmazonS3Client amazonS3;
+	private S3AsyncClient amazonS3;
 
 	@Autowired
-	protected S3MessageHandler s3MessageHandler;
-
-	@Autowired
-	protected CountDownLatch aclLatch;
+	protected S3TransferManager s3TransferManager;
 
 	@Autowired
 	protected CountDownLatch transferCompletedLatch;
@@ -87,29 +82,17 @@ public abstract class AbstractAwsS3ConsumerMockTests {
 
 	@BeforeEach
 	public void setupTest() {
-		Object transferManager = TestUtils.getPropertyValue(this.s3MessageHandler, "transferManager");
+		S3AsyncClient amazonS3 = spy(this.amazonS3);
 
-		AmazonS3 amazonS3 = spy(this.amazonS3);
+		willReturn(CompletableFuture.completedFuture(PutObjectResponse.builder().build()))
+				.given(amazonS3)
+				.putObject(any(PutObjectRequest.class), any(AsyncRequestBody.class));
 
-		willAnswer(invocation -> new PutObjectResult()).given(amazonS3)
-				.putObject(any(PutObjectRequest.class));
-
-		willAnswer(invocation -> {
-			aclLatch.countDown();
-			return null;
-		}).given(amazonS3)
-				.setObjectAcl(any(SetObjectAclRequest.class));
-
-		new DirectFieldAccessor(transferManager).setPropertyValue("s3", amazonS3);
+		new DirectFieldAccessor(this.s3TransferManager).setPropertyValue("s3AsyncClient", amazonS3);
 	}
 
 	@SpringBootApplication
 	public static class S3ConsumerTestApplication {
-
-		@Bean
-		public CountDownLatch aclLatch() {
-			return new CountDownLatch(1);
-		}
 
 		@Bean
 		public CountDownLatch transferCompletedLatch() {
@@ -117,30 +100,25 @@ public abstract class AbstractAwsS3ConsumerMockTests {
 		}
 
 		@Bean
-		public S3ProgressListener s3ProgressListener() {
-			return new S3ProgressListener() {
+		public TransferListener transferListener() {
+			return new TransferListener() {
+
 
 				@Override
-				public void onPersistableTransfer(PersistableTransfer persistableTransfer) {
-
+				public void transferComplete(Context.TransferComplete context) {
+					transferCompletedLatch().countDown();
 				}
 
-				@Override
-				public void progressChanged(ProgressEvent progressEvent) {
-					if (ProgressEventType.TRANSFER_COMPLETED_EVENT.equals(progressEvent.getEventType())) {
-						transferCompletedLatch().countDown();
-					}
-				}
 			};
 		}
 
 		@Bean
-		public S3MessageHandler.UploadMetadataProvider uploadMetadataProvider() {
-			return (metadata, message) -> {
+		public BiConsumer<PutObjectRequest.Builder, Message<?>> uploadMetadataProvider() {
+			return (builder, message) -> {
 				if (message.getPayload() instanceof InputStream) {
-					metadata.setContentLength(1);
-					metadata.setContentType(MediaType.APPLICATION_JSON_VALUE);
-					metadata.setContentDisposition("test.json");
+					builder.contentLength(1L)
+							.contentType(MediaType.APPLICATION_JSON_VALUE)
+							.contentDisposition("test.json");
 				}
 			};
 		}

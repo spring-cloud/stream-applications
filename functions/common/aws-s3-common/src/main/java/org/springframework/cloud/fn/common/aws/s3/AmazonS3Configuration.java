@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 the original author or authors.
+ * Copyright 2016-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,39 +16,35 @@
 
 package org.springframework.cloud.fn.common.aws.s3;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import io.awspring.cloud.autoconfigure.context.ContextCredentialsAutoConfiguration;
-import io.awspring.cloud.autoconfigure.context.ContextRegionProviderAutoConfiguration;
-import io.awspring.cloud.context.annotation.ConditionalOnMissingAmazonClient;
-import io.awspring.cloud.context.config.annotation.ContextDefaultConfigurationRegistrar;
-import io.awspring.cloud.core.region.RegionProvider;
+import java.net.URI;
+
+import io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration;
+import io.awspring.cloud.autoconfigure.s3.S3CrtAsyncClientAutoConfiguration;
+import io.awspring.cloud.autoconfigure.s3.properties.S3Properties;
+import software.amazon.awssdk.services.s3.S3Client;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.integration.aws.support.S3SessionFactory;
 
 /**
  * @author Artem Bilan
  */
 @AutoConfiguration
-@ConditionalOnMissingAmazonClient(AmazonS3.class)
-@Import({
-		ContextCredentialsAutoConfiguration.class,
-		ContextDefaultConfigurationRegistrar.class,
-		ContextRegionProviderAutoConfiguration.class
-})
+@AutoConfigureAfter({S3AutoConfiguration.class, S3CrtAsyncClientAutoConfiguration.class})
 public class AmazonS3Configuration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public AmazonS3 amazonS3(AWSCredentialsProvider awsCredentialsProvider, RegionProvider regionProvider) {
-		return AmazonS3ClientBuilder.standard()
-				.withCredentials(awsCredentialsProvider)
-				.withRegion(regionProvider.getRegion().getName())
-				.build();
+	public S3SessionFactory s3SessionFactory(S3Client amazonS3, S3Properties s3Properties) {
+		S3SessionFactory s3SessionFactory = new S3SessionFactory(amazonS3);
+		URI endpoint = s3Properties.getEndpoint();
+		if (endpoint != null) {
+			s3SessionFactory.setEndpoint(String.join(":", endpoint.getHost(), String.valueOf(endpoint.getPort())));
+		}
+		return s3SessionFactory;
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 the original author or authors.
+ * Copyright 2018-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,19 @@ package org.springframework.cloud.fn.common.metadata.store;
 import java.beans.Introspector;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBAsync;
-import com.amazonaws.services.dynamodbv2.model.DescribeTableRequest;
-import com.amazonaws.services.dynamodbv2.model.DescribeTableResult;
-import io.awspring.cloud.core.region.RegionProvider;
 import org.apache.curator.test.TestingServer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentMatchers;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.regions.providers.AwsRegionProvider;
+import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
+import software.amazon.awssdk.services.dynamodb.model.DescribeTableRequest;
+import software.amazon.awssdk.services.dynamodb.model.DescribeTableResponse;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -122,23 +125,23 @@ public class MetadataStoreAutoConfigurationTests {
 		protected static class DynamoDbMockConfig {
 
 			@Bean
-			public static AmazonDynamoDBAsync dynamoDB() {
-				AmazonDynamoDBAsync dynamoDb = mock(AmazonDynamoDBAsync.class);
-				willReturn(new DescribeTableResult())
+			public static DynamoDbAsyncClient dynamoDB() {
+				DynamoDbAsyncClient dynamoDb = mock(DynamoDbAsyncClient.class);
+				willReturn(CompletableFuture.completedFuture(DescribeTableResponse.builder().build()))
 						.given(dynamoDb)
-						.describeTable(any(DescribeTableRequest.class));
+						.describeTable(ArgumentMatchers.<Consumer<DescribeTableRequest.Builder>>any());
 
 				return dynamoDb;
 			}
 
 			@Bean
-			public static AWSCredentialsProvider awsCredentialsProvider() {
-				return mock(AWSCredentialsProvider.class);
+			public static AwsCredentialsProvider awsCredentialsProvider() {
+				return mock(AwsCredentialsProvider.class);
 			}
 
 			@Bean
-			public static RegionProvider regionProvider() {
-				return mock(RegionProvider.class);
+			public static AwsRegionProvider regionProvider() {
+				return mock(AwsRegionProvider.class);
 			}
 
 		}
