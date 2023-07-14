@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {
 		"file.consumer.mode=lines",
 		"s3.supplier.filenamePattern=*/otherFile",
-		"file.consumer.with-markers=false" })
+		"file.consumer.with-markers=false"})
 public class AmazonS3LinesTransferredTests extends AbstractAwsS3SupplierMockTests {
 
 	@Test
