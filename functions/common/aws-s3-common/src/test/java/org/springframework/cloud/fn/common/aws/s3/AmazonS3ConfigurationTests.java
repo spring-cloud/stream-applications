@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.fn.common.aws.s3;
 
+import io.awspring.cloud.autoconfigure.core.AwsAutoConfiguration;
 import io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration;
 import io.awspring.cloud.autoconfigure.s3.S3CrtAsyncClientAutoConfiguration;
 import io.awspring.cloud.core.region.StaticRegionProvider;
@@ -44,6 +45,7 @@ public class AmazonS3ConfigurationTests {
 	private final ApplicationContextRunner runner = new ApplicationContextRunner()
 			.withConfiguration(
 					AutoConfigurations.of(
+							AwsAutoConfiguration.class,
 							S3AutoConfiguration.class,
 							S3CrtAsyncClientAutoConfiguration.class,
 							AmazonS3Configuration.class))
