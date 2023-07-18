@@ -54,7 +54,7 @@
         <groovy.version>4.0.5</groovy.version>
         <jakarta-jms.version>3.1.0</jakarta-jms.version>
         <spring-cloud-aws.version>3.0.1</spring-cloud-aws.version>
-        <spring-integration-aws.version>3.0.1-SNAPSHOT</spring-integration-aws.version>
+        <spring-integration-aws.version>3.0.1</spring-integration-aws.version>
         <curator.version>5.5.0</curator.version>
         <mavenThreads>1</mavenThreads>
     </properties>
