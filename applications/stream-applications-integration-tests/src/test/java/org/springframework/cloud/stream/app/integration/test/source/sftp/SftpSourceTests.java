@@ -32,7 +32,6 @@ import org.testcontainers.utility.DockerImageName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.app.test.integration.OutputMatcher;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
-import org.springframework.cloud.stream.app.test.integration.StreamAppContainerTestUtils;
 import org.springframework.cloud.stream.app.test.integration.junit.jupiter.BaseContainerExtension;
 
 import static org.awaitility.Awaitility.await;

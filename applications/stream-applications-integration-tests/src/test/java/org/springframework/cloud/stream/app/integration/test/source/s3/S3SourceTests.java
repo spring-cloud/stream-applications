@@ -52,7 +52,6 @@ import static org.awaitility.Awaitility.await;
 import static org.springframework.cloud.stream.app.integration.test.common.Configuration.DEFAULT_DURATION;
 import static org.springframework.cloud.stream.app.test.integration.AppLog.appLog;
 import static org.springframework.cloud.stream.app.test.integration.FluentMap.fluentMap;
-import static org.springframework.cloud.stream.app.test.integration.StreamAppContainerTestUtils.localHostAddress;
 import static org.springframework.cloud.stream.app.test.integration.StreamAppContainerTestUtils.resourceAsFile;
 @Tag("integration")
 @ExtendWith(BaseContainerExtension.class)

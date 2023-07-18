@@ -103,6 +103,9 @@ pushd "$PROJECT_FOLDER" >/dev/null
             if [ "$DEFAULT_JDK" != "" ]; then
               docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$VERSION"
               echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$VERSION"
+              if [[ "$VERSION" != *"-SNAPSHOT"* ]]; then
+                echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:latest"
+              fi
               if [ "$BRANCH" != "" ]; then
                 docker tag "springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK" "springcloudstream/$app:$BRANCH"
                 echo "Tagged:springcloudstream/$app:$VERSION-jdk$DEFAULT_JDK as springcloudstream/$app:$BRANCH"
