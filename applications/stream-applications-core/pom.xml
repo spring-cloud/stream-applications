@@ -19,7 +19,7 @@
         <stream-apps-core.version>4.0.0-SNAPSHOT</stream-apps-core.version>
         <java-functions.version>4.0.0-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.4</apps.base-image>
-		<prometheus-rsocket.version>1.5.0</prometheus-rsocket.version>
+		<prometheus-rsocket.version>1.5.2</prometheus-rsocket.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.8-SNAPSHOT</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.8-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.8-SNAPSHOT</spring-cloud-dataflow-apps-metadata-plugin.version>
