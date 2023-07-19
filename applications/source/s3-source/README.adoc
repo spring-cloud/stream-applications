@@ -50,7 +50,7 @@ A `java.io.File` object.
 
 == Options
 
-The **$$s3$$** $$source$$ has the following options:
+The `s3-source` has the following options:
 
 //tag::configuration-properties[]
 Properties grouped by prefix:
@@ -112,32 +112,35 @@ $$preserve-timestamp$$:: $$To transfer or not the timestamp of the remote file t
 $$remote-dir$$:: $$AWS S3 bucket resource.$$ *($$String$$, default: `$$bucket$$`)*
 $$remote-file-separator$$:: $$Remote File separator.$$ *($$String$$, default: `$$/$$`)*
 $$tmp-file-suffix$$:: $$Temporary file suffix.$$ *($$String$$, default: `$$.tmp$$`)*
+
+=== spring.cloud.aws.credentials
+
+$$access-key$$:: $$The access key to be used with a static provider.$$ *($$String$$, default: `$$<none>$$`)*
+$$instance-profile$$:: $$Configures an instance profile credentials provider with no further configuration.$$ *($$Boolean$$, default: `$$false$$`)*
+$$profile$$:: $$The AWS profile.$$ *($$Profile$$, default: `$$<none>$$`)*
+$$secret-key$$:: $$The secret key to be used with a static provider.$$ *($$String$$, default: `$$<none>$$`)*
+
+=== spring.cloud.aws.region
+
+$$instance-profile$$:: $$Configures an instance profile region provider with no further configuration.$$ *($$Boolean$$, default: `$$false$$`)*
+$$profile$$:: $$The AWS profile.$$ *($$Profile$$, default: `$$<none>$$`)*
+$$static$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+
+=== spring.cloud.aws.s3
+
+$$accelerate-mode-enabled$$:: $$Option to enable using the accelerate endpoint when accessing S3. Accelerate endpoints allow faster transfer of objects by using Amazon CloudFront's globally distributed edge locations.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$checksum-validation-enabled$$:: $$Option to disable doing a validation of the checksum of an object stored in S3.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$chunked-encoding-enabled$$:: $$Option to enable using chunked encoding when signing the request payload for {@link software.amazon.awssdk.services.s3.model.PutObjectRequest} and {@link software.amazon.awssdk.services.s3.model.UploadPartRequest}.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$endpoint$$:: $$Overrides the default endpoint.$$ *($$URI$$, default: `$$<none>$$`)*
+$$path-style-access-enabled$$:: $$Option to enable using path style access for accessing S3 objects instead of DNS style access. DNS style access is preferred as it will result in better load balancing when accessing S3.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$region$$:: $$Overrides the default region.$$ *($$String$$, default: `$$<none>$$`)*
+$$use-arn-region-enabled$$:: $$If an S3 resource ARN is passed in as the target of an S3 operation that has a different region to the one the client was configured with, this flag must be set to 'true' to permit the client to make a cross-region call to the region specified in the ARN otherwise an exception will be thrown.$$ *($$Boolean$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 == Amazon AWS common options
 
-The Amazon S3 Source (as all other Amazon AWS applications) is based on the
-https://github.com/spring-cloud/spring-cloud-aws[Spring Cloud AWS] project as a foundation, and its auto-configuration
-classes are used automatically by Spring Boot.
+The Amazon S3 Source (as all other Amazon AWS applications) is based on the https://awspring.io/[Spring Cloud AWS] project as a foundation, and its auto-configuration classes are used automatically by Spring Boot.
 Consult their documentation regarding required and useful auto-configuration properties.
-
-Some of them are about AWS credentials:
-
-- cloud.aws.credentials.accessKey
-- cloud.aws.credentials.secretKey
-- cloud.aws.credentials.instanceProfile
-- cloud.aws.credentials.profileName
-- cloud.aws.credentials.profilePath
-
-Other are for AWS `Region` definition:
-
-- cloud.aws.region.auto
-- cloud.aws.region.static
-
-And for AWS `Stack`:
-
-- cloud.aws.stack.auto
-- cloud.aws.stack.name
 
 == Examples
 

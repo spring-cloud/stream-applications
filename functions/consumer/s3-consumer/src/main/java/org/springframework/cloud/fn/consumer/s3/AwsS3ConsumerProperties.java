@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 the original author or authors.
+ * Copyright 2016-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package org.springframework.cloud.fn.consumer.s3;
 
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import jakarta.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.Length;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.expression.Expression;
@@ -49,7 +49,7 @@ public class AwsS3ConsumerProperties {
 	/**
 	 * S3 Object access control list.
 	 */
-	private CannedAccessControlList acl;
+	private ObjectCannedACL acl;
 
 	/**
 	 * Expression to evaluate S3 Object access control list.
@@ -81,11 +81,11 @@ public class AwsS3ConsumerProperties {
 		this.keyExpression = keyExpression;
 	}
 
-	public CannedAccessControlList getAcl() {
+	public ObjectCannedACL getAcl() {
 		return this.acl;
 	}
 
-	public void setAcl(CannedAccessControlList acl) {
+	public void setAcl(ObjectCannedACL acl) {
 		this.acl = acl;
 	}
 

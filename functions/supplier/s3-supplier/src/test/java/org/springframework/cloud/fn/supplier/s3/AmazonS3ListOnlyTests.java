@@ -19,10 +19,10 @@ package org.springframework.cloud.fn.supplier.s3;
 import java.time.Duration;
 import java.util.HashSet;
 
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;
@@ -43,22 +43,19 @@ public class AmazonS3ListOnlyTests extends AbstractAwsS3SupplierMockTests {
 		keys.add("subdir/otherFile");
 		StepVerifier stepVerifier = StepVerifier.create(messageFlux)
 				.assertNext(message -> {
-					S3ObjectSummary summary = (S3ObjectSummary) message.getPayload();
-					assertThat(summary.getBucketName()).isEqualTo(S3_BUCKET);
-					assertThat(keys).contains(summary.getKey());
-					keys.remove(summary.getKey());
+					S3Object s3Object = (S3Object) message.getPayload();
+					assertThat(keys).contains(s3Object.key());
+					keys.remove(s3Object.key());
 				})
 				.assertNext(message -> {
-					S3ObjectSummary summary = (S3ObjectSummary) message.getPayload();
-					assertThat(summary.getBucketName()).isEqualTo(S3_BUCKET);
-					assertThat(keys).contains(summary.getKey());
-					keys.remove(summary.getKey());
+					S3Object s3Object = (S3Object) message.getPayload();
+					assertThat(keys).contains(s3Object.key());
+					keys.remove(s3Object.key());
 				})
 				.assertNext(message -> {
-					S3ObjectSummary summary = (S3ObjectSummary) message.getPayload();
-					assertThat(summary.getBucketName()).isEqualTo(S3_BUCKET);
-					assertThat(keys).contains(summary.getKey());
-					keys.remove(summary.getKey());
+					S3Object s3Object = (S3Object) message.getPayload();
+					assertThat(keys).contains(s3Object.key());
+					keys.remove(s3Object.key());
 				})
 				.thenCancel()
 				.verifyLater();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 the original author or authors.
+ * Copyright 2016-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,14 @@ package org.springframework.cloud.fn.consumer.s3;
 
 import java.io.InputStream;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.util.Md5Utils;
-import com.amazonaws.util.StringInputStream;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import reactor.test.StepVerifier;
+import software.amazon.awssdk.core.async.AsyncRequestBody;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.utils.Md5Utils;
+import software.amazon.awssdk.utils.StringInputStream;
 
 import org.springframework.http.MediaType;
 import org.springframework.integration.test.util.TestUtils;
@@ -41,8 +42,8 @@ public class AmazonS3UploadInputStreamTests extends AbstractAwsS3ConsumerMockTes
 
 	@Test
 	public void test() throws Exception {
-		AmazonS3 amazonS3Client = TestUtils.getPropertyValue(this.s3MessageHandler, "transferManager.s3",
-				AmazonS3.class);
+		S3AsyncClient amazonS3Client =
+				TestUtils.getPropertyValue(this.s3TransferManager, "s3AsyncClient", S3AsyncClient.class);
 
 		InputStream payload = new StringInputStream("a");
 		Message<?> message = MessageBuilder.withPayload(payload)
@@ -53,18 +54,25 @@ public class AmazonS3UploadInputStreamTests extends AbstractAwsS3ConsumerMockTes
 
 		ArgumentCaptor<PutObjectRequest> putObjectRequestArgumentCaptor =
 				ArgumentCaptor.forClass(PutObjectRequest.class);
-		verify(amazonS3Client, atLeastOnce()).putObject(putObjectRequestArgumentCaptor.capture());
+		ArgumentCaptor<AsyncRequestBody> asyncRequestBodyArgumentCaptor =
+				ArgumentCaptor.forClass(AsyncRequestBody.class);
+		verify(amazonS3Client, atLeastOnce())
+				.putObject(putObjectRequestArgumentCaptor.capture(), asyncRequestBodyArgumentCaptor.capture());
 
 		PutObjectRequest putObjectRequest = putObjectRequestArgumentCaptor.getValue();
-		assertThat(putObjectRequest.getBucketName()).isEqualTo(S3_BUCKET);
-		assertThat(putObjectRequest.getKey()).isEqualTo("myInputStream");
-		assertThat(putObjectRequest.getFile()).isNull();
-		assertThat(putObjectRequest.getInputStream()).isNotNull();
+		assertThat(putObjectRequest.bucket()).isEqualTo(S3_BUCKET);
+		assertThat(putObjectRequest.key()).isEqualTo("myInputStream");
+		assertThat(putObjectRequest.contentMD5()).isEqualTo(Md5Utils.md5AsBase64(payload));
+		assertThat(putObjectRequest.contentLength()).isEqualTo(1L);
+		assertThat(putObjectRequest.contentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
+		assertThat(putObjectRequest.contentDisposition()).isEqualTo("test.json");
 
-		ObjectMetadata metadata = putObjectRequest.getMetadata();
-		assertThat(metadata.getContentMD5()).isEqualTo(Md5Utils.md5AsBase64(payload));
-		assertThat(metadata.getContentLength()).isEqualTo(1L);
-		assertThat(metadata.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-		assertThat(metadata.getContentDisposition()).isEqualTo("test.json");
+
+		AsyncRequestBody asyncRequestBody = asyncRequestBodyArgumentCaptor.getValue();
+		StepVerifier.create(asyncRequestBody.map(buffer -> new String(buffer.array())))
+				.expectNext("a")
+				.expectComplete()
+				.verify();
 	}
+
 }
