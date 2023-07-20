@@ -10,28 +10,24 @@ RELEASE_TRAIN_VERSION=$2
 $SCDIR/mvnw versions:set \
   -DnewVersion="$VERSION" \
   -s .settings.xml \
-  --offline \
   -DprocessAllModules=true \
   -DgenerateBackupPoms=false \
   -Dartifactory.publish.artifacts=false \
   -B $VERBOSE
 $SCDIR/mvnw versions:set-property -f applications/stream-applications-core \
   -s .settings.xml \
-  --offline \
   -DgenerateBackupPoms=false \
   -Dproperty=stream-apps-core.version \
   -DnewVersion="$VERSION" \
   -B $VERBOSE
 $SCDIR/mvnw versions:set-property -f applications/stream-applications-core \
   -s .settings.xml \
-  --offline \
   -DgenerateBackupPoms=false \
   -Dproperty=java-functions.version \
   -DnewVersion="$VERSION" \
   -B $VERBOSE
 $SCDIR/mvnw versions:set -f stream-applications-release-train \
   -DnewVersion="$RELEASE_TRAIN_VERSION" \
-  --offline \
   -s .settings.xml \
   -DprocessFromLocalAggregationRoot=false
   -DprocessParent=false \
@@ -40,7 +36,6 @@ $SCDIR/mvnw versions:set -f stream-applications-release-train \
   -B $VERBOSE
 $SCDIR/mvnw versions:set-property -f stream-applications-release-train \
   -s .settings.xml \
-  --offline \
   -DgenerateBackupPoms=false \
   -Dproperty=apps.version \
   -DnewVersion="$VERSION" \
