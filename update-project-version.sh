@@ -7,54 +7,35 @@ if [ "$2" = "" ]; then
 fi
 VERSION=$1
 RELEASE_TRAIN_VERSION=$2
-OLD_VERSION=$(SCDIR/mvnw exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q | sed 's/\"//g' | sed 's/version=//g')
-OLD_RT_VERSION=$(SCDIR/mvnw exec:exec -f stream-applications-release-train -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive -q | sed 's/\"//g' | sed 's/version=//g')
-$SCDIR/mvnw versions:set \
-  -DskipResolution=true \
-  -DnewVersion="$VERSION" \
-  -DoldVersion="$OLD_VERSION" \
-  -s .settings.xml \
-  -DprocessAllModules=true \
-  -DgenerateBackupPoms=false \
-  -Dartifactory.publish.artifacts=false \
-  -B $VERBOSE
-$SCDIR/mvnw versions:set-property -f applications/stream-applications-core \
-  -DskipResolution=true \
-  -s .settings.xml \
-  -DgenerateBackupPoms=false \
-  -Dproperty=stream-apps-core.version \
-  -DnewVersion="$VERSION" \
-  -B $VERBOSE
-$SCDIR/mvnw versions:set-property -f applications/stream-applications-core \
-  -DskipResolution=true \
-  -s .settings.xml \
-  -DgenerateBackupPoms=false \
-  -Dproperty=java-functions.version \
-  -DnewVersion="$VERSION" \
-  -B $VERBOSE
+OLD_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/\"//g' | sed 's/version=//g')
+OLD_RT_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout -f stream-applications-release-train | sed 's/\"//g' | sed 's/version=//g')
+if [ "$VERBOSE" = "" ]; then
+  VERBOSE=-q
+fi
+echo "Version:[$OLD_VERSION] -> [$VERSION]"
+echo "Release Train Version: [$OLD_RT_VERSION] -> [$RELEASE_TRAIN_VERSION]"
 
-# $SCDIR/mvnw install -DskipTests -o -T 1C
+$SCDIR/mvnw versions:set \
+  -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
+  -DnewVersion="$VERSION" -DprocessAllModules=true
+
+$SCDIR/mvnw versions:set-property -f applications/stream-applications-core \
+  -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
+  -Dproperty=stream-apps-core.version -DnewVersion="$VERSION"
+
+$SCDIR/mvnw versions:set-property -f applications/stream-applications-core \
+  -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
+  -Dproperty=java-functions.version -DnewVersion="$VERSION"
+
 $SCDIR/mvnw versions:set-property -pl :stream-applications-release-train \
-  -DskipResolution=true \
-  -s .settings.xml \
-  -DgenerateBackupPoms=false \
-  -Dproperty=apps.version \
-  -DnewVersion="$VERSION" \
-  -B $VERBOSE
+  -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
+  -Dproperty=apps.version -DnewVersion="$VERSION" \
+
 $SCDIR/mvnw versions:set -f stream-applications-release-train \
-  -DskipResolution=true \
-  -DoldVersion="$OLD_RT_VERSION" \
+  -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
   -DnewVersion="$RELEASE_TRAIN_VERSION" \
-  -s .settings.xml \
-  -DprocessFromLocalAggregationRoot=false \
-  -DprocessParent=false \
-  -DgenerateBackupPoms=false \
-  -Dartifactory.publish.artifacts=false \
-  -B $VERBOSE
+  -DprocessFromLocalAggregationRoot=false -DprocessParent=false
+
 $SCDIR/mvnw versions:update-parent -pl :stream-applications-descriptor,:stream-applications-docs \
-  -DskipResolution=true \
-  -s .settings.xml \
-  -DgenerateBackupPoms=false \
-  -DparentVersion="$RELEASE_TRAIN_VERSION" \
-  -DallowSnapshots=true \
-  -B $VERBOSE
+  -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -DgenerateBackupPoms=false -B $VERBOSE \
+  -DparentVersion="$RELEASE_TRAIN_VERSION" -DallowSnapshots=true
