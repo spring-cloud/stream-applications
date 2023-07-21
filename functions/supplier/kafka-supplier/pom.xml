@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.springframework.cloud.fn</groupId>
 		<artifactId>spring-functions-parent</artifactId>
-		<version>4.0.0-SNAPSHOT</version>
+		<version>4.0.0-RC2</version>
 		<relativePath>../../spring-functions-parent/pom.xml</relativePath>
 	</parent>
 
