@@ -41,5 +41,20 @@ $SCDIR/mvnw versions:set-property -pl :stream-applications-release-train \
 echo "Update versions for stream-applications-release-train -> $RELEASE_TRAIN_VERSION"
 $SCDIR/mvnw versions:set -f stream-applications-release-train \
   -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
-  -DoldVersion="$OLD_RT_VERSION" -DnewVersion="$RELEASE_TRAIN_VERSION" \
+  -DnewVersion="$RELEASE_TRAIN_VERSION" \
 
+NEW_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout 2> /dev/null)
+NEW_VERSION=$(find_version "$NEW_VERSION")
+if [ "$NEW_VERSION" != "$VERSION" ]; then
+  echo "Expected stream-applications version to be $VERSION not $NEW_VERSION"
+  exit 1
+fi
+PROJECTS="stream-applications-release-train stream-applications-descriptor stream-applications-docs"
+for proj in $PROJECTS; do
+  NEW_RT_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout -pl :$proj 2> /dev/null)
+  NEW_RT_VERSION=$(find_version "$NEW_RT_VERSION")
+  if [ "$NEW_RT_VERSION" != "$RELEASE_TRAIN_VERSION" ]; then
+    echo "Expected $proj version to be $RELEASE_TRAIN_VERSION not $NEW_RT_VERSION"
+    exit 1
+  fi
+done
