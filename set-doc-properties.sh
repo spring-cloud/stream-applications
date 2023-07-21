@@ -26,4 +26,5 @@ else
 fi
 PROPS="zip.deployed=false;zip.type=docs;zip.name=stream-applications;zip.displayname=Stream Applications"
 echo "Setting $PROPS on $PROP_PATH"
+export JFROG_CLI_FAIL_NO_OP=true
 jfrog rt set-props "$PROP_PATH" "$PROPS"

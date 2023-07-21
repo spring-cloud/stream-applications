@@ -49,6 +49,7 @@ if [ "$NEW_VERSION" != "$VERSION" ]; then
   echo "Expected stream-applications version to be $VERSION not $NEW_VERSION"
   exit 1
 fi
+echo "Version updated: stream-applications: $NEW_VERSION"
 PROJECTS="stream-applications-release-train stream-applications-descriptor stream-applications-docs"
 for proj in $PROJECTS; do
   NEW_RT_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout -pl :$proj 2> /dev/null)
@@ -57,4 +58,5 @@ for proj in $PROJECTS; do
     echo "Expected $proj version to be $RELEASE_TRAIN_VERSION not $NEW_RT_VERSION"
     exit 1
   fi
+  echo "Version updated: $proj: $NEW_RT_VERSION"
 done
