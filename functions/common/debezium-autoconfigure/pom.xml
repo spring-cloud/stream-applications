@@ -15,7 +15,7 @@
     <description>Debezium Spring Boot auto-configuration</description>
 
     <properties>
-        <version.debezium>2.3.0.Final</version.debezium>
+        <version.debezium>2.3.1.Final</version.debezium>
         <apicurio.version>2.4.2.Final</apicurio.version>
     </properties>
 

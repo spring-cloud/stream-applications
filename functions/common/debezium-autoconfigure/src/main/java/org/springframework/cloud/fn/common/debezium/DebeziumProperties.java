@@ -126,6 +126,7 @@ public class DebeziumProperties {
 	public Properties getDebeziumNativeConfiguration() {
 		Properties outProps = new java.util.Properties();
 		outProps.putAll(this.getProperties());
+		System.out.println(outProps.toString());
 		return outProps;
 	}
 }
