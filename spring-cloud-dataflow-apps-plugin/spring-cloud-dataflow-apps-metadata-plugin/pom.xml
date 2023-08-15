@@ -13,7 +13,7 @@
 	</parent>
 
 	<properties>
-		<maven.version>3.6.3</maven.version>
+		<maven.version>3.8.1</maven.version>
 		<junit.version>4.12</junit.version>
 		<assertj.version>3.11.1</assertj.version>
 		<commons-text.version>1.8</commons-text.version>
