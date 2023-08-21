@@ -15,7 +15,7 @@
     </parent>
 
     <properties>
-        <apache-ivy.version>2.5.1</apache-ivy.version>
+        <apache-ivy.version>2.5.2</apache-ivy.version>
     </properties>
 
     <dependencies>
