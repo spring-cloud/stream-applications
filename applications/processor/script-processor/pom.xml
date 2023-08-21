@@ -17,7 +17,7 @@
     <properties>
         <jruby-complete.version>9.3.9.0</jruby-complete.version>
         <jython-standalone.version>2.7.3</jython-standalone.version>
-        <apache-ivy.version>2.5.1</apache-ivy.version>
+        <apache-ivy.version>2.5.2</apache-ivy.version>
         <graalvm.version>22.3.0</graalvm.version>
     </properties>
 
