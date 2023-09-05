@@ -14,10 +14,6 @@
         <relativePath>../../stream-applications-core/pom.xml</relativePath>
     </parent>
 
-    <properties>
-        <apache-ivy.version>2.5.1</apache-ivy.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.integration</groupId>
@@ -55,7 +51,6 @@
         <dependency>
             <groupId>org.apache.ivy</groupId>
             <artifactId>ivy</artifactId>
-            <version>${apache-ivy.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
