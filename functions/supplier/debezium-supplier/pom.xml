@@ -15,7 +15,7 @@
     <description>Debezium Supplier</description>
 
     <properties>
-        <version.debezium>2.3.1.Final</version.debezium>
+        <version.debezium>2.3.3.Final</version.debezium>
     </properties>
 
     <dependencies>
