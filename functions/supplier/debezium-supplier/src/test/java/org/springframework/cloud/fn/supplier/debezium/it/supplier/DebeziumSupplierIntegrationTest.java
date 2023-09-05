@@ -73,7 +73,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 public class DebeziumSupplierIntegrationTest {
 
-	public static final String IMAGE_TAG = "2.3.0.Final";
+	public static final String IMAGE_TAG = "2.3.3.Final";
 	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:" + IMAGE_TAG;
 
 	@Container

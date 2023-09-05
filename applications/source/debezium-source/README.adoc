@@ -145,7 +145,7 @@ Instructions below explains how to run pre-configured test databases form Docker
 Start the `debezium/example-mysql` in a docker:
 [source, bash]
 ----
-docker run -it --rm --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql:2.3.0.Final
+docker run -it --rm --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql:2.3.3.Final
 ----
 
 [TIP]
@@ -205,7 +205,7 @@ NOTE: Disable the mysql GenericContainer test initialization code.
 Start a pre-configured postgres server from the `debezium/example-postgres:1.0` Docker image:
 [source, bash]
 ----
-docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:2.3.0.Final
+docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:2.3.3.Final
 ----
 
 You can connect to this server like this:
@@ -257,10 +257,10 @@ NOTE: Disable the postgres GenericContainer test initialization code.
 
 === MongoDB
 
-Start a pre-configured mongodb from the `debezium/example-mongodb:2.3.0.Final` container image:
+Start a pre-configured mongodb from the `debezium/example-mongodb:2.3.3.Final` container image:
 [source, bash]
 ----
-docker run -it --rm --name mongodb -p 27017:27017 -e MONGODB_USER=debezium -e MONGODB_PASSWORD=dbz  debezium/example-mongodb:2.3.0.Final
+docker run -it --rm --name mongodb -p 27017:27017 -e MONGODB_USER=debezium -e MONGODB_PASSWORD=dbz  debezium/example-mongodb:2.3.3.Final
 ----
 
 Initialize the inventory collections
