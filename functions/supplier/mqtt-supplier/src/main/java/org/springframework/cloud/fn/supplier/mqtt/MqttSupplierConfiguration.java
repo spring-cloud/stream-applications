@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 the original author or authors.
+ * Copyright 2017-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.springframework.cloud.fn.common.mqtt.MqttProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
@@ -82,7 +82,7 @@ public class MqttSupplierConfiguration {
 
 	@Bean
 	public Publisher<Message<byte[]>> mqttPublisher(MqttPahoMessageDrivenChannelAdapter mqttInbound) {
-		return IntegrationFlows.from(mqttInbound)
+		return IntegrationFlow.from(mqttInbound)
 				.toReactivePublisher(true);
 	}
 

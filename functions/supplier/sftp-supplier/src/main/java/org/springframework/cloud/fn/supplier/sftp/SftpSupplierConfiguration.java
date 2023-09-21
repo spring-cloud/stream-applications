@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 the original author or authors.
+ * Copyright 2018-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,6 @@ import org.springframework.integration.core.GenericSelector;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlowBuilder;
-import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.file.filters.ChainFileListFilter;
@@ -211,7 +210,7 @@ public class SftpSupplierConfiguration {
 				SftpSupplierProperties sftpSupplierProperties,
 				FileConsumerProperties fileConsumerProperties) {
 
-			return FileUtils.enhanceStreamFlowForReadingMode(IntegrationFlows
+			return FileUtils.enhanceStreamFlowForReadingMode(IntegrationFlow
 							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
 									.delaySubscription(subscriptionBarrier)
 									.contextWrite(Context.of(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
@@ -258,7 +257,7 @@ public class SftpSupplierConfiguration {
 				FileConsumerProperties fileConsumerProperties,
 				@Nullable MessageHandler renameRemoteFileHandler) {
 
-			IntegrationFlowBuilder flowBuilder = FileUtils.enhanceFlowForReadingMode(IntegrationFlows
+			IntegrationFlowBuilder flowBuilder = FileUtils.enhanceFlowForReadingMode(IntegrationFlow
 							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
 									.delaySubscription(subscriptionBarrier)
 									.contextWrite(Context.of(IntegrationReactiveUtils.DELAY_WHEN_EMPTY_KEY,
@@ -367,7 +366,7 @@ public class SftpSupplierConfiguration {
 				GenericSelector<Message<?>> duplicateFilter,
 				GenericSelector<String> listOnlyFilter) {
 
-			return IntegrationFlows.from(listingMessageProducer)
+			return IntegrationFlow.from(listingMessageProducer)
 					.split()
 					.transform(lsEntryToStringTransformer)
 					.filter(duplicateFilter)

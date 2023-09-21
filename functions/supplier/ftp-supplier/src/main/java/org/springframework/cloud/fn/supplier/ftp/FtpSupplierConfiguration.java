@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2022 the original author or authors.
+ * Copyright 2015-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.file.filters.ChainFileListFilter;
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.ftp.dsl.Ftp;
@@ -136,7 +136,7 @@ public class FtpSupplierConfiguration {
 	@Bean
 	@ConditionalOnExpression("environment['file.consumer.mode'] != 'ref'")
 	public Publisher<Message<Object>> ftpReadingFlow(FtpInboundFileSynchronizingMessageSource ftpMessageSource) {
-		return FileUtils.enhanceFlowForReadingMode(IntegrationFlows
+		return FileUtils.enhanceFlowForReadingMode(IntegrationFlow
 				.from(IntegrationReactiveUtils.messageSourceToFlux(ftpMessageSource)), fileConsumerProperties)
 				.toReactivePublisher();
 	}

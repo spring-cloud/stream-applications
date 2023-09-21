@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,8 @@ import org.springframework.cloud.fn.common.file.FileUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlowBuilder;
-import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.file.FileReadingMessageSource;
 import org.springframework.integration.file.dsl.FileInboundChannelAdapterSpec;
 import org.springframework.integration.file.dsl.Files;
@@ -120,7 +120,7 @@ public class FileSupplierConfiguration {
 	@Bean
 	@ConditionalOnExpression("environment['file.consumer.mode'] != 'ref'")
 	public Publisher<Message<Object>> fileReadingFlow() {
-		IntegrationFlowBuilder flowBuilder = IntegrationFlows.from(fileMessageFlux());
+		IntegrationFlowBuilder flowBuilder = IntegrationFlow.from(fileMessageFlux());
 		return FileUtils.enhanceFlowForReadingMode(flowBuilder, this.fileConsumerProperties)
 				.toReactivePublisher();
 	}
