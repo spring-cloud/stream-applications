@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.fn.aggregator;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.Duration;
 import java.util.List;
 
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.cloud.fn.consumer.redis.RedisTestContainerSupport;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.redis.store.RedisMessageStore;
@@ -46,11 +49,14 @@ public class RedisMessageStoreAggregatorTests extends AbstractAggregatorFunction
 
 	@Test
 	public void test() {
+		InputStream fakeNonSerializableKafkaConsumer = new ByteArrayInputStream(new byte[0]);
+
 		Flux<Message<?>> input =
 			Flux.just(MessageBuilder.withPayload("2")
 					.setHeader(IntegrationMessageHeaderAccessor.CORRELATION_ID, "my_correlation")
 					.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_NUMBER, 2)
 					.setHeader(IntegrationMessageHeaderAccessor.SEQUENCE_SIZE, 2)
+					.setHeader("kafka_consumer", new ProxyFactory(fakeNonSerializableKafkaConsumer).getProxy())
 					.build(),
 				MessageBuilder.withPayload("1")
 					.setHeader(IntegrationMessageHeaderAccessor.CORRELATION_ID, "my_correlation")
