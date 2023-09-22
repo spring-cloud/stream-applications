@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2021 the original author or authors.
+ * Copyright 2011-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.http.support.DefaultHttpHeaderMapper;
 import org.springframework.integration.mapping.HeaderMapper;
@@ -60,7 +60,7 @@ public class HttpSupplierConfiguration {
 			HeaderMapper<HttpHeaders> httpHeaderMapper,
 			ServerCodecConfigurer serverCodecConfigurer) {
 
-		return IntegrationFlows.from(
+		return IntegrationFlow.from(
 						WebFlux.inboundChannelAdapter(httpSupplierProperties.getPathPattern())
 								.requestPayloadType(byte[].class)
 								.statusCodeExpression(new ValueExpression<>(HttpStatus.ACCEPTED))

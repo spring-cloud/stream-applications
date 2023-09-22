@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2022 the original author or authors.
+ * Copyright 2015-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlowBuilder;
-import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.file.remote.session.SessionFactory;
 import org.springframework.integration.ftp.dsl.Ftp;
 import org.springframework.integration.ftp.dsl.FtpMessageHandlerSpec;
@@ -54,7 +53,7 @@ public class FtpConsumerConfiguration {
 			@Nullable ComponentCustomizer<FtpMessageHandlerSpec> ftpMessageHandlerSpecCustomizer) {
 
 		IntegrationFlowBuilder integrationFlowBuilder =
-				IntegrationFlows.from(MessageConsumer.class, (gateway) -> gateway.beanName("ftpConsumer"));
+				IntegrationFlow.from(MessageConsumer.class, (gateway) -> gateway.beanName("ftpConsumer"));
 
 		FtpMessageHandlerSpec handlerSpec =
 				Ftp.outboundAdapter(new FtpRemoteFileTemplate(ftpSessionFactory), properties.getMode())
