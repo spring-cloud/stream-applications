@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.FluxMessageChannel;
 import org.springframework.integration.config.AggregatorFactoryBean;
 import org.springframework.integration.store.MessageGroupStore;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -67,7 +68,12 @@ public class AggregatorFunctionConfiguration {
 		FluxMessageChannel outputChannel
 	) {
 		return input -> Flux.from(outputChannel)
-			.doOnRequest((request) -> inputChannel.subscribeTo(input));
+			.doOnRequest((request) ->
+					inputChannel.subscribeTo(
+							input.map((inputMessage) ->
+									MessageBuilder.fromMessage(inputMessage)
+											.removeHeader("kafka_consumer")
+											.build())));
 	}
 
 	@Bean
