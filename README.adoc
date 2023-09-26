@@ -74,7 +74,7 @@ The following are the various components of this repository.
 |link:functions/consumer/rabbit-consumer/README.adoc[RabbitMQ]
 
 |link:functions/supplier/s3-supplier/README.adoc[AWS S3]
-|link:functions/function/tasklauncher-function/README.adoc[Task Launcher]
+|
 |link:functions/consumer/redis-consumer/README.adoc[Redis]
 
 |link:functions/supplier/sftp-supplier/README.adoc[SFTP]
