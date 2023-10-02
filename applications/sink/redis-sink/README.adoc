@@ -30,7 +30,7 @@ $$host$$:: $$Redis server host.$$ *($$String$$, default: `$$localhost$$`)*
 $$password$$:: $$Login password of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
 $$port$$:: $$Redis server port.$$ *($$Integer$$, default: `$$6379$$`)*
 $$timeout$$:: $$Read timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
-$$url$$:: $$Connection URL. Overrides host, port, and password. User is ignored. Example: redis://user:password@example.com:6379$$ *($$String$$, default: `$$<none>$$`)*
+$$url$$:: $$Connection URL. Overrides host, port, username, and password. Example: redis://user:password@example.com:6379$$ *($$String$$, default: `$$<none>$$`)*
 $$username$$:: $$Login username of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
 
 === spring.data.redis.cluster

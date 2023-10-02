@@ -18,14 +18,9 @@ The **$$s3$$** $$sink$$ has the following options:
 Properties grouped by prefix:
 
 
-=== s3.common
-
-$$endpoint-url$$:: $$Optional endpoint url to connect to s3 compatible storage.$$ *($$String$$, default: `$$<none>$$`)*
-$$path-style-access$$:: $$Use path style access.$$ *($$Boolean$$, default: `$$false$$`)*
-
 === s3.consumer
 
-$$acl$$:: $$S3 Object access control list.$$ *($$CannedAccessControlList$$, default: `$$<none>$$`)*
+$$acl$$:: $$S3 Object access control list.$$ *($$ObjectCannedACL$$, default: `$$<none>$$`, possible values: `private`,`public-read`,`public-read-write`,`authenticated-read`,`aws-exec-read`,`bucket-owner-read`,`bucket-owner-full-control`,`null`)*
 $$acl-expression$$:: $$Expression to evaluate S3 Object access control list.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$bucket$$:: $$AWS bucket for target file(s) to store.$$ *($$String$$, default: `$$<none>$$`)*
 $$bucket-expression$$:: $$Expression to evaluate AWS bucket name.$$ *($$Expression$$, default: `$$<none>$$`)*

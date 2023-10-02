@@ -95,11 +95,6 @@ $$encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$
 $$retry-interval$$:: $$Retry interval for Zookeeper operations in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
 $$root$$:: $$Root node - store entries are children of this node.$$ *($$String$$, default: `$$/SpringIntegration-MetadataStore$$`)*
 
-=== s3.common
-
-$$endpoint-url$$:: $$Optional endpoint url to connect to s3 compatible storage.$$ *($$String$$, default: `$$<none>$$`)*
-$$path-style-access$$:: $$Use path style access.$$ *($$Boolean$$, default: `$$false$$`)*
-
 === s3.supplier
 
 $$auto-create-local-dir$$:: $$Create or not the local directory.$$ *($$Boolean$$, default: `$$true$$`)*

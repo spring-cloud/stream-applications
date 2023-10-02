@@ -52,6 +52,7 @@ The **$$jdbc$$** $$sink$$ has the following options:
 //tag::configuration-properties[]
 Properties grouped by prefix:
 
+
 === jdbc.consumer
 
 $$batch-size$$:: $$Threshold in number of messages when data will be flushed to database table.$$ *($$Integer$$, default: `$$1$$`)*

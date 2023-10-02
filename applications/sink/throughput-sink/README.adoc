@@ -8,7 +8,7 @@ Sink that will count messages and log the observed throughput at a selected inte
 The **$$throughput$$** $$sink$$ has the following options:
 
 //tag::configuration-properties[]
-$$throughput.report-every-ms$$:: $$how often to report.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$throughput.report-every-ms$$:: $$how often to report.$$ *($$Integer$$, default: `$$1000$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
