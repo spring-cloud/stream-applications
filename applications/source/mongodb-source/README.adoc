@@ -29,13 +29,13 @@ $$update-expression$$:: $$The SpEL expression in MongoDB update DSL style.$$ *($
 $$additional-hosts$$:: $$Additional server hosts. Cannot be set with URI or if 'host' is not specified. Additional hosts will use the default mongo port of 27017. If you want to use a different port you can use the "host:port" syntax.$$ *($$List<String>$$, default: `$$<none>$$`)*
 $$authentication-database$$:: $$Authentication database name.$$ *($$String$$, default: `$$<none>$$`)*
 $$auto-index-creation$$:: $$Whether to enable auto-index creation.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$database$$:: $$Database name.$$ *($$String$$, default: `$$<none>$$`)*
+$$database$$:: $$Database name. Overrides database in URI.$$ *($$String$$, default: `$$<none>$$`)*
 $$field-naming-strategy$$:: $$Fully qualified name of the FieldNamingStrategy to use.$$ *($$Class<?>$$, default: `$$<none>$$`)*
 $$host$$:: $$Mongo server host. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
 $$password$$:: $$Login password of the mongo server. Cannot be set with URI.$$ *($$Character[]$$, default: `$$<none>$$`)*
 $$port$$:: $$Mongo server port. Cannot be set with URI.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$replica-set-name$$:: $$Required replica set name for the cluster. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
-$$uri$$:: $$Mongo database URI. Overrides host, port, username, password, and database.$$ *($$String$$, default: `$$mongodb://localhost/test$$`)*
+$$uri$$:: $$Mongo database URI. Overrides host, port, username, and password.$$ *($$String$$, default: `$$mongodb://localhost/test$$`)*
 $$username$$:: $$Login user of the mongo server. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
 $$uuid-representation$$:: $$Representation to use when converting a UUID to a BSON binary value.$$ *($$UuidRepresentation$$, default: `$$java-legacy$$`, possible values: `UNSPECIFIED`,`STANDARD`,`C_SHARP_LEGACY`,`JAVA_LEGACY`,`PYTHON_LEGACY`)*
 
