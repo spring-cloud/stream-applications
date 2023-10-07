@@ -7,7 +7,7 @@ env:
   MAVEN_THREADS: '-T 0.5C'
 
 jobs:
-  build:
+  build_deploy_release:
     if: ${{ github.repository == 'spring-cloud/stream-applications' }}
     runs-on: ubuntu-latest
     defaults:
