@@ -62,9 +62,9 @@ jobs:
       - name: Tag Release
         uses: jvalkeal/build-zoo-handler@v0.0.4
         with:
-          tag-release-branch: ${{ env.spring_cloud_dataflow_apps_plugin_version }}
+          tag-release-branch: apps-plugin/v${{ env.spring_cloud_dataflow_apps_plugin_version }}
           tag-release-tag: ${{ env.spring_cloud_dataflow_apps_plugin_version }}
-          tag-release-tag-prefix: v
+          tag-release-tag-prefix: apps-plugin/v
       - name: Clean cache
         run: |
           find ~/.m2/repository -type d -name '*SNAPSHOT' | xargs rm -fr
