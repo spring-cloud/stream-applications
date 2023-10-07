@@ -1,4 +1,4 @@
-name: Release Worker
+name: Apps Plugin (Release)
 
 on:
   workflow_dispatch:
