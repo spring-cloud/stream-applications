@@ -1,4 +1,4 @@
-name: Apps Plugin (Milestone)
+name: Apps Plugin (Milestone..)
 
 on:
   workflow_dispatch:
