@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       milestoneVersion:
-        description: "Milestone version (ex: '-M1')"
+        description: "Milestone version (no dash, eg. 'M1')"
         required: true
 
 env:
