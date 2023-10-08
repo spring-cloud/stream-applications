@@ -65,6 +65,13 @@ jobs:
           tag-release-branch: apps-plugin/v${{ env.spring_cloud_dataflow_apps_plugin_version }}
           tag-release-tag: ${{ env.spring_cloud_dataflow_apps_plugin_version }}
           tag-release-tag-prefix: apps-plugin/v
+      - name: Promote Build
+        run: |
+          jfrog rt build-promote $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER libs-release-local
       - name: Clean cache
         run: |
           find ~/.m2/repository -type d -name '*SNAPSHOT' | xargs rm -fr
+      - name: Print Build Info
+        run: |
+          echo "::notice ::JFROG_CLI_BUILD_NAME=$JFROG_CLI_BUILD_NAME"
+          echo "::notice ::JFROG_CLI_BUILD_NUMBER=$JFROG_CLI_BUILD_NUMBER"
