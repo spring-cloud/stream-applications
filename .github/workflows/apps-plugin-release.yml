@@ -68,10 +68,50 @@ jobs:
       - name: Promote Build
         run: |
           jfrog rt build-promote $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER libs-release-local
-      - name: Clean cache
+      - name: Install tooling for Github release
         run: |
-          find ~/.m2/repository -type d -name '*SNAPSHOT' | xargs rm -fr
+          curl -sSL https://github.com/cbroglie/mustache/releases/download/v1.2.2/mustache_1.2.2_linux_amd64.tar.gz | sudo tar -C /usr/local/bin/ --no-same-owner -xzv mustache
       - name: Print Build Info
         run: |
           echo "::notice ::JFROG_CLI_BUILD_NAME=$JFROG_CLI_BUILD_NAME"
           echo "::notice ::JFROG_CLI_BUILD_NUMBER=$JFROG_CLI_BUILD_NUMBER"
+      - name: Create Github release
+        env:
+          RELEASE_NOTES_ISSUES: ${{runner.temp}}/release_notes_issues.json
+          RELEASE_NOTES_FILE: ${{runner.temp}}/release_notes.md5
+          GH_TOKEN: ${{ secrets.GH_ACTIONS_REPO_TOKEN }}
+        run: |
+          gh issue list \
+            --repo spring-cloud/stream-applications \
+            --state all --json number,title,labels \
+            --search milestone:$spring_cloud_dataflow_apps_plugin_version \
+            --jq '{issues:map(select((.labels | length == 0) or (any(.labels[].name; startswith("automation/rlnotes")|not))) + {repo:"spring-cloud/stream-applications"})}' \
+            > $RELEASE_NOTES_ISSUES
+          mustache $RELEASE_NOTES_ISSUES .github/rlnotes.mustache > $RELEASE_NOTES_FILE
+          gh release create $spring-cloud/stream-applications \
+          --draft \
+          --title "Spring Cloud Dataflow Apps Plugin $spring-cloud/stream-applications" \
+          --generate-notes \
+          --notes-file $RELEASE_NOTES_FILE
+      - name: Update next snapshot version
+        run: |
+          echo JFROG_CLI_BUILD_NAME=spring-cloud-dataflow-apps-plugin-main-ndv >> $GITHUB_ENV
+          echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
+          jfrog rt mvn build-helper:parse-version versions:set \
+            -DprocessAllModules=true \
+            -DgenerateBackupPoms=false \
+            -Dartifactory.publish.artifacts=false \
+            -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}-SNAPSHOT' \
+            -B
+          jfrog rt build-clean
+          mvn clean
+          jfrog rt mvn install -DskipTests -B         
+          jfrog rt build-publish
+      - name: Commit next snapshot version changes
+        uses: jvalkeal/build-zoo-handler@v0.0.4
+        with:
+          commit-changes-branch: main
+          commit-changes-message: Next development version
+      - name: Clean cache
+        run: |
+          find ~/.m2/repository -type d -name '*SNAPSHOT' | xargs rm -fr
