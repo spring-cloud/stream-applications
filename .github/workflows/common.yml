@@ -670,20 +670,21 @@ jobs:
           RELEASE_TRAIN_VERSION: ${{ needs.parameters.outputs.release_train_version }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          SRC_ROOT=$ROOT_DIR/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
-          echo "******SRC_ROOT"
-          ls $SRC_ROOT
-          TARGET_REPO=https://repo.spring.io/artifactory/libs-snapshot-local/org/springframework/cloud/stream/app/stream-applications-descriptor/${RELEASE_TRAIN_VERSION}/stream-applications-descriptor
-          
-          jfrog rt upload "$SRC_ROOT/kafka-apps-maven.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-maven"
-          jfrog rt upload "$SRC_ROOT/kafka-apps-docker.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-docker"
-          jfrog rt upload "$SRC_ROOT/kafka-apps-harbor.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-harbor"
-          jfrog rt upload "$SRC_ROOT/rabbit-apps-maven.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-maven"
-          jfrog rt upload "$SRC_ROOT/rabbit-apps-docker.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-docker"
-          jfrog rt upload "$SRC_ROOT/rabbit-apps-harbor.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-harbor"
-          jfrog rt upload "$SRC_ROOT/kafka-apps-maven-repo-url.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.kafka-apps-maven-repo-url.properties
-          jfrog rt upload "$SRC_ROOT/rabbit-apps-maven-repo-url.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.rabbit-apps-maven-repo-url.properties
-
+          pushd stream-applications > /dev/null
+            echo "::notice ::uploading unique version snapshot descriptors"
+            set -e
+            SRC_ROOT=$ROOT_DIR/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
+            echo "******SRC_ROOT"
+            TARGET_REPO=https://repo.spring.io/artifactory/libs-snapshot-local/org/springframework/cloud/stream/app/stream-applications-descriptor/${RELEASE_TRAIN_VERSION}/stream-applications-descriptor
+            jfrog rt upload "$SRC_ROOT/kafka-apps-maven.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-maven"
+            jfrog rt upload "$SRC_ROOT/kafka-apps-docker.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-docker"
+            jfrog rt upload "$SRC_ROOT/kafka-apps-harbor.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-harbor"
+            jfrog rt upload "$SRC_ROOT/rabbit-apps-maven.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-maven"
+            jfrog rt upload "$SRC_ROOT/rabbit-apps-docker.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-docker"
+            jfrog rt upload "$SRC_ROOT/rabbit-apps-harbor.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-harbor"
+            jfrog rt upload "$SRC_ROOT/kafka-apps-maven-repo-url.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.kafka-apps-maven-repo-url.properties
+            jfrog rt upload "$SRC_ROOT/rabbit-apps-maven-repo-url.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.rabbit-apps-maven-repo-url.properties
+          popd > /dev/null
       - name: Set Stream Applications Docs Properties for ${{ needs.parameters.outputs.release_train_version }}
         run: |
           ./set-doc-properties.sh "${{ needs.parameters.outputs.release_train_version }}"                    
