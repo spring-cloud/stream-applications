@@ -667,7 +667,7 @@ jobs:
         if: ${{ needs.parameters.outputs.build_version_type == 'snapshot' }}
         shell: bash
         env:
-          RELEASE_TRAIN_VERSION=${{ needs.parameters.outputs.release_train_version }}
+          RELEASE_TRAIN_VERSION: ${{ needs.parameters.outputs.release_train_version }}
         run: |
           SRC_ROOT=./stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
           TARGET_REPO=https://repo.spring.io/artifactory/libs-snapshot-local/org/springframework/cloud/stream/app/stream-applications-descriptor/${RELEASE_TRAIN_VERSION}/stream-applications-descriptor
