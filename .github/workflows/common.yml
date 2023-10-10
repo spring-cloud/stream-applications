@@ -659,10 +659,7 @@ jobs:
         uses: ./.github/actions/install-libxml2-utils
       - uses: jfrog/setup-jfrog-cli@v3
         env:
-          JF_URL: 'https://repo.spring.io'
-          JF_ACCESS_TOKEN: '${{ secrets.ARTIFACTORY_PASSWORD }}'
-          JF_USER: '${{ secrets.ARTIFACTORY_USERNAME }}'
-          JF_PASSWORD: '${{ secrets.ARTIFACTORY_PASSWORD }}'
+          JF_ENV_1: '${{ secrets.JF_ARTIFACTORY_SPRING }}'
       - name: Upload descriptors
         if: ${{ needs.parameters.outputs.build_version_type == 'snapshot' }}
         shell: bash
@@ -674,7 +671,6 @@ jobs:
             echo "::notice ::uploading unique version snapshot descriptors"
             set -e
             SRC_ROOT=$ROOT_DIR/stream-applications/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
-            echo "****** $SRC_ROOT"
             TARGET_REPO=https://repo.spring.io/artifactory/libs-snapshot-local/org/springframework/cloud/stream/app/stream-applications-descriptor/${RELEASE_TRAIN_VERSION}/stream-applications-descriptor
             jfrog rt upload "$SRC_ROOT/kafka-apps-maven.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-maven"
             jfrog rt upload "$SRC_ROOT/kafka-apps-docker.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-docker"
@@ -697,9 +693,6 @@ jobs:
           path: '**/target/surefire-reports'
           retention-days: 7
           if-no-files-found: ignore
-      # set all properties for buildName and buildNumber using a list of all built artifacts and version.
-      # use frog download of all builds.
-      # use nexus-sync
       - name: Tag Release
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         shell: bash
@@ -712,8 +705,6 @@ jobs:
             git tag "v${{ needs.parameters.outputs.release_train_version }}"
             git push --tags -v origin
           popd > /dev/null
-      # add jfrog download
-      # nexus-sync
       - name: 'Action: update next dev version'
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         shell: bash
