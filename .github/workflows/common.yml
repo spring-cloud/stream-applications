@@ -673,7 +673,7 @@ jobs:
           pushd stream-applications > /dev/null
             echo "::notice ::uploading unique version snapshot descriptors"
             set -e
-            SRC_ROOT=$ROOT_DIR/stream/applications/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
+            SRC_ROOT=$ROOT_DIR/stream-applications/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
             echo "****** $SRC_ROOT"
             TARGET_REPO=https://repo.spring.io/artifactory/libs-snapshot-local/org/springframework/cloud/stream/app/stream-applications-descriptor/${RELEASE_TRAIN_VERSION}/stream-applications-descriptor
             jfrog rt upload "$SRC_ROOT/kafka-apps-maven.properties" "${TARGET_REPO}-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-maven"
