@@ -657,7 +657,7 @@ jobs:
           popd > /dev/null
       - name: 'Configure: Install libxml2-utils'
         uses: ./.github/actions/install-libxml2-utils
-      - uses: jfrog/setup-jfrog-cli@v1
+      - uses: jfrog/setup-jfrog-cli@v3
         with:
           version: 1.46.4
         env:
@@ -695,9 +695,6 @@ jobs:
           path: '**/target/surefire-reports'
           retention-days: 7
           if-no-files-found: ignore
-      # set all properties for buildName and buildNumber using a list of all built artifacts and version.
-      # use frog download of all builds.
-      # use nexus-sync
       - name: Tag Release
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         shell: bash
@@ -710,8 +707,6 @@ jobs:
             git tag "v${{ needs.parameters.outputs.release_train_version }}"
             git push --tags -v origin
           popd > /dev/null
-      # add jfrog download
-      # nexus-sync
       - name: 'Action: update next dev version'
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         shell: bash
