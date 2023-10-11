@@ -659,6 +659,7 @@ jobs:
         uses: ./.github/actions/install-libxml2-utils
       - uses: jfrog/setup-jfrog-cli@v3
         env:
+          JF_URL: 'https://repo.spring.io'
           JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: Upload descriptors
         if: ${{ needs.parameters.outputs.build_version_type == 'snapshot' }}
