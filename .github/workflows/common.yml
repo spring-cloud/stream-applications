@@ -216,7 +216,7 @@ jobs:
           popd > /dev/null
       - name: 'Action: build initial dependencies'
         shell: bash
-        timeout-minutes: 30
+        timeout-minutes: 60
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
