@@ -23,6 +23,7 @@ jobs:
       GCP_CRED_JSON: ${{ secrets.GCP_CRED_JSON }}
       ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
       ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+      JF_ARTIFACTORY_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
     with:
       branch: 'main'
       verbose: ${{ inputs.verbose == 'true' }}

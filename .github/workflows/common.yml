@@ -29,6 +29,7 @@ on:
       GH_ARC_INSTALLATION_ID:
       GH_ARC_PRIVATE_KEY:
       GH_ARC_PAT:
+      JF_ARTIFACTORY_SPRING:
 
 env:
   VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
