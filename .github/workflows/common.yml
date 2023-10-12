@@ -669,7 +669,7 @@ jobs:
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
-            echo "::notice ::uploading unique version snapshot descriptors"
+            echo "::notice ::uploading unique version snapshot descriptors:$RELEASE_TRAIN_VERSION"
             set -e
             SRC_ROOT=$ROOT_DIR/stream-applications/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
             TARGET_REPO=libs-snapshot-local/org/springframework/cloud/stream/app/stream-applications-descriptor/${RELEASE_TRAIN_VERSION}
@@ -682,6 +682,7 @@ jobs:
             jfrog rt upload "$SRC_ROOT/kafka-apps-maven-repo-url.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.kafka-apps-maven-repo-url.properties"
             jfrog rt upload "$SRC_ROOT/rabbit-apps-maven-repo-url.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.rabbit-apps-maven-repo-url.properties"
           popd > /dev/null
+
       - name: Set Stream Applications Docs Properties for ${{ needs.parameters.outputs.release_train_version }}
         run: |
           ./set-doc-properties.sh "${{ needs.parameters.outputs.release_train_version }}"                    
