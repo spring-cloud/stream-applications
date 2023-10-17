@@ -805,6 +805,29 @@ jobs:
             git commit -a -m "Next development version ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
             git push -v origin 
           popd > /dev/null
+
+      - name: Install tooling for Github release
+        run: |
+          curl -sSL https://github.com/cbroglie/mustache/releases/download/v1.2.2/mustache_1.2.2_linux_amd64.tar.gz | sudo tar -C /usr/local/bin/ --no-same-owner -xzv mustache
+      - name: Create Github release
+        env:
+          RELEASE_NOTES_ISSUES: ${{runner.temp}}/release_notes_issues.json
+          RELEASE_NOTES_FILE: ${{runner.temp}}/release_notes.md5
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue list \
+            --repo spring-cloud/stream-applications \
+            --state all --json number,title,labels \
+            --search milestone:$VERSION \
+            --jq '{issues:map(select((.labels | length == 0) or (any(.labels[].name; startswith("automation/rlnotes")|not))) + {repo:"spring-cloud/stream-applications"})}' \
+            > $RELEASE_NOTES_ISSUES
+          mustache $RELEASE_NOTES_ISSUES .github/rlnotes.mustache > $RELEASE_NOTES_FILE
+          gh release create $VERSION \
+          --draft \
+          --title "Spring Cloud Stream Applications $VERSION" \
+          --generate-notes \
+          --notes-file $RELEASE_NOTES_FILE
+
   rerun-jobs:
     if: ${{ failure() && github.run_attempt == '1' }}
     runs-on: ubuntu-latest
