@@ -35,6 +35,8 @@ env:
   VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
   BRANCH: ${{ inputs.branch }}
   MAVEN_THREADS: ${{ inputs.mavenThreads }}
+  BUILD_NAME: cloud-stream-applications-main
+  BUILD_NUMBER: ${{ env.GITHUB_RUN_NUMBER }}
 
 jobs:
   scan:
@@ -135,6 +137,10 @@ jobs:
             echo "::debug ::JDK_BUILD=$JDK_BUILD"
             echo "::debug ::JRE_DEFAULT=$JRE_DEFAULT"
           fi
+      - name: Print Build Info
+        run: |
+          echo "::notice ::BUILD_NAME=$BUILD_NAME"
+          echo "::notice ::BUILD_NUMBER=$BUILD_NUMBER"
     outputs:
       max_parallel: ${{ env.MAX_PARALLEL }}
       sources: ${{ env.SOURCES }}
@@ -788,25 +794,9 @@ jobs:
             git tag "v${{ needs.parameters.outputs.release_train_version }}"
             git push --tags -v origin
           popd > /dev/null
-      - name: 'Action: update next dev version'
-        if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
-        shell: bash
-        env:
-          VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
-        run: |
-          ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications >/dev/null
-            git config user.name "GitHub Actions Bot"
-            git config user.email "<>"
-            echo "::notice ::updating next dev versions to ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.next_dev_version }}" "${{ needs.parameters.outputs.release_train_next_dev_version }}"
-            echo "::notice ::setting released version to next dev version ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
-            ./next-dev-version.sh
-            git commit -a -m "Next development version ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
-            git push -v origin 
-          popd > /dev/null
 
       - name: Install tooling for Github release
+        if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         run: |
           curl -sSL https://github.com/cbroglie/mustache/releases/download/v1.2.2/mustache_1.2.2_linux_amd64.tar.gz | sudo tar -C /usr/local/bin/ --no-same-owner -xzv mustache
       - name: Create Github release
@@ -827,6 +817,25 @@ jobs:
           --title "Spring Cloud Stream Applications $VERSION" \
           --generate-notes \
           --notes-file $RELEASE_NOTES_FILE
+
+      - name: 'Action: update next dev version'
+        if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
+        shell: bash
+        env:
+          VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
+        run: |
+          ROOT_DIR=$(realpath $PWD)
+          pushd stream-applications >/dev/null
+            git config user.name "GitHub Actions Bot"
+            git config user.email "<>"
+            echo "::notice ::updating next dev versions to ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
+            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.next_dev_version }}" "${{ needs.parameters.outputs.release_train_next_dev_version }}"
+            echo "::notice ::setting released version to next dev version ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
+            ./next-dev-version.sh
+            git commit -a -m "Next development version ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
+            git push -v origin 
+          popd > /dev/null
+
 
   rerun-jobs:
     if: ${{ failure() && github.run_attempt == '1' }}
