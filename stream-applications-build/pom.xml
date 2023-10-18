@@ -58,7 +58,12 @@
         <spring-integration-aws.version>3.0.1</spring-integration-aws.version>
         <curator.version>5.5.0</curator.version>
         <mavenThreads>1</mavenThreads>
-    </properties>
+
+		<!--suppress UnresolvedMavenProperty -->
+		<buildName>${env.BUILD_NAME}</buildName>
+		<!--suppress UnresolvedMavenProperty -->
+		<buildNumber>${env.BUILD_NUMBER}</buildNumber>
+	</properties>
 
     <url>https://spring.io/projects/spring-cloud-stream-applications</url>
     <developers>
@@ -361,12 +366,12 @@
         <repository>
             <id>repo.spring.io</id>
             <name>Spring Release Repository</name>
-            <url>https://repo.spring.io/libs-release-local</url>
+            <url>https://repo.spring.io/libs-release-local;buildName=${buildName};buildNumber=${buildNumber}</url>
         </repository>
         <snapshotRepository>
             <id>repo.spring.io</id>
             <name>Spring Snapshot Repository</name>
-            <url>https://repo.spring.io/libs-snapshot-local</url>
+            <url>https://repo.spring.io/libs-snapshot-local;buildName=${buildName};buildNumber=${buildNumber}</url>
         </snapshotRepository>
     </distributionManagement>
     <profiles>
@@ -413,7 +418,7 @@
                 <repository>
                     <id>repo.spring.io</id>
                     <name>Spring Milestone Repository</name>
-                    <url>https://repo.spring.io/libs-milestone-local</url>
+                    <url>https://repo.spring.io/libs-milestone-local;buildName=${buildName};buildNumber=${buildNumber}</url>
                 </repository>
             </distributionManagement>
         </profile>
@@ -423,7 +428,7 @@
                 <snapshotRepository>
                     <id>repo.spring.io</id>
                     <name>Spring Snapshot Repository</name>
-                    <url>https://repo.spring.io/libs-snapshot-local</url>
+                    <url>https://repo.spring.io/libs-snapshot-local;buildName=${buildName};buildNumber=${buildNumber}</url>
                 </snapshotRepository>
             </distributionManagement>
         </profile>
@@ -433,7 +438,7 @@
                 <repository>
                     <id>repo.spring.io</id>
                     <name>Spring Release Repository</name>
-                    <url>https://repo.spring.io/libs-release-local</url>
+                    <url>https://repo.spring.io/libs-release-local;buildName=${buildName};buildNumber=${buildNumber}</url>
                 </repository>
             </distributionManagement>
             <build>
