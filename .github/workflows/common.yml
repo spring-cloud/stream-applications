@@ -35,8 +35,6 @@ env:
   VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
   BRANCH: ${{ inputs.branch }}
   MAVEN_THREADS: ${{ inputs.mavenThreads }}
-  BUILD_NAME: cloud-stream-applications-main
-  BUILD_NUMBER: ${{ env.GITHUB_RUN_NUMBER }}
 
 jobs:
   scan:
@@ -91,6 +89,8 @@ jobs:
             echo "NEXT_DEV_VERSION=$NEXT_DEV_VERSION" >> $GITHUB_ENV
             echo "RELEASE_TRAIN_VERSION=$RELEASE_TRAIN_VERSION" >> $GITHUB_ENV
             echo "RELEASE_TRAIN_NEXT_DEV_VERSION=$RELEASE_TRAIN_NEXT_DEV_VERSION" >> $GITHUB_ENV
+            echo "BUILD_NAME=cloud-stream-applications-$BRANCH" >> $GITHUB_ENV
+            echo "BUILD_NUMBER=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV      
             echo "::info ::creating streams applications matrix"
             $ROOT_DIR/create-matrices.sh
             if [ ! -f matrix.json ]; then
