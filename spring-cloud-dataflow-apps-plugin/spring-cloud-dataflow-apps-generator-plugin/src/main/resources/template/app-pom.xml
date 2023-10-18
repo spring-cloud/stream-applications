@@ -41,6 +41,9 @@
 		{{this}}
 		{{/app-binder.maven.properties}}
 		<!-- (end) maven properties -->
+		<buildName>${env.BUILD_NAME}</buildName>
+		<buildNumber>${env.BUILD_NUMBER}</buildNumber>
+		<revision>${env.BUILD_REVISION}</revision>
 	</properties>
 
 	<dependencyManagement>
