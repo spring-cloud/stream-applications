@@ -20,12 +20,12 @@
 		<repository>
 			<id>repo.spring.io</id>
 			<name>Spring Release Repository</name>
-			<url>https://repo.spring.io/libs-release-local;buildName=${buildName};buildNumber=${buildNumber};revision=${revision}</url>
+			<url>https://repo.spring.io/libs-release-local;buildName=${buildName};buildNumber=${buildNumber}</url>
 		</repository>
 		<snapshotRepository>
 			<id>repo.spring.io</id>
 			<name>Spring Snapshot Repository</name>
-			<url>https://repo.spring.io/libs-snapshot-local;buildName=${buildName};buildNumber=${buildNumber};revision=${revision}</url>
+			<url>https://repo.spring.io/libs-snapshot-local;buildName=${buildName};buildNumber=${buildNumber}</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -43,7 +43,6 @@
 		<!-- (end) maven properties -->
 		<buildName>${env.BUILD_NAME}</buildName>
 		<buildNumber>${env.BUILD_NUMBER}</buildNumber>
-		<revision>${env.BUILD_REVISION}</revision>
 	</properties>
 
 	<dependencyManagement>
@@ -274,7 +273,7 @@
 				<repository>
 					<id>repo.spring.io</id>
 					<name>Spring Milestone Repository</name>
-					<url>https://repo.spring.io/libs-milestone-local;buildName=${buildName};buildNumber=${buildNumber};revision=${revision}</url>
+					<url>https://repo.spring.io/libs-milestone-local;buildName=${buildName};buildNumber=${buildNumber}</url>
 				</repository>
 			</distributionManagement>
 		</profile>
