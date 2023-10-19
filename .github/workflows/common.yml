@@ -155,6 +155,8 @@ jobs:
       release_train_next_dev_version: ${{ env.RELEASE_TRAIN_NEXT_DEV_VERSION }}
       jdk_build: ${{ env.JDK_BUILD }}
       jre_version: ${{ env.JRE_DEFAULT }}
+      build_name: ${{ env.BUILD_NAME }}
+      build_number: ${{ env.BUILD_NUMBER }}
   core:
     name: 'core - ${{ inputs.branch }}'
     if: ${{ github.repository == 'spring-cloud/stream-applications' }}
@@ -227,6 +229,8 @@ jobs:
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          BUILD_NAME: ${{ needs.parameters.outputs.build_name }}
+          BUILD_NUMBER: ${{ needs.parameters.outputs.build_number }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
         run: |
@@ -374,6 +378,8 @@ jobs:
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          BUILD_NAME: ${{ needs.parameters.outputs.build_name }}
+          BUILD_NUMBER: ${{ needs.parameters.outputs.build_number }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
@@ -491,6 +497,8 @@ jobs:
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          BUILD_NAME: ${{ needs.parameters.outputs.build_name }}
+          BUILD_NUMBER: ${{ needs.parameters.outputs.build_number }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
@@ -608,6 +616,8 @@ jobs:
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          BUILD_NAME: ${{ needs.parameters.outputs.build_name }}
+          BUILD_NUMBER: ${{ needs.parameters.outputs.build_number }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
@@ -716,6 +726,8 @@ jobs:
         env:
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          BUILD_NAME: ${{ needs.parameters.outputs.build_name }}
+          BUILD_NUMBER: ${{ needs.parameters.outputs.build_number }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
