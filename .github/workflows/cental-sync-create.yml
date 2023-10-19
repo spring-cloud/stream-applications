@@ -9,6 +9,12 @@ on:
       buildNumber:
         description: "Artifactory build number"
         required: true
+      releaseSpecFile:
+        type: choice
+        description: "The AQL spec file for the release files"
+        options:
+          - '.github/release-files-by-build-props-spec.json'
+          - '.github/release-files-by-build-info-spec.json'
 
 jobs:
   build:
@@ -20,15 +26,11 @@ jobs:
         version: 1.46.4
       env:
         JF_ARTIFACTORY_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
-    - name: Extract Build Id
-      run: |
-        echo JFROG_CLI_BUILD_NAME=${{ github.event.inputs.buildName }} >> $GITHUB_ENV
-        echo JFROG_CLI_BUILD_NUMBER=${{ github.event.inputs.buildNumber }} >> $GITHUB_ENV
     - name: Download Release Files
       run: |
         jfrog rt download \
-          --spec .github/release-files-spec.json \
-          --spec-vars "buildname=$JFROG_CLI_BUILD_NAME;buildnumber=$JFROG_CLI_BUILD_NUMBER"
+          --spec ${{ inputs.releaseSpecFile }} \
+          --spec-vars "buildname=${{ inputs.buildName }};buildnumber=${{ inputs.buildNumber }}"
     # Create checksums, signatures and create staging repo
     - name: Create Nexus staging repo
       uses: jvalkeal/nexus-sync@v0
