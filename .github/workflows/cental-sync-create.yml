@@ -13,8 +13,8 @@ on:
         type: choice
         description: "The AQL spec file for the release files"
         options:
-          - '.github/release-files-by-build-props-spec.json'
-          - '.github/release-files-by-build-info-spec.json'
+          - '.github/stream-apps-release-files-spec.json'
+          - '.github/apps-plugin-release-files-spec.json'
 
 jobs:
   build:
