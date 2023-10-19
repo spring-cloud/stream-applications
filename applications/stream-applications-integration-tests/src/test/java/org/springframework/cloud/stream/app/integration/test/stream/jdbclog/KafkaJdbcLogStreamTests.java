@@ -81,7 +81,7 @@ public class KafkaJdbcLogStreamTests {
 								.withEnv("SPRING_DATASOURCE_USERNAME", "test")
 								.withEnv("SPRING_DATASOURCE_DRIVER_CLASS_NAME", "org.mariadb.jdbc.Driver")
 								.withEnv("SPRING_DATASOURCE_URL",
-										"jdbc:mariadb://mysql-for-stream:3306/test"))
+										"jdbc:mysql://mysql-for-stream:3306/test?permitMysqlScheme"))
 				.withSinkContainer(
 						new KafkaStreamAppContainer(StreamAppContainerTestUtils.imageName(
 								"log-sink-kafka", VERSION)).withLogConsumer(logMatcher))

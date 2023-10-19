@@ -67,7 +67,7 @@ abstract class JdbcSourceTests {
 				.withEnv("SPRING_DATASOURCE_USERNAME", "test")
 				.withEnv("SPRING_DATASOURCE_PASSWORD", "secret")
 				.withEnv("SPRING_DATASOURCE_DRIVER_CLASS_NAME", "org.mariadb.jdbc.Driver")
-				.withEnv("SPRING_DATASOURCE_URL", "jdbc:mariadb://mysql-for-source:3306/test");
+				.withEnv("SPRING_DATASOURCE_URL", "jdbc:mysql://mysql-for-source:3306/test?permitMysqlScheme");
 		startSource();
 	}
 

@@ -16,7 +16,7 @@
 	<description>Integration Tests for stream applications</description>
 
 	<properties>
-		<mariadb-client.version>2.6.2</mariadb-client.version>
+		<mariadb-client.version>3.1.2</mariadb-client.version>
 		<wiremock.version>2.27.1</wiremock.version>
 		<mysql-connector-java.version>8.0.28</mysql-connector-java.version>
 	</properties>

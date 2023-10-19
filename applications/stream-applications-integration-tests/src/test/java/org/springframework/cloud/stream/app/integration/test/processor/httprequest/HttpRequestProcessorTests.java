@@ -27,6 +27,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.app.test.integration.OutputMatcher;
@@ -41,7 +43,7 @@ import static org.springframework.cloud.stream.app.test.integration.AppLog.appLo
 
 @Tag("integration")
 abstract class HttpRequestProcessorTests {
-
+	private final static Logger logger = LoggerFactory.getLogger(HttpRequestProcessorTests.class);
 	private static MockWebServer server;
 
 	private static int serverPort;
@@ -81,7 +83,11 @@ abstract class HttpRequestProcessorTests {
 		});
 		testTopicSender.send(processor.getInputDestination(), "ping");
 		await().atMost(DEFAULT_DURATION)
-				.until(outputMatcher.messageMatches(message -> message.getPayload().equals("{\"response\":\"ping\"}")));
+				.until(outputMatcher.messageMatches(message -> {
+					Object payload = message.getPayload();
+					logger.info("payload:{}", payload);
+					return payload.equals("{\"response\":\"ping\"}");
+				}));
 		        // See https://github.com/spring-cloud/spring-cloud-stream/issues/2190 .This condition is no longer true.
 				//		&& message.getHeaders().get(MessageHeaders.CONTENT_TYPE)
 				//				.equals(MediaType.APPLICATION_JSON_VALUE)));

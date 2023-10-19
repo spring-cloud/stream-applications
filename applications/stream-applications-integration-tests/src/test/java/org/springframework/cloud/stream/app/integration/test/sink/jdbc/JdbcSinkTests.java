@@ -72,7 +72,7 @@ public abstract class JdbcSinkTests {
 				.withEnv("SPRING_DATASOURCE_PASSWORD", "secret")
 				.withEnv("SPRING_DATASOURCE_DRIVER_CLASS_NAME", "org.mariadb.jdbc.Driver")
 				.withEnv("SPRING_DATASOURCE_URL",
-						"jdbc:mariadb://mysql-for-sink:3306/test")
+						"jdbc:mysql://mysql-for-sink:3306/test?permitMysqlScheme")
 				.waitingFor(Wait.forLogMessage(".*Started JdbcSink.*", 1));
 		startSink();
 	}
@@ -83,7 +83,7 @@ public abstract class JdbcSinkTests {
 		dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
 		dataSource.setUsername(mySQL.getUsername());
 		dataSource.setPassword(mySQL.getPassword());
-		dataSource.setJdbcUrl("jdbc:mysql://localhost:" + mySQL.getMappedPort(3306) + "/test");
+		dataSource.setJdbcUrl(mySQL.getJdbcUrl() + "?permitMysqlScheme");
 		jdbcTemplate = new JdbcTemplate(dataSource);
 		jdbcTemplate.execute("DELETE FROM People");
 		await().atMost(DEFAULT_DURATION)

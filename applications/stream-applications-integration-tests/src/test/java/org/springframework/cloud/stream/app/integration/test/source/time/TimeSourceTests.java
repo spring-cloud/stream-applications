@@ -95,7 +95,7 @@ abstract class TimeSourceTests {
 		webClient.get()
 				.uri("http://" + source.getHost() + ":" + source.getMappedPort(8080) + "/actuator/env")
 				.exchangeToMono(response -> {
-					assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+					assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 					return response.toBodilessEntity();
 				}).block();
 	}

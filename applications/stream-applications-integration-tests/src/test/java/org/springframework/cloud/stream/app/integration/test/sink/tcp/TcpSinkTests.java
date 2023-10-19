@@ -67,11 +67,13 @@ abstract class TcpSinkTests {
 		sink.start();
 	}
 
+	@SuppressWarnings("resource")
 	static void startTcpServer() {
 		socketReady.set(false);
 		new Thread(() -> {
 			try {
-				socket = new ServerSocket(tcpPort, 50, InetAddress.getLocalHost()).accept();
+				socket = new ServerSocket(tcpPort, 16, InetAddress.getLocalHost())
+					.accept();
 				socketReady.set(true);
 			}
 			catch (IOException e) {

@@ -29,7 +29,7 @@ public abstract class Configuration {
 	/**
 	 * Duration.
 	 */
-	public static final Duration DEFAULT_DURATION = Duration.ofMinutes(1);
+	public static final Duration DEFAULT_DURATION = Duration.ofSeconds(90);
 
 	private static final String SPRING_CLOUD_STREAM_APPLICATIONS_VERSION = "spring.cloud.stream.applications.version";
 
