@@ -292,7 +292,9 @@ public abstract class RabbitMQStreamAppContainerTestConfiguration {
 
 		@Override
 		public <P> void send(String topic, P payload) {
-			await().atMost(Duration.ofSeconds(30)).pollInterval(Duration.ofSeconds(1))
+			await().atMost(Duration.ofSeconds(60))
+					.pollDelay(Duration.ofSeconds(5))
+					.pollInterval(Duration.ofSeconds(2))
 					.until(topicExistsAndIsBound(topic));
 			rabbitTemplate.convertAndSend(topic, routingKey, payload);
 		}

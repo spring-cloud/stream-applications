@@ -146,7 +146,9 @@ public class KafkaStreamAppContainerTestConfiguration {
 			this.admin.createTopics(
 					Collections.singletonList(
 							new NewTopic(STREAM_APPLICATIONS_TEST_TOPIC, Optional.empty(), Optional.empty())));
-			await().atMost(Duration.ofSeconds(30))
+			await().atMost(Duration.ofSeconds(60))
+					.pollDelay(Duration.ofSeconds(5))
+					.pollInterval(Duration.ofSeconds(2))
 					.until(() -> {
 						Set<String> topics = admin.listTopics().names().get();
 						return topics.contains(STREAM_APPLICATIONS_TEST_TOPIC);
