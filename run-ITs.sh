@@ -10,7 +10,9 @@ VERSION=$1
 if [ "$VERSION" == "" ]; then
   VERSION=$($SCDIR/mvn-get-version.sh)
 fi
-shift
+if [ "$1" != "" ]; then
+  shift
+fi
 CONTAINERS="s3-source sftp-source http-request-processor log-sink jdbc-source time-source http-source tcp-sink mongodb-sink"
 BROKERS="rabbit kafka"
 for container in $CONTAINERS; do
