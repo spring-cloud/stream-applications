@@ -812,6 +812,7 @@ jobs:
         run: |
           curl -sSL https://github.com/cbroglie/mustache/releases/download/v1.2.2/mustache_1.2.2_linux_amd64.tar.gz | sudo tar -C /usr/local/bin/ --no-same-owner -xzv mustache
       - name: Create Github release
+        if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         env:
           RELEASE_NOTES_ISSUES: ${{runner.temp}}/release_notes_issues.json
           RELEASE_NOTES_FILE: ${{runner.temp}}/release_notes.md5
