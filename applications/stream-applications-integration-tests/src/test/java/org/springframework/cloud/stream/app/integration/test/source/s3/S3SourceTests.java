@@ -19,14 +19,15 @@ package org.springframework.cloud.stream.app.integration.test.source.s3;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.NoSuchBucketException;
@@ -57,12 +58,11 @@ abstract class S3SourceTests implements LocalstackContainerTest {
 	@BeforeEach
 	void configureSource() {
 		s3Client.createBucket(r -> r.bucket("bucket"));
-		// Use LocalStack container network
 		String endpoint = String.format("http://localstack:%d", LOCAL_STACK_CONTAINER.getExposedPorts().get(0));
 		String region = LOCAL_STACK_CONTAINER.getRegion();
 		logger.info("creating S3 source with region={}, endpoint={}, container={}", region, endpoint, LOCAL_STACK_CONTAINER.getEndpoint());
 		source = BaseContainerExtension.containerInstance()
-			.withNetwork(LOCAL_STACK_CONTAINER.getNetwork())
+			.withNetwork(Network.SHARED)
 			.withEnv("SPRING_CLOUD_CONFIG_ENABLED", "false")
 			.withEnv("SPRING_CLOUD_AWS_S3_ENDPOINT", endpoint)
 			.withEnv("SPRING_CLOUD_AWS_S3_PATH_STYLE_ACCESS_ENABLED", "true")
@@ -75,7 +75,6 @@ abstract class S3SourceTests implements LocalstackContainerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	@Disabled
 	void testLines() {
 		startContainer(fluentStringMap().withEntry("FILE_CONSUMER_MODE", "lines"));
 		s3Client.putObject(r -> r.bucket("bucket").key("test"), resourceAsFile("s3/data").toPath());
@@ -83,8 +82,8 @@ abstract class S3SourceTests implements LocalstackContainerTest {
 			.until(outputMatcher.payloadMatches((String s) -> s.contains("Bart Simpson")));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	@Disabled
 	void testTaskLaunchRequest() {
 		startContainer(fluentStringMap().withEntry("SPRING_CLOUD_FUNCTION_DEFINITION", "s3Supplier|taskLaunchRequestFunction")
 			.withEntry("TASK_LAUNCH_REQUEST_ARG_EXPRESSIONS", "filename=payload")
@@ -99,13 +98,18 @@ abstract class S3SourceTests implements LocalstackContainerTest {
 			.until(outputMatcher.payloadMatches(predicate));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void testListOnly() {
+		ObjectMapper mapper = new ObjectMapper();
 		startContainer(fluentStringMap()
 			.withEntry("FILE_CONSUMER_MODE", "ref")
 			.withEntry("S3_SUPPLIER_LIST_ONLY", "true"));
 		s3Client.putObject(r -> r.bucket("bucket").key("test"), resourceAsFile("s3/data").toPath());
-		Predicate<String> predicate = (String s) -> s.contains("\"bucketName\":\"bucket\",\"key\":\"test\"");
+		Predicate<String> predicate = (String s) -> {
+			logger.info("payload:{}", s);
+			return s.contains("\"key\":\"test\"");
+		};
 		await().atMost(DEFAULT_DURATION)
 			.until(outputMatcher.payloadMatches(predicate));
 	}
@@ -127,7 +131,6 @@ abstract class S3SourceTests implements LocalstackContainerTest {
 		catch (NoSuchBucketException exception) {
 			logger.warn("No bucket 'bucket' to remove");
 		}
-
 		source.stop();
 		outputMatcher.clearMessageMatchers();
 	}

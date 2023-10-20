@@ -208,9 +208,12 @@ public class AwsS3SupplierConfiguration {
 		}
 
 		@Bean
-		ReactiveMessageSourceProducer s3ListingMessageProducer(S3Client amazonS3, ObjectMapper objectMapper,
-				AwsS3SupplierProperties awsS3SupplierProperties, Predicate<S3Object> filter) {
-
+		ReactiveMessageSourceProducer s3ListingMessageProducer(
+			S3Client amazonS3,
+			ObjectMapper objectMapper,
+			AwsS3SupplierProperties awsS3SupplierProperties,
+			Predicate<S3Object> filter
+		) {
 			return new ReactiveMessageSourceProducer(
 					(MessageSource<List<String>>) () -> {
 						List<String> summaryList =
@@ -232,7 +235,5 @@ public class AwsS3SupplierConfiguration {
 						return summaryList.isEmpty() ? null : new GenericMessage<>(summaryList);
 					});
 		}
-
 	}
-
 }
