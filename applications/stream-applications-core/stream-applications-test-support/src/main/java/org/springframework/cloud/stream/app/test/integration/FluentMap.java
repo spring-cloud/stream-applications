@@ -20,13 +20,24 @@ import java.util.LinkedHashMap;
 
 /**
  * Fluent API wrapper for {@link java.util.LinkedHashMap}.
+ *
  * @param <K> key type.
  * @param <V> value type.
  * @author David Turanski
+ * @author Corneil du Plessis
  */
 public class FluentMap<K, V> extends LinkedHashMap<K, V> {
+	@SuppressWarnings("rawtypes")
 	public static FluentMap fluentMap() {
 		return new FluentMap();
+	}
+
+	public static <K, V> FluentMap<K, V> fluentMap(Class<K> kClass, Class<V> cClass) {
+		return new FluentMap<>();
+	}
+
+	public static FluentMap<String, String> fluentStringMap() {
+		return new FluentMap<String, String>();
 	}
 
 	public FluentMap<K, V> withEntry(K key, V value) {

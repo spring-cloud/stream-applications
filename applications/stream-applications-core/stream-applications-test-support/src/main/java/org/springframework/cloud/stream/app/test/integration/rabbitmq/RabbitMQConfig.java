@@ -25,6 +25,7 @@ import org.testcontainers.utility.DockerImageName;
 /**
  * Initializes and starts a {@link RabbitMQContainer}.
  * @author David Turanski
+ * @author Corneil du Plessis
  */
 public abstract class RabbitMQConfig {
 	/**
@@ -32,11 +33,10 @@ public abstract class RabbitMQConfig {
 	 */
 	public static RabbitMQContainer rabbitmq;
 
-	final static Network network = Network.SHARED;
 
 	static {
 		rabbitmq = new RabbitMQContainer(DockerImageName.parse("rabbitmq:3.8-management"))
-			.withNetwork(network)
+			.withNetwork(Network.SHARED)
 			.withNetworkAliases("rabbitmq")
 			.withExposedPorts(5672, 15672)
 			.withStartupTimeout(Duration.ofSeconds(120))

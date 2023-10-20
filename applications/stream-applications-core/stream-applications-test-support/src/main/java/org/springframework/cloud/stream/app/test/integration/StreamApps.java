@@ -32,10 +32,13 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * The base class used for testing end-to-end Stream applications.
+ *
  * @author David Turanski
+ * @author Corneil du Plessis
  * @see org.springframework.cloud.stream.app.test.integration.kafka.KafkaStreamApps
  * @see org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQStreamApps
  */
+@SuppressWarnings("resource")
 public abstract class StreamApps implements AutoCloseable, Startable {
 
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -81,6 +84,7 @@ public abstract class StreamApps implements AutoCloseable, Startable {
 		sourceContainer.stop();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void logDebugInfo() {
 		logger.debug("Starting apps...");
 		logger.debug("Source container environment for {} :", sourceContainer().getImage().get());
@@ -97,6 +101,7 @@ public abstract class StreamApps implements AutoCloseable, Startable {
 		sinkContainer().getEnv().forEach((Consumer<String>) env -> logger.debug(env));
 	}
 
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static abstract class Builder<S extends StreamApps> {
 		private final String streamName;
 
@@ -104,7 +109,7 @@ public abstract class StreamApps implements AutoCloseable, Startable {
 
 		private GenericContainer sink;
 
-		private List<GenericContainer> processors = new LinkedList<>();
+		private final List<GenericContainer> processors = new LinkedList<>();
 
 		protected final GenericContainer messageBrokerContainer;
 
@@ -146,31 +151,31 @@ public abstract class StreamApps implements AutoCloseable, Startable {
 
 		private GenericContainer setupSourceContainer() {
 			return source.withNetwork(messageBrokerContainer.getNetwork())
-					.withEnv("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_DESTINATION", sourceOutputDestination())
-					.withEnv(binderProperties())
-					.dependsOn(messageBrokerContainer);
+				.withEnv("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_DESTINATION", sourceOutputDestination())
+				.withEnv(binderProperties())
+				.dependsOn(messageBrokerContainer);
 		}
 
 		private GenericContainer setupSinkContainer() {
 			return sink
-					.withNetwork(messageBrokerContainer.getNetwork())
-					.withEnv("SPRING_CLOUD_STREAM_BINDINGS_INPUT_DESTINATION", sinkInputDestination())
-					.withEnv("SPRING_CLOUD_STREAM_BINDINGS_INPUT_GROUP", streamName)
-					.withEnv(binderProperties())
-					.dependsOn(messageBrokerContainer);
+				.withNetwork(messageBrokerContainer.getNetwork())
+				.withEnv("SPRING_CLOUD_STREAM_BINDINGS_INPUT_DESTINATION", sinkInputDestination())
+				.withEnv("SPRING_CLOUD_STREAM_BINDINGS_INPUT_GROUP", streamName)
+				.withEnv(binderProperties())
+				.dependsOn(messageBrokerContainer);
 		}
 
 		private List<GenericContainer> setupProcessorContainers() {
 			IntStream.range(0, processors.size())
-					.forEach(i -> processors.get(i).withNetwork(messageBrokerContainer.getNetwork())
-							.withEnv("SPRING_CLOUD_STREAM_BINDINGS_INPUT_DESTINATION",
-									i == 0 ? sourceOutputDestination() : "processor_ " + i)
-							.withEnv("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_DESTINATION",
-									i == (processors.size() - 1) ? sinkInputDestination()
-											: "processor_" + (i + 1))
-							.withEnv("SPRING_CLOUD_STREAM_BINDINGS_INPUT_GROUP", streamName)
-							.withEnv(binderProperties())
-							.dependsOn(messageBrokerContainer));
+				.forEach(i -> processors.get(i).withNetwork(messageBrokerContainer.getNetwork())
+					.withEnv("SPRING_CLOUD_STREAM_BINDINGS_INPUT_DESTINATION",
+						i == 0 ? sourceOutputDestination() : "processor_ " + i)
+					.withEnv("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_DESTINATION",
+						i == (processors.size() - 1) ? sinkInputDestination()
+							: "processor_" + (i + 1))
+					.withEnv("SPRING_CLOUD_STREAM_BINDINGS_INPUT_GROUP", streamName)
+					.withEnv(binderProperties())
+					.dependsOn(messageBrokerContainer));
 			return processors;
 		}
 
@@ -180,7 +185,7 @@ public abstract class StreamApps implements AutoCloseable, Startable {
 
 		private String sinkInputDestination() {
 			return (CollectionUtils.isEmpty(processors) || processors.size() <= 1) ? streamName
-					: "processor_" + (processors.size() - 1);
+				: "processor_" + (processors.size() - 1);
 		}
 	}
 }

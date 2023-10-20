@@ -63,14 +63,14 @@ jobs:
         shell: bash
         env:
           VERBOSE: ${{ github.debug && 'true' || '' }}
-        run: |
-          VERSION=${{ inputs.version }}
+          STREAM_APPS_VERSION: ${{ inputs.version }}
+        run: |          
           VERBOSE=${{ inputs.verbose }}
           if [ "$VERBOSE" == "" ] || [ "$VERBOSE" == "false" ]; then
             VERBOSE=${{ github.debug }}
           fi
           export VERBOSE
-          ./run-ITs.sh $VERSION
+          ./run-ITs.sh
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3

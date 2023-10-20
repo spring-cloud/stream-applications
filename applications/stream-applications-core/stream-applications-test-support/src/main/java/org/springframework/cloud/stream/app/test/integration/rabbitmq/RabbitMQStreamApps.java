@@ -23,12 +23,13 @@ import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.cloud.stream.app.test.integration.StreamApps;
 
-import static org.springframework.cloud.stream.app.test.integration.FluentMap.fluentMap;
+import static org.springframework.cloud.stream.app.test.integration.FluentMap.fluentStringMap;
 
 /**
  * Configures an end to end Stream (source, processor(s), sink) using
  * {@link org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQStreamAppContainer}s.
  * @author David Turanski
+ * @author Corneil du Plessis
  */
 public class RabbitMQStreamApps extends StreamApps {
 
@@ -50,9 +51,9 @@ public class RabbitMQStreamApps extends StreamApps {
 
 		protected Map<String, String> binderProperties() {
 
-			return fluentMap()
+			return fluentStringMap()
 					.withEntry("SPRING_RABBITMQ_HOST",
-							messageBrokerContainer.getNetworkAliases().get(0))
+						(String) messageBrokerContainer.getNetworkAliases().get(0))
 					.withEntry("SPRING_RABBITMQ_PORT", "5672");
 		}
 

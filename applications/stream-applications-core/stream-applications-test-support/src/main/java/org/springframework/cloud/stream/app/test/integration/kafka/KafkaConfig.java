@@ -27,10 +27,10 @@ import org.testcontainers.utility.DockerImageName;
  *
  * @author David Turanski
  * @author Artem Bilan
+ * @author Corneil du Plessis
  */
 public abstract class KafkaConfig {
 
-	final static Network network = Network.SHARED;
 
 	/**
 	 * The KafkaContainer.
@@ -38,7 +38,7 @@ public abstract class KafkaConfig {
 	public final static KafkaContainer kafka = new KafkaContainer(
 			DockerImageName.parse("confluentinc/cp-kafka"))
 			.withExposedPorts(9092, 9093)
-			.withNetwork(network)
+			.withNetwork(Network.SHARED)
 			.withStartupTimeout(Duration.ofSeconds(120))
 			.withStartupAttempts(3);
 

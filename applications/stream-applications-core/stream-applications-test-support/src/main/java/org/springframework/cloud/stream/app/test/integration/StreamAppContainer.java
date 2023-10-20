@@ -21,6 +21,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.Network;
 import org.testcontainers.utility.DockerImageName;
 
 import org.springframework.util.Assert;
@@ -32,6 +33,7 @@ import static org.springframework.cloud.stream.app.test.integration.AppLog.appLo
  * Spring Cloud Stream applications. Currently this only supports apps with single I/O
  * destinations. This configures standard input and output destination bindings.
  * @author David Turanski
+ * @author Corneil du Plessis
  */
 public abstract class StreamAppContainer extends GenericContainer<StreamAppContainer> {
 
@@ -58,7 +60,7 @@ public abstract class StreamAppContainer extends GenericContainer<StreamAppConta
 		Assert.notNull(messageBrokerContainer, "A Message broker container is required.");
 		Assert.isTrue(messageBrokerContainer.isRunning(), "Message broker container must be started first.");
 		this.messageBrokerContainer = messageBrokerContainer;
-		this.withNetwork(messageBrokerContainer.getNetwork()).dependsOn(this.messageBrokerContainer)
+		this.withNetwork(Network.SHARED).dependsOn(this.messageBrokerContainer)
 				.withOutputDestination(TestTopicListener.STREAM_APPLICATIONS_TEST_TOPIC)
 				.withInputDestination(TestTopicListener.STREAM_APPLICATIONS_TEST_TOPIC + "_IN_"
 						+ UUID.randomUUID().toString().substring(0, 8))
