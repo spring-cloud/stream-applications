@@ -75,7 +75,7 @@ abstract class S3SourceTests implements LocalstackContainerTest {
 				.until(outputMatcher.payloadMatches((String s) -> s.contains("Bart Simpson")));
 	}
 
-	//@Test
+	@Test
 	void testTaskLaunchRequest() {
 		startContainer(fluentMap()
 				.withEntry("SPRING_CLOUD_FUNCTION_DEFINITION", "s3Supplier|taskLaunchRequestFunction")
@@ -87,7 +87,7 @@ abstract class S3SourceTests implements LocalstackContainerTest {
 				.until(outputMatcher.payloadMatches(s -> s.equals("{\"args\":[\"filename=/tmp/s3-supplier/test\"],\"deploymentProps\":{},\"name\":\"myTask\"}")));
 	}
 
-	//@Test
+	@Test
 	void testListOnly() {
 		startContainer(fluentMap()
 				.withEntry("FILE_CONSUMER_MODE", "ref")
