@@ -16,14 +16,16 @@
 
 package org.springframework.cloud.fn.supplier.s3;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
-import software.amazon.awssdk.services.s3.model.S3Object;
 
+import org.springframework.integration.json.JsonPathUtils;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.TestPropertySource;
 
@@ -43,24 +45,36 @@ public class AmazonS3ListOnlyTests extends AbstractAwsS3SupplierMockTests {
 		keys.add("subdir/otherFile");
 		StepVerifier stepVerifier = StepVerifier.create(messageFlux)
 				.assertNext(message -> {
-					S3Object s3Object = (S3Object) message.getPayload();
-					assertThat(keys).contains(s3Object.key());
-					keys.remove(s3Object.key());
+					String s3Object = (String) message.getPayload();
+					String key = jsonPathKey(s3Object);
+					assertThat(keys).contains(key);
+					keys.remove(key);
 				})
 				.assertNext(message -> {
-					S3Object s3Object = (S3Object) message.getPayload();
-					assertThat(keys).contains(s3Object.key());
-					keys.remove(s3Object.key());
+					String s3Object = (String) message.getPayload();
+					String key = jsonPathKey(s3Object);
+					assertThat(keys).contains(key);
+					keys.remove(key);
 				})
 				.assertNext(message -> {
-					S3Object s3Object = (S3Object) message.getPayload();
-					assertThat(keys).contains(s3Object.key());
-					keys.remove(s3Object.key());
+					String s3Object = (String) message.getPayload();
+					String key = jsonPathKey(s3Object);
+					assertThat(keys).contains(key);
+					keys.remove(key);
 				})
 				.thenCancel()
 				.verifyLater();
 		standardIntegrationFlow.start();
 		stepVerifier.verify(Duration.ofSeconds(10));
+	}
+
+	private static String jsonPathKey(String s3Object) {
+		try {
+			return JsonPathUtils.evaluate(s3Object, "$.key");
+		}
+		catch (IOException ex) {
+			throw new UncheckedIOException(ex);
+		}
 	}
 
 }

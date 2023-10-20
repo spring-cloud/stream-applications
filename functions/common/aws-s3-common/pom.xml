@@ -25,8 +25,8 @@
         </dependency>
 
         <dependency>
-            <groupId>software.amazon.awssdk.crt</groupId>
-            <artifactId>aws-crt</artifactId>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>aws-crt-client</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>

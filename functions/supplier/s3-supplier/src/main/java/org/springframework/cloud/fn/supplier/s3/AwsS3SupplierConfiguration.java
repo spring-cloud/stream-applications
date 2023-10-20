@@ -22,6 +22,8 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -206,18 +208,27 @@ public class AwsS3SupplierConfiguration {
 		}
 
 		@Bean
-		ReactiveMessageSourceProducer s3ListingMessageProducer(S3Client amazonS3,
+		ReactiveMessageSourceProducer s3ListingMessageProducer(S3Client amazonS3, ObjectMapper objectMapper,
 				AwsS3SupplierProperties awsS3SupplierProperties, Predicate<S3Object> filter) {
 
 			return new ReactiveMessageSourceProducer(
-					(MessageSource<List<S3Object>>) () -> {
-						List<S3Object> summaryList =
+					(MessageSource<List<String>>) () -> {
+						List<String> summaryList =
 								amazonS3.listObjects(ListObjectsRequest.builder()
 												.bucket(awsS3SupplierProperties.getRemoteDir())
 												.build())
 										.contents()
 										.stream()
-										.filter(filter).collect(Collectors.toList());
+										.filter(filter)
+										.map(s3Object -> {
+											try {
+												return objectMapper.writeValueAsString(s3Object.toBuilder());
+											}
+											catch (JsonProcessingException ex) {
+												throw new RuntimeException(ex);
+											}
+										})
+										.collect(Collectors.toList());
 						return summaryList.isEmpty() ? null : new GenericMessage<>(summaryList);
 					});
 		}
