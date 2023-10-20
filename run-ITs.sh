@@ -21,9 +21,11 @@ for container in $CONTAINERS; do
 done
 echo "Using STREAM_APPS_VERSION=$STREAM_APPS_VERSION"
 $SCDIR/mvnw $MVN_OPT -pl :stream-applications-integration-tests -am install -DskipTests
+set +e
 $SCDIR/mvnw $MVN_OPT $@ -pl :stream-applications-integration-tests -Pintegration -Psnapshot test integration-test -Dspring.cloud.stream.applications.version=$STREAM_APPS_VERSION
+RC=$?
 LOG_FILE=$SCDIR/stream-applications-integration-tests/test.log
 if [ -f $LOG_FILE ]; then
   cat $LOG_FILE
 fi
-
+exit $RC
