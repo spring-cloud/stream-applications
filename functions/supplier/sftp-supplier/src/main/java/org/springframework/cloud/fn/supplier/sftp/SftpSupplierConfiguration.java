@@ -32,6 +32,7 @@ import reactor.util.context.Context;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -255,7 +256,7 @@ public class SftpSupplierConfiguration {
 				MonoProcessor<?> subscriptionBarrier,
 				SftpSupplierProperties sftpSupplierProperties,
 				FileConsumerProperties fileConsumerProperties,
-				@Nullable MessageHandler renameRemoteFileHandler) {
+				@Nullable @Qualifier("renameRemoteFileHandler") MessageHandler renameRemoteFileHandler) {
 
 			IntegrationFlowBuilder flowBuilder = FileUtils.enhanceFlowForReadingMode(IntegrationFlow
 							.from(IntegrationReactiveUtils.messageSourceToFlux(sftpMessageSource)
