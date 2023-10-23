@@ -1,15 +1,15 @@
-name: Apps Plugin (Release)
+name: Apps Plugin (Next Development Version)
 
 on:
   workflow_dispatch:
 
-env:
-  MAVEN_THREADS: '-T 0.5C'
-
 jobs:
-  build_deploy_release:
+  build_deploy_snapshot:
     if: ${{ github.repository == 'spring-cloud/stream-applications' }}
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     defaults:
       run:
         working-directory: spring-cloud-dataflow-apps-plugin
@@ -39,39 +39,31 @@ jobs:
           jfrog rt mvnc \
             --server-id-resolve=repo.spring.io \
             --server-id-deploy=repo.spring.io \
-            --repo-resolve-releases=libs-spring-dataflow-private-staging-release \
+            --repo-resolve-releases=libs-milestone \
             --repo-resolve-snapshots=libs-snapshot \
-            --repo-deploy-releases=libs-staging-local \
+            --repo-deploy-releases=libs-milestone-local \
             --repo-deploy-snapshots=libs-snapshot-local
-          echo JFROG_CLI_BUILD_NAME=spring-cloud-dataflow-apps-plugin-main-release >> $GITHUB_ENV
+          echo JFROG_CLI_BUILD_NAME=spring-cloud-dataflow-apps-plugin-main-snapshot >> $GITHUB_ENV
           echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
-      - name: Print Build Info
+      - name: Update next snapshot version
         run: |
-          echo "::notice ::JFROG_CLI_BUILD_NAME=$JFROG_CLI_BUILD_NAME"
-          echo "::notice ::JFROG_CLI_BUILD_NUMBER=$JFROG_CLI_BUILD_NUMBER"
-      - name: Build and Publish
-        run: |
+          echo JFROG_CLI_BUILD_NAME=spring-cloud-dataflow-apps-plugin-main-ndv >> $GITHUB_ENV
+          echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
           jfrog rt mvn build-helper:parse-version versions:set \
-            -gs settings.xml \
-            -Pstagingrelease \
             -DprocessAllModules=true \
             -DgenerateBackupPoms=false \
             -Dartifactory.publish.artifacts=false \
-            -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}' \
+            -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}-SNAPSHOT' \
             -B
           jfrog rt build-clean
-          jfrog rt mvn -gs settings.xml -Pstagingrelease,full,deploymentfiles -B install -DskipTests 
+          mvn clean
+          jfrog rt mvn -gs settings.xml install -DskipTests -B         
           jfrog rt build-publish
-          echo spring_cloud_dataflow_apps_plugin_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
-      - name: Tag Release
+      - name: Commit next snapshot version changes
         uses: jvalkeal/build-zoo-handler@v0.0.4
         with:
-          tag-release-branch: apps-plugin/v${{ env.spring_cloud_dataflow_apps_plugin_version }}
-          tag-release-tag: ${{ env.spring_cloud_dataflow_apps_plugin_version }}
-          tag-release-tag-prefix: apps-plugin/v
-      - name: Promote Build
-        run: |
-          jfrog rt build-promote $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER libs-release-local
+          commit-changes-branch: main
+          commit-changes-message: Next development version
       - name: Clean cache
         run: |
           find ~/.m2/repository -type d -name '*SNAPSHOT' | xargs rm -fr
