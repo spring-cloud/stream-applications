@@ -63,7 +63,7 @@ jobs:
         uses: jvalkeal/build-zoo-handler@v0.0.4
         with:
           commit-changes-branch: main
-          commit-changes-message: Next development version
+          commit-changes-message: "[Apps Plugin ${project.version}] Next development version"
       - name: Clean cache
         run: |
           find ~/.m2/repository -type d -name '*SNAPSHOT' | xargs rm -fr
