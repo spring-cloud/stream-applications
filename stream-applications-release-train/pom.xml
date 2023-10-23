@@ -19,7 +19,7 @@
 
     <properties>
         <apps.version>4.0.0-SNAPSHOT</apps.version>
-        <apps.harbor.version>3.2.0</apps.harbor.version>
+        <apps.harbor.version>${apps.version}</apps.harbor.version>
         <apps.docker.tag>${apps.version}</apps.docker.tag>
     </properties>
 
