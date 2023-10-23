@@ -853,7 +853,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run ci-it.yml --field version=${{ needs.parameters.outputs.build_version }} --json
+        run: gh workflow run ci-it.yml -f version=${{ needs.parameters.outputs.build_version }} --json
 
   rerun-jobs:
     if: ${{ failure() && github.run_attempt == '1' }}
