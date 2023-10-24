@@ -1,7 +1,7 @@
 #!/bin/bash
 case $1 in
 "ga")
-  jfrog rt mvnc \
+  jfrog mvnc \
     --server-id-resolve=repo.spring.io \
     --server-id-deploy=repo.spring.io \
     --repo-resolve-releases=libs-release-local \
@@ -10,7 +10,7 @@ case $1 in
     --repo-deploy-snapshots=libs-snapshot-local
   ;;
 "milestone")
-  jfrog rt mvnc \
+  jfrog mvnc \
     --server-id-resolve=repo.spring.io \
     --server-id-deploy=repo.spring.io \
     --repo-resolve-releases=libs-milestone-local \
@@ -19,7 +19,7 @@ case $1 in
     --repo-deploy-snapshots=libs-snapshot-local
   ;;
 "snapshot")
-  jfrog rt mvnc \
+  jfrog mvnc \
     --server-id-resolve=repo.spring.io \
     --server-id-deploy=repo.spring.io \
     --repo-resolve-releases=libs-milestone \
