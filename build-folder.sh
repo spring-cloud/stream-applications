@@ -142,13 +142,13 @@ if ((RESULT == 0)); then
       MVNW="$SCDIR/mvnw"
     fi
     IS_DEPLOY=false
-    if [ "$BUILD_VERSION_TYPE" != "" ]; then
-      if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
-        MAVEN_GOAL="${MAVEN_GOAL//deploy/}"
-        IS_DEPLOY=true
-      fi
-      MVNW="jfrog mvn"
-    fi
+#    if [ "$BUILD_VERSION_TYPE" != "" ]; then
+#      if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
+#        MAVEN_GOAL="${MAVEN_GOAL//deploy/}"
+#        IS_DEPLOY=true
+#      fi
+#      MVNW="jfrog mvn"
+#    fi
     echo -e "Executing:${bold}$MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
     $MVNW -f "$FOLDER" -Pfull $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
     RESULT=$?
@@ -157,10 +157,10 @@ if ((RESULT == 0)); then
       echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:FAILED=${RESULT}"
       break
     fi
-    if [ "$IS_DEPLOY" == "true" ]; then
-      echo -e "Executing:${bold}jfrog rt build-publish${end}"
-      jfrog rt build-publish
-    fi
+#    if [ "$IS_DEPLOY" == "true" ]; then
+#      echo -e "Executing:${bold}jfrog rt build-publish${end}"
+#      jfrog rt build-publish
+#    fi
     echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:SUCCESS"
     # restore values that may be modified by set-env.sh
     MAVEN_OPTS="$SAVED_MAVEN_OPTS"
