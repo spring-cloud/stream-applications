@@ -148,7 +148,7 @@ if ((RESULT == 0)); then
     fi
     IS_DEPLOY=false
     if [ "$BUILD_VERSION_TYPE" != "" ]; then
-      MVNW=jfrog mvn rt
+      MVNW="jfrog mvn"
       if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
         MAVEN_GOAL="${MAVEN_GOAL//deploy/}"
         IS_DEPLOY=true
