@@ -9,6 +9,10 @@
     </servers>
     <profiles>
         <profile>
+            <id>full</id>
+            <!-- Empty on purpose -->
+        </profile>
+        <profile>
             <id>spring</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
