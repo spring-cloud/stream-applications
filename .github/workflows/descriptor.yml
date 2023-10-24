@@ -172,6 +172,10 @@ jobs:
               echo "::info ::$MESSAGE"
             fi          
           popd > /dev/null
+      - uses: jfrog/setup-jfrog-cli@v3
+        env:
+          JF_URL: 'https://repo.spring.io'
+          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: 'Build: stream-applications-release-train'
         shell: bash
         timeout-minutes: 30
@@ -181,6 +185,7 @@ jobs:
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
+          BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
@@ -190,10 +195,6 @@ jobs:
           popd > /dev/null
       - name: 'Configure: Install libxml2-utils'
         uses: ./.github/actions/install-libxml2-utils
-      - uses: jfrog/setup-jfrog-cli@v3
-        env:
-          JF_URL: 'https://repo.spring.io'
-          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: Upload descriptors
         if: ${{ needs.parameters.outputs.build_version_type == 'snapshot' }}
         shell: bash

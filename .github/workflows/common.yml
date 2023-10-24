@@ -77,8 +77,7 @@ jobs:
       - name: 'Configure: create streams applications matrix'
         shell: bash
         run: |
-          ROOT_DIR=$(realpath $PWD)          
-          
+          ROOT_DIR=$(realpath $PWD)                    
           pushd stream-applications > /dev/null
             echo "::info ::getting build version params"
             source $ROOT_DIR/get-build-version-params.sh
@@ -202,6 +201,16 @@ jobs:
         uses: ./.github/actions/install-xsltproc
       - name: 'Configure: Install gh cli'
         uses: ./.github/actions/install-gh
+      - uses: jfrog/setup-jfrog-cli@v3
+        env:
+          JF_URL: 'https://repo.spring.io'
+          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+      - name: Configure JFrog Cli
+        shell: bash
+        run: |
+          ./configure-jfrog.sh ${{ needs.parameters.outputs.build_version_type }}          
+          echo JFROG_CLI_BUILD_NAME=stream-apps-main-release >> $GITHUB_ENV
+          echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
       - name: 'Action: update version'
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         shell: bash
@@ -233,6 +242,7 @@ jobs:
           BUILD_NUMBER: ${{ needs.parameters.outputs.build_number }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
+          BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
@@ -372,6 +382,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: jfrog/setup-jfrog-cli@v3
+        env:
+          JF_URL: 'https://repo.spring.io'
+          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+      - name: Configure JFrog Cli
+        shell: bash
+        run: |
+          ./configure-jfrog.sh ${{ needs.parameters.outputs.build_version_type }}          
+          echo JFROG_CLI_BUILD_NAME=stream-apps-main-release >> $GITHUB_ENV
+          echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         timeout-minutes: 30
@@ -383,6 +403,7 @@ jobs:
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
+          BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
       - name: Unit Test Report
         uses: dorny/test-reporter@v1
@@ -490,7 +511,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+      - uses: jfrog/setup-jfrog-cli@v3
+        env:
+          JF_URL: 'https://repo.spring.io'
+          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+      - name: Configure JFrog Cli
+        shell: bash
+        run: |
+          ./configure-jfrog.sh ${{ needs.parameters.outputs.build_version_type }}          
+          echo JFROG_CLI_BUILD_NAME=stream-apps-main-release >> $GITHUB_ENV
+          echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         timeout-minutes: 30
@@ -502,6 +532,7 @@ jobs:
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
+          BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
@@ -610,6 +641,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: jfrog/setup-jfrog-cli@v3
+        env:
+          JF_URL: 'https://repo.spring.io'
+          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+      - name: Configure JFrog Cli
+        shell: bash
+        run: |
+          ./configure-jfrog.sh ${{ needs.parameters.outputs.build_version_type }}          
+          echo JFROG_CLI_BUILD_NAME=stream-apps-main-release >> $GITHUB_ENV
+          echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
       - name: 'Build: ${{ matrix.app }}'
         shell: bash
         timeout-minutes: 30
@@ -621,6 +662,7 @@ jobs:
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
+          BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
       - name: Unit Test Report
         uses: dorny/test-reporter@v1
@@ -720,6 +762,16 @@ jobs:
               echo "::info ::$MESSAGE"
             fi          
           popd > /dev/null
+      - uses: jfrog/setup-jfrog-cli@v3
+        env:
+          JF_URL: 'https://repo.spring.io'
+          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+      - name: Configure JFrog Cli
+        shell: bash
+        run: |
+          ./configure-jfrog.sh ${{ needs.parameters.outputs.build_version_type }}          
+          echo JFROG_CLI_BUILD_NAME=stream-apps-main-release >> $GITHUB_ENV
+          echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
       - name: 'Build: stream-applications-release-train'
         shell: bash
         timeout-minutes: 30
@@ -731,6 +783,7 @@ jobs:
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
+          BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
@@ -740,10 +793,6 @@ jobs:
           popd > /dev/null
       - name: 'Configure: Install libxml2-utils'
         uses: ./.github/actions/install-libxml2-utils
-      - uses: jfrog/setup-jfrog-cli@v3
-        env:
-          JF_URL: 'https://repo.spring.io'
-          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: Upload descriptors
         if: ${{ needs.parameters.outputs.build_version_type == 'snapshot' }}
         shell: bash
