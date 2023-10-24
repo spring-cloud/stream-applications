@@ -18,7 +18,7 @@ case $1 in
     --repo-deploy-releases=libs-milestone-local \
     --repo-deploy-snapshots=libs-snapshot-local
   ;;
-"staging")
+"snapshot")
   jfrog rt mvnc \
     --server-id-resolve=repo.spring.io \
     --server-id-deploy=repo.spring.io \
