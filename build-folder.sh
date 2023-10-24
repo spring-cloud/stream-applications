@@ -154,14 +154,16 @@ if ((RESULT == 0)); then
         IS_DEPLOY=true
       fi
     fi
+    echo "Executing:$MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL"
     $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
     RESULT=$?
     set -e
     if ((RESULT != 0)); then
-      echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:FAILED"
+      echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:FAILED=${RESULT}"
       break
     fi
     if [ "$IS_DEPLOY" == "true" ]; then
+      echo "Executing: jfrog rt build-publish"
       jfrog rt build-publish
     fi
     echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:SUCCESS"
