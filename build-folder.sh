@@ -152,9 +152,8 @@ if ((RESULT == 0)); then
         MAVEN_GOAL="${MAVEN_GOAL//deploy/}"
         IS_DEPLOY=true
       fi
-      echo -e "Resolving dependencies for ${bold}$FOLDER${end}"
-      set +e
-      $MVNW -U -f "$FOLDER" $MAVEN_OPTS -T 0.75C dependency:resolve
+      echo -e "Quick Compile ${bold}$FOLDER${end}"
+      $MVNW install -f "$FOLDER" $MAVEN_OPTS -T 1C -DskipTests -q
       MVNW="jfrog mvn"
     fi
     echo -e "Executing:${bold}$MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
