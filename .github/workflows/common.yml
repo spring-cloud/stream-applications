@@ -772,6 +772,10 @@ jobs:
           ./configure-jfrog.sh ${{ needs.parameters.outputs.build_version_type }}          
           echo JFROG_CLI_BUILD_NAME=stream-apps-main-release >> $GITHUB_ENV
           echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
+      - name: Print Build Info
+        run: |
+          echo "::notice ::JFROG_CLI_BUILD_NAME=$JFROG_CLI_BUILD_NAME"
+          echo "::notice ::JFROG_CLI_BUILD_NUMBER=$JFROG_CLI_BUILD_NUMBER"
       - name: 'Build: stream-applications-release-train'
         shell: bash
         timeout-minutes: 30
