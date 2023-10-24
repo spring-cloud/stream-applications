@@ -28,4 +28,9 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>full</id>
+        </profile>
+    </profiles>
 </project>

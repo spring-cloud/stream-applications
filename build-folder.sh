@@ -25,12 +25,7 @@ if [ "$VERBOSE" = "true" ]; then
 elif [ "$VERBOSE" = "false" ]; then
   MAVEN_OPTS="-q"
 fi
-if [ "$MAVEN_OPTS" == "" ]; then
-  MAVEN_OPTS="-s $SCDIR/.settings.xml -B"
-else
-  MAVEN_OPTS="$MAVEN_OPTS -s $SCDIR/.settings.xml -B"
-fi
-MAVEN_OPTS="$MAVEN_OPTS -Pfull"
+MAVEN_OPTS="$MAVEN_OPTS -s $SCDIR/.settings.xml -B"
 if [ "$1" == "" ]; then
   echo -e "Options: ${bold} <comma-separated-folders> [<maven-goals>]*${end}"
 fi
@@ -152,12 +147,10 @@ if ((RESULT == 0)); then
         MAVEN_GOAL="${MAVEN_GOAL//deploy/}"
         IS_DEPLOY=true
       fi
-      echo -e "Quick Compile ${bold}$FOLDER${end}"
-      $MVNW install -f "$FOLDER" $MAVEN_OPTS -T 1C -DskipTests -q
       MVNW="jfrog mvn"
     fi
     echo -e "Executing:${bold}$MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
-    $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
+    $MVNW -f "$FOLDER" -Pfull $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
     RESULT=$?
     set -e
     if ((RESULT != 0)); then
