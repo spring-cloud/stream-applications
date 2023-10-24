@@ -148,13 +148,16 @@ if ((RESULT == 0)); then
     fi
     IS_DEPLOY=false
     if [ "$BUILD_VERSION_TYPE" != "" ]; then
-      MVNW="jfrog mvn"
       if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
         MAVEN_GOAL="${MAVEN_GOAL//deploy/}"
         IS_DEPLOY=true
       fi
+      echo -e "Resolving dependencies for ${bold}$FOLDER${end}"
+      set +e
+      $MVNW -U -f "$FOLDER" $MAVEN_OPTS -T 0.75C dependency:resolve
+      MVNW="jfrog mvn"
     fi
-    echo "Executing:$MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL"
+    echo -e "Executing:${bold}$MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
     $MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
     RESULT=$?
     set -e
@@ -163,7 +166,7 @@ if ((RESULT == 0)); then
       break
     fi
     if [ "$IS_DEPLOY" == "true" ]; then
-      echo "Executing: jfrog rt build-publish"
+      echo -e "Executing:${bold}jfrog rt build-publish${end}"
       jfrog rt build-publish
     fi
     echo -e "Maven goals:${bold}-f $FOLDER $MAVEN_GOAL${end}:SUCCESS"
