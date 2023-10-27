@@ -39,6 +39,7 @@ fi
 
 # Determine profile based on version type
 if [ "$VERSION" == "" ]; then
+  echo "Determining version number"
   VERSION=$($SCDIR/mvn-get-version.sh)
 fi
 echo -e "Determining profile to use for version $VERSION"

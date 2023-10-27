@@ -30,6 +30,7 @@ set -e
 
 pushd "$PROJECT_FOLDER" >/dev/null
   if [ "$VERSION" == "" ]; then
+    echo "Determining version number"
     VERSION=$($SCDIR/mvn-get-version.sh)
   fi
 
@@ -65,10 +66,10 @@ pushd "$PROJECT_FOLDER" >/dev/null
     echo "Deploying:$APP_FOLDER"
     if [ -d "src/main/java" ]; then
       echo "Deploying:$APP_FOLDER"
-      $SCDIR/build-folder.sh "." "$MAVEN_GOAL -Pintegration"
+      VERSION=$VERSION $SCDIR/build-folder.sh "." "$MAVEN_GOAL -Pintegration"
     else
       echo "Installing:$APP_FOLDER"
-      $SCDIR/build-folder.sh "." "clean install -Pintegration"
+      VERSION=$VERSION $SCDIR/build-folder.sh "." "clean install -Pintegration"
     fi
 
     if [ ! -d apps ]; then
