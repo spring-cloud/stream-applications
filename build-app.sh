@@ -86,7 +86,7 @@ pushd "$PROJECT_FOLDER" >/dev/null
         pushd "$app" >/dev/null
           FOLDER=$(pwd)
           echo "Building:$FOLDER"
-          $SCDIR/build-folder.sh "." "$MAVEN_GOAL -Pintegration"
+          VERSION=$VERSION $SCDIR/build-folder.sh "." "$MAVEN_GOAL -Pintegration"
           if [ "$SKIP_DEPLOY" == "" ] || [ "$SKIP_DEPLOY" == "false" ]; then
             for v in $JDKS; do
               echo "Pack:$app:$VERSION-jdk$v"

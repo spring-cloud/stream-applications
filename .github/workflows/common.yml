@@ -793,7 +793,7 @@ jobs:
           pushd stream-applications > /dev/null
             echo "::notice ::building - stream-applications-release-train"
             set -e
-            $ROOT_DIR/build-folder.sh stream-applications-release-train "install deploy"                                     
+            VERSION=${{ needs.parameters.outputs.build_version }} $ROOT_DIR/build-folder.sh stream-applications-release-train "install deploy"                                     
           popd > /dev/null
       - name: 'Configure: Install libxml2-utils'
         uses: ./.github/actions/install-libxml2-utils
