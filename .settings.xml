@@ -21,6 +21,11 @@
             <username>${env.ARTIFACTORY_USERNAME}</username>
             <password>${env.ARTIFACTORY_PASSWORD}</password>
         </server>
+		<server>
+			<id>spring-releases</id>
+			<username>${env.ARTIFACTORY_USERNAME}</username>
+			<password>${env.ARTIFACTORY_PASSWORD}</password>
+		</server>
     </servers>
     <profiles>
         <profile>
