@@ -37,30 +37,32 @@ if [ "$MAVEN_GOAL" == "" ]; then
   MAVEN_GOAL="install"
 fi
 
-# if goal includes 'deploy' add the proper profile based on version num
+# Determine profile based on version type
+if [ "$VERSION" == "" ]; then
+  VERSION=$($SCDIR/mvn-get-version.sh)
+fi
+echo -e "Determining profile to use for version $VERSION"
+set +e
+IS_SNAPSHOT=$(echo $VERSION | grep -E "^.*-SNAPSHOT$")
+IS_MILESTONE=$(echo $VERSION | grep -E "^.*-(M|RC)[0-9]+$")
+IS_GA=$(echo $VERSION | grep -E "^.*\.[0-9]+$")
+if [ -n "$IS_MILESTONE" ]; then
+  MAVEN_PROFILE="-Pmilestone"
+elif [ -n "$IS_SNAPSHOT" ]; then
+  MAVEN_PROFILE="-Psnapshot"
+elif [ -n "$IS_GA" ]; then
+  MAVEN_PROFILE="-Prelease"
+else
+  echo "Bad version format: $VERSION"
+  exit 1
+fi
+echo "Profile for version $VERSION is '$MAVEN_PROFILE'"
+
+# if goal includes 'deploy' or is GA release then add the profile based on version
 IS_DEPLOY=$(echo $MAVEN_GOAL | grep -E "\bdeploy\b")
-if [ -n "$IS_DEPLOY" ]; then
-  echo -e "Determining profile to use for deploy goal"
-  if [ "$VERSION" == "" ]; then
-    VERSION=$($SCDIR/mvn-get-version.sh)
-  fi
-  echo "Project Version:$VERSION"
-  set +e
-  IS_SNAPSHOT=$(echo $VERSION | grep -E "^.*-SNAPSHOT$")
-  IS_MILESTONE=$(echo $VERSION | grep -E "^.*-(M|RC)[0-9]+$")
-  IS_GA=$(echo $VERSION | grep -E "^.*\.[0-9]+$")
-  if [ -n "$IS_MILESTONE" ]; then
-    MAVEN_DEPLOY_PROFILE="-Pmilestone"
-  elif [ -n "$IS_SNAPSHOT" ]; then
-    MAVEN_DEPLOY_PROFILE="-Psnapshot"
-  elif [ -n "$IS_GA" ]; then
-    MAVEN_DEPLOY_PROFILE="-Prelease"
-  else
-    echo "Bad version format: $VERSION"
-    exit 1
-  fi
-  echo "Using deploy profile: $MAVEN_DEPLOY_PROFILE"
-  MAVEN_GOAL="$MAVEN_GOAL $MAVEN_DEPLOY_PROFILE"
+if [ -n "$IS_DEPLOY" ] || [ -n "$IS_GA" ]; then
+  echo "Using profile: $MAVEN_PROFILE"
+  MAVEN_GOAL="$MAVEN_GOAL $MAVEN_PROFILE"
 fi
 
 SAVED_IFS=$IFS
