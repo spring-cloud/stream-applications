@@ -12,6 +12,15 @@
             {
               "$or": [
                 {
+                  "name": {"$match": "*.pom"}
+                },
+                {
+                  "name": {"$match": "*.jar"}
+                },
+                {
+                  "name": {"$match": "*.jar"}
+                },
+                {
                   "name": {"$match": "*stream-applications-descriptor-*.stream-apps-kafka-maven"}
                 },
                 {
