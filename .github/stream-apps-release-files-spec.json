@@ -12,10 +12,28 @@
             {
               "$or": [
                 {
-                  "name": {"$match": "*.pom"}
+                  "name": {"$match": "*stream-applications-descriptor-*.stream-apps-kafka-maven"}
                 },
                 {
-                  "name": {"$match": "*.jar"}
+                  "name": {"$match": "*stream-applications-descriptor-*.stream-apps-kafka-docker"}
+                },
+                {
+                  "name": {"$match": "*stream-applications-descriptor-*.stream-apps-kafka-harbor"}
+                },
+                {
+                  "name": {"$match": "*stream-applications-descriptor-*.stream-apps-rabbit-maven"}
+                },
+                {
+                  "name": {"$match": "*stream-applications-descriptor-*.stream-apps-rabbit-docker"}
+                },
+                {
+                  "name": {"$match": "*stream-applications-descriptor-*.stream-apps-rabbit-harbor"}
+                },
+                {
+                  "name": {"$match": "*stream-applications-descriptor-*.kafka-apps-maven-repo-url.properties"}
+                },
+                {
+                  "name": {"$match": "*stream-applications-descriptor-*.rabbit-apps-maven-repo-url.properties"}
                 }
               ]
             }
