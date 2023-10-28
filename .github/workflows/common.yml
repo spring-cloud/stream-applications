@@ -870,6 +870,7 @@ jobs:
           RELEASE_NOTES_ISSUES: ${{runner.temp}}/release_notes_issues.json
           RELEASE_NOTES_FILE: ${{runner.temp}}/release_notes.md5
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TRAIN_VERSION: ${{ needs.parameters.outputs.release_train_version }}
         run: |
           gh issue list \
             --repo spring-cloud/stream-applications \
@@ -878,9 +879,9 @@ jobs:
             --jq '{issues:map(select((.labels | length == 0) or (any(.labels[].name; startswith("automation/rlnotes")|not))) + {repo:"spring-cloud/stream-applications"})}' \
             > $RELEASE_NOTES_ISSUES
           mustache $RELEASE_NOTES_ISSUES .github/rlnotes.mustache > $RELEASE_NOTES_FILE
-          gh release create $VERSION \
+          gh release create v$RELEASE_TRAIN_VERSION \
           --draft \
-          --title "Spring Cloud Stream Applications $VERSION" \
+          --title "Spring Cloud Stream Applications $RELEASE_TRAIN_VERSION" \
           --generate-notes \
           --notes-file $RELEASE_NOTES_FILE
 
