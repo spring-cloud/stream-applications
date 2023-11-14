@@ -45,7 +45,7 @@ import org.springframework.messaging.Message;
 public class SftpConsumerConfiguration {
 
 	@Bean
-	public IntegrationFlow ftpOutboundFlow(SftpConsumerProperties properties,
+	public IntegrationFlow sftpOutboundFlow(SftpConsumerProperties properties,
 			SessionFactory<SftpClient.DirEntry> ftpSessionFactory,
 			@Nullable ComponentCustomizer<SftpMessageHandlerSpec> sftpMessageHandlerSpecCustomizer) {
 

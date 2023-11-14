@@ -10,6 +10,16 @@ You can import `SftpConsumerConfiguration` in the application and then inject th
 
 You can use `sftpConsumer` as a qualifier when injecting.
 
+NOTE: You need to enable lazy bean initialization.
+
+[source,java]
+----
+@Autowired
+@Lazy
+@Qualifier("sftpConsumer")
+private Consumer<Message<?>> sftpConsumer;
+----
+
 ## Configuration Options
 
 All configuration properties are prefixed with `sftp.consumer`.
