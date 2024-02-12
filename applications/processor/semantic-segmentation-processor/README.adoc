@@ -31,11 +31,11 @@ The output header json format represents the color pixel map computed from the i
 == Options
 
 //tag::configuration-properties[]
-$$semantic.segmentation.color-map-uri$$:: $$Every pre-trained model is based on certain object color maps. The pre-defined options are:  - classpath:/colormap/citymap_colormap.json  - classpath:/colormap/ade20k_colormap.json  - classpath:/colormap/black_white_colormap.json  - classpath:/colormap/mapillary_colormap.json$$ *($$String$$, default: `$$classpath:/colormap/citymap_colormap.json$$`)*
-$$semantic.segmentation.debug-output$$:: $$save output image inn the local debugOutputPath path.$$ *($$Boolean$$, default: `$$false$$`)*
-$$semantic.segmentation.debug-output-path$$:: $$<documentation missing>$$ *($$String$$, default: `$$semantic-segmentation-result.png$$`)*
-$$semantic.segmentation.mask-transparency$$:: $$The alpha color of the computed segmentation mask image.$$ *($$Float$$, default: `$$0.45$$`)*
-$$semantic.segmentation.model$$:: $$pre-trained tensorflow semantic segmentation model.$$ *($$String$$, default: `$$https://download.tensorflow.org/models/deeplabv3_mnv2_cityscapes_train_2018_02_05.tar.gz#frozen_inference_graph.pb$$`)*
+$$semantic.segmentation.color-map-uri$$:: $$Every pre-trained model is based on certain object color maps. The pre-defined options are:  - classpath:/colormap/citymap_colormap.json  - classpath:/colormap/ade20k_colormap.json  - classpath:/colormap/black_white_colormap.json  - classpath:/colormap/mapillary_colormap.json$$ *($$String$$, default: `$$<none>$$`)*
+$$semantic.segmentation.debug-output$$:: $$save output image inn the local debugOutputPath path.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$semantic.segmentation.debug-output-path$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+$$semantic.segmentation.mask-transparency$$:: $$The alpha color of the computed segmentation mask image.$$ *($$Float$$, default: `$$<none>$$`)*
+$$semantic.segmentation.model$$:: $$pre-trained tensorflow semantic segmentation model.$$ *($$String$$, default: `$$<none>$$`)*
 $$semantic.segmentation.output-type$$:: $$Specifies the output image type. You can return either the input image with the computed mask overlay, or the mask alone.$$ *($$OutputType$$, default: `$$<none>$$`, possible values: `blended`,`mask`)*
 //end::configuration-properties[]
 
