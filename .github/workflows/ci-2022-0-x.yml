@@ -4,14 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       verbose:
-        required: false
         default: 'false'
-        description: 'Produces verbose output'
+        description: 'Verbose output'
+        required: false
   push:
     paths-ignore:
       - '.github/**'
     branches:
       - '2022.0.x'
+
 jobs:
   build:
     uses: ./.github/workflows/common.yml
@@ -22,6 +23,8 @@ jobs:
       GCP_CRED_JSON: ${{ secrets.GCP_CRED_JSON }}
       ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
       ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+      JF_ARTIFACTORY_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
     with:
       branch: '2022.0.x'
       verbose: ${{ inputs.verbose == 'true' }}
+      mavenThreads: '0.5C'
