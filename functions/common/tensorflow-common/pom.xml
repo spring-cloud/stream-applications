@@ -18,7 +18,7 @@
 	<properties>
 		<checkstyle.skip>true</checkstyle.skip>
 		<tensorflow.version>1.15.0</tensorflow.version>
-		<apache.commons.compress>1.21</apache.commons.compress>
+		<apache.commons.compress>1.26.0</apache.commons.compress>
 		<commons-io.version>2.7</commons-io.version>
 		<commons-lang3.version>3.10</commons-lang3.version>
 		<pcollections.version>3.0.3</pcollections.version>
