@@ -29,7 +29,7 @@ jobs:
       - name: 'Determine Java Version'
         id: determineJavaVersion
         run: |
-          if [[ "${{ inputs.version && inputs.version || '4.0.0-SNAPSHOT' }}" == *"4.0.0"* ]]; then
+          if [ "${{ github.ref_name }}" == "main" ] || [[ "${{ inputs.version && inputs.version || '4.0.0-SNAPSHOT' }}" == *"4.0.0"* ]]; then
             JAVA_VERSION=17
           else
             JAVA_VERSION=8
