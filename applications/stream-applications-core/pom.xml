@@ -38,7 +38,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud.fn</groupId>
-                <artifactId>spring-function-dependencies</artifactId>
+                <artifactId>spring-functions-catalog-bom</artifactId>
                 <version>${java-functions.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
