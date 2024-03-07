@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>analytics-consumer</artifactId>
+            <artifactId>spring-analytics-consumer</artifactId>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
@@ -55,13 +55,13 @@
                         <name>analytics</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.analytics.AnalyticsConsumerConfiguration.class</configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
                         <functionDefinition>byteArrayTextToString|analyticsConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>analytics-consumer</artifactId>
+                                    <artifactId>spring-analytics-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

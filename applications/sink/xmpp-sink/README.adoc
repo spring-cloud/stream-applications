@@ -29,8 +29,8 @@ $$chat-to$$:: $$XMPP handle to send message to.$$ *($$String$$, default: `$$<non
 
 $$host$$:: $$XMPP Host server to connect to.$$ *($$String$$, default: `$$<none>$$`)*
 $$password$$:: $$The Password for the connected user.$$ *($$String$$, default: `$$<none>$$`)*
-$$port$$:: $$Port for connecting to the host.   - Default Client Port: 5222$$ *($$Integer$$, default: `$$5222$$`)*
-$$resource$$:: $$The Resource to bind to on the XMPP Host.   - Can be empty, server will generate one if not set$$ *($$String$$, default: `$$<none>$$`)*
+$$port$$:: $$Port for connecting to the host. - Default Client Port: 5222$$ *($$Integer$$, default: `$$5222$$`)*
+$$resource$$:: $$The Resource to bind to on the XMPP Host. - Can be empty, server will generate one if not set$$ *($$String$$, default: `$$<none>$$`)*
 $$security-mode$$:: $$<documentation missing>$$ *($$SecurityMode$$, default: `$$<none>$$`, possible values: `required`,`ifpossible`,`disabled`)*
 $$service-name$$:: $$The Service Name to set for the XMPP Domain.$$ *($$String$$, default: `$$<none>$$`)*
 $$subscription-mode$$:: $$<documentation missing>$$ *($$SubscriptionMode$$, default: `$$<none>$$`, possible values: `accept_all`,`reject_all`,`manual`)*

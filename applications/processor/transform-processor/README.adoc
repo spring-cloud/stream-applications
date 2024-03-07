@@ -21,7 +21,7 @@ The incoming message can contain any type of payload.
 == Options
 
 //tag::configuration-properties[]
-$$spel.function.expression$$:: $$A SpEL expression to apply.$$ *($$String$$, default: `$$<none>$$`)*
+$$spel.function.expression$$:: $$A SpEL expression to apply.$$ *($$Expression$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

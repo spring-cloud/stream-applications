@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>kafka-supplier</artifactId>
+			<artifactId>spring-kafka-supplier</artifactId>
 		</dependency>
 
 		<dependency>
@@ -58,7 +58,7 @@
 							<dependencies>
 								<dependency>
 									<groupId>org.springframework.cloud.fn</groupId>
-									<artifactId>kafka-supplier</artifactId>
+									<artifactId>spring-kafka-supplier</artifactId>
 								</dependency>
 							</dependencies>
 						</maven>

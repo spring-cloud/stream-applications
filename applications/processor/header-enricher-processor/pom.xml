@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>header-enricher-function</artifactId>
+            <artifactId>spring-header-enricher-function</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
@@ -48,13 +48,13 @@
                         <name>header-enricher</name>
                         <type>processor</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.header.enricher.HeaderEnricherFunctionConfiguration.class</configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
                         <functionDefinition>headerEnricherFunction</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>header-enricher-function</artifactId>
+                                    <artifactId>spring-header-enricher-function</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>twitter-consumer</artifactId>
+            <artifactId>spring-twitter-consumer</artifactId>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
@@ -33,13 +33,6 @@
         <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-netty</artifactId>
-            <version>${mockserver.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mock-server</groupId>
-            <artifactId>mockserver-client-java</artifactId>
-            <version>${mockserver.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -66,14 +59,14 @@
                         <name>twitter-update</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.twitter.status.update.TwitterUpdateConsumerConfiguration.class</configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
                         <functionDefinition>byteArrayTextToString|twitterStatusUpdateConsumer</functionDefinition>
 
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>twitter-consumer</artifactId>
+                                    <artifactId>spring-twitter-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

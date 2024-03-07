@@ -31,7 +31,6 @@ $$initial-retry-interval$$:: $$Initial retry interval when retry is enabled.$$ *
 $$mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$[STANDARD_REQUEST_HEADERS]$$`)*
 $$max-attempts$$:: $$The maximum delivery attempts when retry is enabled.$$ *($$Integer$$, default: `$$3$$`)*
 $$max-retry-interval$$:: $$Max retry interval when retry is enabled.$$ *($$Integer$$, default: `$$30000$$`)*
-$$own-connection$$:: $$When true, use a separate connection based on the boot properties.$$ *($$Boolean$$, default: `$$false$$`)*
 $$queues$$:: $$The queues to which the source will listen for messages.$$ *($$String[]$$, default: `$$<none>$$`)*
 $$requeue$$:: $$Whether rejected messages should be requeued.$$ *($$Boolean$$, default: `$$true$$`)*
 $$retry-multiplier$$:: $$Retry backoff multiplier when retry is enabled.$$ *($$Double$$, default: `$$2$$`)*
@@ -44,6 +43,7 @@ $$addresses$$:: $$Comma-separated list of addresses to which the client should c
 $$channel-rpc-timeout$$:: $$Continuation timeout for RPC calls in channels. Set it to zero to wait forever.$$ *($$Duration$$, default: `$$10m$$`)*
 $$connection-timeout$$:: $$Connection timeout. Set it to zero to wait forever.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$host$$:: $$RabbitMQ host. Ignored if an address is set.$$ *($$String$$, default: `$$localhost$$`)*
+$$max-inbound-message-body-size$$:: $$Maximum size of the body of inbound (received) messages.$$ *($$DataSize$$, default: `$$64MB$$`)*
 $$password$$:: $$Login to authenticate against the broker.$$ *($$String$$, default: `$$guest$$`)*
 $$port$$:: $$RabbitMQ port. Ignored if an address is set. Default to 5672, or 5671 if SSL is enabled.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$publisher-confirm-type$$:: $$Type of publisher confirms to use.$$ *($$ConfirmType$$, default: `$$<none>$$`, possible values: `SIMPLE`,`CORRELATED`,`NONE`)*
@@ -62,6 +62,7 @@ $$concurrency$$:: $$Minimum number of listener invoker threads.$$ *($$Integer$$,
 $$consumer-batch-enabled$$:: $$Whether the container creates a batch of messages based on the 'receive-timeout' and 'batch-size'. Coerces 'de-batching-enabled' to true to include the contents of a producer created batch in the batch as discrete records.$$ *($$Boolean$$, default: `$$false$$`)*
 $$de-batching-enabled$$:: $$Whether the container should present batched messages as discrete messages or call the listener with the batch.$$ *($$Boolean$$, default: `$$true$$`)*
 $$default-requeue-rejected$$:: $$Whether rejected deliveries are re-queued by default.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$force-stop$$:: $$Whether the container (when stopped) should stop immediately after processing the current message or stop after processing all pre-fetched messages.$$ *($$Boolean$$, default: `$$false$$`)*
 $$idle-event-interval$$:: $$How often idle container events should be published.$$ *($$Duration$$, default: `$$<none>$$`)*
 $$max-concurrency$$:: $$Maximum number of listener invoker threads.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$missing-queues-fatal$$:: $$Whether to fail if the queues declared by the container are not available on the broker and/or whether to stop the container if one or more queues are deleted at runtime.$$ *($$Boolean$$, default: `$$true$$`)*

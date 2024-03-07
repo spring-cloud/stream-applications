@@ -21,12 +21,12 @@ Properties grouped by prefix:
 
 === aggregator
 
-$$aggregation$$:: $$SpEL expression for aggregation strategy. Default is collection of payloads.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$correlation$$:: $$SpEL expression for correlation key. Default to correlationId header.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$group-timeout$$:: $$SpEL expression for timeout to expiring uncompleted groups.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$message-store-entity$$:: $$Persistence message store entity: table prefix in RDBMS, collection name in MongoDb, etc.$$ *($$String$$, default: `$$<none>$$`)*
-$$message-store-type$$:: $$Message store type.$$ *($$String$$, default: `$$<none>$$`)*
-$$release$$:: $$SpEL expression for release strategy. Default is based on the sequenceSize header.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$aggregation$$:: $$<documentation missing>$$ *($$Expression$$, default: `$$<none>$$`)*
+$$correlation$$:: $$<documentation missing>$$ *($$Expression$$, default: `$$<none>$$`)*
+$$group-timeout$$:: $$<documentation missing>$$ *($$Expression$$, default: `$$<none>$$`)*
+$$message-store-entity$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+$$message-store-type$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+$$release$$:: $$<documentation missing>$$ *($$Expression$$, default: `$$<none>$$`)*
 
 === spring.data.mongodb
 

@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>sftp-consumer</artifactId>
+            <artifactId>spring-sftp-consumer</artifactId>
         </dependency>
     </dependencies>
 
@@ -43,13 +43,13 @@
                         <name>sftp</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.sftp.SftpConsumerConfiguration.class</configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>sftpConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>sftp-consumer</artifactId>
+                                    <artifactId>spring-sftp-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

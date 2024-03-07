@@ -14,11 +14,11 @@ Properties grouped by prefix:
 === redis.consumer
 
 $$key$$:: $$A literal key name to use when storing to a key.$$ *($$String$$, default: `$$<none>$$`)*
-$$key-expression$$:: $$A SpEL expression to use for storing to a key.$$ *($$String$$, default: `$$<none>$$`)*
+$$key-expression$$:: $$A SpEL expression to use for storing to a key.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$queue$$:: $$A literal queue name to use when storing in a queue.$$ *($$String$$, default: `$$<none>$$`)*
-$$queue-expression$$:: $$A SpEL expression to use for queue.$$ *($$String$$, default: `$$<none>$$`)*
+$$queue-expression$$:: $$A SpEL expression to use for queue.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$topic$$:: $$A literal topic name to use when publishing to a topic.$$ *($$String$$, default: `$$<none>$$`)*
-$$topic-expression$$:: $$A SpEL expression to use for topic.$$ *($$String$$, default: `$$<none>$$`)*
+$$topic-expression$$:: $$A SpEL expression to use for topic.$$ *($$Expression$$, default: `$$<none>$$`)*
 
 === spring.data.redis
 

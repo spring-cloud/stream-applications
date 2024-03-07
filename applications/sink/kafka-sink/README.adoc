@@ -51,6 +51,7 @@ $$value-serializer$$:: $$Serializer class for values.$$ *($$Class<?>$$, default:
 === spring.kafka.template
 
 $$default-topic$$:: $$Default topic to which messages are sent.$$ *($$String$$, default: `$$<none>$$`)*
+$$observation-enabled$$:: $$Whether to enable observation.$$ *($$Boolean$$, default: `$$false$$`)*
 $$transaction-id-prefix$$:: $$Transaction id prefix, override the transaction id prefix in the producer factory.$$ *($$String$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 

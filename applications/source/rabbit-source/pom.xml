@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>rabbit-supplier</artifactId>
+            <artifactId>spring-rabbit-supplier</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -65,14 +65,13 @@
                         <name>rabbit</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.rabbit.RabbitSupplierConfiguration.class
-                        </configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>rabbitSupplier</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>rabbit-supplier</artifactId>
+                                    <artifactId>spring-rabbit-supplier</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.stream.app</groupId>

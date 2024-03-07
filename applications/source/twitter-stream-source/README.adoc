@@ -28,18 +28,19 @@ $$consumer-secret$$:: $$Your Twitter secret.$$ *($$String$$, default: `$$<none>$
 $$debug-enabled$$:: $$Enables Twitter4J debug mode.$$ *($$Boolean$$, default: `$$false$$`)*
 $$raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by the Twitter APIs. When set to False the result will use the Twitter4J's json representations. When set to True the result will use the original Twitter APISs json representations.$$ *($$Boolean$$, default: `$$true$$`)*
 
-=== twitter.stream.filter
-
-$$count$$:: $$Indicates the number of previous statuses to stream before transitioning to the live stream.$$ *($$Integer$$, default: `$$0$$`)*
-$$filter-level$$:: $$The filter level limits what tweets appear in the stream to those with a minimum filterLevel attribute value. One of either none, low, or medium.$$ *($$FilterLevel$$, default: `$$<none>$$`)*
-$$follow$$:: $$Specifies the users, by ID, to receive public tweets from.$$ *($$List<Long>$$, default: `$$<none>$$`)*
-$$language$$:: $$Specifies the tweets language of the stream.$$ *($$List<String>$$, default: `$$<none>$$`)*
-$$locations$$:: $$Locations to track. Internally represented as 2D array. Bounding box is invalid: 52.38, 4.90, 51.51, -0.12.  The first pair must be the SW corner of the box$$ *($$List<BoundingBox>$$, default: `$$<none>$$`)*
-$$track$$:: $$Specifies keywords to track.$$ *($$List<String>$$, default: `$$<none>$$`)*
-
 === twitter.stream
 
+$$enabled$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$type$$:: $$<documentation missing>$$ *($$StreamType$$, default: `$$<none>$$`, possible values: `sample`,`filter`,`firehose`,`link`)*
+
+=== twitter.stream.filter
+
+$$count$$:: $$<documentation missing>$$ *($$Integer$$, default: `$$<none>$$`)*
+$$filter-level$$:: $$<documentation missing>$$ *($$FilterLevel$$, default: `$$<none>$$`)*
+$$follow$$:: $$<documentation missing>$$ *($$List<Long>$$, default: `$$<none>$$`)*
+$$language$$:: $$<documentation missing>$$ *($$List<String>$$, default: `$$<none>$$`)*
+$$locations$$:: $$<documentation missing>$$ *($$List<BoundingBox>$$, default: `$$<none>$$`)*
+$$track$$:: $$<documentation missing>$$ *($$List<String>$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

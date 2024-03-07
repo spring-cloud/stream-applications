@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>mongodb-supplier</artifactId>
+            <artifactId>spring-mongodb-supplier</artifactId>
         </dependency>
     </dependencies>
 
@@ -43,14 +43,13 @@
                         <name>mongodb</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.mongo.MongodbSupplierConfiguration.class
-                        </configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>mongodbSupplier</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>mongodb-supplier</artifactId>
+                                    <artifactId>spring-mongodb-supplier</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.stream.app</groupId>

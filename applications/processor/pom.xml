@@ -21,9 +21,6 @@
         <module>transform-processor</module>
         <module>script-processor</module>
         <module>twitter-trend-processor</module>
-        <module>image-recognition-processor</module>
-        <module>object-detection-processor</module>
-        <module>semantic-segmentation-processor</module>
     </modules>
     <build>
         <plugins>

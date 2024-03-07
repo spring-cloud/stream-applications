@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>redis-consumer</artifactId>
+            <artifactId>spring-redis-consumer</artifactId>
         </dependency>
 
 		<dependency>
@@ -79,13 +79,13 @@
                         <name>redis</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.redis.RedisConsumerConfiguration.class</configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>redisConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>redis-consumer</artifactId>
+                                    <artifactId>spring-redis-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

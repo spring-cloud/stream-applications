@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>ftp-consumer</artifactId>
+            <artifactId>spring-ftp-consumer</artifactId>
         </dependency>
     </dependencies>
 
@@ -43,12 +43,13 @@
                         <name>ftp</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.ftp.FtpConsumerConfiguration.class</configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>ftpConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>ftp-consumer</artifactId>
+                                    <artifactId>spring-ftp-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

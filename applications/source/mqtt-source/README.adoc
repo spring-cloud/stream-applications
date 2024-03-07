@@ -30,11 +30,11 @@ $$username$$:: $$the username to use when connecting to the broker.$$ *($$String
 
 === mqtt.supplier
 
-$$binary$$:: $$true to leave the payload as bytes.$$ *($$Boolean$$, default: `$$false$$`)*
-$$charset$$:: $$the charset used to convert bytes to String (when binary is false).$$ *($$String$$, default: `$$UTF-8$$`)*
-$$client-id$$:: $$identifies the client.$$ *($$String$$, default: `$$stream.client.id.source$$`)*
-$$qos$$:: $$the qos; a single value for all topics or a comma-delimited list to match the topics.$$ *($$Integer[]$$, default: `$$[0]$$`)*
-$$topics$$:: $$the topic(s) (comma-delimited) to which the source will subscribe.$$ *($$String[]$$, default: `$$[stream.mqtt]$$`)*
+$$binary$$:: $$True to leave the payload as bytes.$$ *($$Boolean$$, default: `$$false$$`)*
+$$charset$$:: $$The charset used to convert bytes to String (when binary is false).$$ *($$String$$, default: `$$UTF-8$$`)*
+$$client-id$$:: $$Identifies the client.$$ *($$String$$, default: `$$stream.client.id.source$$`)*
+$$qos$$:: $$The qos; a single value for all topics or a comma-delimited list to match the topics.$$ *($$Integer[]$$, default: `$$[0]$$`)*
+$$topics$$:: $$The topic(s) (comma-delimited) to which the source will subscribe.$$ *($$String[]$$, default: `$$[stream.mqtt]$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

@@ -20,7 +20,7 @@
         <!-- Spring Cloud Function dependencies -->
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>xmpp-supplier</artifactId>
+            <artifactId>spring-xmpp-supplier</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
@@ -37,7 +37,7 @@
 
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>function-test-support</artifactId>
+            <artifactId>spring-function-test-support</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -66,14 +66,13 @@
                         <name>xmpp</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.xmpp.XmppSupplierConfiguration.class
-                        </configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>xmppSupplier</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>xmpp-supplier</artifactId>
+                                    <artifactId>spring-xmpp-supplier</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.stream.app</groupId>

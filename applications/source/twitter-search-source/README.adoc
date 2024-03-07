@@ -39,19 +39,20 @@ $$raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by t
 
 === twitter.search
 
-$$count$$:: $$Number of tweets to return per page (e.g. per single request), up to a max of 100.$$ *($$Integer$$, default: `$$100$$`)*
-$$lang$$:: $$Restricts searched tweets to the given language, given by an http://en.wikipedia.org/wiki/ISO_639-1 .$$ *($$String$$, default: `$$<none>$$`)*
-$$page$$:: $$Number of pages (e.g. requests) to search backwards (from most recent to the oldest tweets) before start the search from the most recent tweets again. The total amount of tweets searched backwards is (page * count)$$ *($$Integer$$, default: `$$3$$`)*
-$$query$$:: $$Search tweets by search query string.$$ *($$String$$, default: `$$<none>$$`)*
-$$restart-from-most-recent-on-empty-response$$:: $$Restart search from the most recent tweets on empty response. Applied only after the first restart (e.g. when since_id != UNBOUNDED)$$ *($$Boolean$$, default: `$$false$$`)*
-$$result-type$$:: $$Specifies what type of search results you would prefer to receive.  The current default is "mixed." Valid values include:   mixed : Include both popular and real time results in the response.   recent : return only the most recent results in the response   popular : return only the most popular results in the response$$ *($$ResultType$$, default: `$$<none>$$`, possible values: `popular`,`mixed`,`recent`)*
-$$since$$:: $$If specified, returns tweets with since the given date. Date should be formatted as YYYY-MM-DD.$$ *($$String$$, default: `$$<none>$$`)*
+$$count$$:: $$<documentation missing>$$ *($$Integer$$, default: `$$<none>$$`)*
+$$enabled$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$lang$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+$$page$$:: $$<documentation missing>$$ *($$Integer$$, default: `$$<none>$$`)*
+$$query$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
+$$restart-from-most-recent-on-empty-response$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$result-type$$:: $$<documentation missing>$$ *($$ResultType$$, default: `$$<none>$$`, possible values: `popular`,`mixed`,`recent`)*
+$$since$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
 
 === twitter.search.geocode
 
-$$latitude$$:: $$User's latitude.$$ *($$Double$$, default: `$$-1$$`)*
-$$longitude$$:: $$User's longitude.$$ *($$Double$$, default: `$$-1$$`)*
-$$radius$$:: $$Radius (in kilometers) around the (latitude, longitude) point.$$ *($$Double$$, default: `$$-1$$`)*
+$$latitude$$:: $$<documentation missing>$$ *($$Double$$, default: `$$<none>$$`)*
+$$longitude$$:: $$<documentation missing>$$ *($$Double$$, default: `$$<none>$$`)*
+$$radius$$:: $$<documentation missing>$$ *($$Double$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

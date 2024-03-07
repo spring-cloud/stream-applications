@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>tcp-consumer</artifactId>
+            <artifactId>spring-tcp-consumer</artifactId>
         </dependency>
     </dependencies>
 
@@ -43,12 +43,13 @@
                         <name>tcp</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.tcp.TcpConsumerConfiguration.class</configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>tcpConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>tcp-consumer</artifactId>
+                                    <artifactId>spring-tcp-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

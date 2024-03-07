@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>http-request-function</artifactId>
+            <artifactId>spring-http-request-function</artifactId>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
@@ -56,15 +56,14 @@
                         <name>http-request</name>
                         <type>processor</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.http.request.HttpRequestFunctionConfiguration.class
-                        </configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
                         <functionDefinition>httpRequestFunction</functionDefinition>
 
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>http-request-function</artifactId>
+                                    <artifactId>spring-http-request-function</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

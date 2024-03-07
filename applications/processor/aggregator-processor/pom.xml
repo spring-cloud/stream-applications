@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>aggregator-function</artifactId>
+            <artifactId>spring-aggregator-function</artifactId>
         </dependency>
     </dependencies>
 
@@ -35,13 +35,13 @@
                         <name>aggregator</name>
                         <type>processor</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.aggregator.AggregatorFunctionConfiguration.class</configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
                         <functionDefinition>jsonBytesToMap|aggregatorFunction</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>aggregator-function</artifactId>
+                                    <artifactId>spring-aggregator-function</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

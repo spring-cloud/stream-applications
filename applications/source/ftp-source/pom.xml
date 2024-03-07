@@ -17,11 +17,17 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>ftp-supplier</artifactId>
+            <artifactId>spring-ftp-supplier</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>function-test-support</artifactId>
+            <artifactId>spring-function-test-support</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ftpserver</groupId>
+            <artifactId>ftpserver-core</artifactId>
+            <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -54,13 +60,13 @@
                         <name>ftp</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.ftp.FtpSupplierConfiguration.class</configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>ftpSupplier</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>ftp-supplier</artifactId>
+                                    <artifactId>spring-ftp-supplier</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.stream.app</groupId>
