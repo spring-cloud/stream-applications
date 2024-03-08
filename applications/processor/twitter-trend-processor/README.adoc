@@ -31,12 +31,12 @@ Properties grouped by prefix:
 
 === twitter.trend.closest
 
-$$lat$$:: $$<documentation missing>$$ *($$Expression$$, default: `$$<none>$$`)*
-$$lon$$:: $$<documentation missing>$$ *($$Expression$$, default: `$$<none>$$`)*
+$$lat$$:: $$If provided with a long parameter the available trend locations will be sorted by distance, nearest to the furthest, to the co-ordinate pair. The valid ranges for longitude is -180.0 to +180.0 (West is negative, East is positive) inclusive.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$lon$$:: $$If provided with a lat parameter the available trend locations will be sorted by distance, nearest to the furthest, to the co-ordinate pair. The valid ranges for longitude is -180.0 to +180.0 (West is negative, East is positive) inclusive.$$ *($$Expression$$, default: `$$<none>$$`)*
 
 === twitter.trend
 
-$$location-id$$:: $$<documentation missing>$$ *($$Expression$$, default: `$$<none>$$`)*
+$$location-id$$:: $$The Yahoo! Where On Earth ID of the location to return trending information for. Global information is available by using 1 as the WOEID.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$trend-query-type$$:: $$<documentation missing>$$ *($$TrendQueryType$$, default: `$$<none>$$`, possible values: `trend`,`trendLocation`)*
 //end::configuration-properties[]
 

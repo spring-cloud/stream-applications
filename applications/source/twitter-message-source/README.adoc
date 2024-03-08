@@ -36,8 +36,8 @@ $$raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by t
 
 === twitter.message.source
 
-$$count$$:: $$<documentation missing>$$ *($$Integer$$, default: `$$<none>$$`)*
-$$enabled$$:: $$<documentation missing>$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$count$$:: $$Max number of events to be returned. 20 default. 50 max.$$ *($$Integer$$, default: `$$20$$`)*
+$$enabled$$:: $$Whether to enable Twitter message receiving.$$ *($$Boolean$$, default: `$$false$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]
