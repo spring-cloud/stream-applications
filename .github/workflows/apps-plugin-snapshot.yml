@@ -44,7 +44,7 @@ jobs:
             --server-id-deploy=repo.spring.io \
             --repo-resolve-releases=libs-milestone \
             --repo-resolve-snapshots=libs-snapshot \
-            --repo-deploy-releases=libs-milestone-local \
+            --repo-deploy-releases=libs-release-local \
             --repo-deploy-snapshots=libs-snapshot-local
           echo JFROG_CLI_BUILD_NAME=spring-cloud-dataflow-apps-plugin-main-snapshot >> $GITHUB_ENV
           echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
