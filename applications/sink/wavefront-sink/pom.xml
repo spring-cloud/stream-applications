@@ -17,11 +17,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>wavefront-consumer</artifactId>
+			<artifactId>spring-wavefront-consumer</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>function-test-support</artifactId>
+			<artifactId>spring-function-test-support</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -48,16 +48,14 @@
 						<name>wavefront</name>
 						<type>sink</type>
 						<version>${project.version}</version>
-						<configClass>
-							org.springframework.cloud.fn.consumer.wavefront.WavefrontConsumerConfiguration.class
-						</configClass>
+						<configClass>AUTOCONFIGURATION</configClass>
 						<functionDefinition>wavefrontConsumer</functionDefinition>
 
 						<maven>
 							<dependencies>
 								<dependency>
 									<groupId>org.springframework.cloud.fn</groupId>
-									<artifactId>wavefront-consumer</artifactId>
+									<artifactId>spring-wavefront-consumer</artifactId>
 								</dependency>
 							</dependencies>
 						</maven>

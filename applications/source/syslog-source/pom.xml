@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>syslog-supplier</artifactId>
+            <artifactId>spring-syslog-supplier</artifactId>
         </dependency>
     </dependencies>
 
@@ -43,13 +43,13 @@
                         <name>syslog</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.syslog.SyslogSupplierConfiguration.class</configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>syslogSupplier</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>syslog-supplier</artifactId>
+                                    <artifactId>spring-syslog-supplier</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.stream.app</groupId>

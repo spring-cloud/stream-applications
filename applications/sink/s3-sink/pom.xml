@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>s3-consumer</artifactId>
+            <artifactId>spring-s3-consumer</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
@@ -58,13 +58,13 @@
                         <name>s3</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.s3.AwsS3ConsumerConfiguration.class</configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>s3Consumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>s3-consumer</artifactId>
+                                    <artifactId>spring-s3-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

@@ -39,8 +39,6 @@ $SCDIR/mvnw versions:set-property -pl :stream-applications-release-train \
   -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
   -Dproperty=apps.version -DnewVersion="$VERSION"
 
-$SCDIR/mvnw install -pl :function-dependencies -am -DskipTests -T 1C
-
 OLD_RT_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout -f ./stream-applications-release-train 2> /dev/null)
 OLD_RT_VERSION=$(find_version "$OLD_RT_VERSION")
 echo "Release Train Version: [$OLD_RT_VERSION] -> [$RELEASE_TRAIN_VERSION]"

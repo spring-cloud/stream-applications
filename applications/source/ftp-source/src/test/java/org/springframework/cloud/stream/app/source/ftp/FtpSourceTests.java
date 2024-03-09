@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.fn.supplier.ftp.FtpSupplierConfiguration;
 import org.springframework.cloud.fn.supplier.ftp.FtpSupplierProperties;
 import org.springframework.cloud.fn.test.support.ftp.FtpTestSupport;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
@@ -54,7 +53,7 @@ public class FtpSourceTests extends FtpTestSupport {
 	FtpSupplierProperties config;
 
 	@Test
-	public void testFtpource() {
+	public void testFtpSource() {
 		Message<byte[]> message = output.receive(10000, "ftpSupplier-out-0");
 		assertThat(new File(new String(message.getPayload()).replaceAll("\"", ""))).isEqualTo(
 				new File(this.config.getLocalDir(), "ftpSource1.txt"));
@@ -64,7 +63,7 @@ public class FtpSourceTests extends FtpTestSupport {
 	}
 
 	@SpringBootApplication
-	@Import({TestChannelBinderConfiguration.class, FtpSupplierConfiguration.class})
+	@Import(TestChannelBinderConfiguration.class)
 	public static class SampleConfiguration {
 
 		@Bean
@@ -77,4 +76,5 @@ public class FtpSourceTests extends FtpTestSupport {
 		}
 
 	}
+
 }

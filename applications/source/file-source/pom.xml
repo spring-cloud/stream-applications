@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>file-supplier</artifactId>
+            <artifactId>spring-file-supplier</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.stream.app</groupId>
@@ -49,13 +49,13 @@
                         <name>file</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.file.FileSupplierConfiguration.class</configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>fileSupplier</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>file-supplier</artifactId>
+                                    <artifactId>spring-file-supplier</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.stream.app</groupId>

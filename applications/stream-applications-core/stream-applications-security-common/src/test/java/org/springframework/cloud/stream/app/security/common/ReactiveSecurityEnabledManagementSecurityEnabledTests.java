@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+ * Copyright 2019-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ public class ReactiveSecurityEnabledManagementSecurityEnabledTests extends Abstr
 				Collections.singletonMap("state", "STOPPED"), Void.class);
 		assertThat(response.getStatusCode()).isIn(HttpStatus.NO_CONTENT, HttpStatus.OK);
 		String result = this.restTemplate.getForEntity("/actuator/bindings", String.class).getBody();
-		assertThat(result.contains("\"state\":\"stopped\"")).isTrue();
+		assertThat(result).contains("\"state\":\"stopped\"");
 	}
 
 	@Test

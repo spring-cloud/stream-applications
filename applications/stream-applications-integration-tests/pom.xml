@@ -70,12 +70,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>function-test-support</artifactId>
+			<artifactId>spring-function-test-support</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>s3-supplier</artifactId>
+			<artifactId>spring-s3-supplier</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>

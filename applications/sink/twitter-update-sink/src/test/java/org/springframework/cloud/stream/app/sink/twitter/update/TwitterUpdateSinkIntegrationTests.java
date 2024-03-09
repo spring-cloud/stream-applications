@@ -17,7 +17,6 @@
 package org.springframework.cloud.stream.app.sink.twitter.update;
 
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterAll;
@@ -34,16 +33,13 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.common.twitter.TwitterConnectionProperties;
 import org.springframework.cloud.fn.common.twitter.util.TwitterTestUtils;
-import org.springframework.cloud.fn.consumer.twitter.status.update.TwitterUpdateConsumerConfiguration;
 import org.springframework.cloud.fn.consumer.twitter.status.update.TwitterUpdateConsumerProperties;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.test.util.TestSocketUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.matchers.Times.unlimited;
@@ -53,12 +49,9 @@ import static org.mockserver.verify.VerificationTimes.once;
 
 /**
  * @author Christian Tzolov
+ * @author Artem Bilan
  */
 public class TwitterUpdateSinkIntegrationTests {
-
-	private static final String MOCK_SERVER_IP = "127.0.0.1";
-
-	private static final Integer MOCK_SERVER_PORT = TestSocketUtils.findAvailableTcpPort();
 
 	private static ClientAndServer mockServer;
 
@@ -66,8 +59,9 @@ public class TwitterUpdateSinkIntegrationTests {
 
 	@BeforeAll
 	public static void startMockServer() {
-		mockServer = ClientAndServer.startClientAndServer(MOCK_SERVER_PORT);
-		mockClient = new MockServerClient(MOCK_SERVER_IP, MOCK_SERVER_PORT);
+		mockServer = ClientAndServer.startClientAndServer();
+		mockClient = new MockServerClient("localhost", mockServer.getPort());
+
 		mockClient
 				.when(
 						request().withMethod("POST").withPath("/statuses/update.json"),
@@ -75,8 +69,7 @@ public class TwitterUpdateSinkIntegrationTests {
 				.respond(response()
 						.withStatusCode(200)
 						.withHeader("Content-Type", "application/json; charset=utf-8")
-						.withBody(TwitterTestUtils.asString("classpath:/response/update_test_1.json"))
-						.withDelay(TimeUnit.SECONDS, 1));
+						.withBody(TwitterTestUtils.asString("classpath:/response/update_test_1.json")));
 	}
 
 	@AfterAll
@@ -211,7 +204,6 @@ public class TwitterUpdateSinkIntegrationTests {
 
 	@SpringBootConfiguration
 	@EnableAutoConfiguration
-	@Import(TwitterUpdateConsumerConfiguration.class)
 	public static class TestTwitterUpdateSinkApplication {
 
 		@Bean
@@ -221,10 +213,11 @@ public class TwitterUpdateSinkIntegrationTests {
 
 			Function<TwitterConnectionProperties, ConfigurationBuilder> mockedConfiguration =
 					toConfigurationBuilder.andThen(
-							new TwitterTestUtils().mockTwitterUrls(
-									String.format("http://%s:%s", MOCK_SERVER_IP, MOCK_SERVER_PORT)));
+							new TwitterTestUtils().mockTwitterUrls("http://localhost:" + mockServer.getPort()));
 
 			return mockedConfiguration.apply(properties).build();
 		}
+
 	}
+
 }

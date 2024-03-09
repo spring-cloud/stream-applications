@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>jms-supplier</artifactId>
+            <artifactId>spring-jms-supplier</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.jms</groupId>
@@ -59,13 +59,13 @@
                         <name>jms</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.jms.JmsSupplierConfiguration.class</configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>jmsSupplier</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>jms-supplier</artifactId>
+                                    <artifactId>spring-jms-supplier</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.stream.app</groupId>

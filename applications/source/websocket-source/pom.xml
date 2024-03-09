@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>websocket-supplier</artifactId>
+            <artifactId>spring-websocket-supplier</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -53,13 +53,13 @@
                         <name>websocket</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.websocket.WebsocketSupplierConfiguration.class</configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>websocketSupplier</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>websocket-supplier</artifactId>
+                                    <artifactId>spring-websocket-supplier</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.stream.app</groupId>

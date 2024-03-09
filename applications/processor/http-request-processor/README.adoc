@@ -52,7 +52,7 @@ $$body-expression$$:: $$A SpEL expression to derive the request body from the in
 $$expected-response-type$$:: $$The type used to interpret the response.$$ *($$Class<?>$$, default: `$$<none>$$`)*
 $$headers-expression$$:: $$A SpEL expression used to derive the http headers map to use.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$http-method-expression$$:: $$A SpEL expression to derive the request method from the incoming message.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$reply-expression$$:: $$A SpEL expression used to compute the final result, applied against the whole http {@link org.springframework.http.ResponseEntity}.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$reply-expression$$:: $$A SpEL expression used to compute the final result, applied against the whole http {@link ResponseEntity}.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$timeout$$:: $$Request timeout in milliseconds.$$ *($$Long$$, default: `$$30000$$`)*
 $$url-expression$$:: $$A SpEL expression against incoming message to determine the URL to use.$$ *($$Expression$$, default: `$$<none>$$`)*
 

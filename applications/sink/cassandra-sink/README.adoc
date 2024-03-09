@@ -24,7 +24,7 @@ $$entity-base-packages$$:: $$Base packages to scan for entities annotated with T
 $$init-script$$:: $$Resource with CQL scripts (delimited by ';') to initialize keyspace schema.$$ *($$Resource$$, default: `$$<none>$$`)*
 $$skip-ssl-validation$$:: $$Flag to validate the Servers' SSL certs.$$ *($$Boolean$$, default: `$$false$$`)*
 
-=== cassandra
+=== cassandra.consumer
 
 $$consistency-level$$:: $$The consistency level for write operation.$$ *($$ConsistencyLevel$$, default: `$$<none>$$`)*
 $$ingest-query$$:: $$Ingest Cassandra query.$$ *($$String$$, default: `$$<none>$$`)*

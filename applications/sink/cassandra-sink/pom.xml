@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>cassandra-consumer</artifactId>
+            <artifactId>spring-cassandra-consumer</artifactId>
         </dependency>
     </dependencies>
 
@@ -43,15 +43,13 @@
                         <name>cassandra</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>
-                            org.springframework.cloud.fn.consumer.cassandra.CassandraConsumerConfiguration.class
-                        </configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>cassandraConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>cassandra-consumer</artifactId>
+                                    <artifactId>spring-cassandra-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

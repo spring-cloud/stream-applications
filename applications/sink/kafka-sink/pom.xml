@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>kafka-publisher</artifactId>
+			<artifactId>spring-kafka-publisher</artifactId>
 		</dependency>
 
 		<dependency>

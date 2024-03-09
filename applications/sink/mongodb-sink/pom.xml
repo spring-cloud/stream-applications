@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>mongodb-consumer</artifactId>
+            <artifactId>spring-mongodb-consumer</artifactId>
         </dependency>
         <dependency>
             <groupId>io.projectreactor</groupId>
@@ -48,14 +48,13 @@
                         <name>mongodb</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.mongo.MongoDbConsumerConfiguration.class
-                        </configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
                         <functionDefinition>byteArrayTextToString|mongodbConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>mongodb-consumer</artifactId>
+                                    <artifactId>spring-mongodb-consumer</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>

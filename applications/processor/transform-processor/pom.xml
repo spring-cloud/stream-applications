@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>spel-function</artifactId>
+			<artifactId>spring-spel-function</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -43,13 +43,13 @@
 						<name>transform</name>
 						<type>processor</type>
 						<version>${project.version}</version>
-						<configClass>org.springframework.cloud.fn.spel.SpelFunctionConfiguration.class</configClass>
+						<configClass>AUTOCONFIGURATION</configClass>
 						<functionDefinition>byteArrayTextToString|spelFunction</functionDefinition>
 						<maven>
 							<dependencies>
 								<dependency>
 									<groupId>org.springframework.cloud.fn</groupId>
-									<artifactId>spel-function</artifactId>
+									<artifactId>spring-spel-function</artifactId>
 								</dependency>
 							</dependencies>
 						</maven>

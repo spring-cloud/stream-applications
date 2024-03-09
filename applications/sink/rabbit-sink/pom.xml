@@ -27,14 +27,9 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>rabbit-consumer</artifactId>
+            <artifactId>spring-rabbit-consumer</artifactId>
         </dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-test-binder</artifactId>
-            <scope>test</scope>
-		</dependency>
-        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
             <version>${testcontainers.version}</version>
@@ -76,13 +71,13 @@
                         <name>rabbit</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.rabbit.RabbitConsumerConfiguration.class</configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>rabbitConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>rabbit-consumer</artifactId>
+                                    <artifactId>spring-rabbit-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

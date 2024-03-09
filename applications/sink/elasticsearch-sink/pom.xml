@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>elasticsearch-consumer</artifactId>
+            <artifactId>spring-elasticsearch-consumer</artifactId>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
@@ -72,14 +72,14 @@
                         <name>elasticsearch</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.elasticsearch.ElasticsearchConsumerConfiguration.class</configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
                         <functionDefinition>byteArrayTextToString|elasticsearchConsumer</functionDefinition>
 
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>elasticsearch-consumer</artifactId>
+                                    <artifactId>spring-elasticsearch-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

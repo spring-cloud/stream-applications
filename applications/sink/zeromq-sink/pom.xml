@@ -20,7 +20,7 @@
         <!-- Spring Cloud Function dependencies -->
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>zeromq-consumer</artifactId>
+            <artifactId>spring-zeromq-consumer</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
@@ -58,14 +58,13 @@
                         <name>zeromq</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.zeromq.ZeroMqConsumerConfiguration.class
-                        </configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>zeromqConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>zeromq-consumer</artifactId>
+                                    <artifactId>spring-zeromq-consumer</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.stream.app</groupId>

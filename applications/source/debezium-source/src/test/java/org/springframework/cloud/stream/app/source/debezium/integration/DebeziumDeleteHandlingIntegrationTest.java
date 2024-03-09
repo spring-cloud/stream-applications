@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.source.debezium.integration;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,19 +27,15 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.ContextConsumer;
 import org.springframework.cloud.fn.common.debezium.DebeziumProperties;
-import org.springframework.cloud.fn.supplier.debezium.DebeziumReactiveConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.kafka.support.KafkaNull;
 import org.springframework.messaging.Message;
 import org.springframework.test.jdbc.JdbcTestUtils;
-import org.springframework.util.ClassUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -107,10 +104,6 @@ public class DebeziumDeleteHandlingIntegrationTest {
 	})
 	public void handleRecordDeletions(String properties) {
 		contextRunner.withPropertyValues(properties.split(","))
-				.withClassLoader(new FilteredClassLoader(KafkaNull.class)) // Remove Kafka from the
-				.run(consumer);
-
-		contextRunner.withPropertyValues(properties.split(","))
 				.run(consumer);
 	}
 
@@ -122,10 +115,6 @@ public class DebeziumDeleteHandlingIntegrationTest {
 		OutputDestination outputDestination = context.getBean(OutputDestination.class);
 		JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
 		DebeziumProperties props = context.getBean(DebeziumProperties.class);
-
-		boolean isKafkaPresent = ClassUtils.isPresent(
-				DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL,
-				context.getClassLoader());
 
 		String deleteHandlingMode = props.getProperties().get("transforms.unwrap.delete.handling.mode");
 		String isDropTombstones = props.getProperties().get("transforms.unwrap.drop.tombstones");
@@ -153,15 +142,14 @@ public class DebeziumDeleteHandlingIntegrationTest {
 		else if (deleteHandlingMode.equals("rewrite")) {
 			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), DebeziumTestUtils.BINDING_NAME);
 			assertThat(received).isNotNull();
-			assertThat(toString(received.getPayload()).contains("\"__deleted\":\"true\""));
+			assertThat(toString(received.getPayload())).contains("\"__deleted\":\"true\"");
 		}
 
-		if (!(isDropTombstones.equals("true")) && isKafkaPresent) {
+		if (!(isDropTombstones.equals("true"))) {
 			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), DebeziumTestUtils.BINDING_NAME);
 			assertThat(received).isNotNull();
 			// Tombstones event should have KafkaNull payload
-			assertThat(received.getPayload().getClass().getCanonicalName())
-					.isEqualTo(DebeziumReactiveConsumerConfiguration.ORG_SPRINGFRAMEWORK_KAFKA_SUPPORT_KAFKA_NULL);
+			assertThat(received.getPayload()).isEqualTo(Optional.empty());
 
 			Object keyRaw = received.getHeaders().get("debezium_key");
 			String key = (keyRaw instanceof byte[]) ? new String((byte[]) keyRaw) : "" + keyRaw;

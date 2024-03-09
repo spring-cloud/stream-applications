@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>rsocket-consumer</artifactId>
+            <artifactId>spring-rsocket-consumer</artifactId>
         </dependency>
         <dependency>
             <groupId>io.projectreactor</groupId>
@@ -53,12 +53,13 @@
                         <name>rsocket</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.rsocket.RsocketConsumerConfiguration.class</configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>rsocketConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>rsocket-consumer</artifactId>
+                                    <artifactId>spring-rsocket-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

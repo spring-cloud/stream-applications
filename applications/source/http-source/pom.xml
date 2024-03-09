@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>http-supplier</artifactId>
+            <artifactId>spring-http-supplier</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -53,8 +53,8 @@
                         <name>http</name>
                         <type>source</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.supplier.http.HttpSupplierConfiguration.class</configClass>
-
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>httpSupplier</functionDefinition>
                         <properties>
                             <spring.main.web-application-type>reactive</spring.main.web-application-type>>
                             <spring.cloud.streamapp.security.enabled>false</spring.cloud.streamapp.security.enabled>
@@ -65,7 +65,7 @@
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>http-supplier</artifactId>
+                                    <artifactId>spring-http-supplier</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.stream.app</groupId>

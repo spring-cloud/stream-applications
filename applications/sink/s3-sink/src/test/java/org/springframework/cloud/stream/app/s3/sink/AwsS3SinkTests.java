@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 the original author or authors.
+ * Copyright 2016-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.s3.sink;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -40,7 +41,7 @@ import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.fn.consumer.s3.AwsS3ConsumerConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -54,7 +55,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
@@ -62,6 +62,7 @@ import static org.mockito.Mockito.verify;
 				"spring.cloud.aws.credentials.accessKey=" + AwsS3SinkTests.AWS_ACCESS_KEY,
 				"spring.cloud.aws.credentials.secretKey=" + AwsS3SinkTests.AWS_SECRET_KEY,
 				"spring.cloud.aws.region.static=" + AwsS3SinkTests.AWS_REGION,
+				"spring.cloud.aws.s3.endpoint=s3://test.endpoint",
 				"s3.consumer.bucket=" + AwsS3SinkTests.S3_BUCKET,
 				"s3.consumer.acl=PUBLIC_READ_WRITE"})
 @DirtiesContext
@@ -78,7 +79,7 @@ public class AwsS3SinkTests {
 	@TempDir
 	protected static Path temporaryRemoteFolder;
 
-	@Autowired
+	@MockBean
 	private S3AsyncClient amazonS3;
 
 	@Autowired
@@ -95,8 +96,6 @@ public class AwsS3SinkTests {
 
 	@BeforeEach
 	public void setupTest() {
-		S3AsyncClient amazonS3 = spy(this.amazonS3);
-
 		willReturn(CompletableFuture.completedFuture(PutObjectResponse.builder().build()))
 				.given(amazonS3)
 				.putObject(any(PutObjectRequest.class), any(AsyncRequestBody.class));
@@ -133,7 +132,7 @@ public class AwsS3SinkTests {
 
 		AsyncRequestBody asyncRequestBody = asyncRequestBodyArgumentCaptor.getValue();
 		StepVerifier.create(asyncRequestBody)
-				.assertNext(buffer -> assertThat(buffer.array()).isEmpty())
+				.assertNext(buffer -> assertThat(buffer).isEqualTo(ByteBuffer.allocate(0)))
 				.expectComplete()
 				.verify();
 
@@ -141,7 +140,7 @@ public class AwsS3SinkTests {
 	}
 
 	@SpringBootApplication
-	@Import({AwsS3ConsumerConfiguration.class, TestChannelBinderConfiguration.class})
+	@Import(TestChannelBinderConfiguration.class)
 	public static class SampleConfiguration {
 
 		@Bean

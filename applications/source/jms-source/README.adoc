@@ -28,10 +28,11 @@ $$pub-sub-domain$$:: $$Whether the default destination type is topic.$$ *($$Bool
 
 === spring.jms.listener
 
-$$acknowledge-mode$$:: $$Acknowledge mode of the container. By default, the listener is transacted with automatic acknowledgment.$$ *($$AcknowledgeMode$$, default: `$$<none>$$`, possible values: `AUTO`,`CLIENT`,`DUPS_OK`)*
+$$acknowledge-mode$$:: $$<documentation missing>$$ *($$AcknowledgeMode$$, default: `$$<none>$$`)*
 $$auto-startup$$:: $$Start the container automatically on startup.$$ *($$Boolean$$, default: `$$true$$`)*
-$$concurrency$$:: $$Minimum number of concurrent consumers. When max-concurrency is not specified the minimum will also be used as the maximum.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$concurrency$$:: $$<documentation missing>$$ *($$Integer$$, default: `$$<none>$$`)*
 $$max-concurrency$$:: $$Maximum number of concurrent consumers.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$min-concurrency$$:: $$Minimum number of concurrent consumers. When max-concurrency is not specified the minimum will also be used as the maximum.$$ *($$Integer$$, default: `$$<none>$$`)*
 $$receive-timeout$$:: $$Timeout to use for receive calls. Use -1 for a no-wait receive or 0 for no timeout at all. The latter is only feasible if not running within a transaction manager and is generally discouraged since it prevents clean shutdown.$$ *($$Duration$$, default: `$$1s$$`)*
 //end::configuration-properties[]
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 the original author or authors.
+ * Copyright 2016-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import org.springframework.integration.router.AbstractMappingMessageRouter;
 import org.springframework.integration.router.AbstractMessageRouter;
 import org.springframework.integration.router.ExpressionEvaluatingRouter;
 import org.springframework.integration.router.MethodInvokingRouter;
+import org.springframework.integration.scripting.dsl.ScriptSpec;
 import org.springframework.integration.scripting.dsl.Scripts;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
@@ -93,12 +94,11 @@ public class RouterSinkConfiguration {
 
 	@Bean
 	@ConditionalOnProperty("router.script")
-	public MessageProcessor<?> scriptProcessor() {
+	public ScriptSpec scriptProcessor() {
 		return Scripts.processor(this.properties.getScript())
 				.lang("groovy")
 				.refreshCheckDelay(this.properties.getRefreshDelay())
-				.variables(obtainScriptVariables(this.properties))
-				.get();
+				.variables(obtainScriptVariables(this.properties));
 	}
 
 	private static Map<String, Object> obtainScriptVariables(RouterSinkProperties properties) {

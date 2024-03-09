@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+ * Copyright 2020-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.consumer.redis.RedisConsumerConfiguration;
 import org.springframework.cloud.fn.consumer.redis.RedisTestContainerSupport;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.support.collections.DefaultRedisList;
 import org.springframework.data.redis.support.collections.RedisList;
@@ -47,32 +45,30 @@ public class RedisSinkTests implements RedisTestContainerSupport {
 
 	@Test
 	public void testRedisSink() {
+		String key = "foo";
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration
 						.getCompleteConfiguration(RedisSinkTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=redisConsumer",
+						"--spring.cloud.stream.bindings.redisConsumer-in-0.consumer.use-native-decoding=true",
 						"--spring.data.redis.url=" + RedisTestContainerSupport.getUri(),
-						"--redis.consumer.key=foo")) {
+						"--redis.consumer.key=" + key)) {
 
-			//Setup
-			String key = "foo";
-
-			final StringRedisTemplate redisTemplate = context.getBean(StringRedisTemplate.class);
+			StringRedisTemplate redisTemplate = context.getBean(StringRedisTemplate.class);
 			redisTemplate.delete(key);
 
-			RedisList<String> redisList = new DefaultRedisList<>(key, redisTemplate);
 			List<String> list = new ArrayList<>();
 			list.add("Manny");
 			list.add("Moe");
 			list.add("Jack");
 
-			//Execute
 			Message<List<String>> message = new GenericMessage<>(list);
 
 			InputDestination source = context.getBean(InputDestination.class);
 			source.send(message);
 
+			RedisList<String> redisList = new DefaultRedisList<>(key, redisTemplate);
 			assertThat(redisList.size()).isEqualTo(3);
 			assertThat(redisList.get(0)).isEqualTo("Manny");
 			assertThat(redisList.get(1)).isEqualTo("Moe");
@@ -81,7 +77,6 @@ public class RedisSinkTests implements RedisTestContainerSupport {
 	}
 
 	@SpringBootApplication
-	@Import(RedisConsumerConfiguration.class)
 	public static class RedisSinkTestApplication {
 	}
 }

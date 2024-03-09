@@ -18,7 +18,6 @@ package org.springframework.cloud.stream.app.processor.twitter.trend;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterAll;
@@ -36,17 +35,14 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.common.twitter.TwitterConnectionProperties;
 import org.springframework.cloud.fn.common.twitter.util.TwitterTestUtils;
-import org.springframework.cloud.fn.twitter.trend.TwitterTrendFunctionConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.test.util.TestSocketUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.matchers.Times.exactly;
@@ -56,22 +52,20 @@ import static org.mockserver.verify.VerificationTimes.once;
 
 /**
  * @author Christian Tzolov
+ * @author Artem Bilan
  */
 public class TwitterTrendProcessorIntegrationTests {
-
-	private static final String MOCK_SERVER_IP = "127.0.0.1";
-
-	private static final Integer MOCK_SERVER_PORT = TestSocketUtils.findAvailableTcpPort();
 
 	private static ClientAndServer mockServer;
 
 	private static MockServerClient mockClient;
+
 	private static HttpRequest trendsRequest;
 
 	@BeforeAll
 	public static void startServer() {
-		mockServer = ClientAndServer.startClientAndServer(MOCK_SERVER_PORT);
-		mockClient = new MockServerClient(MOCK_SERVER_IP, MOCK_SERVER_PORT);
+		mockServer = ClientAndServer.startClientAndServer();
+		mockClient = new MockServerClient("localhost", mockServer.getPort());
 
 		trendsRequest = setExpectation(request()
 				.withMethod("GET")
@@ -91,6 +85,7 @@ public class TwitterTrendProcessorIntegrationTests {
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=twitterTrendFunction",
 
+						"--twitter.trend.trend-query-type=trend",
 						"--twitter.trend.locationId='2972'",
 						"--twitter.connection.rawJson=true",
 
@@ -110,11 +105,6 @@ public class TwitterTrendProcessorIntegrationTests {
 			assertThat(outputMessage).isNotNull();
 
 			mockClient.verify(trendsRequest, once());
-
-			//Resource trendsResource = new DefaultResourceLoader().getResource("classpath:/response/trends.json");
-			//String expected = new String(StreamUtils.copyToByteArray(trendsResource.getInputStream()), StandardCharsets.UTF_8).trim();
-			//String actual = new String(outputMessage.getPayload(), StandardCharsets.UTF_8);
-			//JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
 		}
 	}
 
@@ -127,15 +117,14 @@ public class TwitterTrendProcessorIntegrationTests {
 								new Header("Content-Type", "application/json; charset=utf-8"),
 								new Header("Cache-Control", "public, max-age=86400"))
 						.withBody(TwitterTestUtils.asString("classpath:/response/trends.json"))
-						.withDelay(TimeUnit.SECONDS, 1)
 				);
 		return request;
 	}
 
 	@SpringBootConfiguration
 	@EnableAutoConfiguration
-	@Import(TwitterTrendFunctionConfiguration.class)
 	public static class TestTwitterTrendProcessorApplication {
+
 		@Bean
 		@Primary
 		public twitter4j.conf.Configuration twitterConfiguration2(TwitterConnectionProperties properties,
@@ -143,11 +132,11 @@ public class TwitterTrendProcessorIntegrationTests {
 
 			Function<TwitterConnectionProperties, ConfigurationBuilder> mockedConfiguration =
 					toConfigurationBuilder.andThen(
-							new TwitterTestUtils().mockTwitterUrls(
-									String.format("http://%s:%s", MOCK_SERVER_IP, MOCK_SERVER_PORT)));
+							new TwitterTestUtils().mockTwitterUrls("http://localhost:" + mockServer.getPort()));
 
 			return mockedConfiguration.apply(properties).build();
 		}
+
 	}
 
 }

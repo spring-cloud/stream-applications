@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,11 @@
 
 package org.springframework.cloud.stream.app.rsocket.sink;
 
-import java.util.function.Function;
+import java.time.Duration;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.ReplayProcessor;
+import reactor.core.publisher.Sinks;
 import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +34,9 @@ import org.springframework.cloud.fn.consumer.rsocket.RsocketConsumerConfiguratio
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Import;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -48,7 +44,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 /**
  * @author Soby Chacko
  */
-@SpringBootTest(properties = {"spring.rsocket.server.port=0"}, classes = RSocketSinkTests.RSocketserverApplication.class)
+@SpringBootTest(properties = {"spring.rsocket.server.port=0"}, classes = RSocketSinkTests.RSocketServerApplication.class)
 @DirtiesContext
 public class RSocketSinkTests {
 
@@ -71,15 +67,11 @@ public class RSocketSinkTests {
 		final int port = server.address().getPort();
 
 		applicationContextRunner.withPropertyValues(
-				"spring.cloud.function.definition=rsocketConsumer",
-				"rsocket.consumer.port=" + port,
-				"rsocket.consumer.route=test-route")
+						"spring.cloud.function.definition=rsocketFunctionConsumer",
+						"rsocket.consumer.port=" + port,
+						"rsocket.consumer.route=test-route")
 				.run(context -> {
-					Function<Flux<Message<?>>, Mono<Void>> rsocketConsumer = context.getBean("rsocketConsumer", Function.class);
-					rsocketConsumer.apply(Flux.just(new GenericMessage<>("Hello RSocket")))
-							.subscribe();
-
-					final StepVerifier stepVerifier = StepVerifier.create(RSocketserverApplication.fireForgetPayloads)
+					final StepVerifier stepVerifier = StepVerifier.create(RSocketServerApplication.fireForgetPayloads.asMono())
 							.expectNext("Hello RSocket")
 							.thenCancel()
 							.verifyLater();
@@ -88,25 +80,24 @@ public class RSocketSinkTests {
 					InputDestination source = context.getBean(InputDestination.class);
 					source.send(message);
 
-					stepVerifier.verify();
+					stepVerifier.verify(Duration.ofSeconds(10));
 				});
 	}
 
-	@EnableAutoConfiguration
+	@EnableAutoConfiguration(exclude = RsocketConsumerConfiguration.class)
 	@SpringBootConfiguration
 	@Controller
-	static class RSocketserverApplication {
-		static final ReplayProcessor<String> fireForgetPayloads = ReplayProcessor.create();
+	static class RSocketServerApplication {
+		static final Sinks.One<String> fireForgetPayloads = Sinks.one();
 
 		@MessageMapping("test-route")
 		void someMethod(String payload) {
-			this.fireForgetPayloads.onNext(payload);
+			this.fireForgetPayloads.tryEmitValue(payload);
 		}
 	}
 
 	@EnableAutoConfiguration
 	@SpringBootConfiguration
-	@Import(RsocketConsumerConfiguration.class)
 	static class RsocketSinkTestApplication {
 
 	}

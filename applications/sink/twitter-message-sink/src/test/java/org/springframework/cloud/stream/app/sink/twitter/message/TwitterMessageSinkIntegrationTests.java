@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,15 +36,12 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.common.twitter.TwitterConnectionProperties;
 import org.springframework.cloud.fn.common.twitter.util.TwitterTestUtils;
-import org.springframework.cloud.fn.consumer.twitter.message.TwitterMessageConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.test.util.TestSocketUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.matchers.Times.unlimited;
@@ -54,12 +51,9 @@ import static org.mockserver.verify.VerificationTimes.once;
 
 /**
  * @author Christian Tzolov
+ * @author Artem Bilan
  */
 public class TwitterMessageSinkIntegrationTests {
-
-	private static final String MOCK_SERVER_IP = "127.0.0.1";
-
-	private static final Integer MOCK_SERVER_PORT = TestSocketUtils.findAvailableTcpPort();
 
 	private static ClientAndServer mockServer;
 
@@ -67,8 +61,8 @@ public class TwitterMessageSinkIntegrationTests {
 
 	@BeforeEach
 	public void startMockServer() {
-		mockServer = ClientAndServer.startClientAndServer(MOCK_SERVER_PORT);
-		mockClient = new MockServerClient(MOCK_SERVER_IP, MOCK_SERVER_PORT);
+		mockServer = ClientAndServer.startClientAndServer();
+		mockClient = new MockServerClient("localhost", mockServer.getPort());
 
 		mockClient
 				.when(
@@ -111,7 +105,7 @@ public class TwitterMessageSinkIntegrationTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterMessageSinkApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=byteArrayTextToString|sendDirectMessageConsumer",
+				.run("--spring.cloud.function.definition=byteArrayTextToString|twitterSendMessageConsumer",
 
 						"--twitter.message.update.screenName='user666'",
 
@@ -149,7 +143,7 @@ public class TwitterMessageSinkIntegrationTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterMessageSinkApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=byteArrayTextToString|sendDirectMessageConsumer",
+				.run("--spring.cloud.function.definition=byteArrayTextToString|twitterSendMessageConsumer",
 
 						"--twitter.message.update.userId='1075751718749659136'",
 
@@ -178,7 +172,7 @@ public class TwitterMessageSinkIntegrationTests {
 		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
 				TestChannelBinderConfiguration.getCompleteConfiguration(TestTwitterMessageSinkApplication.class))
 				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=byteArrayTextToString|sendDirectMessageConsumer",
+				.run("--spring.cloud.function.definition=byteArrayTextToString|twitterSendMessageConsumer",
 
 						"--twitter.message.update.userId=headers['user']",
 						"--twitter.message.update.text=payload.concat(\" with suffix \")",
@@ -192,8 +186,8 @@ public class TwitterMessageSinkIntegrationTests {
 			InputDestination source = context.getBean(InputDestination.class);
 			assertThat(source).isNotNull();
 
-			Map<String, String> headers = Collections.singletonMap("user", "1075751718749659136");
-			source.send(new GenericMessage("hello".getBytes(StandardCharsets.UTF_8), headers));
+			Map<String, Object> headers = Collections.singletonMap("user", "1075751718749659136");
+			source.send(new GenericMessage<>("hello".getBytes(StandardCharsets.UTF_8), headers));
 
 			mockClient.verify(request()
 							.withMethod("POST")
@@ -208,7 +202,6 @@ public class TwitterMessageSinkIntegrationTests {
 
 	@SpringBootConfiguration
 	@EnableAutoConfiguration
-	@Import(TwitterMessageConsumerConfiguration.class)
 	public static class TestTwitterMessageSinkApplication {
 
 		@Bean
@@ -218,10 +211,11 @@ public class TwitterMessageSinkIntegrationTests {
 
 			Function<TwitterConnectionProperties, ConfigurationBuilder> mockedConfiguration =
 					toConfigurationBuilder.andThen(
-							new TwitterTestUtils().mockTwitterUrls(
-									String.format("http://%s:%s", MOCK_SERVER_IP, MOCK_SERVER_PORT)));
+							new TwitterTestUtils().mockTwitterUrls("http://localhost:" + mockServer.getPort()));
 
 			return mockedConfiguration.apply(properties).build();
 		}
+
 	}
+
 }

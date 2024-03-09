@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>jdbc-consumer</artifactId>
+            <artifactId>spring-jdbc-consumer</artifactId>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -54,12 +54,13 @@
                         <name>jdbc</name>
                         <type>sink</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.consumer.jdbc.JdbcConsumerConfiguration.class</configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
+                        <functionDefinition>jdbcConsumer</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>jdbc-consumer</artifactId>
+                                    <artifactId>spring-jdbc-consumer</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

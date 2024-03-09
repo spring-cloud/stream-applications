@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 the original author or authors.
+ * Copyright 2016-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.integration.handler.MessageProcessor;
 import org.springframework.integration.scripting.ScriptVariableGenerator;
+import org.springframework.integration.scripting.dsl.ScriptSpec;
 import org.springframework.integration.scripting.dsl.Scripts;
 import org.springframework.messaging.Message;
 
@@ -47,7 +48,7 @@ import org.springframework.messaging.Message;
  * @author Artme Bilan
  * @author Soby Chacko
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ScriptProcessorProperties.class)
 @Import(ScriptVariableGeneratorConfiguration.class)
 public class ScriptProcessorConfiguration {
@@ -69,12 +70,12 @@ public class ScriptProcessorConfiguration {
 	}
 
 	@Bean
-	public Function<Message<?>, Object> scriptProcessorFunction() {
-		return processor()::processMessage;
+	public Function<Message<?>, Object> scriptProcessorFunction(MessageProcessor<?> messageProcessor) {
+		return messageProcessor::processMessage;
 	}
 
 	@Bean
-	public MessageProcessor<?> processor() {
+	public ScriptSpec processor() {
 		String language = this.properties.getLanguage();
 		String script = this.properties.getScript();
 		logger.info(String.format("Input script is '%s', language is '%s'", script, language));
@@ -82,8 +83,7 @@ public class ScriptProcessorConfiguration {
 
 		return Scripts.processor(scriptResource)
 				.lang(language)
-				.variableGenerator(scriptVariableGenerator)
-				.get();
+				.variableGenerator(scriptVariableGenerator);
 	}
 
 	private static String decodeScript(String script) {
@@ -94,4 +94,5 @@ public class ScriptProcessorConfiguration {
 		}
 		return toProcess.replaceAll(NEWLINE_ESCAPE, "\n").replaceAll(DOUBLE_DOUBLE_QUOTE, "\"");
 	}
+
 }

@@ -34,28 +34,23 @@
     <dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>filter-function</artifactId>
-			<version>${java-functions.version}</version>
+			<artifactId>spring-filter-function</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>spel-function</artifactId>
-			<version>${java-functions.version}</version>
+			<artifactId>spring-spel-function</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>header-enricher-function</artifactId>
-			<version>${java-functions.version}</version>
+			<artifactId>spring-header-enricher-function</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>payload-converter-function</artifactId>
-			<version>${java-functions.version}</version>
+			<artifactId>spring-payload-converter-function</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>task-launch-request-function</artifactId>
-			<version>${java-functions.version}</version>
+			<artifactId>spring-task-launch-request-function</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

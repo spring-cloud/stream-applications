@@ -17,26 +17,18 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>twitter-supplier</artifactId>
+			<artifactId>spring-twitter-supplier</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
-			<artifactId>function-test-support</artifactId>
+			<artifactId>spring-function-test-support</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mock-server</groupId>
 			<artifactId>mockserver-netty</artifactId>
-			<version>${mockserver.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.mock-server</groupId>
-			<artifactId>mockserver-client-java</artifactId>
-			<version>${mockserver.version}</version>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -61,16 +53,14 @@
 						<name>twitter-message</name>
 						<type>source</type>
 						<version>${project.version}</version>
-						<configClass>
-							org.springframework.cloud.fn.supplier.twitter.message.TwitterMessageSupplierConfiguration.class
-						</configClass>
-						<functionDefinition>twitterMessageSupplier</functionDefinition>
+						<configClass>AUTOCONFIGURATION</configClass>
+						<functionDefinition>twitterMessagesSupplier</functionDefinition>
 
 						<maven>
 							<dependencies>
 								<dependency>
 									<groupId>org.springframework.cloud.fn</groupId>
-									<artifactId>twitter-supplier</artifactId>
+									<artifactId>spring-twitter-supplier</artifactId>
 								</dependency>
 							</dependencies>
 						</maven>

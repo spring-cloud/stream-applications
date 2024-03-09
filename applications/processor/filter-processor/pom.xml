@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>filter-function</artifactId>
+            <artifactId>spring-filter-function</artifactId>
         </dependency>
     </dependencies>
 
@@ -43,13 +43,13 @@
                         <name>filter</name>
                         <type>processor</type>
                         <version>${project.version}</version>
-                        <configClass>org.springframework.cloud.fn.filter.FilterFunctionConfiguration.class</configClass>
+                        <configClass>AUTOCONFIGURATION</configClass>
                         <functionDefinition>byteArrayTextToString|filterFunction</functionDefinition>
                         <maven>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>filter-function</artifactId>
+                                    <artifactId>spring-filter-function</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>

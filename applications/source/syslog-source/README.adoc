@@ -7,12 +7,12 @@ The syslog source receives SYSLOG packets over UDP, TCP, or both. RFC3164 (BSD) 
 
 //tag::configuration-properties[]
 $$syslog.supplier.buffer-size$$:: $$the buffer size used when decoding messages; larger messages will be rejected.$$ *($$Integer$$, default: `$$2048$$`)*
-$$syslog.supplier.nio$$:: $$whether or not to use NIO (when supporting a large number of connections).$$ *($$Boolean$$, default: `$$false$$`)*
+$$syslog.supplier.nio$$:: $$Whether to use NIO (when supporting a large number of connections).$$ *($$Boolean$$, default: `$$false$$`)*
 $$syslog.supplier.port$$:: $$The port to listen on.$$ *($$Integer$$, default: `$$1514$$`)*
 $$syslog.supplier.protocol$$:: $$Protocol used for SYSLOG (tcp or udp).$$ *($$Protocol$$, default: `$$<none>$$`, possible values: `tcp`,`udp`,`both`)*
-$$syslog.supplier.reverse-lookup$$:: $$whether or not to perform a reverse lookup on the incoming socket.$$ *($$Boolean$$, default: `$$false$$`)*
-$$syslog.supplier.rfc$$:: $$'5424' or '3164' - the syslog format according to the RFC; 3164 is aka 'BSD' format.$$ *($$String$$, default: `$$3164$$`)*
-$$syslog.supplier.socket-timeout$$:: $$the socket timeout.$$ *($$Integer$$, default: `$$0$$`)*
+$$syslog.supplier.reverse-lookup$$:: $$Whether to perform a reverse lookup on the incoming socket.$$ *($$Boolean$$, default: `$$false$$`)*
+$$syslog.supplier.rfc$$:: $$The '5424' or '3164' - the syslog format according to the RFC; 3164 is aka 'BSD' format.$$ *($$String$$, default: `$$3164$$`)*
+$$syslog.supplier.socket-timeout$$:: $$The socket timeout.$$ *($$Integer$$, default: `$$0$$`)*
 //end::configuration-properties[]
 
 //end::ref-doc[]

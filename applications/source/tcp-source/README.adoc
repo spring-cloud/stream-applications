@@ -15,11 +15,11 @@ Properties grouped by prefix:
 
 === tcp
 
-$$nio$$:: $$Whether or not to use NIO.$$ *($$Boolean$$, default: `$$false$$`)*
+$$nio$$:: $$Whether to use NIO.$$ *($$Boolean$$, default: `$$false$$`)*
 $$port$$:: $$The port on which to listen; 0 for the OS to choose a port.$$ *($$Integer$$, default: `$$1234$$`)*
 $$reverse-lookup$$:: $$Perform a reverse DNS lookup on the remote IP Address; if false, just the IP address is included in the message headers.$$ *($$Boolean$$, default: `$$false$$`)*
 $$socket-timeout$$:: $$The timeout (ms) before closing the socket when no data is received.$$ *($$Integer$$, default: `$$120000$$`)*
-$$use-direct-buffers$$:: $$Whether or not to use direct buffers.$$ *($$Boolean$$, default: `$$false$$`)*
+$$use-direct-buffers$$:: $$Whether to use direct buffers.$$ *($$Boolean$$, default: `$$false$$`)*
 
 === tcp.supplier
 

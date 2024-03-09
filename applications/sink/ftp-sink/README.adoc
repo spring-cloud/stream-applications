@@ -37,14 +37,14 @@ Properties grouped by prefix:
 
 === ftp.consumer
 
-$$auto-create-dir$$:: $$Whether or not to create the remote directory.$$ *($$Boolean$$, default: `$$true$$`)*
+$$auto-create-dir$$:: $$Whether to create the remote directory.$$ *($$Boolean$$, default: `$$true$$`)*
 $$filename-expression$$:: $$A SpEL expression to generate the remote file name.$$ *($$String$$, default: `$$<none>$$`)*
 $$mode$$:: $$Action to take if the remote file already exists.$$ *($$FileExistsMode$$, default: `$$<none>$$`, possible values: `APPEND`,`APPEND_NO_FLUSH`,`FAIL`,`IGNORE`,`REPLACE`,`REPLACE_IF_MODIFIED`)*
 $$remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$/$$`)*
 $$remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$/$$`)*
 $$temporary-remote-dir$$:: $$A temporary directory where the file will be written if '#isUseTemporaryFilename()' is true.$$ *($$String$$, default: `$$/$$`)*
 $$tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
-$$use-temporary-filename$$:: $$Whether or not to write to a temporary file and rename.$$ *($$Boolean$$, default: `$$true$$`)*
+$$use-temporary-filename$$:: $$Whether to write to a temporary file and rename.$$ *($$Boolean$$, default: `$$true$$`)*
 
 === ftp.factory
 

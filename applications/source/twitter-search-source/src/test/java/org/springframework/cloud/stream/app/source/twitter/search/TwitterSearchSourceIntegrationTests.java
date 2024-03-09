@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+ * Copyright 2020-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.springframework.cloud.stream.app.source.twitter.search;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,16 +37,13 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.common.twitter.TwitterConnectionProperties;
 import org.springframework.cloud.fn.common.twitter.util.TwitterTestUtils;
-import org.springframework.cloud.fn.supplier.twitter.status.search.TwitterSearchSupplierConfiguration;
 import org.springframework.cloud.fn.supplier.twitter.status.search.TwitterSearchSupplierProperties;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.Message;
-import org.springframework.test.util.TestSocketUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.matchers.Times.exactly;
@@ -57,12 +53,9 @@ import static org.mockserver.verify.VerificationTimes.once;
 
 /**
  * @author Christian Tzolov
+ * @author Artem Bilan
  */
 public class TwitterSearchSourceIntegrationTests {
-
-	private static final String MOCK_SERVER_IP = "127.0.0.1";
-
-	private static final Integer MOCK_SERVER_PORT = TestSocketUtils.findAvailableTcpPort();
 
 	private static ClientAndServer mockServer;
 
@@ -74,9 +67,8 @@ public class TwitterSearchSourceIntegrationTests {
 
 	@BeforeAll
 	public static void startServer() {
-
-		mockServer = ClientAndServer.startClientAndServer(MOCK_SERVER_PORT);
-		mockClient = new MockServerClient(MOCK_SERVER_IP, MOCK_SERVER_PORT);
+		mockServer = ClientAndServer.startClientAndServer();
+		mockClient = new MockServerClient("localhost", mockServer.getPort());
 
 		searchVratsaRequest = setExpectation(request()
 				.withMethod("GET")
@@ -113,6 +105,7 @@ public class TwitterSearchSourceIntegrationTests {
 						"--twitter.connection.accessToken=accessToken666",
 						"--twitter.connection.accessTokenSecret=accessTokenSecret666",
 						"--twitter.search.query=Vratsa",
+						"--twitter.search.enabled=true",
 						"--twitter.search.count=3",
 						"--twitter.search.page=3")) {
 
@@ -122,7 +115,7 @@ public class TwitterSearchSourceIntegrationTests {
 			assertThat(message).isNotNull();
 			String payload = new String(message.getPayload());
 
-			List tweets = new ObjectMapper().readValue(payload, List.class);
+			List<?> tweets = new ObjectMapper().readValue(payload, List.class);
 			assertThat(tweets).hasSize(3);
 			mockClient.verify(searchVratsaRequest, once());
 
@@ -144,21 +137,18 @@ public class TwitterSearchSourceIntegrationTests {
 						"--twitter.search.count=3",
 						"--twitter.search.page=3",
 						"--twitter.search.lang=en",
+						"--twitter.search.enabled=true",
 						"--twitter.search.geocode.latitude=52.1",
 						"--twitter.search.geocode.longitude=4.8",
 						"--twitter.search.geocode.radius=10",
 						"--twitter.search.since=2018-01-01",
-						"--twitter.search.resultType=popular",
-						"--spring.cloud.stream.poller.fixed-delay=10000")) {
+						"--twitter.search.resultType=popular")) {
 
 			TwitterConnectionProperties twitterConnectionProperties = context.getBean(TwitterConnectionProperties.class);
 			assertThat(twitterConnectionProperties.getConsumerKey()).isEqualTo("consumerKey666");
 			assertThat(twitterConnectionProperties.getConsumerSecret()).isEqualTo("consumerSecret666");
 			assertThat(twitterConnectionProperties.getAccessToken()).isEqualTo("accessToken666");
 			assertThat(twitterConnectionProperties.getAccessTokenSecret()).isEqualTo("accessTokenSecret666");
-
-//			DefaultPollerProperties defaultPollerProperties = context.getBean(DefaultPollerProperties.class);
-//			assertThat(defaultPollerProperties.getFixedDelay()).isEqualTo(10000);
 
 			TwitterSearchSupplierProperties searchSupplierProperties =
 					context.getBean(TwitterSearchSupplierProperties.class);
@@ -178,7 +168,7 @@ public class TwitterSearchSourceIntegrationTests {
 			assertThat(message).isNotNull();
 			String payload = new String(message.getPayload());
 
-			List tweets = new ObjectMapper().readValue(payload, List.class);
+			List<?> tweets = new ObjectMapper().readValue(payload, List.class);
 			assertThat(tweets).hasSize(3);
 			mockClient.verify(searchAmsterdamRequest, once());
 
@@ -195,14 +185,12 @@ public class TwitterSearchSourceIntegrationTests {
 								new Header("Content-Type", "application/json; charset=utf-8"),
 								new Header("Cache-Control", "public, max-age=86400"))
 						.withBody(TwitterTestUtils.asString("classpath:/response/search_3.json"))
-						.withDelay(TimeUnit.SECONDS, 1)
 				);
 		return request;
 	}
 
 	@SpringBootConfiguration
 	@EnableAutoConfiguration
-	@Import(TwitterSearchSupplierConfiguration.class)
 	public static class TestTwitterSearchSourceApplication {
 
 		@Bean
@@ -212,10 +200,11 @@ public class TwitterSearchSourceIntegrationTests {
 
 			Function<TwitterConnectionProperties, ConfigurationBuilder> mockedConfiguration =
 					toConfigurationBuilder.andThen(
-							new TwitterTestUtils().mockTwitterUrls(
-									String.format("http://%s:%s", MOCK_SERVER_IP, MOCK_SERVER_PORT)));
+							new TwitterTestUtils().mockTwitterUrls("http://localhost:" + mockServer.getPort()));
 
 			return mockedConfiguration.apply(properties).build();
 		}
+
 	}
+
 }
