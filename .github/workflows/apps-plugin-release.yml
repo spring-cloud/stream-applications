@@ -36,7 +36,7 @@ jobs:
             ${{ runner.os }}-m2-
       - name: Configure JFrog Cli
         run: |
-          jfrog mvnc \
+          jfrog rt mvnc \
             --server-id-resolve=repo.spring.io \
             --server-id-deploy=repo.spring.io \
             --repo-resolve-releases=libs-release-staging \
