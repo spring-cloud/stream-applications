@@ -58,7 +58,7 @@
                                 </dependency>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
-                                    <artifactId>payload-converter-function</artifactId>
+                                    <artifactId>spring-payload-converter-function</artifactId>
                                 </dependency>
                             </dependencies>
                         </maven>
