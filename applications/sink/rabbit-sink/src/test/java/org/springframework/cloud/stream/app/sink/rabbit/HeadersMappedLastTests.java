@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class HeadersMappedLastTests {
 
-	@TestPropertySource(properties = "rabbit.routingKey=scsapp-testq")
+	@TestPropertySource(properties = "rabbit.consumer.routingKey=scsapp-testq")
 	public static class HeadersMappedLastTrueTests extends RabbitSinkIntegrationTests {
 
 		@Test
@@ -46,8 +46,8 @@ public class HeadersMappedLastTests {
 		}
 	}
 
-	@TestPropertySource(properties = { "rabbit.routingKey=scsapp-testq",
-			"rabbit.headersMappedLast=false" })
+	@TestPropertySource(properties = { "rabbit.consumer.routingKey=scsapp-testq",
+			"rabbit.consumer.headersMappedLast=false" })
 	public static class HeadersMappedLastFalseTests extends RabbitSinkIntegrationTests {
 
 		@Test

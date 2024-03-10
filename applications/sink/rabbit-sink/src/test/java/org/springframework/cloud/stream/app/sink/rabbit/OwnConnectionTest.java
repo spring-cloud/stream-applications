@@ -29,8 +29,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Soby Chacko
  * @author Chris Bono
  */
-@TestPropertySource(properties = {"rabbit.routingKey=scsapp-testOwn",
-		"rabbit.own-connection=true"})
+@TestPropertySource(properties = {"rabbit.consumer.routingKey=scsapp-testOwn",
+		"rabbit.consumer.own-connection=true"})
 public class OwnConnectionTest extends RabbitSinkIntegrationTests {
 
 	@Test

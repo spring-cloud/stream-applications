@@ -25,9 +25,9 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestPropertySource(properties = {"rabbit.routingKey=scsapp-testq",
-		"rabbit.persistentDeliveryMode=true",
-		"rabbit.mappedRequestHeaders=STANDARD_REQUEST_HEADERS,bar"})
+@TestPropertySource(properties = {"rabbit.consumer.routingKey=scsapp-testq",
+		"rabbit.consumer.persistentDeliveryMode=true",
+		"rabbit.consumer.mappedRequestHeaders=STANDARD_REQUEST_HEADERS,bar"})
 public class SimpleRoutingKeyAndCustomHeaderTests extends RabbitSinkIntegrationTests {
 
 	@Test
