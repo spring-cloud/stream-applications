@@ -52,275 +52,265 @@
         <!-- common javadocs -->
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>file-common</artifactId>
+            <artifactId>spring-file-common</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>ftp-common</artifactId>
+            <artifactId>spring-ftp-common</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>metadata-store-common</artifactId>
+            <artifactId>spring-metadata-store-common</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>mqtt-common</artifactId>
+            <artifactId>spring-mqtt-common</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>tcp-common</artifactId>
+            <artifactId>spring-tcp-common</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>twitter-common</artifactId>
+            <artifactId>spring-twitter-common</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <!-- supplier javadocs -->
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>debezium-supplier</artifactId>
+            <artifactId>spring-debezium-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>file-supplier</artifactId>
+            <artifactId>spring-file-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>ftp-supplier</artifactId>
+            <artifactId>spring-ftp-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>http-supplier</artifactId>
+            <artifactId>spring-http-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>jdbc-supplier</artifactId>
+            <artifactId>spring-jdbc-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>jms-supplier</artifactId>
+            <artifactId>spring-jms-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>mail-supplier</artifactId>
+            <artifactId>spring-mail-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>mongodb-supplier</artifactId>
+            <artifactId>spring-mongodb-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>mqtt-supplier</artifactId>
+            <artifactId>spring-mqtt-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>rabbit-supplier</artifactId>
+            <artifactId>spring-rabbit-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>s3-supplier</artifactId>
+            <artifactId>spring-s3-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>sftp-supplier</artifactId>
+            <artifactId>spring-sftp-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>syslog-supplier</artifactId>
+            <artifactId>spring-syslog-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>tcp-supplier</artifactId>
+            <artifactId>spring-tcp-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>time-supplier</artifactId>
+            <artifactId>spring-time-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>twitter-supplier</artifactId>
+            <artifactId>spring-twitter-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>websocket-supplier</artifactId>
+            <artifactId>spring-websocket-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>zeromq-supplier</artifactId>
+            <artifactId>spring-zeromq-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <!-- consumer javadocs -->
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>cassandra-consumer</artifactId>
+            <artifactId>spring-cassandra-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>analytics-consumer</artifactId>
+            <artifactId>spring-analytics-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>wavefront-consumer</artifactId>
+            <artifactId>spring-wavefront-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>elasticsearch-consumer</artifactId>
+            <artifactId>spring-elasticsearch-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>file-consumer</artifactId>
+            <artifactId>spring-file-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>ftp-consumer</artifactId>
+            <artifactId>spring-ftp-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>jdbc-consumer</artifactId>
+            <artifactId>spring-jdbc-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>log-consumer</artifactId>
+            <artifactId>spring-log-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>mongodb-consumer</artifactId>
+            <artifactId>spring-mongodb-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>mqtt-consumer</artifactId>
+            <artifactId>spring-mqtt-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>rabbit-consumer</artifactId>
+            <artifactId>spring-rabbit-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>redis-consumer</artifactId>
+            <artifactId>spring-redis-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>rsocket-consumer</artifactId>
+            <artifactId>spring-rsocket-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>s3-consumer</artifactId>
+            <artifactId>spring-s3-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>sftp-consumer</artifactId>
+            <artifactId>spring-sftp-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>tcp-consumer</artifactId>
+            <artifactId>spring-tcp-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>twitter-consumer</artifactId>
+            <artifactId>spring-twitter-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>websocket-consumer</artifactId>
+            <artifactId>spring-websocket-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>zeromq-consumer</artifactId>
+            <artifactId>spring-zeromq-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <!-- function javadocs -->
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>aggregator-function</artifactId>
+            <artifactId>spring-aggregator-function</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>header-enricher-function</artifactId>
+            <artifactId>spring-header-enricher-function</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>http-request-function</artifactId>
+            <artifactId>spring-http-request-function</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>image-recognition-function</artifactId>
+            <artifactId>spring-spel-function</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>object-detection-function</artifactId>
+            <artifactId>spring-splitter-function</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>spel-function</artifactId>
+            <artifactId>spring-task-launch-request-function</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>splitter-function</artifactId>
+            <artifactId>spring-twitter-function</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>task-launch-request-function</artifactId>
+            <artifactId>spring-xmpp-consumer</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>twitter-function</artifactId>
-            <version>${java-functions.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>xmpp-consumer</artifactId>
-            <version>${java-functions.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud.fn</groupId>
-            <artifactId>xmpp-supplier</artifactId>
+            <artifactId>spring-xmpp-supplier</artifactId>
             <version>${java-functions.version}</version>
         </dependency>
         <!-- Apps don't use external functions as baseline, but contain @ConfigurationProperties -->
