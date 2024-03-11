@@ -19,21 +19,22 @@ package org.springframework.cloud.stream.app.sink.rabbit;
 import java.time.Duration;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
  * Provides a static RabbitMQ Container that can be shared across test classes.
  *
  * @author Chris Bono
+ * @author Artem Bilan
  */
 @Testcontainers(disabledWithoutDocker = true)
 public interface RabbitMqTestContainerSupport {
 
-	GenericContainer<?> RABBIT_MQ_CONTAINER = new GenericContainer<>("rabbitmq:3.10")
-		.withExposedPorts(5672)
-		.withStartupTimeout(Duration.ofSeconds(120))
-		.withStartupAttempts(3);
+	RabbitMQContainer RABBIT_MQ_CONTAINER = new RabbitMQContainer("rabbitmq:management")
+			.withExposedPorts(5672)
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 
 	@BeforeAll
 	static void startContainer() {
@@ -43,4 +44,5 @@ public interface RabbitMqTestContainerSupport {
 	static Integer getPort() {
 		return RABBIT_MQ_CONTAINER.getFirstMappedPort();
 	}
+
 }

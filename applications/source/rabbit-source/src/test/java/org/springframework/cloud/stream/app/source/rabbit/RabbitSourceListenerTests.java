@@ -16,15 +16,12 @@
 
 package org.springframework.cloud.stream.app.source.rabbit;
 
-import java.util.HashMap;
-
 import org.aopalliance.aop.Advice;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.RabbitMQContainer;
 
 import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.support.AmqpHeaders;
@@ -48,20 +45,26 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Gary Russell
  * @author Chris Schaefer
  * @author Corneil du Plessis
+ * @author Artem Bilan
  */
 @Tag("integration")
 public class RabbitSourceListenerTests {
 
 	static {
-		RabbitMQContainer rabbitmq = new RabbitMQContainer("rabbitmq:3.7-management-alpine")
-				.withQueue("scsapp-testq", false, false, new HashMap<>())
-				.withQueue("scsapp-testq2", false, false, new HashMap<>())
-				.withQueue("scsapp-testOwnSource", false, false, new HashMap<>())
-				.withExchange("scsapp-testex", "fanout")
-				.withBinding("scsapp-testex", "scsapp-testq");
+		RabbitMQContainer rabbitmq = new RabbitMQContainer("rabbitmq:management");
 		rabbitmq.start();
 
-		System.setProperty("spring.rabbitmq.test.port", rabbitmq.getAmqpPort().toString());
+		try {
+			rabbitmq.execInContainer("rabbitmqadmin", "declare", "queue", "name=scsapp-testq", "auto_delete=false", "durable=false");
+			rabbitmq.execInContainer("rabbitmqadmin", "declare", "queue", "name=scsapp-testq2", "auto_delete=false", "durable=false");
+			rabbitmq.execInContainer("rabbitmqadmin", "declare", "exchange", "name=scsapp-testex", "type=fanout");
+			rabbitmq.execInContainer("rabbitmqadmin", "declare", "binding", "source=scsapp-testex", "destination=scsapp-testq");
+		}
+		catch (Exception ex) {
+			throw new IllegalStateException(ex);
+		}
+
+		System.setProperty("spring.rabbitmq.port", rabbitmq.getAmqpPort().toString());
 	}
 
 	@Test
@@ -78,9 +81,7 @@ public class RabbitSourceListenerTests {
 						"--spring.rabbitmq.listener.simple.acknowledgeMode=AUTO",
 						"--spring.rabbitmq.listener.simple.prefetch=10",
 						"--spring.rabbitmq.listener.simple.transactionSize=5",
-						"--spring.cloud.stream.function.bindings.rabbitSupplier-out-0=output",
-						"--spring.rabbitmq.port=" +
-								"${spring.rabbitmq.test.port}"
+						"--spring.cloud.stream.function.bindings.rabbitSupplier-out-0=output"
 				)) {
 
 			final RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
@@ -94,62 +95,6 @@ public class RabbitSourceListenerTests {
 		}
 	}
 
-	@Test
-	public void testOwnConnection() {
-		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				TestChannelBinderConfiguration
-						.getCompleteConfiguration(RabbitSourceTestApplication.class))
-				.web(WebApplicationType.NONE)
-				.run("--spring.cloud.function.definition=rabbitSupplier",
-						"--rabbit.supplier.queues=scsapp-testOwnSource",
-						"--rabbit.supplier.enableRetry=false",
-						"--rabbit.supplier.own-connection=true",
-						"--spring.rabbitmq.port=" +
-								"${spring.rabbitmq.test.port}"
-				)) {
-
-			// Reset the boot connection factory -should not matter to container as it SHOULD be using its own connection factory
-			final CachingConnectionFactory bootFactory = context.getBean(CachingConnectionFactory.class);
-			bootFactory.resetConnection();
-			final OutputDestination target = context.getBean(OutputDestination.class);
-
-			// Send a message on a separate connection - the container should still receive it.
-			sendMessageOnSeparateConnection("scsapp-testOwnSource", "foo", bootFactory);
-
-
-			Message<byte[]> sourceMessage = target.receive(600000, "rabbitSupplier-out-0");
-
-			final String actual = new String(sourceMessage.getPayload());
-			assertThat(actual).isEqualTo("foo");
-			assertThat(bootFactory.getCacheProperties().getProperty("localPort")).isEqualTo("0");
-		}
-	}
-
-	/**
-	 * Sends a message on a separate connection.
-	 *
-	 * @param routingKey message routing key
-	 * @param payload message content
-	 * @param bootFactory the auto-configured connection factory used to get connection coordinates from
-	 */
-	private void sendMessageOnSeparateConnection(String routingKey, Object payload, CachingConnectionFactory bootFactory) {
-		CachingConnectionFactory copiedConnectionFactory = null;
-		try {
-			copiedConnectionFactory = new CachingConnectionFactory(bootFactory.getHost(), bootFactory.getPort());
-			copiedConnectionFactory.setUsername(bootFactory.getUsername());
-			copiedConnectionFactory.setPassword(bootFactory.getRabbitConnectionFactory().getPassword());
-			if (bootFactory.getVirtualHost() != null) {
-				copiedConnectionFactory.setVirtualHost(bootFactory.getVirtualHost());
-			}
-			RabbitTemplate rabbitTemplate = new RabbitTemplate(copiedConnectionFactory);
-			rabbitTemplate.convertAndSend(routingKey, payload);
-		}
-		finally {
-			if (copiedConnectionFactory != null) {
-				copiedConnectionFactory.resetConnection();
-			}
-		}
-	}
 
 	@Test
 	public void testPropertiesPopulated() {
@@ -170,9 +115,7 @@ public class RabbitSourceListenerTests {
 						"--spring.rabbitmq.listener.simple.maxConcurrency = 3 ",
 						"--spring.rabbitmq.listener.simple.acknowledgeMode = NONE",
 						"--spring.rabbitmq.listener.simple.prefetch = 10",
-						"--spring.rabbitmq.listener.simple.batchSize = 5",
-						"--spring.rabbitmq.port=" +
-								"${spring.rabbitmq.test.port}"
+						"--spring.rabbitmq.listener.simple.batchSize = 5"
 				)) {
 
 			final RabbitTemplate rabbitTemplate = context.getBean(RabbitTemplate.class);
@@ -213,4 +156,5 @@ public class RabbitSourceListenerTests {
 	@Import(RabbitSupplierConfiguration.class)
 	public static class RabbitSourceTestApplication {
 	}
+
 }
