@@ -18,7 +18,6 @@ package org.springframework.cloud.stream.app.source.debezium.integration;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;

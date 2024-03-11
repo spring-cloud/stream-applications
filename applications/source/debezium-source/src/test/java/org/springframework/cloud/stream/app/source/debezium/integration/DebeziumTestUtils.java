@@ -33,12 +33,16 @@ import org.springframework.util.StreamUtils;
 public final class DebeziumTestUtils {
 
 	public static final String DATABASE_NAME = "inventory";
-	public static final String BINDING_NAME = "debeziumSupplier-out-0";
-	public static final String IMAGE_TAG = "2.3.3.Final";
-	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:" + IMAGE_TAG;
-	public static final String DEBEZIUM_EXAMPLE_POSTGRES_IMAGE = "debezium/example-postgres:" + IMAGE_TAG;
-	public static final String DEBEZIUM_EXAMPLE_MONGODB_IMAGE = "debezium/example-mongodb:" + IMAGE_TAG;
 
+	public static final String BINDING_NAME = "debeziumSupplier-out-0";
+
+	public static final String IMAGE_TAG = "2.3.3.Final";
+
+	public static final String DEBEZIUM_EXAMPLE_MYSQL_IMAGE = "debezium/example-mysql:" + IMAGE_TAG;
+
+	public static final String DEBEZIUM_EXAMPLE_POSTGRES_IMAGE = "debezium/example-postgres:" + IMAGE_TAG;
+
+	public static final String DEBEZIUM_EXAMPLE_MONGODB_IMAGE = "debezium/example-mongodb:" + IMAGE_TAG;
 
 
 	private DebeziumTestUtils() {

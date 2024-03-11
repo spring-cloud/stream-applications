@@ -18,7 +18,6 @@ package org.springframework.cloud.stream.app.source.debezium.integration;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.core.Configuration;

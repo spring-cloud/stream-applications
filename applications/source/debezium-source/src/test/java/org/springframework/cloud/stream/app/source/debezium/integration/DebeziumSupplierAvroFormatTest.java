@@ -59,39 +59,39 @@ public class DebeziumSupplierAvroFormatTest {
 
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
 			TestChannelBinderConfiguration.getCompleteConfiguration(TestDebeziumSourceApplication.class))
-					.web(WebApplicationType.NONE)
-					.properties(
-							"spring.cloud.function.definition=debeziumSupplier",
+			.web(WebApplicationType.NONE)
+			.properties(
+					"spring.cloud.function.definition=debeziumSupplier",
 
-							"debezium.payloadFormat=AVRO",
+					"debezium.payloadFormat=AVRO",
 
-							"debezium.properties.key.converter=io.apicurio.registry.utils.converter.AvroConverter",
-							"debezium.properties.key.converter.apicurio.registry.auto-register=true",
-							"debezium.properties.key.converter.apicurio.registry.find-latest=true",
-							"debezium.properties.value.converter=io.apicurio.registry.utils.converter.AvroConverter",
-							"debezium.properties.value.converter.apicurio.registry.auto-register=true",
-							"debezium.properties.value.converter.apicurio.registry.find-latest=true",
-							"debezium.properties.schema.name.adjustment.mode=avro",
+					"debezium.properties.key.converter=io.apicurio.registry.utils.converter.AvroConverter",
+					"debezium.properties.key.converter.apicurio.registry.auto-register=true",
+					"debezium.properties.key.converter.apicurio.registry.find-latest=true",
+					"debezium.properties.value.converter=io.apicurio.registry.utils.converter.AvroConverter",
+					"debezium.properties.value.converter.apicurio.registry.auto-register=true",
+					"debezium.properties.value.converter.apicurio.registry.find-latest=true",
+					"debezium.properties.schema.name.adjustment.mode=avro",
 
-							"debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
-							"debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
+					"debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
+					"debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
 
-							"debezium.properties.topic.prefix=my-topic",
-							"debezium.properties.name=my-connector",
-							"debezium.properties.database.server.id=85744",
+					"debezium.properties.topic.prefix=my-topic",
+					"debezium.properties.name=my-connector",
+					"debezium.properties.database.server.id=85744",
 
-							"debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector",
-							"debezium.properties.database.user=debezium",
-							"debezium.properties.database.password=dbz",
-							"debezium.properties.database.hostname=localhost",
+					"debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector",
+					"debezium.properties.database.user=debezium",
+					"debezium.properties.database.password=dbz",
+					"debezium.properties.database.hostname=localhost",
 
-							// JdbcTemplate configuration
-							String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
-									debeziumMySQL.getMappedPort(3306), DebeziumTestUtils.DATABASE_NAME),
-							"app.datasource.username=root",
-							"app.datasource.password=debezium",
-							"app.datasource.driver-class-name=com.mysql.cj.jdbc.Driver",
-							"app.datasource.type=com.zaxxer.hikari.HikariDataSource");
+					// JdbcTemplate configuration
+					String.format("app.datasource.url=jdbc:mysql://localhost:%d/%s?enabledTLSProtocols=TLSv1.2",
+							debeziumMySQL.getMappedPort(3306), DebeziumTestUtils.DATABASE_NAME),
+					"app.datasource.username=root",
+					"app.datasource.password=debezium",
+					"app.datasource.driver-class-name=com.mysql.cj.jdbc.Driver",
+					"app.datasource.type=com.zaxxer.hikari.HikariDataSource");
 
 	@Test
 	public void mysqlWithAvroContentFormat() {
