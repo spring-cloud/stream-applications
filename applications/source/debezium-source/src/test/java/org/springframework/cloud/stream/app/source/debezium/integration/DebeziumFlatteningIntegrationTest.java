@@ -146,7 +146,7 @@ public class DebeziumFlatteningIntegrationTest {
 		JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}",
 				toString(messages.get(1).getHeaders().get("debezium_key")));
 
-		assertThat(messages.get(3).getPayload()).isEqualTo(Optional.empty());
+		assertThat(messages.get(3).getPayload()).isEqualTo("null".getBytes());
 		assertThat(messages.get(3).getHeaders().get("debezium_destination"))
 				.isEqualTo("my-topic.inventory.customers");
 		JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}",
@@ -239,7 +239,7 @@ public class DebeziumFlatteningIntegrationTest {
 		}
 
 		if (isDropTombstones.equals("false")) {
-			assertThat(messages.get(3).getPayload()).isEqualTo(Optional.empty());
+			assertThat(messages.get(3).getPayload()).isEqualTo("null".getBytes());
 			assertThat(messages.get(3).getHeaders().get("debezium_destination"))
 					.isEqualTo("my-topic.inventory.customers");
 			JsonAssert.assertJsonEquals("{\"id\":" + newRecordId + "}",

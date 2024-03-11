@@ -20,7 +20,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.debezium.testing.testcontainers.MongoDbContainer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awaitility.Awaitility;
@@ -62,25 +61,25 @@ public class DebeziumDatabasesIntegrationTest {
 	private final SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(
 			TestChannelBinderConfiguration
 					.getCompleteConfiguration(DebeziumDatabasesIntegrationTest.TestApplication.class))
-							.web(WebApplicationType.NONE)
-							.properties(
-									"spring.cloud.function.definition=debeziumSupplier",
-									// Flattening:
-									// https://debezium.io/documentation/reference/stable/transformations/event-flattening.html
-									"debezium.properties.transforms=unwrap",
-									"debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
-									"debezium.properties.transforms.unwrap.drop.tombstones=false",
-									"debezium.properties.transforms.unwrap.delete.handling.mode=rewrite",
-									"debezium.properties.transforms.unwrap.add.fields=name,db,op,table",
+			.web(WebApplicationType.NONE)
+			.properties(
+					"spring.cloud.function.definition=debeziumSupplier",
+					// Flattening:
+					// https://debezium.io/documentation/reference/stable/transformations/event-flattening.html
+					"debezium.properties.transforms=unwrap",
+					"debezium.properties.transforms.unwrap.type=io.debezium.transforms.ExtractNewRecordState",
+					"debezium.properties.transforms.unwrap.drop.tombstones=false",
+					"debezium.properties.transforms.unwrap.delete.handling.mode=rewrite",
+					"debezium.properties.transforms.unwrap.add.fields=name,db,op,table",
 
-									"debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
-									"debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
+					"debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory",
+					"debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore",
 
-									"debezium.properties.schema=false",
+					"debezium.properties.schema=false",
 
-									"debezium.properties.topic.prefix=my-topic",
-									"debezium.properties.name=my-connector",
-									"debezium.properties.database.server.id=85744");
+					"debezium.properties.topic.prefix=my-topic",
+					"debezium.properties.name=my-connector",
+					"debezium.properties.database.server.id=85744");
 
 	@Test
 	public void mysql() {
@@ -196,22 +195,13 @@ public class DebeziumDatabasesIntegrationTest {
 	@Test
 	@Disabled
 	public void mongodb() {
-		GenericContainer<?> mongodb = MongoDbContainer
-				.node()
-				.imageName(DockerImageName.parse(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MONGODB_IMAGE))
-				.name("mymongo")
-				// .port(27017)
-				.replicaSet("rs0")
-				.skipDockerDesktopLogWarning(true)
-				.build();
-
-		// GenericContainer<?> mongodb = new GenericContainer<>(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MONGODB_IMAGE)
-		mongodb
-				.withEnv("MONGODB_USER", "debezium")
-				.withEnv("MONGODB_PASSWORD", "dbz")
-				.withExposedPorts(27017)
-				.withStartupTimeout(Duration.ofSeconds(120))
-				.withStartupAttempts(3);
+		GenericContainer<?> mongodb =
+				new GenericContainer<>(DockerImageName.parse(DebeziumTestUtils.DEBEZIUM_EXAMPLE_MONGODB_IMAGE))
+						.withEnv("MONGODB_USER", "debezium")
+						.withEnv("MONGODB_PASSWORD", "dbz")
+						.withExposedPorts(27017)
+						.withStartupTimeout(Duration.ofSeconds(120))
+						.withStartupAttempts(3);
 
 		mongodb.start();
 		String id = mongodb.getContainerId();
@@ -241,7 +231,7 @@ public class DebeziumDatabasesIntegrationTest {
 	}
 
 	@SpringBootConfiguration
-	@EnableAutoConfiguration(exclude = { MongoAutoConfiguration.class, DataSourceAutoConfiguration.class })
+	@EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class, DataSourceAutoConfiguration.class})
 	public static class TestApplication {
 	}
 

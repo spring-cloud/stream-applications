@@ -149,7 +149,7 @@ public class DebeziumDeleteHandlingIntegrationTest {
 			received = outputDestination.receive(Duration.ofSeconds(10).toMillis(), DebeziumTestUtils.BINDING_NAME);
 			assertThat(received).isNotNull();
 			// Tombstones event should have KafkaNull payload
-			assertThat(received.getPayload()).isEqualTo(Optional.empty());
+			assertThat(received.getPayload()).isEqualTo("null".getBytes());
 
 			Object keyRaw = received.getHeaders().get("debezium_key");
 			String key = (keyRaw instanceof byte[]) ? new String((byte[]) keyRaw) : "" + keyRaw;
