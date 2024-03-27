@@ -76,6 +76,11 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 
 	static final String CONFIGURATION_PROPERTIES_END_TAG = "//end::configuration-properties[]";
 
+	private static final Map<String, String> APPTYPE_TO_FUNCTIONTYPE = Map.of(
+			"source", "supplier",
+			"processor", "function",
+			"sink", "consumer");
+
 	private BootApplicationConfigurationMetadataResolver metadataResolver = new BootApplicationConfigurationMetadataResolver(
 			imageName -> null);
 
@@ -104,7 +109,7 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 
 		File tmp = new File(readme.getPath() + ".tmp");
 		try (PrintWriter out = new PrintWriter(tmp);
-				BufferedReader reader = new BufferedReader(new FileReader(readme))) {
+			BufferedReader reader = new BufferedReader(new FileReader(readme))) {
 
 			String line;
 			do {
@@ -123,42 +128,24 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 				grouped = false;
 			}
 
-			ScatteredArchive archive = new ScatteredArchive(mavenProject);
-			BootClassLoaderFactory bootClassLoaderFactory = new BootClassLoaderFactory(archive, null);
-			try (URLClassLoader classLoader = bootClassLoaderFactory.createClassLoader()) {
-				debug(classLoader);
+			boolean linkToFunctionCatalog = "true".equals(startTagAttributes.get("link-to-catalog"));
+			if (linkToFunctionCatalog) {
+				handleExternalLinkToFunctionsCatalog(artifact, out);
+			}
+			else {
+				handleInlineConfigProperties(out);
+			}
 
-				List<ConfigurationMetadataProperty> properties = metadataResolver.listProperties(archive, false);
-				Collections.sort(properties, Comparator.comparing(ConfigurationMetadataProperty::getId));
+			// Drop all lines between start/end tag
+			do {
+				line = reader.readLine();
+			}
+			while (!line.startsWith(CONFIGURATION_PROPERTIES_END_TAG));
 
-				Map<String, List<ConfigurationMetadataProperty>> groupedProperties = groupProperties(properties);
-
-				grouped = grouped && groupedProperties.size() > 1;
-
-				if (grouped) {
-					out.println("Properties grouped by prefix:\n");
-					groupedProperties.forEach((group, props) -> {
-						getLog().debug(" Documenting group " + group);
-						out.println(asciidocForGroup(group));
-						listProperties(props, out, classLoader, prop -> prop.getName());
-					});
-
-				}
-				else {
-					listProperties(properties, out, classLoader, prop -> prop.getId());
-				}
-				do {
-					line = reader.readLine();
-					// drop lines
-				}
-				while (!line.startsWith(CONFIGURATION_PROPERTIES_END_TAG));
-
-				// Copy remaining lines, including //end::configuration-properties[]
-				while (line != null) {
-					out.println(line);
-					line = reader.readLine();
-				}
-				getLog().info(String.format("Documented %d configuration properties", properties.size()));
+			// Copy remaining lines, including //end::configuration-properties[]
+			while (line != null) {
+				out.println(line);
+				line = reader.readLine();
 			}
 		}
 		catch (Exception e) {
@@ -174,6 +161,40 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 		}
 	}
 
+	private void handleExternalLinkToFunctionsCatalog(Artifact artifact, PrintWriter out) {
+		String artifactId = artifact.getArtifactId();
+		String appName = artifactId.substring(0, artifactId.lastIndexOf('-'));
+		String appType = artifactId.substring(artifactId.lastIndexOf('-') + 1);
+		String functionType = APPTYPE_TO_FUNCTIONTYPE.get(appType);
+		String functionName = "spring-%s-%s".formatted(appName, functionType);
+		String url = "https://github.com/spring-cloud/spring-functions-catalog/tree/main/%s/%s#configuration-options[See Spring Functions Catalog for configuration options].".formatted(functionType, functionName);
+		out.println(url);
+	}
+
+	private void handleInlineConfigProperties(PrintWriter out) throws IOException {
+		ScatteredArchive archive = new ScatteredArchive(mavenProject);
+		BootClassLoaderFactory bootClassLoaderFactory = new BootClassLoaderFactory(archive, null);
+		try (URLClassLoader classLoader = bootClassLoaderFactory.createClassLoader()) {
+			debug(classLoader);
+			List<ConfigurationMetadataProperty> properties = metadataResolver.listProperties(archive, false);
+			Collections.sort(properties, Comparator.comparing(ConfigurationMetadataProperty::getId));
+			Map<String, List<ConfigurationMetadataProperty>> groupedProperties = groupProperties(properties);
+			grouped = grouped && groupedProperties.size() > 1;
+			if (grouped) {
+				out.println("Properties grouped by prefix:\n");
+				groupedProperties.forEach((group, props) -> {
+					getLog().debug(" Documenting group " + group);
+					out.println(asciidocForGroup(group));
+					listProperties(props, out, classLoader, prop -> prop.getName());
+				});
+			}
+			else {
+				listProperties(properties, out, classLoader, prop -> prop.getId());
+			}
+			getLog().info(String.format("Documented %d configuration properties", properties.size()));
+		}
+	}
+
 	private void listProperties(List<ConfigurationMetadataProperty> properties, PrintWriter out,
 			ClassLoader classLoader,
 			Function<ConfigurationMetadataProperty, String> propertyValue) {
@@ -181,7 +202,6 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 			getLog().debug("Documenting " + property.getId());
 			out.println(asciidocFor(property, classLoader, propertyValue));
 		}
-
 	}
 
 	private Map<String, List<ConfigurationMetadataProperty>> groupProperties(
