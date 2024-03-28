@@ -12,42 +12,8 @@ for more information.
 The **$$mongodb$$** $$source$$ has the following options:
 
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== mongodb.supplier
-
-$$collection$$:: $$The MongoDB collection to query.$$ *($$String$$, default: `$$<none>$$`)*
-$$query$$:: $$The MongoDB query.$$ *($$String$$, default: `$${ }$$`)*
-$$query-expression$$:: $$The SpEL expression in MongoDB query DSL style.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$split$$:: $$Whether to split the query result as individual messages.$$ *($$Boolean$$, default: `$$true$$`)*
-$$update-expression$$:: $$The SpEL expression in MongoDB update DSL style.$$ *($$Expression$$, default: `$$<none>$$`)*
-
-=== spring.data.mongodb
-
-$$additional-hosts$$:: $$Additional server hosts. Cannot be set with URI or if 'host' is not specified. Additional hosts will use the default mongo port of 27017. If you want to use a different port you can use the "host:port" syntax.$$ *($$List<String>$$, default: `$$<none>$$`)*
-$$authentication-database$$:: $$Authentication database name.$$ *($$String$$, default: `$$<none>$$`)*
-$$auto-index-creation$$:: $$Whether to enable auto-index creation.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$database$$:: $$Database name. Overrides database in URI.$$ *($$String$$, default: `$$<none>$$`)*
-$$field-naming-strategy$$:: $$Fully qualified name of the FieldNamingStrategy to use.$$ *($$Class<?>$$, default: `$$<none>$$`)*
-$$host$$:: $$Mongo server host. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
-$$password$$:: $$Login password of the mongo server. Cannot be set with URI.$$ *($$Character[]$$, default: `$$<none>$$`)*
-$$port$$:: $$Mongo server port. Cannot be set with URI.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$replica-set-name$$:: $$Required replica set name for the cluster. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
-$$uri$$:: $$Mongo database URI. Overrides host, port, username, and password.$$ *($$String$$, default: `$$mongodb://localhost/test$$`)*
-$$username$$:: $$Login user of the mongo server. Cannot be set with URI.$$ *($$String$$, default: `$$<none>$$`)*
-$$uuid-representation$$:: $$Representation to use when converting a UUID to a BSON binary value.$$ *($$UuidRepresentation$$, default: `$$java-legacy$$`, possible values: `UNSPECIFIED`,`STANDARD`,`C_SHARP_LEGACY`,`JAVA_LEGACY`,`PYTHON_LEGACY`)*
-
-=== spring.data.mongodb.gridfs
-
-$$bucket$$:: $$GridFS bucket name.$$ *($$String$$, default: `$$<none>$$`)*
-$$database$$:: $$GridFS database name.$$ *($$String$$, default: `$$<none>$$`)*
-
-=== spring.data.mongodb.ssl
-
-$$bundle$$:: $$SSL bundle name.$$ *($$String$$, default: `$$<none>$$`)*
-$$enabled$$:: $$Whether to enable SSL support. Enabled automatically if "bundle" is provided unless specified otherwise.$$ *($$Boolean$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/supplier/spring-mongodb-supplier#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 Also see the https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[Spring Boot Documentation] for additional `MongoProperties` properties.

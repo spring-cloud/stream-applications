@@ -81,84 +81,8 @@ A `java.io.File` object.
 
 The **$$ftp$$** $$source$$ has the following options:
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== file.consumer
-
-$$markers-json$$:: $$When 'fileMarkers == true', specify if they should be produced as FileSplitter.FileMarker objects or JSON.$$ *($$Boolean$$, default: `$$true$$`)*
-$$mode$$:: $$The FileReadingMode to use for file reading sources. Values are 'ref' - The File object, 'lines' - a message per line, or 'contents' - the contents as bytes.$$ *($$FileReadingMode$$, default: `$$<none>$$`, possible values: `ref`,`lines`,`contents`)*
-$$with-markers$$:: $$Set to true to emit start of file/end of file marker messages before/after the data. Only valid with FileReadingMode 'lines'.$$ *($$Boolean$$, default: `$$<none>$$`)*
-
-=== metadata.store.dynamo-db
-
-$$create-delay$$:: $$Delay between create table retries.$$ *($$Integer$$, default: `$$1$$`)*
-$$create-retries$$:: $$Retry number for create table request.$$ *($$Integer$$, default: `$$25$$`)*
-$$read-capacity$$:: $$Read capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
-$$table$$:: $$Table name for metadata.$$ *($$String$$, default: `$$<none>$$`)*
-$$time-to-live$$:: $$TTL for table entries.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$write-capacity$$:: $$Write capacity on the table.$$ *($$Long$$, default: `$$1$$`)*
-
-=== metadata.store.jdbc
-
-$$region$$:: $$Unique grouping identifier for messages persisted with this store.$$ *($$String$$, default: `$$DEFAULT$$`)*
-$$table-prefix$$:: $$Prefix for the custom table name.$$ *($$String$$, default: `$$<none>$$`)*
-
-=== metadata.store.mongo-db
-
-$$collection$$:: $$MongoDB collection name for metadata.$$ *($$String$$, default: `$$metadataStore$$`)*
-
-=== metadata.store.redis
-
-$$key$$:: $$Redis key for metadata.$$ *($$String$$, default: `$$<none>$$`)*
-
-=== metadata.store
-
-$$type$$:: $$Indicates the type of metadata store to configure (default is 'memory'). You must include the corresponding Spring Integration dependency to use a persistent store.$$ *($$StoreType$$, default: `$$<none>$$`, possible values: `mongodb`,`redis`,`dynamodb`,`jdbc`,`zookeeper`,`hazelcast`,`memory`)*
-
-=== metadata.store.zookeeper
-
-$$connect-string$$:: $$Zookeeper connect string in form HOST:PORT.$$ *($$String$$, default: `$$127.0.0.1:2181$$`)*
-$$encoding$$:: $$Encoding to use when storing data in Zookeeper.$$ *($$Charset$$, default: `$$UTF-8$$`)*
-$$retry-interval$$:: $$Retry interval for Zookeeper operations in milliseconds.$$ *($$Integer$$, default: `$$1000$$`)*
-$$root$$:: $$Root node - store entries are children of this node.$$ *($$String$$, default: `$$/SpringIntegration-MetadataStore$$`)*
-
-=== sftp.supplier
-
-$$auto-create-local-dir$$:: $$Set to true to create the local directory if it does not exist.$$ *($$Boolean$$, default: `$$true$$`)*
-$$delay-when-empty$$:: $$Duration of delay when no new files are detected.$$ *($$Duration$$, default: `$$1s$$`)*
-$$delete-remote-files$$:: $$Set to true to delete remote files after successful transfer.$$ *($$Boolean$$, default: `$$false$$`)*
-$$directories$$:: $$A list of factory "name.directory" pairs.$$ *($$String[]$$, default: `$$<none>$$`)*
-$$factories$$:: $$A map of factory names to factories.$$ *($$Map<String, Factory>$$, default: `$$<none>$$`)*
-$$fair$$:: $$True for fair rotation of multiple servers/directories. This is false by default so if a source has more than one entry, these will be received before the other sources are visited.$$ *($$Boolean$$, default: `$$false$$`)*
-$$filename-pattern$$:: $$A filter pattern to match the names of files to transfer.$$ *($$String$$, default: `$$<none>$$`)*
-$$filename-regex$$:: $$A filter regex pattern to match the names of files to transfer.$$ *($$Pattern$$, default: `$$<none>$$`)*
-$$list-only$$:: $$Set to true to return file metadata without the entire payload.$$ *($$Boolean$$, default: `$$false$$`)*
-$$local-dir$$:: $$The local directory to use for file transfers.$$ *($$File$$, default: `$$<none>$$`)*
-$$max-fetch$$:: $$The maximum number of remote files to fetch per poll; default unlimited. Does not apply when listing files or building task launch requests.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$preserve-timestamp$$:: $$Set to true to preserve the original timestamp.$$ *($$Boolean$$, default: `$$true$$`)*
-$$remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$/$$`)*
-$$remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$/$$`)*
-$$rename-remote-files-to$$:: $$A SpEL expression resolving to the new name remote files must be renamed to after successful transfer.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$stream$$:: $$Set to true to stream the file rather than copy to a local directory.$$ *($$Boolean$$, default: `$$false$$`)*
-$$tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
-
-=== sftp.supplier.factory
-
-$$allow-unknown-keys$$:: $$True to allow an unknown or changed key.$$ *($$Boolean$$, default: `$$false$$`)*
-$$host$$:: $$The host name of the server.$$ *($$String$$, default: `$$localhost$$`)*
-$$known-hosts-expression$$:: $$A SpEL expression resolving to the location of the known hosts file.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$pass-phrase$$:: $$Passphrase for user's private key.$$ *($$String$$, default: `$$<empty string>$$`)*
-$$password$$:: $$The password to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
-$$port$$:: $$The port of the server.$$ *($$Integer$$, default: `$$22$$`)*
-$$private-key$$:: $$Resource location of user's private key.$$ *($$Resource$$, default: `$$<none>$$`)*
-$$username$$:: $$The username to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
-
-=== sftp.supplier.sort-by
-
-$$attribute$$:: $$Attribute of the file listing entry to sort by (FILENAME, ATIME: last access time, MTIME: last modified time).$$ *($$Attribute$$, default: `$$<none>$$`)*
-$$dir$$:: $$Sorting direction (ASC or DESC).$$ *($$Dir$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/supplier/spring-sftp-supplier#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 == Examples

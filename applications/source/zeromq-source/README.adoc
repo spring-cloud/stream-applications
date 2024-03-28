@@ -17,12 +17,8 @@ N/A
 
 The **$$zeromq$$** $$source$$ has the following options:
 
-//tag::configuration-properties[]
-$$zeromq.supplier.bind-port$$:: $$Bind Port for creating a ZeroMQ Socket; 0 selects a random port.$$ *($$Integer$$, default: `$$0$$`)*
-$$zeromq.supplier.connect-url$$:: $$Connection URL for to the ZeroMQ Socket.$$ *($$String$$, default: `$$<none>$$`)*
-$$zeromq.supplier.consume-delay$$:: $$The delay to consume from the ZeroMQ Socket when no data received.$$ *($$Duration$$, default: `$$1s$$`)*
-$$zeromq.supplier.socket-type$$:: $$The Socket Type the connection should make.$$ *($$SocketType$$, default: `$$<none>$$`, possible values: `PAIR`,`PUB`,`SUB`,`REQ`,`REP`,`DEALER`,`ROUTER`,`PULL`,`PUSH`,`XPUB`,`XSUB`,`STREAM`,`CLIENT`,`SERVER`,`RADIO`,`DISH`,`CHANNEL`,`PEER`,`RAW`,`SCATTER`,`GATHER`)*
-$$zeromq.supplier.topics$$:: $$The Topics to subscribe to.$$ *($$String[]$$, default: `$$[]$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/supplier/spring-zeromq-supplier#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 Also see the https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[Spring Boot Documentation]

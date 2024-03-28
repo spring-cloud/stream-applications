@@ -9,9 +9,8 @@ The names of headers to remove are presented as a comma or space separated list.
 
 The **$$header-filter$$** $$processor$$ has the following options:
 
-//tag::configuration-properties[]
-$$header.filter.delete-all$$:: $$Indicates the need to remove all headers.$$ *($$Boolean$$, default: `$$false$$`)*
-$$header.filter.remove$$:: $$Remove all headers named. A comma, space separated list of header names. The names may contain patterns.$$ *($$String$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/function/spring-header-filter-function#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

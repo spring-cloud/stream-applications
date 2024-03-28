@@ -13,71 +13,8 @@ A JSON String or byte array representing the entity (or a list of entities) to b
 The **$$cassandra$$** $$sink$$ has the following options:
 
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== cassandra.cluster
-
-$$create-keyspace$$:: $$Flag to create (or not) keyspace on application startup.$$ *($$Boolean$$, default: `$$false$$`)*
-$$entity-base-packages$$:: $$Base packages to scan for entities annotated with Table annotations.$$ *($$String[]$$, default: `$$[]$$`)*
-$$init-script$$:: $$Resource with CQL scripts (delimited by ';') to initialize keyspace schema.$$ *($$Resource$$, default: `$$<none>$$`)*
-$$skip-ssl-validation$$:: $$Flag to validate the Servers' SSL certs.$$ *($$Boolean$$, default: `$$false$$`)*
-
-=== cassandra.consumer
-
-$$consistency-level$$:: $$The consistency level for write operation.$$ *($$ConsistencyLevel$$, default: `$$<none>$$`)*
-$$ingest-query$$:: $$Ingest Cassandra query.$$ *($$String$$, default: `$$<none>$$`)*
-$$query-type$$:: $$QueryType for Cassandra Sink.$$ *($$Type$$, default: `$$<none>$$`, possible values: `INSERT`,`UPDATE`,`DELETE`,`STATEMENT`)*
-$$statement-expression$$:: $$Expression in Cassandra query DSL style.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$ttl$$:: $$Time-to-live option of WriteOptions.$$ *($$Integer$$, default: `$$0$$`)*
-
-=== spring.cassandra
-
-$$compression$$:: $$Compression supported by the Cassandra binary protocol.$$ *($$Compression$$, default: `$$none$$`, possible values: `LZ4`,`SNAPPY`,`NONE`)*
-$$config$$:: $$Location of the configuration file to use.$$ *($$Resource$$, default: `$$<none>$$`)*
-$$contact-points$$:: $$Cluster node addresses in the form 'host:port', or a simple 'host' to use the configured port.$$ *($$List<String>$$, default: `$$[127.0.0.1:9042]$$`)*
-$$keyspace-name$$:: $$Keyspace name to use.$$ *($$String$$, default: `$$<none>$$`)*
-$$local-datacenter$$:: $$Datacenter that is considered "local". Contact points should be from this datacenter.$$ *($$String$$, default: `$$<none>$$`)*
-$$password$$:: $$Login password of the server.$$ *($$String$$, default: `$$<none>$$`)*
-$$port$$:: $$Port to use if a contact point does not specify one.$$ *($$Integer$$, default: `$$9042$$`)*
-$$schema-action$$:: $$Schema action to take at startup.$$ *($$String$$, default: `$$none$$`)*
-$$session-name$$:: $$Name of the Cassandra session.$$ *($$String$$, default: `$$<none>$$`)*
-$$username$$:: $$Login user of the server.$$ *($$String$$, default: `$$<none>$$`)*
-
-=== spring.cassandra.connection
-
-$$connect-timeout$$:: $$Timeout to use when establishing driver connections.$$ *($$Duration$$, default: `$$5s$$`)*
-$$init-query-timeout$$:: $$Timeout to use for internal queries that run as part of the initialization process, just after a connection is opened.$$ *($$Duration$$, default: `$$5s$$`)*
-
-=== spring.cassandra.controlconnection
-
-$$timeout$$:: $$Timeout to use for control queries.$$ *($$Duration$$, default: `$$5s$$`)*
-
-=== spring.cassandra.pool
-
-$$heartbeat-interval$$:: $$Heartbeat interval after which a message is sent on an idle connection to make sure it's still alive.$$ *($$Duration$$, default: `$$30s$$`)*
-$$idle-timeout$$:: $$Idle timeout before an idle connection is removed.$$ *($$Duration$$, default: `$$5s$$`)*
-
-=== spring.cassandra.request
-
-$$consistency$$:: $$Queries consistency level.$$ *($$DefaultConsistencyLevel$$, default: `$$<none>$$`, possible values: `ANY`,`ONE`,`TWO`,`THREE`,`QUORUM`,`ALL`,`LOCAL_ONE`,`LOCAL_QUORUM`,`EACH_QUORUM`,`SERIAL`,`LOCAL_SERIAL`)*
-$$page-size$$:: $$How many rows will be retrieved simultaneously in a single network round-trip.$$ *($$Integer$$, default: `$$5000$$`)*
-$$serial-consistency$$:: $$Queries serial consistency level.$$ *($$DefaultConsistencyLevel$$, default: `$$<none>$$`, possible values: `ANY`,`ONE`,`TWO`,`THREE`,`QUORUM`,`ALL`,`LOCAL_ONE`,`LOCAL_QUORUM`,`EACH_QUORUM`,`SERIAL`,`LOCAL_SERIAL`)*
-$$timeout$$:: $$How long the driver waits for a request to complete.$$ *($$Duration$$, default: `$$2s$$`)*
-
-=== spring.cassandra.request.throttler
-
-$$drain-interval$$:: $$How often the throttler attempts to dequeue requests. Set this high enough that each attempt will process multiple entries in the queue, but not delay requests too much.$$ *($$Duration$$, default: `$$<none>$$`)*
-$$max-concurrent-requests$$:: $$Maximum number of requests that are allowed to execute in parallel.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$max-queue-size$$:: $$Maximum number of requests that can be enqueued when the throttling threshold is exceeded.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$max-requests-per-second$$:: $$Maximum allowed request rate.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$type$$:: $$Request throttling type.$$ *($$ThrottlerType$$, default: `$$none$$`, possible values: `CONCURRENCY_LIMITING`,`RATE_LIMITING`,`NONE`)*
-
-=== spring.cassandra.ssl
-
-$$bundle$$:: $$SSL bundle name.$$ *($$String$$, default: `$$<none>$$`)*
-$$enabled$$:: $$Whether to enable SSL support.$$ *($$Boolean$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer/spring-cassandra-consumer#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

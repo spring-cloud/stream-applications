@@ -66,21 +66,8 @@ The incoming message can contain any type of payload.
 
 == Options
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== analytics
-
-$$amount-expression$$:: $$A SpEL expression to compute the output metrics value (e.g. amount). It defaults to 1.0$$ *($$Expression$$, default: `$$<none>$$`)*
-$$meter-type$$:: $$Micrometer meter type used to report the metrics to the backend.$$ *($$MeterType$$, default: `$$<none>$$`, possible values: `counter`,`gauge`)*
-$$name$$:: $$The name of the output metrics. The 'name' and 'nameExpression' are mutually exclusive. Only one of them can be set.$$ *($$String$$, default: `$$<none>$$`)*
-$$name-expression$$:: $$A SpEL expression to compute the output metrics name from the input message. The 'name' and 'nameExpression' are mutually exclusive. Only one of them can be set.$$ *($$Expression$$, default: `$$<none>$$`)*
-
-=== analytics.tag
-
-$$expression$$:: $$Computes tags from SpEL expression. Single SpEL expression can produce an array of values, which in turn means distinct name/value tags. Every name/value tag will produce a separate meter increment. Tag expression format is: analytics.tag.expression.[tag-name]=[SpEL expression]$$ *($$Map<String, Expression>$$, default: `$$<none>$$`)*
-$$fixed$$:: $$DEPRECATED: Please use the analytics.tag.expression with literal SpEL expression. Custom, fixed Tags. Those tags have constant values, created once and then sent along with every published metrics. The convention to define a fixed Tags is: <code>   analytics.tag.fixed.[tag-name]=[tag-value] </code>$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer/spring-analytics-consumer#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

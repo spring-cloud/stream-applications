@@ -20,8 +20,6 @@ The incoming message can contain any type of payload.
 
 == Options
 
-//tag::configuration-properties[]
-$$spel.function.expression$$:: $$A SpEL expression to apply.$$ *($$Expression$$, default: `$$<none>$$`)*
-//end::configuration-properties[]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/function/spring-spel-function#configuration-options[See function catalog for configuration options]
 
 //end::ref-doc[]

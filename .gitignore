@@ -30,3 +30,4 @@ aws.credentials.properties
 workspace/
 .vscode
 hostkey.ser
+README.adoc.tmp

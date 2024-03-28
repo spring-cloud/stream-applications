@@ -15,45 +15,7 @@ Note: Twitter's search service and, by extension, the Search API is not meant to
 
 == Options
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== spring.integration.poller
-
-$$cron$$:: $$Cron expression for polling. Mutually exclusive with 'fixedDelay' and 'fixedRate'.$$ *($$String$$, default: `$$<none>$$`)*
-$$fixed-delay$$:: $$Polling delay period. Mutually exclusive with 'cron' and 'fixedRate'.$$ *($$Duration$$, default: `$$<none>$$`)*
-$$fixed-rate$$:: $$Polling rate period. Mutually exclusive with 'fixedDelay' and 'cron'.$$ *($$Duration$$, default: `$$<none>$$`)*
-$$initial-delay$$:: $$Polling initial delay. Applied for 'fixedDelay' and 'fixedRate'; ignored for 'cron'.$$ *($$Duration$$, default: `$$<none>$$`)*
-$$max-messages-per-poll$$:: $$Maximum number of messages to poll per polling cycle.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$receive-timeout$$:: $$How long to wait for messages on poll.$$ *($$Duration$$, default: `$$1s$$`)*
-
-=== twitter.connection
-
-$$access-token$$:: $$Your Twitter token.$$ *($$String$$, default: `$$<none>$$`)*
-$$access-token-secret$$:: $$Your Twitter token secret.$$ *($$String$$, default: `$$<none>$$`)*
-$$consumer-key$$:: $$Your Twitter key.$$ *($$String$$, default: `$$<none>$$`)*
-$$consumer-secret$$:: $$Your Twitter secret.$$ *($$String$$, default: `$$<none>$$`)*
-$$debug-enabled$$:: $$Enables Twitter4J debug mode.$$ *($$Boolean$$, default: `$$false$$`)*
-$$raw-json$$:: $$Enable caching the original (raw) JSON objects as returned by the Twitter APIs. When set to False the result will use the Twitter4J's json representations. When set to True the result will use the original Twitter APISs json representations.$$ *($$Boolean$$, default: `$$true$$`)*
-
-=== twitter.search
-
-$$count$$:: $$Number of tweets to return per page (e.g. per single request), up to a max of 100.$$ *($$Integer$$, default: `$$100$$`)*
-$$enabled$$:: $$Whether to enable Twitter search supplier.$$ *($$Boolean$$, default: `$$false$$`)*
-$$lang$$:: $$Restricts searched tweets to the given language, given by an http://en.wikipedia.org/wiki/ISO_639-1.$$ *($$String$$, default: `$$<none>$$`)*
-$$page$$:: $$Number of pages (e.g. requests) to search backwards (from most recent to the oldest tweets) before start the search from the most recent tweets again. The total amount of tweets searched backwards is (page * count)$$ *($$Integer$$, default: `$$3$$`)*
-$$query$$:: $$Search tweets by search query string.$$ *($$String$$, default: `$$<none>$$`)*
-$$restart-from-most-recent-on-empty-response$$:: $$Restart search from the most recent tweets on empty response. Applied only after the first restart (e.g. when since_id != UNBOUNDED)$$ *($$Boolean$$, default: `$$false$$`)*
-$$result-type$$:: $$Specifies what type of search results you would prefer to receive. The current default is "mixed." Valid values include: mixed : Include both popular and real time results in the response. recent : return only the most recent results in the response popular : return only the most popular results in the response$$ *($$ResultType$$, default: `$$<none>$$`, possible values: `popular`,`mixed`,`recent`)*
-$$since$$:: $$If specified, returns tweets with since the given date. Date should be formatted as YYYY-MM-DD.$$ *($$String$$, default: `$$<none>$$`)*
-
-=== twitter.search.geocode
-
-$$latitude$$:: $$User's latitude.$$ *($$Double$$, default: `$$-1$$`)*
-$$longitude$$:: $$User's longitude.$$ *($$Double$$, default: `$$-1$$`)*
-$$radius$$:: $$Radius (in kilometers) around the (latitude, longitude) point.$$ *($$Double$$, default: `$$-1$$`)*
-//end::configuration-properties[]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/supplier/spring-twitter-supplier#12-configuration-options[See function catalog for configuration options]
 
 //end::ref-doc[]
 
@@ -78,4 +40,3 @@ And here is an example pipeline that uses twitter-search:
 twitter-search-stream= twitter-search  --twitter.connection.consumerKey= ... --twitter.connection.consumerSecret= ... --twitter.connection.accessToken= ... --twitter.connection.accessTokenSecret= ... --twitter.search.query=Amsterdam --twitter.search.count=30 --twitter.search.page=3
 
 ```
-

@@ -6,12 +6,8 @@ A simple Websocket Sink implementation.
 == Options
 The following options are supported:
 
-//tag::configuration-properties[]
-$$websocket.consumer.log-level$$:: $$The logLevel for netty channels. Default is <tt>WARN</tt>$$ *($$String$$, default: `$$<none>$$`)*
-$$websocket.consumer.path$$:: $$The path on which a WebsocketSink consumer needs to connect. Default is <tt>/websocket</tt>$$ *($$String$$, default: `$$/websocket$$`)*
-$$websocket.consumer.port$$:: $$The port on which the Netty server listens. Default is <tt>9292</tt>$$ *($$Integer$$, default: `$$9292$$`)*
-$$websocket.consumer.ssl$$:: $$Whether to create a {@link io.netty.handler.ssl.SslContext}.$$ *($$Boolean$$, default: `$$false$$`)*
-$$websocket.consumer.threads$$:: $$The number of threads for the Netty {@link io.netty.channel.EventLoopGroup}. Default is <tt>1</tt>$$ *($$Integer$$, default: `$$1$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer/spring-websocket-consumer#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 == Examples
@@ -73,4 +69,3 @@ There is also a simple HTML page where you see forwarded messages in a text area
 it directly via  `https://host:port` in your browser.
 
 //end::ref-doc[]
-

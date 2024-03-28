@@ -17,10 +17,8 @@ N/A
 
 The **$$zeromq$$** $$sink$$ has the following options:
 
-//tag::configuration-properties[]
-$$zeromq.consumer.connect-url$$:: $$Connection URL for connecting to the ZeroMQ Socket.$$ *($$String$$, default: `$$<none>$$`)*
-$$zeromq.consumer.socket-type$$:: $$The Socket Type the connection should establish.$$ *($$SocketType$$, default: `$$<none>$$`, possible values: `PAIR`,`PUB`,`SUB`,`REQ`,`REP`,`DEALER`,`ROUTER`,`PULL`,`PUSH`,`XPUB`,`XSUB`,`STREAM`,`CLIENT`,`SERVER`,`RADIO`,`DISH`,`CHANNEL`,`PEER`,`RAW`,`SCATTER`,`GATHER`)*
-$$zeromq.consumer.topic$$:: $$A Topic SpEL expression to evaluate a topic before sending messages to subscribers.$$ *($$Expression$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer/spring-zeromq-consumer#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 == Build

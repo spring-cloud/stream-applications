@@ -7,11 +7,8 @@ RSocket sink to send data using RSocket protocols' fire and forget strategy.
 
 The **$$rsocket$$** $$sink$$ has the following options:
 
-//tag::configuration-properties[]
-$$rsocket.consumer.host$$:: $$RSocket host.$$ *($$String$$, default: `$$localhost$$`)*
-$$rsocket.consumer.port$$:: $$RSocket port.$$ *($$Integer$$, default: `$$7000$$`)*
-$$rsocket.consumer.route$$:: $$Route used for RSocket.$$ *($$String$$, default: `$$<none>$$`)*
-$$rsocket.consumer.uri$$:: $$URI that can be used for websocket based transport.$$ *($$URI$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer/spring-rsocket-consumer#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 

@@ -10,9 +10,8 @@ For example `--headers='foo=payload.someProperty \n bar=payload.otherProperty'`.
 
 The **$$header-enricher$$** $$processor$$ has the following options:
 
-//tag::configuration-properties[]
-$$header.enricher.headers$$:: $$\n separated properties representing headers in which values are SpEL expressions, e.g foo='bar' \n baz=payload.baz.$$ *($$Properties$$, default: `$$<none>$$`)*
-$$header.enricher.overwrite$$:: $$set to true to overwrite any existing message headers.$$ *($$Boolean$$, default: `$$false$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/function/spring-header-enricher-function#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

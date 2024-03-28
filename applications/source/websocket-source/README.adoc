@@ -4,18 +4,8 @@ The `Websocket` source that produces messages through web socket.
 
 == Options
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== websocket.supplier
-
-$$allowed-origins$$:: $$The allowed origins.$$ *($$String$$, default: `$$*$$`)*
-$$path$$:: $$The path on which server WebSocket handler is exposed.$$ *($$String$$, default: `$$/websocket$$`)*
-
-=== websocket.supplier.sock-js
-
-$$enable$$:: $$Enable SockJS service on the server. Default is 'false'$$ *($$Boolean$$, default: `$$false$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/supplier/spring-websocket-supplier#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 == Examples
