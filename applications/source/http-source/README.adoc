@@ -19,24 +19,8 @@ If content type does not match `text/*` or `application/json`
 
 The **$$http$$** $$source$$ supports the following configuration properties:
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== http.supplier.cors
-
-$$allow-credentials$$:: $$Whether the browser should include any cookies associated with the domain of the request being annotated.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$allowed-headers$$:: $$List of request headers that can be used during the actual request.$$ *($$String[]$$, default: `$$<none>$$`)*
-$$allowed-origins$$:: $$List of allowed origins, e.g. https://domain1.com.$$ *($$String[]$$, default: `$$<none>$$`)*
-
-=== http.supplier
-
-$$mapped-request-headers$$:: $$Headers that will be mapped.$$ *($$String[]$$, default: `$$<none>$$`)*
-$$path-pattern$$:: $$HTTP endpoint path mapping.$$ *($$String$$, default: `$$/$$`)*
-
-=== server
-
-$$port$$:: $$Server HTTP port.$$ *($$Integer$$, default: `$$8080$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/supplier/spring-http-supplier#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

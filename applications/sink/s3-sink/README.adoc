@@ -14,48 +14,8 @@ Messages accepted by this sink must contain one of the `payload` as:
 
 The **$$s3$$** $$sink$$ has the following options:
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== s3.consumer
-
-$$acl$$:: $$S3 Object access control list.$$ *($$ObjectCannedACL$$, default: `$$<none>$$`, possible values: `private`,`public-read`,`public-read-write`,`authenticated-read`,`aws-exec-read`,`bucket-owner-read`,`bucket-owner-full-control`,`null`)*
-$$acl-expression$$:: $$Expression to evaluate S3 Object access control list.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$bucket$$:: $$AWS bucket for target file(s) to store.$$ *($$String$$, default: `$$<none>$$`)*
-$$bucket-expression$$:: $$Expression to evaluate AWS bucket name.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$key-expression$$:: $$Expression to evaluate S3 Object key.$$ *($$Expression$$, default: `$$<none>$$`)*
-
-=== spring.cloud.aws.credentials
-
-$$access-key$$:: $$The access key to be used with a static provider.$$ *($$String$$, default: `$$<none>$$`)*
-$$instance-profile$$:: $$Configures an instance profile credentials provider with no further configuration.$$ *($$Boolean$$, default: `$$false$$`)*
-$$profile$$:: $$The AWS profile.$$ *($$Profile$$, default: `$$<none>$$`)*
-$$secret-key$$:: $$The secret key to be used with a static provider.$$ *($$String$$, default: `$$<none>$$`)*
-
-=== spring.cloud.aws.region
-
-$$instance-profile$$:: $$Configures an instance profile region provider with no further configuration.$$ *($$Boolean$$, default: `$$false$$`)*
-$$profile$$:: $$The AWS profile.$$ *($$Profile$$, default: `$$<none>$$`)*
-$$static$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
-
-=== spring.cloud.aws.s3
-
-$$accelerate-mode-enabled$$:: $$Option to enable using the accelerate endpoint when accessing S3. Accelerate endpoints allow faster transfer of objects by using Amazon CloudFront's globally distributed edge locations.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$checksum-validation-enabled$$:: $$Option to disable doing a validation of the checksum of an object stored in S3.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$chunked-encoding-enabled$$:: $$Option to enable using chunked encoding when signing the request payload for {@link software.amazon.awssdk.services.s3.model.PutObjectRequest} and {@link software.amazon.awssdk.services.s3.model.UploadPartRequest}.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$cross-region-enabled$$:: $$Enables cross-region bucket access.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$endpoint$$:: $$Overrides the default endpoint.$$ *($$URI$$, default: `$$<none>$$`)*
-$$path-style-access-enabled$$:: $$Option to enable using path style access for accessing S3 objects instead of DNS style access. DNS style access is preferred as it will result in better load balancing when accessing S3.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$region$$:: $$Overrides the default region.$$ *($$String$$, default: `$$<none>$$`)*
-$$use-arn-region-enabled$$:: $$If an S3 resource ARN is passed in as the target of an S3 operation that has a different region to the one the client was configured with, this flag must be set to 'true' to permit the client to make a cross-region call to the region specified in the ARN otherwise an exception will be thrown.$$ *($$Boolean$$, default: `$$<none>$$`)*
-
-=== spring.cloud.aws.s3.crt
-
-$$initial-read-buffer-size-in-bytes$$:: $$Configure the starting buffer size the client will use to buffer the parts downloaded from S3. Maintain a larger window to keep up a high download throughput; parts cannot download in parallel unless the window is large enough to hold multiple parts. Maintain a smaller window to limit the amount of data buffered in memory.$$ *($$Long$$, default: `$$<none>$$`)*
-$$max-concurrency$$:: $$Specifies the maximum number of S3 connections that should be established during transfer.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$minimum-part-size-in-bytes$$:: $$Sets the minimum part size for transfer parts. Decreasing the minimum part size causes multipart transfer to be split into a larger number of smaller parts. Setting this value too low has a negative effect on transfer speeds, causing extra latency and network communication for each part.$$ *($$Long$$, default: `$$<none>$$`)*
-$$target-throughput-in-gbps$$:: $$The target throughput for transfer requests. Higher value means more S3 connections will be opened. Whether the transfer manager can achieve the configured target throughput depends on various factors such as the network bandwidth of the environment and the configured `max-concurrency`.$$ *($$Double$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer/spring-s3-consumer#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 The target generated application based on the `AmazonS3SinkConfiguration` can be enhanced with the `S3MessageHandler.UploadMetadataProvider` and/or `S3ProgressListener`, which are injected into `S3MessageHandler` bean.

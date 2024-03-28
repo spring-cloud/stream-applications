@@ -35,32 +35,8 @@ N/A (writes to the SFTP server).
 
 The **$$sftp$$** $$sink$$ has the following options:
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== sftp.consumer
-
-$$auto-create-dir$$:: $$Whether to create the remote directory.$$ *($$Boolean$$, default: `$$true$$`)*
-$$filename-expression$$:: $$A SpEL expression to generate the remote file name.$$ *($$String$$, default: `$$<none>$$`)*
-$$mode$$:: $$Action to take if the remote file already exists.$$ *($$FileExistsMode$$, default: `$$<none>$$`, possible values: `APPEND`,`APPEND_NO_FLUSH`,`FAIL`,`IGNORE`,`REPLACE`,`REPLACE_IF_MODIFIED`)*
-$$remote-dir$$:: $$The remote FTP directory.$$ *($$String$$, default: `$$/$$`)*
-$$remote-file-separator$$:: $$The remote file separator.$$ *($$String$$, default: `$$/$$`)*
-$$temporary-remote-dir$$:: $$A temporary directory where the file will be written if 'isUseTemporaryFilename()' is true.$$ *($$String$$, default: `$$/$$`)*
-$$tmp-file-suffix$$:: $$The suffix to use while the transfer is in progress.$$ *($$String$$, default: `$$.tmp$$`)*
-$$use-temporary-filename$$:: $$Whether to write to a temporary file and rename.$$ *($$Boolean$$, default: `$$true$$`)*
-
-=== sftp.consumer.factory
-
-$$allow-unknown-keys$$:: $$True to allow an unknown or changed key.$$ *($$Boolean$$, default: `$$false$$`)*
-$$cache-sessions$$:: $$Cache sessions.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$host$$:: $$The host name of the server.$$ *($$String$$, default: `$$localhost$$`)*
-$$known-hosts-expression$$:: $$A SpEL expression resolving to the location of the known hosts file.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$pass-phrase$$:: $$Passphrase for user's private key.$$ *($$String$$, default: `$$<empty string>$$`)*
-$$password$$:: $$The password to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
-$$port$$:: $$The port of the server.$$ *($$Integer$$, default: `$$22$$`)*
-$$private-key$$:: $$Resource location of user's private key.$$ *($$Resource$$, default: `$$<none>$$`)*
-$$username$$:: $$The username to use to connect to the server.$$ *($$String$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer/spring-sftp-consumer#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

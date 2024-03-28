@@ -12,29 +12,8 @@ Source that enables receiving messages from MQTT.
 
 The **$$mqtt$$** $$source$$ has the following options:
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== mqtt
-
-$$clean-session$$:: $$whether the client and server should remember state across restarts and reconnects.$$ *($$Boolean$$, default: `$$true$$`)*
-$$connection-timeout$$:: $$the connection timeout in seconds.$$ *($$Integer$$, default: `$$30$$`)*
-$$keep-alive-interval$$:: $$the ping interval in seconds.$$ *($$Integer$$, default: `$$60$$`)*
-$$password$$:: $$the password to use when connecting to the broker.$$ *($$String$$, default: `$$guest$$`)*
-$$persistence$$:: $$'memory' or 'file'.$$ *($$String$$, default: `$$memory$$`)*
-$$persistence-directory$$:: $$Persistence directory.$$ *($$String$$, default: `$$/tmp/paho$$`)*
-$$ssl-properties$$:: $$MQTT Client SSL properties.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
-$$url$$:: $$location of the mqtt broker(s) (comma-delimited list).$$ *($$String[]$$, default: `$$[tcp://localhost:1883]$$`)*
-$$username$$:: $$the username to use when connecting to the broker.$$ *($$String$$, default: `$$guest$$`)*
-
-=== mqtt.supplier
-
-$$binary$$:: $$True to leave the payload as bytes.$$ *($$Boolean$$, default: `$$false$$`)*
-$$charset$$:: $$The charset used to convert bytes to String (when binary is false).$$ *($$String$$, default: `$$UTF-8$$`)*
-$$client-id$$:: $$Identifies the client.$$ *($$String$$, default: `$$stream.client.id.source$$`)*
-$$qos$$:: $$The qos; a single value for all topics or a comma-delimited list to match the topics.$$ *($$Integer[]$$, default: `$$[0]$$`)*
-$$topics$$:: $$The topic(s) (comma-delimited) to which the source will subscribe.$$ *($$String[]$$, default: `$$[stream.mqtt]$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/supplier/spring-mqtt-supplier#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

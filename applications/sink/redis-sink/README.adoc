@@ -7,70 +7,8 @@ Sends messages to Redis.
 
 The **$$redis$$** $$sink$$ has the following options:
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== redis.consumer
-
-$$key$$:: $$A literal key name to use when storing to a key.$$ *($$String$$, default: `$$<none>$$`)*
-$$key-expression$$:: $$A SpEL expression to use for storing to a key.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$queue$$:: $$A literal queue name to use when storing in a queue.$$ *($$String$$, default: `$$<none>$$`)*
-$$queue-expression$$:: $$A SpEL expression to use for queue.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$topic$$:: $$A literal topic name to use when publishing to a topic.$$ *($$String$$, default: `$$<none>$$`)*
-$$topic-expression$$:: $$A SpEL expression to use for topic.$$ *($$Expression$$, default: `$$<none>$$`)*
-
-=== spring.data.redis
-
-$$client-name$$:: $$Client name to be set on connections with CLIENT SETNAME.$$ *($$String$$, default: `$$<none>$$`)*
-$$client-type$$:: $$Type of client to use. By default, auto-detected according to the classpath.$$ *($$ClientType$$, default: `$$<none>$$`, possible values: `LETTUCE`,`JEDIS`)*
-$$connect-timeout$$:: $$Connection timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
-$$database$$:: $$Database index used by the connection factory.$$ *($$Integer$$, default: `$$0$$`)*
-$$host$$:: $$Redis server host.$$ *($$String$$, default: `$$localhost$$`)*
-$$password$$:: $$Login password of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
-$$port$$:: $$Redis server port.$$ *($$Integer$$, default: `$$6379$$`)*
-$$timeout$$:: $$Read timeout.$$ *($$Duration$$, default: `$$<none>$$`)*
-$$url$$:: $$Connection URL. Overrides host, port, username, and password. Example: redis://user:password@example.com:6379$$ *($$String$$, default: `$$<none>$$`)*
-$$username$$:: $$Login username of the redis server.$$ *($$String$$, default: `$$<none>$$`)*
-
-=== spring.data.redis.cluster
-
-$$max-redirects$$:: $$Maximum number of redirects to follow when executing commands across the cluster.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$nodes$$:: $$Comma-separated list of "host:port" pairs to bootstrap from. This represents an "initial" list of cluster nodes and is required to have at least one entry.$$ *($$List<String>$$, default: `$$<none>$$`)*
-
-=== spring.data.redis.jedis.pool
-
-$$enabled$$:: $$Whether to enable the pool. Enabled automatically if "commons-pool2" is available. With Jedis, pooling is implicitly enabled in sentinel mode and this setting only applies to single node setup.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$max-active$$:: $$Maximum number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.$$ *($$Integer$$, default: `$$8$$`)*
-$$max-idle$$:: $$Maximum number of "idle" connections in the pool. Use a negative value to indicate an unlimited number of idle connections.$$ *($$Integer$$, default: `$$8$$`)*
-$$max-wait$$:: $$Maximum amount of time a connection allocation should block before throwing an exception when the pool is exhausted. Use a negative value to block indefinitely.$$ *($$Duration$$, default: `$$-1ms$$`)*
-$$min-idle$$:: $$Target for the minimum number of idle connections to maintain in the pool. This setting only has an effect if both it and time between eviction runs are positive.$$ *($$Integer$$, default: `$$0$$`)*
-$$time-between-eviction-runs$$:: $$Time between runs of the idle object evictor thread. When positive, the idle object evictor thread starts, otherwise no idle object eviction is performed.$$ *($$Duration$$, default: `$$<none>$$`)*
-
-=== spring.data.redis.lettuce.pool
-
-$$enabled$$:: $$Whether to enable the pool. Enabled automatically if "commons-pool2" is available. With Jedis, pooling is implicitly enabled in sentinel mode and this setting only applies to single node setup.$$ *($$Boolean$$, default: `$$<none>$$`)*
-$$max-active$$:: $$Maximum number of connections that can be allocated by the pool at a given time. Use a negative value for no limit.$$ *($$Integer$$, default: `$$8$$`)*
-$$max-idle$$:: $$Maximum number of "idle" connections in the pool. Use a negative value to indicate an unlimited number of idle connections.$$ *($$Integer$$, default: `$$8$$`)*
-$$max-wait$$:: $$Maximum amount of time a connection allocation should block before throwing an exception when the pool is exhausted. Use a negative value to block indefinitely.$$ *($$Duration$$, default: `$$-1ms$$`)*
-$$min-idle$$:: $$Target for the minimum number of idle connections to maintain in the pool. This setting only has an effect if both it and time between eviction runs are positive.$$ *($$Integer$$, default: `$$0$$`)*
-$$time-between-eviction-runs$$:: $$Time between runs of the idle object evictor thread. When positive, the idle object evictor thread starts, otherwise no idle object eviction is performed.$$ *($$Duration$$, default: `$$<none>$$`)*
-
-=== spring.data.redis.lettuce
-
-$$shutdown-timeout$$:: $$Shutdown timeout.$$ *($$Duration$$, default: `$$100ms$$`)*
-
-=== spring.data.redis.sentinel
-
-$$master$$:: $$Name of the Redis server.$$ *($$String$$, default: `$$<none>$$`)*
-$$nodes$$:: $$Comma-separated list of "host:port" pairs.$$ *($$List<String>$$, default: `$$<none>$$`)*
-$$password$$:: $$Password for authenticating with sentinel(s).$$ *($$String$$, default: `$$<none>$$`)*
-$$username$$:: $$Login username for authenticating with sentinel(s).$$ *($$String$$, default: `$$<none>$$`)*
-
-=== spring.data.redis.ssl
-
-$$bundle$$:: $$SSL bundle name.$$ *($$String$$, default: `$$<none>$$`)*
-$$enabled$$:: $$Whether to enable SSL support. Enabled automatically if "bundle" is provided unless specified otherwise.$$ *($$Boolean$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer/spring-redis-consumer#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

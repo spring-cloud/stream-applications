@@ -21,11 +21,8 @@ N/A
 
 The **$$jdbc$$** $$sink$$ has the following options:
 
-//tag::configuration-properties[]
-$$spring.datasource.driver-class-name$$:: $$Fully qualified name of the JDBC driver. Auto-detected based on the URL by default.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.datasource.password$$:: $$Login password of the database.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.datasource.url$$:: $$JDBC URL of the database.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.datasource.username$$:: $$Login username of the database.$$ *($$String$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer/spring-pgcopy-consumer#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 NOTE: The module also uses Spring Boot's https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-sql.html#boot-features-configure-datasource[DataSource support] for configuring the database connection, so properties like `spring.datasource.url` _etc._ apply.

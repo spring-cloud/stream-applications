@@ -10,15 +10,8 @@ Supports common ETL use-cases, where existing (historical) metrics data has to b
 
 The *Wavefront* $$sink$$ has the following options:
 
-//tag::configuration-properties[]
-$$wavefront.api-token$$:: $$Wavefront API access token.$$ *($$String$$, default: `$$<none>$$`)*
-$$wavefront.metric-expression$$:: $$A SpEL expression that evaluates to a metric value.$$ *($$Expression$$, default: `$$<none>$$`)*
-$$wavefront.metric-name$$:: $$The name of the metric.Defaults to the application name.$$ *($$String$$, default: `$$<none>$$`)*
-$$wavefront.proxy-uri$$:: $$The URL of the Wavefront proxy.$$ *($$String$$, default: `$$<none>$$`)*
-$$wavefront.source$$:: $$Unique application, host, container, or instance that emits metrics.$$ *($$String$$, default: `$$<none>$$`)*
-$$wavefront.tag-expression$$:: $$Collection of custom metadata associated with the metric.Point tags cannot be empty. Valid characters for keys: alphanumeric, hyphen ('-'), underscore ('_'), dot ('.'). For values any character is allowed, including spaces. To include a double quote, escape it with a backslash, A backslash cannot be the last character in the tag value. Maximum allowed length for a combination of a point tag key and value is 254 characters (255 including the '=' separating key and value). If the value is longer, the point is rejected and logged$$ *($$Map<String, Expression>$$, default: `$$<none>$$`)*
-$$wavefront.timestamp-expression$$:: $$A SpEL expression that evaluates to a timestamp of the metric (optional).$$ *($$Expression$$, default: `$$<none>$$`)*
-$$wavefront.uri$$:: $$The URL of the Wavefront environment.$$ *($$String$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer/spring-wavefront-consumer#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

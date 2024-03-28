@@ -12,10 +12,8 @@ Please see more info in the https://docs.spring.io/spring-cloud-stream/docs/Elmh
 The **$$log$$** $$sink$$ has the following options:
 
 
-//tag::configuration-properties[]
-$$log.consumer.expression$$:: $$A SpEL expression (against the incoming message) to evaluate as the logged message.$$ *($$String$$, default: `$$payload$$`)*
-$$log.consumer.level$$:: $$The level at which to log messages.$$ *($$Level$$, default: `$$<none>$$`, possible values: `FATAL`,`ERROR`,`WARN`,`INFO`,`DEBUG`,`TRACE`)*
-$$log.consumer.name$$:: $$The name of the logger to use.$$ *($$String$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer/spring-log-consumer#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

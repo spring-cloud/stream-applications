@@ -15,8 +15,8 @@ If the incoming type is `byte[]` and the content type is set to `text/plain` or 
 
 == Options
 
-//tag::configuration-properties[]
-$$filter.function.expression$$:: $$Boolean SpEL expression to apply against request message to filter.$$ *($$Expression$$, default: `$$<none>$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/function/spring-filter-function#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

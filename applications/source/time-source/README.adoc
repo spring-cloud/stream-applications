@@ -7,14 +7,19 @@ The time source will simply emit a String with the current time every so often.
 
 The **$$time$$** $$source$$ has the following options:
 
-//tag::configuration-properties[group=false]
-$$spring.integration.poller.cron$$:: $$Cron expression for polling. Mutually exclusive with 'fixedDelay' and 'fixedRate'.$$ *($$String$$, default: `$$<none>$$`)*
-$$spring.integration.poller.fixed-delay$$:: $$Polling delay period. Mutually exclusive with 'cron' and 'fixedRate'.$$ *($$Duration$$, default: `$$<none>$$`)*
-$$spring.integration.poller.fixed-rate$$:: $$Polling rate period. Mutually exclusive with 'fixedDelay' and 'cron'.$$ *($$Duration$$, default: `$$<none>$$`)*
-$$spring.integration.poller.initial-delay$$:: $$Polling initial delay. Applied for 'fixedDelay' and 'fixedRate'; ignored for 'cron'.$$ *($$Duration$$, default: `$$<none>$$`)*
-$$spring.integration.poller.max-messages-per-poll$$:: $$Maximum number of messages to poll per polling cycle.$$ *($$Integer$$, default: `$$<none>$$`)*
-$$spring.integration.poller.receive-timeout$$:: $$How long to wait for messages on poll.$$ *($$Duration$$, default: `$$1s$$`)*
-$$time.date-format$$:: $$Format for the date value.$$ *($$String$$, default: `$$MM/dd/yy HH:mm:ss$$`)*
+=== spring.integration.poller
+
+$$cron$$:: $$Cron expression for polling. Mutually exclusive with 'fixedDelay' and 'fixedRate'.$$ *($$String$$, default: `$$<none>$$`)*
+$$fixed-delay$$:: $$Polling delay period. Mutually exclusive with 'cron' and 'fixedRate'.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$fixed-rate$$:: $$Polling rate period. Mutually exclusive with 'fixedDelay' and 'cron'.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$initial-delay$$:: $$Polling initial delay. Applied for 'fixedDelay' and 'fixedRate'; ignored for 'cron'.$$ *($$Duration$$, default: `$$<none>$$`)*
+$$max-messages-per-poll$$:: $$Maximum number of messages to poll per polling cycle.$$ *($$Integer$$, default: `$$<none>$$`)*
+$$receive-timeout$$:: $$How long to wait for messages on poll.$$ *($$Duration$$, default: `$$1s$$`)*
+
+
+=== time
+//tag::configuration-properties[link-to-catalog=true,group=false]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/supplier/spring-time-supplier#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 //end::ref-doc[]

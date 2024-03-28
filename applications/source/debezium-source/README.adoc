@@ -17,21 +17,8 @@ The `Debezium Source` currently supports CDC for multiple datastores: https://de
 
 == Options
 
-//tag::configuration-properties[]
-Properties grouped by prefix:
-
-
-=== debezium
-
-$$debezium-native-configuration$$:: $$<documentation missing>$$ *($$Properties$$, default: `$$<none>$$`)*
-$$offset-commit-policy$$:: $$The policy that defines when the offsets should be committed to offset storage.$$ *($$DebeziumOffsetCommitPolicy$$, default: `$$<none>$$`, possible values: `ALWAYS`,`PERIODIC`,`DEFAULT`)*
-$$payload-format$$:: $${@code io.debezium.engine.ChangeEvent} Key and Payload formats. Defaults to 'JSON'.$$ *($$DebeziumFormat$$, default: `$$<none>$$`, possible values: `JSON`,`AVRO`,`PROTOBUF`)*
-$$properties$$:: $$Spring pass-trough wrapper for debezium configuration properties. All properties with a 'debezium.properties.*' prefix are native Debezium properties.$$ *($$Map<String, String>$$, default: `$$<none>$$`)*
-
-=== debezium.supplier
-
-$$enable-empty-payload$$:: $$Enable support for tombstone (aka delete) messages.$$ *($$Boolean$$, default: `$$true$$`)*
-$$header-names-to-map$$:: $$Patterns for {@code ChangeEvent.headers()} to map.$$ *($$String[]$$, default: `$$[*]$$`)*
+//tag::configuration-properties[link-to-catalog=true]
+https://github.com/spring-cloud/spring-functions-catalog/tree/main/supplier/spring-debezium-supplier#configuration-options[See Spring Functions Catalog for configuration options].
 //end::configuration-properties[]
 
 ==== Event flattening configuration
@@ -381,5 +368,3 @@ cat ./inventory.sql | docker exec -i dbz_oracle sqlplus debezium/dbz@//localhost
 ----
 java -jar debezium-source.jar --debezium.properties.connector.class=io.debezium.connector.mysql.MySqlConnector --debezium.properties.topic.prefix=my-topic --debezium.properties.name=my-connector --debezium.properties.database.server.id=85744  --debezium.properties.database.server.id=85744 --debezium.properties.database.user=debezium --debezium.properties.database.password=dbz --debezium.properties.database.hostname=localhost --debezium.properties.database.port=3306 --debezium.properties.schema.history.internal=io.debezium.relational.history.MemorySchemaHistory --debezium.properties.offset.storage=org.apache.kafka.connect.storage.MemoryOffsetBackingStore
 ----
-
-
