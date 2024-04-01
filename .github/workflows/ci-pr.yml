@@ -7,7 +7,6 @@ env:
   MAIN_PATH: 'build-dir'
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   MAVEN_THREADS: 'true'
-  TRIVY_DEBUG: 'true'
 jobs:
   build:
     if: github.repository == 'spring-cloud/stream-applications'
@@ -147,8 +146,7 @@ jobs:
           ignore-unfixed: true
           format: 'table'
           severity: 'CRITICAL,HIGH'
-          timeout: '2h'
-          skip-files: '**/README.adoc'
+          timeout: '15m'
       - name: 'Scanned'
         shell: bash
         run: echo "::info ::Scanned"
