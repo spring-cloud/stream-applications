@@ -146,6 +146,7 @@ jobs:
           ignore-unfixed: true
           format: 'table'
           severity: 'CRITICAL,HIGH'
+          timeout: '10m'
       - name: 'Scanned'
         shell: bash
         run: echo "::info ::Scanned"
