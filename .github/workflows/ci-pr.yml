@@ -7,6 +7,7 @@ env:
   MAIN_PATH: 'build-dir'
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   MAVEN_THREADS: 'true'
+  TRIVY_DEBUG: 'true'
 jobs:
   build:
     if: github.repository == 'spring-cloud/stream-applications'

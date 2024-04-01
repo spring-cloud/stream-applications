@@ -35,6 +35,7 @@ env:
   VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
   BRANCH: ${{ inputs.branch }}
   MAVEN_THREADS: ${{ inputs.mavenThreads }}
+  TRIVY_DEBUG: 'true'
 
 jobs:
   scan:
