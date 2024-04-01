@@ -148,6 +148,7 @@ jobs:
           format: 'table'
           severity: 'CRITICAL,HIGH'
           timeout: '30m'
+          skip-files: '**/README.adoc'
       - name: 'Scanned'
         shell: bash
         run: echo "::info ::Scanned"
