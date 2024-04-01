@@ -147,7 +147,7 @@ jobs:
           ignore-unfixed: true
           format: 'table'
           severity: 'CRITICAL,HIGH'
-          timeout: '30m'
+          timeout: '2h'
           skip-files: '**/README.adoc'
       - name: 'Scanned'
         shell: bash
