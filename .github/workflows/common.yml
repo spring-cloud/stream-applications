@@ -359,15 +359,22 @@ jobs:
           popd > /dev/null
       - name: Scan Jar files
         shell: bash
+        id: scan
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
             $ROOT_DIR/scan-folders.sh
           popd > /dev/null
+          if [ -f scan.sarif ]; then            
+            echo "scan_file=$(realpath scan.sarif)" >> $GITHUB_OUTPUT
+          else
+            echo "scan_file=" >> $GITHUB_OUTPUT
+          fi
       - name: Upload Trivy scan results to GitHub Security tab
+        if: ${{ steps.scan.output.scan_file != null && steps.scan.output.scan_file != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'scan.sarif'
+          sarif_file: '${{ steps.scan.output.scan_file }}'
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -498,16 +505,23 @@ jobs:
             fi
           popd > /dev/null
       - name: Scan Jar files
+        id: scan
         shell: bash
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
             $ROOT_DIR/scan-folders.sh
           popd > /dev/null
+          if [ -f scan.sarif ]; then            
+            echo "scan_file=$(realpath scan.sarif)" >> $GITHUB_OUTPUT
+          else
+            echo "scan_file=" >> $GITHUB_OUTPUT
+          fi
       - name: Upload Trivy scan results to GitHub Security tab
+        if: ${{ steps.scan.output.scan_file != null && steps.scan.output.scan_file != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'scan.sarif'
+          sarif_file: '${{ steps.scan.output.scan_file }}'
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -640,15 +654,22 @@ jobs:
           popd > /dev/null
       - name: Scan Jar files
         shell: bash
+        id: scan
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
             $ROOT_DIR/scan-folders.sh
           popd > /dev/null
+          if [ -f scan.sarif ]; then            
+            echo "scan_file=$(realpath scan.sarif)" >> $GITHUB_OUTPUT
+          else
+            echo "scan_file=" >> $GITHUB_OUTPUT
+          fi
       - name: Upload Trivy scan results to GitHub Security tab
+        if: ${{ steps.scan.output.scan_file != null && steps.scan.output.scan_file != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'scan.sarif'
+          sarif_file: '${{ steps.scan.output.scan_file }}'
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
