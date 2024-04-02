@@ -24,28 +24,24 @@ echo "Version:[$OLD_VERSION] -> [$VERSION]"
 echo "Release Train Version: [$OLD_RT_VERSION] -> [$RELEASE_TRAIN_VERSION]"
 
 $SCDIR/mvnw versions:set \
-  -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
-  -DoldVersion="$OLD_VERSION" -DnewVersion="$VERSION" -DprocessAllModules=true
+  -s $SCDIR/.settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
+  -DoldVersion="$OLD_VERSION" -DnewVersion="$VERSION" -DprocessAllModules=true -Pspring
 
 $SCDIR/mvnw versions:set-property -f applications/stream-applications-core \
-  -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
-  -Dproperty=stream-apps-core.version -DnewVersion="$VERSION"
-
-$SCDIR/mvnw versions:set-property -f applications/stream-applications-core \
-  -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
-  -Dproperty=java-functions.version -DnewVersion="$VERSION"
+  -s $SCDIR/.settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
+  -Dproperty=stream-apps-core.version -DnewVersion="$VERSION" -Pspring
 
 $SCDIR/mvnw versions:set-property -pl :stream-applications-release-train \
-  -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
-  -Dproperty=apps.version -DnewVersion="$VERSION"
+  -s $SCDIR/.settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
+  -Dproperty=apps.version -DnewVersion="$VERSION" -Pspring
 
 OLD_RT_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout -f ./stream-applications-release-train 2> /dev/null)
 OLD_RT_VERSION=$(find_version "$OLD_RT_VERSION")
 echo "Release Train Version: [$OLD_RT_VERSION] -> [$RELEASE_TRAIN_VERSION]"
 echo "Update versions for stream-applications-release-train -> $RELEASE_TRAIN_VERSION"
 $SCDIR/mvnw versions:set -f ./stream-applications-release-train \
-  -DskipResolution=true -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
-  -DoldVersion="$OLD_RT_VERSION" -DnewVersion="$RELEASE_TRAIN_VERSION"
+  -s $SCDIR/.settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
+  -DoldVersion="$OLD_RT_VERSION" -DnewVersion="$RELEASE_TRAIN_VERSION" -Pspring
 
 NEW_VERSION=$($SCDIR/mvnw help:evaluate -DskipResolution=true -Dexpression=project.version -q -DforceStdout 2> /dev/null)
 NEW_VERSION=$(find_version "$NEW_VERSION")
