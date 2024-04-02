@@ -923,7 +923,6 @@ jobs:
     if: ${{ failure() && github.run_attempt == '1' }}
     runs-on: ubuntu-latest
     needs:
-      - scan
       - sources
       - processors
       - sinks
