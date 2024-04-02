@@ -11,7 +11,7 @@ while [ "$1" != "" ]; do
   fi
   shift
 done
-find $SCDIR -type d -name target -exec bash "$SCDIR/scan-jars.sh" '{}' \;
+find . -type d -name target -exec bash "$SCDIR/scan-jars.sh" '{}' \;
 echo "{\"version\": \"2.1.0\", \"\$schema\": \"https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json\", \"runs\": [" > "$SCDIR/scan.sarif"
 if [ -f "$SCDIR/runs.sarif" ]; then
   cat "$SCDIR/runs.sarif" >> "$SCDIR/scan.sarif"

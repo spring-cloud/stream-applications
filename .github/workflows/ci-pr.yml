@@ -127,8 +127,9 @@ jobs:
       - name: Scan Jar files
         shell: bash
         run: |
+          ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
-            ./scan-folders.sh table
+            $ROOT_DIR/scan-folders.sh table
           popd > /dev/null
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
