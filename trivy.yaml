@@ -1,4 +1,4 @@
 timeout: 10m
 scan:
-  security-checks:
+  scanners:
     - vuln

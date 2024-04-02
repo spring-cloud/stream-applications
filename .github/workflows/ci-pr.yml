@@ -124,6 +124,12 @@ jobs:
           for appdir in $SINKS; do
             ./build-app.sh . "./$appdir" true
           done
+      - name: Scan Jar files
+        shell: bash
+        run: |
+          pushd stream-applications > /dev/null
+            ./scan-folders.sh table
+          popd > /dev/null
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
@@ -135,21 +141,6 @@ jobs:
       - name: 'Built'
         shell: bash
         run: echo "::info ::Built"
-  scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          ignore-unfixed: true
-          format: 'table'
-          severity: 'CRITICAL,HIGH'
-          timeout: '15m'
-      - name: 'Scanned'
-        shell: bash
-        run: echo "::info ::Scanned"
   done:
     runs-on: ubuntu-latest
     needs: [ scan, build ]
