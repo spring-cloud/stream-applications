@@ -36,17 +36,17 @@
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.35</spring-javaformat-checkstyle.version>
 
-        <spring-boot.version>3.2.3</spring-boot.version>
-        <spring.version>6.1.4</spring.version>
+        <spring-boot.version>3.3.0-M1</spring-boot.version>
+        <spring.version>6.1.5</spring.version>
 
         <!--        <spring-integration.version>6.1.0</spring-integration.version>-->
 
-        <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
         <spring-cloud-starters.version>4.0.5</spring-cloud-starters.version>
-        <spring-cloud-function.version>4.1.0</spring-cloud-function.version>
-        <spring-cloud-stream-dependencies.version>4.1.0</spring-cloud-stream-dependencies.version>
+        <spring-cloud-function.version>4.1.1</spring-cloud-function.version>
+        <spring-cloud-stream-dependencies.version>4.1.1</spring-cloud-stream-dependencies.version>
 
-        <testcontainers.version>1.19.5</testcontainers.version>
+        <testcontainers.version>1.19.7</testcontainers.version>
         <mockserver.version>5.15.0</mockserver.version>
 
         <groovy.version>4.0.14</groovy.version>
@@ -57,6 +57,8 @@
         <curator.version>5.5.0</curator.version>
         <mavenThreads>1</mavenThreads>
 
+        <commons-compress.version>1.26.0</commons-compress.version>
+        <json-path.version>2.9.0</json-path.version>
 		<!--suppress UnresolvedMavenProperty -->
 		<buildName>${env.BUILD_NAME}</buildName>
 		<!--suppress UnresolvedMavenProperty -->
@@ -79,6 +81,22 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${json-path.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${commons-compress.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring.version}</version>
+                <type>pom</type>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>

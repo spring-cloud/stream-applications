@@ -1,8 +1,8 @@
 {
-  "release_version": "5.0.0-M1",
+  "release_version": "5.0.0-SNAPSHOT",
   "next_dev_version": "5.0.0-SNAPSHOT",
   "release_train": {
-    "release_version": "2024.0.0-M1",
+    "release_version": "2024.0.0-SNAPSHOT",
     "next_dev_version": "2024.0.0-SNAPSHOT"
   }
 }
