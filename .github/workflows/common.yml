@@ -37,27 +37,6 @@ env:
   MAVEN_THREADS: ${{ inputs.mavenThreads }}
 
 jobs:
-  scan:
-    if: ${{ github.repository == 'spring-cloud/stream-applications' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          ignore-unfixed: true
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
-          timeout: '15m'
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
-      - name: 'Scanned'
-        shell: bash
-        run: echo "::info ::Scanned"
   parameters:
     name: 'parameters - ${{ inputs.branch }}'
     if: ${{ github.repository == 'spring-cloud/stream-applications' }}
@@ -378,6 +357,16 @@ jobs:
               echo "::info ::$MESSAGE"
             fi
           popd > /dev/null
+      - name: Scan Jar files
+        shell: bash
+        run: |
+          pushd stream-applications > /dev/null
+            ./scan-folders.sh
+          popd > /dev/null
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'stream-applications/scan.sarif'
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -507,6 +496,16 @@ jobs:
               echo "::info ::$MESSAGE"
             fi
           popd > /dev/null
+      - name: Scan Jar files
+        shell: bash
+        run: |
+          pushd stream-applications > /dev/null
+            ./scan-folders.sh
+          popd > /dev/null
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'stream-applications/scan.sarif'
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -637,6 +636,16 @@ jobs:
               echo "::info ::$MESSAGE"
             fi
           popd > /dev/null
+      - name: Scan Jar files
+        shell: bash
+        run: |
+          pushd stream-applications > /dev/null
+            ./scan-folders.sh
+          popd > /dev/null
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'stream-applications/scan.sarif'
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
