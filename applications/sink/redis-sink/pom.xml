@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>redis-common</artifactId>
-            <version>${project.version}</version>
+            <version>${java-functions.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
