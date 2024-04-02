@@ -28,7 +28,7 @@ pushd "$PROJECT_FOLDER" > /dev/null
     VERSION=$($SCDIR/mvn-get-version.sh)
   fi
   echo "Project Version:$VERSION"
-  if [[ "$VERSION" == "4."* ]]; then
+  if [[ "$VERSION" != "3."* ]]; then
     JDKS="17"
     if [ "$DEFAULT_JDK" == "" ];then
         DEFAULT_JDK="17"
