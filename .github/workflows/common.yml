@@ -367,7 +367,7 @@ jobs:
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'stream-applications/scan.sarif'
+          sarif_file: 'scan.sarif'
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -507,7 +507,7 @@ jobs:
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'stream-applications/scan.sarif'
+          sarif_file: 'scan.sarif'
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -648,7 +648,7 @@ jobs:
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'stream-applications/scan.sarif'
+          sarif_file: 'scan.sarif'
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
