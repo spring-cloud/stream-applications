@@ -360,11 +360,12 @@ jobs:
       - name: Scan Jar files
         shell: bash
         run: |
+          ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
-            ./scan-folders.sh
+            $ROOT_DIR/scan-folders.sh
           popd > /dev/null
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'stream-applications/scan.sarif'
       - name: 'Configure: Docker login'
@@ -499,11 +500,12 @@ jobs:
       - name: Scan Jar files
         shell: bash
         run: |
+          ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
-            ./scan-folders.sh
+            $ROOT_DIR/scan-folders.sh
           popd > /dev/null
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'stream-applications/scan.sarif'
       - name: 'Configure: Docker login'
@@ -639,11 +641,12 @@ jobs:
       - name: Scan Jar files
         shell: bash
         run: |
+          ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
-            ./scan-folders.sh
+            $ROOT_DIR/scan-folders.sh
           popd > /dev/null
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'stream-applications/scan.sarif'
       - name: 'Configure: Docker login'
