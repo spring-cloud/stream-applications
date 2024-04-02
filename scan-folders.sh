@@ -11,6 +11,8 @@ while [ "$1" != "" ]; do
   fi
   shift
 done
+REAL_PATH=$(realpath $PWD)
+echo "Scanning in $REAL_PATH"
 find . -type d -name target -exec bash "$SCDIR/scan-jars.sh" '{}' \;
 echo "{\"version\": \"2.1.0\", \"\$schema\": \"https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json\", \"runs\": [" > "$SCDIR/scan.sarif"
 if [ -f "$SCDIR/runs.sarif" ]; then
