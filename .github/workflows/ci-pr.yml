@@ -124,7 +124,9 @@ jobs:
           for appdir in $SINKS; do
             ./build-app.sh . "./$appdir" true
           done
-      - name: Scan Jar files
+      - name: 'Configure: Install Trivy'
+        uses: ./.github/actions/install-trivy
+      - name: 'Action: Trivy scan'
         shell: bash
         run: |
           ROOT_DIR=$(realpath $PWD)

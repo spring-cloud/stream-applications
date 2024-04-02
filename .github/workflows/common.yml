@@ -385,7 +385,9 @@ jobs:
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
-      - name: 'Scan Jar files'
+      - name: 'Configure: Install Trivy'
+        uses: ./.github/actions/install-trivy
+      - name: 'Action: Trivy scan'
         shell: bash
         id: scan
         run: |
@@ -532,7 +534,9 @@ jobs:
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
-      - name: 'Scan Jar files'
+      - name: 'Configure: Install Trivy'
+        uses: ./.github/actions/install-trivy
+      - name: 'Action: Trivy scan'
         shell: bash
         id: scan
         run: |
@@ -680,7 +684,9 @@ jobs:
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
-      - name: 'Scan Jar files'
+      - name: 'Configure: Install Trivy'
+        uses: ./.github/actions/install-trivy
+      - name: 'Action: Trivy scan'
         shell: bash
         id: scan
         run: |
