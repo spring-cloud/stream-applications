@@ -16,15 +16,18 @@
 
 package org.springframework.cloud.stream.app.sink.redis;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.fn.consumer.redis.RedisTestContainerSupport;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -41,8 +44,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Artem Bilan
  * @author Chris Bono
  */
-public class RedisSinkTests implements RedisTestContainerSupport {
+@Testcontainers(disabledWithoutDocker = true)
+public class RedisSinkTests {
+	static GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>("redis:7").withExposedPorts(6379)
+			.withStartupTimeout(Duration.ofSeconds(120))
+			.withStartupAttempts(3);
 
+	@BeforeAll
+	static void startContainer() {
+		REDIS_CONTAINER.start();
+	}
+	static String getUri() {
+		return "redis://localhost:" + REDIS_CONTAINER.getFirstMappedPort();
+	}
 	@Test
 	public void testRedisSink() {
 		String key = "foo";
@@ -52,7 +66,7 @@ public class RedisSinkTests implements RedisTestContainerSupport {
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=redisConsumer",
 						"--spring.cloud.stream.bindings.redisConsumer-in-0.consumer.use-native-decoding=true",
-						"--spring.data.redis.url=" + RedisTestContainerSupport.getUri(),
+						"--spring.data.redis.url=" + getUri(),
 						"--redis.consumer.key=" + key)) {
 
 			StringRedisTemplate redisTemplate = context.getBean(StringRedisTemplate.class);
