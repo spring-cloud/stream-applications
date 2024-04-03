@@ -87,7 +87,7 @@ public class MojoHarnessTest {
 
 		Parent parent = pomModel.getParent();
 		assertThat(parent.getArtifactId()).isEqualTo("spring-boot-starter-parent");
-		assertThat(parent.getVersion()).isEqualTo("2.3.0.M1");
+		assertThat(parent.getVersion()).isEqualTo("3.3.0.M3");
 
 		assertThat(pomModel.getArtifactId()).isEqualTo("http-source-kafka");
 		assertThat(pomModel.getGroupId()).isEqualTo("org.springframework.cloud.stream.app.test");

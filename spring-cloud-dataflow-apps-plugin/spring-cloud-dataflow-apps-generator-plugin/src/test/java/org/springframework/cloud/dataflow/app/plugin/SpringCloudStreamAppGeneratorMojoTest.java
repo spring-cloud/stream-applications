@@ -85,7 +85,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		application.getMaven().getDependencies().add(dep);
 
 		// BOM
-		application.setBootVersion("2.3.0.M1");
+		application.setBootVersion("3.3.0.M3");
 		application.getMetadata().setMavenPluginVersion("1.0.2.BUILD-SNAPSHOT");
 
 		setMojoProperty("application", application);
@@ -188,7 +188,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 
 		Parent parent = pomModel.getParent();
 		assertThat(parent.getArtifactId()).isEqualTo("spring-boot-starter-parent");
-		assertThat(parent.getVersion()).isEqualTo("2.3.0.M1");
+		assertThat(parent.getVersion()).isEqualTo("3.3.0.M3");
 
 		assertThat(pomModel.getArtifactId()).isEqualTo("log-sink-kafka");
 		assertThat(pomModel.getGroupId()).isEqualTo("org.springframework.cloud.stream.app");
