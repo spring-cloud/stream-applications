@@ -10,6 +10,7 @@ on:
   push:
     paths-ignore:
       - '.github/**'
+      - 'spring-cloud-dataflow-apps-plugin/**'
     branches:
       - 'main'
 
