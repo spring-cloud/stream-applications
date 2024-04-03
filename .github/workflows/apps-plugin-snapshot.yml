@@ -29,7 +29,7 @@ jobs:
           distribution: temurin
       - uses: jvalkeal/setup-maven@v1
         with:
-          maven-version: 3.9.4
+          maven-version: 3.8.8
           maven-mirror: 'https://dlcdn.apache.org/maven/maven-3/'
       - uses: jfrog/setup-jfrog-cli@v3
         with:
