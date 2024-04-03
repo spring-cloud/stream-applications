@@ -56,7 +56,7 @@ jobs:
       - name: Build and Publish
         run: |
           jfrog rt build-clean
-          jfrog rt mvn -gs settings.xml -Pfull,deploymentfiles -B install 
+          jfrog rt mvn -gs settings.xml -B install 
           jfrog rt build-publish
       - name: Capture Test Results
         if: ${{ always() }}
