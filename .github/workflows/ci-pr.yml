@@ -144,10 +144,3 @@ jobs:
       - name: 'Built'
         shell: bash
         run: echo "::info ::Built"
-  done:
-    runs-on: ubuntu-latest
-    needs: [ scan, build ]
-    steps:
-      - name: 'Done'
-        shell: bash
-        run: echo "::info ::Done"
