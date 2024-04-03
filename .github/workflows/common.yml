@@ -395,16 +395,16 @@ jobs:
           pushd stream-applications > /dev/null
             $ROOT_DIR/scan-folders.sh
           popd > /dev/null
-          if [ -f scan.sarif ]; then            
-            echo "scan_file=$(realpath scan.sarif)" >> $GITHUB_OUTPUT
+          if [ -f "$ROOT_DIR/scan.sarif" ]; then
+            echo "scan_file=$ROOT_DIR/scan.sarif" >> $GITHUB_OUTPUT
           else
             echo "scan_file=" >> $GITHUB_OUTPUT
           fi
       - name: Upload Trivy scan results to GitHub Security tab
-        if: ${{ steps.scan.output.scan_file != null && steps.scan.output.scan_file != '' }}
+        if: ${{ steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: '${{ steps.scan.output.scan_file }}'
+          sarif_file: '${{ steps.scan.outputs.scan_file }}'
       - name: Unit Test Report
         uses: dorny/test-reporter@v1
         if: ${{ success() || failure() }}
@@ -544,16 +544,16 @@ jobs:
           pushd stream-applications > /dev/null
             $ROOT_DIR/scan-folders.sh
           popd > /dev/null
-          if [ -f scan.sarif ]; then            
-            echo "scan_file=$(realpath scan.sarif)" >> $GITHUB_OUTPUT
+          if [ -f "$ROOT_DIR/scan.sarif" ]; then
+            echo "scan_file=$ROOT_DIR/scan.sarif" >> $GITHUB_OUTPUT
           else
             echo "scan_file=" >> $GITHUB_OUTPUT
           fi
       - name: Upload Trivy scan results to GitHub Security tab
-        if: ${{ steps.scan.output.scan_file != null && steps.scan.output.scan_file != '' }}
+        if: ${{ steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: '${{ steps.scan.output.scan_file }}'
+          sarif_file: '${{ steps.scan.outputs.scan_file }}'
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
@@ -694,16 +694,16 @@ jobs:
           pushd stream-applications > /dev/null
             $ROOT_DIR/scan-folders.sh
           popd > /dev/null
-          if [ -f scan.sarif ]; then            
-            echo "scan_file=$(realpath scan.sarif)" >> $GITHUB_OUTPUT
+          if [ -f "$ROOT_DIR/scan.sarif" ]; then
+            echo "scan_file=$ROOT_DIR/scan.sarif" >> $GITHUB_OUTPUT
           else
             echo "scan_file=" >> $GITHUB_OUTPUT
           fi
       - name: Upload Trivy scan results to GitHub Security tab
-        if: ${{ steps.scan.output.scan_file != null && steps.scan.output.scan_file != '' }}
+        if: ${{ steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: '${{ steps.scan.output.scan_file }}'
+          sarif_file: '${{ steps.scan.outputs.scan_file }}'
       - name: Unit Test Report
         uses: dorny/test-reporter@v1
         if: ${{ success() || failure() }}
