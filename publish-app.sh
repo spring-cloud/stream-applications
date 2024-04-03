@@ -29,7 +29,7 @@ pushd "$PROJECT_FOLDER" > /dev/null
   fi
   echo "Project Version:$VERSION"
   if [[ "$VERSION" != "3."* ]]; then
-    JDKS="17 21"
+    JDKS="17"
     if [ "$DEFAULT_JDK" == "" ];then
         DEFAULT_JDK="17"
       fi
