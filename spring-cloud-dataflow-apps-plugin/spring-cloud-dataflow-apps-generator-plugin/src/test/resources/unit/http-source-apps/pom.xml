@@ -11,17 +11,16 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<spring-boot.version>2.3.0.M1</spring-boot.version>
-		<stream-apps-core.version>3.0.0.BUILD-SNAPSHOT</stream-apps-core.version>
-		<java-cfenv-boot.version>2.1.1.RELEASE</java-cfenv-boot.version>
-		<app-metadata-maven-plugin-version>1.0.2.BUILD-SNAPSHOT</app-metadata-maven-plugin-version>
+		<spring-boot.version>3.3.0.M3</spring-boot.version>
+		<stream-apps-core.version>5.0.0-SNAPSHOT</stream-apps-core.version>
+		<java-cfenv-boot.version>2.4.1</java-cfenv-boot.version>
+		<app-metadata-maven-plugin-version>1.0.13-SNAPSHOT</app-metadata-maven-plugin-version>
 
 		<!-- Emulate the properties that otherwise should come from the stream-apps-parent parent -->
-		<java-functions.version>1.0.0.BUILD-SNAPSHOT</java-functions.version>
-		<spring-cloud-dependencies.version>Hoxton.RELEASE</spring-cloud-dependencies.version>
-		<spring-cloud-stream-dependencies.version>Horsham.SR2</spring-cloud-stream-dependencies.version>
-		<spring-cloud-function-dependencies.version>3.0.2.RELEASE</spring-cloud-function-dependencies.version>
-		<apps.base-image>springcloud/baseimage:1.0.4</apps.base-image>
+		<java-functions.version>5.0.0-SNAPSHOT</java-functions.version>
+		<spring-cloud-dependencies.version>2023.0.1</spring-cloud-dependencies.version>
+		<spring-cloud-stream-dependencies.version>4.1.1</spring-cloud-stream-dependencies.version>
+		<spring-cloud-function-dependencies.version>4.1.1</spring-cloud-function-dependencies.version>
 	</properties>
 
 	<build>
@@ -45,7 +44,7 @@
 							<application>
 								<bootVersion>${spring-boot.version}</bootVersion>
 								<metadata>
-									<mavenPluginVersion>2.0.2.BUILD-SNAPSHOT</mavenPluginVersion>
+									<mavenPluginVersion>3.3.0-M1</mavenPluginVersion>
 								</metadata>
 								<containerImage>
 									<orgName>globalOrgName</orgName>
