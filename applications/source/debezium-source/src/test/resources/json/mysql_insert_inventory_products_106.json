@@ -10,7 +10,9 @@
     "version": "${json-unit.ignore}",
     "connector": "mysql",
     "name": "my-topic",
-    "ts_ms": 1681663084000,
+    "ts_ms": "${json-unit.ignore}",
+    "ts_ns": "${json-unit.ignore}",
+    "ts_us": "${json-unit.ignore}",
     "snapshot": "true",
     "db": "inventory",
     "table": "products",
@@ -24,5 +26,7 @@
   },
   "op": "r",
   "ts_ms": "${json-unit.ignore}",
+  "ts_ns": "${json-unit.ignore}",
+  "ts_us": "${json-unit.ignore}",
   "transaction": null
 }

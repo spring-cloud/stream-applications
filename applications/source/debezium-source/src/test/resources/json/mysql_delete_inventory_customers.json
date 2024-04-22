@@ -11,6 +11,8 @@
     "connector": "mysql",
     "name": "my-topic",
     "ts_ms": "${json-unit.ignore}",
+    "ts_ns": "${json-unit.ignore}",
+    "ts_us": "${json-unit.ignore}",
     "snapshot": "false",
     "db": "inventory",
     "table": "customers",
@@ -24,5 +26,7 @@
   },
   "op": "d",
   "ts_ms": "${json-unit.ignore}",
+  "ts_ns": "${json-unit.ignore}",
+  "ts_us": "${json-unit.ignore}",
   "transaction": null
 }
