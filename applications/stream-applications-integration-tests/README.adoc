@@ -27,16 +27,9 @@ Then we need to verify the result by checking the sink's external resource.
 To test a processor we publish a message and  use an `OutputMatcher`  to verify the output.
 
 == Configuration
-See link:src/test/java/org/springframework/cloud/stream/apps/integration/test/common/Configuration.java[Configuration] for configuration
+See link:src/test/java/org/springframework/cloud/stream/app/integration/test/common/Configuration.java[Configuration] for configuration
 options. These tests use Spring but not boot currently.
 The most important setting is the image versions to test.
 To override it, set the System property, e.g.,
 
-./mvnw clean test -Dspring.cloud.stream.applications.version=4.0.0-RC1
-
-
-
-
-
-
-
+./mvnw clean test -Dspring.cloud.stream.applications.version=5.0.0-RC1
