@@ -19,26 +19,26 @@ If you want write a custom application or function, this repository contains man
 
 === Project structure
 
-Each function is a Maven project under the link:../functions[functions] directory.
+Each function is a Maven project in the https://github.com/spring-cloud/spring-functions-catalog[Spring Functions Catalog].
 They are organized by type:
 
 .Function Types
 |===
 |Type | Purpose | Package Name
-|link:../functions/supplier/[Supplier]
+|link:https://github.com/spring-cloud/spring-functions-catalog/tree/main/supplier[Supplier]
 |produce information (poll an external source, receive data on demand, etc.)
 |org.springframework.cloud.fn.supplier.<function_name>
 
-|link:../functions/consumer/[Consumer]
+|link:https://github.com/spring-cloud/spring-functions-catalog/tree/main/consumer[Consumer]
 |consume data and send it to an external system
 |org.springframework.cloud.fn.consumer.<function_name>
 
-|link:../functions/function/[Function]
+|link:https://github.com/spring-cloud/spring-functions-catalog/tree/main/function[Function]
 |consume data, process it, and produce a result
 |org.springframework.cloud.fn.<function_name>
 |===
 
-There is also link:../functions/common/[common] for code that is shared across multiple functions.
+There is also link:https://github.com/spring-cloud/spring-functions-catalog/tree/main/common[common] for code that is shared across multiple functions.
 
 It is easiest to start with the maven configuration for an existing function.
 If your function module includes `ConfigurationProperties`, make sure to add the `spring-boot-configuration-processor` dependency.
