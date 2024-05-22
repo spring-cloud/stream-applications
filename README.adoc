@@ -18,9 +18,12 @@ The following are the various components of this repository.
 
 === Reusable Spring Cloud Stream Applications
 
+The following table shows the currently available stream applications:
+
 |===
-| Source | Processor | Sink
-|link:applications/source/debezium-source/README.adoc[Debezium supplier]
+| `Source` | `Processor` | `Sink`
+
+|link:applications/source/debezium-source/README.adoc[Debezium]
 |link:applications/processor/aggregator-processor/README.adoc[Aggregator]
 |link:applications/sink/analytics-sink/README.adoc[Analytics]
 
@@ -32,48 +35,48 @@ The following are the various components of this repository.
 |link:applications/processor/filter-processor/README.adoc[Filter]
 |link:applications/sink/elasticsearch-sink/README.adoc[Elasticsearch]
 
-|
+|link:applications/source/http-source/README.adoc[HTTP]
 |link:applications/processor/groovy-processor/README.adoc[Groovy]
 |link:applications/sink/file-sink/README.adoc[File]
 
-|link:applications/source/http-source/README.adoc[HTTP]
-|link:applications/processor/header-enricher-processor/README.adoc[Header-Enricher]
+|link:applications/source/jdbc-source/README.adoc[JDBC]
+|link:applications/processor/header-enricher-processor/README.adoc[Header Enricher]
 |link:applications/sink/ftp-sink/README.adoc[FTP]
 
-|link:applications/source/jdbc-source/README.adoc[JDBC]
-|link:applications/processor/http-request-processor/README.adoc[HTTP Request]
-|
-
 |link:applications/source/jms-source/README.adoc[JMS]
-|
+|link:applications/processor/header-filter-processor/README.adoc[Header Filter]
 |link:applications/sink/jdbc-sink/README.adoc[JDBC]
 
-|link:applications/source/load-generator-source/README.adoc[Load-Generator]
-|
+|link:applications/source/kafka-source/README.adoc[Kafka]
+|link:applications/processor/http-request-processor/README.adoc[HTTP Request]
+|link:applications/sink/kafka-sink/README.adoc[Kafka]
+
+|link:applications/source/load-generator-source/README.adoc[Load Generator]
+|link:applications/processor/script-processor/README.adoc[Script]
 |link:applications/sink/log-sink/README.adoc[Log]
 
 |link:applications/source/mail-source/README.adoc[Mail]
-|
+|link:applications/processor/splitter-processor/README.adoc[Splitter]
 |link:applications/sink/mongodb-sink/README.adoc[MongoDB]
 
 |link:applications/source/mongodb-source/README.adoc[MongoDB]
-|
+|link:applications/processor/transform-processor/README.adoc[Transform]
 |link:applications/sink/mqtt-sink/README.adoc[MQTT]
 
 |link:applications/source/mqtt-source/README.adoc[MQTT]
-|link:applications/processor/script-processor/README.adoc[Script]
+|link:applications/processor/twitter-trend-processor/README.adoc[Twitter Trend]
 |link:applications/sink/pgcopy-sink/README.adoc[Pgcopy]
 
 |link:applications/source/rabbit-source/README.adoc[RabbitMQ]
-|link:applications/processor/splitter-processor/README.adoc[Splitter]
+|
 |link:applications/sink/rabbit-sink/README.adoc[RabbitMQ]
 
 |link:applications/source/s3-source/README.adoc[AWS S3]
-|link:applications/processor/transform-processor/README.adoc[Transform]
+|
 |link:applications/sink/redis-sink/README.adoc[Redis]
 
 |link:applications/source/sftp-source/README.adoc[SFTP]
-|link:applications/processor/twitter-trend-processor/README.adoc[Twitter Trend]
+|
 |link:applications/sink/router-sink/README.adoc[Router]
 
 |link:applications/source/syslog-source/README.adoc[Syslog]
@@ -82,11 +85,11 @@ The following are the various components of this repository.
 
 |link:applications/source/tcp-source/README.adoc[TCP]
 |
-|link:applications/sink/sftp-sink/README.adoc[SFTP]
+|link:applications/sink/s3-sink/README.adoc[AWS S3]
 
 |link:applications/source/time-source/README.adoc[Time]
 |
-|
+|link:applications/sink/sftp-sink/README.adoc[SFTP]
 
 |link:applications/source/twitter-message-source/README.adoc[Twitter Message]
 |
@@ -108,13 +111,17 @@ The following are the various components of this repository.
 |
 |link:applications/sink/wavefront-sink/README.adoc[Wavefront]
 
+|link:applications/source/zeromq-source/README.adoc[ZeroMQ]
 |
-|
-|link:applications/sink/websocket-sink/README.adoc[Websocket]
+|link:applications/sink/websocket-sink/README.adoc[Webscoket]
 
 |
 |
 |link:applications/sink/xmpp-sink/README.adoc[XMPP]
+
+|
+|
+|link:applications/sink/zeromq-sink/README.adoc[ZeroMQ]
 
 |===
 
