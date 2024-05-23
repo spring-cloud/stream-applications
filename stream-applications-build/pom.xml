@@ -36,8 +36,8 @@
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.35</spring-javaformat-checkstyle.version>
 
-        <spring-boot.version>3.2.5</spring-boot.version>
-        <spring.version>6.1.7</spring.version>
+        <spring-boot.version>3.2.6</spring-boot.version>
+        <spring.version>6.1.8</spring.version>
 
         <!--        <spring-integration.version>6.1.0</spring-integration.version>-->
 
