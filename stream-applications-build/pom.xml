@@ -57,7 +57,7 @@
         <curator.version>5.5.0</curator.version>
         <mavenThreads>1</mavenThreads>
 
-        <commons-compress.version>1.26.0</commons-compress.version>
+        <commons-compress.version>1.26.2</commons-compress.version>
         <json-path.version>2.9.0</json-path.version>
 		<!--suppress UnresolvedMavenProperty -->
 		<buildName>${env.BUILD_NAME}</buildName>
