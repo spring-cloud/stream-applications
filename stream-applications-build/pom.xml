@@ -47,7 +47,7 @@
         <apache-ivy.version>2.5.2</apache-ivy.version>
         <jakarta-jms.version>3.1.0</jakarta-jms.version>
         <spring-cloud-aws.version>3.1.1</spring-cloud-aws.version>
-        <spring-integration-aws.version>3.0.5</spring-integration-aws.version>
+        <spring-integration-aws.version>3.0.7</spring-integration-aws.version>
         <curator.version>5.5.0</curator.version>
         <mavenThreads>1</mavenThreads>
         <commons-compress.version>1.26.2</commons-compress.version>
