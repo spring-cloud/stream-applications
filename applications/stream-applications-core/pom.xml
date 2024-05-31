@@ -17,7 +17,7 @@
 
     <properties>
         <stream-apps-core.version>5.0.0-SNAPSHOT</stream-apps-core.version>
-        <java-functions.version>5.0.0-RC1</java-functions.version>
+        <java-functions.version>5.0.0</java-functions.version>
 		<prometheus-rsocket.version>1.5.2</prometheus-rsocket.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.13-SNAPSHOT</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.13-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
