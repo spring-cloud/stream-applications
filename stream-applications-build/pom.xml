@@ -38,7 +38,7 @@
         <spring-boot.version>3.3.0</spring-boot.version>
         <spring.version>6.1.8</spring.version>
         <spring-cloud.version>2023.0.2</spring-cloud.version>
-        <spring-cloud-starters.version>4.0.5</spring-cloud-starters.version>
+        <spring-cloud-starters.version>4.1.2</spring-cloud-starters.version>
         <spring-cloud-function.version>4.1.2</spring-cloud-function.version>
         <spring-cloud-stream-dependencies.version>4.1.2</spring-cloud-stream-dependencies.version>
         <testcontainers.version>1.19.8</testcontainers.version>
