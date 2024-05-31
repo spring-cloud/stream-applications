@@ -41,7 +41,7 @@
 
         <!--        <spring-integration.version>6.1.0</spring-integration.version>-->
 
-        <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <spring-cloud.version>2023.0.2</spring-cloud.version>
         <spring-cloud-starters.version>4.0.5</spring-cloud-starters.version>
         <spring-cloud-function.version>4.1.1</spring-cloud-function.version>
         <spring-cloud-stream-dependencies.version>4.1.1</spring-cloud-stream-dependencies.version>
