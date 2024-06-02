@@ -522,8 +522,16 @@ public class MetadataAggregationMojo extends AbstractMojo {
 					Class<?> clazz = ClassUtils.resolveClassName(property.getType(), classLoader);
 					if (clazz.isEnum()) {
 						List<ValueHint> valueHints = new ArrayList<>();
-						for (Object o : clazz.getEnumConstants()) {
-							valueHints.add(new ValueHint(o, null));
+						Object[] enumConstants;
+						try {
+							enumConstants = clazz.getEnumConstants();
+						}
+						catch (NoClassDefFoundError ex) {
+							getLog().error("Failed to resolve enum constants for property = " + property + " and class = " + clazz, ex);
+							continue;
+						}
+						for (Object enumConstant : enumConstants) {
+							valueHints.add(new ValueHint(enumConstant, null));
 						}
 
 						if (!providers.containsKey(property.getType())) {
