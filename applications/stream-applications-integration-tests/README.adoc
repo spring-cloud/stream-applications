@@ -32,4 +32,4 @@ options. These tests use Spring but not boot currently.
 The most important setting is the image versions to test.
 To override it, set the System property, e.g.,
 
-./mvnw clean test -Dspring.cloud.stream.applications.version=5.0.0-RC1
+./mvnw clean test -Dspring.cloud.stream.applications.version=5.0.0
