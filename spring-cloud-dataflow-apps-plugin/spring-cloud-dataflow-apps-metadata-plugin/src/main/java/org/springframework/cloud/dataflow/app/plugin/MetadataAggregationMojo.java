@@ -34,10 +34,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -107,6 +109,11 @@ public class MetadataAggregationMojo extends AbstractMojo {
 	static final String SPRING_CLOUD_DATAFLOW_PORT_MAPPING_PROPERTIES = "dataflow-configuration-port-mapping.properties";
 
 	static final String SPRING_CLOUD_DATAFLOW_OPTION_GROUPS_PROPERTIES = "dataflow-configuration-option-groups.properties";
+
+	private static final Set<String> KNOWN_PROBLEMATIC_ENUMS = new HashSet<>();
+	static {
+		KNOWN_PROBLEMATIC_ENUMS.add("org.springframework.boot.autoconfigure.data.jdbc.JdbcDatabaseDialect");
+	}
 
 	@Parameter(defaultValue = "${project}")
 	private MavenProject mavenProject;
@@ -527,8 +534,13 @@ public class MetadataAggregationMojo extends AbstractMojo {
 							enumConstants = clazz.getEnumConstants();
 						}
 						catch (NoClassDefFoundError ex) {
-							getLog().error("Failed to resolve enum constants for property = " + property + " and class = " + clazz, ex);
-							continue;
+							String enumClass = clazz.getName();
+							if (KNOWN_PROBLEMATIC_ENUMS.contains(enumClass)) {
+								getLog().info("[EXPECTED] Failed to resolve enum constants for property = " + property + " and class = " + clazz);
+								continue;
+							}
+							getLog().error("[UNEXPECTED] Failed to resolve enum constants for property = " + property + " and class = " + clazz, ex);
+							throw ex;
 						}
 						for (Object enumConstant : enumConstants) {
 							valueHints.add(new ValueHint(enumConstant, null));
