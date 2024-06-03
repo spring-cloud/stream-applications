@@ -77,7 +77,7 @@ for app in ${PROCESSORS[@]}; do
     if [ -f "$TARGET_FILE" ]; then
       pack build \
         --path "$TARGET_FILE" \
-        --builder gcr.io/paketo-buildpacks/builder:base \
+        --builder paketobuildpacks/builder-jammy-base:latest \
         --env BP_JVM_VERSION=$v \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
@@ -106,7 +106,7 @@ for app in ${SINKS[@]}; do
     if [ -f "$TARGET_FILE" ]; then
       pack build \
         --path "$TARGET_FILE" \
-        --builder gcr.io/paketo-buildpacks/builder:base \
+        --builder paketobuildpacks/builder-jammy-base:latest \
         --env BP_JVM_VERSION=$v \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
@@ -135,7 +135,7 @@ for app in ${SOURCES[@]}; do
     if [ -f "$TARGET_FILE" ]; then
       pack build \
         --path "$TARGET_FILE" \
-        --builder gcr.io/paketo-buildpacks/builder:base \
+        --builder paketobuildpacks/builder-jammy-base:latest \
         --env BP_JVM_VERSION=$v \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \

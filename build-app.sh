@@ -92,7 +92,7 @@ pushd "$PROJECT_FOLDER" >/dev/null
               echo "Pack:$app:$VERSION-jdk$v"
               pack build \
                 --path "target/$app-$VERSION.jar" \
-                --builder gcr.io/paketo-buildpacks/builder:base \
+                --builder paketobuildpacks/builder-jammy-base:latest \
                 --env BP_JVM_VERSION=$v \
                 --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
                 --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
