@@ -76,33 +76,15 @@ jobs:
             MAVEN_OPTS="-X $MAVEN_OPTS"
           fi
           for module in $MODULES; do
-            if [[ "$module" == *"/"* ]]; then
-              if [ "$FOLDERS" = "" ]; then
-                FOLDERS="$module"
-              else
-                FOLDERS="$FOLDERS,$module"
-              fi
+            if [ "$FOLDERS" = "" ]; then
+              FOLDERS="$module"
             else
-              if [ "$ROOT_MODULES" == "" ]; then
-                ROOT_MODULES=$module
-              else
-                ROOT_MODULES="$ROOT_MODULES,$module"
-              fi
+              FOLDERS="$FOLDERS,$module"
             fi
           done
           set +e
-          if [ "$ROOT_MODULES" != "" ]; then
-              # Module with no / are probably a root module that contains other modules and will trigger a lot of dependant builds without real value
-              echo "::info ::building $ROOT_MODULES"
-              echo "::debug ::MAVEN:./mvnw $MAVEN_OPTS -pl $ROOT_MODULES install"
-              ./mvnw $MAVEN_OPTS -pl $ROOT_MODULES install
-              RC=$?
-              if ((RC!=0)); then
-                exit $RC
-              fi
-          fi
           if [ "$FOLDERS" != "" ]; then
-            echo "::info ::verify $FOLDERS and dependents"
+            echo "::info ::install $FOLDERS and dependents"
             echo "::debug ::MAVEN:./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install"
             ./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install
             RC=$?
@@ -110,10 +92,11 @@ jobs:
               exit $RC
             fi
           fi
+          PWD=$(pwd)
           # Build any applications that was compiled but don't deploy to artifactory.          
-          PROCESSORS=$(find ./applications/processor -name target -exec ./parent-dir '{}' \;)
-          SINKS=$(find ./applications/sink -name target -exec ./parent-dir '{}' \;)
-          SOURCES=$(find ./applications/source -name target -exec ./parent-dir '{}' \;)
+          PROCESSORS=$(find ./applications/processor -name target -exec $PWD/parent-dir.sh '{}' \;)
+          SINKS=$(find ./applications/sink -name target -exec $PWD/parent-dir.sh '{}' \;)
+          SOURCES=$(find ./applications/source -name target -exec $PWD/parent-dir.sh '{}' \;)
           # true as 3rd argument ensures that jars aren't deployed and containers aren't built.
           for appdir in $PROCESSORS; do
             ./build-app.sh . "./$appdir" true
