@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -76,10 +77,12 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 
 	static final String CONFIGURATION_PROPERTIES_END_TAG = "//end::configuration-properties[]";
 
-	private static final Map<String, String> APPTYPE_TO_FUNCTIONTYPE = Map.of(
-			"source", "supplier",
-			"processor", "function",
-			"sink", "consumer");
+	private static final Map<String, String> APPTYPE_TO_FUNCTIONTYPE = new HashMap<>();
+	static {
+		APPTYPE_TO_FUNCTIONTYPE.put("source", "supplier");
+		APPTYPE_TO_FUNCTIONTYPE.put("processor", "function");
+		APPTYPE_TO_FUNCTIONTYPE.put("sink", "consumer");
+	}
 
 	private BootApplicationConfigurationMetadataResolver metadataResolver = new BootApplicationConfigurationMetadataResolver(
 			imageName -> null);
@@ -166,8 +169,8 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 		String appName = artifactId.substring(0, artifactId.lastIndexOf('-'));
 		String appType = artifactId.substring(artifactId.lastIndexOf('-') + 1);
 		String functionType = APPTYPE_TO_FUNCTIONTYPE.get(appType);
-		String functionName = "spring-%s-%s".formatted(appName, functionType);
-		String url = "https://github.com/spring-cloud/spring-functions-catalog/tree/main/%s/%s#configuration-options[See Spring Functions Catalog for configuration options].".formatted(functionType, functionName);
+		String functionName = String.format("spring-%s-%s", appName, functionType);
+		String url = String.format("https://github.com/spring-cloud/spring-functions-catalog/tree/main/%s/%s#configuration-options[See Spring Functions Catalog for configuration options].", functionType, functionName);
 		out.println(url);
 	}
 

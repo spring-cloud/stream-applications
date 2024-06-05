@@ -196,7 +196,7 @@ public class MetadataAggregationMojo extends AbstractMojo {
 				new File(projectMetaInfFolder, "spring-configuration-metadata-encoded.properties"))) {
 			ConfigurationMetadata metadata = gatherConfigurationMetadata(metadataFilter);
 			String escapedJson = StringEscapeUtils.escapeJson(toJson(metadata));
-			fileWriter.write("org.springframework.cloud.dataflow.spring.configuration.metadata.json=" + escapedJson);
+			fileWriter.write("org.springframework.cloud.dataflow.spring.configuration.metadata.json=\"" + escapedJson + "\"");
 		}
 		catch (IOException e) {
 			throw new MojoExecutionException("Error creating file ", e);

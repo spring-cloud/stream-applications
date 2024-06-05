@@ -118,7 +118,12 @@ cd applications/sink/log-sink/apps/log-sink-rabbit
 ----
 
 ==== Building a Docker image
-The apps use the https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin[Jib Maven Plugin] to build and publish the Docker image.
+
+[source,shell]
+----
+./mvnw spring-boot:build-image
+----
+
 If you have made some changes to an app, you may want to build the image and test it locally.
 
 NOTE: If you plan to use the image with minikube, run the following command before building the image:
@@ -132,17 +137,19 @@ To build the image in your local registry:
 
 [source,shell]
 ----
-./mvnw clean package jib:dockerBuild
+./mvnw clean package spring-boot:build-image
 ----
 
 To publish the image to a remote registry:
 
 [source,shell]
 ----
-./mvnw jib:build \
-    -Djib.to.image=myregistry/myimage:latest \
-    -Djib.to.auth.username=$USERNAME \
-    -Djib.to.auth.password=$PASSWORD
+./mvnw spring-boot:build-image \
+  -Ddocker.publishRegistry.username=registry-user \
+  -Ddocker.publishRegistry.password=registry-secret \
+  -Ddocker.publishRegistry.url=docker.private-registry.com \
+  -Dspring-boot.build-image.publish=true \
+  -Dspring-boot.build-image.imageName=docker.private-registry.com/library/my-app:v1
 ----
 
 == Patching Pre-built Applications
@@ -240,7 +247,7 @@ For example, if we have to update Spring Cloud Stream to `3.2.4-SNAPSHOT`, this 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream-dependencies</artifactId>
-            <version>4.0.3</version>
+            <version>4.1.2</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>

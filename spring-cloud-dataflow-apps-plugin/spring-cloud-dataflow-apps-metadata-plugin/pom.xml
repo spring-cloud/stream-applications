@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.springframework.cloud</groupId>
 		<artifactId>spring-cloud-dataflow-apps-plugin-parent</artifactId>
-		<version>1.0.15-SNAPSHOT</version>
+		<version>1.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -17,8 +17,8 @@
 		<junit.version>4.12</junit.version>
 		<assertj.version>3.11.1</assertj.version>
 		<commons-text.version>1.8</commons-text.version>
-		<spring.version>5.2.8.RELEASE</spring.version>
-		<snakeyaml.version>1.26</snakeyaml.version>
+		<spring.version>5.3.36</spring.version>
+		<snakeyaml.version>1.33</snakeyaml.version>
 	</properties>
 
 	<dependencies>

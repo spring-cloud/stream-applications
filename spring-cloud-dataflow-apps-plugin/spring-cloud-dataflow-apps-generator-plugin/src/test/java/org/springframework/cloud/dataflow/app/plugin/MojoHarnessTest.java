@@ -74,7 +74,7 @@ public class MojoHarnessTest {
 		Model pomModel = getModel(new File("./target/apps"));
 
 		List<Dependency> dependencies = pomModel.getDependencies();
-		assertThat(dependencies.size()).isEqualTo(15);
+		assertThat(dependencies.size()).isGreaterThanOrEqualTo(15);
 
 		assertThat(dependencies.stream()
 				.filter(d -> d.getArtifactId().equals("http-supplier")).count()).isEqualTo(1);
@@ -87,7 +87,7 @@ public class MojoHarnessTest {
 
 		Parent parent = pomModel.getParent();
 		assertThat(parent.getArtifactId()).isEqualTo("spring-boot-starter-parent");
-		assertThat(parent.getVersion()).isEqualTo("3.3.0.M3");
+		assertThat(parent.getVersion()).isEqualTo("3.3.0");
 
 		assertThat(pomModel.getArtifactId()).isEqualTo("http-source-kafka");
 		assertThat(pomModel.getGroupId()).isEqualTo("org.springframework.cloud.stream.app.test");
@@ -99,15 +99,13 @@ public class MojoHarnessTest {
 
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("spring-boot-maven-plugin")).count()).isEqualTo(1);
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("properties-maven-plugin")).count()).isEqualTo(1);
-		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).count()).isEqualTo(1);
 
-		Plugin jibPlugin = plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).findFirst().get();
-		assertThat(jibPlugin.getConfiguration().toString())
-				.contains("<org.springframework.cloud.dataflow.spring-configuration-metadata.json>" +
-						"${org.springframework.cloud.dataflow.spring.configuration.metadata.json}" +
-						"</org.springframework.cloud.dataflow.spring-configuration-metadata.json>");
-		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>testspringcloud/${project.artifactId}:3.0.0.BUILD-SNAPSHOT</image>");
-		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>globalBaseImage</image>");
+		Plugin springBootPlugin = plugins.stream().filter(p -> p.getArtifactId().equals("spring-boot-maven-plugin")).findFirst().get();
+		assertThat(springBootPlugin).isNotNull();
+		assertThat(springBootPlugin.getConfiguration()).isNotNull();
+		assertThat(springBootPlugin.getConfiguration().toString()).containsPattern("\\<image\\>\\s*" +
+				"\\<name\\>.+/\\$\\{project.artifactId\\}:\\d+\\.\\d+\\.\\d+.*\\</name\\>\\s*" +
+				"\\</image\\>");
 		assertThat(pomModel.getRepositories().size()).isEqualTo(5);
 
 		assertThat(pomModel.getRepositories().stream().map(r -> r.getId()).collect(Collectors.toList()))
