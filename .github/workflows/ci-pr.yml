@@ -2,6 +2,8 @@ name: 'CI - PR'
 
 on:
   pull_request:
+    paths-ignore:
+      - 'spring-cloud-dataflow-apps-plugin/**'
 
 env:
   MAIN_PATH: 'build-dir'
@@ -29,7 +31,7 @@ jobs:
         if: ${{ github.base_ref != 'main' }}
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ needs.parameters.outputs.jdk_build }}
+          java-version: '8'
       - name: 'Configure: Install GraalVM'
         if: ${{ github.base_ref == 'main' }}
         uses: graalvm/setup-graalvm@v1
@@ -52,6 +54,8 @@ jobs:
       - name: 'Action: verify changed modules'
         shell: bash
         env:
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
           PR=$(echo "${{ github.ref_name }}" | grep -o '[[:digit:]]*')
