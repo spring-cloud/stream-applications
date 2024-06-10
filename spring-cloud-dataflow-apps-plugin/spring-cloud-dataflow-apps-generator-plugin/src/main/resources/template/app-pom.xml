@@ -138,49 +138,30 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				{{#app.bootPluginConfiguration}}
-				<configuration>
+				{{#app.bootExecution}}
+				<executions>
+					<execution>
+					<!-- bootExecution -->
 					{{this}}
-				</configuration>
-				{{/app.bootPluginConfiguration}}
-			</plugin>
-
-			<plugin>
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>jib-maven-plugin</artifactId>
-				<version>3.3.0</version>
+					</execution>
+				</executions>
+				{{/app.bootExecution}}
 				<configuration>
-					<from>
-						<image>{{app.containerImage.baseImage}}</image>
-					</from>
-					<to>
-						<image>{{app.containerImage.orgName}}/${project.artifactId}:{{app.containerImage.tag}}</image>
-					</to>
-					<container>
-						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
-						<format>{{app.containerImage.format}}</format>
-						{{#app.containerImage.enableMetadata}}
-						<labels>
-							<org.springframework.cloud.dataflow.spring-configuration-metadata.json>
-								${org.springframework.cloud.dataflow.spring.configuration.metadata.json}
-							</org.springframework.cloud.dataflow.spring-configuration-metadata.json>
-							<application.name>${project.artifactId}</application.name>
-							<application.version>${project.version}</application.version>
-						</labels>
-						{{/app.containerImage.enableMetadata}}
-					</container>
+				{{#app.bootPluginConfiguration}}
+				<!-- bootPluginConfiguration -->
+				{{this}}
+				{{/app.bootPluginConfiguration}}
+				<image>
+					<name>{{app.containerImage.orgName}}/{{app.containerImage.baseImage}}:{{app.containerImage.tag}}</name>
+				</image>
 				</configuration>
 			</plugin>
-
 			{{#app.containerImage.enableMetadata}}
-			<!--
-			 Use of properties-maven-plugin to load the encoded metadata properties created by the jib-maven-plugin
-			 Use: Use: ./mvnw clean install jib:dockerBuild or ./mvnw clean install jib:build
-			-->
+			<!-- enableMetadata -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>properties-maven-plugin</artifactId>
-				<version>1.0.0</version>
+				<version>1.2.1</version>
 				<executions>
 					<execution>
 						<phase>process-classes</phase>
@@ -205,15 +186,18 @@
 				<version>{{app.metadata.mavenPluginVersion}}</version>
 				<configuration>
 					{{#app.containerImage.enableMetadata}}
+					<!-- enableMetadata -->
 					<storeFilteredMetadata>true</storeFilteredMetadata>
 					<metadataFilter>
 						<names>
 							{{#app.metadataNameFilters}}
+							<!-- metadataNameFilters -->
 							<filter>{{this}}</filter>
 							{{/app.metadataNameFilters}}
 						</names>
 						<sourceTypes>
 							{{#app.metadata.sourceTypeFilters}}
+							<!-- sourceTypeFilters -->
 							<filter>{{this}}</filter>
 							{{/app.metadata.sourceTypeFilters}}
 						</sourceTypes>
@@ -232,7 +216,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.21.0</version>
+				<version>3.2.5</version>
 				<configuration>
 					<threadCount>1</threadCount>
 					<forkCount>1</forkCount>

@@ -87,8 +87,17 @@ public class AppDefinition {
 	 * Application metadata related configurations to be applied for this App definition.
 	 */
 	private final Metadata metadata = new Metadata();
-
+	private String bootExecution;
 	private String bootPluginConfiguration;
+
+	public String getBootExecution() {
+		return bootExecution;
+	}
+
+	public void setBootExecution(String bootExecution) {
+		System.out.println(getClass() + ".bootExecution=" + bootExecution);
+		this.bootExecution = bootExecution;
+	}
 
 	public String getBootPluginConfiguration() {
 		return bootPluginConfiguration;

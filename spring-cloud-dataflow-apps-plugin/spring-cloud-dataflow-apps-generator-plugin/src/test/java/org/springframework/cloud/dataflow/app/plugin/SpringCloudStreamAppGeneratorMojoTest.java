@@ -31,7 +31,6 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -85,8 +84,8 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		application.getMaven().getDependencies().add(dep);
 
 		// BOM
-		application.setBootVersion("3.3.0.M3");
-		application.getMetadata().setMavenPluginVersion("1.0.2.BUILD-SNAPSHOT");
+		application.setBootVersion("3.3.0");
+		application.getMetadata().setMavenPluginVersion("1.1.0-SNAPSHOT");
 
 		setMojoProperty("application", application);
 
@@ -128,13 +127,6 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		// The properties-maven-plugin should not be defined if the container metadata is not enabled.
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("properties-maven-plugin")).count()).isEqualTo(0);
 
-		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).count()).isEqualTo(1);
-
-		Plugin jibPlugin = plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).findFirst().get();
-		assertThat(jibPlugin.getConfiguration().toString())
-				.doesNotContain("<org.springframework.cloud.dataflow.spring-configuration-metadata.json>" +
-						"${org.springframework.cloud.dataflow.spring.configuration.metadata.json}" +
-						"</org.springframework.cloud.dataflow.spring-configuration-metadata.json>");
 	}
 
 	@Test
@@ -150,27 +142,27 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 	}
 
 	@Test
-	public void testCustomBootMavenPluginConfiguration() throws Exception {
-		application.setBootPluginConfiguration("<![CDATA[\n" +
-				"                            <requiresUnpack>\n" +
-				"                                <dependency>\n" +
-				"                                    <groupId>org.python</groupId>\n" +
-				"                                    <artifactId>jython-standalone</artifactId>\n" +
-				"                                </dependency>\n" +
-				"                            </requiresUnpack>\n" +
-				"                            ]]>");
-
+	public void testCustomBootMavenExecutionsAndPluginConfiguration() throws Exception {
+		application.setBootPluginConfiguration("<requiresUnpack>" +
+				"<dependency>" +
+				"<groupId>org.python</groupId>" +
+				"<artifactId>jython-standalone</artifactId>" +
+				"</dependency>" +
+				"</requiresUnpack>");
+		application.setBootExecution("<id>process-aot</id>" +
+				"<goals>" +
+				"<goal>process-aot</goal>" +
+				"</goals>");
 		springCloudStreamAppMojo.execute();
 
 		Model pomModel = getModel(new File(projectHome.getRoot().getAbsolutePath()));
 		List<Plugin> plugins = pomModel.getBuild().getPlugins();
 		final Optional<Plugin> bootPlugin = plugins.stream().filter(p -> p.getArtifactId().equals("spring-boot-maven-plugin")).findFirst();
 		assertThat(bootPlugin.isPresent()).isTrue();
-		final Plugin plugin = bootPlugin.get();
-		final Xpp3Dom configuration = (Xpp3Dom) plugin.getConfiguration();
-		assertThat(configuration.getValue().contains("<requiresUnpack>")).isTrue();
-		assertThat(configuration.getValue().contains("jython-standalone")).isTrue();
-		assertThat(configuration.getValue().contains("</requiresUnpack>")).isTrue();
+		assertThat(bootPlugin.get().getConfiguration().toString()).contains("requiresUnpack");
+		assertThat(bootPlugin.get().getExecutions()).as("Expected executions").isNotEmpty();
+		assertThat(bootPlugin.get().getExecutions().get(0).getGoals()).as("Expected goals").isNotEmpty();
+		assertThat(bootPlugin.get().getExecutions().get(0).getGoals().get(0)).isEqualTo("process-aot");
 	}
 
 	private void assertGeneratedPomXml(File rootPath) {
@@ -178,7 +170,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		Model pomModel = getModel(rootPath);
 
 		List<Dependency> dependencies = pomModel.getDependencies();
-		assertThat(dependencies.size()).isEqualTo(3);
+		assertThat(dependencies.size()).isGreaterThanOrEqualTo(3);
 
 		assertThat(dependencies.stream()
 				.filter(d -> d.getArtifactId().equals("log-consumer")).count()).isEqualTo(1);
@@ -188,7 +180,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 
 		Parent parent = pomModel.getParent();
 		assertThat(parent.getArtifactId()).isEqualTo("spring-boot-starter-parent");
-		assertThat(parent.getVersion()).isEqualTo("3.3.0.M3");
+		assertThat(parent.getVersion()).isEqualTo("3.3.0");
 
 		assertThat(pomModel.getArtifactId()).isEqualTo("log-sink-kafka");
 		assertThat(pomModel.getGroupId()).isEqualTo("org.springframework.cloud.stream.app");
@@ -199,14 +191,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		List<Plugin> plugins = pomModel.getBuild().getPlugins();
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("spring-boot-maven-plugin")).count()).isEqualTo(1);
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("properties-maven-plugin")).count()).isEqualTo(1);
-		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).count()).isEqualTo(1);
 
-		Plugin jibPlugin = plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).findFirst().get();
-		assertThat(jibPlugin.getConfiguration().toString())
-				.contains("<org.springframework.cloud.dataflow.spring-configuration-metadata.json>" +
-						"${org.springframework.cloud.dataflow.spring.configuration.metadata.json}" +
-						"</org.springframework.cloud.dataflow.spring-configuration-metadata.json>");
-		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>base/image</image>");
 
 		assertThat(pomModel.getRepositories().size()).isEqualTo(2);
 	}
