@@ -49,6 +49,18 @@ public class MojoHarnessTest {
 	@Rule
 	public MojoRule mojoRule = new MojoRule();
 
+	//	@Before
+//	public void before() {
+//		setMojoProperty("generatedProjectHome", projectHome.getRoot().getAbsolutePath());
+//	}
+//	private SpringCloudStreamAppGeneratorMojo springCloudStreamAppMojo = new SpringCloudStreamAppGeneratorMojo();
+//
+//	private Class<? extends SpringCloudStreamAppGeneratorMojo> mojoClazz = springCloudStreamAppMojo.getClass();
+//	private void setMojoProperty(String propertyName, Object value) throws NoSuchFieldException {
+//		Field mojoProperty = mojoClazz.getDeclaredField(propertyName);
+//		mojoProperty.setAccessible(true);
+//		ReflectionUtils.setField(mojoProperty, springCloudStreamAppMojo, value);
+//	}
 	@Test
 	public void testSomething() throws Exception {
 
@@ -106,8 +118,14 @@ public class MojoHarnessTest {
 		assertThat(springBootPlugin.getConfiguration().toString()).containsPattern("\\<image\\>\\s*" +
 				"\\<name\\>.+/\\$\\{project.artifactId\\}:\\d+\\.\\d+\\.\\d+.*\\</name\\>\\s*" +
 				"\\</image\\>");
-		assertThat(pomModel.getRepositories().size()).isEqualTo(5);
 
+		List<String> executions = springBootPlugin.getExecutions().stream().map(pluginExecution -> pluginExecution.getId() + ":" + pluginExecution.getPhase() + ":" + pluginExecution.getGoals()).collect(Collectors.toList());
+		assertThat(executions).as("Exepcted executions").isNotEmpty();
+		assertThat(executions.toString()).contains("process-aot");
+
+		assertThat(springBootPlugin.getConfiguration().toString()).contains("requiresUnpack");
+
+		assertThat(pomModel.getRepositories().size()).isEqualTo(5);
 		assertThat(pomModel.getRepositories().stream().map(r -> r.getId()).collect(Collectors.toList()))
 				.contains("bintray-global", "bintray-application", "bintray-binder");
 	}

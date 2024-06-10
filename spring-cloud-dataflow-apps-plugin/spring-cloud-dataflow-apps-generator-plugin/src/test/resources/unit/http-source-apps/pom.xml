@@ -229,7 +229,24 @@
 						<version>${project.version}</version>
 						<configClass>io.pivotal.java.function.http.supplier.HttpSupplierConfiguration.class</configClass>
 						<groupId>org.springframework.cloud.stream.app.test</groupId>
-
+						<bootExecution><![CDATA[
+								<!-- http-source-apps -->
+								<id>process-aot</id>
+								<goals>
+									<goal>process-aot</goal>
+								</goals>
+								]]>
+						</bootExecution>
+						<bootPluginConfiguration><![CDATA[
+								<!-- http-source-apps -->
+								<requiresUnpack>
+									<dependency>
+										<groupId>org.python</groupId>
+										<artifactId>jython-standalone</artifactId>
+									</dependency>
+								</requiresUnpack>
+								]]>
+						</bootPluginConfiguration>
 						<properties>
 							<spring.main.web-application-type>reactive</spring.main.web-application-type>
 							<spring.cloud.streamapp.security.enabled>false</spring.cloud.streamapp.security.enabled>
