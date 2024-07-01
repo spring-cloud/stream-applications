@@ -19,10 +19,10 @@
         <stream-apps-core.version>5.0.1-SNAPSHOT</stream-apps-core.version>
         <java-functions.version>5.0.0</java-functions.version>
 		<prometheus-rsocket.version>1.5.2</prometheus-rsocket.version>
-        <spring-cloud-dataflow-apps-generator-plugin.version>1.0.14</spring-cloud-dataflow-apps-generator-plugin.version>
-        <spring-cloud-dataflow-apps-docs-plugin.version>1.0.14</spring-cloud-dataflow-apps-docs-plugin.version>
-        <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.14</spring-cloud-dataflow-apps-metadata-plugin.version>
-        <java-cfenv-boot.version>2.4.1</java-cfenv-boot.version>
+        <spring-cloud-dataflow-apps-generator-plugin.version>1.1.0-SNAPSHOT</spring-cloud-dataflow-apps-generator-plugin.version>
+        <spring-cloud-dataflow-apps-docs-plugin.version>1.1.0-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
+        <spring-cloud-dataflow-apps-metadata-plugin.version>1.1.0-SNAPSHOT</spring-cloud-dataflow-apps-metadata-plugin.version>
+        <java-cfenv-boot.version>3.1.5</java-cfenv-boot.version>
     </properties>
 
     <modules>
