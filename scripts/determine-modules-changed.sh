@@ -23,7 +23,7 @@ for file in $MODIFIED; do
   FILE=$(realpath $file)
   echo "$file was changed"
   for ITEM in $ALL_MODULES; do
-    if [[ "$ITEM" != "." ]] && [[ "$file" == *"$ITEM"* ]]; then
+    if [[ "$ITEM" != "." ]] && [[ "$file" != *"spring-cloud-dataflow-apps-plugin"* ]] && [[ "$file" == *"$ITEM"* ]]; then
       echo "Matched $ITEM"
       HAS_ITEM=$(itemInModules)
       if ((HAS_ITEM == 0)); then
