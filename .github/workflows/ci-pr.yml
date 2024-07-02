@@ -6,7 +6,7 @@ on:
 env:
   MAIN_PATH: 'build-dir'
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  MAVEN_THREADS: 'true'
+  MAVEN_THREADS: 'false'
 jobs:
   build:
     if: github.repository == 'spring-cloud/stream-applications'

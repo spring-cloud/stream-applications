@@ -19,10 +19,12 @@ package org.springframework.cloud.stream.app.sink.analytics;
 import java.nio.charset.StandardCharsets;
 
 import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.fn.consumer.analytics.AnalyticsConsumerConfiguration;
@@ -45,17 +47,20 @@ public class AnalyticsSinkTests {
 				TestChannelBinderConfiguration.getCompleteConfiguration(AnalyticsSinkTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=byteArrayTextToString|analyticsConsumer",
+						"--management.defaults.metrics.export.enabled=true",
+						"--analytics.meter-type=counter",
 						"--analytics.name=counter666",
 						"--analytics.amount-expression=payload.length()",
 						"--analytics.tag.expression.foo='bar'")) {
 
-			SimpleMeterRegistry meterRegistry = context.getBean(SimpleMeterRegistry.class);
+			MeterRegistry meterRegistry = context.getBean(MeterRegistry.class);
 
 			String message = "hello world message";
 			InputDestination source = context.getBean(InputDestination.class);
 			source.send(new GenericMessage<>(message.getBytes(StandardCharsets.UTF_8)));
 
-			Counter counter = meterRegistry.find("counter666").counter();
+			Counter counter = meterRegistry.counter("counter666", "foo", "bar");
+			assertThat(counter).as("counter:counter666").isNotNull();
 			assertThat(counter.count()).isEqualTo(message.length());
 			assertThat(counter.getId().getTag("foo")).isEqualTo("bar");
 		}
@@ -63,6 +68,7 @@ public class AnalyticsSinkTests {
 
 	@SpringBootApplication
 	@Import({ AnalyticsConsumerConfiguration.class})
+	@ImportAutoConfiguration({MetricsAutoConfiguration.class})
 	public static class AnalyticsSinkTestApplication {
 	}
 
