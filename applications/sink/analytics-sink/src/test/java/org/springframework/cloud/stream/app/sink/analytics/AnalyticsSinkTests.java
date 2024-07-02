@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.assertj.core.description.Description;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
