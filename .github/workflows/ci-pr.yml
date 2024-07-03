@@ -84,29 +84,14 @@ jobs:
           done
           set +e
           if [ "$FOLDERS" != "" ]; then
-            echo "::info ::install $FOLDERS and dependents"
-            echo "::debug ::MAVEN:./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install"
+            echo "::notice::install $FOLDERS and dependents"
+            echo "::debug::MAVEN:./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install"
             ./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install
             RC=$?
             if ((RC!=0)); then
               exit $RC
             fi
           fi
-          PWD=$(pwd)
-          # Build any applications that was compiled but don't deploy to artifactory.          
-          PROCESSORS=$(find ./applications/processor -name target -exec $PWD/parent-dir.sh '{}' \;)
-          SINKS=$(find ./applications/sink -name target -exec $PWD/parent-dir.sh '{}' \;)
-          SOURCES=$(find ./applications/source -name target -exec $PWD/parent-dir.sh '{}' \;)
-          # true as 3rd argument ensures that jars aren't deployed and containers aren't built.
-          for appdir in $PROCESSORS; do
-            ./build-app.sh . "./$appdir" true
-          done          
-          for appdir in $SOURCES; do
-            ./build-app.sh . "./$appdir" true
-          done          
-          for appdir in $SINKS; do
-            ./build-app.sh . "./$appdir" true
-          done
       - name: 'Configure: Install Trivy'
         uses: ./.github/actions/install-trivy
       - name: 'Action: Trivy scan'
