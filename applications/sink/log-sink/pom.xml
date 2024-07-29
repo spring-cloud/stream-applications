@@ -56,8 +56,21 @@
                         <version>${project.version}</version>
                         <configClass>AUTOCONFIGURATION</configClass>
                         <functionDefinition>byteArrayTextToString|logConsumer</functionDefinition>
-
+                        <bootExecution>
+                        <![CDATA[
+                            <id>process-aot</id>
+                            <goals>
+                                <goal>process-aot</goal>
+                            </goals>
+                        ]]>
+                        </bootExecution>
                         <maven>
+                            <plugins>
+                                <plugin>
+                                    <groupId>org.graalvm.buildtools</groupId>
+                                    <artifactId>native-maven-plugin</artifactId>
+                                </plugin>
+                            </plugins>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.springframework.cloud.fn</groupId>
