@@ -138,16 +138,24 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-				<image>
-					<name>{{app.containerImage.orgName}}/${project.artifactId}:{{app.containerImage.tag}}</name>
-				</image>
-				{{#app.bootPluginConfiguration}}
+				{{#app.bootExecution}}
+				<executions>
+					<!-- bootExecution -->
 					{{this}}
+				</executions>
+				{{/app.bootExecution}}
+				<configuration>
+				{{#app.bootPluginConfiguration}}
+				<!-- bootPluginConfiguration -->
+				{{this}}
 				{{/app.bootPluginConfiguration}}
+				<image>
+					<name>{{app.containerImage.orgName}}/{{app.containerImage.baseImage}}:{{app.containerImage.tag}}</name>
+				</image>
 				</configuration>
 			</plugin>
 			{{#app.containerImage.enableMetadata}}
+			<!-- enableMetadata -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>properties-maven-plugin</artifactId>
@@ -176,15 +184,18 @@
 				<version>{{app.metadata.mavenPluginVersion}}</version>
 				<configuration>
 					{{#app.containerImage.enableMetadata}}
+					<!-- enableMetadata -->
 					<storeFilteredMetadata>true</storeFilteredMetadata>
 					<metadataFilter>
 						<names>
 							{{#app.metadataNameFilters}}
+							<!-- metadataNameFilters -->
 							<filter>{{this}}</filter>
 							{{/app.metadataNameFilters}}
 						</names>
 						<sourceTypes>
 							{{#app.metadata.sourceTypeFilters}}
+							<!-- sourceTypeFilters -->
 							<filter>{{this}}</filter>
 							{{/app.metadata.sourceTypeFilters}}
 						</sourceTypes>

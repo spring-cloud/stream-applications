@@ -8,7 +8,7 @@
 	<version>{{app.version}}</version>
 	<packaging>pom</packaging>
 
-	<name>Apps Modules</name>
+	<name>{{app.name}}-{{app.type}}-apps</name>
 	<description>Parent project for generated apps project modules</description>
 	<url>http://spring.io/spring-cloud</url>
 	<licenses>
@@ -80,7 +80,11 @@
 	</distributionManagement>
 	<build>
 		<plugins>
-
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.3.0</version>
+			</plugin>
 		</plugins>
 	</build>
 	<profiles>

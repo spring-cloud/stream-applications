@@ -85,7 +85,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 
 		// BOM
 		application.setBootVersion("3.3.0");
-		application.getMetadata().setMavenPluginVersion("1.0.2.BUILD-SNAPSHOT");
+		application.getMetadata().setMavenPluginVersion("1.1.0-SNAPSHOT");
 
 		setMojoProperty("application", application);
 
@@ -142,23 +142,27 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 	}
 
 	@Test
-	public void testCustomBootMavenPluginConfiguration() throws Exception {
-		application.setBootPluginConfiguration("<![CDATA[\n" +
-				"                            <requiresUnpack>\n" +
-				"                                <dependency>\n" +
-				"                                    <groupId>org.python</groupId>\n" +
-				"                                    <artifactId>jython-standalone</artifactId>\n" +
-				"                                </dependency>\n" +
-				"                            </requiresUnpack>\n" +
-				"                            ]]>");
-
+	public void testCustomBootMavenExecutionsAndPluginConfiguration() throws Exception {
+		application.setBootPluginConfiguration("<requiresUnpack>" +
+				"<dependency>" +
+				"<groupId>org.python</groupId>" +
+				"<artifactId>jython-standalone</artifactId>" +
+				"</dependency>" +
+				"</requiresUnpack>");
+		application.setBootExecution("<execution><id>process-aot</id>" +
+				"<goals>" +
+				"<goal>process-aot</goal>" +
+				"</goals></execution>");
 		springCloudStreamAppMojo.execute();
 
 		Model pomModel = getModel(new File(projectHome.getRoot().getAbsolutePath()));
 		List<Plugin> plugins = pomModel.getBuild().getPlugins();
 		final Optional<Plugin> bootPlugin = plugins.stream().filter(p -> p.getArtifactId().equals("spring-boot-maven-plugin")).findFirst();
 		assertThat(bootPlugin.isPresent()).isTrue();
-
+		assertThat(bootPlugin.get().getConfiguration().toString()).contains("requiresUnpack");
+		assertThat(bootPlugin.get().getExecutions()).as("Expected executions").isNotEmpty();
+		assertThat(bootPlugin.get().getExecutions().get(0).getGoals()).as("Expected goals").isNotEmpty();
+		assertThat(bootPlugin.get().getExecutions().get(0).getGoals().get(0)).isEqualTo("process-aot");
 	}
 
 	private void assertGeneratedPomXml(File rootPath) {

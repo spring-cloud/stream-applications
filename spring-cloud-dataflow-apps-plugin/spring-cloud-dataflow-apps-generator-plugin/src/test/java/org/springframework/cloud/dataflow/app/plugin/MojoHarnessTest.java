@@ -87,7 +87,7 @@ public class MojoHarnessTest {
 
 		Parent parent = pomModel.getParent();
 		assertThat(parent.getArtifactId()).isEqualTo("spring-boot-starter-parent");
-		assertThat(parent.getVersion()).isEqualTo("3.3.0");
+		assertThat(parent.getVersion()).isEqualTo("3.3.2");
 
 		assertThat(pomModel.getArtifactId()).isEqualTo("http-source-kafka");
 		assertThat(pomModel.getGroupId()).isEqualTo("org.springframework.cloud.stream.app.test");
@@ -106,8 +106,12 @@ public class MojoHarnessTest {
 		assertThat(springBootPlugin.getConfiguration().toString()).containsPattern("\\<image\\>\\s*" +
 				"\\<name\\>.+/\\$\\{project.artifactId\\}:\\d+\\.\\d+\\.\\d+.*\\</name\\>\\s*" +
 				"\\</image\\>");
-		assertThat(pomModel.getRepositories().size()).isEqualTo(5);
 
+		List<String> executions = springBootPlugin.getExecutions().stream().map(pluginExecution -> pluginExecution.getId() + ":" + pluginExecution.getPhase() + ":" + pluginExecution.getGoals()).collect(Collectors.toList());
+		assertThat(executions).as("Expected executions").isNotEmpty();
+		assertThat(executions.toString()).contains("process-aot");
+
+		assertThat(pomModel.getRepositories().size()).isEqualTo(5);
 		assertThat(pomModel.getRepositories().stream().map(r -> r.getId()).collect(Collectors.toList()))
 				.contains("bintray-global", "bintray-application", "bintray-binder");
 	}
