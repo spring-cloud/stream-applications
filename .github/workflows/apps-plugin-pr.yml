@@ -1,23 +1,20 @@
-name: Apps Plugin (Snapshot)
+name: 'CI - PR'
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - 'main'
-    paths:
-      - 'spring-cloud-dataflow-apps-plugin/**'
+  pull_request:
+    paths-ignore:
+      - 'applications/**'
+      - 'stream-applications-build/**'
+      - 'stream-applications-release-train/**'
 
 env:
-  MAVEN_THREADS: '-T 0.5C'
-
+  MAIN_PATH: 'build-dir'
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MAVEN_THREADS: 'true'
 jobs:
-  build_deploy_snapshot:
-    if: ${{ github.repository == 'spring-cloud/stream-applications' }}
+  build:
+    if: github.repository == 'spring-cloud/stream-applications'
     runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
     defaults:
       run:
         working-directory: spring-cloud-dataflow-apps-plugin
@@ -42,22 +39,13 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-m2-
-      - name: Configure JFrog Cli
-        run: |
-          jfrog rt mvnc \
-            --server-id-resolve=repo.spring.io \
-            --server-id-deploy=repo.spring.io \
-            --repo-resolve-releases=libs-milestone \
-            --repo-resolve-snapshots=libs-snapshot \
-            --repo-deploy-releases=libs-milestone-local \
-            --repo-deploy-snapshots=libs-snapshot-local
-          echo JFROG_CLI_BUILD_NAME=spring-cloud-dataflow-apps-plugin-main-snapshot >> $GITHUB_ENV
-          echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
       - name: Build and Publish
-        run: |
-          jfrog rt build-clean
-          jfrog rt mvn -s settings.xml -B install 
-          jfrog rt build-publish
+        shell: bash
+        env:
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+        run: |          
+          ./mvnw -s settings.xml -B install
       - name: Capture Test Results
         if: ${{ always() }}
         uses: actions/upload-artifact@v3

@@ -129,6 +129,22 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 				this.global.getApplication().getFunctionDefinition() : this.application.getFunctionDefinition();
 		app.setFunctionDefinition(applicationFunctionDefinition); //TODO is applicationFunctionDefinition required?
 
+		String appBootPluginConfiguration = StringUtils.hasText(this.application.getBootPluginConfiguration()) ?
+				this.application.getBootPluginConfiguration() : this.global.getApplication().getBootPluginConfiguration();
+		app.setBootPluginConfiguration(appBootPluginConfiguration);
+
+		String appBootExecution = StringUtils.hasText(this.application.getBootExecution()) ?
+				this.application.getBootExecution() : this.global.getApplication().getBootExecution();
+		app.setBootExecution(appBootExecution);
+
+		Boolean skipNativeTests = this.application.skipNativeTests != null ? this.application.skipNativeTests :
+				this.global.application.skipNativeTests != null ? this.global.application.skipNativeTests : Boolean.FALSE;
+		app.setSkipNativeTests(skipNativeTests);
+
+		String nativeConfiguration = StringUtils.hasText(this.application.getNativeConfiguration()) ? this.application.getNativeConfiguration() :
+				this.global.getApplication().getNativeConfiguration();
+		app.setNativeConfiguration(nativeConfiguration);
+
 		String metadataMavenPluginVersion = StringUtils.isEmpty(this.application.getMetadata().getMavenPluginVersion()) ?
 				this.global.getApplication().getMetadata().getMavenPluginVersion() : this.application.getMetadata().getMavenPluginVersion();
 		if (StringUtils.isEmpty(metadataMavenPluginVersion)) {
@@ -306,8 +322,6 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 				})
 				.collect(Collectors.toList());
 
-		app.setBootPluginConfiguration(this.application.getBootPluginConfiguration());
-
 		// ----------------------------------------------------------------------------------------------------------
 		//                                 Project Generator
 		// ----------------------------------------------------------------------------------------------------------
@@ -465,6 +479,9 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		private final Maven maven = new Maven();
 
 		private String bootPluginConfiguration;
+		private String bootExecution;
+		private Boolean skipNativeTests;
+		private String nativeConfiguration;
 
 		public String getBootPluginConfiguration() {
 			return bootPluginConfiguration;
@@ -472,6 +489,30 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 
 		public void setBootPluginConfiguration(String bootPluginConfiguration) {
 			this.bootPluginConfiguration = bootPluginConfiguration;
+		}
+
+		public String getBootExecution() {
+			return bootExecution;
+		}
+
+		public void setBootExecution(String bootExecution) {
+			this.bootExecution = bootExecution;
+		}
+
+		public Boolean getSkipNativeTests() {
+			return skipNativeTests;
+		}
+
+		public void setSkipNativeTests(Boolean skipNativeTests) {
+			this.skipNativeTests = skipNativeTests;
+		}
+
+		public String getNativeConfiguration() {
+			return nativeConfiguration;
+		}
+
+		public void setNativeConfiguration(String nativeConfiguration) {
+			this.nativeConfiguration = nativeConfiguration;
 		}
 
 		public Map<String, String> getProperties() {
@@ -631,7 +672,7 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 			/**
 			 * Base images to be used by the target container image.
 			 */
-			private String baseImage;
+			private String baseImage = "${project.artifactId}";
 
 			/**
 			 * Enable or disable the inclusion of application's metadata into the image's labels.
