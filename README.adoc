@@ -148,6 +148,14 @@ This will build and test / integration test all the modules.
 ./full-build-test.sh
 ....
 
+==== Boil the Ocean (sans tests)
+
+This will build all the modules (including apps) but skip tests.
+
+....
+./full-build-no-test.sh
+....
+
 ==== Core
 
 This will build the core functionality and all functions.
