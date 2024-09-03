@@ -155,11 +155,12 @@
                                     <management.metrics.tags.application.type>"${spring.cloud.dataflow.stream.app.type:unknown}"</management.metrics.tags.application.type>
                                     <management.metrics.tags.instance.index>"${spring.cloud.stream.instanceIndex:0}"</management.metrics.tags.instance.index>
                                     <management.metrics.tags.application.guid>"${spring.cloud.application.guid:unknown}"</management.metrics.tags.application.guid>
-
                                     <!-- Wavefront Tracing -->
                                     <wavefront.application.name>"${spring.cloud.dataflow.stream.name:unknown}</wavefront.application.name>
                                     <wavefront.application.service>${spring.cloud.dataflow.stream.app.label:unknown}-${spring.cloud.dataflow.stream.app.type:unknown}"</wavefront.application.service>
-
+                                    <!-- Zipkin Tracing -->
+                                    <management.tracing.enabled>false</management.tracing.enabled>
+                                    <management.tracing.sampling.probability>1.0</management.tracing.sampling.probability>
                                 </properties>
                                 <metadata>
                                     <mavenPluginVersion>${spring-cloud-dataflow-apps-metadata-plugin.version}</mavenPluginVersion>
@@ -214,7 +215,7 @@
                                         </dependency>
                                         <dependency>
                                             <groupId>io.micrometer</groupId>
-                                            <artifactId>micrometer-registry-prometheus</artifactId>
+                                            <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
                                         </dependency>
 										<dependency>
 											<groupId>io.micrometer.prometheus</groupId>
@@ -224,6 +225,23 @@
                                         <dependency>
                                             <groupId>io.micrometer</groupId>
                                             <artifactId>micrometer-registry-wavefront</artifactId>
+                                        </dependency>
+                                        <!-- Tracing -->
+                                        <dependency>
+                                            <groupId>io.micrometer</groupId>
+                                            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>io.zipkin.reporter2</groupId>
+                                            <artifactId>zipkin-reporter-brave</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>io.zipkin.reporter2</groupId>
+                                            <artifactId>zipkin-sender-urlconnection</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>io.micrometer</groupId>
+                                            <artifactId>micrometer-tracing-reporter-wavefront</artifactId>
                                         </dependency>
                                         <dependency>
                                             <groupId>io.pivotal.cfenv</groupId>
