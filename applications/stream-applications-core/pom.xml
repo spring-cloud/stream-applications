@@ -18,7 +18,7 @@
     <properties>
         <stream-apps-core.version>5.0.1-SNAPSHOT</stream-apps-core.version>
         <java-functions.version>5.0.1-SNAPSHOT</java-functions.version>
-		<prometheus-rsocket.version>1.5.2</prometheus-rsocket.version>
+        <prometheus-rsocket.version>2.0.0-M1</prometheus-rsocket.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.14</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.14</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.14</spring-cloud-dataflow-apps-metadata-plugin.version>
@@ -144,12 +144,10 @@
                                     <!-- Disable all meter repositories by default.  -->
                                     <management.wavefront.metrics.export.enabled>false</management.wavefront.metrics.export.enabled>
                                     <management.influx.metrics.export.enabled>false</management.influx.metrics.export.enabled>
-									<management.datadog.metrics.export.enabled>false</management.datadog.metrics.export.enabled>
-									<management.prometheus.metrics.export.enabled>false</management.prometheus.metrics.export.enabled>
-									<!-- rsocket proxy still on SB2.7.x naming convention -->
-									<management.metrics.export.prometheus.rsocket.enabled>false</management.metrics.export.prometheus.rsocket.enabled>
-
-									<!-- Add SCDF stream metrics tags. -->
+                                    <management.datadog.metrics.export.enabled>false</management.datadog.metrics.export.enabled>
+                                    <management.prometheus.metrics.export.enabled>false</management.prometheus.metrics.export.enabled>
+                                    <management.prometheus.metrics.export.rsocket.enabled>false</management.prometheus.metrics.export.rsocket.enabled>
+                                    <!-- Add SCDF stream metrics tags. -->
                                     <management.metrics.tags.stream.name>"${spring.cloud.dataflow.stream.name:unknown}"</management.metrics.tags.stream.name>
                                     <management.metrics.tags.application.name>"${spring.cloud.dataflow.stream.app.label:unknown}"</management.metrics.tags.application.name>
                                     <management.metrics.tags.application.type>"${spring.cloud.dataflow.stream.app.type:unknown}"</management.metrics.tags.application.type>
@@ -167,6 +165,16 @@
                                 </metadata>
                                 <maven>
                                     <dependencyManagement>
+                                        <dependency>
+                                            <groupId>io.micrometer.prometheus</groupId>
+                                            <artifactId>prometheus-rsocket-spring</artifactId>
+                                            <version>${prometheus-rsocket.version}</version>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>io.micrometer.prometheus</groupId>
+                                            <artifactId>prometheus-rsocket-client</artifactId>
+                                            <version>${prometheus-rsocket.version}</version>
+                                        </dependency>
                                         <!-- Temporarily override SC-Fn dependency by giving it the highest precedence since 2020.0.5 release of spring-cloud will not take place until December -->
                                         <dependency>
                                             <groupId>org.springframework.cloud</groupId>
@@ -217,11 +225,14 @@
                                             <groupId>io.micrometer</groupId>
                                             <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
                                         </dependency>
-										<dependency>
-											<groupId>io.micrometer.prometheus</groupId>
-											<artifactId>prometheus-rsocket-spring</artifactId>
-											<version>${prometheus-rsocket.version}</version>
-										</dependency>
+                                        <dependency>
+                                            <groupId>io.micrometer.prometheus</groupId>
+                                            <artifactId>prometheus-rsocket-spring</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>io.micrometer.prometheus</groupId>
+                                            <artifactId>prometheus-rsocket-client</artifactId>
+                                        </dependency>
                                         <dependency>
                                             <groupId>io.micrometer</groupId>
                                             <artifactId>micrometer-registry-wavefront</artifactId>
