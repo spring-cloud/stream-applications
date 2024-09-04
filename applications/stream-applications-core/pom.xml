@@ -170,11 +170,6 @@
                                             <artifactId>prometheus-rsocket-spring</artifactId>
                                             <version>${prometheus-rsocket.version}</version>
                                         </dependency>
-                                        <dependency>
-                                            <groupId>io.micrometer.prometheus</groupId>
-                                            <artifactId>prometheus-rsocket-client</artifactId>
-                                            <version>${prometheus-rsocket.version}</version>
-                                        </dependency>
                                         <!-- Temporarily override SC-Fn dependency by giving it the highest precedence since 2020.0.5 release of spring-cloud will not take place until December -->
                                         <dependency>
                                             <groupId>org.springframework.cloud</groupId>
@@ -228,10 +223,6 @@
                                         <dependency>
                                             <groupId>io.micrometer.prometheus</groupId>
                                             <artifactId>prometheus-rsocket-spring</artifactId>
-                                        </dependency>
-                                        <dependency>
-                                            <groupId>io.micrometer.prometheus</groupId>
-                                            <artifactId>prometheus-rsocket-client</artifactId>
                                         </dependency>
                                         <dependency>
                                             <groupId>io.micrometer</groupId>
