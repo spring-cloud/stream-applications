@@ -156,9 +156,11 @@
                                     <!-- Wavefront Tracing -->
                                     <wavefront.application.name>"${spring.cloud.dataflow.stream.name:unknown}</wavefront.application.name>
                                     <wavefront.application.service>${spring.cloud.dataflow.stream.app.label:unknown}-${spring.cloud.dataflow.stream.app.type:unknown}"</wavefront.application.service>
-                                    <!-- Zipkin Tracing -->
+                                    <!-- Disable Tracing and all Tracing exporters -->
                                     <management.tracing.enabled>false</management.tracing.enabled>
                                     <management.tracing.sampling.probability>1.0</management.tracing.sampling.probability>
+                                    <management.zipkin.tracing.enabled>false</management.zipkin.tracing.enabled>
+                                    <management.wavefront.tracing.enabled>false</management.wavefront.tracing.enabled>
                                 </properties>
                                 <metadata>
                                     <mavenPluginVersion>${spring-cloud-dataflow-apps-metadata-plugin.version}</mavenPluginVersion>
