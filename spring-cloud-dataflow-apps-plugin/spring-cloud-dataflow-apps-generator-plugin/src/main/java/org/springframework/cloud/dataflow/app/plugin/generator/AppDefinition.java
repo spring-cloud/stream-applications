@@ -87,8 +87,18 @@ public class AppDefinition {
 	 * Application metadata related configurations to be applied for this App definition.
 	 */
 	private final Metadata metadata = new Metadata();
-
+	private String bootExecution;
 	private String bootPluginConfiguration;
+	private Boolean skipNativeTests;
+	private String nativeConfiguration;
+
+	public String getBootExecution() {
+		return bootExecution;
+	}
+
+	public void setBootExecution(String bootExecution) {
+		this.bootExecution = bootExecution;
+	}
 
 	public String getBootPluginConfiguration() {
 		return bootPluginConfiguration;
@@ -96,6 +106,22 @@ public class AppDefinition {
 
 	public void setBootPluginConfiguration(String bootPluginConfiguration) {
 		this.bootPluginConfiguration = bootPluginConfiguration;
+	}
+
+	public String getNativeConfiguration() {
+		return nativeConfiguration;
+	}
+
+	public void setNativeConfiguration(String nativeConfiguration) {
+		this.nativeConfiguration = nativeConfiguration;
+	}
+
+	public Boolean getSkipNativeTests() {
+		return skipNativeTests;
+	}
+
+	public void setSkipNativeTests(Boolean skipNativeTests) {
+		this.skipNativeTests = skipNativeTests;
 	}
 
 	public String getName() {
