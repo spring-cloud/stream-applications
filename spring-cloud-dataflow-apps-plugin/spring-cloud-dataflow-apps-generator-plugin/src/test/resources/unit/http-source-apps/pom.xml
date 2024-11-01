@@ -13,7 +13,7 @@
 	<properties>
 		<spring-boot.version>3.3.0.M3</spring-boot.version>
 		<stream-apps-core.version>5.0.0-SNAPSHOT</stream-apps-core.version>
-		<java-cfenv-boot.version>2.4.1</java-cfenv-boot.version>
+		<java-cfenv-boot.version>3.2.0</java-cfenv-boot.version>
 		<app-metadata-maven-plugin-version>1.0.13-SNAPSHOT</app-metadata-maven-plugin-version>
 
 		<!-- Emulate the properties that otherwise should come from the stream-apps-parent parent -->
