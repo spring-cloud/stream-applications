@@ -17,7 +17,7 @@ function addItem() {
     fi
 }
 MODIFIED="$*"
-ALL_MODULES=$(find . -name "pom.xml" -type f -exec dirname '{}' \; | sed 's/\.\///' | sort -r)
+ALL_MODULES=$(find . -name "pom.xml" -not -path './spring-cloud-dataflow-apps-plugin/*' -type f -exec dirname '{}' \; | sed 's/\.\///' | sort -r)
 MODULES=
 for file in $MODIFIED; do
   FILE=$(realpath $file)
