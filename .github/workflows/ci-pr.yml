@@ -94,11 +94,6 @@ jobs:
           fi
       - name: 'Configure: Install Trivy'
         uses: ./.github/actions/install-trivy
-      - name: 'Action: Trivy scan'
-        shell: bash
-        run: |
-          BUILD_DIR=$(realpath $MAIN_PATH)
-          $BUILD_DIR/scan-folders.sh table
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
