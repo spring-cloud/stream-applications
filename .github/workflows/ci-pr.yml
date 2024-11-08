@@ -53,6 +53,7 @@ jobs:
         env:
           VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
+
           export SKIP_DEPLOY=true
           ./build-core.sh "-T 1C install -Psnapshot"
           ./build-apps.sh "-T 1C install -Psnapshot"
