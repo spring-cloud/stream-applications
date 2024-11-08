@@ -59,7 +59,7 @@
         <curator.version>5.5.0</curator.version>
         <mavenThreads>1</mavenThreads>
 
-		<!-- Nothing has changed but we want to see if this is building -->
+		<!-- Nothing has changed but we want to see if this is building (take 2) -->
 
 		<!--suppress UnresolvedMavenProperty -->
 		<buildName>${env.BUILD_NAME}</buildName>
