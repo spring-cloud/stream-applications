@@ -54,6 +54,7 @@ jobs:
         env:
           VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
+          echo "*** Hello from PR" 
           PR=$(echo "${{ github.ref_name }}" | grep -o '[[:digit:]]*')
           echo "Checking out pull request #$PR"
           gh pr checkout $PR

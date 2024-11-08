@@ -16,6 +16,7 @@ function addItem() {
       echo "$MODULES $1"
     fi
 }
+echo "*** Hello from PR (determine-modules-changed)"
 MODIFIED="$*"
 ALL_MODULES=$(find . -name "pom.xml" -type f -exec dirname '{}' \; | sed 's/\.\///' | sort -r)
 echo "[" >modules.json
