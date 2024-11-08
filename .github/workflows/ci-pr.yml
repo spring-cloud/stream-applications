@@ -26,12 +26,11 @@ jobs:
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
       - name: 'Configure: Install Java'
-        if: ${{ github.base_ref != 'main' }}
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
           java-version: 17
-      - name: 'Configure: Install GraalVM'
-        if: ${{ github.base_ref == 'main' }}
+          distribution: 'graalvm'
+      - name: 'Configure: GraalVM'
         uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
@@ -54,76 +53,10 @@ jobs:
         env:
           VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
-          PR=$(echo "${{ github.ref_name }}" | grep -o '[[:digit:]]*')
-          echo "Checking out pull request #$PR"
-          gh pr checkout $PR
-          BUILD_DIR=$(realpath $MAIN_PATH)
-          echo "Changed files:"
-          gh pr diff --name-only
-          CHANGED=$(gh pr diff --name-only)
-          $BUILD_DIR/scripts/determine-modules-changed.sh "$CHANGED"
-          MODULES=$(jq '.[]' modules.json | sed 's/\"//g')
-          FOLDERS=
-          ROOT_MODULES=
-          if [ "$MAVEN_THREADS" = "true" ]; then
-            MVN_THR="-T 0.5C"
-          else
-            MVN_THR=
-          fi
-          MAVEN_OPTS="-s $BUILD_DIR/.settings.xml -B -U $MVN_THR"
-          echo "VERBOSE=$VERBOSE"
-          if [ "$VERBOSE" = "true" ]; then
-            MAVEN_OPTS="-X $MAVEN_OPTS"
-          fi
-          for module in $MODULES; do
-            if [[ "$module" == *"/"* ]]; then
-              if [ "$FOLDERS" = "" ]; then
-                FOLDERS="$module"
-              else
-                FOLDERS="$FOLDERS,$module"
-              fi
-            else
-              if [ "$ROOT_MODULES" == "" ]; then
-                ROOT_MODULES=$module
-              else
-                ROOT_MODULES="$ROOT_MODULES,$module"
-              fi
-            fi
-          done
-          set +e
-          if [ "$ROOT_MODULES" != "" ]; then
-              # Module with no / are probably a root module that contains other modules and will trigger a lot of dependant builds without real value
-              echo "::info ::building $ROOT_MODULES"
-              echo "::debug ::MAVEN:./mvnw $MAVEN_OPTS -pl $ROOT_MODULES install"
-              ./mvnw $MAVEN_OPTS -pl $ROOT_MODULES install
-              RC=$?
-              if ((RC!=0)); then
-                exit $RC
-              fi
-          fi
-          if [ "$FOLDERS" != "" ]; then
-            echo "::info ::verify $FOLDERS and dependents"
-            echo "::debug ::MAVEN:./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install"
-            ./mvnw $MAVEN_OPTS -amd -pl $FOLDERS install
-            RC=$?
-            if ((RC!=0)); then
-              exit $RC
-            fi
-          fi
-          # Build any applications that was compiled but don't deploy to artifactory.          
-          PROCESSORS=$(find ./applications/processor -name target -exec ./parent-dir '{}' \;)
-          SINKS=$(find ./applications/sink -name target -exec ./parent-dir '{}' \;)
-          SOURCES=$(find ./applications/source -name target -exec ./parent-dir '{}' \;)
-          # true as 3rd argument ensures that jars aren't deployed and containers aren't built.
-          for appdir in $PROCESSORS; do
-            ./build-app.sh . "./$appdir" true
-          done          
-          for appdir in $SOURCES; do
-            ./build-app.sh . "./$appdir" true
-          done          
-          for appdir in $SINKS; do
-            ./build-app.sh . "./$appdir" true
-          done
+          export SKIP_DEPLOY=true
+          ./build-core.sh "-T 1C install -Psnapshot"
+          ./build-apps.sh "-T 1C install -Psnapshot"
+          ./integration-tests.sh
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
