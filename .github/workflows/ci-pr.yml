@@ -28,7 +28,7 @@ jobs:
       - name: 'Configure: Install Java'
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '17.0.12'
           distribution: 'graalvm'
       - name: 'Configure: cache for maven dependencies'
         uses: actions/cache@v3
