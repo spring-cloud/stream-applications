@@ -38,16 +38,16 @@ jobs:
 
       - name: 'Configure: Install Java'
         if: ${{ env.JAVA_VERSION == '8' }}
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
-          java-version: 8
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'liberica'
       - name: 'Configure: Install GraalVM'
         if: ${{ env.JAVA_VERSION != '8' }}
-        uses: graalvm/setup-graalvm@v1
+        uses: actions/setup-java@v4
         with:
-          version: 'latest'
-          java-version: '17'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'graalvm'
       - name: 'Configure: cache for maven dependencies'
         uses: actions/cache@v3
         with:

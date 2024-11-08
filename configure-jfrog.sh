@@ -17,3 +17,5 @@ case $1 in
 esac
 echo "MVNC=$MVNC"
 jfrog mvnc $MVNC
+RC=$?
+exit $RC
