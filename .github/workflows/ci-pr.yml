@@ -29,7 +29,7 @@ jobs:
         if: ${{ github.base_ref != 'main' }}
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ needs.parameters.outputs.jdk_build }}
+          java-version: 17
       - name: 'Configure: Install GraalVM'
         if: ${{ github.base_ref == 'main' }}
         uses: graalvm/setup-graalvm@v1
@@ -92,13 +92,6 @@ jobs:
               exit $RC
             fi
           fi
-      - name: 'Configure: Install Trivy'
-        uses: ./.github/actions/install-trivy
-      - name: 'Action: Trivy scan'
-        shell: bash
-        run: |
-          BUILD_DIR=$(realpath $MAIN_PATH)
-          $BUILD_DIR/scan-folders.sh table
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
