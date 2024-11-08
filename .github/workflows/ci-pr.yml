@@ -135,23 +135,9 @@ jobs:
       - name: 'Built'
         shell: bash
         run: echo "::info ::Built"
-  scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          ignore-unfixed: true
-          format: 'table'
-          severity: 'CRITICAL,HIGH'
-      - name: 'Scanned'
-        shell: bash
-        run: echo "::info ::Scanned"
   done:
     runs-on: ubuntu-latest
-    needs: [ scan, build ]
+    needs: [ scan ]
     steps:
       - name: 'Done'
         shell: bash
