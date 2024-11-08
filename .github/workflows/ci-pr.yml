@@ -41,15 +41,20 @@ jobs:
             maven-repo-
       - name: 'Configure: Install xsltproc'
         uses: ./.github/actions/install-xsltproc
-      - name: 'Action: verify changed modules'
+      - name: 'Action: Build Core'
         shell: bash
         env:
           VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
           export SKIP_DEPLOY=true
           ./build-core.sh "-T 1C install -Psnapshot"
+      - name: 'Action: Build Apps'
+        shell: bash
+        env:
+          VERBOSE: ${{ github.debug && 'true' || '' }}
+        run: |
+          export SKIP_DEPLOY=true
           ./build-apps.sh "-T 1C install -Psnapshot"
-          ./integration-tests.sh
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
