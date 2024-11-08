@@ -28,15 +28,8 @@ jobs:
       - name: 'Configure: Install Java'
         uses: actions/setup-java@v4
         with:
-          java-version: 17
-          distribution: 'graalvm'
-      - name: 'Configure: GraalVM'
-        uses: graalvm/setup-graalvm@v1
-        with:
-          version: 'latest'
           java-version: '17'
-          components: 'js'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          distribution: 'graalvm'
       - name: 'Configure: cache for maven dependencies'
         uses: actions/cache@v3
         with:
