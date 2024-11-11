@@ -7,6 +7,12 @@ env:
   MAIN_PATH: 'build-dir'
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   MAVEN_THREADS: 'false'
+  BUILD_NAME: 'stream-applications-${{ github.ref_name }}'
+  BUILD_NUMBER: ${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
+  ARTIFACTORY_USERNAME: 'anonymous'
+  ARTIFACTORY_PASSWORD: 'anonymous'
+  SKIP_DEPLOY: 'true'
+
 jobs:
   build:
     if: github.repository == 'spring-cloud/stream-applications'
@@ -45,19 +51,13 @@ jobs:
         shell: bash
         env:
           VERBOSE: ${{ github.debug && 'true' || '' }}
-          ARTIFACTORY_USERNAME: 'anonymous'
-          ARTIFACTORY_PASSWORD: 'anonymous'
         run: |
-          export SKIP_DEPLOY=true
           ./build-core.sh "-T 1C package -Psnapshot"
       - name: 'Action: Build Apps'
         shell: bash
         env:
           VERBOSE: ${{ github.debug && 'true' || '' }}
-          ARTIFACTORY_USERNAME: 'anonymous'
-          ARTIFACTORY_PASSWORD: 'anonymous'
         run: |
-          export SKIP_DEPLOY=true
           ./build-apps.sh "-T 1C package -Psnapshot"
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
