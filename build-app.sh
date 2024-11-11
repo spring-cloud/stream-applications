@@ -23,7 +23,9 @@ if [ "$2" == "" ]; then
 fi
 PROJECT_FOLDER=$(realpath "$1")
 APP_FOLDER=$2
-SKIP_DEPLOY=$3
+if [ "$3" != "" ]; then
+  SKIP_DEPLOY=$3
+fi
 
 set -e
 
