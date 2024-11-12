@@ -16,7 +16,7 @@ env:
 jobs:
   build:
     if: github.repository == 'spring-cloud/stream-applications'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu22-8-32-OSS
     steps:
       - name: 'Configure: checkout stream-applications@${{ github.ref_name }}'
         uses: actions/checkout@v3
