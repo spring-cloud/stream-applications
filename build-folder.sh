@@ -20,14 +20,18 @@ function check_env() {
   fi
 }
 
+if [ "$1" == "" ]; then
+  echo -e "Options: ${bold} <comma-separated-folders> [<maven-goals>]*${end}"
+  exit 1
+fi
 if [ "$VERBOSE" = "true" ]; then
   MAVEN_OPTS="-X"
 elif [ "$VERBOSE" = "false" ]; then
   MAVEN_OPTS="-q"
 fi
-MAVEN_OPTS="$MAVEN_OPTS -s $SCDIR/.settings.xml -B"
-if [ "$1" == "" ]; then
-  echo -e "Options: ${bold} <comma-separated-folders> [<maven-goals>]*${end}"
+MAVEN_OPTS="$MAVEN_OPTS -B"
+if [ "$SKIP_DEPLOY" != "true" ]; then
+  MAVEN_OPTS="$MAVEN_OPTS -s $SCDIR/.settings.xml"
 fi
 FOLDER_NAMES="$1"
 shift
@@ -83,7 +87,7 @@ for FOLDER in $FOLDER_NAMES; do
 done
 # IFS will affect mvnw ability to split arguments.
 IFS=$SAVED_IFS
-if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
+if [[ "$MAVEN_GOAL" == *"deploy"* ]] && [ "$SKIP_DEPLOY" != "true" ]; then
   check_env ARTIFACTORY_USERNAME
   check_env ARTIFACTORY_PASSWORD
 fi
