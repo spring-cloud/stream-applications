@@ -187,7 +187,6 @@ jobs:
         with:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
           distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Configure: cache for maven dependencies'
         uses: actions/cache@v3
         with:
@@ -278,24 +277,6 @@ jobs:
           path: 'stream-applications/**/target/surefire-reports'
           retention-days: 7
           if-no-files-found: ignore
-      - name: 'Action: Re-run ${{ github.workflow }}'
-        if: ${{ failure() }}
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh run view ${{ github.run_id }} -v | grep "^X"
-          FAILURES=$(gh run view ${{ github.run_id }} -v | grep "^X")
-          COUNT_TESTS=$(echo "$FAILURES" | grep -c -F "tests ")
-          if((COUNT_TESTS > 0)); then
-            echo "::info ::Re-run ${{ github.workflow }} run ${{ github.run_id }}"
-            gh run rerun ${{ github.run_id }} --failed --debug
-          else
-            echo "Checked ${{ github.workflow }} run ${{ github.run_id }}. No failures in tests jobs:"
-            for msg in $FAILURES; do
-              echo "$msg"
-            done
-          fi
   processors:
     if: ${{ github.repository == 'spring-cloud/stream-applications' && needs.parameters.outputs.processors != '' && needs.parameters.outputs.processors != null }}
     needs:
