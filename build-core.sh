@@ -19,5 +19,5 @@ if [ "$1" = "" ]; then
 else
   MAVEN_GOAL="$*"
 fi
-
+set -e
 $SCDIR/build-folder.sh stream-applications-build,applications/stream-applications-core "$MAVEN_GOAL"

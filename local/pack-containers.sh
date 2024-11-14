@@ -76,6 +76,7 @@ for app in ${PROCESSORS[@]}; do
     TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
     if [ -f "$TARGET_FILE" ]; then
       pack build \
+        --pull-policy if-not-present \
         --path "$TARGET_FILE" \
         --builder paketobuildpacks/builder-jammy-base:latest \
         --env BP_JVM_VERSION=$v \
@@ -105,6 +106,7 @@ for app in ${SINKS[@]}; do
     TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
     if [ -f "$TARGET_FILE" ]; then
       pack build \
+        --pull-policy if-not-present \
         --path "$TARGET_FILE" \
         --builder paketobuildpacks/builder-jammy-base:latest \
         --env BP_JVM_VERSION=$v \
@@ -134,6 +136,7 @@ for app in ${SOURCES[@]}; do
     TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
     if [ -f "$TARGET_FILE" ]; then
       pack build \
+        --pull-policy if-not-present \
         --path "$TARGET_FILE" \
         --builder paketobuildpacks/builder-jammy-base:latest \
         --env BP_JVM_VERSION=$v \

@@ -23,7 +23,9 @@ if [ "$2" == "" ]; then
 fi
 PROJECT_FOLDER=$(realpath "$1")
 APP_FOLDER=$2
-SKIP_DEPLOY=$3
+if [ "$3" != "" ]; then
+  SKIP_DEPLOY=$3
+fi
 
 set -e
 
@@ -40,7 +42,7 @@ pushd "$PROJECT_FOLDER" >/dev/null
   else
     MAVEN_GOAL="install verify deploy"
   fi
-  if [[ "$MAVEN_GOAL" == *"deploy"* ]]; then
+  if [[ "$MAVEN_GOAL" == *"deploy"* ]] && [ "$SKIP_DEPLOY" != "true" ]; then
     check_env ARTIFACTORY_USERNAME
     check_env ARTIFACTORY_PASSWORD
   fi
@@ -90,7 +92,9 @@ pushd "$PROJECT_FOLDER" >/dev/null
           if [ "$SKIP_DEPLOY" == "" ] || [ "$SKIP_DEPLOY" == "false" ]; then
             for v in $JDKS; do
               echo "Pack:$app:$VERSION-jdk$v"
+              set -e
               pack build \
+                --pull-policy if-not-present \
                 --path "target/$app-$VERSION.jar" \
                 --builder paketobuildpacks/builder-jammy-base:latest \
                 --env BP_JVM_VERSION=$v \
