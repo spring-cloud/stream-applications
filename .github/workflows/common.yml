@@ -18,6 +18,11 @@ on:
         required: false
         default: '1'
         description: 'Maven Thread Option. Examples 0.5C, 2'
+      enableSecurityScan:
+        type: boolean
+        required: false
+        default: false
+        description: 'Enable security scan with Trivy'
     secrets:
       DOCKERHUB_USERNAME:
       DOCKERHUB_TOKEN:
@@ -38,7 +43,7 @@ env:
 
 jobs:
   scan:
-    if: ${{ github.repository == 'spring-cloud/stream-applications' }}
+    if: ${{ inputs.enableSecurityScan && github.repository == 'spring-cloud/stream-applications' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
