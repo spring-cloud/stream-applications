@@ -76,8 +76,9 @@ for app in ${PROCESSORS[@]}; do
     TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
     if [ -f "$TARGET_FILE" ]; then
       pack build \
+        --pull-policy if-not-present \
         --path "$TARGET_FILE" \
-        --builder gcr.io/paketo-buildpacks/builder:base \
+        --builder paketobuildpacks/builder-jammy-base:latest \
         --env BP_JVM_VERSION=$v \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
@@ -105,8 +106,9 @@ for app in ${SINKS[@]}; do
     TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
     if [ -f "$TARGET_FILE" ]; then
       pack build \
+        --pull-policy if-not-present \
         --path "$TARGET_FILE" \
-        --builder gcr.io/paketo-buildpacks/builder:base \
+        --builder paketobuildpacks/builder-jammy-base:latest \
         --env BP_JVM_VERSION=$v \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \
@@ -134,8 +136,9 @@ for app in ${SOURCES[@]}; do
     TARGET_FILE="$APP_PATH/$app-$BROKER-$TAG.jar"
     if [ -f "$TARGET_FILE" ]; then
       pack build \
+        --pull-policy if-not-present \
         --path "$TARGET_FILE" \
-        --builder gcr.io/paketo-buildpacks/builder:base \
+        --builder paketobuildpacks/builder-jammy-base:latest \
         --env BP_JVM_VERSION=$v \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 \
         --env BPE_APPEND_JDK_JAVA_OPTIONS=-Dsun.jnu.encoding \

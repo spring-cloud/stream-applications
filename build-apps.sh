@@ -19,17 +19,31 @@ if [ "$1" = "" ]; then
 else
   MAVEN_GOAL="$*"
 fi
-
+RC=0
+set +e
 $SCDIR/create-matrices.sh
 PROCESSORS=$(jq -c '.processors | .[]' matrix.json | sed 's/\"//g')
 SINKS=$(jq -c '.sinks | .[]' matrix.json | sed 's/\"//g')
 SOURCES=$(jq -c '.sources | .[]' matrix.json | sed 's/\"//g')
 for app in $PROCESSORS; do
   $SCDIR/build-app.sh . "applications/processor/$app"
+  RCC=$?
+  if ((RCC!=0)); then
+    RC=$RCC
+  fi
 done
 for app in $SOURCES; do
   $SCDIR/build-app.sh . "applications/source/$app"
+  RCC=$?
+  if ((RCC!=0)); then
+    RC=$RCC
+  fi
 done
 for app in $SINKS; do
   $SCDIR/build-app.sh . "applications/sink/$app"
+  RCC=$?
+  if ((RCC!=0)); then
+    RC=$RCC
+  fi
 done
+exit $RC
