@@ -18,6 +18,11 @@ on:
         required: false
         default: '1'
         description: 'Maven Thread Option. Examples 0.5C, 2'
+      enableSecurityScan:
+        type: boolean
+        required: false
+        default: false
+        description: 'Enable security scan with Trivy'
     secrets:
       DOCKERHUB_USERNAME:
       DOCKERHUB_TOKEN:
@@ -352,8 +357,10 @@ jobs:
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
       - name: 'Configure: Install Trivy'
+        if: ${{ inputs.enableSecurityScan }}
         uses: ./.github/actions/install-trivy
       - name: 'Action: Trivy scan'
+        if: ${{ inputs.enableSecurityScan }}
         shell: bash
         id: scan
         run: |
@@ -367,7 +374,7 @@ jobs:
             echo "scan_file=" >> $GITHUB_OUTPUT
           fi
       - name: Upload Trivy scan results to GitHub Security tab
-        if: ${{ steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
+        if: ${{ inputs.enableSecurityScan && steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: '${{ steps.scan.outputs.scan_file }}'
@@ -493,8 +500,10 @@ jobs:
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
       - name: 'Configure: Install Trivy'
+        if: ${{ inputs.enableSecurityScan }}
         uses: ./.github/actions/install-trivy
       - name: 'Action: Trivy scan'
+        if: ${{ inputs.enableSecurityScan }}
         shell: bash
         id: scan
         run: |
@@ -508,7 +517,7 @@ jobs:
             echo "scan_file=" >> $GITHUB_OUTPUT
           fi
       - name: Upload Trivy scan results to GitHub Security tab
-        if: ${{ steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
+        if: ${{ inputs.enableSecurityScan && steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: '${{ steps.scan.outputs.scan_file }}'
@@ -643,8 +652,10 @@ jobs:
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
       - name: 'Configure: Install Trivy'
+        if: ${{ inputs.enableSecurityScan }}
         uses: ./.github/actions/install-trivy
       - name: 'Action: Trivy scan'
+        if: ${{ inputs.enableSecurityScan }}
         shell: bash
         id: scan
         run: |
@@ -658,7 +669,7 @@ jobs:
             echo "scan_file=" >> $GITHUB_OUTPUT
           fi
       - name: Upload Trivy scan results to GitHub Security tab
-        if: ${{ steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
+        if: ${{ inputs.enableSecurityScan && steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: '${{ steps.scan.outputs.scan_file }}'
