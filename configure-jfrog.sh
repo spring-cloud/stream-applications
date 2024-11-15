@@ -19,10 +19,13 @@ echo "MVNC=$MVNC"
 jfrog mvnc $MVNC
 RC=$?
 if ((RC !=0)); then
+  echo "jfrog mvnc $MVNC"
+  echo "error: $RC"
   exit $RC
 fi
 jfrog rt ping
 RC=$?
 if ((RC !=0)); then
+  echo "jfrog rt ping error: $RC"
   exit $RC
 fi

@@ -778,7 +778,6 @@ jobs:
       - name: Configure JFrog Cli
         shell: bash
         run: |
-          jfrog rt ping
           ./configure-jfrog.sh ${{ needs.parameters.outputs.build_version_type }}          
           echo JFROG_CLI_BUILD_NAME=stream-apps-main-release >> $GITHUB_ENV
           echo JFROG_CLI_BUILD_NUMBER=$GITHUB_RUN_NUMBER >> $GITHUB_ENV
