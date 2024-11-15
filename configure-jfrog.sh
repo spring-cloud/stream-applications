@@ -18,4 +18,11 @@ esac
 echo "MVNC=$MVNC"
 jfrog mvnc $MVNC
 RC=$?
-exit $RC
+if ((RC !=0)); then
+  exit $RC
+fi
+jfrog rt ping
+RC=$?
+if ((RC !=0)); then
+  exit $RC
+fi
