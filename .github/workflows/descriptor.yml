@@ -167,7 +167,7 @@ jobs:
       - uses: jfrog/setup-jfrog-cli@v3
         env:
           JF_URL: 'https://repo.spring.io'
-          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+          JF_ARTIFACTORY_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: 'Build: stream-applications-release-train'
         shell: bash
         timeout-minutes: 30
