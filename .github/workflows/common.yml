@@ -771,7 +771,7 @@ jobs:
               echo "::info ::$MESSAGE"
             fi          
           popd > /dev/null
-      - uses: jfrog/setup-jfrog-cli@v4
+      - uses: jfrog/setup-jfrog-cli@v3
         env:
           JF_URL: 'https://repo.spring.io'
           JF_ACCESS_TOKEN: ${{ secrets.JF_ARTIFACTORY_SPRING }}
