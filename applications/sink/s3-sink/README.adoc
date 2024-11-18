@@ -44,6 +44,7 @@ $$static$$:: $$<documentation missing>$$ *($$String$$, default: `$$<none>$$`)*
 $$accelerate-mode-enabled$$:: $$Option to enable using the accelerate endpoint when accessing S3. Accelerate endpoints allow faster transfer of objects by using Amazon CloudFront's globally distributed edge locations.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$checksum-validation-enabled$$:: $$Option to disable doing a validation of the checksum of an object stored in S3.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$chunked-encoding-enabled$$:: $$Option to enable using chunked encoding when signing the request payload for {@link software.amazon.awssdk.services.s3.model.PutObjectRequest} and {@link software.amazon.awssdk.services.s3.model.UploadPartRequest}.$$ *($$Boolean$$, default: `$$<none>$$`)*
+$$cross-region-enabled$$:: $$Enables cross-region bucket access.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$endpoint$$:: $$Overrides the default endpoint.$$ *($$URI$$, default: `$$<none>$$`)*
 $$path-style-access-enabled$$:: $$Option to enable using path style access for accessing S3 objects instead of DNS style access. DNS style access is preferred as it will result in better load balancing when accessing S3.$$ *($$Boolean$$, default: `$$<none>$$`)*
 $$region$$:: $$Overrides the default region.$$ *($$String$$, default: `$$<none>$$`)*

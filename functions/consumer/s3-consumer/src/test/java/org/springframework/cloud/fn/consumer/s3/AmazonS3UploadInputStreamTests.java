@@ -17,6 +17,7 @@
 package org.springframework.cloud.fn.consumer.s3;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -42,22 +43,18 @@ public class AmazonS3UploadInputStreamTests extends AbstractAwsS3ConsumerMockTes
 
 	@Test
 	public void test() throws Exception {
-		S3AsyncClient amazonS3Client =
-				TestUtils.getPropertyValue(this.s3TransferManager, "s3AsyncClient", S3AsyncClient.class);
+		S3AsyncClient amazonS3Client = TestUtils.getPropertyValue(this.s3TransferManager, "s3AsyncClient",
+				S3AsyncClient.class);
 
 		InputStream payload = new StringInputStream("a");
-		Message<?> message = MessageBuilder.withPayload(payload)
-				.setHeader("key", "myInputStream")
-				.build();
+		Message<?> message = MessageBuilder.withPayload(payload).setHeader("key", "myInputStream").build();
 
 		this.s3Consumer.accept(message);
 
-		ArgumentCaptor<PutObjectRequest> putObjectRequestArgumentCaptor =
-				ArgumentCaptor.forClass(PutObjectRequest.class);
-		ArgumentCaptor<AsyncRequestBody> asyncRequestBodyArgumentCaptor =
-				ArgumentCaptor.forClass(AsyncRequestBody.class);
-		verify(amazonS3Client, atLeastOnce())
-				.putObject(putObjectRequestArgumentCaptor.capture(), asyncRequestBodyArgumentCaptor.capture());
+		ArgumentCaptor<PutObjectRequest> putObjectRequestArgumentCaptor = ArgumentCaptor.captor();
+		ArgumentCaptor<AsyncRequestBody> asyncRequestBodyArgumentCaptor = ArgumentCaptor.captor();
+		verify(amazonS3Client, atLeastOnce()).putObject(putObjectRequestArgumentCaptor.capture(),
+				asyncRequestBodyArgumentCaptor.capture());
 
 		PutObjectRequest putObjectRequest = putObjectRequestArgumentCaptor.getValue();
 		assertThat(putObjectRequest.bucket()).isEqualTo(S3_BUCKET);
@@ -67,9 +64,8 @@ public class AmazonS3UploadInputStreamTests extends AbstractAwsS3ConsumerMockTes
 		assertThat(putObjectRequest.contentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
 		assertThat(putObjectRequest.contentDisposition()).isEqualTo("test.json");
 
-
 		AsyncRequestBody asyncRequestBody = asyncRequestBodyArgumentCaptor.getValue();
-		StepVerifier.create(asyncRequestBody.map(buffer -> new String(buffer.array())))
+		StepVerifier.create(asyncRequestBody.map((buffer) -> StandardCharsets.UTF_8.decode(buffer).toString()))
 				.expectNext("a")
 				.expectComplete()
 				.verify();

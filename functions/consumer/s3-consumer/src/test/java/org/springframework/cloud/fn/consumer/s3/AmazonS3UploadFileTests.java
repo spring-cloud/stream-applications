@@ -32,6 +32,7 @@ import org.springframework.integration.test.util.TestUtils;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.util.FileCopyUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
@@ -42,38 +43,36 @@ public class AmazonS3UploadFileTests extends AbstractAwsS3ConsumerMockTests {
 
 	@Test
 	public void test() throws Exception {
-		S3AsyncClient amazonS3Client =
-				TestUtils.getPropertyValue(this.s3TransferManager, "s3AsyncClient", S3AsyncClient.class);
+		S3AsyncClient amazonS3Client = TestUtils.getPropertyValue(this.s3TransferManager, "s3AsyncClient",
+				S3AsyncClient.class);
 
 		File file = new File(temporaryRemoteFolder.toFile(), "foo.mp3");
-		file.createNewFile();
-		Message<?> message = MessageBuilder.withPayload(file)
-				.build();
+		FileCopyUtils.copy(new byte[] { 1 }, file);
+		Message<?> message = MessageBuilder.withPayload(file).build();
 
 		this.s3Consumer.accept(message);
 
-		ArgumentCaptor<PutObjectRequest> putObjectRequestArgumentCaptor =
-				ArgumentCaptor.forClass(PutObjectRequest.class);
-		ArgumentCaptor<AsyncRequestBody> asyncRequestBodyArgumentCaptor =
-				ArgumentCaptor.forClass(AsyncRequestBody.class);
-		verify(amazonS3Client, atLeastOnce())
-				.putObject(putObjectRequestArgumentCaptor.capture(), asyncRequestBodyArgumentCaptor.capture());
+		ArgumentCaptor<PutObjectRequest> putObjectRequestArgumentCaptor = ArgumentCaptor.captor();
+		ArgumentCaptor<AsyncRequestBody> asyncRequestBodyArgumentCaptor = ArgumentCaptor.captor();
+		verify(amazonS3Client, atLeastOnce()).putObject(putObjectRequestArgumentCaptor.capture(),
+				asyncRequestBodyArgumentCaptor.capture());
 
 		PutObjectRequest putObjectRequest = putObjectRequestArgumentCaptor.getValue();
 		assertThat(putObjectRequest.bucket()).isEqualTo(S3_BUCKET);
 		assertThat(putObjectRequest.key()).isEqualTo("foo.mp3");
 		assertThat(putObjectRequest.contentMD5()).isEqualTo(Md5Utils.md5AsBase64(file));
-		assertThat(putObjectRequest.contentLength()).isEqualTo(0L);
+		assertThat(putObjectRequest.contentLength()).isEqualTo(1L);
 		assertThat(putObjectRequest.contentType()).isEqualTo("audio/mpeg");
 		assertThat(putObjectRequest.acl()).isEqualTo(ObjectCannedACL.PUBLIC_READ_WRITE);
 
 		AsyncRequestBody asyncRequestBody = asyncRequestBodyArgumentCaptor.getValue();
 		StepVerifier.create(asyncRequestBody)
-				.assertNext(buffer -> assertThat(buffer.array()).isEmpty())
+				.assertNext((buffer) -> assertThat(buffer.limit()).isEqualTo(1))
 				.expectComplete()
 				.verify();
 
 		assertThat(this.transferCompletedLatch.await(10, TimeUnit.SECONDS)).isTrue();
 	}
+
 
 }
