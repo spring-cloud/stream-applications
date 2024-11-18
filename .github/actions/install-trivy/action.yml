@@ -1,0 +1,10 @@
+name: 'Install Trivy'
+description: 'Install Trivy'
+
+runs:
+  using: composite
+  steps:
+    - name: 'Install Trivy'
+      shell: bash
+      run: |
+        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.50.1
