@@ -20,7 +20,7 @@ on:
         description: 'Maven Thread Option. Examples 0.5C, 2'
       enableSecurityScan:
         type: boolean
-        required: false
+        required: true
         default: false
         description: 'Enable security scan with Trivy'
     secrets:
@@ -40,6 +40,8 @@ env:
   VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
   BRANCH: ${{ inputs.branch }}
   MAVEN_THREADS: ${{ inputs.mavenThreads }}
+  TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db
+  TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
 
 jobs:
   scan:
