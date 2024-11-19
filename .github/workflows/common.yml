@@ -730,7 +730,7 @@ jobs:
       - uses: jfrog/setup-jfrog-cli@v3
         env:
           JF_URL: 'https://repo.spring.io'
-          JF_ACCESS_TOKEN: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+          JF_ARTIFACTORY_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: Configure JFrog Cli
         shell: bash
         run: |
