@@ -52,6 +52,7 @@ public class RedisSinkTests implements RedisTestContainerSupport {
 						.getCompleteConfiguration(RedisSinkTestApplication.class))
 				.web(WebApplicationType.NONE)
 				.run("--spring.cloud.function.definition=redisConsumer",
+						"--spring.cloud.stream.bindings.redisConsumer-in-0.consumer.use-native-decoding=true",
 						"--spring.data.redis.url=" + RedisTestContainerSupport.getUri(),
 						"--redis.consumer.key=foo")) {
 

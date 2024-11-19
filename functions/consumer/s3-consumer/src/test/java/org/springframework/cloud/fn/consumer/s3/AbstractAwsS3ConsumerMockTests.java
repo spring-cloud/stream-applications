@@ -36,6 +36,7 @@ import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.Message;
@@ -43,16 +44,14 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willReturn;
-import static org.mockito.Mockito.spy;
 
 @DirtiesContext
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
-		properties = {
-				"spring.cloud.aws.credentials.accessKey=" + AbstractAwsS3ConsumerMockTests.AWS_ACCESS_KEY,
+		properties = { "spring.cloud.aws.credentials.accessKey=" + AbstractAwsS3ConsumerMockTests.AWS_ACCESS_KEY,
 				"spring.cloud.aws.credentials.secretKey=" + AbstractAwsS3ConsumerMockTests.AWS_SECRET_KEY,
 				"spring.cloud.aws.region.static=" + AbstractAwsS3ConsumerMockTests.AWS_REGION,
 				"spring.cloud.aws.s3.endpoint=s3://foo",
-				"s3.consumer.bucket=" + AbstractAwsS3ConsumerMockTests.S3_BUCKET})
+				"s3.consumer.bucket=" + AbstractAwsS3ConsumerMockTests.S3_BUCKET })
 public abstract class AbstractAwsS3ConsumerMockTests {
 
 	protected static final String AWS_ACCESS_KEY = "test.accessKey";
@@ -66,7 +65,7 @@ public abstract class AbstractAwsS3ConsumerMockTests {
 	@TempDir
 	protected static Path temporaryRemoteFolder;
 
-	@Autowired
+	@MockBean
 	private S3AsyncClient amazonS3;
 
 	@Autowired
@@ -80,10 +79,7 @@ public abstract class AbstractAwsS3ConsumerMockTests {
 
 	@BeforeEach
 	public void setupTest() {
-		S3AsyncClient amazonS3 = spy(this.amazonS3);
-
-		willReturn(CompletableFuture.completedFuture(PutObjectResponse.builder().build()))
-				.given(amazonS3)
+		willReturn(CompletableFuture.completedFuture(PutObjectResponse.builder().build())).given(amazonS3)
 				.putObject(any(PutObjectRequest.class), any(AsyncRequestBody.class));
 
 		new DirectFieldAccessor(this.s3TransferManager).setPropertyValue("s3AsyncClient", amazonS3);
@@ -100,7 +96,6 @@ public abstract class AbstractAwsS3ConsumerMockTests {
 		@Bean
 		public TransferListener transferListener() {
 			return new TransferListener() {
-
 
 				@Override
 				public void transferComplete(Context.TransferComplete context) {

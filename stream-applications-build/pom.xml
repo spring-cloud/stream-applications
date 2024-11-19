@@ -36,33 +36,29 @@
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.35</spring-javaformat-checkstyle.version>
 
-        <spring-boot.version>3.1.8</spring-boot.version>
-        <spring.version>6.0.16</spring.version>
-
-        <spring-kafka.version>3.0.13</spring-kafka.version>
-        <spring-rabbit.version>3.0.10</spring-rabbit.version>
-        <!--        <spring-integration.version>6.1.0</spring-integration.version>-->
-
-        <spring-cloud.version>2022.0.4</spring-cloud.version>
+        <spring-boot.version>3.1.12</spring-boot.version>
+        <spring.version>6.0.21</spring.version>
+        <spring-kafka.version>3.0.17</spring-kafka.version>
+        <spring-rabbit.version>3.0.14</spring-rabbit.version>
+        <spring-cloud.version>2022.0.5</spring-cloud.version>
         <spring-cloud-starters.version>4.0.5</spring-cloud-starters.version>
         <spring-cloud-function.version>4.0.6</spring-cloud-function.version>
         <spring-cloud-stream-dependencies.version>4.0.5</spring-cloud-stream-dependencies.version>
-
-        <testcontainers.version>1.18.3</testcontainers.version>
-        <mockserver.version>5.13.2</mockserver.version>
-
         <groovy.version>4.0.14</groovy.version>
         <apache-ivy.version>2.5.2</apache-ivy.version>
         <jakarta-jms.version>3.1.0</jakarta-jms.version>
-        <spring-cloud-aws.version>3.0.2</spring-cloud-aws.version>
-        <spring-integration-aws.version>3.0.2</spring-integration-aws.version>
+        <spring-cloud-aws.version>3.0.5</spring-cloud-aws.version>
+        <spring-integration-aws.version>3.0.8</spring-integration-aws.version>
         <curator.version>5.5.0</curator.version>
-        <mavenThreads>1</mavenThreads>
+        <testcontainers.version>1.18.3</testcontainers.version>
+        <mockito.version>5.14.2</mockito.version>
+		<mockserver.version>5.13.2</mockserver.version>
 
-		<!--suppress UnresolvedMavenProperty -->
-		<buildName>${env.BUILD_NAME}</buildName>
-		<!--suppress UnresolvedMavenProperty -->
-		<buildNumber>${env.BUILD_NUMBER}</buildNumber>
+        <mavenThreads>1</mavenThreads>
+        <!--suppress UnresolvedMavenProperty -->
+        <buildName>${env.BUILD_NAME}</buildName>
+        <!--suppress UnresolvedMavenProperty -->
+        <buildNumber>${env.BUILD_NUMBER}</buildNumber>
 	</properties>
 
     <url>https://spring.io/projects/spring-cloud-stream-applications</url>
@@ -81,6 +77,13 @@
 
     <dependencyManagement>
         <dependencies>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-bom</artifactId>
+				<version>${mockito.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
