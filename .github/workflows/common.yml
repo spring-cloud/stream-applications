@@ -20,8 +20,8 @@ on:
         description: 'Maven Thread Option. Examples 0.5C, 2'
       enableSecurityScan:
         type: boolean
-        required: true
-        default: false
+        required: false
+        default: true
         description: 'Enable security scan with Trivy'
     secrets:
       DOCKERHUB_USERNAME:
