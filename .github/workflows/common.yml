@@ -39,9 +39,31 @@ on:
 env:
   VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
   BRANCH: ${{ inputs.branch }}
-  MAVEN_THREADS: ${{ inputs.mavenThreads }}  
+  MAVEN_THREADS: ${{ inputs.mavenThreads }}
+  TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db
+  TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
 
 jobs:
+  scan:
+    if: ${{ inputs.enableSecurityScan && github.repository == 'spring-cloud/stream-applications' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+      - name: 'Scanned'
+        shell: bash
+        run: echo "::info ::Scanned"
   parameters:
     name: 'parameters - ${{ inputs.branch }}'
     if: ${{ github.repository == 'spring-cloud/stream-applications' }}
@@ -356,31 +378,6 @@ jobs:
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
-      - name: 'Configure: Install Trivy'
-        if: ${{ inputs.enableSecurityScan }}
-        uses: ./.github/actions/install-trivy
-      - name: 'Action: Trivy scan'
-        if: ${{ inputs.enableSecurityScan }}
-        shell: bash
-        id: scan
-        env:
-          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db
-          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
-        run: |
-          ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications > /dev/null
-            $ROOT_DIR/scan-folders.sh
-          popd > /dev/null
-          if [ -f "$ROOT_DIR/scan.sarif" ]; then
-            echo "scan_file=$ROOT_DIR/scan.sarif" >> $GITHUB_OUTPUT
-          else
-            echo "scan_file=" >> $GITHUB_OUTPUT
-          fi
-      - name: Upload Trivy scan results to GitHub Security tab
-        if: ${{ inputs.enableSecurityScan && steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: '${{ steps.scan.outputs.scan_file }}'
       - name: Unit Test Report
         uses: dorny/test-reporter@v1
         if: ${{ success() || failure() }}
@@ -502,31 +499,6 @@ jobs:
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
-      - name: 'Configure: Install Trivy'
-        if: ${{ inputs.enableSecurityScan }}
-        uses: ./.github/actions/install-trivy
-      - name: 'Action: Trivy scan'
-        if: ${{ inputs.enableSecurityScan }}
-        shell: bash
-        id: scan
-        env:
-          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db
-          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
-        run: |
-          ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications > /dev/null
-            $ROOT_DIR/scan-folders.sh
-          popd > /dev/null
-          if [ -f "$ROOT_DIR/scan.sarif" ]; then
-            echo "scan_file=$ROOT_DIR/scan.sarif" >> $GITHUB_OUTPUT
-          else
-            echo "scan_file=" >> $GITHUB_OUTPUT
-          fi
-      - name: Upload Trivy scan results to GitHub Security tab
-        if: ${{ inputs.enableSecurityScan && steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: '${{ steps.scan.outputs.scan_file }}'
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
@@ -657,31 +629,6 @@ jobs:
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
-      - name: 'Configure: Install Trivy'
-        if: ${{ inputs.enableSecurityScan }}
-        uses: ./.github/actions/install-trivy
-      - name: 'Action: Trivy scan'
-        if: ${{ inputs.enableSecurityScan }}
-        shell: bash
-        id: scan
-        env:
-          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db
-          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
-        run: |
-          ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications > /dev/null
-            $ROOT_DIR/scan-folders.sh
-          popd > /dev/null
-          if [ -f "$ROOT_DIR/scan.sarif" ]; then
-            echo "scan_file=$ROOT_DIR/scan.sarif" >> $GITHUB_OUTPUT
-          else
-            echo "scan_file=" >> $GITHUB_OUTPUT
-          fi
-      - name: Upload Trivy scan results to GitHub Security tab
-        if: ${{ inputs.enableSecurityScan && steps.scan.outputs.scan_file != null && steps.scan.outputs.scan_file != '' }}
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: '${{ steps.scan.outputs.scan_file }}'
       - name: Unit Test Report
         uses: dorny/test-reporter@v1
         if: ${{ success() || failure() }}
@@ -931,6 +878,7 @@ jobs:
     if: ${{ failure() && github.run_attempt == '1' }}
     runs-on: ubuntu-latest
     needs:
+      - scan
       - sources
       - processors
       - sinks
