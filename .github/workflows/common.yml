@@ -39,9 +39,7 @@ on:
 env:
   VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
   BRANCH: ${{ inputs.branch }}
-  MAVEN_THREADS: ${{ inputs.mavenThreads }}
-  TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db
-  TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
+  MAVEN_THREADS: ${{ inputs.mavenThreads }}  
 
 jobs:
   parameters:
@@ -365,6 +363,9 @@ jobs:
         if: ${{ inputs.enableSecurityScan }}
         shell: bash
         id: scan
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db
+          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
@@ -508,6 +509,9 @@ jobs:
         if: ${{ inputs.enableSecurityScan }}
         shell: bash
         id: scan
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db
+          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
@@ -660,6 +664,9 @@ jobs:
         if: ${{ inputs.enableSecurityScan }}
         shell: bash
         id: scan
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db
+          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
