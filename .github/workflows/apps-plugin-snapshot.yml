@@ -2,6 +2,11 @@ name: Apps Plugin (Snapshot)
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'spring-cloud-dataflow-apps-plugin/**'
 
 env:
   MAVEN_THREADS: '-T 0.5C'
@@ -39,7 +44,7 @@ jobs:
             ${{ runner.os }}-m2-
       - name: Configure JFrog Cli
         run: |
-          jfrog mvnc \
+          jfrog rt mvnc \
             --server-id-resolve=repo.spring.io \
             --server-id-deploy=repo.spring.io \
             --repo-resolve-releases=libs-milestone \
@@ -51,7 +56,7 @@ jobs:
       - name: Build and Publish
         run: |
           jfrog rt build-clean
-          jfrog rt mvn -gs settings.xml -Pfull,deploymentfiles -B install 
+          jfrog rt mvn -gs settings.xml -B install 
           jfrog rt build-publish
       - name: Capture Test Results
         if: ${{ always() }}
