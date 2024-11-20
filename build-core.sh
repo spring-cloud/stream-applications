@@ -20,4 +20,4 @@ else
   MAVEN_GOAL="$*"
 fi
 set -e
-$SCDIR/build-folder.sh stream-applications-build,applications/stream-applications-core "$MAVEN_GOAL"
+$SCDIR/build-folder.sh stream-applications-build,functions,applications/stream-applications-core "$MAVEN_GOAL"
