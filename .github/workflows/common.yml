@@ -203,7 +203,7 @@ jobs:
       - uses: jfrog/setup-jfrog-cli@v3
         env:
           JF_URL: 'https://repo.spring.io'
-          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+          JF_ARTIFACTORY_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: Configure JFrog Cli
         shell: bash
         run: |
@@ -358,7 +358,7 @@ jobs:
       - uses: jfrog/setup-jfrog-cli@v3
         env:
           JF_URL: 'https://repo.spring.io'
-          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+          JF_ARTIFACTORY_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: Configure JFrog Cli
         shell: bash
         run: |
@@ -479,7 +479,7 @@ jobs:
       - uses: jfrog/setup-jfrog-cli@v3
         env:
           JF_URL: 'https://repo.spring.io'
-          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+          JF_ARTIFACTORY_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: Configure JFrog Cli
         shell: bash
         run: |
@@ -609,7 +609,7 @@ jobs:
       - uses: jfrog/setup-jfrog-cli@v3
         env:
           JF_URL: 'https://repo.spring.io'
-          JF_ENV_1: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+          JF_ARTIFACTORY_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: Configure JFrog Cli
         shell: bash
         run: |
@@ -767,17 +767,13 @@ jobs:
         shell: bash
         env:
           RELEASE_TRAIN_VERSION: ${{ needs.parameters.outputs.release_train_version }}
-          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
-          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
-          BUILD_NAME: ${{ needs.parameters.outputs.build_name }}
-          BUILD_NUMBER: ${{ needs.parameters.outputs.build_number }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           pushd stream-applications > /dev/null
             echo "::notice ::uploading unique version snapshot descriptors:$RELEASE_TRAIN_VERSION"
             set -e
-            SRC_ROOT="$ROOT_DIR/stream-applications/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF"
-            TARGET_REPO="libs-snapshot-local/org/springframework/cloud/stream/app/stream-applications-descriptor/${RELEASE_TRAIN_VERSION}"
+            SRC_ROOT=$ROOT_DIR/stream-applications/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
+            TARGET_REPO=libs-snapshot-local/org/springframework/cloud/stream/app/stream-applications-descriptor/${RELEASE_TRAIN_VERSION}
             jfrog rt upload "$SRC_ROOT/kafka-apps-maven.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-maven"
             jfrog rt upload "$SRC_ROOT/kafka-apps-docker.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-docker"
             jfrog rt upload "$SRC_ROOT/kafka-apps-harbor.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-harbor"
