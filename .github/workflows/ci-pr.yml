@@ -12,6 +12,8 @@ env:
   ARTIFACTORY_USERNAME: 'anonymous'
   ARTIFACTORY_PASSWORD: 'anonymous'
   SKIP_DEPLOY: 'true'
+  TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db
+  TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,aquasec/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
 
 jobs:
   build:
@@ -59,6 +61,13 @@ jobs:
           VERBOSE: ${{ github.debug && 'true' || '' }}
         run: |
           ./build-apps.sh "-T 1C package -Psnapshot"
+      - name: 'Configure: Install Trivy'
+        uses: ./.github/actions/install-trivy
+      - name: 'Action: Trivy scan'
+        shell: bash
+        run: |
+          BUILD_DIR=$(realpath $MAIN_PATH)
+          $BUILD_DIR/scan-folders.sh table
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
