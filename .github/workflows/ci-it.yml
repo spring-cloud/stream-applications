@@ -63,13 +63,20 @@ jobs:
             VERBOSE=${{ github.debug }}
           fi
           export VERBOSE
-          ./run-ITs.sh
-      - name: Test Report
+          ./run-ITs.sh      
+      - name: Unit Test Report
         uses: dorny/test-reporter@v1
         if: ${{ success() || failure() }}
         with:
           name: Unit Tests
           path: '**/surefire-reports/*.xml'
+          reporter: java-junit
+      - name: Integrtation Test Report
+        uses: dorny/test-reporter@v1
+        if: ${{ success() || failure() }}
+        with:
+          name: Integration Tests
+          path: '**/failsafe-reports/*.xml'
           reporter: java-junit
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
