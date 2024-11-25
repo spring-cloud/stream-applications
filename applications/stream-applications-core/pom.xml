@@ -143,6 +143,7 @@
                                 </containerImage>
                                 <properties>
                                     <!-- Disable all meter repositories by default.  -->
+                                    <spring.cloud.bootstrap.enabled>true</spring.cloud.bootstrap.enabled>
                                     <management.wavefront.metrics.export.enabled>false</management.wavefront.metrics.export.enabled>
                                     <management.influx.metrics.export.enabled>false</management.influx.metrics.export.enabled>
                                     <management.datadog.metrics.export.enabled>false</management.datadog.metrics.export.enabled>
