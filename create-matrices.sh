@@ -17,34 +17,38 @@ popd  > /dev/null
 pushd applications/source  > /dev/null
 SOURCES=$(find * -maxdepth 0 -type d)
 popd  > /dev/null
-pushd functions/consumer > /dev/null
-CONSUMERS=$(find * -maxdepth 0 -type d)
-popd  > /dev/null
-pushd functions/function  > /dev/null
-FUNCTIONS=$(find * -maxdepth 0 -type d)
-popd  > /dev/null
-pushd functions/supplier  > /dev/null
-SUPPLIERS=$(find * -maxdepth 0 -type d)
-popd  > /dev/null
-
+if [ -d functions ]; then
+  pushd functions/consumer > /dev/null
+  CONSUMERS=$(find * -maxdepth 0 -type d)
+  popd  > /dev/null
+  pushd functions/function  > /dev/null
+  FUNCTIONS=$(find * -maxdepth 0 -type d)
+  popd  > /dev/null
+  pushd functions/supplier  > /dev/null
+  SUPPLIERS=$(find * -maxdepth 0 -type d)
+  popd  > /dev/null
+fi
 TOTAL=0
 echo "{" > matrix.json
-echo "\"functions\":[" >> matrix.json
-COUNT=0
-for app in $FUNCTIONS; do
-  add_app $app
-done
-echo "],\"consumers\":[" >> matrix.json
-COUNT=0
-for app in $CONSUMERS; do
-  add_app $app
-done
-echo "],\"suppliers\":[" >> matrix.json
-COUNT=0
-for app in $SUPPLIERS; do
-  add_app $app
-done
-echo "],\"processors\":[" >> matrix.json
+if [ -d functions ]; then
+  echo "\"functions\":[" >> matrix.json
+  COUNT=0
+  for app in $FUNCTIONS; do
+    add_app $app
+  done
+  echo "],\"consumers\":[" >> matrix.json
+  COUNT=0
+  for app in $CONSUMERS; do
+    add_app $app
+  done
+  echo "],\"suppliers\":[" >> matrix.json
+  COUNT=0
+  for app in $SUPPLIERS; do
+    add_app $app
+  done
+  echo "],"
+fi
+echo "\"processors\":[" >> matrix.json
 COUNT=0
 for app in $PROCESSORS; do
   add_app $app
