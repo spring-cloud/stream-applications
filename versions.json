@@ -1,8 +1,8 @@
 {
-  "release_version": "4.0.1-SNAPSHOT",
-  "next_dev_version": "4.0.1-SNAPSHOT",
+  "release_version": "4.0.1",
+  "next_dev_version": "4.0.2-SNAPSHOT",
   "release_train": {
-    "release_version": "2022.0.1-SNAPSHOT",
-    "next_dev_version": "2022.0.1-SNAPSHOT"
+    "release_version": "2022.0.1",
+    "next_dev_version": "2022.0.2-SNAPSHOT"
   }
 }
