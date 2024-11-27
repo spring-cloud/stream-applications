@@ -12,6 +12,7 @@ function find_version() {
     echo $VER
 }
 ./mvnw clean install -DskipTests -T 1C
+./mvnw clean -T 1C
 NEW_VERSION=$1
 RELEASE_TRAIN_VERSION=$2
 OLD_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout 2> /dev/null)
@@ -26,12 +27,12 @@ echo "Release Train Version: [$OLD_RT_VERSION] -> [$RELEASE_TRAIN_VERSION]"
 set -e
 
 $SCDIR/mvnw versions:set -f stream-applications-build \
-  -o -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
+  -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
   -DoldVersion="$OLD_VERSION" -DnewVersion="$NEW_VERSION" -DprocessAllModules=false
 $SCDIR/mvnw install -DskipResolution=true -pl :stream-applications-build -DskipTests -T 1C
 
 $SCDIR/mvnw versions:set -f functions/function-dependencies \
-  -o -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
+  -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
   -DoldVersion="$OLD_VERSION" -DnewVersion="$NEW_VERSION" -DprocessAllModules=false
 $SCDIR/mvnw install -DskipResolution=true -pl :function-dependencies -DskipTests -T 1C
 
