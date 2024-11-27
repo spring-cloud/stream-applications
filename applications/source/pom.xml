@@ -6,7 +6,7 @@
 
     <groupId>org.springframework.cloud.stream.app</groupId>
     <artifactId>source</artifactId>
-    <version>4.0.1</version>
+    <version>4.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
