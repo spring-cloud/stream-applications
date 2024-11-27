@@ -11,8 +11,6 @@ function find_version() {
     done
     echo $VER
 }
-./mvnw clean install -DskipTests -Dmaven.javadoc.skip=true -T 1C -ntp
-./mvnw clean -T 1C -ntp
 NEW_VERSION=$1
 RELEASE_TRAIN_VERSION=$2
 OLD_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout 2> /dev/null)
