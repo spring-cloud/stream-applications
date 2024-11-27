@@ -11,8 +11,8 @@ function find_version() {
     done
     echo $VER
 }
-./mvnw clean install -DskipTests -T 1C
-./mvnw clean -T 1C
+./mvnw clean install -DskipTests -Dmaven.javadoc.skip=true -T 1C -ntp
+./mvnw clean -T 1C -ntp
 NEW_VERSION=$1
 RELEASE_TRAIN_VERSION=$2
 OLD_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout 2> /dev/null)
@@ -31,9 +31,6 @@ $SCDIR/mvnw versions:set -f stream-applications-build \
   -DoldVersion="$OLD_VERSION" -DnewVersion="$NEW_VERSION" -DprocessAllModules=false
 $SCDIR/mvnw install -DskipResolution=true -pl :stream-applications-build -DskipTests -T 1C
 
-$SCDIR/mvnw versions:set -f functions/function-dependencies \
-  -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
-  -DoldVersion="$OLD_VERSION" -DnewVersion="$NEW_VERSION" -DprocessAllModules=false
 $SCDIR/mvnw install -DskipResolution=true -pl :function-dependencies -DskipTests -T 1C
 
 $SCDIR/mvnw versions:set \
@@ -56,9 +53,11 @@ OLD_RT_VERSION=$($SCDIR/mvnw help:evaluate -DskipResolution=true  -Dexpression=p
 OLD_RT_VERSION=$(find_version "$OLD_RT_VERSION")
 echo "Release Train Version: [$OLD_RT_VERSION] -> [$RELEASE_TRAIN_VERSION]"
 echo "Update versions for stream-applications-release-train -> $RELEASE_TRAIN_VERSION"
-$SCDIR/mvnw versions:set -f ./stream-applications-release-train \
-  -DskipResolution=true  -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
+
+$SCDIR/mvnw versions:set -pl ":stream-applications-release-train,:stream-applications-descriptor,:stream-applications-docs" \
+  -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
   -DoldVersion="$OLD_RT_VERSION" -DnewVersion="$RELEASE_TRAIN_VERSION"
+
 
 FOUND_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout 2> /dev/null)
 FOUND_VERSION=$(find_version "$FOUND_VERSION")
@@ -69,7 +68,7 @@ fi
 echo "Version updated: stream-applications: $FOUND_VERSION"
 PROJECTS="stream-applications-release-train stream-applications-descriptor stream-applications-docs"
 for proj in $PROJECTS; do
-  NEW_RT_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout -pl :$proj 2> /dev/null)
+  NEW_RT_VERSION=$($SCDIR/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout -pl ":$proj" 2> /dev/null)
   NEW_RT_VERSION=$(find_version "$NEW_RT_VERSION")
   if [ "$NEW_RT_VERSION" != "$RELEASE_TRAIN_VERSION" ]; then
     echo "Expected $proj version to be $RELEASE_TRAIN_VERSION not $NEW_RT_VERSION"
