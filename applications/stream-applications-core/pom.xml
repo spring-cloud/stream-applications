@@ -16,8 +16,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <stream-apps-core.version>4.0.1</stream-apps-core.version>
-        <java-functions.version>4.0.1</java-functions.version>
+        <stream-apps-core.version>4.0.1-SNAPSHOT</stream-apps-core.version>
+        <java-functions.version>4.0.1-SNAPSHOT</java-functions.version>
         <apps.base-image>springcloud/baseimage:1.0.4</apps.base-image>
 		<prometheus-rsocket.version>1.5.2</prometheus-rsocket.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.0.14</spring-cloud-dataflow-apps-generator-plugin.version>
