@@ -69,7 +69,6 @@ jobs:
     if: ${{ github.repository == 'spring-cloud/stream-applications' }}
     runs-on: ubuntu-latest
     steps:
-      - name: 'Configure: checkout'
       - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
         uses: actions/checkout@v3
         with:
@@ -722,6 +721,10 @@ jobs:
         shell: bash
         env:
           RELEASE_TRAIN_VERSION: ${{ needs.parameters.outputs.release_train_version }}
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          BUILD_NAME: ${{ needs.parameters.outputs.build_name }}
+          BUILD_NUMBER: ${{ needs.parameters.outputs.build_number }}
         run: |
           ROOT_DIR=$(realpath $PWD)
           echo "::notice ::uploading unique version snapshot descriptors:$RELEASE_TRAIN_VERSION"
