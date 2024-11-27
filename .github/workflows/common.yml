@@ -354,7 +354,7 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
-        run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
+        run: ./build-app.sh . "applications/processor/${{ matrix.app }}"
       - name: Unit Test Report
         uses: dorny/test-reporter@v1
         if: ${{ success() || failure() }}
@@ -385,7 +385,7 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./publish-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
+        run: ./publish-app.sh . "applications/processor/${{ matrix.app }}"
   sinks:
     if: ${{ github.repository == 'spring-cloud/stream-applications' && needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
     needs:
@@ -468,7 +468,7 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
-        run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
+        run: ./build-app.sh . "applications/sink/${{ matrix.app }}"
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
@@ -499,7 +499,7 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./publish-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
+        run: ./publish-app.sh . "applications/sink/${{ matrix.app }}"
   sources:
     if: ${{ github.repository == 'spring-cloud/stream-applications' && needs.parameters.outputs.sources != '' && needs.parameters.outputs.sources != null }}
     runs-on: ubuntu-latest
@@ -591,7 +591,7 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
-        run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
+        run: ./build-app.sh . "applications/source/${{ matrix.app }}"
       - name: Unit Test Report
         uses: dorny/test-reporter@v1
         if: ${{ success() || failure() }}
@@ -622,7 +622,7 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./publish-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
+        run: ./publish-app.sh . "applications/source/${{ matrix.app }}"
   release-train:
     if: ${{ github.repository == 'spring-cloud/stream-applications' }}
     needs:
