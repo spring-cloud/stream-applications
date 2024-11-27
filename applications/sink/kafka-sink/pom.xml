@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>stream-applications-core</artifactId>
 		<groupId>org.springframework.cloud.stream.app</groupId>
-		<version>4.0.1-SNAPSHOT</version>
+		<version>4.0.1</version>
 		<relativePath>../../stream-applications-core/pom.xml</relativePath>
 	</parent>
 

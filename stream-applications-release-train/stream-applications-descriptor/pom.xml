@@ -4,7 +4,7 @@
     <parent>
         <artifactId>stream-applications-release-train</artifactId>
         <groupId>org.springframework.cloud.stream.app</groupId>
-        <version>2022.0.1-SNAPSHOT</version>
+        <version>2022.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
