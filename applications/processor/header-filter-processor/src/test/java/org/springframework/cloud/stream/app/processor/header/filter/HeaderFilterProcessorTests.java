@@ -19,7 +19,6 @@ package org.springframework.cloud.stream.app.processor.header.filter;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.WebApplicationType;
@@ -67,7 +66,6 @@ public class HeaderFilterProcessorTests {
 		}
 	}
 
-	@NotNull
 	private static Set<String> getNonReadOnlyHeaders(Message<byte[]> message) {
 		var headers = new HashSet<>(message.getHeaders().keySet());
 		var accessor = new IntegrationMessageHeaderAccessor(message);
