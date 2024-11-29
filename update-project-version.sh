@@ -34,10 +34,6 @@ $SCDIR/mvnw versions:set-property -f applications/stream-applications-core \
   -s .settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
   -Dproperty=stream-apps-core.version -DnewVersion="$NEW_VERSION"
 
-$SCDIR/mvnw versions:set-property -f applications/stream-applications-core \
-  -s .settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
-  -Dproperty=java-functions.version -DnewVersion="$NEW_VERSION"
-
 $SCDIR/mvnw versions:set-property -pl :stream-applications-release-train \
   -s .settings.xml -DgenerateBackupPoms=false -B $VERBOSE \
   -Dproperty=apps.version -DnewVersion="$NEW_VERSION"
