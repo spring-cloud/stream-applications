@@ -728,7 +728,7 @@ jobs:
           ROOT_DIR=$(realpath $PWD)
           echo "::notice ::uploading unique version snapshot descriptors:$RELEASE_TRAIN_VERSION"
           set -e
-          SRC_ROOT=$ROOT_DIR/stream-applications/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
+          SRC_ROOT=$ROOT_DIR/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
           TARGET_REPO=libs-snapshot-local/org/springframework/cloud/stream/app/stream-applications-descriptor/${RELEASE_TRAIN_VERSION}
           jfrog rt upload "$SRC_ROOT/kafka-apps-maven.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-maven"
           jfrog rt upload "$SRC_ROOT/kafka-apps-docker.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-docker"
