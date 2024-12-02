@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>spring-function-test-support</artifactId>
-            <version>${project.version}</version>
+            <version>${java-functions.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -69,15 +69,10 @@ jobs:
     if: ${{ github.repository == 'spring-cloud/stream-applications' }}
     runs-on: ubuntu-latest
     steps:
-      - name: 'Configure: checkout'
-        uses: actions/checkout@v3
-        with:
-          ref: 'main'
       - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
         uses: actions/checkout@v3
         with:
           ref: ${{ inputs.branch }}
-          path: 'stream-applications'
       - name: 'Configure: Ensure scripts are executable'
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
@@ -85,40 +80,38 @@ jobs:
         shell: bash
         run: |
           ROOT_DIR=$(realpath $PWD)                    
-          pushd stream-applications > /dev/null
-            echo "::info ::getting build version params"
-            source $ROOT_DIR/get-build-version-params.sh
-            echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_ENV
-            echo "BUILD_VERSION_TYPE=$BUILD_VERSION_TYPE" >> $GITHUB_ENV
-            echo "CUR_VERSION=$CUR_VERSION" >> $GITHUB_ENV
-            echo "IS_VERSION_CHANGE=$IS_VERSION_CHANGE" >> $GITHUB_ENV
-            echo "NEXT_DEV_VERSION=$NEXT_DEV_VERSION" >> $GITHUB_ENV
-            echo "RELEASE_TRAIN_VERSION=$RELEASE_TRAIN_VERSION" >> $GITHUB_ENV
-            echo "RELEASE_TRAIN_NEXT_DEV_VERSION=$RELEASE_TRAIN_NEXT_DEV_VERSION" >> $GITHUB_ENV
-            echo "BUILD_NAME=cloud-stream-applications-$BRANCH" >> $GITHUB_ENV
-            echo "BUILD_NUMBER=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV      
-            echo "::info ::creating streams applications matrix"
-            $ROOT_DIR/create-matrices.sh
-            if [ ! -f matrix.json ]; then
-              echo "Expected to find matrix.json in:"
-              ls -al
-              exit 2
-            fi
-            COUNT=$(jq '.count' matrix.json)
-            MAX_PARALLEL=$((5 * COUNT / 4))
-            if ((MAX_PARALLEL == COUNT)); then
-              MAX_PARALLEL=$((COUNT + 1))
-            fi          
-            MATRIX=$(jq -c . matrix.json)
-            PROCESSORS=$(jq -c '.processors' matrix.json)
-            SINKS=$(jq -c '.sinks' matrix.json)
-            SOURCES=$(jq -c '.sources' matrix.json)
-            echo "MAX_PARALLEL=$MAX_PARALLEL" >> $GITHUB_ENV
-            echo "MATRIX=$MATRIX" >> $GITHUB_ENV
-            echo "PROCESSORS=$PROCESSORS" >> $GITHUB_ENV
-            echo "SINKS=$SINKS" >> $GITHUB_ENV
-            echo "SOURCES=$SOURCES" >> $GITHUB_ENV
-          popd
+          echo "::info ::getting build version params"
+          source $ROOT_DIR/get-build-version-params.sh
+          echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_ENV
+          echo "BUILD_VERSION_TYPE=$BUILD_VERSION_TYPE" >> $GITHUB_ENV
+          echo "CUR_VERSION=$CUR_VERSION" >> $GITHUB_ENV
+          echo "IS_VERSION_CHANGE=$IS_VERSION_CHANGE" >> $GITHUB_ENV
+          echo "NEXT_DEV_VERSION=$NEXT_DEV_VERSION" >> $GITHUB_ENV
+          echo "RELEASE_TRAIN_VERSION=$RELEASE_TRAIN_VERSION" >> $GITHUB_ENV
+          echo "RELEASE_TRAIN_NEXT_DEV_VERSION=$RELEASE_TRAIN_NEXT_DEV_VERSION" >> $GITHUB_ENV
+          echo "BUILD_NAME=cloud-stream-applications-$BRANCH" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV      
+          echo "::info ::creating streams applications matrix"
+          $ROOT_DIR/create-matrices.sh
+          if [ ! -f matrix.json ]; then
+            echo "Expected to find matrix.json in:"
+            ls -al
+            exit 2
+          fi
+          COUNT=$(jq '.count' matrix.json)
+          MAX_PARALLEL=$((5 * COUNT / 4))
+          if ((MAX_PARALLEL == COUNT)); then
+            MAX_PARALLEL=$((COUNT + 1))
+          fi          
+          MATRIX=$(jq -c . matrix.json)
+          PROCESSORS=$(jq -c '.processors' matrix.json)
+          SINKS=$(jq -c '.sinks' matrix.json)
+          SOURCES=$(jq -c '.sources' matrix.json)
+          echo "MAX_PARALLEL=$MAX_PARALLEL" >> $GITHUB_ENV
+          echo "MATRIX=$MATRIX" >> $GITHUB_ENV
+          echo "PROCESSORS=$PROCESSORS" >> $GITHUB_ENV
+          echo "SINKS=$SINKS" >> $GITHUB_ENV
+          echo "SOURCES=$SOURCES" >> $GITHUB_ENV
           
           if [[ "${{ inputs.branch }}" == *"2021"* ]]; then
             echo "JDK_BUILD=8" >> $GITHUB_ENV
@@ -173,12 +166,7 @@ jobs:
       - name: 'Configure: checkout stream-applications@main'
         uses: actions/checkout@v3
         with:
-          ref: 'main'
-      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
-        uses: actions/checkout@v3
-        with:
           ref: ${{ inputs.branch }}
-          path: 'stream-applications'
       - name: 'Configure: Ensure scripts are executable'
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
@@ -217,20 +205,18 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications >/dev/null
-            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                         
-            echo "::notice ::checking updated versions"
-            set +e
-            MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
-            RC=$?
-            if ((RC!=0)); then
-              echo "::error ::$MESSAGE"
-              exit $RC
-            else
-              echo "::info ::$MESSAGE"
-            fi
-          popd > /dev/null
+          echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+          $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                         
+          echo "::notice ::checking updated versions"
+          set +e
+          MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
+          RC=$?
+          if ((RC!=0)); then
+            echo "::error ::$MESSAGE"
+            exit $RC
+          else
+            echo "::info ::$MESSAGE"
+          fi
       - name: 'Action: build initial dependencies'
         shell: bash
         timeout-minutes: 60
@@ -244,7 +230,6 @@ jobs:
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications > /dev/null
           echo "::notice ::building - stream-applications-build,functions,applications/stream-applications-core"
           set -e
           $ROOT_DIR/build-core.sh "install -DskipTests"
@@ -252,7 +237,6 @@ jobs:
           $ROOT_DIR/build-core.sh "verify deploy"
           set +e
           echo "::notice ::core build completed"
-          popd > /dev/null
       - name: Unit Test Report
         uses: dorny/test-reporter@v1
         if: ${{ success() || failure() }}
@@ -291,12 +275,7 @@ jobs:
       - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
         with:
-          ref: 'main'
-      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
-        uses: actions/checkout@v3
-        with:
           ref: ${{ inputs.branch }}
-          path: 'stream-applications'
       - name: Ensure scripts are executable
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
@@ -336,20 +315,18 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications >/dev/null
-            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
-            echo "::notice ::checking updated versions"
-            set +e
-            MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
-            RC=$?
-            if ((RC!=0)); then
-              echo "::error ::$MESSAGE"
-              exit $RC
-            else
-              echo "::info ::$MESSAGE"
-            fi
-          popd > /dev/null
+          echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+          $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
+          echo "::notice ::checking updated versions"
+          set +e
+          MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
+          RC=$?
+          if ((RC!=0)); then
+            echo "::error ::$MESSAGE"
+            exit $RC
+          else
+            echo "::info ::$MESSAGE"
+          fi
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -377,7 +354,7 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
-        run: ./build-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
+        run: ./build-app.sh . "applications/processor/${{ matrix.app }}"
       - name: Unit Test Report
         uses: dorny/test-reporter@v1
         if: ${{ success() || failure() }}
@@ -408,7 +385,7 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./publish-app.sh "stream-applications" "applications/processor/${{ matrix.app }}"
+        run: ./publish-app.sh . "applications/processor/${{ matrix.app }}"
   sinks:
     if: ${{ github.repository == 'spring-cloud/stream-applications' && needs.parameters.outputs.sinks != '' && needs.parameters.outputs.sinks != null }}
     needs:
@@ -423,12 +400,7 @@ jobs:
       - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
         with:
-          ref: 'main'
-      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
-        uses: actions/checkout@v3
-        with:
           ref: ${{ inputs.branch }}
-          path: 'stream-applications'
       - name: Ensure scripts are executable
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
@@ -457,20 +429,18 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications >/dev/null
-            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
-            echo "::notice ::checking updated versions"
-            set +e
-            MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
-            RC=$?
-            if ((RC!=0)); then
-              echo "::error ::$MESSAGE"
-              exit $RC
-            else
-              echo "::info ::$MESSAGE"
-            fi
-          popd > /dev/null
+          echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+          $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
+          echo "::notice ::checking updated versions"
+          set +e
+          MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
+          RC=$?
+          if ((RC!=0)); then
+            echo "::error ::$MESSAGE"
+            exit $RC
+          else
+            echo "::info ::$MESSAGE"
+          fi
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -498,7 +468,7 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
-        run: ./build-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
+        run: ./build-app.sh . "applications/sink/${{ matrix.app }}"
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
@@ -529,7 +499,7 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./publish-app.sh "stream-applications" "applications/sink/${{ matrix.app }}"
+        run: ./publish-app.sh . "applications/sink/${{ matrix.app }}"
   sources:
     if: ${{ github.repository == 'spring-cloud/stream-applications' && needs.parameters.outputs.sources != '' && needs.parameters.outputs.sources != null }}
     runs-on: ubuntu-latest
@@ -545,12 +515,7 @@ jobs:
       - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
         with:
-          ref: 'main'
-      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
-        uses: actions/checkout@v3
-        with:
           ref: ${{ inputs.branch }}
-          path: 'stream-applications'
       - name: Ensure scripts are executable
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
@@ -587,20 +552,18 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications >/dev/null
-            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
-            echo "::notice ::checking updated versions"
-            set +e
-            MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
-            RC=$?
-            if ((RC!=0)); then
-              echo "::error ::$MESSAGE"
-              exit $RC
-            else
-              echo "::info ::$MESSAGE"
-            fi
-          popd > /dev/null
+          echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+          $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
+          echo "::notice ::checking updated versions"
+          set +e
+          MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
+          RC=$?
+          if ((RC!=0)); then
+            echo "::error ::$MESSAGE"
+            exit $RC
+          else
+            echo "::info ::$MESSAGE"
+          fi
       - name: 'Configure: Docker login'
         uses: docker/login-action@v2
         with:
@@ -628,7 +591,7 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && 'true' || '' }}
           MAVEN_THREADS: ${{ inputs.mavenThreads }}
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
-        run: ./build-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
+        run: ./build-app.sh . "applications/source/${{ matrix.app }}"
       - name: Unit Test Report
         uses: dorny/test-reporter@v1
         if: ${{ success() || failure() }}
@@ -659,7 +622,7 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           DEFAULT_JDK: ${{ needs.parameters.outputs.jre_version }}
-        run: ./publish-app.sh "stream-applications" "applications/source/${{ matrix.app }}"
+        run: ./publish-app.sh . "applications/source/${{ matrix.app }}"
   release-train:
     if: ${{ github.repository == 'spring-cloud/stream-applications' }}
     needs:
@@ -673,12 +636,7 @@ jobs:
       - name: 'Configure: checkout stream-applications'
         uses: actions/checkout@v3
         with:
-          ref: 'main'
-      - name: 'Configure: checkout stream-applications@${{ inputs.branch }}'
-        uses: actions/checkout@v3
-        with:
           ref: ${{ inputs.branch }}
-          path: 'stream-applications'
       - name: Ensure scripts are executable
         shell: bash
         run: find . -type f -name "*.sh" -exec chmod a+x '{}' \;
@@ -713,20 +671,18 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications >/dev/null
-            echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
-            echo "::notice ::checking updated versions"
-            set +e
-            MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
-            RC=$?
-            if ((RC!=0)); then
-              echo "::error ::$MESSAGE"
-              exit $RC
-            else
-              echo "::info ::$MESSAGE"
-            fi          
-          popd > /dev/null
+          echo "::notice ::updating versions to ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+          $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.build_version }}" "${{ needs.parameters.outputs.release_train_version }}"                        
+          echo "::notice ::checking updated versions"
+          set +e
+          MESSAGE=$($ROOT_DIR/check-versions-for-release.sh ${{ needs.parameters.outputs.build_version_type }})
+          RC=$?
+          if ((RC!=0)); then
+            echo "::error ::$MESSAGE"
+            exit $RC
+          else
+            echo "::info ::$MESSAGE"
+          fi
       - uses: jfrog/setup-jfrog-cli@v3
         env:
           JF_URL: 'https://repo.spring.io'
@@ -755,11 +711,9 @@ jobs:
           BUILD_VERSION_TYPE: ${{ needs.parameters.outputs.build_version_type }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications > /dev/null
-            echo "::notice ::building - stream-applications-release-train"
-            set -e
-            VERSION=${{ needs.parameters.outputs.build_version }} $ROOT_DIR/build-folder.sh stream-applications-release-train "install deploy"                                     
-          popd > /dev/null
+          echo "::notice ::building - stream-applications-release-train"
+          set -e
+          VERSION=${{ needs.parameters.outputs.build_version }} $ROOT_DIR/build-folder.sh stream-applications-release-train "install deploy"
       - name: 'Configure: Install libxml2-utils'
         uses: ./.github/actions/install-libxml2-utils
       - name: Upload descriptors
@@ -767,22 +721,24 @@ jobs:
         shell: bash
         env:
           RELEASE_TRAIN_VERSION: ${{ needs.parameters.outputs.release_train_version }}
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          BUILD_NAME: ${{ needs.parameters.outputs.build_name }}
+          BUILD_NUMBER: ${{ needs.parameters.outputs.build_number }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications > /dev/null
-            echo "::notice ::uploading unique version snapshot descriptors:$RELEASE_TRAIN_VERSION"
-            set -e
-            SRC_ROOT=$ROOT_DIR/stream-applications/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
-            TARGET_REPO=libs-snapshot-local/org/springframework/cloud/stream/app/stream-applications-descriptor/${RELEASE_TRAIN_VERSION}
-            jfrog rt upload "$SRC_ROOT/kafka-apps-maven.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-maven"
-            jfrog rt upload "$SRC_ROOT/kafka-apps-docker.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-docker"
-            jfrog rt upload "$SRC_ROOT/kafka-apps-harbor.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-harbor"
-            jfrog rt upload "$SRC_ROOT/rabbit-apps-maven.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-maven"
-            jfrog rt upload "$SRC_ROOT/rabbit-apps-docker.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-docker"
-            jfrog rt upload "$SRC_ROOT/rabbit-apps-harbor.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-harbor"
-            jfrog rt upload "$SRC_ROOT/kafka-apps-maven-repo-url.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.kafka-apps-maven-repo-url.properties"
-            jfrog rt upload "$SRC_ROOT/rabbit-apps-maven-repo-url.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.rabbit-apps-maven-repo-url.properties"
-          popd > /dev/null
+          echo "::notice ::uploading unique version snapshot descriptors:$RELEASE_TRAIN_VERSION"
+          set -e
+          SRC_ROOT=$ROOT_DIR/stream-applications/stream-applications-release-train/stream-applications-descriptor/target/classes/META-INF
+          TARGET_REPO=libs-snapshot-local/org/springframework/cloud/stream/app/stream-applications-descriptor/${RELEASE_TRAIN_VERSION}
+          jfrog rt upload "$SRC_ROOT/kafka-apps-maven.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-maven"
+          jfrog rt upload "$SRC_ROOT/kafka-apps-docker.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-docker"
+          jfrog rt upload "$SRC_ROOT/kafka-apps-harbor.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-harbor"
+          jfrog rt upload "$SRC_ROOT/rabbit-apps-maven.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-maven"
+          jfrog rt upload "$SRC_ROOT/rabbit-apps-docker.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-docker"
+          jfrog rt upload "$SRC_ROOT/rabbit-apps-harbor.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-harbor"
+          jfrog rt upload "$SRC_ROOT/kafka-apps-maven-repo-url.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.kafka-apps-maven-repo-url.properties"
+          jfrog rt upload "$SRC_ROOT/rabbit-apps-maven-repo-url.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.rabbit-apps-maven-repo-url.properties"
 
       - name: Set Stream Applications Docs Properties for ${{ needs.parameters.outputs.release_train_version }}
         run: |
@@ -816,14 +772,12 @@ jobs:
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         shell: bash
         run: |          
-          pushd stream-applications > /dev/null
-            git config user.name "GitHub Actions Bot"
-            git config user.email "<>"
-            git commit -a -m "Release ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
-            git tag "v${{ needs.parameters.outputs.build_version }}"
-            git tag "v${{ needs.parameters.outputs.release_train_version }}"
-            git push --tags -v origin
-          popd > /dev/null
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          git commit -a -m "Release ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+          git tag "v${{ needs.parameters.outputs.build_version }}"
+          git tag "v${{ needs.parameters.outputs.release_train_version }}"
+          git push --tags -v origin
 
       - name: Install tooling for Github release
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
@@ -857,16 +811,14 @@ jobs:
           VERBOSE: ${{ (github.debug || inputs.verbose) && '-X' || '' }}
         run: |
           ROOT_DIR=$(realpath $PWD)
-          pushd stream-applications >/dev/null
-            git config user.name "GitHub Actions Bot"
-            git config user.email "<>"
-            echo "::notice ::updating next dev versions to ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
-            $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.next_dev_version }}" "${{ needs.parameters.outputs.release_train_next_dev_version }}"
-            echo "::notice ::setting released version to next dev version ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
-            ./next-dev-version.sh
-            git commit -a -m "Next development version ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
-            git push -v origin 
-          popd > /dev/null
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          echo "::notice ::updating next dev versions to ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
+          $ROOT_DIR/update-project-version.sh "${{ needs.parameters.outputs.next_dev_version }}" "${{ needs.parameters.outputs.release_train_next_dev_version }}"
+          echo "::notice ::setting released version to next dev version ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
+          ./next-dev-version.sh
+          git commit -a -m "Next development version ${{ needs.parameters.outputs.next_dev_version }} / ${{ needs.parameters.outputs.release_train_next_dev_version }}"
+          git push -v origin
       - name: 'Start Integration Tests for ${{ needs.parameters.outputs.build_version }}'
         if: ${{ success() }}
         shell: bash
