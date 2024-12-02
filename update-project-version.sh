@@ -28,6 +28,7 @@ set +e
 
 $SCDIR/mvnw clean install -DskipTests -T 1C -ntp -Dmaven.javadoc.skip=true
 $SCDIR/mvnw clean
+find $SCDIR -name apps -type d -exec rm -rf '{}' \;
 
 $SCDIR/mvnw versions:set \
   -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
