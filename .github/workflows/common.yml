@@ -717,7 +717,6 @@ jobs:
       - name: 'Configure: Install libxml2-utils'
         uses: ./.github/actions/install-libxml2-utils
       - name: Upload descriptors
-        if: ${{ needs.parameters.outputs.build_version_type == 'snapshot' }}
         shell: bash
         env:
           RELEASE_TRAIN_VERSION: ${{ needs.parameters.outputs.release_train_version }}
@@ -774,7 +773,7 @@ jobs:
         run: |          
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
-          git commit -a -m "Release ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}"
+          git commit -a -m "Release ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}. Build ${{ needs.parameters.outputs.build_name }} - ${{ needs.parameters.outputs.build_number }}"
           git tag "v${{ needs.parameters.outputs.build_version }}"
           git tag "v${{ needs.parameters.outputs.release_train_version }}"
           git push --tags -v origin
