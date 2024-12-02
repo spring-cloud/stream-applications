@@ -26,6 +26,9 @@ echo "Version:[$OLD_VERSION] -> [$NEW_VERSION]"
 echo "Release Train Version: [$OLD_RT_VERSION] -> [$RELEASE_TRAIN_VERSION]"
 set +e
 
+$SCDIR/mvnw clean install -DskipTests -T 1C
+$SCDIR/mvnw clean
+
 $SCDIR/mvnw versions:set \
   -s .settings.xml -DgenerateBackupPoms=false -Dartifactory.publish.artifacts=false -B $VERBOSE \
   -DoldVersion="$OLD_VERSION" -DnewVersion="$NEW_VERSION" -DprocessAllModules=true -Dmaven.version.ignore="${OLD_RT_VERSION/\./\\.}"
