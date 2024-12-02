@@ -5,7 +5,7 @@
 
 	<groupId>org.springframework.cloud.fn</groupId>
 	<artifactId>functions-common</artifactId>
-    <version>4.0.2-SNAPSHOT</version>
+    <version>4.0.1-SNAPSHOT</version>
 	<name>java-functions-common</name>
 	<description>Java Functions Common</description>
 	<packaging>pom</packaging>
