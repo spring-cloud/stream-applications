@@ -26,7 +26,7 @@ echo "Version:[$OLD_VERSION] -> [$NEW_VERSION]"
 echo "Release Train Version: [$OLD_RT_VERSION] -> [$RELEASE_TRAIN_VERSION]"
 set +e
 
-$SCDIR/mvnw clean install -DskipTests -T 1C -ntp
+$SCDIR/mvnw clean install -DskipTests -T 1C -ntp -Dmaven.javadoc.skip=true
 $SCDIR/mvnw clean
 
 $SCDIR/mvnw versions:set \
