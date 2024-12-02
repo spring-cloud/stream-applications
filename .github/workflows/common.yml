@@ -770,7 +770,8 @@ jobs:
       - name: Tag Release
         if: ${{ needs.parameters.outputs.is_version_change == 'true' }}
         shell: bash
-        run: |          
+        run: |
+          echo "::info ::Release ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}. Build ${{ needs.parameters.outputs.build_name }} - ${{ needs.parameters.outputs.build_number }}"
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
           git commit -a -m "Release ${{ needs.parameters.outputs.build_version }} / ${{ needs.parameters.outputs.release_train_version }}. Build ${{ needs.parameters.outputs.build_name }} - ${{ needs.parameters.outputs.build_number }}"
