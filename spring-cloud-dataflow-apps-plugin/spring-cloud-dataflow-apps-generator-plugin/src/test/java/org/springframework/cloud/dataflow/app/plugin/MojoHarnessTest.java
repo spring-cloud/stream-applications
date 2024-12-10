@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,70 +25,65 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.plugin.testing.MojoRule;
+import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.project.ProjectBuildingRequest;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Christian Tzolov
  */
-public class MojoHarnessTest {
+class MojoHarnessTest extends AbstractMojoTestCase {
 
-	@Rule
-	public TemporaryFolder projectHome = new TemporaryFolder();
-
-	@Rule
-	public MojoRule mojoRule = new MojoRule();
+	@BeforeEach
+	void prepareForTest() throws Exception {
+		super.setUp();
+	}
 
 	@Test
-	public void testSomething() throws Exception {
-
-		File pomRoot = new File("src/test/resources/unit/http-source-apps/");
-
-		SpringCloudStreamAppGeneratorMojo myMojo = (SpringCloudStreamAppGeneratorMojo)
-				mojoRule.lookupConfiguredMojo(pomRoot, "generate-app");
-
+	void httpSourceAppsGeneration() throws Exception {
+		File pomRoot = new File("src/test/resources/unit/http-source-apps");
+		MavenProject project = readMavenProject(pomRoot);
+		SpringCloudStreamAppGeneratorMojo myMojo = (SpringCloudStreamAppGeneratorMojo) super.lookupConfiguredMojo(project, "generate-app");
 		assertThat(myMojo).isNotNull();
 
 		myMojo.execute();
 
 		assertThat(new File("./target/apps/http-source-kafka/src/main/resources/test.txt")).exists();
-
 		assertThat(new File("./target/apps/http-source-kafka/src/main/resources/application.properties")).exists();
 
 		Properties applicationProperties = new Properties();
 		applicationProperties.load(new FileReader("./target/apps/http-source-kafka/src/main/resources/application.properties"));
 		assertThat(applicationProperties.getProperty("spring.cloud.function.definition")).isEqualTo("httpSupplier");
-
 		assertThat(applicationProperties.getProperty("static.property")).isEqualTo("bla");
 
 		Model pomModel = getModel(new File("./target/apps"));
 
 		List<Dependency> dependencies = pomModel.getDependencies();
 		assertThat(dependencies.size()).isEqualTo(15);
-
 		assertThat(dependencies.stream()
 				.filter(d -> d.getArtifactId().equals("http-supplier")).count()).isEqualTo(1);
-
 		assertThat(dependencies.stream()
 				.filter(d -> d.getArtifactId().equals("stream-applications-postprocessor-common")).count()).isEqualTo(1);
-
 		assertThat(dependencies.stream()
 				.filter(d -> d.getArtifactId().equals("spring-cloud-stream-binder-kafka")).count()).isEqualTo(1);
 
 		Parent parent = pomModel.getParent();
 		assertThat(parent.getArtifactId()).isEqualTo("spring-boot-starter-parent");
 		assertThat(parent.getVersion()).isEqualTo("3.3.0.M3");
-
 		assertThat(pomModel.getArtifactId()).isEqualTo("http-source-kafka");
 		assertThat(pomModel.getGroupId()).isEqualTo("org.springframework.cloud.stream.app.test");
 		assertThat(pomModel.getName()).isEqualTo("http-source-kafka");
@@ -96,7 +91,6 @@ public class MojoHarnessTest {
 		assertThat(pomModel.getDescription()).isEqualTo("Spring Cloud Stream Http Source Kafka Binder Application");
 
 		List<Plugin> plugins = pomModel.getBuild().getPlugins();
-
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("spring-boot-maven-plugin")).count()).isEqualTo(1);
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("properties-maven-plugin")).count()).isEqualTo(1);
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).count()).isEqualTo(1);
@@ -108,8 +102,8 @@ public class MojoHarnessTest {
 						"</org.springframework.cloud.dataflow.spring-configuration-metadata.json>");
 		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>testspringcloud/${project.artifactId}:3.0.0.BUILD-SNAPSHOT</image>");
 		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>globalBaseImage</image>");
-		assertThat(pomModel.getRepositories().size()).isEqualTo(5);
 
+		assertThat(pomModel.getRepositories().size()).isEqualTo(5);
 		assertThat(pomModel.getRepositories().stream().map(r -> r.getId()).collect(Collectors.toList()))
 				.contains("bintray-global", "bintray-application", "bintray-binder");
 	}
@@ -123,5 +117,16 @@ public class MojoHarnessTest {
 			throw new IllegalStateException(e);
 		}
 	}
-}
 
+	private MavenProject readMavenProject(File basedir) throws Exception {
+		File pom = new File(basedir, "pom.xml");
+		MavenExecutionRequest request = new DefaultMavenExecutionRequest();
+		request.setBaseDirectory(basedir);
+		ProjectBuildingRequest configuration = request.getProjectBuildingRequest();
+		configuration.setRepositorySession(new DefaultRepositorySystemSession());
+		ProjectBuilder projectBuilder = (ProjectBuilder) super.lookup(ProjectBuilder.class.getName());
+		MavenProject project = projectBuilder.build(pom, configuration).getProject();
+		assertNotNull(project);
+		return project;
+	}
+}
