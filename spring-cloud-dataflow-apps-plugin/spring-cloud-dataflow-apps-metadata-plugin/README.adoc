@@ -67,7 +67,7 @@ The following example includes the `server.port` property and all properties fro
       <plugin>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dataflow-apps-metadata-plugin</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.0-SNAPSHOT</version>
         <configuration>
           <storeFilteredMetadata>true</storeFilteredMetadata>
           <metadataFilter>
