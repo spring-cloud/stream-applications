@@ -33,16 +33,14 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.cloud.dataflow.app.plugin.generator.AppDefinition;
 import org.springframework.util.ReflectionUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 /**
  * @author Christian Tzolov
@@ -50,8 +48,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class SpringCloudStreamAppGeneratorMojoTest {
 
-	@Rule
-	public TemporaryFolder projectHome = new TemporaryFolder();
+	@TempDir
+	public File projectHome;
 
 	private SpringCloudStreamAppGeneratorMojo springCloudStreamAppMojo = new SpringCloudStreamAppGeneratorMojo();
 
@@ -59,8 +57,8 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 
 	private SpringCloudStreamAppGeneratorMojo.Application application;
 
-	@Before
-	public void before() throws NoSuchFieldException {
+	@BeforeEach
+	public void prepareForTest() throws NoSuchFieldException {
 
 		application = new SpringCloudStreamAppGeneratorMojo.Application();
 		application.setName("log");
@@ -110,7 +108,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		setMojoProperty("binders", binders);
 
 		//setMojoProperty("generatedProjectHome", "./target/apps");
-		setMojoProperty("generatedProjectHome", projectHome.getRoot().getAbsolutePath());
+		setMojoProperty("generatedProjectHome", projectHome.getAbsolutePath());
 	}
 
 	@Test
@@ -122,7 +120,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		springCloudStreamAppMojo.execute();
 
 		//Model pomModel = getModel(new File("./target/apps"));
-		Model pomModel = getModel(new File(projectHome.getRoot().getAbsolutePath()));
+		Model pomModel = getModel(new File(projectHome.getAbsolutePath()));
 		List<Plugin> plugins = pomModel.getBuild().getPlugins();
 
 		// The properties-maven-plugin should not be defined if the container metadata is not enabled.
@@ -146,7 +144,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		springCloudStreamAppMojo.execute();
 
 		//assertGeneratedPomXml(new File("./target/apps"));
-		assertGeneratedPomXml(new File(projectHome.getRoot().getAbsolutePath()));
+		assertGeneratedPomXml(new File(projectHome.getAbsolutePath()));
 	}
 
 	@Test
@@ -162,7 +160,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 
 		springCloudStreamAppMojo.execute();
 
-		Model pomModel = getModel(new File(projectHome.getRoot().getAbsolutePath()));
+		Model pomModel = getModel(new File(projectHome.getAbsolutePath()));
 		List<Plugin> plugins = pomModel.getBuild().getPlugins();
 		final Optional<Plugin> bootPlugin = plugins.stream().filter(p -> p.getArtifactId().equals("spring-boot-maven-plugin")).findFirst();
 		assertThat(bootPlugin.isPresent()).isTrue();

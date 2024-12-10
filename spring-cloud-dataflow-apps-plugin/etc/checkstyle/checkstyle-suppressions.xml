@@ -4,6 +4,7 @@
 		"https://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 <suppressions>
 	<suppress files="(.*EmbeddedEngine\.java)" checks="[a-zA-Z0-9]*"/>
+	<suppress files="(.*EmbeddedEngine2\.java)" checks="[a-zA-Z0-9]*"/>
 	<suppress files="(.*Class\.java)" checks="[a-zA-Z0-9]*"/>
 	<suppress files="[\\/]src[\\/]main[\\/](protos)[\\/]"
 			  checks="(Javadoc*|HideUtility*)"/>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 the original author or authors.
+ * Copyright 2017-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,19 @@
 
 package org.springframework.cloud.dataflow.app.plugin;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConfigurationMetadataDocumentationMojoTests {
 
 	@Test
-	public void testJavaTypeBeautifier() {
+	void javaTypeBeautifier() {
 		ConfigurationMetadataDocumentationMojo mojo = new ConfigurationMetadataDocumentationMojo();
 		String s = mojo.niceType("java.lang.String");
 		assertThat(s).isEqualTo("String");
-
 		s = mojo.niceType("java.lang.Class<?>");
 		assertThat(s).isEqualTo("Class<?>");
-
 		s = mojo.niceType("java.util.Map$Entry<java.lang.String,    java.util.Map<java.lang.Integer,java.util.List<java.lang.Long>>>");
 		assertThat(s).isEqualTo("Entry<String, Map<Integer, List<Long>>>");
 	}
