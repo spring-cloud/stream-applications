@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 the original author or authors.
+ * Copyright 2018-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.springframework.cloud.dataflow.app.plugin;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.core.io.ClassPathResource;
 
@@ -29,29 +29,24 @@ import static org.springframework.cloud.dataflow.app.plugin.MetadataAggregationM
 
 /**
  * @author David Turanski
- **/
-
-public class MergeWhitelistPropertiesTest {
+ */
+class MergeWhitelistPropertiesTest {
 
 	@Test
-	public void merge() throws IOException {
+	void mergeProperties() throws IOException {
 		Properties properties1 = new Properties();
 		properties1.load(new ClassPathResource("META-INF/whitelist-1.properties").getInputStream());
-
 		Properties properties2 = new MetadataAggregationMojo().merge(properties1,
 			new ClassPathResource("META-INF/whitelist-2.properties").getInputStream());
-
 		assertThat(properties2).containsKeys(CONFIGURATION_PROPERTIES_CLASSES, CONFIGURATION_PROPERTIES_NAMES);
 	}
 
 	@Test
-	public void mergeReverseOrder() throws IOException {
+	public void mergePropertiesReverseOrder() throws IOException {
 		Properties properties1 = new Properties();
 		properties1.load(new ClassPathResource("META-INF/whitelist-2.properties").getInputStream());
-
 		Properties properties2 = new MetadataAggregationMojo().merge(properties1,
 			new ClassPathResource("META-INF/whitelist-1.properties").getInputStream());
-
 		assertThat(properties2).containsKeys(CONFIGURATION_PROPERTIES_CLASSES, CONFIGURATION_PROPERTIES_NAMES);
 	}
 

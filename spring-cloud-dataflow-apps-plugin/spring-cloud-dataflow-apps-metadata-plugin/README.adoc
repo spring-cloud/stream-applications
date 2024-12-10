@@ -1,84 +1,85 @@
 = Spring Cloud Stream & Task Maven Metadata Plugin
 
-Maven plugin for aggregating Spring Boot metadata from all dependencies of a project into
-a single metadata-only artifact.
+Maven plugin for aggregating Spring Boot metadata from all dependencies of a project into a single metadata-only artifact.
 
 == Usage
 
-To use this plugin, configure this plugin for your app project (either directly or through a parent POM):
-```
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.cloud.stream.app.plugin</groupId>
-				<artifactId>spring-cloud-app-starter-metadata-maven-plugin</artifactId>
-				<version>2.0.0.BUILD-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<id>aggregate-metadata</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>aggregate-metadata</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-```
+To use this plugin, configure this plugin for your app project:
+[source, xml]
+----
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dataflow-apps-metadata-plugin</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <executions>
+                <execution>
+                    <id>aggregate-metadata</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>aggregate-metadata</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+----
 
-This will produce and attach to the build a jar file named `<artifactId>-<version>-metadata.jar` (`metadata` being the
-maven classifier used for the artifact, which can be customized as such:)
-```
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.cloud.stream.app.plugin</groupId>
-				<artifactId>spring-cloud-app-starter-metadata-maven-plugin</artifactId>
-				<version>2.0.0.BUILD-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<id>aggregate-metadata</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>aggregate-metadata</goal>
-						</goals>
-						<configuration>
-						    <classifier>foobar</classifier>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-```
+This will produce and attach to the build a jar file named `<artifactId>-<version>-metadata.jar` where the `metadata` suffix is the maven classifier and can be customized as follows:
+[source, xml]
+----
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dataflow-apps-metadata-plugin</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <executions>
+                <execution>
+                    <id>aggregate-metadata</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>aggregate-metadata</goal>
+                    </goals>
+                    <configuration>
+                        <classifier>mymetadata</classifier>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+----
 
-You can filter in subset of the gathered metadata and store it into a java property file: `META-INF/spring-configuration-metadata-encoded.properties`.
-This file has single property `org.springframework.cloud.dataflow.spring.configuration.metadata.json` which contains the pre-filtered metadata encoded as Base64.
-To activate this feature you need to set the `storeFilteredMetadata` parameter to `true`. Use the `metadataFilter` to configure the whitelisted metadata content to include.
-For example:
-```
+The gathered metadata can be filtered and stored into a java properties file named `META-INF/spring-configuration-metadata-encoded.properties`.
+The file includes a single property named `org.springframework.cloud.dataflow.spring.configuration.metadata.json` which contains the filtered metadata encoded as Base64.
+
+To activate the feature, set the `storeFilteredMetadata` configuration option to `true`.
+Use the `metadataFilter` configuration option to specify the metadata to include.
+
+The following example includes the `server.port` property and all properties from two configuration properties classes:
+[source, xml]
+----
 <build>
   <plugins>
       <plugin>
         <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-app-starter-metadata-maven-plugin</artifactId>
-        <version>2.0.0.BUILD-SNAPSHOT</version>
-
+        <artifactId>spring-cloud-dataflow-apps-metadata-plugin</artifactId>
+        <version>1.0.0</version>
         <configuration>
           <storeFilteredMetadata>true</storeFilteredMetadata>
-
           <metadataFilter>
             <names>
               <filter>server.port</filter>
             </names>
             <sourceTypes>
-              <filter>io.pivotal.java.function.http.supplier.HttpSourceProperties</filter>
-              <filter>io.pivotal.java.function.http.supplier.HttpSourceProperties$Cors</filter>
+              <filter>com.example.MyConfigProperties</filter>
+              <filter>com.example.MyOtherConfigProperties</filter>
             </sourceTypes>
           </metadataFilter>
         </configuration>
-
         <executions>
           <execution>
             <id>aggregate-metadata</id>
@@ -91,5 +92,4 @@ For example:
       </plugin>
   </plugins>
 </build>
-```
-
+----

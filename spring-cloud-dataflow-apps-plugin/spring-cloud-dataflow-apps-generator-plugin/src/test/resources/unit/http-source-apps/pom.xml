@@ -14,7 +14,7 @@
 		<spring-boot.version>3.3.0.M3</spring-boot.version>
 		<stream-apps-core.version>5.0.0-SNAPSHOT</stream-apps-core.version>
 		<java-cfenv-boot.version>3.2.0</java-cfenv-boot.version>
-		<app-metadata-maven-plugin-version>1.0.13-SNAPSHOT</app-metadata-maven-plugin-version>
+		<app-metadata-maven-plugin-version>1.1.0-SNAPSHOT</app-metadata-maven-plugin-version>
 
 		<!-- Emulate the properties that otherwise should come from the stream-apps-parent parent -->
 		<java-functions.version>5.0.0-SNAPSHOT</java-functions.version>
@@ -29,7 +29,7 @@
 				<plugin>
 					<groupId>org.springframework.cloud</groupId>
 					<artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
-					<version>1.0.0-SNAPSHOT</version>
+					<version>1.1.0-SNAPSHOT</version>
 					<executions>
 						<execution>
 							<id>app-gen</id>
@@ -219,7 +219,7 @@
 			<plugin>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
+				<version>1.1.0-SNAPSHOT</version>
 
 				<configuration>
 					<generatedProjectHome>./target/apps</generatedProjectHome>
@@ -280,11 +280,10 @@
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-app-starter-metadata-maven-plugin</artifactId>
-				<version>2.0.0.BUILD-SNAPSHOT</version>
+				<artifactId>spring-cloud-apps-metadata-plugin</artifactId>
+				<version>1.1.0-SNAPSHOT</version>
 				<configuration>
 					<storeFilteredMetadata>true</storeFilteredMetadata>
-
 					<metadataFilter>
 						<names>
 							<filter>server.port</filter>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 the original author or authors.
+ * Copyright 2020-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public final class MavenXmlWriter {
 	public static <T> String toXml(T element) {
 		String privateMethodName = "write" + element.getClass().getSimpleName();
 		String xmlTagName = element.getClass().getSimpleName().toLowerCase();
-		return write(serializer -> invokeMavenXppWriteMethod(element, privateMethodName, xmlTagName, serializer));
+		return write(xmlTagName, serializer -> invokeMavenXppWriteMethod(element, privateMethodName, xmlTagName, serializer));
 	}
 
 	/**
@@ -103,32 +103,37 @@ public final class MavenXmlWriter {
 			throw new IllegalStateException("Issue creating config for additional plugin", ex);
 		}
 
-		return write(serializer -> invokeMavenXppWriteMethod(
+		return write("plugin", serializer -> invokeMavenXppWriteMethod(
 				plugin, "writePlugin", "plugin", serializer));
 	}
 
 	/**
-	 * Template method that helps generating well-formed and valid XML segments. It uses the {@link XmlSerializer}
-	 * to create the create the XML structure and delegates to the #elementWriter callback to fill in the content.
+	 * Generates well-formed and valid XML segments with the help of
+	 * {@link XmlSerializer}.
 	 *
-	 * @param elementWriter Callback handler that contributes the XML content.
-	 * @return Returns well-formed XML element.
+	 * @param xmlTagName the tag of the element
+	 * @param elementWriter callback handler that writes the XML content
+	 * @return well-formed XML element with namespace element removed
 	 */
-	public static String write(Consumer<XmlSerializer> elementWriter) {
+	public static String write(String xmlTagName, Consumer<XmlSerializer> elementWriter) {
 		try {
 			Writer writer = new StringWriter();
-
 			XmlSerializer serializer = new MXSerializer();
 			serializer.setProperty("http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  ");
 			serializer.setProperty("http://xmlpull.org/v1/doc/properties.html#serializer-line-separator", "\n");
 			serializer.setOutput(writer);
-
 			serializer.startDocument("UTF-8", null);
 			elementWriter.accept(serializer);
 			serializer.endDocument();
-
 			String result = writer.toString();
-			return result.substring(result.indexOf('\n') + 1); // remove first line (e.g. remove the <?xml ... ?>)
+			// Strip the namespace info
+			// E.g. '<?xml version="1.0" encoding="UTF-8"?><thing>one</thing>' with xml
+			// tag 'thing' will return '<thing>one</thing>'
+			int xmlTagNameIdx = result.indexOf("<" + xmlTagName);
+			if (xmlTagNameIdx != -1) {
+				result = result.substring(xmlTagNameIdx);
+			}
+			return result;
 		}
 		catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -168,6 +173,9 @@ public final class MavenXmlWriter {
 	public static String indent(String input, int indentation) {
 		String indentPrefix = "\n" + IntStream.range(0, indentation).mapToObj(i -> " ").collect(Collectors.joining());
 		String indentedInput = input.replace("\n", indentPrefix);
-		return indentedInput.substring(0, indentedInput.lastIndexOf(indentPrefix)); // remove the last empty line.
+		if (input.endsWith(indentPrefix)) {
+			indentedInput = indentedInput.substring(0, indentedInput.lastIndexOf(indentPrefix)); // remove the last empty line.
+		}
+		return indentedInput;
 	}
 }

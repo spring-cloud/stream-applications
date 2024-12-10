@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 the original author or authors.
+ * Copyright 2016-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -418,14 +418,14 @@ public class ConfigurationMetadataDocumentationMojo extends AbstractMojo {
 		}
 
 		@Override
-		public List<Archive> getNestedArchives(EntryFilter ignored) throws IOException {
+		public Iterator<Archive> getNestedArchives(EntryFilter ignored, EntryFilter ignored2) throws IOException {
 			try {
 				List<Archive> archives = new ArrayList<>(mavenProject.getRuntimeClasspathElements().size());
 				for (String dep : mavenProject.getRuntimeClasspathElements()) {
 					File file = new File(dep);
 					archives.add(file.isDirectory() ? new ExplodedArchive(file) : new JarFileArchive(file));
 				}
-				return archives;
+				return archives.iterator();
 			}
 			catch (DependencyResolutionRequiredException e) {
 				throw new IOException("Could not create boot archive", e);
