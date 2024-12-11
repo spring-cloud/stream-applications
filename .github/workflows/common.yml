@@ -689,6 +689,8 @@ jobs:
           JF_ARTIFACTORY_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: Configure JFrog Cli
         shell: bash
+        env:
+          JF_SERVER_ID: ${{ vars.JF_SERVER_ID }}
         run: |
           ./configure-jfrog.sh ${{ needs.parameters.outputs.build_version_type }}          
           echo JFROG_CLI_BUILD_NAME=stream-apps-main-release >> $GITHUB_ENV

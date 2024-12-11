@@ -37,8 +37,8 @@ jobs:
       - name: Configure JFrog Cli
         run: |
           jfrog rt mvnc \
-            --server-id-resolve=repo.spring.io \
-            --server-id-deploy=repo.spring.io \
+            --server-id-resolve=${{ vars.JF_SERVER_ID }} \
+            --server-id-deploy=${{ vars.JF_SERVER_ID }} \
             --repo-resolve-releases=libs-milestone \
             --repo-resolve-snapshots=libs-snapshot \
             --repo-deploy-releases=libs-milestone-local \
