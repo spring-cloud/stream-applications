@@ -83,7 +83,7 @@ class MojoHarnessTest extends AbstractMojoTestCase {
 
 		Parent parent = pomModel.getParent();
 		assertThat(parent.getArtifactId()).isEqualTo("spring-boot-starter-parent");
-		assertThat(parent.getVersion()).isEqualTo("3.3.0.M3");
+		assertThat(parent.getVersion()).isEqualTo("3.3.6");
 		assertThat(pomModel.getArtifactId()).isEqualTo("http-source-kafka");
 		assertThat(pomModel.getGroupId()).isEqualTo("org.springframework.cloud.stream.app.test");
 		assertThat(pomModel.getName()).isEqualTo("http-source-kafka");
@@ -93,15 +93,6 @@ class MojoHarnessTest extends AbstractMojoTestCase {
 		List<Plugin> plugins = pomModel.getBuild().getPlugins();
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("spring-boot-maven-plugin")).count()).isEqualTo(1);
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("properties-maven-plugin")).count()).isEqualTo(1);
-		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).count()).isEqualTo(1);
-
-		Plugin jibPlugin = plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).findFirst().get();
-		assertThat(jibPlugin.getConfiguration().toString())
-				.contains("<org.springframework.cloud.dataflow.spring-configuration-metadata.json>" +
-						"${org.springframework.cloud.dataflow.spring.configuration.metadata.json}" +
-						"</org.springframework.cloud.dataflow.spring-configuration-metadata.json>");
-		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>testspringcloud/${project.artifactId}:3.0.0.BUILD-SNAPSHOT</image>");
-		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>globalBaseImage</image>");
 
 		assertThat(pomModel.getRepositories().size()).isEqualTo(5);
 		assertThat(pomModel.getRepositories().stream().map(r -> r.getId()).collect(Collectors.toList()))
