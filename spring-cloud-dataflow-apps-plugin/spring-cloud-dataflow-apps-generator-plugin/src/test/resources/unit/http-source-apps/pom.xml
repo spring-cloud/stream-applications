@@ -44,7 +44,7 @@
 							<application>
 								<bootVersion>${spring-boot.version}</bootVersion>
 								<metadata>
-									<mavenPluginVersion>3.3.0-M1</mavenPluginVersion>
+									<mavenPluginVersion>3.3.0</mavenPluginVersion>
 								</metadata>
 								<containerImage>
 									<orgName>globalOrgName</orgName>
