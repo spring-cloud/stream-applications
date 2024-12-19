@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.springframework.cloud.stream.app</groupId>
     <artifactId>applications</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>5.0.1-SNAPSHOT</version>
     <name>applications</name>
     <description>Infrastructure for stream applications</description>
     <packaging>pom</packaging>
