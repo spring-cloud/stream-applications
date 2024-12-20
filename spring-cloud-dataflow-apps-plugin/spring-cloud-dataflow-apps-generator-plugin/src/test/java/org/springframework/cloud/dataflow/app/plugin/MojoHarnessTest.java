@@ -83,7 +83,7 @@ class MojoHarnessTest extends AbstractMojoTestCase {
 
 		Parent parent = pomModel.getParent();
 		assertThat(parent.getArtifactId()).isEqualTo("spring-boot-starter-parent");
-		assertThat(parent.getVersion()).isEqualTo("3.3.0.M3");
+		assertThat(parent.getVersion()).isEqualTo("3.4.1");
 		assertThat(pomModel.getArtifactId()).isEqualTo("http-source-kafka");
 		assertThat(pomModel.getGroupId()).isEqualTo("org.springframework.cloud.stream.app.test");
 		assertThat(pomModel.getName()).isEqualTo("http-source-kafka");
