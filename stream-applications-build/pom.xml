@@ -40,7 +40,7 @@
         <spring-cloud.version>2024.0.1-SNAPSHOT</spring-cloud.version>
         <spring-cloud-starters.version>4.2.1-SNAPSHOT</spring-cloud-starters.version>
         <spring-cloud-function.version>4.2.1-SNAPSHOT</spring-cloud-function.version>
-        <spring-cloud-stream-dependencies.version>4.2.0</spring-cloud-stream-dependencies.version>
+        <spring-cloud-stream-dependencies.version>4.2.1-SNAPSHOT</spring-cloud-stream-dependencies.version>
         <testcontainers.version>1.19.8</testcontainers.version>
         <mockserver.version>5.15.0</mockserver.version>
         <groovy.version>4.0.24</groovy.version>
@@ -50,6 +50,7 @@
         <mavenThreads>1</mavenThreads>
         <commons-compress.version>1.26.2</commons-compress.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
+		<okhttp3.version>4.12.0</okhttp3.version>
 		<!--suppress UnresolvedMavenProperty -->
 		<buildName>${env.BUILD_NAME}</buildName>
 		<!--suppress UnresolvedMavenProperty -->
@@ -133,6 +134,13 @@
                 <artifactId>ivy</artifactId>
                 <version>${apache-ivy.version}</version>
             </dependency>
+			<dependency>
+				<groupId>com.squareup.okhttp3</groupId>
+				<artifactId>okhttp-bom</artifactId>
+				<version>${okhttp3.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 
