@@ -113,6 +113,7 @@ public class MetadataAggregationMojo extends AbstractMojo {
 	private static final Set<String> KNOWN_PROBLEMATIC_ENUMS = new HashSet<>();
 	static {
 		KNOWN_PROBLEMATIC_ENUMS.add("org.springframework.boot.autoconfigure.data.jdbc.JdbcDatabaseDialect");
+		KNOWN_PROBLEMATIC_ENUMS.add("org.springframework.boot.autoconfigure.http.client.HttpClientProperties$Factory");
 	}
 
 	@Parameter(defaultValue = "${project}")
