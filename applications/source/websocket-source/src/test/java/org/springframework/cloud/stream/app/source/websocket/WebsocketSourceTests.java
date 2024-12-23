@@ -18,6 +18,7 @@ package org.springframework.cloud.stream.app.source.websocket;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.integration.websocket.ClientWebSocketContainer;
 import org.springframework.messaging.Message;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -73,7 +73,7 @@ public class WebsocketSourceTests {
 						this.properties.getPath());
 
 		HttpHeaders httpHeaders = new HttpHeaders();
-		String token = Base64Utils.encodeToString(
+		String token = Base64.getEncoder().encodeToString(
 				(this.securityProperties.getUser().getName() + ":" + this.securityProperties.getUser().getPassword())
 						.getBytes(StandardCharsets.UTF_8));
 		httpHeaders.set(HttpHeaders.AUTHORIZATION, "Basic " + token);

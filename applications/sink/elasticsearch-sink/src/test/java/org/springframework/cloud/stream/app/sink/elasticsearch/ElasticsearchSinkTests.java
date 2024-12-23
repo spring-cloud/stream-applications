@@ -35,11 +35,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.fn.consumer.elasticsearch.ElasticsearchConsumerConfiguration;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
-import org.springframework.lang.NonNull;
 import org.springframework.messaging.support.GenericMessage;
 
 
@@ -59,7 +55,6 @@ public class ElasticsearchSinkTests {
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withUserConfiguration(TestChannelBinderConfiguration.getCompleteConfiguration(ElasticsearchSinkTestApplication.class));
 
-
 	@Test
 	void elasticSearchSinkWithIndexNameProperty() {
 		this.contextRunner
@@ -67,16 +62,13 @@ public class ElasticsearchSinkTests {
 						"elasticsearch.consumer.index=foo", "elasticsearch.consumer.id=1",
 						"spring.elasticsearch.rest.uris=http://" + elasticsearch.getHttpHostAddress())
 				.run(context -> {
-
-					final InputDestination inputDestination = context.getBean(InputDestination.class);
-					final String jsonObject = "{\"age\":10,\"dateOfBirth\":1471466076564,"
+					InputDestination inputDestination = context.getBean(InputDestination.class);
+					String jsonObject = "{\"age\":10,\"dateOfBirth\":1471466076564,"
 							+ "\"fullName\":\"John Doe\"}";
-
 					inputDestination.send(new GenericMessage<>(jsonObject));
-
-					final ElasticsearchClient elasticsearchClient = context.getBean(ElasticsearchClient.class);
-					final GetRequest getRequest = new GetRequest.Builder().index("foo").id("1").build();
-					final GetResponse<JsonData> response = elasticsearchClient.get(getRequest, JsonData.class);
+					ElasticsearchClient elasticsearchClient = context.getBean(ElasticsearchClient.class);
+					GetRequest getRequest = new GetRequest.Builder().index("foo").id("1").build();
+					GetResponse<JsonData> response = elasticsearchClient.get(getRequest, JsonData.class);
 					assertThat(response.found()).isTrue();
 					assertThat(response.source()).isNotNull();
 					assertThat(response.source().toJson()).isEqualTo(JsonData.fromJson(jsonObject).toJson());
@@ -108,17 +100,6 @@ public class ElasticsearchSinkTests {
 	@SpringBootApplication
 	@Import(ElasticsearchConsumerConfiguration.class)
 	static class ElasticsearchSinkTestApplication {
-	}
-
-	@Configuration(proxyBeanMethods = false)
-	static class Config extends ElasticsearchConfiguration {
-		@NonNull
-		@Override
-		public ClientConfiguration clientConfiguration() {
-			return ClientConfiguration.builder()
-				.connectedTo(elasticsearch.getHttpHostAddress())
-				.build();
-		}
 	}
 
 }
