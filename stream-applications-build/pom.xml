@@ -35,26 +35,26 @@
         <nohttp-checkstyle.version>0.0.11</nohttp-checkstyle.version>
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.43</spring-javaformat-checkstyle.version>
-        <spring-boot.version>3.3.6</spring-boot.version>
-        <spring.version>6.1.15</spring.version>
-        <spring-cloud.version>2023.0.4</spring-cloud.version>
-        <spring-cloud-starters.version>4.1.5</spring-cloud-starters.version>
-        <spring-cloud-function.version>4.1.4</spring-cloud-function.version>
-        <spring-cloud-stream-dependencies.version>4.1.4</spring-cloud-stream-dependencies.version>
-        <testcontainers.version>1.19.8</testcontainers.version>
+        <spring-boot.version>3.4.2-SNAPSHOT</spring-boot.version>
+        <spring-cloud.version>2024.0.1-SNAPSHOT</spring-cloud.version>
+        <!-- =================================================================== -->
+        <!-- Required only for release train docs generation in -->
+        <!-- /stream-applications-release-train/stream-applications-docs/pom.xml -->
+        <spring.version>6.2.1</spring.version>
+        <spring-cloud-stream-dependencies.version>4.2.1-SNAPSHOT</spring-cloud-stream-dependencies.version>
+        <!-- =================================================================== -->
         <mockserver.version>5.15.0</mockserver.version>
-        <groovy.version>4.0.24</groovy.version>
         <apache-ivy.version>2.5.2</apache-ivy.version>
-        <jakarta-jms.version>3.1.0</jakarta-jms.version>
         <curator.version>5.5.0</curator.version>
         <mavenThreads>1</mavenThreads>
         <commons-compress.version>1.26.2</commons-compress.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
-		<!--suppress UnresolvedMavenProperty -->
-		<buildName>${env.BUILD_NAME}</buildName>
-		<!--suppress UnresolvedMavenProperty -->
-		<buildNumber>${env.BUILD_NUMBER}</buildNumber>
-	</properties>
+        <okhttp3.version>4.12.0</okhttp3.version>
+        <!--suppress UnresolvedMavenProperty -->
+        <buildName>${env.BUILD_NAME}</buildName>
+        <!--suppress UnresolvedMavenProperty -->
+        <buildNumber>${env.BUILD_NUMBER}</buildNumber>
+    </properties>
 
     <url>https://spring.io/projects/spring-cloud-stream-applications</url>
     <developers>
@@ -83,12 +83,6 @@
                 <version>${commons-lang3.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-framework-bom</artifactId>
-                <version>${spring.version}</version>
-                <type>pom</type>
-            </dependency>
-            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot.version}</version>
@@ -103,35 +97,16 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-function-dependencies</artifactId>
-                <version>${spring-cloud-function.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers-bom</artifactId>
-                <version>${testcontainers.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.groovy</groupId>
-                <artifactId>groovy-bom</artifactId>
-                <version>${groovy.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>jakarta.jms</groupId>
-                <artifactId>jakarta.jms-api</artifactId>
-                <version>${jakarta-jms.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.ivy</groupId>
                 <artifactId>ivy</artifactId>
                 <version>${apache-ivy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp-bom</artifactId>
+                <version>${okhttp3.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

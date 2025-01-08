@@ -17,7 +17,7 @@
 
     <properties>
         <stream-apps-core.version>6.0.0-SNAPSHOT</stream-apps-core.version>
-        <java-functions.version>5.0.1</java-functions.version>
+        <java-functions.version>5.1.0-SNAPSHOT</java-functions.version>
         <prometheus-rsocket.version>1.5.3</prometheus-rsocket.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.1.0-SNAPSHOT</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.1.0-SNAPSHOT</spring-cloud-dataflow-apps-docs-plugin.version>
@@ -43,37 +43,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-function-dependencies</artifactId>
-                <version>${spring-cloud-function.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-stream-dependencies</artifactId>
-                <version>${spring-cloud-stream-dependencies.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
 			<dependency>
 				<groupId>org.mock-server</groupId>
 				<artifactId>mockserver-netty</artifactId>
 				<version>${mockserver.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>5.9.3</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers-bom</artifactId>
-                <version>${testcontainers.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -169,17 +143,6 @@
                                 </metadata>
                                 <maven>
                                     <dependencyManagement>
-                                        <!-- Temporarily override SC-Fn dependency by giving it the highest precedence since 2020.0.5 release of spring-cloud will not take place until December -->
-                                        <dependency>
-                                            <groupId>org.springframework.cloud</groupId>
-                                            <artifactId>spring-cloud-function-dependencies</artifactId>
-                                            <version>${spring-cloud-function.version}</version>
-                                        </dependency>
-                                        <dependency>
-                                            <groupId>org.springframework.cloud</groupId>
-                                            <artifactId>spring-cloud-stream-dependencies</artifactId>
-                                            <version>${spring-cloud-stream-dependencies.version}</version>
-                                        </dependency>
                                         <dependency>
                                             <groupId>org.springframework.cloud</groupId>
                                             <artifactId>spring-cloud-dependencies</artifactId>
