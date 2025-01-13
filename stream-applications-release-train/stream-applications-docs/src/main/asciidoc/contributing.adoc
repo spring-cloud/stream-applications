@@ -7,13 +7,10 @@ tracker for issues and merging pull requests into master. If you want
 to contribute even something trivial please do not hesitate, but
 follow the guidelines below.
 
-=== Sign the Contributor License Agreement
-Before we accept a non-trivial patch or pull request we will need you to sign the
-https://support.springsource.com/spring_committer_signup[contributor's agreement].
-Signing the contributor's agreement does not grant anyone commit rights to the main
-repository, but it does mean that we can accept your contributions, and you will get an
-author credit if we do.  Active contributors might be asked to join the core team, and
-given the ability to merge pull requests.
+
+== Developer Certificate of Origin
+All commits must include a **Signed-off-by** trailer at the end of each commit message to indicate that the contributor agrees to the Developer Certificate of Origin.
+For additional details, please refer to the blog post https://spring.io/blog/2025/01/06/hello-dco-goodbye-cla-simplifying-contributions-to-spring[Hello DCO, Goodbye CLA: Simplifying Contributions to Spring].
 
 === Code Conventions and Housekeeping
 None of these is essential for a pull request, but they will all help.  They can also be
