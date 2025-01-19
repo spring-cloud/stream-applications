@@ -306,7 +306,7 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 				})
 				.collect(Collectors.toList());
 
-		app.setBootPluginConfiguration(this.application.getBootPluginConfiguration());
+		app.setBootPluginConfiguration(deriveBootPluginConfiguration());
 
 		// ----------------------------------------------------------------------------------------------------------
 		//                                 Project Generator
@@ -323,6 +323,18 @@ public class SpringCloudStreamAppGeneratorMojo extends AbstractMojo {
 		catch (IOException e) {
 			throw new MojoFailureException("Project generation failure", e);
 		}
+	}
+
+	private String deriveBootPluginConfiguration() {
+		String imageInfo = "<image><name>{{app.containerImage.orgName}}/${project.artifactId}:{{app.containerImage.tag}}</name></image>";
+		String bootPluginConfig = this.application.getBootPluginConfiguration();
+		if (!StringUtils.hasText(bootPluginConfig)) {
+			return "<![CDATA[%n%s%n]]>".formatted(imageInfo);
+		}
+		if (bootPluginConfig.contains("<image>") && bootPluginConfig.contains("</image>")) {
+			return bootPluginConfig;
+		}
+		return bootPluginConfig.replace("<![CDATA[", "<![CDATA[%n%s%n".formatted(imageInfo));
 	}
 
 	private boolean isSameArtifact(Dependency dep1, Dependency dep2) {

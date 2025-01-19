@@ -135,21 +135,15 @@
 			{{this}}
 			{{/app-binder.maven.plugins}}
 			<!-- (end) additional plugins -->
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<image>
-						<name>{{app.containerImage.orgName}}/${project.artifactId}:{{app.containerImage.tag}}</name>
-					</image>
-					<!-- extra configuration -->
-					{{#app.bootPluginConfiguration}}
-					{{this}}
-					{{/app.bootPluginConfiguration}}
-					<!-- (end) extra configuration -->
-				</configuration>
-			</plugin>
-
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                {{#app.bootPluginConfiguration}}
+                <configuration>
+                    {{this}}
+                </configuration>
+                {{/app.bootPluginConfiguration}}
+            </plugin>
 
 			{{#app.containerImage.enableMetadata}}
 			<!--
