@@ -70,18 +70,11 @@ public final class MavenXmlWriter {
 	 * <additionalPlugins>
 	 *   <plugin>
 	 *     <groupId>com.google.cloud.tools</groupId>
-	 *     <artifactId>jib-maven-plugin</artifactId>
-	 *     <version>3.3.0</version>
+	 *     <artifactId>my-plugin</artifactId>
+	 *     <version>1.0.0</version>
 	 *     <configuration>
 	 *       <![CDATA[
-	 *         <from><image>springcloud/baseimage:1.0.4</image></from>
-	 *         <to>
-	 *           <image>springcloudstream:${project.artifactId}</image>
-	 *           <tags><tag>latest</tag></tags>
-	 *         </to>
-	 *         <container>
-	 *           <format>Docker</format>
-	 *         </container>
+	 *         <some-property>someValue</some-property>
 	 *       ]]>
 	 *     </configuration>
 	 *   </plugin>

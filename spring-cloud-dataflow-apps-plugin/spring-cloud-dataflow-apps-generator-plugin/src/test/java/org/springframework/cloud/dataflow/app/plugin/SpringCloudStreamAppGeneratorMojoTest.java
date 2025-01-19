@@ -126,13 +126,6 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		// The properties-maven-plugin should not be defined if the container metadata is not enabled.
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("properties-maven-plugin")).count()).isEqualTo(0);
 
-		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).count()).isEqualTo(1);
-
-		Plugin jibPlugin = plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).findFirst().get();
-		assertThat(jibPlugin.getConfiguration().toString())
-				.doesNotContain("<org.springframework.cloud.dataflow.spring-configuration-metadata.json>" +
-						"${org.springframework.cloud.dataflow.spring.configuration.metadata.json}" +
-						"</org.springframework.cloud.dataflow.spring-configuration-metadata.json>");
 	}
 
 	@Test
@@ -166,9 +159,11 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		assertThat(bootPlugin.isPresent()).isTrue();
 		final Plugin plugin = bootPlugin.get();
 		final Xpp3Dom configuration = (Xpp3Dom) plugin.getConfiguration();
-		assertThat(configuration.getValue().contains("<requiresUnpack>")).isTrue();
-		assertThat(configuration.getValue().contains("jython-standalone")).isTrue();
-		assertThat(configuration.getValue().contains("</requiresUnpack>")).isTrue();
+		assertThat(configuration).isNotNull();
+		String configurationString = configuration.toString();
+		assertThat(configurationString).contains("<requiresUnpack>");
+		assertThat(configurationString).contains("jython-standalone");
+		assertThat(configurationString).contains("</requiresUnpack>");
 	}
 
 	private void assertGeneratedPomXml(File rootPath) {
@@ -197,14 +192,6 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		List<Plugin> plugins = pomModel.getBuild().getPlugins();
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("spring-boot-maven-plugin")).count()).isEqualTo(1);
 		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("properties-maven-plugin")).count()).isEqualTo(1);
-		assertThat(plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).count()).isEqualTo(1);
-
-		Plugin jibPlugin = plugins.stream().filter(p -> p.getArtifactId().equals("jib-maven-plugin")).findFirst().get();
-		assertThat(jibPlugin.getConfiguration().toString())
-				.contains("<org.springframework.cloud.dataflow.spring-configuration-metadata.json>" +
-						"${org.springframework.cloud.dataflow.spring.configuration.metadata.json}" +
-						"</org.springframework.cloud.dataflow.spring-configuration-metadata.json>");
-		assertThat(jibPlugin.getConfiguration().toString()).contains("<image>base/image</image>");
 
 		assertThat(pomModel.getRepositories().size()).isEqualTo(2);
 	}

@@ -138,44 +138,22 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				{{#app.bootPluginConfiguration}}
 				<configuration>
+					<image>
+						<name>{{app.containerImage.orgName}}/${project.artifactId}:{{app.containerImage.tag}}</name>
+					</image>
+					<!-- extra configuration -->
+					{{#app.bootPluginConfiguration}}
 					{{this}}
+					{{/app.bootPluginConfiguration}}
+					<!-- (end) extra configuration -->
 				</configuration>
-				{{/app.bootPluginConfiguration}}
 			</plugin>
 
-			<plugin>
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>jib-maven-plugin</artifactId>
-				<version>3.3.0</version>
-				<configuration>
-					<from>
-						<image>{{app.containerImage.baseImage}}</image>
-					</from>
-					<to>
-						<image>{{app.containerImage.orgName}}/${project.artifactId}:{{app.containerImage.tag}}</image>
-					</to>
-					<container>
-						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
-						<format>{{app.containerImage.format}}</format>
-						{{#app.containerImage.enableMetadata}}
-						<labels>
-							<org.springframework.cloud.dataflow.spring-configuration-metadata.json>
-								${org.springframework.cloud.dataflow.spring.configuration.metadata.json}
-							</org.springframework.cloud.dataflow.spring-configuration-metadata.json>
-							<application.name>${project.artifactId}</application.name>
-							<application.version>${project.version}</application.version>
-						</labels>
-						{{/app.containerImage.enableMetadata}}
-					</container>
-				</configuration>
-			</plugin>
 
 			{{#app.containerImage.enableMetadata}}
 			<!--
-			 Use of properties-maven-plugin to load the encoded metadata properties created by the jib-maven-plugin
-			 Use: Use: ./mvnw clean install jib:dockerBuild or ./mvnw clean install jib:build
+			 Use of properties-maven-plugin to load the encoded metadata properties
 			-->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
