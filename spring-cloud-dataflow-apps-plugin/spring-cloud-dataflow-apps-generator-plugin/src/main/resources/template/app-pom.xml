@@ -153,8 +153,7 @@
 
 			{{#app.containerImage.enableMetadata}}
 			<!--
-			 Use of properties-maven-plugin to load the encoded metadata properties created by the jib-maven-plugin
-			 Use: Use: ./mvnw clean install jib:dockerBuild or ./mvnw clean install jib:build
+			 Use of properties-maven-plugin to load the encoded metadata properties
 			-->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
