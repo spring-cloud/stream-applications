@@ -160,7 +160,7 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		final Plugin plugin = bootPlugin.get();
 		final Xpp3Dom configuration = (Xpp3Dom) plugin.getConfiguration();
 		assertThat(configuration).isNotNull();
-		String configurationString = configuration.toString();
+		String configurationString = configuration.getValue();
 		assertThat(configurationString).contains("<requiresUnpack>");
 		assertThat(configurationString).contains("jython-standalone");
 		assertThat(configurationString).contains("</requiresUnpack>");
