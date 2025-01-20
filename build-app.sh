@@ -81,10 +81,6 @@ pushd "$PROJECT_FOLDER" >/dev/null
     pushd apps >/dev/null
       APPS=$(find * -maxdepth 0 -type d)
       for app in $APPS; do
-        echo "Removing jib-maven-plugin for:$APP_FOLDER/apps/$app"
-        $SCDIR/scripts/remove-jib-plugin.sh $app/pom.xml
-      done
-      for app in $APPS; do
         pushd "$app" >/dev/null
           FOLDER=$(pwd)
           echo "Building:$FOLDER"
