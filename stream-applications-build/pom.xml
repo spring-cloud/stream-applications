@@ -35,14 +35,14 @@
         <nohttp-checkstyle.version>0.0.11</nohttp-checkstyle.version>
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.43</spring-javaformat-checkstyle.version>
-        <spring-boot.version>3.4.2-SNAPSHOT</spring-boot.version>
+        <spring-boot.version>3.4.2</spring-boot.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
         <!-- SC bom override to pickup spring-cloud/spring-cloud-function#1224 -->
         <spring-cloud-function.version>4.2.1</spring-cloud-function.version>
         <!-- =================================================================== -->
         <!-- Required only for release train docs generation in -->
         <!-- /stream-applications-release-train/stream-applications-docs/pom.xml -->
-        <spring.version>6.2.1</spring.version>
+        <spring.version>6.2.2</spring.version>
         <spring-cloud-stream-dependencies.version>4.2.0</spring-cloud-stream-dependencies.version>
         <!-- =================================================================== -->
         <mockserver.version>5.15.0</mockserver.version>
