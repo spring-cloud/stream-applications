@@ -255,7 +255,7 @@ jobs:
           fail-on-empty: false
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'core-surefire-reports'
           path: 'stream-applications/**/target/surefire-reports'
@@ -373,7 +373,7 @@ jobs:
           fail-on-empty: false
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: '${{ matrix.app }}-surefire-reports'
           path: '**/target/surefire-reports'
@@ -471,7 +471,7 @@ jobs:
         run: ./build-app.sh . "applications/sink/${{ matrix.app }}"
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: '${{ matrix.app }}-surefire-reports'
           path: '**/target/surefire-reports'
@@ -610,7 +610,7 @@ jobs:
           fail-on-empty: false
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: '${{ matrix.app }}-surefire-reports'
           path: '**/target/surefire-reports'
@@ -764,7 +764,7 @@ jobs:
           fail-on-empty: false
       - name: 'Upload: Test Reports'
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: '${{ matrix.app }}-surefire-reports'
           path: '**/target/surefire-reports'
