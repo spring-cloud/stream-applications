@@ -70,7 +70,7 @@ jobs:
           $BUILD_DIR/scan-folders.sh table
       - name: 'Upload: Error logs'
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'modified-surefire-reports'
           path: '**/target/surefire-reports'
