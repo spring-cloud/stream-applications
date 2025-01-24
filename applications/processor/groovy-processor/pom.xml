@@ -14,10 +14,6 @@
         <relativePath>../../stream-applications-core/pom.xml</relativePath>
     </parent>
 
-    <properties>
-        <apache-ivy.version>2.5.1</apache-ivy.version>
-    </properties>
-
     <dependencies>
 
         <dependency>

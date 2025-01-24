@@ -4,7 +4,6 @@ SCDIR=$(realpath $SCDIR)
 if [[ "$1" != *"-sources.jar" ]] && [[ "$1" != *"-javadoc.jar" ]]; then
     if [ "$TRIVY_UPLOAD" == "true" ]; then
       echo "Scanning:$1"
-      echo "trivy rootfs --format sarif -o \"$1.sarif\" \"$1\""
       trivy rootfs --exit-code 1 --format sarif -o "$1.sarif" "$1"
       if [ -f "$1.sarif" ]; then
         if [ -f $SCDIR/runs.sarif ]; then
