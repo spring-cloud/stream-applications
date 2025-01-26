@@ -137,13 +137,19 @@
                                     <management.tracing.sampling.probability>1.0</management.tracing.sampling.probability>
                                     <management.zipkin.tracing.export.enabled>false</management.zipkin.tracing.export.enabled>
                                     <management.wavefront.tracing.export.enabled>false</management.wavefront.tracing.export.enabled>
-                                    <spring-cloud-function.version>4.2.1</spring-cloud-function.version>
                                 </properties>
                                 <metadata>
                                     <mavenPluginVersion>${spring-cloud-dataflow-apps-metadata-plugin.version}</mavenPluginVersion>
                                 </metadata>
                                 <maven>
                                     <dependencyManagement>
+                                        <dependency>
+                                            <groupId>org.springframework.cloud</groupId>
+                                            <artifactId>spring-cloud-function-dependencies</artifactId>
+                                            <version>${spring-cloud-function.version}</version>
+                                            <scope>import</scope>
+                                            <type>pom</type>
+                                        </dependency>
                                         <dependency>
                                             <groupId>org.springframework.cloud</groupId>
                                             <artifactId>spring-cloud-dependencies</artifactId>
