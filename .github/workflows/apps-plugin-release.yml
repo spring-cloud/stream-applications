@@ -55,7 +55,7 @@ jobs:
             -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}' \
             -B
           jfrog rt build-clean
-          jfrog mvn -gs settings.xml -Pstagingrelease,full,deploymentfiles -B install clean -DskipTests 
+          jfrog mvn -gs settings.xml -Pstagingrelease,full,deploymentfiles -B clean install -DskipTests 
           jfrog rt build-publish
           echo spring_cloud_dataflow_apps_plugin_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
       - name: Tag Release
