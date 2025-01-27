@@ -20,3 +20,4 @@ jobs:
         staging-profile-name: ${{ secrets.OSSRH_STAGING_PROFILE_NAME }}
         staging-repo-id: ${{ github.event.inputs.stagedRepositoryId }}
         release: true
+        release-timeout: 1200
