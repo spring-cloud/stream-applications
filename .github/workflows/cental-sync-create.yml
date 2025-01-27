@@ -48,6 +48,8 @@ jobs:
         pgp-sign: true
         pgp-sign-passphrase: ${{ secrets.GPG_PASSPHRASE }}
         pgp-sign-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+        close-timeout: 1200
+        release-timeout: 1200
 
       # Print staging repo id
     - name: Print Staging Repo Id
