@@ -10,7 +10,7 @@ on:
 permissions: {}
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu22-8-32-OSS
     steps:
     - uses: jvalkeal/nexus-sync@v0
       with:
