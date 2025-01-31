@@ -23,7 +23,7 @@
         <spring-cloud-dataflow-apps-docs-plugin.version>1.0.14</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.0.14</spring-cloud-dataflow-apps-metadata-plugin.version>
         <java-cfenv-boot.version>3.2.0</java-cfenv-boot.version>
-        <spring-cloud-services.version>4.1.6</spring-cloud-services.version>
+        <spring-cloud-services.version>4.1.7</spring-cloud-services.version>
     </properties>
 
     <modules>
