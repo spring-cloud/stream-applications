@@ -208,6 +208,26 @@
 										</dependencies>
 									</maven>
 								</rabbit>
+								<pulsar>
+									<maven>
+										<dependencies>
+											<dependency>
+												<groupId>org.springframework.cloud</groupId>
+												<artifactId>spring-cloud-stream-binder-pulsar</artifactId>
+											</dependency>
+										</dependencies>
+										<repositories>
+											<repository>
+												<snapshots>
+													<enabled>false</enabled>
+												</snapshots>
+												<id>bintray-binder</id>
+												<name>bintray-binder</name>
+												<url>https://dl.bintray.com/binder/maven</url>
+											</repository>
+										</repositories>
+									</maven>
+								</pulsar>
 							</binders>
 						</global>
 					</configuration>

@@ -21,6 +21,15 @@
                   "name": {"$match": "*.jar"}
                 },
                 {
+                  "name": {"$match": "*stream-applications-descriptor-*.stream-apps-pulsar-maven"}
+                },
+                {
+                  "name": {"$match": "*stream-applications-descriptor-*.stream-apps-pulsar-docker"}
+                },
+                {
+                  "name": {"$match": "*stream-applications-descriptor-*.stream-apps-pulsar-harbor"}
+                },
+                {
                   "name": {"$match": "*stream-applications-descriptor-*.stream-apps-kafka-maven"}
                 },
                 {
@@ -37,6 +46,9 @@
                 },
                 {
                   "name": {"$match": "*stream-applications-descriptor-*.stream-apps-rabbit-harbor"}
+                },
+                {
+                  "name": {"$match": "*stream-applications-descriptor-*.pulsar-apps-maven-repo-url.properties"}
                 },
                 {
                   "name": {"$match": "*stream-applications-descriptor-*.kafka-apps-maven-repo-url.properties"}
