@@ -11,7 +11,7 @@ if [ "$STREAM_APPS_VERSION" == "" ]; then
   STREAM_APPS_VERSION=$($SCDIR/mvn-get-version.sh)
 fi
 CONTAINERS="s3-source sftp-source http-request-processor log-sink jdbc-source time-source http-source tcp-sink mongodb-sink"
-BROKERS="rabbit kafka"
+BROKERS="rabbit kafka pulsar"
 for container in $CONTAINERS; do
   for broker in $BROKERS; do
     echo "Pulling springcloudstream/${container}-${broker}:$STREAM_APPS_VERSION"

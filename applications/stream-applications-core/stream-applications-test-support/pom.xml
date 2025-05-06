@@ -40,6 +40,10 @@
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.pulsar</groupId>
+			<artifactId>spring-pulsar</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.amqp</groupId>
 			<artifactId>spring-rabbit</artifactId>
 		</dependency>
@@ -60,6 +64,11 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>kafka</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>pulsar</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
