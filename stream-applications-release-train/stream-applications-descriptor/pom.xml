@@ -32,12 +32,17 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
+                    <include>META-INF/pulsar-apps-maven.properties</include>
+                    <include>META-INF/pulsar-apps-docker.properties</include>
+                    <include>META-INF/pulsar-apps-harbor.properties</include>
+                    <include>META-INF/rabbit-apps-maven.properties</include>
                     <include>META-INF/kafka-apps-maven.properties</include>
                     <include>META-INF/rabbit-apps-maven.properties</include>
                     <include>META-INF/kafka-apps-docker.properties</include>
                     <include>META-INF/kafka-apps-harbor.properties</include>
                     <include>META-INF/rabbit-apps-docker.properties</include>
                     <include>META-INF/rabbit-apps-harbor.properties</include>
+                    <include>META-INF/pulsar-apps-maven-repo-url.properties</include>
                     <include>META-INF/kafka-apps-maven-repo-url.properties</include>
                     <include>META-INF/rabbit-apps-maven-repo-url.properties</include>
                 </includes>
@@ -118,6 +123,18 @@
                         <configuration>
                             <artifacts>
                                 <artifact>
+                                    <file>target/classes/META-INF/pulsar-apps-maven.properties</file>
+                                    <type>stream-apps-pulsar-maven</type>
+                                </artifact>
+                                <artifact>
+                                    <file>target/classes/META-INF/pulsar-apps-docker.properties</file>
+                                    <type>stream-apps-pulsar-docker</type>
+                                </artifact>
+                                <artifact>
+                                    <file>target/classes/META-INF/pulsar-apps-harbor.properties</file>
+                                    <type>stream-apps-pulsar-harbor</type>
+                                </artifact>
+                                <artifact>
                                     <file>target/classes/META-INF/kafka-apps-maven.properties</file>
                                     <type>stream-apps-kafka-maven</type>
                                 </artifact>
@@ -140,6 +157,10 @@
                                 <artifact>
                                     <file>target/classes/META-INF/rabbit-apps-harbor.properties</file>
                                     <type>stream-apps-rabbit-harbor</type>
+                                </artifact>
+                                <artifact>
+                                    <file>target/classes/META-INF/pulsar-apps-maven-repo-url.properties</file>
+                                    <type>pulsar-apps-maven-repo-url.properties</type>
                                 </artifact>
                                 <artifact>
                                     <file>target/classes/META-INF/kafka-apps-maven-repo-url.properties</file>

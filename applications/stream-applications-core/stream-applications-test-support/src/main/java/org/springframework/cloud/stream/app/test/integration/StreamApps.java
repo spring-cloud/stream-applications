@@ -37,6 +37,7 @@ import org.springframework.util.CollectionUtils;
  * @author Corneil du Plessis
  * @see org.springframework.cloud.stream.app.test.integration.kafka.KafkaStreamApps
  * @see org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQStreamApps
+ * @see org.springframework.cloud.stream.app.test.integration.pulsar.PulsarStreamApps
  */
 @SuppressWarnings("resource")
 public abstract class StreamApps implements AutoCloseable, Startable {
