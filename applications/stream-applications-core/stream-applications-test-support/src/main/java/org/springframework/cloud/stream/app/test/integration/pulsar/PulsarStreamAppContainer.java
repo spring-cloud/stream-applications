@@ -20,8 +20,8 @@ import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 
 /**
  * An implementation of
- * {@link StreamAppContainer} for
- * kafka. This provides the required broker connection properties.
+ * {@link org.springframework.cloud.stream.app.test.integration.StreamAppContainer} for
+ * pulsar. This provides the required broker connection properties.
  * @author David Turanski
  */
 public class PulsarStreamAppContainer extends StreamAppContainer {

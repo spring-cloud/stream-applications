@@ -33,7 +33,7 @@ public abstract class PulsarConfig {
 
 
 	/**
-	 * The KafkaContainer.
+	 * The PulsarContainer.
 	 */
 	public final static PulsarContainer pulsar = new PulsarContainer(
 			DockerImageName.parse("apachepulsar/pulsar-all"))
