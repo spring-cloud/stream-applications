@@ -253,16 +253,6 @@
                                 </maven>
                             </application>
                             <binders>
-                                <pulsar>
-                                    <maven>
-                                        <dependencies>
-                                            <dependency>
-                                                <groupId>org.springframework.cloud</groupId>
-                                                <artifactId>spring-cloud-stream-binder-pulsar</artifactId>
-                                            </dependency>
-                                        </dependencies>
-                                    </maven>
-                                </pulsar>
                                 <kafka>
                                     <maven>
                                         <dependencies>
