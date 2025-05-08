@@ -732,10 +732,14 @@ jobs:
           jfrog rt upload "$SRC_ROOT/kafka-apps-maven.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-maven"
           jfrog rt upload "$SRC_ROOT/kafka-apps-docker.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-docker"
           jfrog rt upload "$SRC_ROOT/kafka-apps-harbor.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-kafka-harbor"
+          jfrog rt upload "$SRC_ROOT/pulsar-apps-maven.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-pulsar-maven"
+          jfrog rt upload "$SRC_ROOT/pulsar-apps-docker.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-pulsar-docker"
+          jfrog rt upload "$SRC_ROOT/pulsar-apps-harbor.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-pulsar-harbor"
           jfrog rt upload "$SRC_ROOT/rabbit-apps-maven.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-maven"
           jfrog rt upload "$SRC_ROOT/rabbit-apps-docker.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-docker"
           jfrog rt upload "$SRC_ROOT/rabbit-apps-harbor.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.stream-apps-rabbit-harbor"
           jfrog rt upload "$SRC_ROOT/kafka-apps-maven-repo-url.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.kafka-apps-maven-repo-url.properties"
+          jfrog rt upload "$SRC_ROOT/pulsar-apps-maven-repo-url.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.pulsar-apps-maven-repo-url.properties"
           jfrog rt upload "$SRC_ROOT/rabbit-apps-maven-repo-url.properties" "${TARGET_REPO}/stream-applications-descriptor-${RELEASE_TRAIN_VERSION}.rabbit-apps-maven-repo-url.properties"
 
       - name: Set Stream Applications Docs Properties for ${{ needs.parameters.outputs.release_train_version }}
