@@ -50,7 +50,7 @@
         <curator.version>5.5.0</curator.version>
         <mavenThreads>1</mavenThreads>
         <commons-compress.version>1.26.2</commons-compress.version>
-        <commons-lang3.version>3.17.0</commons-lang3.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
         <okhttp3.version>4.12.0</okhttp3.version>
         <!--suppress UnresolvedMavenProperty -->
         <buildName>${env.BUILD_NAME}</buildName>
