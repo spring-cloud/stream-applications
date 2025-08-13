@@ -11,16 +11,16 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<spring-boot.version>3.4.1</spring-boot.version>
+		<spring-boot.version>3.5.4</spring-boot.version>
 		<stream-apps-core.version>5.0.0-SNAPSHOT</stream-apps-core.version>
 		<java-cfenv-boot.version>3.2.0</java-cfenv-boot.version>
 		<app-metadata-maven-plugin-version>1.1.0-SNAPSHOT</app-metadata-maven-plugin-version>
 
 		<!-- Emulate the properties that otherwise should come from the stream-apps-parent parent -->
 		<java-functions.version>5.0.0-SNAPSHOT</java-functions.version>
-		<spring-cloud-dependencies.version>2023.0.1</spring-cloud-dependencies.version>
-		<spring-cloud-stream-dependencies.version>4.1.1</spring-cloud-stream-dependencies.version>
-		<spring-cloud-function-dependencies.version>4.1.1</spring-cloud-function-dependencies.version>
+		<spring-cloud-dependencies.version>2025.0.0</spring-cloud-dependencies.version>
+		<spring-cloud-stream-dependencies.version>5.1.0</spring-cloud-stream-dependencies.version>
+		<spring-cloud-function-dependencies.version>5.1.0</spring-cloud-function-dependencies.version>
 	</properties>
 
 	<build>
