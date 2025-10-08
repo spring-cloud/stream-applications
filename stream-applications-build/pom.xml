@@ -35,22 +35,19 @@
         <nohttp-checkstyle.version>0.0.11</nohttp-checkstyle.version>
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.43</spring-javaformat-checkstyle.version>
-        <spring-boot.version>3.4.2</spring-boot.version>
-        <spring-cloud.version>2024.0.0</spring-cloud.version>
-        <!-- SC bom override to pickup spring-cloud/spring-cloud-function#1224 -->
-        <spring-cloud-function.version>4.2.1</spring-cloud-function.version>
+        <spring-boot.version>3.4.10</spring-boot.version>
+        <spring-cloud.version>2024.0.2</spring-cloud.version>
         <!-- =================================================================== -->
         <!-- Required only for release train docs generation in -->
         <!-- /stream-applications-release-train/stream-applications-docs/pom.xml -->
-        <spring.version>6.2.2</spring.version>
-        <spring-cloud-stream-dependencies.version>4.2.0</spring-cloud-stream-dependencies.version>
+        <spring.version>6.2.11</spring.version>
+        <spring-cloud-stream-dependencies.version>4.2.2</spring-cloud-stream-dependencies.version>
         <!-- =================================================================== -->
         <mockserver.version>5.15.0</mockserver.version>
         <apache-ivy.version>2.5.2</apache-ivy.version>
         <curator.version>5.5.0</curator.version>
         <mavenThreads>1</mavenThreads>
         <commons-compress.version>1.26.2</commons-compress.version>
-        <commons-lang3.version>3.17.0</commons-lang3.version>
         <okhttp3.version>4.12.0</okhttp3.version>
         <!--suppress UnresolvedMavenProperty -->
         <buildName>${env.BUILD_NAME}</buildName>
@@ -80,23 +77,11 @@
                 <version>${commons-compress.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-function-dependencies</artifactId>
-                <version>${spring-cloud-function.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
