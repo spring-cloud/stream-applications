@@ -19,6 +19,7 @@
         <stream-apps-core.version>5.1.1-SNAPSHOT</stream-apps-core.version>
         <java-functions.version>5.1.1</java-functions.version>
         <prometheus-rsocket.version>1.5.3</prometheus-rsocket.version>
+        <snappy-java.version>1.1.10.5</snappy-java.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.1.1</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.1.1</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.1.1</spring-cloud-dataflow-apps-metadata-plugin.version>
@@ -186,6 +187,12 @@
                                             <groupId>io.micrometer.prometheus</groupId>
                                             <artifactId>prometheus-rsocket-spring</artifactId>
                                             <version>${prometheus-rsocket.version}</version>
+                                            <exclusions>
+                                                <exclude>
+                                                    <groupId>org.xerial.snappy</groupId>
+                                                    <artifactId>snappy-java</artifactId>
+                                                </exclude>
+                                            </exclusions>
                                         </dependency>
                                         <dependency>
                                             <groupId>io.micrometer</groupId>
@@ -236,6 +243,11 @@
                                         <dependency>
                                             <groupId>org.springframework.cloud</groupId>
                                             <artifactId>spring-cloud-starter-config</artifactId>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.xerial.snappy</groupId>
+                                            <artifactId>snappy-java</artifactId>
+                                            <version>${snappy-java.version}</version>
                                         </dependency>
                                         <dependency>
                                             <groupId>io.pivotal.spring.cloud</groupId>
