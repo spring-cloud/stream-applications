@@ -36,7 +36,7 @@ public abstract class KafkaConfig {
 	 * The KafkaContainer.
 	 */
 	public final static KafkaContainer kafka = new KafkaContainer(
-			DockerImageName.parse("confluentinc/cp-kafka"))
+			DockerImageName.parse("confluentinc/cp-kafka:7.5.0"))
 			.withExposedPorts(9092, 9093)
 			.withNetwork(Network.SHARED)
 			.withStartupTimeout(Duration.ofSeconds(120))
