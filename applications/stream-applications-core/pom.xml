@@ -19,12 +19,19 @@
         <stream-apps-core.version>5.1.1-SNAPSHOT</stream-apps-core.version>
         <java-functions.version>5.1.1</java-functions.version>
         <prometheus-rsocket.version>1.5.3</prometheus-rsocket.version>
-        <snappy-java.version>1.1.10.5</snappy-java.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.1.1</spring-cloud-dataflow-apps-generator-plugin.version>
         <spring-cloud-dataflow-apps-docs-plugin.version>1.1.1</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.1.1</spring-cloud-dataflow-apps-metadata-plugin.version>
         <java-cfenv-boot.version>3.2.0</java-cfenv-boot.version>
         <spring-cloud-services.version>4.1.8</spring-cloud-services.version>
+
+        <!-- Override for CVE-2025-53864 -->
+        <snappy-java.version>1.1.10.5</snappy-java.version>
+
+        <!-- Override for CVE-2025-53864 -->
+        <nimbus-oauth2-oidc-sdk.version>9.43.6</nimbus-oauth2-oidc-sdk.version>
+        <nimbus-jose-jwt.version>9.37.4</nimbus-jose-jwt.version>
+
     </properties>
 
     <modules>
@@ -183,6 +190,7 @@
                                             <groupId>io.micrometer</groupId>
                                             <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
                                         </dependency>
+                                        <!-- Exclude snappy-java due to CVE-2023-43642 -->
                                         <dependency>
                                             <groupId>io.micrometer.prometheus</groupId>
                                             <artifactId>prometheus-rsocket-spring</artifactId>
@@ -193,6 +201,11 @@
                                                     <artifactId>snappy-java</artifactId>
                                                 </exclude>
                                             </exclusions>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.xerial.snappy</groupId>
+                                            <artifactId>snappy-java</artifactId>
+                                            <version>${snappy-java.version}</version>
                                         </dependency>
                                         <dependency>
                                             <groupId>io.micrometer</groupId>
@@ -245,14 +258,45 @@
                                             <artifactId>spring-cloud-starter-config</artifactId>
                                         </dependency>
                                         <dependency>
-                                            <groupId>org.xerial.snappy</groupId>
-                                            <artifactId>snappy-java</artifactId>
-                                            <version>${snappy-java.version}</version>
-                                        </dependency>
-                                        <dependency>
                                             <groupId>io.pivotal.spring.cloud</groupId>
                                             <artifactId>spring-cloud-services-starter-config-client</artifactId>
                                             <version>${spring-cloud-services.version}</version>
+                                            <!-- oauth2-client brings in Nimbus w/ CVE-2025-53864 -->
+                                            <exclusions>
+                                                <exclude>
+                                                    <groupId>org.springframework.security</groupId>
+                                                    <artifactId>spring-security-oauth2-client</artifactId>
+                                                </exclude>
+                                            </exclusions>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>org.springframework.security</groupId>
+                                            <artifactId>spring-security-oauth2-client</artifactId>
+                                            <!-- oauth2-oidc-sdk brings in nimbus-jose-jwt w/ CVE-2025-53864 -->
+                                            <exclusions>
+                                                <exclude>
+                                                    <groupId>com.nimbusds</groupId>
+                                                    <artifactId>oauth2-oidc-sdk</artifactId>
+                                                </exclude>
+                                            </exclusions>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>com.nimbusds</groupId>
+                                            <artifactId>oauth2-oidc-sdk</artifactId>
+                                            <version>${nimbus-oauth2-oidc-sdk.version}</version>
+                                            <!-- oauth2-oidc-sdk brings in nimbus-jose-jwt w/ CVE-2025-53864 -->
+                                            <exclusions>
+                                                <exclude>
+                                                    <groupId>com.nimbusds</groupId>
+                                                    <artifactId>nimbus-jose-jwt</artifactId>
+                                                </exclude>
+                                            </exclusions>
+                                        </dependency>
+                                        <!-- nimbus-jose-jwt override for CVE-2025-53864 -->
+                                        <dependency>
+                                            <groupId>com.nimbusds</groupId>
+                                            <artifactId>nimbus-jose-jwt</artifactId>
+                                            <version>${nimbus-jose-jwt.version}</version>
                                         </dependency>
                                     </dependencies>
                                 </maven>
