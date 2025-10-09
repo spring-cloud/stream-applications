@@ -12,6 +12,7 @@
 
 	<properties>
 		<json-unit.version>1.25.1</json-unit.version>
+		<grpc-netty-shaded.version>1.75.0</grpc-netty-shaded.version>
 	</properties>
 
 	<artifactId>debezium-source</artifactId>
@@ -23,8 +24,19 @@
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>spring-debezium-supplier</artifactId>
+			<!-- Exclude grpc-netty-shaded due to CVE-2025-55163 -->
+			<exclusions>
+				<exclusion>
+					<groupId>io.grpc</groupId>
+					<artifactId>grpc-netty-shaded</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-netty-shaded</artifactId>
+			<version>${grpc-netty-shaded.version}</version>
+		</dependency>
 		<!-- TEST -->
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
@@ -124,8 +136,19 @@
 								<dependency>
 									<groupId>org.springframework.cloud.fn</groupId>
 									<artifactId>spring-debezium-supplier</artifactId>
+									<!-- Exclude grpc-netty-shaded due to CVE-2025-55163 -->
+									<exclusions>
+										<exclusion>
+											<groupId>io.grpc</groupId>
+											<artifactId>grpc-netty-shaded</artifactId>
+										</exclusion>
+									</exclusions>
 								</dependency>
 								<dependency>
+									<groupId>io.grpc</groupId>
+									<artifactId>grpc-netty-shaded</artifactId>
+									<version>${grpc-netty-shaded.version}</version>
+								</dependency>								<dependency>
 									<groupId>org.springframework.cloud.stream.app</groupId>
 									<artifactId>stream-applications-composite-function-support</artifactId>
 									<version>${stream-apps-core.version}</version>
