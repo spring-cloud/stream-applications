@@ -57,7 +57,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
           exit-code: 1
           trivyignores: .trivyignore
-          skip-dirs: 'spring-cloud-dataflow-apps-plugin'
+          skip-dirs: 'spring-cloud-dataflow-apps-plugin/**'
       - name: 'Scanned'
         shell: bash
         run: echo "::info ::Scanned"
