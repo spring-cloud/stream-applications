@@ -37,9 +37,9 @@
 		<maven-plugin-annotations.version>3.15.1</maven-plugin-annotations.version>
 		<commons.io.version>2.16.1</commons.io.version>
 		<commons-text.version>1.12.0</commons-text.version>
-		<spring-boot.version>3.4.1</spring-boot.version>
-		<spring.version>6.1.15</spring.version>
-		<spring-cloud.version>2023.0.4</spring-cloud.version>
+		<spring-boot.version>3.4.10</spring-boot.version>
+		<spring.version>6.2.11</spring.version>
+		<spring-cloud.version>2024.0.2</spring-cloud.version>
 	</properties>
   	<modules>
 		<module>spring-cloud-dataflow-apps-generator-plugin</module>
