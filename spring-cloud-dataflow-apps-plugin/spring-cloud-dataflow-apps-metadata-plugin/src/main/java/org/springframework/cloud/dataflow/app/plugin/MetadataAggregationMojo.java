@@ -134,7 +134,7 @@ public class MetadataAggregationMojo extends AbstractMojo {
 	private final JsonMarshaller jsonMarshaller = new JsonMarshaller();
 
 	public void execute() throws MojoExecutionException {
-		Result result = new Result(gatherConfigurationMetadata(null), gatherVisibleMetadata());
+		Result result = new Result(gatherConfigurationMetadata(null), gatherVisibleMetadata(), gatherOptionGroupsMetadata());
 		produceArtifact(result);
 
 		if (storeFilteredMetadata) {
@@ -332,6 +332,46 @@ public class MetadataAggregationMojo extends AbstractMojo {
 		return visible;
 	}
 
+	/**
+	 * Read all existing option groups metadata from this project runtime dependencies and merge them in a single object.
+	 */
+	/*default*/ Properties gatherOptionGroupsMetadata() throws MojoExecutionException {
+		Properties optionGroups = new Properties();
+		try {
+			for (String path : mavenProject.getRuntimeClasspathElements()) {
+				if (Files.isDirectory(Paths.get(path))) {
+					Path optionGroupsPath = Paths.get(path, "META-INF", SPRING_CLOUD_DATAFLOW_OPTION_GROUPS_PROPERTIES);
+					File optionGroupsFile = optionGroupsPath.toFile();
+					if (optionGroupsFile.canRead()) {
+						try (InputStream is = new FileInputStream(optionGroupsFile)) {
+							Properties properties = new Properties();
+							properties.load(is);
+							getLog().debug("Loading option groups from " + path);
+							optionGroups.putAll(properties);
+						}
+					}
+				}
+				else {
+					try (ZipFile zipFile = new ZipFile(new File(path))) {
+						ZipEntry entry = zipFile.getEntry("META-INF/" + SPRING_CLOUD_DATAFLOW_OPTION_GROUPS_PROPERTIES);
+						if (entry != null) {
+							try (InputStream inputStream = zipFile.getInputStream(entry)) {
+								Properties properties = new Properties();
+								properties.load(inputStream);
+								getLog().debug("Loading option groups from " + path);
+								optionGroups.putAll(properties);
+							}
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			throw new MojoExecutionException("Exception trying to read option groups metadata from dependencies of project", e);
+		}
+		return optionGroups;
+	}
+
 	/*default*/ ConfigurationMetadata gatherConfigurationMetadata(MetadataFilter metadataFilters)
 			throws MojoExecutionException {
 		ConfigurationMetadata metadata = new ConfigurationMetadata();
@@ -502,11 +542,11 @@ public class MetadataAggregationMojo extends AbstractMojo {
 
 			entry = new ZipEntry("META-INF/" + SPRING_CLOUD_DATAFLOW_PORT_MAPPING_PROPERTIES);
 			jos.putNextEntry(entry);
+			result.getPortMappingProperties().store(jos, "Describes visible port mapping properties for this app");
 
 			entry = new ZipEntry("META-INF/" + SPRING_CLOUD_DATAFLOW_OPTION_GROUPS_PROPERTIES);
 			jos.putNextEntry(entry);
-
-			result.getPortMappingProperties().store(jos, "Describes visible port mapping properties for this app");
+			result.getOptionGroupsProperties().store(jos, "Describes option groups for this app");
 
 			getLog().info(String.format("Attaching %s to current project", output.getCanonicalPath()));
 			projectHelper.attachArtifact(mavenProject, output, classifier);
@@ -630,6 +670,8 @@ public class MetadataAggregationMojo extends AbstractMojo {
 
 		private final Properties visible;
 
+		private final Properties optionGroups;
+
 		private Properties getPortMappingProperties() {
 			Properties portMappingProperties = new Properties();
 			visible.entrySet().stream()
@@ -638,9 +680,14 @@ public class MetadataAggregationMojo extends AbstractMojo {
 			return portMappingProperties;
 		}
 
-		private Result(ConfigurationMetadata metadata, Properties visible) {
+		private Properties getOptionGroupsProperties() {
+			return optionGroups;
+		}
+
+		Result(ConfigurationMetadata metadata, Properties visible, Properties optionGroups) {
 			this.metadata = metadata;
 			this.visible = visible;
+			this.optionGroups = optionGroups;
 		}
 	}
 }
