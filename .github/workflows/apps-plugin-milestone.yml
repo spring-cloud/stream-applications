@@ -27,7 +27,7 @@ jobs:
         env:
           JF_URL: 'https://repo.spring.io'
           JF_ENV_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}

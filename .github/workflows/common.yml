@@ -173,7 +173,7 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
           distribution: 'liberica'
       - name: 'Configure: cache for maven dependencies'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single-${{ inputs.branch }}
@@ -282,7 +282,7 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
           distribution: 'liberica'
       - name: 'Configure: cache for maven dependencies'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single-${{ inputs.branch }}
@@ -407,7 +407,7 @@ jobs:
           java-version: ${{ needs.parameters.outputs.jdk_build }}
           distribution: 'liberica'
       - name: 'Configure: cache for maven dependencies'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single-${{ inputs.branch }}
@@ -530,7 +530,7 @@ jobs:
           components: 'js'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Configure: cache for maven dependencies'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single-${{ inputs.branch }}
@@ -651,7 +651,7 @@ jobs:
           components: 'js'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Configure: cache for maven dependencies'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: maven-repo-${{ hashFiles('**/pom.xml') }}-8-single-${{ inputs.branch }}

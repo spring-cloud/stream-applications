@@ -42,7 +42,7 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'liberica'
       - name: 'Configure: cache for maven dependencies'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: maven-repo-${{ hashFiles('**/pom.xml') }}-it-${{ github.base_ref }}
