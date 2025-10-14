@@ -32,7 +32,6 @@ import org.springframework.boot.configurationprocessor.metadata.ConfigurationMet
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.cloud.dataflow.app.plugin.MetadataAggregationMojo.CONFIGURATION_PROPERTIES_INBOUND_PORTS;
 import static org.springframework.cloud.dataflow.app.plugin.MetadataAggregationMojo.SPRING_CLOUD_DATAFLOW_OPTION_GROUPS_PROPERTIES;
 
 /**
