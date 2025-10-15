@@ -19,9 +19,32 @@
         <netty-codec-smtp.version>4.1.128.Final</netty-codec-smtp.version>
     </properties>
     <dependencies>
+        <!-- Due  to CVE-2025-59419 we need a netty-all w/ an updated netty-code-smtp -->
         <dependency>
             <groupId>org.springframework.cloud.fn</groupId>
             <artifactId>spring-websocket-consumer</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-all</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${netty-all.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-codec-smtp</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-smtp</artifactId>
+            <version>${netty-codec-smtp.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
