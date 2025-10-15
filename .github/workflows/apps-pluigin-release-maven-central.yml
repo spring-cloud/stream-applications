@@ -1,5 +1,4 @@
-name: Release Apps Plugin to Maven Central
-
+name: Apps Plugin (Release to Maven Central)
 
 on:
   workflow_dispatch:
