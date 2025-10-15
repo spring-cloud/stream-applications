@@ -39,12 +39,6 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/checkout@v5
-        with:
-          repository: spring-io/spring-github-workflows
-          show-progress: false
-          ref: ${{ env.WORKFLOWS_REF }}
-
       - uses: jfrog/setup-jfrog-cli@v4
 
       - name: Download Release Files
