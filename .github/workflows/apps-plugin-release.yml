@@ -55,14 +55,13 @@ jobs:
             -DgenerateBackupPoms=false \
             -Dartifactory.publish.artifacts=false \
             -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}' \
-            -B
+            -B --no-transfer-progress
           jfrog rt build-clean
           echo "${MAVEN_GPG_PRIVATE_KEY}" > private.asc
           gpg --import --batch --no-tty private.asc
-          jfrog mvn -B -gs settings.xml -Pstagingrelease -B clean install -DskipTests 
+          jfrog mvn -B --no-transfer-progress -gs settings.xml -Pstagingrelease -B clean install -DskipTests 
           jfrog rt build-publish
           echo spring_cloud_dataflow_apps_plugin_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
-
       - name: Tag Release
         uses: jvalkeal/build-zoo-handler@v0.0.4
         with:

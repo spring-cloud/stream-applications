@@ -21,6 +21,9 @@
                   "name": {"$match": "*.jar"}
                 },
                 {
+                  "name": {"$match": "*.asc"}
+                },
+                {
                   "name": {"$match": "*stream-applications-descriptor-*.stream-apps-kafka-maven"}
                 },
                 {
