@@ -1,0 +1,66 @@
+name: Release Apps Plugin to Maven Central
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      buildName:
+        description: "Artifactory build name"
+        required: true
+      buildNumber:
+        description: "Artifactory build number"
+        required: true
+      releaseSpecFile:
+        type: choice
+        description: "The AQL spec file for the release files"
+        options:
+          - '.github/stream-apps-release-files-spec.json'
+          - '.github/apps-plugin-release-files-spec.json'
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  JF_ENV_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+  CENTRAL_TOKEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+  WORKFLOWS_REF: main
+
+jobs:
+  deploy-to-maven-central:
+    runs-on: ubuntu22-8-32-OSS
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          show-progress: false
+
+      - name: Verify Maven Secrets
+        run: |
+          if [[ -z $CENTRAL_TOKEN_USERNAME ]] 
+          then
+            gh run cancel ${{ github.run_id }}
+            echo "::error title=Cannot deploy to Maven Central:: The 'CENTRAL_TOKEN_USERNAME' & 'CENTRAL_TOKEN_PASSWORD' must be provided"
+            exit 1
+          fi
+
+      - uses: actions/checkout@v5
+        with:
+          repository: spring-io/spring-github-workflows
+          show-progress: false
+          ref: ${{ env.WORKFLOWS_REF }}
+
+      - uses: jfrog/setup-jfrog-cli@v4
+
+      - name: Download Release Files
+        run: |
+          jfrog rt download \
+          --spec ${{ inputs.releaseSpecFile }} \
+          --spec-vars "buildname=${{ inputs.buildName }};buildnumber=${{ inputs.buildNumber }}"
+          jarToCheck=$(find central_bundle -name "*.jar" -print -quit)
+          jarToCheck=${jarToCheck#central_bundle}
+          echo jarToCheck=$jarToCheck >> $GITHUB_OUTPUT
+
+      - name: Deploy to Maven Central
+        if: env.CENTRAL_TOKEN_USERNAME
+        uses: spring-io/central-publish-action@v0.3.0
+        with:
+          token-name: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          token: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+          dir: central_bundle

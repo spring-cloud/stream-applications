@@ -49,7 +49,7 @@
           ]
         }
       },
-      "target": "nexus/"
+      "target": "central_bundle/"
     }
   ]
 }
