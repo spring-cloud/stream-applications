@@ -9,6 +9,7 @@
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>spring-cloud-dataflow-apps-docs-plugin</artifactId>
+	<name>spring-cloud-dataflow-apps-docs-plugin</name>
 	<packaging>maven-plugin</packaging>
 	<dependencies>
 		<dependency>

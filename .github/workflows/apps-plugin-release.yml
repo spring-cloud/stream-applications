@@ -5,6 +5,8 @@ on:
 
 env:
   MAVEN_THREADS: '-T 0.5C'
+  MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+  MAVEN_GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
 jobs:
   build_deploy_release:
@@ -55,18 +57,23 @@ jobs:
             -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}' \
             -B
           jfrog rt build-clean
-          jfrog mvn -gs settings.xml -Pstagingrelease,full,deploymentfiles -B clean install -DskipTests 
+          echo "${MAVEN_GPG_PRIVATE_KEY}" > private.asc
+          gpg --import --batch --no-tty private.asc
+          jfrog mvn -B -gs settings.xml -Pstagingrelease -B clean install -DskipTests 
           jfrog rt build-publish
           echo spring_cloud_dataflow_apps_plugin_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
+
       - name: Tag Release
         uses: jvalkeal/build-zoo-handler@v0.0.4
         with:
           tag-release-branch: apps-plugin/v${{ env.spring_cloud_dataflow_apps_plugin_version }}
           tag-release-tag: ${{ env.spring_cloud_dataflow_apps_plugin_version }}
           tag-release-tag-prefix: apps-plugin/v
+
       - name: Promote Build
         run: |
           jfrog rt build-promote $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER libs-release-local
+
       - name: Clean cache
         run: |
           find ~/.m2/repository -type d -name '*SNAPSHOT' | xargs rm -fr

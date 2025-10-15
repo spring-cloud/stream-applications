@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
-  <packaging>maven-plugin</packaging>
-  <name>spring-cloud-dataflow-apps-generator-plugin</name>
-  <parent>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-dataflow-apps-plugin-parent</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
-    <relativePath>..</relativePath>
-  </parent>
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>spring-cloud-dataflow-apps-generator-plugin</artifactId>
+	<name>spring-cloud-dataflow-apps-generator-plugin</name>
+	<packaging>maven-plugin</packaging>
+	<parent>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-dataflow-apps-plugin-parent</artifactId>
+		<version>1.1.2-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
   <dependencies>
 	<dependency>
 		<groupId>org.apache.maven</groupId>

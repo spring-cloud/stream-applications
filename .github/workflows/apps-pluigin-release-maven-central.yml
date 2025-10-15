@@ -20,7 +20,6 @@ env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   JF_ENV_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
   CENTRAL_TOKEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
-  WORKFLOWS_REF: main
 
 jobs:
   deploy-to-maven-central:
@@ -46,9 +45,6 @@ jobs:
           jfrog rt download \
           --spec ${{ inputs.releaseSpecFile }} \
           --spec-vars "buildname=${{ inputs.buildName }};buildnumber=${{ inputs.buildNumber }}"
-          jarToCheck=$(find central_bundle -name "*.jar" -print -quit)
-          jarToCheck=${jarToCheck#central_bundle}
-          echo jarToCheck=$jarToCheck >> $GITHUB_OUTPUT
 
       - name: Deploy to Maven Central
         if: env.CENTRAL_TOKEN_USERNAME
