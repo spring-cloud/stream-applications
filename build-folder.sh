@@ -156,8 +156,21 @@ if ((RESULT == 0)); then
 #      fi
 #      MVNW="jfrog mvn"
 #    fi
+
+    if [[ "$VERSION" == *"-SNAPSHOT" ]]; then
+      MAVEN_OPTS="$MAVEN_OPTS -Dgpg.skip=true "
+    else
+      check_env MAVEN_GPG_PRIVATE_KEY
+      check_env MAVEN_GPG_PASSPHRASE
+      # Prime gpg w/ the expected private key
+      echo "${MAVEN_GPG_PRIVATE_KEY}" > private.asc
+      gpg --import --batch --no-tty private.asc
+    fi
+
     echo -e "Executing:${bold}$MVNW -f "$FOLDER" $MAVEN_OPTS $MVN_THR $MAVEN_GOAL${end}"
+
     $MVNW -f "$FOLDER" -Pfull $MAVEN_OPTS $MVN_THR $MAVEN_GOAL
+
     RESULT=$?
     set -e
     if ((RESULT != 0)); then

@@ -299,6 +299,29 @@
                                             <version>${nimbus-jose-jwt.version}</version>
                                         </dependency>
                                     </dependencies>
+                                    <plugins>
+                                        <plugin>
+                                            <artifactId>maven-gpg-plugin</artifactId>
+                                            <version>3.2.8</version>
+                                            <executions>
+                                                <execution>
+                                                    <id>sign-artifacts</id>
+                                                    <phase>verify</phase>
+                                                    <goals>
+                                                        <goal>sign</goal>
+                                                    </goals>
+                                                </execution>
+                                            </executions>
+                                            <configuration>
+                                                <![CDATA[
+                                                    <gpgArguments>
+                                                        <arg>--batch</arg>
+                                                        <arg>--pinentry-mode=loopback</arg>
+                                                    </gpgArguments>
+                                                ]]>
+                                            </configuration>
+                                        </plugin>
+                                    </plugins>
                                 </maven>
                             </application>
                             <binders>
