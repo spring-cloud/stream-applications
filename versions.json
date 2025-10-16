@@ -1,8 +1,8 @@
 {
-  "release_version": "5.1.1",
+  "release_version": "5.1.2-SNAPSHOT",
   "next_dev_version": "5.1.2-SNAPSHOT",
   "release_train": {
-    "release_version": "2025.0.1",
+    "release_version": "2025.0.2-SNAPSHOT",
     "next_dev_version": "2025.0.2-SNAPSHOT"
   }
 }

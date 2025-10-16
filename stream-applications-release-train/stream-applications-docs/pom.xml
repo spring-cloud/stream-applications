@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-release-train</artifactId>
-        <version>2025.0.1</version>
+        <version>2025.0.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>stream-applications-docs</artifactId>
     <name>stream-applications-docs</name>
     <description>Stream Apps Docs</description>
-    <version>2025.0.1</version>
+    <version>2025.0.2-SNAPSHOT</version>
     <properties>
         <docs.resources.version>0.2.5</docs.resources.version>
         <rootDir>${basedir}/../..</rootDir>
