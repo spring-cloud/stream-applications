@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.cloud.stream.app</groupId>
         <artifactId>stream-applications-build</artifactId>
-        <version>5.1.1-SNAPSHOT</version>
+        <version>5.1.1</version>
         <relativePath>../../stream-applications-build/pom.xml</relativePath>
     </parent>
 
@@ -16,7 +16,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <stream-apps-core.version>5.1.1-SNAPSHOT</stream-apps-core.version>
+        <stream-apps-core.version>5.1.1</stream-apps-core.version>
         <java-functions.version>5.1.1</java-functions.version>
         <prometheus-rsocket.version>1.5.3</prometheus-rsocket.version>
         <spring-cloud-dataflow-apps-generator-plugin.version>1.1.2</spring-cloud-dataflow-apps-generator-plugin.version>
