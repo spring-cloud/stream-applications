@@ -1,0 +1,196 @@
+name: Stream Apps (Release to Maven Central app-by-app)
+
+on:
+  workflow_dispatch:
+    inputs:
+      buildName:
+        description: "Artifactory build name"
+        required: true
+      buildNumber:
+        description: "Artifactory build number"
+        required: true
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  JF_ENV_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
+  CENTRAL_TOKEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+
+jobs:
+  deploy-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          show-progress: false
+      - uses: jfrog/setup-jfrog-cli@v4
+      - uses: ./.github/actions/deploy-artifacts-to-maven-central
+        with:
+          buildName: ${{ inputs.buildName }}
+          buildNumber: ${{ inputs.buildNumber }}
+          appNamesPattern: 'stream-applications-build*'
+          targetDir: 'central_bundle/stream-applications-build'
+          centralTokenName: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          centralToken: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+      - uses: ./.github/actions/deploy-artifacts-to-maven-central
+        with:
+          buildName: ${{ inputs.buildName }}
+          buildNumber: ${{ inputs.buildNumber }}
+          appNamesPattern: 'stream-applications-core*'
+          targetDir: 'central_bundle/stream-applications-core'
+          centralTokenName: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          centralToken: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+      - uses: ./.github/actions/deploy-artifacts-to-maven-central
+        with:
+          buildName: ${{ inputs.buildName }}
+          buildNumber: ${{ inputs.buildNumber }}
+          appNamesPattern: 'stream-applications-test-support*,stream-applications-postprocessor-common*,stream-applications-security-common*,stream-applications-composite-function-support*'
+          targetDir: 'central_bundle/stream-applications-core-subs'
+          centralTokenName: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          centralToken: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+  download-sources:
+    needs: deploy-core
+    runs-on: ubuntu-latest
+    outputs:
+      dirs: ${{ steps.get-artifact-dirs.outputs.dirs }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          show-progress: false
+      - uses: jfrog/setup-jfrog-cli@v4
+      - name: Download Release Files
+        run: |
+          jfrog rt download \
+          --spec ".github/stream-apps-release-files-spec.json" \
+          --spec-vars "buildname=${{ inputs.buildName }};buildnumber=${{ inputs.buildNumber }};appDirMatch=org/springframework/cloud/stream/app/*source*;targetDir=central_bundle/sources/"
+      - name: Get artifacts dirs to upload
+        id: get-artifact-dirs
+        run: |
+          pushd central_bundle/sources/org/springframework/cloud/stream/app
+          DIRS=$(find . -maxdepth 1 -mindepth 1 -type d | cut -c3- | jq -R -s -c 'split("\n")[:-1]')
+          popd
+          echo "dirs=$DIRS" >> $GITHUB_OUTPUT
+  deploy-sources:
+    needs: download-sources
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app-dir: ${{ fromJson(needs.download-sources.outputs.dirs) }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          show-progress: false
+      - uses: jfrog/setup-jfrog-cli@v4
+      - uses: ./.github/actions/deploy-artifacts-to-maven-central
+        with:
+          buildName: ${{ inputs.buildName }}
+          buildNumber: ${{ inputs.buildNumber }}
+          appNamesPattern: '${{ matrix.app-dir }}*'
+          targetDir: 'central_bundle/source/${{ matrix.app-dir }}'
+          centralTokenName: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          centralToken: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+  download-sinks:
+    needs: deploy-core
+    runs-on: ubuntu-latest
+    outputs:
+      dirs: ${{ steps.get-artifact-dirs.outputs.dirs }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          show-progress: false
+      - uses: jfrog/setup-jfrog-cli@v4
+      - name: Download Release Files
+        run: |
+          jfrog rt download \
+          --spec ".github/stream-apps-release-files-spec.json" \
+          --spec-vars "buildname=${{ inputs.buildName }};buildnumber=${{ inputs.buildNumber }};appDirMatch=org/springframework/cloud/stream/app/*sink*;targetDir=central_bundle/sinks/"
+      - name: Get artifacts dirs to upload
+        id: get-artifact-dirs
+        run: |
+          pushd central_bundle/sinks/org/springframework/cloud/stream/app
+          DIRS=$(find . -maxdepth 1 -mindepth 1 -type d | cut -c3- | jq -R -s -c 'split("\n")[:-1]')
+          popd
+          echo "dirs=$DIRS" >> $GITHUB_OUTPUT
+  deploy-sinks:
+    needs: download-sinks
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app-dir: ${{ fromJson(needs.download-sinks.outputs.dirs) }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          show-progress: false
+      - uses: jfrog/setup-jfrog-cli@v4
+      - uses: ./.github/actions/deploy-artifacts-to-maven-central
+        with:
+          buildName: ${{ inputs.buildName }}
+          buildNumber: ${{ inputs.buildNumber }}
+          appNamesPattern: '${{ matrix.app-dir }}*'
+          targetDir: 'central_bundle/sink/${{ matrix.app-dir }}'
+          centralTokenName: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          centralToken: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+  download-processors:
+    needs: deploy-core
+    runs-on: ubuntu-latest
+    outputs:
+      dirs: ${{ steps.get-artifact-dirs.outputs.dirs }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          show-progress: false
+      - uses: jfrog/setup-jfrog-cli@v4
+      - name: Download Release Files
+        run: |
+          jfrog rt download \
+          --spec ".github/stream-apps-release-files-spec.json" \
+          --spec-vars "buildname=${{ inputs.buildName }};buildnumber=${{ inputs.buildNumber }};appDirMatch=org/springframework/cloud/stream/app/*processor*;targetDir=central_bundle/processors/"
+      - name: Get artifacts dirs to upload
+        id: get-artifact-dirs
+        run: |
+          pushd central_bundle/processors/org/springframework/cloud/stream/app
+          DIRS=$(find . -maxdepth 1 -mindepth 1 -type d ! -path './stream-applications-postprocessor-common' | cut -c3- | jq -R -s -c 'split("\n")[:-1]')
+          popd
+          echo "dirs=$DIRS" >> $GITHUB_OUTPUT
+  deploy-processors:
+    needs: download-processors
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app-dir: ${{ fromJson(needs.download-processors.outputs.dirs) }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          show-progress: false
+      - uses: jfrog/setup-jfrog-cli@v4
+      - uses: ./.github/actions/deploy-artifacts-to-maven-central
+        with:
+          buildName: ${{ inputs.buildName }}
+          buildNumber: ${{ inputs.buildNumber }}
+          appNamesPattern: '${{ matrix.app-dir }}*'
+          targetDir: 'central_bundle/processor/${{ matrix.app-dir }}'
+          centralTokenName: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          centralToken: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+  deploy-release-train:
+    needs: [ deploy-sources, deploy-sinks, deploy-processors ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          show-progress: false
+      - uses: jfrog/setup-jfrog-cli@v4
+      - uses: ./.github/actions/deploy-artifacts-to-maven-central
+        with:
+          buildName: ${{ inputs.buildName }}
+          buildNumber: ${{ inputs.buildNumber }}
+          appNamesPattern: 'stream-applications-release-train*'
+          targetDir: 'central_bundle/stream-applications-release-train'
+          centralTokenName: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          centralToken: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+      - uses: ./.github/actions/deploy-artifacts-to-maven-central
+        with:
+          buildName: ${{ inputs.buildName }}
+          buildNumber: ${{ inputs.buildNumber }}
+          appNamesPattern: '*stream-applications-descriptor*,stream-applications-docs*'
+          targetDir: 'central_bundle/stream-applications-descriptor'
+          centralTokenName: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          centralToken: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}

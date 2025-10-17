@@ -1,0 +1,39 @@
+name: 'Deploy Artifacts To Maven Central'
+description: 'Downloads release files from Artifactory and deploys to Maven Central'
+inputs:
+  buildName:
+    description: "Artifactory build name"
+    required: true
+  buildNumber:
+    description: "Artifactory build number"
+    required: true
+  appNamesPattern:
+    description: "Patterns to match the artifact separated by commas (e.g. 'stream-applications-build*,other-app*')"
+    required: true
+  targetDir:
+    description: "Folder to download the artifact (e.g. 'central_bundle/stream-applications-build')"
+    required: true
+  centralTokenName:
+    description: "Central token name"
+    required: true
+  centralToken:
+    description: "Central token"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Download Release Files For (${{ inputs.appNamesPattern }}
+      shell: bash
+      run: |
+        ./scripts/release/deploy-artifacts-to-maven-central.sh \
+            ${{ inputs.buildName }} \
+            ${{ inputs.buildNumber }} \
+            "${{ inputs.appNamesPattern }}" \
+            ${{ inputs.targetDir }}
+    - name: Deploy ${{ inputs.appNamesPattern }} to Maven Central
+      uses: spring-io/central-publish-action@v0.3.0
+      with:
+        token-name: ${{ inputs.centralTokenName }}
+        token: ${{ inputs.centralToken }}
+        dir: ${{ inputs.targetDir }}
+        ignore-already-exists-error: true

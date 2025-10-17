@@ -7,7 +7,7 @@
             {
               "@buildName": "${buildname}",
               "@buildNumber": "${buildnumber}",
-              "path": {"$match": "org*"}
+              "path": {"$match": "${appDirMatch}" }
             },
             {
               "$or": [
@@ -52,7 +52,7 @@
           ]
         }
       },
-      "target": "central_bundle/"
+      "target": "${targetDir}"
     }
   ]
 }
