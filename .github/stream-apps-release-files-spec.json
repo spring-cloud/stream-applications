@@ -18,9 +18,6 @@
                   "name": {"$match": "*.jar"}
                 },
                 {
-                  "name": {"$match": "*.jar"}
-                },
-                {
                   "name": {"$match": "*.asc"}
                 },
                 {
@@ -46,6 +43,9 @@
                 },
                 {
                   "name": {"$match": "*stream-applications-descriptor-*.rabbit-apps-maven-repo-url.properties"}
+                },
+                {
+                  "name": {"$match": "*stream-applications-docs-*.zip"}
                 }
               ]
             }
