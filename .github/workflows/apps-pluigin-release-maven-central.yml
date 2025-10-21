@@ -23,7 +23,7 @@ env:
 
 jobs:
   deploy-to-maven-central:
-    runs-on: ubuntu22-8-32-OSS
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
         with:
