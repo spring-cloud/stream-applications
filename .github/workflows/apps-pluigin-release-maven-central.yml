@@ -9,12 +9,6 @@ on:
       buildNumber:
         description: "Artifactory build number"
         required: true
-      releaseSpecFile:
-        type: choice
-        description: "The AQL spec file for the release files"
-        options:
-          - '.github/stream-apps-release-files-spec.json'
-          - '.github/apps-plugin-release-files-spec.json'
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +37,7 @@ jobs:
       - name: Download Release Files
         run: |
           jfrog rt download \
-          --spec ${{ inputs.releaseSpecFile }} \
+          --spec '.github/apps-plugin-release-files-spec.json' \
           --spec-vars "buildname=${{ inputs.buildName }};buildnumber=${{ inputs.buildNumber }}"
 
       - name: Deploy to Maven Central
