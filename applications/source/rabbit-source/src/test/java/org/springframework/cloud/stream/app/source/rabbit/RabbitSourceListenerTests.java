@@ -22,6 +22,12 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.RabbitMQContainer;
 
 import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.support.AmqpHeaders;
@@ -54,14 +60,31 @@ public class RabbitSourceListenerTests {
 		RabbitMQContainer rabbitmq = new RabbitMQContainer("rabbitmq:management");
 		rabbitmq.start();
 
+		CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+		connectionFactory.setHost(rabbitmq.getHost());
+		connectionFactory.setPort(rabbitmq.getAmqpPort());
+		connectionFactory.setUsername(rabbitmq.getAdminUsername());
+		connectionFactory.setPassword(rabbitmq.getAdminPassword());
+
 		try {
-			rabbitmq.execInContainer("rabbitmqadmin", "declare", "queue", "name=scsapp-testq", "auto_delete=false", "durable=false");
-			rabbitmq.execInContainer("rabbitmqadmin", "declare", "queue", "name=scsapp-testq2", "auto_delete=false", "durable=false");
-			rabbitmq.execInContainer("rabbitmqadmin", "declare", "exchange", "name=scsapp-testex", "type=fanout");
-			rabbitmq.execInContainer("rabbitmqadmin", "declare", "binding", "source=scsapp-testex", "destination=scsapp-testq");
+			RabbitAdmin admin = new RabbitAdmin(connectionFactory);
+
+			Queue testq = new Queue("scsapp-testq", false, false, false);
+			Queue testq2 = new Queue("scsapp-testq2", false, false, false);
+			admin.declareQueue(testq);
+			admin.declareQueue(testq2);
+
+			FanoutExchange exchange = new FanoutExchange("scsapp-testex", false, false);
+			admin.declareExchange(exchange);
+
+			Binding binding = BindingBuilder.bind(testq).to(exchange);
+			admin.declareBinding(binding);
 		}
 		catch (Exception ex) {
-			throw new IllegalStateException(ex);
+			throw new IllegalStateException("Failed to create RabbitMQ test infrastructure", ex);
+		}
+		finally {
+			connectionFactory.destroy();
 		}
 
 		System.setProperty("spring.rabbitmq.port", rabbitmq.getAmqpPort().toString());
