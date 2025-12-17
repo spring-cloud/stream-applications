@@ -114,6 +114,8 @@ public class MetadataAggregationMojo extends AbstractMojo {
 	static {
 		KNOWN_PROBLEMATIC_ENUMS.add("org.springframework.boot.autoconfigure.data.jdbc.JdbcDatabaseDialect");
 		KNOWN_PROBLEMATIC_ENUMS.add("org.springframework.boot.autoconfigure.http.client.HttpClientProperties$Factory");
+		KNOWN_PROBLEMATIC_ENUMS.add("org.springframework.boot.autoconfigure.http.client.AbstractHttpRequestFactoryProperties$Factory");
+		KNOWN_PROBLEMATIC_ENUMS.add("org.springframework.boot.autoconfigure.http.client.reactive.AbstractClientHttpConnectorProperties$Connector");
 	}
 
 	@Parameter(defaultValue = "${project}")
