@@ -32,6 +32,9 @@
         <nimbus-oauth2-oidc-sdk.version>9.43.6</nimbus-oauth2-oidc-sdk.version>
         <nimbus-jose-jwt.version>9.37.4</nimbus-jose-jwt.version>
 
+        <!-- Override for CVE-2025-59250 -->
+        <mssql-jdbc.version>12.8.2.jre11</mssql-jdbc.version>
+
     </properties>
 
     <modules>
@@ -56,6 +59,11 @@
 				<artifactId>mockserver-netty</artifactId>
 				<version>${mockserver.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>com.microsoft.sqlserver</groupId>
+                <artifactId>mssql-jdbc</artifactId>
+                <version>${mssql-jdbc.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -164,6 +172,11 @@
                                             <version>${java-functions.version}</version>
                                             <type>pom</type>
                                             <scope>import</scope>
+                                        </dependency>
+                                        <dependency>
+                                            <groupId>com.microsoft.sqlserver</groupId>
+                                            <artifactId>mssql-jdbc</artifactId>
+                                            <version>${mssql-jdbc.version}</version>
                                         </dependency>
                                     </dependencyManagement>
                                     <dependencies>
