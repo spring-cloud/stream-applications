@@ -30,4 +30,10 @@ public enum Binder {
 	 * RabbitMQ Binder.
 	 */
 	RabbitMQ,
+
+
+	/**
+	 * Pulsar Binder.
+	 */
+	Pulsar,
 }

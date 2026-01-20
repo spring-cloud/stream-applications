@@ -101,9 +101,16 @@ public class SpringCloudStreamAppGeneratorMojoTest {
 		rabbitDep.setArtifactId("spring-cloud-stream-binder-rabbit");
 		rabbitBinder.getMaven().getDependencies().add(rabbitDep);
 
+		SpringCloudStreamAppGeneratorMojo.Binder pulsarBinder = new SpringCloudStreamAppGeneratorMojo.Binder();
+		Dependency pulsarDep = new Dependency();
+		pulsarDep.setGroupId("org.springframework.cloud");
+		pulsarDep.setArtifactId("spring-cloud-stream-binder-pulsar");
+		pulsarBinder.getMaven().getDependencies().add(pulsarDep);
+
 		Map<String, SpringCloudStreamAppGeneratorMojo.Binder> binders = new HashMap<>();
 		binders.put("kafka", kafkaBinder);
 		binders.put("rabbit", rabbitBinder);
+		binders.put("pulsar", pulsarBinder);
 
 		setMojoProperty("binders", binders);
 

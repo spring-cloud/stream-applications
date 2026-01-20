@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainer;
 import org.springframework.cloud.stream.app.test.integration.StreamAppContainerTestUtils;
 import org.springframework.cloud.stream.app.test.integration.kafka.KafkaStreamAppContainer;
+import org.springframework.cloud.stream.app.test.integration.pulsar.PulsarStreamAppContainer;
 import org.springframework.cloud.stream.app.test.integration.rabbitmq.RabbitMQStreamAppContainer;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
@@ -59,6 +60,9 @@ public class BaseContainerExtension implements ExecutionCondition {
 		String version = getVersion(annotation);
 
 		switch (annotation.binder()) {
+			case Pulsar:
+				baseContainer = new PulsarStreamAppContainer(
+						StreamAppContainerTestUtils.imageName(annotation.repository(), annotation.name(), version));
 		case Kafka:
 			baseContainer = new KafkaStreamAppContainer(
 					StreamAppContainerTestUtils.imageName(annotation.repository(), annotation.name(), version));
