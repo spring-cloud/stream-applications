@@ -14,10 +14,11 @@
         <relativePath>../../stream-applications-core/pom.xml</relativePath>
     </parent>
 
+
     <properties>
-        <jruby-complete.version>9.3.9.0</jruby-complete.version>
-        <jython-standalone.version>2.7.3</jython-standalone.version>
-        <graalvm.version>22.3.0</graalvm.version>
+        <jruby-complete.version>9.3.15.0</jruby-complete.version>
+        <jython-standalone.version>2.7.4</jython-standalone.version>
+        <graalvm.version>22.3.5</graalvm.version>
     </properties>
 
     <dependencies>
