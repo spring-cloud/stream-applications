@@ -23,10 +23,10 @@
         <spring-cloud-dataflow-apps-docs-plugin.version>1.1.2</spring-cloud-dataflow-apps-docs-plugin.version>
         <spring-cloud-dataflow-apps-metadata-plugin.version>1.1.2</spring-cloud-dataflow-apps-metadata-plugin.version>
         <java-cfenv-boot.version>3.2.0</java-cfenv-boot.version>
-        <spring-cloud-services.version>4.1.8</spring-cloud-services.version>
+        <spring-cloud-services.version>4.1.9</spring-cloud-services.version>
 
         <!-- Override for CVE-2025-53864 -->
-        <snappy-java.version>1.1.10.5</snappy-java.version>
+        <snappy-java.version>1.1.10.8</snappy-java.version>
 
         <!-- Override for CVE-2025-53864 -->
         <nimbus-oauth2-oidc-sdk.version>9.43.6</nimbus-oauth2-oidc-sdk.version>

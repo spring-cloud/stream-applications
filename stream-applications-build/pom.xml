@@ -35,13 +35,13 @@
         <nohttp-checkstyle.version>0.0.11</nohttp-checkstyle.version>
         <disable.nohttp.checks>true</disable.nohttp.checks>
         <spring-javaformat-checkstyle.version>0.0.43</spring-javaformat-checkstyle.version>
-        <spring-boot.version>3.4.10</spring-boot.version>
-        <spring-cloud.version>2024.0.2</spring-cloud.version>
+        <spring-boot.version>3.4.13</spring-boot.version>
+        <spring-cloud.version>2024.0.3</spring-cloud.version>
         <!-- =================================================================== -->
         <!-- Required only for release train docs generation in -->
         <!-- /stream-applications-release-train/stream-applications-docs/pom.xml -->
-        <spring.version>6.2.11</spring.version>
-        <spring-cloud-stream-dependencies.version>4.2.2</spring-cloud-stream-dependencies.version>
+        <spring.version>6.2.15</spring.version>
+        <spring-cloud-stream-dependencies.version>4.2.3</spring-cloud-stream-dependencies.version>
         <!-- =================================================================== -->
         <mockserver.version>5.15.0</mockserver.version>
         <apache-ivy.version>2.5.2</apache-ivy.version>
