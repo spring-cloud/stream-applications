@@ -13,9 +13,10 @@
     <name>stream-applications-descriptor</name>
     <version>2025.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <properties>
         <uniqueVersion>false</uniqueVersion>
-        <groovy.version>3.0.23</groovy.version>
+        <groovy.version>3.0.25</groovy.version>
     </properties>
     <dependencies>
         <dependency>

@@ -15,8 +15,8 @@
     </parent>
 
     <properties>
-        <netty-all.version>4.1.127.Final</netty-all.version>
-        <netty-codec-smtp.version>4.1.128.Final</netty-codec-smtp.version>
+        <netty-all.version>4.1.131.Final</netty-all.version>
+        <netty-codec-smtp.version>4.1.131.Final</netty-codec-smtp.version>
     </properties>
     <dependencies>
         <!-- Due  to CVE-2025-59419 we need a netty-all w/ an updated netty-code-smtp -->
