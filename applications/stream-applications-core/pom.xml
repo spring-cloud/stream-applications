@@ -32,11 +32,8 @@
         <nimbus-oauth2-oidc-sdk.version>9.43.6</nimbus-oauth2-oidc-sdk.version>
         <nimbus-jose-jwt.version>9.37.4</nimbus-jose-jwt.version>
 
-        <!-- Override for CVE-2025-59250 -->
-        <mssql-jdbc.version>12.8.2.jre11</mssql-jdbc.version>
-
-        <!-- Override for CVE-2025-12183 -->
-        <lz4-java.version>1.8.1</lz4-java.version>
+        <!-- Override for CVE-2025-12183 / CVE-2025-66566 -->
+        <lz4-java.version>1.10.3</lz4-java.version>
 
     </properties>
 
@@ -62,16 +59,6 @@
 				<artifactId>mockserver-netty</artifactId>
 				<version>${mockserver.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>com.microsoft.sqlserver</groupId>
-                <artifactId>mssql-jdbc</artifactId>
-                <version>${mssql-jdbc.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.lz4</groupId>
-                <artifactId>lz4-java</artifactId>
-                <version>${lz4-java.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -180,16 +167,6 @@
                                             <version>${java-functions.version}</version>
                                             <type>pom</type>
                                             <scope>import</scope>
-                                        </dependency>
-                                        <dependency>
-                                            <groupId>com.microsoft.sqlserver</groupId>
-                                            <artifactId>mssql-jdbc</artifactId>
-                                            <version>${mssql-jdbc.version}</version>
-                                        </dependency>
-                                        <dependency>
-                                            <groupId>org.lz4</groupId>
-                                            <artifactId>lz4-java</artifactId>
-                                            <version>${lz4-java.version}</version>
                                         </dependency>
                                     </dependencyManagement>
                                     <dependencies>
@@ -357,6 +334,18 @@
                                             <dependency>
                                                 <groupId>org.springframework.cloud</groupId>
                                                 <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+                                                <!-- Exclude lz4-java due to CVE-2025-12183 / CVE-2025-66566 -->
+                                                <exclusions>
+                                                    <exclusion>
+                                                        <groupId>org.lz4</groupId>
+                                                        <artifactId>lz4-java</artifactId>
+                                                    </exclusion>
+                                                </exclusions>
+                                            </dependency>
+                                            <dependency>
+                                                <groupId>at.yawk.lz4</groupId>
+                                                <artifactId>lz4-java</artifactId>
+                                                <version>${lz4-java.version}</version>
                                             </dependency>
                                         </dependencies>
                                     </maven>
