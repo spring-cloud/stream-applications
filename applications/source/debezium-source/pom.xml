@@ -13,6 +13,7 @@
 	<properties>
 		<json-unit.version>1.25.1</json-unit.version>
 		<grpc-netty-shaded.version>1.75.0</grpc-netty-shaded.version>
+		<org-bitbucket-jose4j.version>0.9.6</org-bitbucket-jose4j.version>
 	</properties>
 
 	<artifactId>debezium-source</artifactId>
@@ -24,11 +25,21 @@
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>spring-debezium-supplier</artifactId>
-			<!-- Exclude grpc-netty-shaded due to CVE-2025-55163 -->
 			<exclusions>
+				<!-- Exclude grpc-netty-shaded due to CVE-2025-55163 -->
 				<exclusion>
 					<groupId>io.grpc</groupId>
 					<artifactId>grpc-netty-shaded</artifactId>
+				</exclusion>
+				<!-- Exclude lz4-java due to CVE-2025-12183 / CVE-2025-66566 -->
+				<exclusion>
+					<groupId>org.lz4</groupId>
+					<artifactId>lz4-java</artifactId>
+				</exclusion>
+				<!-- Exclude jose4j due to CVE-2024-29371 -->
+				<exclusion>
+					<groupId>org.bitbucket.b_c</groupId>
+					<artifactId>jose4j</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -36,6 +47,18 @@
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-netty-shaded</artifactId>
 			<version>${grpc-netty-shaded.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>at.yawk.lz4</groupId>
+			<artifactId>lz4-java</artifactId>
+			<version>${lz4-java.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bitbucket.b_c</groupId>
+			<artifactId>jose4j</artifactId>
+			<version>${org-bitbucket-jose4j.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<!-- TEST -->
 		<dependency>
@@ -136,11 +159,21 @@
 								<dependency>
 									<groupId>org.springframework.cloud.fn</groupId>
 									<artifactId>spring-debezium-supplier</artifactId>
-									<!-- Exclude grpc-netty-shaded due to CVE-2025-55163 -->
 									<exclusions>
+										<!-- Exclude grpc-netty-shaded due to CVE-2025-55163 -->
 										<exclusion>
 											<groupId>io.grpc</groupId>
 											<artifactId>grpc-netty-shaded</artifactId>
+										</exclusion>
+										<!-- Exclude lz4-java due to CVE-2025-12183 / CVE-2025-66566 -->
+										<exclusion>
+											<groupId>org.lz4</groupId>
+											<artifactId>lz4-java</artifactId>
+										</exclusion>
+										<!-- Exclude jose4j due to CVE-2024-29371 -->
+										<exclusion>
+											<groupId>org.bitbucket.b_c</groupId>
+											<artifactId>jose4j</artifactId>
 										</exclusion>
 									</exclusions>
 								</dependency>
@@ -148,7 +181,20 @@
 									<groupId>io.grpc</groupId>
 									<artifactId>grpc-netty-shaded</artifactId>
 									<version>${grpc-netty-shaded.version}</version>
-								</dependency>								<dependency>
+								</dependency>
+								<dependency>
+									<groupId>at.yawk.lz4</groupId>
+									<artifactId>lz4-java</artifactId>
+									<version>${lz4-java.version}</version>
+									<scope>runtime</scope>
+								</dependency>
+								<dependency>
+									<groupId>org.bitbucket.b_c</groupId>
+									<artifactId>jose4j</artifactId>
+									<version>${org-bitbucket-jose4j.version}</version>
+									<scope>runtime</scope>
+								</dependency>
+								<dependency>
 									<groupId>org.springframework.cloud.stream.app</groupId>
 									<artifactId>stream-applications-composite-function-support</artifactId>
 									<version>${stream-apps-core.version}</version>

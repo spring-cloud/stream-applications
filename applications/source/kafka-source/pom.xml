@@ -20,6 +20,17 @@
 		<dependency>
 			<groupId>org.springframework.cloud.fn</groupId>
 			<artifactId>spring-kafka-supplier</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.lz4</groupId>
+					<artifactId>lz4-java</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>at.yawk.lz4</groupId>
+			<artifactId>lz4-java</artifactId>
+			<version>${lz4-java.version}</version>
 		</dependency>
 
 		<dependency>
@@ -53,12 +64,23 @@
 						<version>${project.version}</version>
 						<configClass>AUTOCONFIGURATION</configClass>
 						<functionDefinition>kafkaSupplier</functionDefinition>
-
 						<maven>
 							<dependencies>
+								<!-- Exclude lz4-java due to CVE-2025-12183 / CVE-2025-66566 -->
 								<dependency>
 									<groupId>org.springframework.cloud.fn</groupId>
 									<artifactId>spring-kafka-supplier</artifactId>
+									<exclusions>
+										<exclusion>
+											<groupId>org.lz4</groupId>
+											<artifactId>lz4-java</artifactId>
+										</exclusion>
+									</exclusions>
+								</dependency>
+								<dependency>
+									<groupId>at.yawk.lz4</groupId>
+									<artifactId>lz4-java</artifactId>
+									<version>${lz4-java.version}</version>
 								</dependency>
 							</dependencies>
 						</maven>

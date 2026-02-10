@@ -6,12 +6,21 @@ CVE-2023-32731
 
 ################################
 # Snakeyaml 1.3.3
-# SCDF usage has been mitigated.
+# Usage has been mitigated.
 ################################
 CVE-2022-1471
 
 ################################
 # Spring Web 5.3.x
-# SCDF not affected.
+# Not affected.
 ################################
 CVE-2016-1000027
+
+################################
+# SqlServer Jdbc Driver
+# Using 12.8.2.jre11 but Trivy
+# does not recognize the jre11
+# suffix and still reports the
+# CVE.
+################################
+CVE-2025-59250
