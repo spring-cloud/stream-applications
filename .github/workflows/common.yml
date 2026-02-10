@@ -50,11 +50,11 @@ env:
 jobs:
   scan:
     if: ${{ inputs.enableSecurityScan && github.repository == 'spring-cloud/stream-applications' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu22-8-32-OSS
     steps:
       - uses: actions/checkout@v4
       - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.33.1
         with:
           scan-type: 'fs'
           ignore-unfixed: true
@@ -62,6 +62,7 @@ jobs:
           exit-code: 1
           trivyignores: .trivyignore
           skip-dirs: 'spring-cloud-dataflow-apps-plugin/**'
+          timeout: 15m
       - name: 'Scanned'
         shell: bash
         run: echo "::info ::Scanned"
