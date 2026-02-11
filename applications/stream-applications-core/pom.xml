@@ -35,6 +35,8 @@
         <!-- Override for CVE-2025-12183 / CVE-2025-66566 -->
         <lz4-java.version>1.10.3</lz4-java.version>
 
+        <!-- Override for CVE-2026-24400 -->
+        <assertj.version>3.27.7</assertj.version>
     </properties>
 
     <modules>
@@ -59,6 +61,11 @@
 				<artifactId>mockserver-netty</artifactId>
 				<version>${mockserver.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -71,6 +78,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.assertj</groupId>
+                    <artifactId>assertj-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
