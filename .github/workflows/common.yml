@@ -50,9 +50,15 @@ env:
 jobs:
   scan:
     if: ${{ inputs.enableSecurityScan && github.repository == 'spring-cloud/stream-applications' }}
-    runs-on: ubuntu22-8-32-OSS
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: 'Build all - force resolve to avoid Trivy timeout'
+        shell: bash
+        run: |
+          export SKIP_RESOLVE=false
+          ./build-core.sh "-T 1C package -DskipTests -Psnapshot"
+          ./build-apps.sh "-T 1C package -DskipTests -Psnapshot"
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
         with:
@@ -62,7 +68,7 @@ jobs:
           exit-code: 1
           trivyignores: .trivyignore
           skip-dirs: 'spring-cloud-dataflow-apps-plugin/**'
-          timeout: '120m'
+          timeout: '30m'
           version: 'v0.69.1'
       - name: 'Scanned'
         shell: bash
