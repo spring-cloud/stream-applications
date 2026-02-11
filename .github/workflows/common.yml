@@ -55,8 +55,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: 'Build all - force resolve to avoid Trivy timeout'
         shell: bash
+        env:
+          ARTIFACTORY_USERNAME: 'anonymous'
+          ARTIFACTORY_PASSWORD: 'anonymous'
+          SKIP_RESOLVE: false
         run: |
-          export SKIP_RESOLVE=false
           ./build-core.sh "-T 1C package -DskipTests -Psnapshot"
           ./build-apps.sh "-T 1C package -DskipTests -Psnapshot"
       - name: Run Trivy vulnerability scanner in repo mode
