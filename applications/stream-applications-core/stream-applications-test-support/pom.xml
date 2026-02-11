@@ -38,6 +38,18 @@
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
+			<!-- Exclude lz4-java due to CVE-2025-12183 / CVE-2025-66566 -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.lz4</groupId>
+					<artifactId>lz4-java</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>at.yawk.lz4</groupId>
+			<artifactId>lz4-java</artifactId>
+			<version>${lz4-java.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.amqp</groupId>
