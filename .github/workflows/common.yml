@@ -62,7 +62,7 @@ jobs:
           exit-code: 1
           trivyignores: .trivyignore
           skip-dirs: 'spring-cloud-dataflow-apps-plugin/**'
-          timeout: 30m
+          timeout: '120m'
           version: 'v0.69.1'
       - name: 'Scanned'
         shell: bash
