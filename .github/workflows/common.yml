@@ -59,6 +59,7 @@ jobs:
           ARTIFACTORY_USERNAME: 'anonymous'
           ARTIFACTORY_PASSWORD: 'anonymous'
           SKIP_RESOLVE: false
+          SKIP_DEPLOY: true
         run: |
           ./build-core.sh "-T 1C package -DskipTests -Psnapshot"
           ./build-apps.sh "-T 1C package -DskipTests -Psnapshot"
