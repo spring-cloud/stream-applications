@@ -63,7 +63,7 @@ jobs:
           trivyignores: .trivyignore
           skip-dirs: 'spring-cloud-dataflow-apps-plugin/**'
           timeout: 30m
-          version: 0.69.1
+          version: 'v0.69.1'
       - name: 'Scanned'
         shell: bash
         run: echo "::info ::Scanned"
