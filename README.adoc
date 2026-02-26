@@ -1,3 +1,9 @@
+= Spring Cloud Stream Applications are no longer maintained as an open-source project by Broadcom, Inc.
+
+Spring Cloud Stream Applications 2025.0.1 is the last open-source release and any future releases will only be made available to Tanzu Spring customers. 
+For Tanzu entitled customers, Spring Cloud Stream Applications has recently been patched to 2025.0.2 in the https://techdocs.broadcom.com/us/en/vmware-tanzu/spring/tanzu-spring/commercial/spring-tanzu/spring-enterprise-subscription.html[Spring Enterprise artifact repository].
+
+
 == Stream Applications
 
 In this repository, you will find a collection of components that can meet various data integration use cases and requirements.
